@@ -1,0 +1,21 @@
+tools:
+  - class_name: "llin_verl.pi_sqlite_tool.ReadOnlySQLiteTool"
+    config:
+      type: "native"
+      sandbox_root: "/pi_sandbox"
+      database_name: "logistics.sqlite"
+      max_rows: 80
+      progress_steps: 100000
+    tool_schema:
+      type: function
+      function:
+        name: query_sqlite
+        description: "在当前物流轨迹环境中执行一条只读 SQLite 查询，返回列名和结果行。"
+        parameters:
+          type: object
+          additionalProperties: false
+          properties:
+            sql:
+              type: string
+              description: "只读 SELECT 或 WITH 查询；数据库文件已经选好，不要使用 ATTACH。"
+          required: ["sql"]

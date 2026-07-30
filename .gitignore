@@ -1,0 +1,18 @@
+# Local connection notes and credentials
+SSH_PRIVATE_KEY_LOGIN_*.md
+*.pem
+*.key
+
+# Local environment and generated files
+.env
+.env.*
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+outputs/
+runs/
+data/*.parquet
+
+# Locally downloaded framework/source references
+reference/
