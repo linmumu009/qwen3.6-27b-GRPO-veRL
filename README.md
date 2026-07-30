@@ -7,6 +7,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - 5 号机负责 FSDP2 训练，Ray 自定义资源名为 `llin_trainer`。
 - 6 号机负责 vLLM 异步轨迹推理，Ray 自定义资源名为 `llin_rollout`。
 - 两台机器通过内网 Ray 集群通信；训练权重使用 veRL 的 `nccl` 检查点后端，在昇腾环境中实际注册为 HCCL 广播。
+- HCCL 固定使用 `eno0` 和 `192.168.202.0/24` 内网，并为 host/NPU socket 分配互不重叠的端口范围，避免自动选中不可达的管理网卡。
 - 所有新增镜像、容器、工作目录和实验名均以 `llin` 开头，不复用或修改其他人的环境。
 
 当前服务器部署：
@@ -17,6 +18,8 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 | 工作目录 | `/data3/llin/qwen3.6-27b-verl-grpo` | `/data3/llin/qwen3.6-27b-verl-grpo` |
 | 容器 | `llin-verl-trainer-m05-20260730` | `llin-verl-rollout-m06-20260730` |
 | 镜像 | `llin-verl-a3:20260730` | `llin-verl-a3:20260730` |
+| 容器权限 | 特权模式（仅重建上述 `llin` 容器） | 特权模式（仅重建上述 `llin` 容器） |
+| 单步实验 NPU | 16（FSDP2） | 8（vLLM TP=8、DP=1） |
 
 ## 数据结论
 
@@ -39,7 +42,10 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/prepare_pi_dataset.py`：验证轨迹到 veRL Parquet 的转换程序。
 - `scripts/start_ray_m05.sh`、`scripts/start_ray_m06.sh`：两机 Ray 启动程序。
 - `scripts/check_ray_roles.py`：跨机角色落点验证。
+- `scripts/check_hccl.py`：两机基础 HCCL all-reduce 验证。
+- `scripts/check_hccl_fanout.py`：1 个训练 rank 到 8 个 rollout rank 的权重广播拓扑验证。
 - `scripts/run_pi_grpo_smoke.sh`：Qwen3.6-27B 单步轨迹 GRPO 冒烟实验。
+- `scripts/launch_pi_grpo_smoke.sh`：带退出码、起止时间和完整日志的后台实验启动器。
 
 ## 已验证状态
 
@@ -48,7 +54,10 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - Ray 两节点集群已连通，可见 32 张 NPU；角色测试确认训练任务落在 5 号机、rollout 任务落在 6 号机。
 - 4 条真实验证任务已转换为 Parquet；两台机器上的只读数据库查询和奖励闭环均为 `4/4` 满分。
 - 本地及两台容器内单元测试均为 `5 passed`。
-- 当前非特权实验容器无法初始化 NPU。服务器现有 Ascend 容器采用特权模式；正式单步训练需在明确接受该安全边界后重建这两个新容器，或由服务器管理员提供等价的最小权限配置。
+- 经明确授权，两个新建的 `llin` 容器已重建为特权容器；两侧 NPU 探针均通过，未改动其他人的镜像、容器或目录。
+- 两机 2-rank HCCL all-reduce 和 1→8 rollout fan-out 均通过；单步配置使用 5 GiB 权重广播 bucket，并将 vLLM HBM 利用率限制为 60%。
+- `llin-pi-grpo-one-step-20260730-08` 已完成 1 个真实 GRPO 更新并以退出码 `0` 结束：16 条轨迹均完成 8 轮交互，平均奖励 `0.096875`（最小 `0.05`、最大 `0.20`），actor loss `0.013279`，梯度范数 `0.855277`。
+- 单步实测生成耗时 `198.47s`、跨机权重同步 `7.35s`、actor 更新 `35.47s`；已保存完整的 `global_step_1` FSDP2 actor、优化器、额外状态、模型配置和 tokenizer 检查点。
 
 ## 参考实现
 
@@ -58,6 +67,13 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [veRL 昇腾模型与算法支持](https://github.com/verl-project/verl/blob/main/docs/ascend_tutorial/model_support/model_and_algorithm_support.md)
 
 ## 版本记录
+
+### v0.3.0 — 2026-07-30
+
+- 按授权将 5、6 号机上两个新建的 `llin` 容器重建为特权 Ascend 容器，并验证 NPU 可用性。
+- 固定 HCCL 内网接口和通信端口范围，新增 2-rank all-reduce 与 1→8 权重广播拓扑检查。
+- 将 Qwen3.6 工具调用切换到 `qwen3_coder` XML 解析，配置 16-NPU FSDP2 训练和 8-NPU TP rollout。
+- 完成真实数据上的单步轨迹 GRPO 更新，记录奖励、loss、性能数据并保存 `global_step_1` 检查点。
 
 ### v0.2.0 — 2026-07-30
 

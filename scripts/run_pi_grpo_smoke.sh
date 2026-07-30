@@ -2,18 +2,22 @@
 set -euo pipefail
 
 PROJECT_ROOT="${PROJECT_ROOT:-/workspace/llin-verl-grpo}"
+VERL_ROOT="${VERL_ROOT:-/verl}"
 MODEL_PATH="${MODEL_PATH:-/models/Qwen3.6-27B}"
 DATA_FILE="${DATA_FILE:-${PROJECT_ROOT}/data/pi_verified_smoke.parquet}"
 RUN_NAME="${RUN_NAME:-pi-grpo-one-step-20260730}"
 OUTPUT_DIR="${OUTPUT_DIR:-${PROJECT_ROOT}/runs/${RUN_NAME}}"
 
 export PYTHONPATH="${PROJECT_ROOT}/runtime:${PROJECT_ROOT}:${PYTHONPATH:-}"
+export RAY_ADDRESS="${RAY_ADDRESS:-192.168.202.5:26379}"
 export LLIN_PIN_RAY_ROLES=1
 export LLIN_TRAINER_RESOURCE=llin_trainer
 export LLIN_ROLLOUT_RESOURCE=llin_rollout
 export HCCL_EXEC_TIMEOUT=60000
 export HCCL_CONNECT_TIMEOUT=7200
 export TOKENIZERS_PARALLELISM=true
+
+cd "${VERL_ROOT}"
 
 python3 -m verl.experimental.one_step_off_policy.main_ppo \
   algorithm.adv_estimator=grpo \
@@ -53,9 +57,9 @@ python3 -m verl.experimental.one_step_off_policy.main_ppo \
   actor_rollout_ref.ref.fsdp_config.param_offload=True \
   actor_rollout_ref.rollout.name=vllm \
   actor_rollout_ref.rollout.mode=async \
-  actor_rollout_ref.rollout.tensor_model_parallel_size=16 \
+  actor_rollout_ref.rollout.tensor_model_parallel_size=8 \
   actor_rollout_ref.rollout.data_parallel_size=1 \
-  actor_rollout_ref.rollout.gpu_memory_utilization=0.75 \
+  actor_rollout_ref.rollout.gpu_memory_utilization=0.60 \
   actor_rollout_ref.rollout.max_num_batched_tokens=8192 \
   actor_rollout_ref.rollout.max_model_len=6144 \
   actor_rollout_ref.rollout.max_num_seqs=16 \
@@ -68,11 +72,11 @@ python3 -m verl.experimental.one_step_off_policy.main_ppo \
   actor_rollout_ref.rollout.multi_turn.max_assistant_turns=4 \
   actor_rollout_ref.rollout.multi_turn.max_user_turns=3 \
   actor_rollout_ref.rollout.multi_turn.max_tool_response_length=1024 \
-  actor_rollout_ref.rollout.multi_turn.format=hermes \
+  actor_rollout_ref.rollout.multi_turn.format=qwen3_coder \
   actor_rollout_ref.rollout.multi_turn.tokenization_sanity_check_mode=disable \
   actor_rollout_ref.rollout.agent.num_workers=8 \
   actor_rollout_ref.rollout.checkpoint_engine.backend=nccl \
-  actor_rollout_ref.rollout.checkpoint_engine.update_weights_bucket_megabytes=256 \
+  actor_rollout_ref.rollout.checkpoint_engine.update_weights_bucket_megabytes=5120 \
   reward.custom_reward_function.path="${PROJECT_ROOT}/llin_verl/pi_reward.py" \
   reward.custom_reward_function.name=compute_score \
   reward.reward_manager.name=naive \
@@ -82,7 +86,7 @@ python3 -m verl.experimental.one_step_off_policy.main_ppo \
   trainer.project_name=llin-qwen36-verl-grpo \
   trainer.experiment_name="${RUN_NAME}" \
   trainer.default_local_dir="${OUTPUT_DIR}/checkpoints" \
-  trainer.rollout_data_dir="${OUTPUT_DIR}/rollouts" \
+  trainer.rollout_data_dir=null \
   trainer.save_freq=1 \
   trainer.test_freq=-1 \
   trainer.total_epochs=1 \
@@ -91,5 +95,5 @@ python3 -m verl.experimental.one_step_off_policy.main_ppo \
   trainer.nnodes=1 \
   trainer.n_gpus_per_node=16 \
   rollout.nnodes=1 \
-  rollout.n_gpus_per_node=16 \
+  rollout.n_gpus_per_node=8 \
   "$@"

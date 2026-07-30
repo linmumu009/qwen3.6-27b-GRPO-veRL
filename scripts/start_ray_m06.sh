@@ -1,6 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+PROJECT_ROOT="${PROJECT_ROOT:-/workspace/llin-verl-grpo}"
+export PYTHONPATH="${PROJECT_ROOT}/runtime:${PROJECT_ROOT}:${PYTHONPATH:-}"
+export LLIN_PIN_RAY_ROLES=1
+export HCCL_IF_IP=192.168.202.4
+export HCCL_SOCKET_IFNAME=eno0
+export HCCL_IF_BASE_PORT=60000
+export HCCL_HOST_SOCKET_PORT_RANGE=60100-60163
+export HCCL_NPU_SOCKET_PORT_RANGE=60200-60263
+
 ray start \
   --address=192.168.202.5:26379 \
   --node-ip-address=192.168.202.4 \
