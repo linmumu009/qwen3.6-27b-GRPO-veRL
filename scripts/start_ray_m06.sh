@@ -2,13 +2,28 @@
 set -euo pipefail
 
 PROJECT_ROOT="${PROJECT_ROOT:-/workspace/llin-verl-grpo}"
-export PYTHONPATH="${PROJECT_ROOT}/runtime:${PROJECT_ROOT}:${PYTHONPATH:-}"
+VLLM_ROOT="${VLLM_ROOT:-/vllm}"
+export PYTHONPATH="${VLLM_ROOT}:${PROJECT_ROOT}/runtime:${PROJECT_ROOT}:${PYTHONPATH:-}"
 export LLIN_PIN_RAY_ROLES=1
 export HCCL_IF_IP=192.168.202.4
 export HCCL_SOCKET_IFNAME=eno0
 export HCCL_IF_BASE_PORT=60000
 export HCCL_HOST_SOCKET_PORT_RANGE=60100-60163
 export HCCL_NPU_SOCKET_PORT_RANGE=60200-60263
+# Keep the rollout workers on the same nonuniform Broadcast algorithm as the
+# trainer-side checkpoint sender.
+export HCCL_ALGO="broadcast=level0:NA;level1:NHR"
+
+# Rollout and AgentLoop actors import veRL from this container, not from the
+# trainer container. Apply worker-side compatibility fixes before Ray can
+# launch any actors here.
+python3 "${PROJECT_ROOT}/scripts/patch_verl_vllm_dp_weight_sync.py" \
+  --target "/verl/verl/workers/rollout/vllm_rollout/utils.py"
+python3 "${PROJECT_ROOT}/scripts/patch_verl_agent_loop_continuous_token.py" \
+  --target "/verl/verl/experimental/agent_loop/agent_loop.py"
+python3 "${PROJECT_ROOT}/scripts/patch_verl_fully_async_group_token_queue.py" \
+  --message-queue "/verl/verl/experimental/fully_async_policy/message_queue.py" \
+  --rollouter "/verl/verl/experimental/fully_async_policy/fully_async_rollouter.py"
 
 ray start \
   --address=192.168.202.5:26379 \

@@ -6,7 +6,7 @@ VERL_ROOT="${VERL_ROOT:-/verl}"
 VLLM_ROOT="${VLLM_ROOT:-/vllm}"
 MODEL_PATH="${MODEL_PATH:-/models/Qwen3.6-27B}"
 DATA_FILE="${DATA_FILE:-${PROJECT_ROOT}/data/pi_verified_smoke.parquet}"
-RUN_NAME="${RUN_NAME:-pi-grpo-megatron-tp4-pp2-cp2-one-step-20260730}"
+RUN_NAME="${RUN_NAME:-pi-grpo-fully-async-tp4-pp2-cp2-tp8-dp2-20260730}"
 OUTPUT_DIR="${OUTPUT_DIR:-${PROJECT_ROOT}/runs/${RUN_NAME}}"
 MEGATRON_BRIDGE_ROOT="${MEGATRON_BRIDGE_ROOT:-${PROJECT_ROOT}/reference/Megatron-Bridge-de93536e/src}"
 
@@ -17,6 +17,9 @@ TRAIN_NPUS="${TRAIN_NPUS:-16}"
 ROLLOUT_TP="${ROLLOUT_TP:-8}"
 ROLLOUT_NPUS="${ROLLOUT_NPUS:-16}"
 TOTAL_TRAINING_STEPS="${TOTAL_TRAINING_STEPS:-20}"
+GROUPS_PER_STEP="${GROUPS_PER_STEP:-4}"
+TOTAL_ROLLOUT_GROUPS="${TOTAL_ROLLOUT_GROUPS:-$((TOTAL_TRAINING_STEPS * GROUPS_PER_STEP))}"
+MAX_QUEUE_TOKENS="${MAX_QUEUE_TOKENS:-40000}"
 SAVE_FREQ="${SAVE_FREQ:-20}"
 WEIGHT_BUCKET_MB="${WEIGHT_BUCKET_MB:-3072}"
 
@@ -25,15 +28,13 @@ if (( TRAIN_TP * TRAIN_PP * TRAIN_CP != TRAIN_NPUS )); then
     "${TRAIN_TP}" "${TRAIN_PP}" "${TRAIN_CP}" "${TRAIN_NPUS}" >&2
   exit 2
 fi
-
 if (( ROLLOUT_NPUS % ROLLOUT_TP != 0 )); then
   printf 'Invalid rollout topology: NPUs(%s) is not divisible by TP(%s)\n' \
     "${ROLLOUT_NPUS}" "${ROLLOUT_TP}" >&2
   exit 2
 fi
-
 if [[ ! -d "${MEGATRON_BRIDGE_ROOT}/megatron/bridge" ]]; then
-  printf 'Megatron-Bridge de93536e source not found: %s\n' "${MEGATRON_BRIDGE_ROOT}" >&2
+  printf 'Megatron-Bridge source not found: %s\n' "${MEGATRON_BRIDGE_ROOT}" >&2
   exit 2
 fi
 
@@ -52,23 +53,26 @@ python3 "${PROJECT_ROOT}/scripts/patch_verl_megatron_bridge_compat.py" \
   --target "${VERL_ROOT}/verl/models/mcore/bridge.py"
 python3 "${PROJECT_ROOT}/scripts/patch_verl_vllm_dp_weight_sync.py" \
   --target "${VERL_ROOT}/verl/workers/rollout/vllm_rollout/utils.py"
-python3 "${PROJECT_ROOT}/scripts/patch_verl_one_step_dump_executor.py" \
-  --target "${VERL_ROOT}/verl/experimental/one_step_off_policy/ray_trainer.py"
-python3 "${PROJECT_ROOT}/scripts/patch_verl_one_step_continuous_token.py" \
-  --target "${VERL_ROOT}/verl/experimental/one_step_off_policy/main_ppo.py"
+python3 "${PROJECT_ROOT}/scripts/patch_verl_fully_async_continuous_token.py" \
+  --target "${VERL_ROOT}/verl/experimental/fully_async_policy/fully_async_main.py"
 python3 "${PROJECT_ROOT}/scripts/patch_verl_agent_loop_continuous_token.py" \
   --target "${VERL_ROOT}/verl/experimental/agent_loop/agent_loop.py"
+python3 "${PROJECT_ROOT}/scripts/patch_verl_fully_async_group_token_queue.py" \
+  --message-queue "${VERL_ROOT}/verl/experimental/fully_async_policy/message_queue.py" \
+  --rollouter "${VERL_ROOT}/verl/experimental/fully_async_policy/fully_async_rollouter.py"
 
 cd "${VERL_ROOT}"
 
-python3 -m verl.experimental.one_step_off_policy.main_ppo \
+python3 -m verl.experimental.fully_async_policy.fully_async_main \
   --config-path=config \
-  --config-name=one_step_off_ppo_megatron_trainer.yaml \
+  --config-name=fully_async_ppo_megatron_trainer.yaml \
   algorithm.adv_estimator=grpo \
   algorithm.use_kl_in_reward=False \
+  algorithm.rollout_correction.bypass_mode=True \
   data.train_files="${DATA_FILE}" \
   data.val_files="${DATA_FILE}" \
-  data.train_batch_size=4 \
+  data.train_batch_size=0 \
+  data.gen_batch_size=1 \
   data.max_prompt_length=2048 \
   data.max_response_length=4096 \
   data.filter_overlong_prompts=True \
@@ -87,12 +91,15 @@ python3 -m verl.experimental.one_step_off_policy.main_ppo \
   actor_rollout_ref.model.use_remove_padding=False \
   actor_rollout_ref.model.enable_gradient_checkpointing=True \
   actor_rollout_ref.actor.optim.lr=1e-6 \
+  actor_rollout_ref.actor.optim.lr_decay_style=constant \
+  actor_rollout_ref.actor.optim.lr_decay_steps="${TOTAL_TRAINING_STEPS}" \
   +actor_rollout_ref.actor.optim.override_optimizer_config.optimizer_cpu_offload=True \
   +actor_rollout_ref.actor.optim.override_optimizer_config.optimizer_offload_fraction=1 \
   +actor_rollout_ref.actor.optim.override_optimizer_config.overlap_cpu_optimizer_d2h_h2d=True \
-  actor_rollout_ref.actor.ppo_mini_batch_size=4 \
+  actor_rollout_ref.actor.ppo_mini_batch_size="${GROUPS_PER_STEP}" \
   actor_rollout_ref.actor.ppo_micro_batch_size_per_gpu=1 \
   actor_rollout_ref.actor.use_dynamic_bsz=False \
+  actor_rollout_ref.actor.use_rollout_log_probs=True \
   actor_rollout_ref.actor.use_kl_loss=False \
   actor_rollout_ref.actor.entropy_coeff=0 \
   actor_rollout_ref.actor.megatron.use_mbridge=True \
@@ -136,6 +143,7 @@ python3 -m verl.experimental.one_step_off_policy.main_ppo \
   actor_rollout_ref.rollout.max_model_len=6144 \
   actor_rollout_ref.rollout.max_num_seqs=16 \
   actor_rollout_ref.rollout.n=4 \
+  actor_rollout_ref.rollout.calculate_log_probs=True \
   actor_rollout_ref.rollout.enable_prefix_caching=True \
   actor_rollout_ref.rollout.disable_log_stats=False \
   actor_rollout_ref.rollout.enforce_eager=True \
@@ -171,5 +179,13 @@ python3 -m verl.experimental.one_step_off_policy.main_ppo \
   trainer.n_gpus_per_node="${TRAIN_NPUS}" \
   rollout.nnodes=1 \
   rollout.n_gpus_per_node="${ROLLOUT_NPUS}" \
+  rollout.n=4 \
+  rollout.total_rollout_steps="${TOTAL_ROLLOUT_GROUPS}" \
+  async_training.staleness_threshold=0.5 \
+  async_training.trigger_parameter_sync_step=1 \
+  async_training.require_batches=1 \
+  async_training.partial_rollout=True \
+  +async_training.max_queue_tokens="${MAX_QUEUE_TOKENS}" \
+  async_training.concurrent_samples_per_replica=16 \
   'actor_rollout_ref.actor.checkpoint.save_contents=[model,extra]' \
   "$@"

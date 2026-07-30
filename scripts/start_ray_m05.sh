@@ -2,15 +2,24 @@
 set -euo pipefail
 
 PROJECT_ROOT="${PROJECT_ROOT:-/workspace/llin-verl-grpo}"
+VLLM_ROOT="${VLLM_ROOT:-/vllm}"
 mkdir -p "${PROJECT_ROOT}/runs/ray/m05"
 
-export PYTHONPATH="${PROJECT_ROOT}/runtime:${PROJECT_ROOT}:${PYTHONPATH:-}"
+export PYTHONPATH="${VLLM_ROOT}:${PROJECT_ROOT}/runtime:${PROJECT_ROOT}:${PYTHONPATH:-}"
 export LLIN_PIN_RAY_ROLES=1
 export HCCL_IF_IP=192.168.202.5
 export HCCL_SOCKET_IFNAME=eno0
 export HCCL_IF_BASE_PORT=60000
 export HCCL_HOST_SOCKET_PORT_RANGE=60100-60163
 export HCCL_NPU_SOCKET_PORT_RANGE=60200-60263
+# The checkpoint engine forms an asymmetric 1-trainer + 16-rollout
+# communicator. Force the NHR broadcast path, which supports Broadcast and
+# nonuniform cross-server rank placement on Atlas A3.
+export HCCL_ALGO="broadcast=level0:NA;level1:NHR"
+
+python3 "${PROJECT_ROOT}/scripts/patch_verl_fully_async_group_token_queue.py" \
+  --message-queue "/verl/verl/experimental/fully_async_policy/message_queue.py" \
+  --rollouter "/verl/verl/experimental/fully_async_policy/fully_async_rollouter.py"
 
 ray start \
   --head \
