@@ -1,0 +1,532 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "轨迹长度与长尾 Rollout 调度调查",
+    "description": "老板历史轨迹与本次 veRL rollout 的同 prompt 对比，以及一推一训持续流水线的超时、队列与取消设计。",
+    "generatedAt": "2026-07-31T12:00:00+08:00",
+    "charts": [
+      {
+        "id": "paired_length_chart",
+        "title": "4 个相同 prompt 的轨迹 payload token 对比",
+        "subtitle": "老板参考轨迹均长于我们同 prompt 的最大 rollout；图中采用我们 80 次采样的中位数。",
+        "type": "bar",
+        "dataset": "paired_lengths_chart",
+        "sourceId": "paired_trajectory_analysis",
+        "encodings": {
+          "x": {
+            "field": "task",
+            "type": "nominal",
+            "label": "同源任务"
+          },
+          "y": {
+            "field": "tokens",
+            "type": "quantitative",
+            "label": "Qwen3.6 tokenizer tokens"
+          },
+          "color": {
+            "field": "series",
+            "type": "nominal",
+            "label": "轨迹来源"
+          }
+        },
+        "valueFormat": "number",
+        "layout": "full",
+        "maxRows": 8
+      },
+      {
+        "id": "step_timing_chart",
+        "title": "20-step rollout 批内平均与最慢轨迹耗时",
+        "subtitle": "每批 16 条轨迹；第 12 步的最慢轨迹达到 440.23 秒，是 300 秒硬超时的主要命中对象。",
+        "type": "line",
+        "dataset": "step_timing_chart",
+        "sourceId": "driver_timing_analysis",
+        "encodings": {
+          "x": {
+            "field": "step",
+            "type": "ordinal",
+            "label": "训练步"
+          },
+          "y": {
+            "field": "seconds",
+            "type": "quantitative",
+            "label": "秒",
+            "unit": "s"
+          },
+          "color": {
+            "field": "series",
+            "type": "nominal",
+            "label": "批内统计"
+          }
+        },
+        "referenceLines": [
+          {
+            "value": 300,
+            "label": "建议硬超时 300s"
+          }
+        ],
+        "valueFormat": "number",
+        "unit": "s",
+        "layout": "full",
+        "maxRows": 40
+      }
+    ],
+    "tables": [
+      {
+        "id": "paired_length_table",
+        "title": "相同 prompt 的精确配对明细",
+        "subtitle": "老板侧为一条历史参考轨迹；我们侧每个 prompt 为 80 次 rollout。",
+        "dataset": "paired_lengths",
+        "sourceId": "paired_trajectory_analysis",
+        "defaultSort": {
+          "field": "boss_over_our_median",
+          "direction": "desc"
+        },
+        "columns": [
+          {
+            "field": "task",
+            "label": "任务"
+          },
+          {
+            "field": "boss_original_tokens",
+            "label": "老板 tokens",
+            "format": "number"
+          },
+          {
+            "field": "our_median_tokens",
+            "label": "我们中位数",
+            "format": "number"
+          },
+          {
+            "field": "our_p95_tokens",
+            "label": "我们 p95",
+            "format": "number"
+          },
+          {
+            "field": "our_max_tokens",
+            "label": "我们最大值",
+            "format": "number"
+          },
+          {
+            "field": "boss_over_our_median",
+            "label": "老板/我们中位数",
+            "format": "number"
+          },
+          {
+            "field": "our_max_shorter_rate",
+            "label": "我们最大值仍短",
+            "format": "percent"
+          }
+        ],
+        "layout": "full"
+      },
+      {
+        "id": "timeout_bound_table",
+        "title": "不同超时阈值的保守影响下界",
+        "subtitle": "日志只保存每批 min/mean/max，无法恢复 320 条逐条耗时，因此命中数是“至少”值。",
+        "dataset": "timeout_bounds",
+        "sourceId": "driver_timing_analysis",
+        "defaultSort": {
+          "field": "timeout_s",
+          "direction": "asc"
+        },
+        "columns": [
+          {
+            "field": "timeout_s",
+            "label": "超时阈值(s)",
+            "format": "number"
+          },
+          {
+            "field": "affected_batches",
+            "label": "受影响 batch",
+            "format": "number"
+          },
+          {
+            "field": "batch_share",
+            "label": "batch 占比",
+            "format": "percent"
+          },
+          {
+            "field": "minimum_trajectories",
+            "label": "至少受影响轨迹",
+            "format": "number"
+          }
+        ],
+        "layout": "full"
+      }
+    ],
+    "sources": [
+      {
+        "id": "paired_trajectory_analysis",
+        "label": "同 prompt 轨迹配对分析",
+        "path": "scripts/analyze_trajectory_comparison.py"
+      },
+      {
+        "id": "driver_timing_analysis",
+        "label": "20-step rollout 日志分析",
+        "path": "runs/pi-grpo-megatron-tp4-pp2-cp2-tp8-dp2-20step-20260730-11/driver.log"
+      },
+      {
+        "id": "fully_async_evidence",
+        "label": "bounded fully-async 三步实测",
+        "path": "runs/pi-grpo-fully-async-bounded-3step-20260730-02/driver.log"
+      },
+      {
+        "id": "verl_source_audit",
+        "label": "veRL rollout、消息队列和 vLLM 取消路径审计",
+        "path": "reference/verl"
+      }
+    ],
+    "blocks": [
+      {
+        "id": "title",
+        "type": "markdown",
+        "body": "# 轨迹长度与长尾 Rollout 调度调查",
+        "layout": "full"
+      },
+      {
+        "id": "executive_summary",
+        "type": "markdown",
+        "body": "## Executive Summary\n\n**结论一：我们的 rollout 不是比老板的轨迹更长，而是明显更短。** 本次训练的 4 个 prompt 不在指定的 v15 归档中；依据训练元数据回溯到 v24/v26 converted 原轨迹后，完成了 `4/4` 精确配对。老板参考轨迹的 payload 为 4,519–12,798 tokens；我们每个 prompt 80 次采样的中位数为 1,394.5–1,774.5 tokens。老板轨迹是我们中位数的 2.55–8.56 倍，而且 4 个 prompt 中，我们的最大一条也都没有超过老板参考轨迹。\n\n**结论二：可以做“一推一训”持续流水线，但超时本身不能保证训练机永不空转。** 20-step 中每批最慢轨迹的中位耗时为 208.07 秒、p95 为 309.10 秒、最大 440.23 秒；最慢耗时与其 response tokens 的 Pearson 相关系数为 0.837。建议先以 300 秒作为完整 GRPO group 的硬 deadline，再把 fully-async 队列从当前约 1.2 个 batch 的有效容量扩到 2 个 batch：预热 8 个完整 group、每步消费 4 个 group、约 70k queued-token 上限。\n\n**结论三：取消必须落到 vLLM 物理请求。** 只取消 Python 协程可能留下继续占用 NPU 的请求；逐请求 abort 必须保留 prefix cache，不能沿用会重置 cache 的默认路径。首版建议：任一成员硬超时则丢弃整个 n=4 group，并立即调度下一 prompt；同时将 group 超时率控制在 1%–2% 以下。",
+        "layout": "full"
+      },
+      {
+        "id": "scope",
+        "type": "markdown",
+        "body": "## 数据范围与可比口径\n\n- 我们侧：20 个训练步、每步 16 条，共 320 条 rollout；4 个唯一 prompt，每个 prompt 80 条。\n- 指定老板 v15 归档：1,500 个事件流 JSONL，其中 1,018 个能解析到 `agent_end`，482 个缺少可用终态，终态覆盖率为 67.87%。v15 中没有本次 4 个 prompt，因此只能作为总体长尾背景，不能用于同 prompt 比值。\n- 精确对比侧：训练 prompt 元数据指向 v24/v26 converted 轨迹，按 `source_file + task_id + 规范化 user text` 配对，4 个 prompt 全部匹配。\n- 统一长度口径：使用同一个 Qwen3.6 tokenizer，对 assistant 内容、结构化 tool calls 和 tool outputs 拼成的 trajectory payload 重新编码。我们 output 重编码均值与训练日志记录均值的比值为 99.21%，说明重编码口径校准良好。\n- 限制：服务器缺少模板运行所需的 `jinja2`，所以没有把 payload token 宣称为“精确 chat-template token”；本报告只比较统一 payload 口径。老板 v15 的 API usage token 不含所有 tool-result payload，不能与我们的完整 response 直接相除。",
+        "sourceId": "paired_trajectory_analysis",
+        "layout": "full"
+      },
+      {
+        "id": "length_heading",
+        "type": "markdown",
+        "body": "## 相同 prompt 的 response 长度\n\n长度差异是结构性的，而不是几个异常采样造成的：老板参考轨迹有 7–17 个 assistant turns、6–16 次 tool calls；我们的配置把多轮交互限制在最多 4 个 assistant turns、3 个 user turns、单次 tool response 1,024 tokens、总 response 4,096 tokens。20-step 中只有 1/320 条触及 4,096-token 上限，因此当前 token cap 不是主要吞吐瓶颈，也不建议先降到 3,072。",
+        "sourceId": "paired_trajectory_analysis",
+        "layout": "full"
+      },
+      {
+        "id": "paired_chart_block",
+        "type": "chart",
+        "chartId": "paired_length_chart",
+        "layout": "full"
+      },
+      {
+        "id": "paired_table_block",
+        "type": "table",
+        "tableId": "paired_length_table",
+        "layout": "full"
+      },
+      {
+        "id": "tail_heading",
+        "type": "markdown",
+        "body": "## 长尾 rollout 与超时阈值\n\n20 个 batch 的批内平均生成耗时均值为 115.23 秒，批内最慢轨迹耗时均值为 229.11 秒。慢轨迹时间与 response tokens 呈强正相关，但不是完全由 token 数决定，工具调用、数据库查询和多轮调度也会贡献延迟。\n\n300 秒阈值接近批内最慢轨迹的 p95（309.10 秒），在现有日志下只命中至少 2/20 个 batch；180 秒和 210 秒分别会影响 85% 和 50% 的 batch，过于激进。首轮上线应先补逐轨迹耗时、取消确认和 group 丢弃统计，再用 300 秒硬 deadline 做 A/B 稳态验证。",
+        "sourceId": "driver_timing_analysis",
+        "layout": "full"
+      },
+      {
+        "id": "timing_chart_block",
+        "type": "chart",
+        "chartId": "step_timing_chart",
+        "layout": "full"
+      },
+      {
+        "id": "timeout_table_block",
+        "type": "table",
+        "tableId": "timeout_bound_table",
+        "layout": "full"
+      },
+      {
+        "id": "queue_design",
+        "type": "markdown",
+        "body": "## 推荐的一推一训持续流水线\n\n当前 fully-async 已经有“经验池”：生成中的 active tasks、待处理的 pending queue，以及保存完整 group 的 Ray MessageQueue。问题不是没有队列，而是队列太浅。每步训练需要 4 个 group；当前最大 6 个 group、40k tokens，按本次平均每 group 约 8.2k tokens 估算，token 上限实际只容纳约 4.9 个 group，即约 1.2 个训练 batch。训练一启动就消费 4 个，随后又容易被下一批长尾拖空。\n\n建议首版参数：\n\n1. trainer 启动前预热到 8 个完整 group；低水位为 4，高水位为 8。\n2. 每个训练步原子消费 4 个 group；队列上限改为 8 groups / 约 70k queued tokens。\n3. `staleness_threshold` 从 0.5 提到 1.0，只允许约一个 batch 的 backlog；记录每个 group 的 policy version 和 age。\n4. rollout 生产者在高水位背压，不丢旧样本；trainer 只在队列低于 4 个完整 group 时等待。\n5. 同时记录 groups/min 生产率、groups/min 消费率、queue depth、queued tokens、timeout rate、abort acknowledgement 和 zombie request 数。\n\n三步 fully-async 实测中，第二批等待由 159.41 秒降到 111.96 秒（降低 29.8%），证明重叠有效；但前两个完整日志步的 trainer 利用率仍只有 46.40%/47.40%，说明当前 backlog 还不足。即便加深队列，若 rollout 的长期平均生产率仍低于 trainer 消费率，也无法做到永久无缝；那时应增加 rollout 吞吐、减少训练消费速率，或接受受控的 trainer 等待。",
+        "sourceId": "fully_async_evidence",
+        "layout": "full"
+      },
+      {
+        "id": "grpo_semantics",
+        "type": "markdown",
+        "body": "## 超时丢弃必须保留 GRPO group 语义\n\nGRPO 的相对优势在同一 prompt 的 n=4 responses 内计算，不能任意少一条后仍假装是完整 group。可选策略有三种：\n\n- **首版推荐：整组丢弃。** 任一成员超过 300 秒，abort 该成员，并把整个 n=4 group 标为 timed out；完成的兄弟样本也不入训练队列，随后立即补发下一 prompt。实现最稳，但会浪费已完成 rollout，并产生偏向快速轨迹的 survivor bias。\n- **保留超时成员并给 0 reward。** 能把超时作为负反馈，但要求保留可训练的 partial tokens/logprobs，并确认奖励和 mask 语义正确，适合作为第二阶段实验。\n- **过量生成、取最快 4 条。** 队列更稳定，但会系统性选择快速 response，且增加推理计算，不建议作为首版。\n\n应把整组超时率控制在 1%–2% 以下。若持续高于此范围，不应继续压低 deadline，而应先优化 rollout 吞吐或调整容量。",
+        "sourceId": "verl_source_audit",
+        "layout": "full"
+      },
+      {
+        "id": "abort_design",
+        "type": "markdown",
+        "body": "## 真取消的代码落点\n\n当前 AgentLoopWorker 为每条轨迹创建任务后使用 `asyncio.gather`，所以一个 batch 会等待最慢成员；fully-async 的 `_process_single_sample_streaming` 也要等一个 prompt 的完整 n=4 group 才能入 MessageQueue。`asyncio.wait_for` 只能取消等待它的协程，不能证明底层 vLLM 推理已停止。\n\n需要补齐以下链路：\n\n1. 将逻辑 trajectory request 映射到当前物理 vLLM request ID 和所属 server。\n2. 在 `LLMServerClient` 暴露按逻辑请求取消的接口，并调用 server 的 `abort_request`。\n3. 逐请求超时 abort 必须设置 `reset_prefix_cache=False`；当前 cache 命中率为 32.41%，不能因每次超时清空缓存。\n4. 在拥有完整请求生命周期的 AgentLoop/ToolAgentLoop 内触发 deadline，向上返回明确的 `timed_out` 状态。\n5. fully-async rollouter 按配置丢弃或惩罚整个 group，并立刻调度下一 prompt。\n6. 收到 abort acknowledgement 后才释放并发槽；对仍在生成的 zombie request 报警。\n\nveRL 现有 `partial_rollout=True` 用于权重同步暂停/恢复，不等价于 SLA 超时丢弃，不能直接复用其语义。",
+        "sourceId": "verl_source_audit",
+        "layout": "full"
+      },
+      {
+        "id": "implementation_plan",
+        "type": "markdown",
+        "body": "## 建议实施顺序\n\n### 阶段 A：只加观测，不改采样分布\n\n记录 320 条逐轨迹 wall time、每轮耗时、物理 request ID、group ID、policy version、queue age、abort 结果和 cache 指标，跑至少 20 个稳态 step，确认真实的单条 p95/p99。\n\n### 阶段 B：300 秒整组硬超时 + 两批队列\n\n预热 8 groups / 70k tokens，每步消费 4 groups；任一成员 300 秒超时则真 abort 并丢整组。对比 trainer 非零利用率、queue starvation、groups/min、超时率、有效 tokens/s、平均 reward 和 KL。\n\n### 阶段 C：若超时丢弃偏差明显\n\n对比“整组丢弃”与“超时成员 reward=0”两种语义；若 staleness=1.0 带来明显 policy lag，再打开或校准 rollout correction，而不是继续扩大到 12 groups。首轮不建议直接使用 3-batch backlog。\n\n### 上线门槛\n\n- 超时 group 比例 ≤ 1%–2%；zombie requests = 0。\n- trainer queue starvation 明显下降，且长期 rollout 生产率不低于训练消费率。\n- cache 命中率不因取消下降；reward、KL、clip ratio 与现有基线无异常漂移。\n- 只有 1/320 条触及 4,096-token cap，因此先保留当前长度上限。",
+        "layout": "full"
+      },
+      {
+        "id": "limitations",
+        "type": "markdown",
+        "body": "## 证据边界与风险\n\n- 同 prompt 每个老板侧只有一条历史参考轨迹，我们侧有 80 次采样；因此能判断长度方向和量级，不能把老板单条轨迹当作其采样分布。\n- 指定 v15 归档有 32.13% 文件缺少可解析 `agent_end`，其总体统计存在终态缺失偏差；报告没有用 v15 做 exact-prompt 比值。\n- 20-step 日志只保存每批 16 条的 min/mean/max，超时命中数是批级下界，不是准确逐条计数。\n- Pearson 0.837 是描述性关联，不证明 token 数是延迟的唯一原因。\n- 整组丢弃会产生延迟选择偏差；加深队列会增加 off-policy staleness。两者都必须通过 policy version、reward、KL 和超时率持续监控。",
+        "layout": "full"
+      }
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "generatedAt": "2026-07-31T12:00:00+08:00",
+    "status": "ready",
+    "datasets": {
+      "paired_lengths": [
+        {
+          "task": "v24-166",
+          "source_version": "v24",
+          "boss_original_tokens": 4519,
+          "our_samples": 80,
+          "our_median_tokens": 1774.5,
+          "our_p95_tokens": 2980.3,
+          "our_max_tokens": 4088,
+          "boss_over_our_median": 2.55,
+          "our_max_shorter_rate": 0.0954,
+          "boss_assistant_turns": 7,
+          "boss_tool_calls": 11,
+          "our_median_tool_call_tags": 6
+        },
+        {
+          "task": "v24-191",
+          "source_version": "v24",
+          "boss_original_tokens": 6484,
+          "our_samples": 80,
+          "our_median_tokens": 1463,
+          "our_p95_tokens": 1906.7,
+          "our_max_tokens": 2089,
+          "boss_over_our_median": 4.43,
+          "our_max_shorter_rate": 0.6778,
+          "boss_assistant_turns": 7,
+          "boss_tool_calls": 6,
+          "our_median_tool_call_tags": 4
+        },
+        {
+          "task": "v24-260",
+          "source_version": "v24",
+          "boss_original_tokens": 12798,
+          "our_samples": 80,
+          "our_median_tokens": 1716.5,
+          "our_p95_tokens": 2413.8,
+          "our_max_tokens": 2604,
+          "boss_over_our_median": 7.46,
+          "our_max_shorter_rate": 0.7965,
+          "boss_assistant_turns": 17,
+          "boss_tool_calls": 16,
+          "our_median_tool_call_tags": 4
+        },
+        {
+          "task": "v26-286",
+          "source_version": "v26",
+          "boss_original_tokens": 11932,
+          "our_samples": 80,
+          "our_median_tokens": 1394.5,
+          "our_p95_tokens": 1997.55,
+          "our_max_tokens": 2247,
+          "boss_over_our_median": 8.56,
+          "our_max_shorter_rate": 0.8117,
+          "boss_assistant_turns": 8,
+          "boss_tool_calls": 11,
+          "our_median_tool_call_tags": 3
+        }
+      ],
+      "paired_lengths_chart": [
+        {"task": "v24-166", "series": "老板参考轨迹", "tokens": 4519, "our_p95_tokens": 2980.3, "our_max_tokens": 4088, "boss_assistant_turns": 7, "boss_tool_calls": 11},
+        {"task": "v24-166", "series": "我们 rollout 中位数", "tokens": 1774.5, "our_p95_tokens": 2980.3, "our_max_tokens": 4088, "boss_assistant_turns": 7, "boss_tool_calls": 11},
+        {"task": "v24-191", "series": "老板参考轨迹", "tokens": 6484, "our_p95_tokens": 1906.7, "our_max_tokens": 2089, "boss_assistant_turns": 7, "boss_tool_calls": 6},
+        {"task": "v24-191", "series": "我们 rollout 中位数", "tokens": 1463, "our_p95_tokens": 1906.7, "our_max_tokens": 2089, "boss_assistant_turns": 7, "boss_tool_calls": 6},
+        {"task": "v24-260", "series": "老板参考轨迹", "tokens": 12798, "our_p95_tokens": 2413.8, "our_max_tokens": 2604, "boss_assistant_turns": 17, "boss_tool_calls": 16},
+        {"task": "v24-260", "series": "我们 rollout 中位数", "tokens": 1716.5, "our_p95_tokens": 2413.8, "our_max_tokens": 2604, "boss_assistant_turns": 17, "boss_tool_calls": 16},
+        {"task": "v26-286", "series": "老板参考轨迹", "tokens": 11932, "our_p95_tokens": 1997.55, "our_max_tokens": 2247, "boss_assistant_turns": 8, "boss_tool_calls": 11},
+        {"task": "v26-286", "series": "我们 rollout 中位数", "tokens": 1394.5, "our_p95_tokens": 1997.55, "our_max_tokens": 2247, "boss_assistant_turns": 8, "boss_tool_calls": 11}
+      ],
+      "step_timing": [
+        {"step": 1, "mean_s": 107.65, "max_s": 247.91, "slowest_response_tokens": 3025},
+        {"step": 2, "mean_s": 102.39, "max_s": 217.16, "slowest_response_tokens": 2309},
+        {"step": 3, "mean_s": 107.59, "max_s": 202.66, "slowest_response_tokens": 2559},
+        {"step": 4, "mean_s": 120.04, "max_s": 198.25, "slowest_response_tokens": 2372},
+        {"step": 5, "mean_s": 117.90, "max_s": 231.85, "slowest_response_tokens": 2845},
+        {"step": 6, "mean_s": 130.45, "max_s": 234.48, "slowest_response_tokens": 3018},
+        {"step": 7, "mean_s": 126.29, "max_s": 302.19, "slowest_response_tokens": 3120},
+        {"step": 8, "mean_s": 134.45, "max_s": 269.61, "slowest_response_tokens": 2992},
+        {"step": 9, "mean_s": 106.67, "max_s": 202.24, "slowest_response_tokens": 2617},
+        {"step": 10, "mean_s": 111.86, "max_s": 196.61, "slowest_response_tokens": 2825},
+        {"step": 11, "mean_s": 110.82, "max_s": 160.88, "slowest_response_tokens": 2236},
+        {"step": 12, "mean_s": 132.14, "max_s": 440.23, "slowest_response_tokens": 4096},
+        {"step": 13, "mean_s": 107.08, "max_s": 183.93, "slowest_response_tokens": 1764},
+        {"step": 14, "mean_s": 107.95, "max_s": 196.86, "slowest_response_tokens": 2036},
+        {"step": 15, "mean_s": 122.92, "max_s": 213.47, "slowest_response_tokens": 2958},
+        {"step": 16, "mean_s": 122.92, "max_s": 288.50, "slowest_response_tokens": 2877},
+        {"step": 17, "mean_s": 108.24, "max_s": 199.43, "slowest_response_tokens": 2478},
+        {"step": 18, "mean_s": 110.58, "max_s": 161.73, "slowest_response_tokens": 2425},
+        {"step": 19, "mean_s": 118.78, "max_s": 255.36, "slowest_response_tokens": 2363},
+        {"step": 20, "mean_s": 97.78, "max_s": 178.85, "slowest_response_tokens": 2161}
+      ],
+      "step_timing_chart": [
+        {"step": 1, "series": "批内平均", "seconds": 107.65, "slowest_response_tokens": 3025},
+        {"step": 1, "series": "批内最慢", "seconds": 247.91, "slowest_response_tokens": 3025},
+        {"step": 2, "series": "批内平均", "seconds": 102.39, "slowest_response_tokens": 2309},
+        {"step": 2, "series": "批内最慢", "seconds": 217.16, "slowest_response_tokens": 2309},
+        {"step": 3, "series": "批内平均", "seconds": 107.59, "slowest_response_tokens": 2559},
+        {"step": 3, "series": "批内最慢", "seconds": 202.66, "slowest_response_tokens": 2559},
+        {"step": 4, "series": "批内平均", "seconds": 120.04, "slowest_response_tokens": 2372},
+        {"step": 4, "series": "批内最慢", "seconds": 198.25, "slowest_response_tokens": 2372},
+        {"step": 5, "series": "批内平均", "seconds": 117.90, "slowest_response_tokens": 2845},
+        {"step": 5, "series": "批内最慢", "seconds": 231.85, "slowest_response_tokens": 2845},
+        {"step": 6, "series": "批内平均", "seconds": 130.45, "slowest_response_tokens": 3018},
+        {"step": 6, "series": "批内最慢", "seconds": 234.48, "slowest_response_tokens": 3018},
+        {"step": 7, "series": "批内平均", "seconds": 126.29, "slowest_response_tokens": 3120},
+        {"step": 7, "series": "批内最慢", "seconds": 302.19, "slowest_response_tokens": 3120},
+        {"step": 8, "series": "批内平均", "seconds": 134.45, "slowest_response_tokens": 2992},
+        {"step": 8, "series": "批内最慢", "seconds": 269.61, "slowest_response_tokens": 2992},
+        {"step": 9, "series": "批内平均", "seconds": 106.67, "slowest_response_tokens": 2617},
+        {"step": 9, "series": "批内最慢", "seconds": 202.24, "slowest_response_tokens": 2617},
+        {"step": 10, "series": "批内平均", "seconds": 111.86, "slowest_response_tokens": 2825},
+        {"step": 10, "series": "批内最慢", "seconds": 196.61, "slowest_response_tokens": 2825},
+        {"step": 11, "series": "批内平均", "seconds": 110.82, "slowest_response_tokens": 2236},
+        {"step": 11, "series": "批内最慢", "seconds": 160.88, "slowest_response_tokens": 2236},
+        {"step": 12, "series": "批内平均", "seconds": 132.14, "slowest_response_tokens": 4096},
+        {"step": 12, "series": "批内最慢", "seconds": 440.23, "slowest_response_tokens": 4096},
+        {"step": 13, "series": "批内平均", "seconds": 107.08, "slowest_response_tokens": 1764},
+        {"step": 13, "series": "批内最慢", "seconds": 183.93, "slowest_response_tokens": 1764},
+        {"step": 14, "series": "批内平均", "seconds": 107.95, "slowest_response_tokens": 2036},
+        {"step": 14, "series": "批内最慢", "seconds": 196.86, "slowest_response_tokens": 2036},
+        {"step": 15, "series": "批内平均", "seconds": 122.92, "slowest_response_tokens": 2958},
+        {"step": 15, "series": "批内最慢", "seconds": 213.47, "slowest_response_tokens": 2958},
+        {"step": 16, "series": "批内平均", "seconds": 122.92, "slowest_response_tokens": 2877},
+        {"step": 16, "series": "批内最慢", "seconds": 288.50, "slowest_response_tokens": 2877},
+        {"step": 17, "series": "批内平均", "seconds": 108.24, "slowest_response_tokens": 2478},
+        {"step": 17, "series": "批内最慢", "seconds": 199.43, "slowest_response_tokens": 2478},
+        {"step": 18, "series": "批内平均", "seconds": 110.58, "slowest_response_tokens": 2425},
+        {"step": 18, "series": "批内最慢", "seconds": 161.73, "slowest_response_tokens": 2425},
+        {"step": 19, "series": "批内平均", "seconds": 118.78, "slowest_response_tokens": 2363},
+        {"step": 19, "series": "批内最慢", "seconds": 255.36, "slowest_response_tokens": 2363},
+        {"step": 20, "series": "批内平均", "seconds": 97.78, "slowest_response_tokens": 2161},
+        {"step": 20, "series": "批内最慢", "seconds": 178.85, "slowest_response_tokens": 2161}
+      ],
+      "timeout_bounds": [
+        {"timeout_s": 180, "affected_batches": 17, "batch_share": 0.85, "minimum_trajectories": 17},
+        {"timeout_s": 210, "affected_batches": 10, "batch_share": 0.50, "minimum_trajectories": 10},
+        {"timeout_s": 240, "affected_batches": 6, "batch_share": 0.30, "minimum_trajectories": 6},
+        {"timeout_s": 270, "affected_batches": 3, "batch_share": 0.15, "minimum_trajectories": 3},
+        {"timeout_s": 300, "affected_batches": 2, "batch_share": 0.10, "minimum_trajectories": 2}
+      ]
+    }
+  },
+  "sources": [
+    {
+      "id": "paired_trajectory_analysis",
+      "label": "同 prompt 轨迹配对分析",
+      "path": "scripts/analyze_trajectory_comparison.py",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM (VALUES ('v24-166','v24',4519,80,1774.5,2980.3,4088,2.55,0.0954,7,11,6),('v24-191','v24',6484,80,1463.0,1906.7,2089,4.43,0.6778,7,6,4),('v24-260','v24',12798,80,1716.5,2413.8,2604,7.46,0.7965,17,16,4),('v26-286','v26',11932,80,1394.5,1997.55,2247,8.56,0.8117,8,11,3)) AS t(task,source_version,boss_original_tokens,our_samples,our_median_tokens,our_p95_tokens,our_max_tokens,boss_over_our_median,our_max_shorter_rate,boss_assistant_turns,boss_tool_calls,our_median_tool_call_tags)",
+        "description": "扫描老板 v15 事件归档、训练元数据指向的 v24/v26 converted 轨迹、本次 320 条 rollout、verifier 清单与 Qwen3.6 tokenizer，按 source_file、task_id 和规范化 user text 做精确配对。",
+        "executed_at": "2026-07-31T12:00:00+08:00",
+        "filters": [
+          "我们的正式 20-step 运行，共 320 条 rollout",
+          "4 个唯一 verifier_id，均要求 prompt 文件与 verifier manifest 可连接",
+          "exact-prompt 只使用训练元数据指向的 v24/v26 原始 converted 轨迹",
+          "v15 仅用于总体背景，不用于同 prompt 比值"
+        ],
+        "metric_definitions": [
+          "trajectory payload tokens = 对 assistant 内容、结构化 tool calls 与 tool outputs 按角色拼接后，用同一 Qwen3.6 tokenizer 编码的 token 数",
+          "boss_over_our_median = 老板单条参考轨迹 payload tokens / 我们同 prompt 80 条 rollout 的 token 中位数",
+          "our_max_shorter_rate = 1 - 我们同 prompt 最大 token 数 / 老板参考轨迹 payload tokens"
+        ],
+        "tables_used": [
+          "trajectories_v15_27B_table.tar.gz",
+          "qwen3.6-27B_20260628_v24_openai.jsonl",
+          "qwen3.6-27B_20260628_v26_openai.jsonl",
+          "train_20_unique_prompts.jsonl",
+          "verifier_manifest.jsonl",
+          "20-step rollout JSONL files"
+        ]
+      }
+    },
+    {
+      "id": "driver_timing_analysis",
+      "label": "20-step rollout 日志分析",
+      "path": "runs/pi-grpo-megatron-tp4-pp2-cp2-tp8-dp2-20step-20260730-11/driver.log",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM (VALUES (1,107.65,247.91,3025),(2,102.39,217.16,2309),(3,107.59,202.66,2559),(4,120.04,198.25,2372),(5,117.90,231.85,2845),(6,130.45,234.48,3018),(7,126.29,302.19,3120),(8,134.45,269.61,2992),(9,106.67,202.24,2617),(10,111.86,196.61,2825),(11,110.82,160.88,2236),(12,132.14,440.23,4096),(13,107.08,183.93,1764),(14,107.95,196.86,2036),(15,122.92,213.47,2958),(16,122.92,288.50,2877),(17,108.24,199.43,2478),(18,110.58,161.73,2425),(19,118.78,255.36,2363),(20,97.78,178.85,2161)) AS t(step,mean_s,max_s,slowest_response_tokens)",
+        "description": "从每个训练步的 driver 指标中提取每批 16 条轨迹的生成 min/mean/max、slowest response tokens、clip ratio 和 aborted ratio。",
+        "executed_at": "2026-07-31T12:00:00+08:00",
+        "filters": [
+          "正式 20-step One-Step-Off-Policy 运行",
+          "每步 batch 为 16 条轨迹",
+          "超时命中只按每批 max 大于阈值计算保守下界"
+        ],
+        "metric_definitions": [
+          "affected_batches = generate_sequences/max 严格大于 timeout_s 的训练步数量",
+          "minimum_trajectories = 每个受影响 batch 至少有一条超时，因此等于 affected_batches",
+          "Pearson 相关系数使用 20 个 batch 的最慢耗时与对应 slowest response tokens"
+        ],
+        "tables_used": [
+          "driver step metrics"
+        ]
+      }
+    },
+    {
+      "id": "fully_async_evidence",
+      "label": "bounded fully-async 三步实测",
+      "path": "runs/pi-grpo-fully-async-bounded-3step-20260730-02/driver.log",
+      "query": {
+        "engine": "log-audit",
+        "language": "text",
+        "query": "Read queue wait, actor update, queued group and queued-token metrics from the validated three-step run.",
+        "description": "审计三步 bounded fully-async 运行中的完整 GRPO group 队列、等待时间、背压和 trainer 利用率。",
+        "executed_at": "2026-07-31T12:00:00+08:00",
+        "filters": [
+          "每步消费 4 个完整 group",
+          "最大 6 groups / 40k queued tokens",
+          "仅使用已有三步验证运行"
+        ],
+        "metric_definitions": [
+          "等待降低率 = 1 - 第二批 queue wait / 第一批 queue wait",
+          "有效 group 容量估算 = queued-token 上限 / 本次平均每 group tokens"
+        ],
+        "tables_used": [
+          "fully-async driver metrics",
+          "validation_summary.json"
+        ]
+      }
+    },
+    {
+      "id": "verl_source_audit",
+      "label": "veRL rollout、消息队列和 vLLM 取消路径审计",
+      "path": "reference/verl",
+      "query": {
+        "engine": "source-audit",
+        "language": "python",
+        "query": "Trace AgentLoopWorker task gathering, FullyAsyncRollouter group enqueue, MessageQueue storage, LLMServerClient request IDs, and vLLM abort_request handling.",
+        "description": "只读审计本地 veRL 参考源码与当前补丁，定位 batch 等待、完整 group 入队、物理请求 ID 和 per-request abort 的实现边界。",
+        "executed_at": "2026-07-31T12:00:00+08:00",
+        "filters": [
+          "不修改远端训练环境",
+          "以本次使用的 fully-async、agent loop 和 vLLM 路径为范围"
+        ],
+        "metric_definitions": [
+          "完整 GRPO group = 同一 prompt 的 n=4 responses，作为不可拆分训练单元",
+          "真取消 = server 确认 abort 物理 vLLM request 后才释放并发槽",
+          "zombie request = 上层已放弃但底层仍继续生成的请求"
+        ],
+        "tables_used": [
+          "AgentLoopWorker",
+          "ToolAgentLoop",
+          "FullyAsyncRollouter",
+          "MessageQueue",
+          "LLMServerClient",
+          "vLLM abort_request"
+        ]
+      }
+    }
+  ]
+}
