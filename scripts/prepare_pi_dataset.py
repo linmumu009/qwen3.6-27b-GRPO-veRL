@@ -41,19 +41,21 @@ def build_records(
 
         verifier = verifier_by_id[verifier_id]
         environment_id = verifier["environment_id"]
-        user_messages = [
+        source_prompt_messages = [
             {"role": message["role"], "content": message["content"]}
             for message in prompt_record["messages"]
-            if message.get("role") == "user"
+            if message.get("role") in {"system", "user"}
         ]
-        if not user_messages:
+        if not any(message["role"] == "user" for message in source_prompt_messages):
             continue
+        if not any(message["role"] == "system" for message in source_prompt_messages):
+            source_prompt_messages.insert(0, {"role": "system", "content": SYSTEM_PROMPT})
 
         output.append(
             {
                 "data_source": "llin_pi_dwh",
                 "agent_name": "tool_agent",
-                "prompt": [{"role": "system", "content": SYSTEM_PROMPT}, *user_messages],
+                "prompt": source_prompt_messages,
                 "ability": "dwh_sql",
                 "reward_model": {
                     "style": "rule",

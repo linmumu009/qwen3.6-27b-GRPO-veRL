@@ -18,6 +18,12 @@ def test_megatron_topology_and_cpu_optimizer_are_explicit() -> None:
         'TOTAL_TRAINING_STEPS="${TOTAL_TRAINING_STEPS:-20}"',
         'SAVE_FREQ="${SAVE_FREQ:-20}"',
         'WEIGHT_BUCKET_MB="${WEIGHT_BUCKET_MB:-3072}"',
+        'MAX_CONTEXT_TOKENS="${MAX_CONTEXT_TOKENS:-49152}"',
+        'MAX_PROMPT_TOKENS="${MAX_PROMPT_TOKENS:-4096}"',
+        'MAX_RESPONSE_TOKENS="${MAX_RESPONSE_TOKENS:-45056}"',
+        'MAX_ASSISTANT_TURNS="${MAX_ASSISTANT_TURNS:-25}"',
+        'MAX_USER_TURNS="${MAX_USER_TURNS:-24}"',
+        'MAX_TOOL_RESPONSE_CHARS="${MAX_TOOL_RESPONSE_CHARS:-32768}"',
         'VLLM_ROOT="${VLLM_ROOT:-/vllm}"',
         "actor_rollout_ref.actor.strategy=megatron",
         "actor_rollout_ref.actor.megatron.param_offload=False",
@@ -37,6 +43,10 @@ def test_megatron_topology_and_cpu_optimizer_are_explicit() -> None:
         "data.continuous_token.model_family=qwen35",
         "actor_rollout_ref.rollout.enable_prefix_caching=True",
         "actor_rollout_ref.rollout.disable_log_stats=False",
+        "actor_rollout_ref.rollout.enable_chunked_prefill=True",
+        'actor_rollout_ref.rollout.max_model_len="${MAX_CONTEXT_TOKENS}"',
+        'actor_rollout_ref.rollout.multi_turn.max_assistant_turns="${MAX_ASSISTANT_TURNS}"',
+        'actor_rollout_ref.rollout.multi_turn.max_user_turns="${MAX_USER_TURNS}"',
         'checkpoint_engine.update_weights_bucket_megabytes="${WEIGHT_BUCKET_MB}"',
         "export CUDA_DEVICE_MAX_CONNECTIONS=1",
     )
@@ -125,7 +135,9 @@ def test_fully_async_launch_preserves_topology_groups_and_token_bound() -> None:
         'ROLLOUT_TP="${ROLLOUT_TP:-8}"',
         'ROLLOUT_NPUS="${ROLLOUT_NPUS:-16}"',
         'GROUPS_PER_STEP="${GROUPS_PER_STEP:-4}"',
-        'MAX_QUEUE_TOKENS="${MAX_QUEUE_TOKENS:-40000}"',
+        'MAX_QUEUE_TOKENS="${MAX_QUEUE_TOKENS:-$((GROUPS_PER_STEP * 4 * MAX_CONTEXT_TOKENS))}"',
+        'MAX_CONTEXT_TOKENS="${MAX_CONTEXT_TOKENS:-49152}"',
+        'MAX_ASSISTANT_TURNS="${MAX_ASSISTANT_TURNS:-25}"',
         "actor_rollout_ref.rollout.n=4",
         "rollout.n=4",
         "async_training.staleness_threshold=0.5",
@@ -138,6 +150,7 @@ def test_fully_async_launch_preserves_topology_groups_and_token_bound() -> None:
         'actor_rollout_ref.actor.optim.lr_decay_steps="${TOTAL_TRAINING_STEPS}"',
         "data.continuous_token.enable=True",
         "actor_rollout_ref.rollout.enable_prefix_caching=True",
+        "actor_rollout_ref.rollout.enable_chunked_prefill=True",
     )
     for item in expected:
         assert item in text

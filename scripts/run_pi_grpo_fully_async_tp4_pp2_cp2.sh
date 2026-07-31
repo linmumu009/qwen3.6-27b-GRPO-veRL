@@ -19,9 +19,21 @@ ROLLOUT_NPUS="${ROLLOUT_NPUS:-16}"
 TOTAL_TRAINING_STEPS="${TOTAL_TRAINING_STEPS:-20}"
 GROUPS_PER_STEP="${GROUPS_PER_STEP:-4}"
 TOTAL_ROLLOUT_GROUPS="${TOTAL_ROLLOUT_GROUPS:-$((TOTAL_TRAINING_STEPS * GROUPS_PER_STEP))}"
-MAX_QUEUE_TOKENS="${MAX_QUEUE_TOKENS:-40000}"
 SAVE_FREQ="${SAVE_FREQ:-20}"
 WEIGHT_BUCKET_MB="${WEIGHT_BUCKET_MB:-3072}"
+MAX_CONTEXT_TOKENS="${MAX_CONTEXT_TOKENS:-49152}"
+MAX_PROMPT_TOKENS="${MAX_PROMPT_TOKENS:-4096}"
+MAX_RESPONSE_TOKENS="${MAX_RESPONSE_TOKENS:-45056}"
+MAX_ASSISTANT_TURNS="${MAX_ASSISTANT_TURNS:-25}"
+MAX_USER_TURNS="${MAX_USER_TURNS:-24}"
+MAX_TOOL_RESPONSE_CHARS="${MAX_TOOL_RESPONSE_CHARS:-32768}"
+ROLLOUT_MAX_BATCHED_TOKENS="${ROLLOUT_MAX_BATCHED_TOKENS:-8192}"
+ROLLOUT_MAX_SEQS="${ROLLOUT_MAX_SEQS:-16}"
+ROLLOUT_GPU_MEMORY_UTILIZATION="${ROLLOUT_GPU_MEMORY_UTILIZATION:-0.60}"
+# One complete training batch is GROUPS_PER_STEP groups × rollout.n=4
+# responses. Keeping this many worst-case tokens prevents an oversized-group
+# producer from blocking before the trainer can collect its first full batch.
+MAX_QUEUE_TOKENS="${MAX_QUEUE_TOKENS:-$((GROUPS_PER_STEP * 4 * MAX_CONTEXT_TOKENS))}"
 
 if (( TRAIN_TP * TRAIN_PP * TRAIN_CP != TRAIN_NPUS )); then
   printf 'Invalid training topology: TP(%s) * PP(%s) * CP(%s) != NPUs(%s)\n' \
@@ -31,6 +43,11 @@ fi
 if (( ROLLOUT_NPUS % ROLLOUT_TP != 0 )); then
   printf 'Invalid rollout topology: NPUs(%s) is not divisible by TP(%s)\n' \
     "${ROLLOUT_NPUS}" "${ROLLOUT_TP}" >&2
+  exit 2
+fi
+if (( MAX_PROMPT_TOKENS + MAX_RESPONSE_TOKENS != MAX_CONTEXT_TOKENS )); then
+  printf 'Invalid context budget: prompt(%s) + response(%s) != context(%s)\n' \
+    "${MAX_PROMPT_TOKENS}" "${MAX_RESPONSE_TOKENS}" "${MAX_CONTEXT_TOKENS}" >&2
   exit 2
 fi
 if [[ ! -d "${MEGATRON_BRIDGE_ROOT}/megatron/bridge" ]]; then
@@ -73,8 +90,8 @@ python3 -m verl.experimental.fully_async_policy.fully_async_main \
   data.val_files="${DATA_FILE}" \
   data.train_batch_size=0 \
   data.gen_batch_size=1 \
-  data.max_prompt_length=2048 \
-  data.max_response_length=4096 \
+  data.max_prompt_length="${MAX_PROMPT_TOKENS}" \
+  data.max_response_length="${MAX_RESPONSE_TOKENS}" \
   data.filter_overlong_prompts=True \
   data.filter_overlong_prompts_workers=4 \
   data.dataloader_num_workers=4 \
@@ -138,10 +155,11 @@ python3 -m verl.experimental.fully_async_policy.fully_async_main \
   actor_rollout_ref.rollout.mode=async \
   actor_rollout_ref.rollout.tensor_model_parallel_size="${ROLLOUT_TP}" \
   actor_rollout_ref.rollout.data_parallel_size="$((ROLLOUT_NPUS / ROLLOUT_TP))" \
-  actor_rollout_ref.rollout.gpu_memory_utilization=0.60 \
-  actor_rollout_ref.rollout.max_num_batched_tokens=8192 \
-  actor_rollout_ref.rollout.max_model_len=6144 \
-  actor_rollout_ref.rollout.max_num_seqs=16 \
+  actor_rollout_ref.rollout.gpu_memory_utilization="${ROLLOUT_GPU_MEMORY_UTILIZATION}" \
+  actor_rollout_ref.rollout.max_num_batched_tokens="${ROLLOUT_MAX_BATCHED_TOKENS}" \
+  actor_rollout_ref.rollout.max_model_len="${MAX_CONTEXT_TOKENS}" \
+  actor_rollout_ref.rollout.max_num_seqs="${ROLLOUT_MAX_SEQS}" \
+  actor_rollout_ref.rollout.enable_chunked_prefill=True \
   actor_rollout_ref.rollout.n=4 \
   actor_rollout_ref.rollout.calculate_log_probs=True \
   actor_rollout_ref.rollout.enable_prefix_caching=True \
@@ -151,9 +169,9 @@ python3 -m verl.experimental.fully_async_policy.fully_async_main \
   actor_rollout_ref.rollout.log_prob_micro_batch_size_per_gpu=1 \
   actor_rollout_ref.rollout.multi_turn.enable=True \
   actor_rollout_ref.rollout.multi_turn.tool_config_path="${PROJECT_ROOT}/configs/pi_sqlite_tool.yaml" \
-  actor_rollout_ref.rollout.multi_turn.max_assistant_turns=4 \
-  actor_rollout_ref.rollout.multi_turn.max_user_turns=3 \
-  actor_rollout_ref.rollout.multi_turn.max_tool_response_length=1024 \
+  actor_rollout_ref.rollout.multi_turn.max_assistant_turns="${MAX_ASSISTANT_TURNS}" \
+  actor_rollout_ref.rollout.multi_turn.max_user_turns="${MAX_USER_TURNS}" \
+  actor_rollout_ref.rollout.multi_turn.max_tool_response_length="${MAX_TOOL_RESPONSE_CHARS}" \
   actor_rollout_ref.rollout.multi_turn.format=qwen3_coder \
   actor_rollout_ref.rollout.multi_turn.tokenization_sanity_check_mode=disable \
   actor_rollout_ref.rollout.agent.num_workers=8 \
