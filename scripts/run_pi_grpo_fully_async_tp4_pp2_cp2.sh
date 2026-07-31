@@ -26,6 +26,7 @@ MAX_PROMPT_TOKENS="${MAX_PROMPT_TOKENS:-4096}"
 MAX_RESPONSE_TOKENS="${MAX_RESPONSE_TOKENS:-45056}"
 MAX_ASSISTANT_TURNS="${MAX_ASSISTANT_TURNS:-25}"
 MAX_USER_TURNS="${MAX_USER_TURNS:-24}"
+MAX_PARALLEL_TOOL_CALLS="${MAX_PARALLEL_TOOL_CALLS:-4}"
 MAX_TOOL_RESPONSE_CHARS="${MAX_TOOL_RESPONSE_CHARS:-32768}"
 ROLLOUT_MAX_BATCHED_TOKENS="${ROLLOUT_MAX_BATCHED_TOKENS:-8192}"
 ROLLOUT_MAX_SEQS="${ROLLOUT_MAX_SEQS:-16}"
@@ -171,6 +172,7 @@ python3 -m verl.experimental.fully_async_policy.fully_async_main \
   actor_rollout_ref.rollout.multi_turn.tool_config_path="${PROJECT_ROOT}/configs/pi_sqlite_tool.yaml" \
   actor_rollout_ref.rollout.multi_turn.max_assistant_turns="${MAX_ASSISTANT_TURNS}" \
   actor_rollout_ref.rollout.multi_turn.max_user_turns="${MAX_USER_TURNS}" \
+  actor_rollout_ref.rollout.multi_turn.max_parallel_calls="${MAX_PARALLEL_TOOL_CALLS}" \
   actor_rollout_ref.rollout.multi_turn.max_tool_response_length="${MAX_TOOL_RESPONSE_CHARS}" \
   actor_rollout_ref.rollout.multi_turn.format=qwen3_coder \
   actor_rollout_ref.rollout.multi_turn.tokenization_sanity_check_mode=disable \

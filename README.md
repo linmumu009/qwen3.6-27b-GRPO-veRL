@@ -10,7 +10,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - HCCL 固定使用 `eno0` 和 `192.168.202.0/24` 内网，并为 host/NPU socket 分配互不重叠的端口范围，避免自动选中不可达的管理网卡。
 - actor 模型参数常驻 NPU，不做参数卸载；Adam 优化器与梯度卸载到 5 号机内存，并开启全量激活重计算。LoRA 已关闭（`lora_rank=0`）。
 - rollout 开启 Continuous Token、prefix caching 和两路 vLLM cache 计数；checkpoint 每 20 步保存一次，仅保存 `model,extra` 并只保留 1 份。
-- 下一阶段真实环境配置将最大上下文设为 `49,152` tokens（初始 prompt `4,096` + 多轮 response `45,056`），assistant/tool 交互上限设为 `25/24` 轮，单次工具返回放宽到 `32,768` 字符；vLLM 保持 `8,192`-token chunked prefill 和每副本最多 16 个活跃序列。
+- 长上下文配置将最大上下文设为 `49,152` tokens（默认初始 prompt `4,096` + 多轮 response `45,056`），assistant/tool 交互上限设为 `25/24` 轮，单轮最多 4 个并行工具调用，单次工具返回放宽到 `32,768` 字符；vLLM 保持 `8,192`-token chunked prefill 和每副本最多 16 个活跃序列。
 - 数据转换优先保留源轨迹的 system prompt；只有源记录没有 system message 时才使用项目的物流分析 fallback prompt。
 - 20-step One-Step-Off-Policy 的长尾切换判据已触发；后续推荐使用 bounded fully-async：一个 prompt 的 4 条 GRPO 轨迹作为不可拆分 group。48K 配置的 queued-token 上限至少容纳一个最坏情况训练 batch（默认 `786,432` tokens），group 数上限继续控制 staleness，满载时背压而不是丢弃旧样本。
 - 所有新增镜像、容器、工作目录和实验名均以 `llin` 开头，不复用或修改其他人的环境。
@@ -43,6 +43,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 - [`docs/training_experiment_report_20260731.md`](docs/training_experiment_report_20260731.md)：从初始环境、数据改造、十余次关键尝试到最终 One-Step 与 bounded fully-async 跑通的完整复盘报告。
 - [`docs/trajectory_rollout_investigation_20260731.html`](docs/trajectory_rollout_investigation_20260731.html)：同 prompt 轨迹长度对比、长尾 rollout 超时、完整 GRPO group 队列与 vLLM 真取消方案的可交互调查报告。
+- [`docs/context_48k_tool_turn_validation_20260731.md`](docs/context_48k_tool_turn_validation_20260731.md)：8K/16K/32K/48K 阶梯实跑、显存峰值、system prompt 血缘和工具调用轮次对齐报告。
 - `llin_verl/pi_sqlite_tool.py`：只读 SQLite 轨迹工具。
 - `llin_verl/pi_reward.py`：数值结果、工具证据和必需表联合奖励。
 - `runtime/sitecustomize.py`：将训练池固定到 5 号机、rollout 池固定到 6 号机。
@@ -83,7 +84,10 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `pi-grpo-fully-async-bounded-3step-20260730-02` 已完成 3/3 个 bounded fully-async 更新并以退出码 `0` 结束。每步消费 4 个完整 GRPO group，最大 6 个在途/排队 group，40k queued-token 背压生效，未出现 queue drop 或 Continuous Token fallback。
 - fully-async 三批队列等待为 `159.41s / 111.96s / 177.26s`；第二批利用训练期间生成的 backlog，将等待降低约 `29.8%`。后续参数同步为 `7.79s / 7.75s / 7.28s`，cache 命中率 `32.41%`。前两个完整日志步的 trainer 资源利用率为 `46.40% / 47.40%`，但仍有约一半 trainer 时间在等待，需用更长稳态运行继续评估吞吐。
 - 48K 容量估算以每卡实际可用 `61.27 GiB` 为上限：训练侧从实测 `29.63 GiB` 峰值出发，直接可计算的增量为 `4.28 GiB`，另留 `10 GiB` workspace/碎片预算后规划峰值约 `43.91 GiB`，余量约 `17.36 GiB`。rollout 侧每个 48K 活跃序列约需 `0.89 GiB` KV+GDN cache，16 并发约 `14.25 GiB`；加 TP8 权重分片与 `12 GiB` runtime 预算后约 `32.54 GiB`，低于 60% HBM 预算 `36.76 GiB`，规划余量约 `4.23 GiB`。
-- 上述 48K 结论是公式与既有实测结合的容量门禁，尚不是 48K 实跑证据；正式训练前必须按 `8K → 16K → 32K → 48K` 做 NPU 分配与一条完整前反向阶梯探针。当前 veRL runtime 仍只提供 `query_sqlite`，尚未等价复现老板的 PI `bash/read/edit/write` 工具环境，因此不得把本次参数调整称为“完整真实环境已对齐”。
+- 48K 阶梯实测已完成：8K、16K 真实环境均完成 16 条轨迹和全参数更新；32K 容量探针处理 `122,021` tokens，actor 峰值 allocated/reserved 为 `27.86/31.35 GiB`；48K 容量探针实际处理 `43,848`-token prompt 和 `190,900` 个总 tokens，峰值为 `32.42/37.78 GiB`，退出码均为 `0`。
+- 48K 相对每卡实际可用 `61.27 GiB` 仍有约 `23.49 GiB` reserved 余量，证明当前 TP4/PP2/CP2、micro-batch 1、激活重计算及 optimizer/gradient CPU offload 能完成长上下文全参数前反向。该结果不等于 16 条轨迹同时接近 48K 的 rollout 吞吐验证。
+- 源轨迹 system/user prompt 已精确保留；`25 assistant turns / 24 工具反馈批次 / 单轮 4 个并行调用` 覆盖抽查源轨迹的 `6–11 / 9–20 / 2–4` 范围。16K 实跑每条产生 `4–19` 次工具调用，单轮并行峰值为 3。
+- 当前 veRL runtime 仍只提供 `query_sqlite`，尚未等价复现老板的 PI `bash/read/edit/write` 工具环境，因此“prompt、上下文和轮次已对齐”不能表述为“完整真实 Agent 环境已对齐”。
 
 ## 参考实现
 
@@ -93,6 +97,13 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [veRL 昇腾模型与算法支持](https://github.com/verl-project/verl/blob/main/docs/ascend_tutorial/model_support/model_and_algorithm_support.md)
 
 ## 版本记录
+
+### v0.9.0 — 2026-07-31
+
+- 完成 8K、16K、32K、48K 长上下文阶梯实跑；48K 探针以 `43,848`-token prompt 完成 TP8×DP2 rollout、TP4×PP2×CP2 全参数前反向和 CPU Adam 更新，退出码为 `0`。
+- 48K actor 峰值 allocated/reserved 为 `32.42/37.78 GiB`，相对每卡实际可用 `61.27 GiB` 仍有约 `23.49 GiB` reserved 余量；记录 32K/48K 的 tokens、耗时和适用边界。
+- 将 One-Step 与 bounded fully-async 的单轮并行工具调用上限显式设为 4；结合 25 assistant turns 和 24 工具反馈批次，覆盖抽查老板源轨迹的轮数与并行度。
+- 新增长上下文与工具轮次验证报告，明确 system/user prompt 已按数据血缘对齐，但 `query_sqlite` runtime 尚未等价复现 PI `bash/read/edit/write` 环境。
 
 ### v0.8.0 — 2026-07-31
 
