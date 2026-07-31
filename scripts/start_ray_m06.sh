@@ -29,6 +29,9 @@ python3 "${PROJECT_ROOT}/scripts/patch_verl_fastest_k_oversampling.py" \
   --agent-loop "/verl/verl/experimental/agent_loop/agent_loop.py" \
   --tool-agent-loop "/verl/verl/experimental/agent_loop/tool_agent_loop.py" \
   --llm-server "/verl/verl/workers/rollout/llm_server.py"
+python3 "${PROJECT_ROOT}/scripts/patch_verl_fully_async_observability.py" \
+  --trainer "/verl/verl/experimental/fully_async_policy/fully_async_trainer.py" \
+  --main "/verl/verl/experimental/fully_async_policy/fully_async_main.py"
 
 ray start \
   --address=192.168.202.5:26379 \

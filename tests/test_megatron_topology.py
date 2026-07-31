@@ -144,15 +144,20 @@ def test_fully_async_launch_preserves_topology_groups_and_token_bound() -> None:
         'MAX_PARALLEL_TOOL_CALLS="${MAX_PARALLEL_TOOL_CALLS:-4}"',
         'FASTEST_K="${FASTEST_K:-4}"',
         'OVERSAMPLE_CANDIDATES="${OVERSAMPLE_CANDIDATES:-6}"',
+        'PREWARM_GROUPS="${PREWARM_GROUPS:-0}"',
+        'STALENESS_THRESHOLD="${STALENESS_THRESHOLD:-0.5}"',
+        'AGENT_WORKERS="${AGENT_WORKERS:-8}"',
         'actor_rollout_ref.rollout.multi_turn.max_parallel_calls="${MAX_PARALLEL_TOOL_CALLS}"',
         "actor_rollout_ref.rollout.n=4",
         "rollout.n=4",
-        "async_training.staleness_threshold=0.5",
         "async_training.trigger_parameter_sync_step=1",
         "async_training.partial_rollout=True",
         '+async_training.max_queue_tokens="${MAX_QUEUE_TOKENS}"',
         '+async_training.fastest_k="${FASTEST_K}"',
         '+async_training.oversample_candidates="${OVERSAMPLE_CANDIDATES}"',
+        '+async_training.prewarm_groups="${PREWARM_GROUPS}"',
+        'async_training.staleness_threshold="${STALENESS_THRESHOLD}"',
+        'actor_rollout_ref.rollout.agent.num_workers="${AGENT_WORKERS}"',
         "actor_rollout_ref.actor.use_rollout_log_probs=True",
         "actor_rollout_ref.rollout.calculate_log_probs=True",
         "actor_rollout_ref.actor.optim.lr_decay_style=constant",
@@ -171,6 +176,7 @@ def test_both_ray_nodes_apply_fully_async_queue_patch_before_start() -> None:
         for patch_call in (
             'python3 "${PROJECT_ROOT}/scripts/patch_verl_fully_async_group_token_queue.py"',
             'python3 "${PROJECT_ROOT}/scripts/patch_verl_fastest_k_oversampling.py"',
+            'python3 "${PROJECT_ROOT}/scripts/patch_verl_fully_async_observability.py"',
         ):
             assert patch_call in text
             assert text.index(patch_call) < text.index("ray start")
@@ -381,6 +387,45 @@ def test_fastest_k_oversampling_patch_is_idempotent_and_preserves_group_size(tmp
     assert "LLIN_FASTEST_K_PHYSICAL_ABORT" in client_text
     assert "server.abort_request.remote(physical_id, reset_prefix_cache)" in client_text
     assert '"reset_prefix_cache": bool(reset_prefix_cache)' in client_text
+
+
+def test_fully_async_observability_patch_is_idempotent(tmp_path: Path) -> None:
+    import importlib.util
+
+    patch_path = ROOT / "scripts" / "patch_verl_fully_async_observability.py"
+    spec = importlib.util.spec_from_file_location("fully_async_observability_patch", patch_path)
+    assert spec and spec.loader
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+
+    source_root = ROOT / "reference" / "verl" / "verl" / "experimental" / "fully_async_policy"
+    trainer_target = tmp_path / "fully_async_trainer.py"
+    main_target = tmp_path / "fully_async_main.py"
+    trainer_target.write_text(
+        (source_root / "fully_async_trainer.py").read_text(encoding="utf-8"),
+        encoding="utf-8",
+    )
+    main_target.write_text(
+        (source_root / "fully_async_main.py").read_text(encoding="utf-8"),
+        encoding="utf-8",
+    )
+
+    assert module.patch_trainer(trainer_target) == "patched"
+    assert module.patch_trainer(trainer_target) == "already-patched"
+    assert module.patch_main(main_target) == "patched"
+    assert module.patch_main(main_target) == "already-patched"
+
+    trainer_text = trainer_target.read_text(encoding="utf-8")
+    main_text = main_target.read_text(encoding="utf-8")
+    compile(trainer_text, str(trainer_target), "exec")
+    compile(main_text, str(main_target), "exec")
+    assert "LLIN_FULLY_ASYNC_STAGE_TIMING" in trainer_text
+    assert "[LLIN_QUEUE_STAGE]" in trainer_text
+    assert "[LLIN_TRAIN_STAGE]" in trainer_text
+    assert "update_actor_s=" in trainer_text
+    assert "LLIN_FULLY_ASYNC_PREWARM" in main_text
+    assert "[LLIN_PREWARM]" in main_text
+    assert "rollouter exited before prewarm completed" in main_text
 
 
 def test_bridge_patch_is_idempotent(tmp_path: Path) -> None:

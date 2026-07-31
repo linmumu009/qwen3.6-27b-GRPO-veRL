@@ -36,7 +36,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 1. 从已验证轨迹中提取 prompt、环境 ID 和 verifier。
 2. 转换成 veRL 的 prompt-only Parquet，并指定 `tool_agent`。
 3. rollout 期间通过只读 `query_sqlite` 工具查询每个任务的 `logistics.sqlite`。
-4. 只有实际查询了必需表并给出验证数值时才获得满分；查询到正确表但最终答案错误只给进度分。
+4. 只有实际查询了必需表，且**最终可见 assistant answer** 给出验证数值时才获得满分；think、tool call 或 tool result 中出现目标值只记录为证据诊断，不再替代最终答案正确性。
 
 原始轨迹、验证清单、Parquet、模型、checkpoint 和运行日志均不会提交到 Git。
 
@@ -46,6 +46,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [`docs/trajectory_rollout_investigation_20260731.html`](docs/trajectory_rollout_investigation_20260731.html)：同 prompt 轨迹长度对比、长尾 rollout 超时、完整 GRPO group 队列与 vLLM 真取消方案的可交互调查报告。
 - [`docs/context_48k_tool_turn_validation_20260731.md`](docs/context_48k_tool_turn_validation_20260731.md)：8K/16K/32K/48K 阶梯实跑、显存峰值、system prompt 血缘和工具调用轮次对齐报告。
 - [`docs/fastest_k_oversampling_validation_20260731.md`](docs/fastest_k_oversampling_validation_20260731.md)：`4→4` 与 `6→最快4` 的严格单步 A/B、吞吐收益、质量选择偏差和物理 vLLM 取消证据边界。
+- [`docs/fastest_k_efficiency_20step_20260731.html`](docs/fastest_k_efficiency_20step_20260731.html)：五组拓扑/过量采样矩阵、8-group 预热的 20-step fully-async 时序、奖励泄漏复核和下一步效率实验的自包含技术报告。
 - `llin_verl/pi_sqlite_tool.py`：只读 SQLite 轨迹工具。
 - `llin_verl/pi_reward.py`：数值结果、工具证据和必需表联合奖励。
 - `runtime/sitecustomize.py`：将训练池固定到 5 号机、rollout 池固定到 6 号机。
@@ -63,6 +64,8 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/monitor_npu_utilization.py`、`scripts/monitor_vllm_cache_metrics.py`：两机 NPU 稳态利用率与两路 vLLM prefix-cache 计数采样。
 - `scripts/analyze_grpo_steady_state.py`：汇总 20-step 稳态耗时、长尾、NPU 利用率和 cache 命中率，并输出 fully-async 切换判据。
 - `scripts/analyze_trajectory_comparison.py`：只读扫描老板轨迹、同源 converted 轨迹、本次 320 条 rollout 与 20-step 日志，输出可复查的长度和超时统计。
+- `scripts/analyze_fastest_k_efficiency.py`：解析预热、队列等待、actor 更新、Fastest-K quorum/丢弃/abort、staleness 和严格奖励 replay。
+- `scripts/build_fastest_k_efficiency_report.py`：从聚合摘要生成 canonical report artifact，原始轨迹、日志与 checkpoint 不进入报告载荷。
 - `scripts/estimate_48k_capacity.py`：依据已验证的 6K 实测峰值、Qwen3.6 64 层混合 GDN/全注意力结构及 TP/PP/CP 切分，估算 48K 训练激活和 rollout KV/GDN cache 容量。
 - `llin_verl/megatron_bridge_compat.py`、`scripts/patch_verl_megatron_bridge_compat.py`：为昇腾验证版 Megatron-Bridge 补齐当前 veRL 所需的最小兼容接口。
 
@@ -72,7 +75,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - 两台机器均完成官方镜像的软件栈和 Qwen3.6-27B 模型识别检查。
 - Ray 两节点集群已连通，可见 32 张 NPU；角色测试确认训练任务落在 5 号机、rollout 任务落在 6 号机。
 - 4 条真实验证任务已转换为 Parquet；两台机器上的只读数据库查询和奖励闭环均为 `4/4` 满分。
-- 本地覆盖 Megatron 拓扑、Continuous Token、TP8/DP2 权重同步、监控分析、48K 容量估算、bounded fully-async 队列及 Fastest-K 幂等补丁测试，项目测试为 `36 passed`。
+- 本地覆盖 Megatron 拓扑、Continuous Token、TP8/DP2 权重同步、监控分析、48K 容量估算、bounded fully-async 队列、Fastest-K、精确阶段计时与严格奖励 replay，项目测试为 `41 passed`。
 - 经明确授权，两个新建的 `llin` 容器已重建为特权容器；两侧 NPU 探针均通过，未改动其他人的镜像、容器或目录。
 - 两机 2-rank HCCL all-reduce 和 1→16 rollout fan-out 均通过；256 MiB stateless PyHCCL 广播、普通 broadcast 与 all-reduce 均验证成功。正式配置使用 3 GiB 权重广播 bucket，并将 vLLM HBM 利用率限制为 60%。
 - `llin-pi-grpo-one-step-20260730-08` 已完成 1 个真实 GRPO 更新并以退出码 `0` 结束：16 条轨迹均完成 8 轮交互，平均奖励 `0.096875`（最小 `0.05`、最大 `0.20`），actor loss `0.013279`，梯度范数 `0.855277`。
@@ -94,6 +97,11 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - Fastest-K 严格单步 A/B 已跑通：`4→4` baseline 与 `6→最快4` 均完成 16 条轨迹和一次全参数更新，退出码均为 `0`。过量采样将 trainer 收集等待从 `383.81s` 降至 `283.85s`（`-26.04%`），完整训练步从 `464.60s` 降至 `364.69s`（`-21.50%`）。
 - 同一 A/B 中 Fastest-K 平均 reward 从 `0.500000` 降至 `0.290625`，完全答对从 `6/16` 降至 `2/16`，平均输出字符数下降 `12.62%`。单步结果不足以证明因果，但已确认最快选择存在质量偏差风险，正式默认前必须完成多步同 prompt 调度 A/B。
 - 本次四个 group 均形成 `6 candidates → 4 selected + 2 discarded`，但日志中的 `physical_aborts=0`；真 vLLM abort 路径已实现，当前运行只观察到在工具/回合间隙取消上层 task，尚未实证生成中物理请求的 abort acknowledgement。
+- 单步配置矩阵已扩展为 TP8×DP2 的 `4→4 / 5→4 / 6→4` 和 TP4×DP4 的 `4→4 / 5→4`；完整 step 分别为 `464.60 / 412.34 / 364.69 / 482.61 / 388.97s`，当前最优仍是 TP8×DP2 `6→最快4`。
+- `llin-tp8-dp2-fastest-k6of4-prewarm8-8k-20step-20260731-01` 已完成 20/20 个全参数更新并以退出码 `0` 结束；8-group 预热为 `375.76s / 104,761 tokens`，20 份 rollout 共 320 条轨迹，最终 `global_step_20` checkpoint 约 `47.57 GiB`，索引引用的 13 个 safetensors 分片全部存在。
+- step 2–20 的平均完整 step 为 `182.67s`：队列等待 `152.93s`、actor 更新 `19.54s`，累计等待占比 `83.72%`。预热只让前两个 batch 基本无等待，随后队列再次耗尽，证明瓶颈是长期 rollout 生产率而不是队列深度。
+- 77 个可审计 Fastest-K quorum 的均值/p95 为 `291.06/394.01s`，共丢弃 154 个候选、stale drop 为 0、物理 vLLM abort 仍为 0；不能宣称未选候选的底层生成已经被实际中止。
+- 本轮旧奖励平均 `0.39625`，轨迹任意位置含目标值为 `83/320`，严格最终答案正确仅 `3/320`。按新语义离线 replay 后平均 reward 为 `0.19625`、满分 3 条；项目代码已改为只有最终可见答案正确才能满分，历史运行值保持不回写。
 
 ## 参考实现
 
@@ -103,6 +111,13 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [veRL 昇腾模型与算法支持](https://github.com/verl-project/verl/blob/main/docs/ascend_tutorial/model_support/model_and_algorithm_support.md)
 
 ## 版本记录
+
+### v0.11.0 — 2026-07-31
+
+- 增加 fully-async 精确阶段计时与 8-group 预热观测，完成 TP8×DP2、TP4×DP4 的五组单步配置矩阵，并选定 TP8×DP2 `6→最快4` 进行 20-step 稳态验证。
+- 20/20 更新以退出码 0 完成；稳态平均 step `182.67s`，其中队列等待 `152.93s`、actor 更新 `19.54s`，确认预热和加深队列不能修复长期 rollout 供给不足。
+- 将旧奖励的“整条轨迹含目标值”与“最终可见答案正确”拆分；320 条 replay 显示旧命中 `83` 条、严格正确 `3` 条，后续满分条件已改为严格最终答案正确。
+- 新增可复现分析器、canonical HTML 技术报告和回归测试，项目测试为 `41 passed`；报告通过桌面与窄屏稳定态 QA，官方 500ms browser receipt 因 renderer 自身 16px 瞬态布局误报未通过，证据边界已保留。
 
 ### v0.10.0 — 2026-07-31
 

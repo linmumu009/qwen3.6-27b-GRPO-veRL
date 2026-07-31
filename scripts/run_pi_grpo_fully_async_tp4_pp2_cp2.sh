@@ -31,8 +31,11 @@ MAX_TOOL_RESPONSE_CHARS="${MAX_TOOL_RESPONSE_CHARS:-32768}"
 ROLLOUT_MAX_BATCHED_TOKENS="${ROLLOUT_MAX_BATCHED_TOKENS:-8192}"
 ROLLOUT_MAX_SEQS="${ROLLOUT_MAX_SEQS:-16}"
 ROLLOUT_GPU_MEMORY_UTILIZATION="${ROLLOUT_GPU_MEMORY_UTILIZATION:-0.60}"
+AGENT_WORKERS="${AGENT_WORKERS:-8}"
 FASTEST_K="${FASTEST_K:-4}"
 OVERSAMPLE_CANDIDATES="${OVERSAMPLE_CANDIDATES:-6}"
+PREWARM_GROUPS="${PREWARM_GROUPS:-0}"
+STALENESS_THRESHOLD="${STALENESS_THRESHOLD:-0.5}"
 # One complete training batch is GROUPS_PER_STEP groups × rollout.n=4
 # responses. Keeping this many worst-case tokens prevents an oversized-group
 # producer from blocking before the trainer can collect its first full batch.
@@ -61,6 +64,10 @@ fi
 if (( OVERSAMPLE_CANDIDATES < FASTEST_K )); then
   printf 'Invalid oversampling: candidates(%s) must be >= fastest_k(%s)\n' \
     "${OVERSAMPLE_CANDIDATES}" "${FASTEST_K}" >&2
+  exit 2
+fi
+if (( PREWARM_GROUPS < 0 )); then
+  printf 'Invalid prewarm group count: %s\n' "${PREWARM_GROUPS}" >&2
   exit 2
 fi
 if [[ ! -d "${MEGATRON_BRIDGE_ROOT}/megatron/bridge" ]]; then
@@ -95,6 +102,9 @@ python3 "${PROJECT_ROOT}/scripts/patch_verl_fastest_k_oversampling.py" \
   --agent-loop "${VERL_ROOT}/verl/experimental/agent_loop/agent_loop.py" \
   --tool-agent-loop "${VERL_ROOT}/verl/experimental/agent_loop/tool_agent_loop.py" \
   --llm-server "${VERL_ROOT}/verl/workers/rollout/llm_server.py"
+python3 "${PROJECT_ROOT}/scripts/patch_verl_fully_async_observability.py" \
+  --trainer "${VERL_ROOT}/verl/experimental/fully_async_policy/fully_async_trainer.py" \
+  --main "${VERL_ROOT}/verl/experimental/fully_async_policy/fully_async_main.py"
 
 cd "${VERL_ROOT}"
 
@@ -193,7 +203,7 @@ python3 -m verl.experimental.fully_async_policy.fully_async_main \
   actor_rollout_ref.rollout.multi_turn.max_tool_response_length="${MAX_TOOL_RESPONSE_CHARS}" \
   actor_rollout_ref.rollout.multi_turn.format=qwen3_coder \
   actor_rollout_ref.rollout.multi_turn.tokenization_sanity_check_mode=disable \
-  actor_rollout_ref.rollout.agent.num_workers=8 \
+  actor_rollout_ref.rollout.agent.num_workers="${AGENT_WORKERS}" \
   actor_rollout_ref.rollout.checkpoint_engine.backend=nccl \
   actor_rollout_ref.rollout.checkpoint_engine.update_weights_bucket_megabytes="${WEIGHT_BUCKET_MB}" \
   reward.custom_reward_function.path="${PROJECT_ROOT}/llin_verl/pi_reward.py" \
@@ -218,13 +228,14 @@ python3 -m verl.experimental.fully_async_policy.fully_async_main \
   rollout.n_gpus_per_node="${ROLLOUT_NPUS}" \
   rollout.n=4 \
   rollout.total_rollout_steps="${TOTAL_ROLLOUT_GROUPS}" \
-  async_training.staleness_threshold=0.5 \
+  async_training.staleness_threshold="${STALENESS_THRESHOLD}" \
   async_training.trigger_parameter_sync_step=1 \
   async_training.require_batches=1 \
   async_training.partial_rollout=True \
   +async_training.max_queue_tokens="${MAX_QUEUE_TOKENS}" \
   +async_training.fastest_k="${FASTEST_K}" \
   +async_training.oversample_candidates="${OVERSAMPLE_CANDIDATES}" \
+  +async_training.prewarm_groups="${PREWARM_GROUPS}" \
   async_training.concurrent_samples_per_replica=16 \
   'actor_rollout_ref.actor.checkpoint.save_contents=[model,extra]' \
   "$@"
