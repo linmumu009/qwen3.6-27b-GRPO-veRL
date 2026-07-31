@@ -31,6 +31,8 @@ MAX_TOOL_RESPONSE_CHARS="${MAX_TOOL_RESPONSE_CHARS:-32768}"
 ROLLOUT_MAX_BATCHED_TOKENS="${ROLLOUT_MAX_BATCHED_TOKENS:-8192}"
 ROLLOUT_MAX_SEQS="${ROLLOUT_MAX_SEQS:-16}"
 ROLLOUT_GPU_MEMORY_UTILIZATION="${ROLLOUT_GPU_MEMORY_UTILIZATION:-0.60}"
+FASTEST_K="${FASTEST_K:-4}"
+OVERSAMPLE_CANDIDATES="${OVERSAMPLE_CANDIDATES:-6}"
 # One complete training batch is GROUPS_PER_STEP groups × rollout.n=4
 # responses. Keeping this many worst-case tokens prevents an oversized-group
 # producer from blocking before the trainer can collect its first full batch.
@@ -49,6 +51,16 @@ fi
 if (( MAX_PROMPT_TOKENS + MAX_RESPONSE_TOKENS != MAX_CONTEXT_TOKENS )); then
   printf 'Invalid context budget: prompt(%s) + response(%s) != context(%s)\n' \
     "${MAX_PROMPT_TOKENS}" "${MAX_RESPONSE_TOKENS}" "${MAX_CONTEXT_TOKENS}" >&2
+  exit 2
+fi
+if (( FASTEST_K != 4 )); then
+  printf 'Invalid fastest-K group size: fastest_k(%s) must equal rollout.n(4)\n' \
+    "${FASTEST_K}" >&2
+  exit 2
+fi
+if (( OVERSAMPLE_CANDIDATES < FASTEST_K )); then
+  printf 'Invalid oversampling: candidates(%s) must be >= fastest_k(%s)\n' \
+    "${OVERSAMPLE_CANDIDATES}" "${FASTEST_K}" >&2
   exit 2
 fi
 if [[ ! -d "${MEGATRON_BRIDGE_ROOT}/megatron/bridge" ]]; then
@@ -78,6 +90,11 @@ python3 "${PROJECT_ROOT}/scripts/patch_verl_agent_loop_continuous_token.py" \
 python3 "${PROJECT_ROOT}/scripts/patch_verl_fully_async_group_token_queue.py" \
   --message-queue "${VERL_ROOT}/verl/experimental/fully_async_policy/message_queue.py" \
   --rollouter "${VERL_ROOT}/verl/experimental/fully_async_policy/fully_async_rollouter.py"
+python3 "${PROJECT_ROOT}/scripts/patch_verl_fastest_k_oversampling.py" \
+  --rollouter "${VERL_ROOT}/verl/experimental/fully_async_policy/fully_async_rollouter.py" \
+  --agent-loop "${VERL_ROOT}/verl/experimental/agent_loop/agent_loop.py" \
+  --tool-agent-loop "${VERL_ROOT}/verl/experimental/agent_loop/tool_agent_loop.py" \
+  --llm-server "${VERL_ROOT}/verl/workers/rollout/llm_server.py"
 
 cd "${VERL_ROOT}"
 
@@ -206,6 +223,8 @@ python3 -m verl.experimental.fully_async_policy.fully_async_main \
   async_training.require_batches=1 \
   async_training.partial_rollout=True \
   +async_training.max_queue_tokens="${MAX_QUEUE_TOKENS}" \
+  +async_training.fastest_k="${FASTEST_K}" \
+  +async_training.oversample_candidates="${OVERSAMPLE_CANDIDATES}" \
   async_training.concurrent_samples_per_replica=16 \
   'actor_rollout_ref.actor.checkpoint.save_contents=[model,extra]' \
   "$@"

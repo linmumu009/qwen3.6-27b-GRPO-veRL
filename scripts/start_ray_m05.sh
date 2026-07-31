@@ -20,6 +20,11 @@ export HCCL_ALGO="broadcast=level0:NA;level1:NHR"
 python3 "${PROJECT_ROOT}/scripts/patch_verl_fully_async_group_token_queue.py" \
   --message-queue "/verl/verl/experimental/fully_async_policy/message_queue.py" \
   --rollouter "/verl/verl/experimental/fully_async_policy/fully_async_rollouter.py"
+python3 "${PROJECT_ROOT}/scripts/patch_verl_fastest_k_oversampling.py" \
+  --rollouter "/verl/verl/experimental/fully_async_policy/fully_async_rollouter.py" \
+  --agent-loop "/verl/verl/experimental/agent_loop/agent_loop.py" \
+  --tool-agent-loop "/verl/verl/experimental/agent_loop/tool_agent_loop.py" \
+  --llm-server "/verl/verl/workers/rollout/llm_server.py"
 
 ray start \
   --head \

@@ -122,6 +122,7 @@ def test_rollout_node_applies_worker_side_patches_before_ray_start() -> None:
     for patch_call in (
         'python3 "${PROJECT_ROOT}/scripts/patch_verl_vllm_dp_weight_sync.py"',
         'python3 "${PROJECT_ROOT}/scripts/patch_verl_agent_loop_continuous_token.py"',
+        'python3 "${PROJECT_ROOT}/scripts/patch_verl_fastest_k_oversampling.py"',
     ):
         assert patch_call in text
         assert text.index(patch_call) < text.index(ray_start)
@@ -141,6 +142,8 @@ def test_fully_async_launch_preserves_topology_groups_and_token_bound() -> None:
         'MAX_CONTEXT_TOKENS="${MAX_CONTEXT_TOKENS:-49152}"',
         'MAX_ASSISTANT_TURNS="${MAX_ASSISTANT_TURNS:-25}"',
         'MAX_PARALLEL_TOOL_CALLS="${MAX_PARALLEL_TOOL_CALLS:-4}"',
+        'FASTEST_K="${FASTEST_K:-4}"',
+        'OVERSAMPLE_CANDIDATES="${OVERSAMPLE_CANDIDATES:-6}"',
         'actor_rollout_ref.rollout.multi_turn.max_parallel_calls="${MAX_PARALLEL_TOOL_CALLS}"',
         "actor_rollout_ref.rollout.n=4",
         "rollout.n=4",
@@ -148,6 +151,8 @@ def test_fully_async_launch_preserves_topology_groups_and_token_bound() -> None:
         "async_training.trigger_parameter_sync_step=1",
         "async_training.partial_rollout=True",
         '+async_training.max_queue_tokens="${MAX_QUEUE_TOKENS}"',
+        '+async_training.fastest_k="${FASTEST_K}"',
+        '+async_training.oversample_candidates="${OVERSAMPLE_CANDIDATES}"',
         "actor_rollout_ref.actor.use_rollout_log_probs=True",
         "actor_rollout_ref.rollout.calculate_log_probs=True",
         "actor_rollout_ref.actor.optim.lr_decay_style=constant",
@@ -163,9 +168,12 @@ def test_fully_async_launch_preserves_topology_groups_and_token_bound() -> None:
 def test_both_ray_nodes_apply_fully_async_queue_patch_before_start() -> None:
     for name in ("start_ray_m05.sh", "start_ray_m06.sh"):
         text = (ROOT / "scripts" / name).read_text(encoding="utf-8")
-        patch_call = 'python3 "${PROJECT_ROOT}/scripts/patch_verl_fully_async_group_token_queue.py"'
-        assert patch_call in text
-        assert text.index(patch_call) < text.index("ray start")
+        for patch_call in (
+            'python3 "${PROJECT_ROOT}/scripts/patch_verl_fully_async_group_token_queue.py"',
+            'python3 "${PROJECT_ROOT}/scripts/patch_verl_fastest_k_oversampling.py"',
+        ):
+            assert patch_call in text
+            assert text.index(patch_call) < text.index("ray start")
 
 
 def test_vllm_dp_weight_sync_patch_is_idempotent(tmp_path: Path) -> None:
@@ -315,6 +323,64 @@ def test_fully_async_continuous_token_patch_is_idempotent(tmp_path: Path) -> Non
     patched = target.read_text(encoding="utf-8")
     assert 'continuous_token.get("enable", False)' in patched
     assert "processor = None" in patched
+
+
+def test_fastest_k_oversampling_patch_is_idempotent_and_preserves_group_size(tmp_path: Path) -> None:
+    import importlib.util
+
+    patch_path = ROOT / "scripts" / "patch_verl_fastest_k_oversampling.py"
+    spec = importlib.util.spec_from_file_location("fastest_k_oversampling_patch", patch_path)
+    assert spec and spec.loader
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+
+    source_root = ROOT / "reference" / "verl" / "verl"
+    targets = {
+        "rollouter": (
+            tmp_path / "fully_async_rollouter.py",
+            source_root / "experimental" / "fully_async_policy" / "fully_async_rollouter.py",
+            module.patch_rollouter,
+        ),
+        "agent": (
+            tmp_path / "agent_loop.py",
+            source_root / "experimental" / "agent_loop" / "agent_loop.py",
+            module.patch_agent_loop,
+        ),
+        "tool": (
+            tmp_path / "tool_agent_loop.py",
+            source_root / "experimental" / "agent_loop" / "tool_agent_loop.py",
+            module.patch_tool_agent_loop,
+        ),
+        "client": (
+            tmp_path / "llm_server.py",
+            source_root / "workers" / "rollout" / "llm_server.py",
+            module.patch_llm_client,
+        ),
+    }
+    for target, source, patch in targets.values():
+        target.write_text(source.read_text(encoding="utf-8"), encoding="utf-8")
+        assert patch(target) == "patched"
+        assert patch(target) == "already-patched"
+        compile(target.read_text(encoding="utf-8"), str(target), "exec")
+
+    rollouter_text = targets["rollouter"][0].read_text(encoding="utf-8")
+    assert "LLIN_FASTEST_K_OVERSAMPLE_BATCH" in rollouter_text
+    assert "full_batch[:1].repeat(" in rollouter_text
+    assert "fastest_k != expected_group_size" in rollouter_text
+
+    agent_text = targets["agent"][0].read_text(encoding="utf-8")
+    assert "LLIN_FASTEST_K_QUORUM" in agent_text
+    assert "return_when=asyncio.FIRST_COMPLETED" in agent_text
+    assert "reset_prefix_cache=False" in agent_text
+    assert "selected_non_tensor_batch" in agent_text
+
+    tool_text = targets["tool"][0].read_text(encoding="utf-8")
+    assert 'kwargs.get("__llin_request_id")' in tool_text
+
+    client_text = targets["client"][0].read_text(encoding="utf-8")
+    assert "LLIN_FASTEST_K_PHYSICAL_ABORT" in client_text
+    assert "server.abort_request.remote(physical_id, reset_prefix_cache)" in client_text
+    assert '"reset_prefix_cache": bool(reset_prefix_cache)' in client_text
 
 
 def test_bridge_patch_is_idempotent(tmp_path: Path) -> None:
