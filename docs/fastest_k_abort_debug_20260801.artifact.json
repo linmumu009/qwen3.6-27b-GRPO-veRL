@@ -1,0 +1,328 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "Fastest-K 物理取消与严格奖励门禁复盘",
+    "description": "2026-08-01 严格奖励在线验证、Fastest-K V2-V4 取消故障链、最终修复和资源释放记录。",
+    "generatedAt": "2026-08-01T15:00:00+08:00",
+    "charts": [
+      {
+        "id": "abort_outcome_chart",
+        "title": "V2–V4 成功物理取消的落后候选数",
+        "subtitle": "每轮均有 8 个应取消候选；V4 首次实现 8/8 物理终止。",
+        "type": "bar",
+        "dataset": "abort_success",
+        "sourceId": "abort_outcomes_query",
+        "encodings": {
+          "x": {"field": "phase", "type": "nominal", "label": "实现阶段"},
+          "y": {"field": "physical_aborts", "type": "quantitative", "label": "成功物理取消请求数"}
+        },
+        "valueFormat": "number",
+        "layout": "full",
+        "maxRows": 3
+      }
+    ],
+    "tables": [
+      {
+        "id": "run_ledger_table",
+        "title": "本轮关键实验账本",
+        "subtitle": "按执行顺序记录退出状态、可审计取消结果及每轮回答的问题。",
+        "dataset": "run_ledger",
+        "sourceId": "run_ledger_query",
+        "defaultSort": {"field": "order", "direction": "asc"},
+        "columns": [
+          {"field": "order", "label": "顺序", "format": "number"},
+          {"field": "phase", "label": "阶段"},
+          {"field": "exit_code", "label": "退出码", "format": "number"},
+          {"field": "discarded", "label": "丢弃候选", "format": "number"},
+          {"field": "physical_aborts", "label": "物理取消", "format": "number"},
+          {"field": "retry_exhausted", "label": "重试耗尽", "format": "number"}
+        ],
+        "layout": "full"
+      },
+      {
+        "id": "v4_group_table",
+        "title": "V4 四个 GRPO group 的逐组取消证据",
+        "subtitle": "每个 prompt 生成 6 条候选，最快 4 条入组，另外 2 条必须在 vLLM 中真实终止。",
+        "dataset": "v4_groups",
+        "sourceId": "v4_group_query",
+        "defaultSort": {"field": "group", "direction": "asc"},
+        "columns": [
+          {"field": "group", "label": "Group", "format": "number"},
+          {"field": "quorum_s", "label": "最快4条到齐(s)", "format": "number"},
+          {"field": "active_requests", "label": "活跃物理请求", "format": "number"},
+          {"field": "physical_aborts", "label": "成功物理取消", "format": "number"},
+          {"field": "retry_exhausted", "label": "重试耗尽", "format": "number"},
+          {"field": "failures", "label": "其他失败", "format": "number"}
+        ],
+        "layout": "full"
+      }
+    ],
+    "sources": [
+      {
+        "id": "abort_outcomes_query",
+        "label": "V2–V4 成功物理取消数",
+        "path": "scripts/analyze_fastest_k_efficiency.py",
+        "query": {
+          "engine": "duckdb",
+          "language": "sql",
+          "sql": "SELECT * FROM (VALUES ('V2 可观测性',0,8,0),('V3 注册重试',0,8,6),('V4 public abort',8,8,0)) AS t(phase,physical_aborts,discarded_total,retry_exhausted)",
+          "description": "比较三次 4-group 门禁中成功终止的物理 vLLM 请求数。",
+          "executed_at": "2026-08-01T14:50:00+08:00",
+          "filters": ["每轮 4 groups", "每组 6→最快4", "每轮共丢弃 8 条"],
+          "metric_definitions": ["物理取消率 = physical_aborts / discarded_total；每轮 discarded_total=8"],
+          "tables_used": ["driver.log LLIN_FASTEST_K records"]
+        }
+      },
+      {
+        "id": "run_ledger_query",
+        "label": "本轮关键实验账本",
+        "path": "scripts/analyze_fastest_k_efficiency.py",
+        "query": {
+          "engine": "duckdb",
+          "language": "sql",
+          "sql": "SELECT * FROM (VALUES (1,'严格奖励门禁','strict-5step-01',0,0,0,0,0,'80条在线score与严格重放一致；55条满分'),(2,'V2 可观测性','abort-01',0,4,8,0,0,'8个活跃请求均确认，但全部not found'),(3,'V3 首次启动','abort-02',1,0,0,0,0,'补丁升级不幂等；模型加载前退出'),(4,'V3 注册重试','abort-03',0,4,8,0,6,'1不活跃、1自然完成、6重试耗尽'),(5,'V4 public abort','abort-04',0,4,8,8,0,'8/8真实取消，0失败，训练步完成')) AS t(\"order\",phase,run,exit_code,groups,discarded,physical_aborts,retry_exhausted,result)",
+          "description": "把五次关键运行的退出状态、Fastest-K 终态和诊断结论固定为审计表。",
+          "executed_at": "2026-08-01T14:50:00+08:00",
+          "filters": ["只包含回答了新诊断问题的运行"],
+          "metric_definitions": ["失败启动没有模型更新，groups 记为 0"],
+          "tables_used": ["exit_code", "finished_at", "driver.log"]
+        }
+      },
+      {
+        "id": "v4_group_query",
+        "label": "V4 逐组取消证据",
+        "path": "runs/llin-abort-gate-tp8-dp2-6of4-8k-1step-20260801-04/analysis.json",
+        "query": {
+          "engine": "duckdb",
+          "language": "sql",
+          "sql": "SELECT * FROM (VALUES (1,77.138017,2,2,0,0),(2,142.548077,2,2,0,0),(3,258.260647,2,2,0,0),(4,266.681209,2,2,0,0)) AS t(\"group\",quorum_s,active_requests,physical_aborts,retry_exhausted,failures)",
+          "description": "V4 四个 prompt group 的 quorum 和每组两条落后请求取消结果。",
+          "executed_at": "2026-08-01T14:40:00+08:00",
+          "filters": ["exit_code=0", "6 candidates → fastest 4"],
+          "metric_definitions": ["每组取消成功率 = physical_aborts / active_requests"],
+          "tables_used": ["driver.log LLIN_FASTEST_K records"]
+        }
+      },
+      {
+        "id": "run_logs",
+        "label": "2026-08-01 严格奖励与 V2-V4 运行日志",
+        "path": "runs/llin-abort-gate-tp8-dp2-6of4-8k-1step-20260801-*/driver.log",
+        "query": {
+          "engine": "log-audit",
+          "language": "text",
+          "query": "Read exit_code, finished_at, LLIN_PREWARM, LLIN_TRAIN_STAGE, LLIN_FASTEST_K and traceback evidence from the named run directories.",
+          "description": "逐个审计严格奖励 5-step 和四次 abort-gate 运行；原始日志、轨迹和模型不进入 Git。",
+          "executed_at": "2026-08-01T14:50:00+08:00",
+          "filters": [
+            "仅使用 llin 命名的本项目运行目录",
+            "V2-V4 均使用 TP8×DP2 rollout、6→最快4、8K、25/24 轮和 4 个 prompt",
+            "失败运行在模型更新前退出，不计为训练结果"
+          ],
+          "metric_definitions": [
+            "physical_aborts = vLLM 服务端确认通过公开 AsyncLLM.abort API 终止的外部请求数",
+            "retry_exhausted = 请求仍在逻辑活跃表中，但连续 20 次、每次间隔 50ms 的服务端取消都未成功",
+            "abort_not_active = Fastest-K 触发取消时，逻辑到物理请求映射已自然消失"
+          ],
+          "tables_used": ["driver.log", "exit_code", "finished_at", "analysis.json"]
+        }
+      },
+      {
+        "id": "strict_reward_log",
+        "label": "严格奖励 5-step 在线门禁",
+        "path": "runs/llin-strict-reward-gate-tp8-dp2-4of4-8k-5step-20260801-01/analysis.json",
+        "query": {
+          "engine": "python",
+          "language": "python",
+          "query": "scripts/analyze_fastest_k_efficiency.py --driver-log <run>/driver.log --rollout-dir <run>/rollouts",
+          "description": "对 80 条在线 rollout 重放严格奖励，并按 prompt 内容哈希分组核对在线 score。",
+          "executed_at": "2026-08-01T09:00:00+08:00",
+          "filters": ["5 个训练步", "每步 4 prompts × n=4", "不做过量采样"],
+          "metric_definitions": [
+            "严格满分 = 使用工具、查询必需表，并且最终可见 assistant answer 给出正确数值",
+            "严格正确率 = 严格满分轨迹数 / 全部 rollout 轨迹数"
+          ],
+          "tables_used": ["20-step rollout JSONL", "strict reward replay"]
+        }
+      },
+      {
+        "id": "v4_log",
+        "label": "V4 公开 external-ID 取消验证",
+        "path": "runs/llin-abort-gate-tp8-dp2-6of4-8k-1step-20260801-04/analysis.json",
+        "query": {
+          "engine": "python",
+          "language": "python",
+          "query": "scripts/analyze_fastest_k_efficiency.py --driver-log <run>/driver.log --rollout-dir <run>/rollouts",
+          "description": "聚合四个 Fastest-K group 的物理请求、确认、取消、重试耗尽和失败计数。",
+          "executed_at": "2026-08-01T14:40:00+08:00",
+          "filters": ["exit_code=0", "4 groups", "6 candidates → fastest 4"],
+          "metric_definitions": ["取消成功率 = physical_aborts / active_requests"],
+          "tables_used": ["driver.log", "rollouts/1.jsonl", "analysis.json"]
+        }
+      },
+      {
+        "id": "source_audit",
+        "label": "veRL 与 vLLM 0.18 取消路径源码审计",
+        "path": "scripts/patch_verl_vllm_abort_api.py",
+        "query": {
+          "engine": "source-audit",
+          "language": "python",
+          "query": "Trace logical trajectory ID → physical external request ID → output_processor.external_req_ids → AsyncLLM.abort → EngineCore abort.",
+          "description": "对比 veRL 旧 abort_request 与 vLLM 0.18 的 public abort 语义，确认 external/internal request ID 的键空间差异。",
+          "executed_at": "2026-08-01T13:30:00+08:00",
+          "filters": ["vLLM 0.18", "本项目使用的 async server 路径"],
+          "metric_definitions": [],
+          "tables_used": ["vllm_async_server.py", "async_llm.py", "output_processor.py"]
+        }
+      },
+      {
+        "id": "resource_release",
+        "label": "两机实验停止与 NPU 释放核验",
+        "path": "README.md",
+        "query": {
+          "engine": "system-audit",
+          "language": "text",
+          "query": "Restart only llin-verl-trainer-m05-20260730 and llin-verl-rollout-m06-20260730; verify project process list and npu-smi process table.",
+          "description": "V4 完成后只重启本项目两个 llin 容器，并核对两机无 Ray/vLLM/Megatron 进程、NPU 无运行进程。",
+          "executed_at": "2026-08-01T14:45:00+08:00",
+          "filters": ["不停止、删除或修改其他人的容器和目录"],
+          "metric_definitions": ["驱动基线 HBM = 无 NPU 运行进程时 npu-smi 报告的基础占用"],
+          "tables_used": ["docker process list", "npu-smi info"]
+        }
+      }
+    ],
+    "blocks": [
+      {"id": "title", "type": "markdown", "body": "# Fastest-K 物理取消与严格奖励门禁复盘", "layout": "full"},
+      {
+        "id": "technical_summary",
+        "type": "markdown",
+        "body": "## 技术结论：严格奖励已在线生效，Fastest-K 的假取消已修成真实 vLLM 取消\n\n- **严格奖励门禁通过。** 5-step、80 条在线 rollout 的 score 与离线严格重放完全一致：55/80 条得到满分，平均 reward 为 0.740625。该比例只描述 4 个 smoke prompt；其中 3 个 prompt 很容易、1 个 prompt 0/20 满分，不能外推为总体正确率。\n- **历史 Fastest-K 只取消了 Python task，没有释放 vLLM 计算。** V2 证明 8/8 个落后候选都有活跃物理请求且服务端都回应，但全部报 request not found；V3 增加最多 1 秒注册重试后仍有 6/8 重试耗尽，排除了单纯注册时序问题。\n- **根因是 external/internal request ID 混用。** veRL 把 external request ID 直接用于查询 vLLM 0.18 以 internal ID 为键的 `request_states`，所以活跃请求会被永久误判为不存在。V4 改为通过 `external_req_ids` 验证，并调用公开 `AsyncLLM.abort(external_id)`。\n- **V4 实跑闭环。** 4 个 group 的 8 个落后候选全部物理取消：active=8、ack=8、physical abort=8、retry exhausted=0、failure=0；训练步正常完成并以退出码 0 结束。\n- **实验已停止并释放资源。** 两个项目专用 `llin` 容器重启为空闲状态，两机均无 Ray/vLLM/Megatron 进程；`npu-smi` 对所有 16 张 NPU 报告 `No running processes`，每卡仅保留约 2.88–3.13 GiB 驱动基线 HBM。",
+        "layout": "full"
+      },
+      {
+        "id": "run_ledger_intro",
+        "type": "markdown",
+        "body": "## 五次运行把问题从奖励语义逐层收敛到 vLLM ID 键空间\n\n下表只把真正回答了新问题的运行列入账本。严格奖励门禁先证明训练消费的是新 reward；随后 V2、V3 和 V4 分别回答“有没有物理请求”“是不是注册竞争”“为什么永远找不到请求”。`-02` 是一次有价值的失败：补丁升级链自身不具备前向幂等性，因而在模型加载前退出，没有产生参数更新。",
+        "layout": "full"
+      },
+      {"id": "abort_outcome_visual", "type": "chart", "chartId": "abort_outcome_chart", "layout": "full"},
+      {
+        "id": "strict_reward",
+        "type": "markdown",
+        "body": "## 严格奖励在线门禁排除了历史 reward 泄漏\n\n旧逻辑曾把 think、tool call 或 tool result 中出现目标数值当成答对，导致历史 320 条轨迹中任意位置命中 83 条，而最终答案严格正确只有 3 条。本轮基线使用修正后的在线 reward 跑满 5 step：80 条轨迹在线 score 与离线 replay 逐条一致，55 条严格满分、57 条包含目标证据、75 条查询必需表、80 条调用工具。\n\n按 prompt 分组后，满分数为 0/20、17/20、19/20、19/20。这解释了 0.740625 的高均值：它由一个极小且高度不均衡的四题 smoke 集构成，不代表老板 1,500 条任务的准确率，也不证明模型已经收敛。某个 prompt 的四条采样若 reward 全相同，GRPO 组内 advantage 会归零；这是算法性质，不是 reward 实现错误。",
+        "sourceId": "strict_reward_log",
+        "layout": "full"
+      },
+      {
+        "id": "v2_result",
+        "type": "markdown",
+        "body": "## V2 证明问题发生在服务端查找，而不是上层没有触发取消\n\n最初 20-step 记录了 154 个 discarded candidates，却有 0 次 physical abort。V2 将“无活跃映射”“服务端确认”“request not found”“其他异常”拆开计数。四个 group 共 8 个落后候选全部具有 active physical request，8 个 RPC 也全部返回 acknowledgement，但 8 个都被服务端判为 not found。\n\n这一步排除了两种错误判断：落后候选并非都已自然完成，也并非只处在工具轮次之间、没有底层请求。问题已经收敛到请求注册或服务端请求 ID 解释。",
+        "sourceId": "run_logs",
+        "layout": "full"
+      },
+      {
+        "id": "v3_result",
+        "type": "markdown",
+        "body": "## V3 的注册重试没有解决问题，但暴露并修复了补丁升级 bug\n\nV3 对每个 physical request 最多重试 20 次、每次间隔 50ms；如果逻辑映射在重试中消失，则标记为自然完成。第一次启动 `-02` 在模型加载前失败：V2 补丁只认识自己的 marker，看到已经升级为 V3 的源码后仍尝试按 V1 文本再次替换，触发 `expected patch anchor not found`。修复方式是让旧补丁识别所有后续 marker，并把多版本连续执行纳入幂等回归测试。\n\n修复启动链后的 `-03` 中，8 个落后候选只有 1 个在取消前已不活跃、1 个在重试期间自然完成，剩余 6 个连续 1 秒仍全部 not found，physical abort 仍为 0。因此“只有注册窗口太短”的假设被否定。",
+        "sourceId": "run_logs",
+        "layout": "full"
+      },
+      {
+        "id": "v4_root_cause",
+        "type": "markdown",
+        "body": "## V4 修复 external/internal ID 混用，并保留 prefix cache\n\nvLLM 0.18 的 `output_processor.request_states` 以 internal request ID 为键；external request ID 通过 `external_req_ids` 映射到 internal ID。veRL 旧服务端却执行 `request_states.get(external_request_id)`，所以请求即使正在 NPU 上生成也会永久返回 not found。\n\nV4 不再直接操作 vLLM 私有状态和 EngineCore：先用 `external_req_ids` 确认 external ID 已注册，再调用公开的 `await self.engine.abort(request_id)`。公开 API 负责 external→internal 解析、output processor 终止和 EngineCore abort。Fastest-K 仍传递 `reset_prefix_cache=False`，逐请求取消不会清空已经验证有效的 prefix cache。启动脚本在 Ray worker 注册前按 V1→V2→V3→V4 顺序幂等应用补丁，确保两台节点行为一致。",
+        "sourceId": "source_audit",
+        "layout": "full"
+      },
+      {
+        "id": "v4_evidence",
+        "type": "markdown",
+        "body": "## V4 的 8/8 真实取消证明过量采样不再遗留僵尸生成\n\n最终 `-04` 运行完成 4 个 prompt，每个 prompt 生成 6 条候选并取最快 4 条。四次 quorum 分别为 77.138、142.548、258.261 和 266.681 秒。每组剩余 2 条都处于活跃生成状态，且 2 条均得到服务端物理取消确认；总计 8/8 成功，未出现自然完成、重试耗尽或其他失败。\n\n该运行预热到 5 个完整 group、45,170 queued tokens，等待 267.524 秒；训练消费一个 batch 时 queue wait 仅 0.051 秒，actor update 57.045 秒，完整训练 step 65.101 秒。它证明取消正确性和单步训练闭环，不是长期吞吐 A/B；效率结论仍应由后续多步对照实验给出。",
+        "sourceId": "v4_log",
+        "layout": "full"
+      },
+      {
+        "id": "environment",
+        "type": "markdown",
+        "body": "## 成功运行保持既有双机训练拓扑，仅改变取消链路\n\n训练侧仍为 5 号机 16 张 Ascend 910、Megatron TP4×PP2×CP2、全参数 GRPO，参数常驻 NPU，梯度和 Adam 卸载到 CPU；rollout 侧仍为 6 号机 16 张 Ascend 910、vLLM TP8×DP2。验证配置为 8K 上下文、25/24 assistant/tool 轮次、`n=4`、physical candidates=6、Fastest-K=4、4 个 prompt、无 checkpoint。\n\n因此 V3 与 V4 的结果差异可以归因于服务端取消实现，而不是模型、并行拓扑、数据、reward 或采样规模变化。报告没有把非致命的 Apex、modelopt、Triton 和 `mstx.range_end()` 警告写成训练失败；所有成功运行都以 exit code 0、rollout 落盘和训练阶段日志为判据。",
+        "sourceId": "run_logs",
+        "layout": "full"
+      },
+      {
+        "id": "resource_status",
+        "type": "markdown",
+        "body": "## 实验结束后已停机，当前没有占用训练或 rollout 显存\n\nV4 结束后只重启了本项目的 `llin-verl-trainer-m05-20260730` 和 `llin-verl-rollout-m06-20260730` 两个容器。两侧容器中均未发现 raylet、GCS、vLLM EngineCore、FullyAsync 或 WorkerDict 进程；两台主机的 16 张 NPU 都显示无运行进程。HBM 为约 2,878–3,133 MiB/卡，属于容器重启后的驱动基线，而不是模型或优化器占用。其他人的容器、目录、镜像和实验结果均未修改。",
+        "sourceId": "resource_release",
+        "layout": "full"
+      },
+      {
+        "id": "limitations",
+        "type": "markdown",
+        "body": "## 证据边界：取消正确性已证明，长期效率和质量仍待下一轮\n\n- V4 只有 4 个 prompt、8 次应取消请求；足以证明本次路径能真实终止，但还不能估算长期取消失败率。\n- V4 是单步 gate，不能与历史 20-step 的稳态速度直接比较；预热和冷启动占比不同。\n- 严格 reward 的 55/80 来自 4 个固定 smoke prompts，类别和难度极不均衡；不能作为总体正确率或训练收益。\n- Fastest-K 会偏向较短、较快轨迹。物理取消修复只消除了浪费，不消除 survivor bias；正式采用仍需多步同 prompt 的 4→4 与 6→4 质量/吞吐 A/B。\n- 本报告没有绘制趋势图：V2-V4 是四个有意改变实现的诊断门禁，不构成同分布时间序列；精确状态表比连线图更能避免错误的趋势解释。",
+        "layout": "full"
+      },
+      {
+        "id": "next_steps",
+        "type": "markdown",
+        "body": "## 下一步在重新开机后只做一件事：多步同 prompt A/B\n\n本轮按要求已经停止。下一次实验建议在完全相同的模型、prompt、seed 策略和 8K/25轮配置下，对比 `4→4` 与修复后的 `6→最快4`，至少各跑 20 个稳态 step。必须同时报告：有效 groups/min、trainer queue wait、rollout NPU 利用率、physical abort 成功率、zombie requests、严格最终正确率、reward、KL、输出长度和每个 prompt 的差异。\n\n只有当 physical abort 长期接近 100%、trainer 等待显著下降，而且严格正确率和 reward 没有不可接受的退化时，才把 6→4 作为正式默认；否则保留为可选吞吐策略。",
+        "layout": "full"
+      },
+      {
+        "id": "questions",
+        "type": "markdown",
+        "body": "## 后续仍需回答的问题\n\n1. 20-step 以上运行中，物理取消成功率能否维持，是否出现极低频 zombie request？\n2. 6→最快4 的速度选择偏差在严格 reward 下有多大，是否集中伤害复杂 prompt？\n3. 加深完整 group 队列后，rollout 长期生产率能否高于 trainer 消费率，还是仍需增加推理算力或减慢训练消费？\n4. 48K 真实长轨迹下，取消响应时间和 Fastest-K 收益是否与本次 8K gate 一致？",
+        "layout": "full"
+      }
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "generatedAt": "2026-08-01T15:00:00+08:00",
+    "status": "ready",
+    "datasets": {
+      "abort_success": [
+        {"phase": "V2 可观测性", "physical_aborts": 0, "discarded_total": 8, "retry_exhausted": 0},
+        {"phase": "V3 注册重试", "physical_aborts": 0, "discarded_total": 8, "retry_exhausted": 6},
+        {"phase": "V4 public abort", "physical_aborts": 8, "discarded_total": 8, "retry_exhausted": 0}
+      ],
+      "abort_outcomes": [
+        {"phase": "V2 可观测性", "outcome": "服务端 not found", "requests": 8, "discarded_total": 8},
+        {"phase": "V2 可观测性", "outcome": "自然完成/不活跃", "requests": 0, "discarded_total": 8},
+        {"phase": "V2 可观测性", "outcome": "重试耗尽", "requests": 0, "discarded_total": 8},
+        {"phase": "V2 可观测性", "outcome": "物理取消", "requests": 0, "discarded_total": 8},
+        {"phase": "V3 注册重试", "outcome": "服务端 not found", "requests": 0, "discarded_total": 8},
+        {"phase": "V3 注册重试", "outcome": "自然完成/不活跃", "requests": 2, "discarded_total": 8},
+        {"phase": "V3 注册重试", "outcome": "重试耗尽", "requests": 6, "discarded_total": 8},
+        {"phase": "V3 注册重试", "outcome": "物理取消", "requests": 0, "discarded_total": 8},
+        {"phase": "V4 public abort", "outcome": "服务端 not found", "requests": 0, "discarded_total": 8},
+        {"phase": "V4 public abort", "outcome": "自然完成/不活跃", "requests": 0, "discarded_total": 8},
+        {"phase": "V4 public abort", "outcome": "重试耗尽", "requests": 0, "discarded_total": 8},
+        {"phase": "V4 public abort", "outcome": "物理取消", "requests": 8, "discarded_total": 8}
+      ],
+      "run_ledger": [
+        {"order": 1, "phase": "严格奖励门禁", "run": "strict-5step-01", "exit_code": 0, "groups": 0, "discarded": 0, "physical_aborts": 0, "retry_exhausted": 0, "result": "80条在线score与严格重放一致；55条满分"},
+        {"order": 2, "phase": "V2 可观测性", "run": "abort-01", "exit_code": 0, "groups": 4, "discarded": 8, "physical_aborts": 0, "retry_exhausted": 0, "result": "8个活跃请求均确认，但全部not found"},
+        {"order": 3, "phase": "V3 首次启动", "run": "abort-02", "exit_code": 1, "groups": 0, "discarded": 0, "physical_aborts": 0, "retry_exhausted": 0, "result": "补丁升级不幂等；模型加载前退出"},
+        {"order": 4, "phase": "V3 注册重试", "run": "abort-03", "exit_code": 0, "groups": 4, "discarded": 8, "physical_aborts": 0, "retry_exhausted": 6, "result": "1不活跃、1自然完成、6重试耗尽"},
+        {"order": 5, "phase": "V4 public abort", "run": "abort-04", "exit_code": 0, "groups": 4, "discarded": 8, "physical_aborts": 8, "retry_exhausted": 0, "result": "8/8真实取消，0失败，训练步完成"}
+      ],
+      "v4_groups": [
+        {"group": 1, "quorum_s": 77.138017, "active_requests": 2, "physical_aborts": 2, "retry_exhausted": 0, "failures": 0},
+        {"group": 2, "quorum_s": 142.548077, "active_requests": 2, "physical_aborts": 2, "retry_exhausted": 0, "failures": 0},
+        {"group": 3, "quorum_s": 258.260647, "active_requests": 2, "physical_aborts": 2, "retry_exhausted": 0, "failures": 0},
+        {"group": 4, "quorum_s": 266.681209, "active_requests": 2, "physical_aborts": 2, "retry_exhausted": 0, "failures": 0}
+      ]
+    }
+  },
+  "sources": [
+    {"id": "abort_outcomes_query", "label": "V2–V4 成功物理取消数", "path": "scripts/analyze_fastest_k_efficiency.py"},
+    {"id": "run_ledger_query", "label": "本轮关键实验账本", "path": "scripts/analyze_fastest_k_efficiency.py"},
+    {"id": "v4_group_query", "label": "V4 逐组取消证据", "path": "runs/llin-abort-gate-tp8-dp2-6of4-8k-1step-20260801-04/analysis.json"},
+    {"id": "run_logs", "label": "2026-08-01 严格奖励与 V2-V4 运行日志", "path": "runs/llin-abort-gate-tp8-dp2-6of4-8k-1step-20260801-*/driver.log"},
+    {"id": "strict_reward_log", "label": "严格奖励 5-step 在线门禁", "path": "runs/llin-strict-reward-gate-tp8-dp2-4of4-8k-5step-20260801-01/analysis.json"},
+    {"id": "v4_log", "label": "V4 公开 external-ID 取消验证", "path": "runs/llin-abort-gate-tp8-dp2-6of4-8k-1step-20260801-04/analysis.json"},
+    {"id": "source_audit", "label": "veRL 与 vLLM 0.18 取消路径源码审计", "path": "scripts/patch_verl_vllm_abort_api.py"},
+    {"id": "resource_release", "label": "两机实验停止与 NPU 释放核验", "path": "README.md"}
+  ]
+}

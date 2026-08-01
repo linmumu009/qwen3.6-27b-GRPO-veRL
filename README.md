@@ -14,6 +14,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - 数据转换优先保留源轨迹的 system prompt；只有源记录没有 system message 时才使用项目的物流分析 fallback prompt。
 - 20-step One-Step-Off-Policy 的长尾切换判据已触发；后续推荐使用 bounded fully-async：一个 prompt 的 4 条 GRPO 轨迹作为不可拆分 group。48K 配置的 queued-token 上限至少容纳一个最坏情况训练 batch（默认 `786,432` tokens），group 数上限继续控制 staleness，满载时背压而不是丢弃旧样本。
 - bounded fully-async 已支持 Fastest-K 过量采样：默认物理生成 6 条候选、最先完成的 4 条组成完整 GRPO group，剩余候选取消；可用 `OVERSAMPLE_CANDIDATES=4` 恢复无过量采样的 baseline。该能力已验证吞吐收益，但仍需多步质量 A/B 后才能作为正式训练默认策略。
+- Fastest-K 的逐请求取消已改为 vLLM 0.18 的公开 external-request API；V4 门禁实测 8/8 个落后候选完成物理取消，且不清空 prefix cache。当前实验已停止，两台 `llin` 容器保持空闲。
 - 所有新增镜像、容器、工作目录和实验名均以 `llin` 开头，不复用或修改其他人的环境。
 
 当前服务器部署：
@@ -25,7 +26,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 | 容器 | `llin-verl-trainer-m05-20260730` | `llin-verl-rollout-m06-20260730` |
 | 镜像 | `llin-verl-a3:20260730` | `llin-verl-a3:20260730` |
 | 容器权限 | 特权模式（仅重建上述 `llin` 容器） | 特权模式（仅重建上述 `llin` 容器） |
-| 当前实验 NPU | 16（Megatron TP=4、PP=2、CP=2，全参） | 16（vLLM TP=8、DP=2） |
+| 当前实验 NPU | 0（实验已停止；容器空闲） | 0（实验已停止；容器空闲） |
 
 ## 数据结论
 
@@ -47,6 +48,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [`docs/context_48k_tool_turn_validation_20260731.md`](docs/context_48k_tool_turn_validation_20260731.md)：8K/16K/32K/48K 阶梯实跑、显存峰值、system prompt 血缘和工具调用轮次对齐报告。
 - [`docs/fastest_k_oversampling_validation_20260731.md`](docs/fastest_k_oversampling_validation_20260731.md)：`4→4` 与 `6→最快4` 的严格单步 A/B、吞吐收益、质量选择偏差和物理 vLLM 取消证据边界。
 - [`docs/fastest_k_efficiency_20step_20260731.html`](docs/fastest_k_efficiency_20step_20260731.html)：五组拓扑/过量采样矩阵、8-group 预热的 20-step fully-async 时序、奖励泄漏复核和下一步效率实验的自包含技术报告。
+- [`docs/fastest_k_abort_debug_20260801.html`](docs/fastest_k_abort_debug_20260801.html)：严格奖励在线门禁、Fastest-K V2–V4 假取消故障链、external/internal request ID 根因、最终 8/8 物理取消和显存释放的完整技术复盘。
 - `llin_verl/pi_sqlite_tool.py`：只读 SQLite 轨迹工具。
 - `llin_verl/pi_reward.py`：数值结果、工具证据和必需表联合奖励。
 - `runtime/sitecustomize.py`：将训练池固定到 5 号机、rollout 池固定到 6 号机。
@@ -61,6 +63,8 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/launch_pi_grpo_megatron_smoke.sh`：Megatron 单步实验的日志、时间和退出码启动器。
 - `scripts/run_pi_grpo_fully_async_tp4_pp2_cp2.sh`：TP4/PP2/CP2 训练、TP8/DP2 rollout 的 bounded fully-async 配置，按完整 GRPO group 入队并以 queued tokens 做背压。
 - `scripts/patch_verl_fastest_k_oversampling.py`：给 fully-async AgentLoop 增加可配置候选过量采样、最快 K quorum、完整 GRPO group 选择和逐请求 vLLM 取消链路。
+- `scripts/patch_verl_fastest_k_abort_observability.py`、`scripts/patch_verl_fastest_k_abort_retry.py`：区分无活跃请求、服务端确认、自然完成、重试耗尽与取消失败，并关闭 Fastest-K 取消注册竞争。
+- `scripts/patch_verl_vllm_abort_api.py`：修复 vLLM 0.18 external/internal request ID 混用，使用公开 `AsyncLLM.abort(external_id)` 真正终止物理请求。
 - `scripts/monitor_npu_utilization.py`、`scripts/monitor_vllm_cache_metrics.py`：两机 NPU 稳态利用率与两路 vLLM prefix-cache 计数采样。
 - `scripts/analyze_grpo_steady_state.py`：汇总 20-step 稳态耗时、长尾、NPU 利用率和 cache 命中率，并输出 fully-async 切换判据。
 - `scripts/analyze_trajectory_comparison.py`：只读扫描老板轨迹、同源 converted 轨迹、本次 320 条 rollout 与 20-step 日志，输出可复查的长度和超时统计。
@@ -75,7 +79,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - 两台机器均完成官方镜像的软件栈和 Qwen3.6-27B 模型识别检查。
 - Ray 两节点集群已连通，可见 32 张 NPU；角色测试确认训练任务落在 5 号机、rollout 任务落在 6 号机。
 - 4 条真实验证任务已转换为 Parquet；两台机器上的只读数据库查询和奖励闭环均为 `4/4` 满分。
-- 本地覆盖 Megatron 拓扑、Continuous Token、TP8/DP2 权重同步、监控分析、48K 容量估算、bounded fully-async 队列、Fastest-K、精确阶段计时与严格奖励 replay，项目测试为 `41 passed`。
+- 本地覆盖 Megatron 拓扑、Continuous Token、TP8/DP2 权重同步、监控分析、48K 容量估算、bounded fully-async 队列、Fastest-K、精确阶段计时、严格奖励 replay 和 vLLM public abort，项目测试为 `43 passed`。
 - 经明确授权，两个新建的 `llin` 容器已重建为特权容器；两侧 NPU 探针均通过，未改动其他人的镜像、容器或目录。
 - 两机 2-rank HCCL all-reduce 和 1→16 rollout fan-out 均通过；256 MiB stateless PyHCCL 广播、普通 broadcast 与 all-reduce 均验证成功。正式配置使用 3 GiB 权重广播 bucket，并将 vLLM HBM 利用率限制为 60%。
 - `llin-pi-grpo-one-step-20260730-08` 已完成 1 个真实 GRPO 更新并以退出码 `0` 结束：16 条轨迹均完成 8 轮交互，平均奖励 `0.096875`（最小 `0.05`、最大 `0.20`），actor loss `0.013279`，梯度范数 `0.855277`。
@@ -96,12 +100,18 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - 当前 veRL runtime 仍只提供 `query_sqlite`，尚未等价复现老板的 PI `bash/read/edit/write` 工具环境，因此“prompt、上下文和轮次已对齐”不能表述为“完整真实 Agent 环境已对齐”。
 - Fastest-K 严格单步 A/B 已跑通：`4→4` baseline 与 `6→最快4` 均完成 16 条轨迹和一次全参数更新，退出码均为 `0`。过量采样将 trainer 收集等待从 `383.81s` 降至 `283.85s`（`-26.04%`），完整训练步从 `464.60s` 降至 `364.69s`（`-21.50%`）。
 - 同一 A/B 中 Fastest-K 平均 reward 从 `0.500000` 降至 `0.290625`，完全答对从 `6/16` 降至 `2/16`，平均输出字符数下降 `12.62%`。单步结果不足以证明因果，但已确认最快选择存在质量偏差风险，正式默认前必须完成多步同 prompt 调度 A/B。
-- 本次四个 group 均形成 `6 candidates → 4 selected + 2 discarded`，但日志中的 `physical_aborts=0`；真 vLLM abort 路径已实现，当前运行只观察到在工具/回合间隙取消上层 task，尚未实证生成中物理请求的 abort acknowledgement。
+- 历史 v0.10 单步 A/B 的四个 group 均形成 `6 candidates → 4 selected + 2 discarded`，但当时 `physical_aborts=0`；后续 V2–V4 专项门禁已定位并修复该假取消，不能再把历史 0 次取消视为当前实现状态。
 - 单步配置矩阵已扩展为 TP8×DP2 的 `4→4 / 5→4 / 6→4` 和 TP4×DP4 的 `4→4 / 5→4`；完整 step 分别为 `464.60 / 412.34 / 364.69 / 482.61 / 388.97s`，当前最优仍是 TP8×DP2 `6→最快4`。
 - `llin-tp8-dp2-fastest-k6of4-prewarm8-8k-20step-20260731-01` 已完成 20/20 个全参数更新并以退出码 `0` 结束；8-group 预热为 `375.76s / 104,761 tokens`，20 份 rollout 共 320 条轨迹，最终 `global_step_20` checkpoint 约 `47.57 GiB`，索引引用的 13 个 safetensors 分片全部存在。
 - step 2–20 的平均完整 step 为 `182.67s`：队列等待 `152.93s`、actor 更新 `19.54s`，累计等待占比 `83.72%`。预热只让前两个 batch 基本无等待，随后队列再次耗尽，证明瓶颈是长期 rollout 生产率而不是队列深度。
 - 77 个可审计 Fastest-K quorum 的均值/p95 为 `291.06/394.01s`，共丢弃 154 个候选、stale drop 为 0、物理 vLLM abort 仍为 0；不能宣称未选候选的底层生成已经被实际中止。
 - 本轮旧奖励平均 `0.39625`，轨迹任意位置含目标值为 `83/320`，严格最终答案正确仅 `3/320`。按新语义离线 replay 后平均 reward 为 `0.19625`、满分 3 条；项目代码已改为只有最终可见答案正确才能满分，历史运行值保持不回写。
+- `llin-strict-reward-gate-tp8-dp2-4of4-8k-5step-20260801-01` 已以退出码 0 完成 5 个在线更新；80 条 rollout 的在线 score 与严格离线 replay 完全一致，55 条严格满分、平均 reward `0.740625`。四个 prompt 的满分数为 `0/20、17/20、19/20、19/20`，因此该值只证明新 reward 已上线，不能外推为总体准确率。
+- Fastest-K V2 门禁记录到 8 个活跃物理请求、8 个 RPC acknowledgement，但 8 个服务端结果均为 request not found；V3 增加最多 20 次、总计 1 秒注册重试后仍有 6 个 retry exhausted，排除了单纯注册窗口不足。
+- V3 首次启动暴露补丁升级链的前向幂等 bug：旧 V2 补丁无法识别 V3 marker，按旧 anchor 重复替换并在模型加载前退出。现已让旧补丁识别后续 marker，并加入 V1→V2→V3→V4 连续执行的幂等测试。
+- 源码审计确认 vLLM 0.18 的 `request_states` 以 internal ID 为键，而 veRL 旧取消服务错误地用 external ID 直接查询。V4 改用 `external_req_ids` 验证注册状态并调用公开 `AsyncLLM.abort(external_id)`，保留 `reset_prefix_cache=False`。
+- `llin-abort-gate-tp8-dp2-6of4-8k-1step-20260801-04` 已以退出码 0 完成：4 个 group 共 8 个落后候选全部物理取消，`active_requests=8`、`abort_acks=8`、`physical_aborts=8`、`retry_exhausted=0`、`failures=0`；训练 step 的 queue wait/actor update/完整耗时为 `0.051/57.045/65.101s`。
+- V4 结束后仅重启本项目两个 `llin` 容器；两机均无 Ray、vLLM、Megatron 或 NPU 运行进程，16 张 NPU 每卡仅保留约 `2.88–3.13 GiB` 驱动基线 HBM，训练和 rollout 显存已释放。
 
 ## 参考实现
 
@@ -111,6 +121,14 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [veRL 昇腾模型与算法支持](https://github.com/verl-project/verl/blob/main/docs/ascend_tutorial/model_support/model_and_algorithm_support.md)
 
 ## 版本记录
+
+### v0.12.0 — 2026-08-01
+
+- 完成严格奖励 5-step 在线门禁；80 条 score 与严格 replay 完全一致，并按 prompt 分组揭示 55/80 高均值来自三易一难的极小 smoke 集，避免将其误报为总体正确率。
+- 通过 V2 可观测性、V3 注册重试和 V4 源码修复，定位 Fastest-K `physical_aborts=0` 的根因是 vLLM 0.18 external/internal request ID 混用；最终 4 个 group 的 8 个落后候选全部完成真实物理取消。
+- 修复补丁升级链的前向幂等问题；新增取消状态分析、public abort 补丁和回归测试，项目测试更新为 `43 passed`。
+- 新增完整技术复盘，记录每次运行、失败、假设、排除证据和最终配置；本轮结束后停止两台项目 Ray 环境并释放全部训练/推理显存。
+- 自包含 HTML 报告通过 canonical artifact、exact-payload 与 semantic fallback 的 `structural_only` 验证；本机 Chromium reader 出现横向溢出/启动超时，未将增强交互验收冒充为已通过。
 
 ### v0.11.0 — 2026-07-31
 

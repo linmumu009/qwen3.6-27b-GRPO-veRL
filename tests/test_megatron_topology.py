@@ -123,6 +123,9 @@ def test_rollout_node_applies_worker_side_patches_before_ray_start() -> None:
         'python3 "${PROJECT_ROOT}/scripts/patch_verl_vllm_dp_weight_sync.py"',
         'python3 "${PROJECT_ROOT}/scripts/patch_verl_agent_loop_continuous_token.py"',
         'python3 "${PROJECT_ROOT}/scripts/patch_verl_fastest_k_oversampling.py"',
+        'python3 "${PROJECT_ROOT}/scripts/patch_verl_fastest_k_abort_observability.py"',
+        'python3 "${PROJECT_ROOT}/scripts/patch_verl_fastest_k_abort_retry.py"',
+        'python3 "${PROJECT_ROOT}/scripts/patch_verl_vllm_abort_api.py"',
     ):
         assert patch_call in text
         assert text.index(patch_call) < text.index(ray_start)
@@ -176,6 +179,9 @@ def test_both_ray_nodes_apply_fully_async_queue_patch_before_start() -> None:
         for patch_call in (
             'python3 "${PROJECT_ROOT}/scripts/patch_verl_fully_async_group_token_queue.py"',
             'python3 "${PROJECT_ROOT}/scripts/patch_verl_fastest_k_oversampling.py"',
+            'python3 "${PROJECT_ROOT}/scripts/patch_verl_fastest_k_abort_observability.py"',
+            'python3 "${PROJECT_ROOT}/scripts/patch_verl_fastest_k_abort_retry.py"',
+            'python3 "${PROJECT_ROOT}/scripts/patch_verl_vllm_abort_api.py"',
             'python3 "${PROJECT_ROOT}/scripts/patch_verl_fully_async_observability.py"',
         ):
             assert patch_call in text
@@ -387,6 +393,95 @@ def test_fastest_k_oversampling_patch_is_idempotent_and_preserves_group_size(tmp
     assert "LLIN_FASTEST_K_PHYSICAL_ABORT" in client_text
     assert "server.abort_request.remote(physical_id, reset_prefix_cache)" in client_text
     assert '"reset_prefix_cache": bool(reset_prefix_cache)' in client_text
+
+
+def test_fastest_k_abort_observability_upgrade_is_idempotent(tmp_path: Path) -> None:
+    import importlib.util
+
+    base_path = ROOT / "scripts" / "patch_verl_fastest_k_oversampling.py"
+    base_spec = importlib.util.spec_from_file_location("fastest_k_base_patch", base_path)
+    assert base_spec and base_spec.loader
+    base = importlib.util.module_from_spec(base_spec)
+    base_spec.loader.exec_module(base)
+
+    upgrade_path = ROOT / "scripts" / "patch_verl_fastest_k_abort_observability.py"
+    upgrade_spec = importlib.util.spec_from_file_location("fastest_k_abort_upgrade", upgrade_path)
+    assert upgrade_spec and upgrade_spec.loader
+    upgrade = importlib.util.module_from_spec(upgrade_spec)
+    upgrade_spec.loader.exec_module(upgrade)
+
+    retry_path = ROOT / "scripts" / "patch_verl_fastest_k_abort_retry.py"
+    retry_spec = importlib.util.spec_from_file_location("fastest_k_abort_retry", retry_path)
+    assert retry_spec and retry_spec.loader
+    retry = importlib.util.module_from_spec(retry_spec)
+    retry_spec.loader.exec_module(retry)
+
+    source_root = ROOT / "reference" / "verl" / "verl"
+    agent = tmp_path / "agent_loop.py"
+    client = tmp_path / "llm_server.py"
+    agent.write_text(
+        (source_root / "experimental" / "agent_loop" / "agent_loop.py").read_text(encoding="utf-8"),
+        encoding="utf-8",
+    )
+    client.write_text(
+        (source_root / "workers" / "rollout" / "llm_server.py").read_text(encoding="utf-8"),
+        encoding="utf-8",
+    )
+    assert base.patch_agent_loop(agent) == "patched"
+    assert base.patch_llm_client(client) == "patched"
+    assert upgrade.patch_agent_loop(agent) == "patched"
+    assert upgrade.patch_client(client) == "patched"
+    assert upgrade.patch_agent_loop(agent) == "already-patched"
+    assert upgrade.patch_client(client) == "already-patched"
+    assert retry.patch_agent_loop(agent) == "patched"
+    assert retry.patch_client(client) == "patched"
+    assert retry.patch_agent_loop(agent) == "already-patched"
+    assert retry.patch_client(client) == "already-patched"
+    assert upgrade.patch_agent_loop(agent) == "already-patched"
+    assert upgrade.patch_client(client) == "already-patched"
+
+    agent_text = agent.read_text(encoding="utf-8")
+    client_text = client.read_text(encoding="utf-8")
+    assert "LLIN_FASTEST_K_QUORUM_V3" in agent_text
+    assert "active_requests=" in agent_text
+    assert "abort_failures=" in agent_text
+    assert "LLIN_FASTEST_K_PHYSICAL_ABORT_V3" in client_text
+    assert '"acknowledged_count"' in client_text
+    assert '"retry_exhausted_count"' in client_text
+    compile(agent_text, str(agent), "exec")
+    compile(client_text, str(client), "exec")
+
+
+def test_vllm_abort_patch_uses_public_external_id_api(tmp_path: Path) -> None:
+    import importlib.util
+
+    patch_path = ROOT / "scripts" / "patch_verl_vllm_abort_api.py"
+    spec = importlib.util.spec_from_file_location("vllm_abort_api_patch", patch_path)
+    assert spec and spec.loader
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+
+    source = (
+        ROOT
+        / "reference"
+        / "verl"
+        / "verl"
+        / "workers"
+        / "rollout"
+        / "vllm_rollout"
+        / "vllm_async_server.py"
+    )
+    target = tmp_path / "vllm_async_server.py"
+    target.write_text(source.read_text(encoding="utf-8"), encoding="utf-8")
+
+    assert module.patch_server(target) == "patched"
+    assert module.patch_server(target) == "already-patched"
+    patched = target.read_text(encoding="utf-8")
+    assert "LLIN_VLLM_PUBLIC_ABORT_V4" in patched
+    assert "external_req_ids" in patched
+    assert "await self.engine.abort(request_id)" in patched
+    assert "request_states.get(request_id)" not in patched
+    compile(patched, str(target), "exec")
 
 
 def test_fully_async_observability_patch_is_idempotent(tmp_path: Path) -> None:

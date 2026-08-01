@@ -9,6 +9,8 @@ machine-readable JSON report.
 from __future__ import annotations
 
 import argparse
+from collections import defaultdict
+import hashlib
 import json
 import math
 import re
@@ -31,6 +33,16 @@ _STAGE_RE = re.compile(
 _FASTEST_RE = re.compile(
     rf"\[LLIN_FASTEST_K\] candidates=(\d+) selected=(\d+) discarded=(\d+) "
     rf"completed_discarded=(\d+) physical_aborts=(\d+) quorum_s=({_FLOAT})"
+)
+_FASTEST_ABORT_DETAIL_RE = re.compile(
+    rf"\[LLIN_FASTEST_K\].*?quorum_s={_FLOAT} "
+    r"active_requests=(\d+) abort_acks=(\d+) "
+    r"abort_not_active=(\d+) abort_failures=(\d+)"
+)
+_FASTEST_ABORT_V3_RE = re.compile(
+    rf"\[LLIN_FASTEST_K\].*?quorum_s={_FLOAT} "
+    r"active_requests=(\d+) abort_acks=(\d+) abort_not_active=(\d+) "
+    r"abort_completed=(\d+) abort_retry_exhausted=(\d+) abort_failures=(\d+)"
 )
 _PARAM_SYNC_RE = re.compile(rf"timing_s/timing_s/param_sync:(?:np\.float64\()?({_FLOAT})")
 _STALE_DROP_RE = re.compile(rf"fully_async/count/dropped_stale_samples:({_FLOAT})")
@@ -102,6 +114,25 @@ def parse_driver_text(text: str) -> dict[str, Any]:
         }
         for match in _FASTEST_RE.finditer(text)
     ]
+    v3_details = list(_FASTEST_ABORT_V3_RE.finditer(text))
+    if v3_details:
+        for item, detail in zip(fastest, v3_details):
+            item.update(
+                active_requests=int(detail.group(1)),
+                abort_acks=int(detail.group(2)),
+                abort_not_active=int(detail.group(3)),
+                abort_completed=int(detail.group(4)),
+                abort_retry_exhausted=int(detail.group(5)),
+                abort_failures=int(detail.group(6)),
+            )
+    else:
+        for item, detail in zip(fastest, _FASTEST_ABORT_DETAIL_RE.finditer(text)):
+            item.update(
+                active_requests=int(detail.group(1)),
+                abort_acks=int(detail.group(2)),
+                abort_not_active=int(detail.group(3)),
+                abort_failures=int(detail.group(4)),
+            )
     sync_values = [float(value) for value in _PARAM_SYNC_RE.findall(text)]
     stale_values = [float(value) for value in _STALE_DROP_RE.findall(text)]
     steady = [item for item in stages if item["step"] >= 2]
@@ -139,6 +170,14 @@ def parse_driver_text(text: str) -> dict[str, Any]:
             "discarded_total": sum(item["discarded"] for item in fastest),
             "completed_discarded_total": sum(item["completed_discarded"] for item in fastest),
             "physical_aborts_total": sum(item["physical_aborts"] for item in fastest),
+            "active_requests_total": sum(item.get("active_requests", 0) for item in fastest),
+            "abort_acks_total": sum(item.get("abort_acks", 0) for item in fastest),
+            "abort_not_active_total": sum(item.get("abort_not_active", 0) for item in fastest),
+            "abort_completed_total": sum(item.get("abort_completed", 0) for item in fastest),
+            "abort_retry_exhausted_total": sum(
+                item.get("abort_retry_exhausted", 0) for item in fastest
+            ),
+            "abort_failures_total": sum(item.get("abort_failures", 0) for item in fastest),
         },
         "param_sync_s": describe(sync_values),
         "dropped_stale_samples_final": stale_values[-1] if stale_values else None,
@@ -155,6 +194,7 @@ def iter_rollout_rows(directory: Path) -> Iterable[dict[str, Any]]:
 def summarize_rollouts(directory: Path) -> dict[str, Any]:
     rows = list(iter_rollout_rows(directory))
     strict_scores = []
+    scores_by_verifier: dict[str, list[float]] = defaultdict(list)
     for row in rows:
         tool_used = bool(float(row.get("tool_used", 0.0)))
         required_table_used = bool(float(row.get("required_table_used", 0.0)))
@@ -167,6 +207,11 @@ def summarize_rollouts(directory: Path) -> dict[str, Any]:
             strict_scores.append(0.05)
         else:
             strict_scores.append(0.0)
+        verifier_id = str((row.get("gts") or {}).get("verifier_id") or "")
+        if not verifier_id:
+            input_digest = hashlib.sha256(str(row.get("input") or "").encode("utf-8")).hexdigest()
+            verifier_id = f"prompt_sha256:{input_digest[:12]}"
+        scores_by_verifier[verifier_id].append(strict_scores[-1])
     return {
         "rows": len(rows),
         "files": len(list(directory.glob("*.jsonl"))),
@@ -180,6 +225,17 @@ def summarize_rollouts(directory: Path) -> dict[str, Any]:
         ),
         "strict_full_reward_count": sum(score == 1.0 for score in strict_scores),
         "strict_reward_replay": describe(strict_scores),
+        "strict_reward_by_verifier": {
+            verifier_id: {
+                "samples": len(scores),
+                "full_reward_count": sum(score == 1.0 for score in scores),
+                "full_reward_rate": (
+                    sum(score == 1.0 for score in scores) / len(scores) if scores else None
+                ),
+                "reward": describe(scores),
+            }
+            for verifier_id, scores in sorted(scores_by_verifier.items())
+        },
         "required_table_used": sum(float(row.get("required_table_used", 0.0)) for row in rows),
         "tool_used": sum(float(row.get("tool_used", 0.0)) for row in rows),
         "output_chars": describe(len(str(row.get("output") or "")) for row in rows),

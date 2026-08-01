@@ -29,6 +29,14 @@ python3 "${PROJECT_ROOT}/scripts/patch_verl_fastest_k_oversampling.py" \
   --agent-loop "/verl/verl/experimental/agent_loop/agent_loop.py" \
   --tool-agent-loop "/verl/verl/experimental/agent_loop/tool_agent_loop.py" \
   --llm-server "/verl/verl/workers/rollout/llm_server.py"
+python3 "${PROJECT_ROOT}/scripts/patch_verl_fastest_k_abort_observability.py" \
+  --agent-loop "/verl/verl/experimental/agent_loop/agent_loop.py" \
+  --llm-server "/verl/verl/workers/rollout/llm_server.py"
+python3 "${PROJECT_ROOT}/scripts/patch_verl_fastest_k_abort_retry.py" \
+  --agent-loop "/verl/verl/experimental/agent_loop/agent_loop.py" \
+  --llm-server "/verl/verl/workers/rollout/llm_server.py"
+python3 "${PROJECT_ROOT}/scripts/patch_verl_vllm_abort_api.py" \
+  --target "/verl/verl/workers/rollout/vllm_rollout/vllm_async_server.py"
 python3 "${PROJECT_ROOT}/scripts/patch_verl_fully_async_observability.py" \
   --trainer "/verl/verl/experimental/fully_async_policy/fully_async_trainer.py" \
   --main "/verl/verl/experimental/fully_async_policy/fully_async_main.py"
