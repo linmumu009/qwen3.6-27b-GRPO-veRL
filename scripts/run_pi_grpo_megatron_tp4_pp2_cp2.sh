@@ -70,6 +70,8 @@ python3 "${PROJECT_ROOT}/scripts/patch_verl_vllm_dp_weight_sync.py" \
   --target "${VERL_ROOT}/verl/workers/rollout/vllm_rollout/utils.py"
 python3 "${PROJECT_ROOT}/scripts/patch_verl_one_step_dump_executor.py" \
   --target "${VERL_ROOT}/verl/experimental/one_step_off_policy/ray_trainer.py"
+python3 "${PROJECT_ROOT}/scripts/patch_verl_val_only_skip_initial_sync.py" \
+  --target "${VERL_ROOT}/verl/experimental/one_step_off_policy/ray_trainer.py"
 python3 "${PROJECT_ROOT}/scripts/patch_verl_one_step_continuous_token.py" \
   --target "${VERL_ROOT}/verl/experimental/one_step_off_policy/main_ppo.py"
 python3 "${PROJECT_ROOT}/scripts/patch_verl_agent_loop_continuous_token.py" \

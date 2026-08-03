@@ -129,6 +129,11 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 版本记录
 
+### v0.17.0 — 2026-08-03
+
+- 冻结基线第三次启动已保持进程存活并完成 actor、两套 TP8 vLLM、944/944 权重转换，但在 0/200 处停在冗余的首次 1→16 actor-to-rollout 广播超过 60 分钟；失败证据保留在 `llin-pi-formal-frozen-baseline-20260803-03`。
+- 为 `val_only + resume_mode=disable` 增加受限优化：actor 与 rollout 均从同一只读 `MODEL_PATH` 加载时跳过首次权重广播；训练、恢复 checkpoint 或非 val-only 运行仍保留原同步行为，避免把该修复扩散到正式训练语义。
+
 ### v0.16.0 — 2026-08-03
 
 - 冻结基线第二次启动已成功越过 forward-only、模型装载、TP8×DP2 vLLM 与完整四工具初始化，但在 0/200 处发现 Fastest-K 补丁假定所有运行都存在 `async_training` 配置；失败证据保留在 `llin-pi-formal-frozen-baseline-20260803-02`。
