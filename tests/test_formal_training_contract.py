@@ -1,5 +1,9 @@
 from pathlib import Path
 
+import pytest
+
+from scripts.check_formal_data_on_ray import check_manifests, file_manifest
+
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -40,6 +44,7 @@ def test_formal_50step_is_exact_4of4_with_periodic_greedy_validation():
     )
     for item in expected:
         assert item in script
+    assert "check_formal_data_on_ray.py" in script
 
 
 def test_formal_launcher_records_lifecycle_and_exit_code():
@@ -50,3 +55,26 @@ def test_formal_launcher_records_lifecycle_and_exit_code():
     assert 'started_at' in script
     assert 'exit_code' in script
     assert 'finished_at' in script
+
+
+def test_formal_data_manifest_requires_identical_files_on_both_roles(tmp_path: Path):
+    train = tmp_path / "train.parquet"
+    val = tmp_path / "val.parquet"
+    train.write_bytes(b"train")
+    val.write_bytes(b"val")
+    manifest = file_manifest([str(train), str(val)])
+
+    check_manifests({"trainer": manifest, "rollout": dict(manifest)})
+
+    mismatch = {path: dict(item) for path, item in manifest.items()}
+    mismatch[str(train)]["sha256"] = "different"
+    with pytest.raises(ValueError, match="data mismatch"):
+        check_manifests({"trainer": manifest, "rollout": mismatch})
+
+
+def test_formal_data_manifest_rejects_missing_remote_file(tmp_path: Path):
+    missing = str(tmp_path / "missing.parquet")
+    manifest = file_manifest([missing])
+
+    with pytest.raises(FileNotFoundError, match="cannot read formal PI data"):
+        check_manifests({"trainer": manifest, "rollout": manifest})

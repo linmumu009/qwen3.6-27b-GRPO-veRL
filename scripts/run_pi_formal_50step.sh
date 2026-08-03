@@ -39,6 +39,11 @@ if (( PREWARM_GROUPS > MAX_QUEUE_GROUPS )); then
   exit 2
 fi
 
+python3 "${PROJECT_ROOT}/scripts/check_formal_data_on_ray.py" \
+  --train-file "${TRAIN_FILE}" \
+  --val-file "${VAL_FILE}" \
+  --ray-address "${RAY_ADDRESS:-192.168.202.5:26379}"
+
 # Exact 4->4 sampling: no fastest-K surplus candidates are created. The test
 # split remains sealed; only the 160-task train and 20-task validation files
 # enter this run. Validation is greedy n=1 every EVAL_FREQ policy updates.
