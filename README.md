@@ -50,6 +50,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [`docs/fastest_k_oversampling_validation_20260731.md`](docs/fastest_k_oversampling_validation_20260731.md)：`4→4` 与 `6→最快4` 的严格单步 A/B、吞吐收益、质量选择偏差和物理 vLLM 取消证据边界。
 - [`docs/fastest_k_efficiency_20step_20260731.html`](docs/fastest_k_efficiency_20step_20260731.html)：五组拓扑/过量采样矩阵、8-group 预热的 20-step fully-async 时序、奖励泄漏复核和下一步效率实验的自包含技术报告。
 - [`docs/fastest_k_abort_debug_20260801.html`](docs/fastest_k_abort_debug_20260801.html)：严格奖励在线门禁、Fastest-K V2–V4 假取消故障链、external/internal request ID 根因、最终 8/8 物理取消和显存释放的完整技术复盘。
+- [`docs/frozen_model_baseline_20260803.md`](docs/frozen_model_baseline_20260803.md)：完整 PI Agent、48K 上下文和 200 条正式任务的冻结模型基线，以及四次启动的故障与修复复盘。
 - `llin_verl/pi_sqlite_tool.py`：只读 SQLite 轨迹工具。
 - `llin_verl/pi_workspace_tools.py`、`llin_verl/pi_agent_loop.py`：完整 PI 四工具、轨迹级共享沙箱、事件审计和统一清理。
 - `llin_verl/pi_sqlite_cli.py`：为官方昇腾镜像补齐的受限只读 sqlite3 CLI 兼容层。
@@ -83,7 +84,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - 两台机器均完成官方镜像的软件栈和 Qwen3.6-27B 模型识别检查。
 - Ray 两节点集群已连通，可见 32 张 NPU；角色测试确认训练任务落在 5 号机、rollout 任务落在 6 号机。
 - 4 条真实验证任务已转换为 Parquet；两台机器上的只读数据库查询和奖励闭环均为 `4/4` 满分。
-- 本地覆盖 Megatron 拓扑、Continuous Token、TP8/DP2 权重同步、监控分析、48K 容量估算、bounded fully-async 队列、Fastest-K、完整 PI 工具、奖励 V2、正式数据门禁和 vLLM public abort，项目测试为 `54 passed`。
+- 本地覆盖 Megatron 拓扑、Continuous Token、TP8/DP2 权重同步、监控分析、48K 容量估算、bounded fully-async 队列、Fastest-K、完整 PI 工具、奖励 V2、正式数据门禁、冻结基线兼容和 vLLM public abort，项目测试为 `57 passed`。
 - 完整 PI Agent 已通过 6 号机真实 veRL 容器门禁：`bash/read/write/edit` 全部加载，同一轨迹共享可写沙箱，sqlite3 只读代理可查询 v15 数据，失败状态正确记录，轨迹释放后工作区不存在；门禁结束后容器已停止。
 - 正式数据 `/data3/llin/qwen3.6-27b-verl-grpo/data/formal_pi_v2_20260803` 已生成并通过独立审计：train/val/test 为 `160/20/20`，共 200 个唯一 task 和 instruction hash，跨 split 重叠为 0；每条 gold SQL 均重新执行并与标签一致。
 - 正式 prompt 连同四工具 schema 的 token 范围为 train `773–809`、val `775–799`、test `775–806`，均远低于 4,096-token 初始 prompt 预算；三个 Parquet 的 SHA256 已写入服务器侧审计报告。
@@ -119,6 +120,9 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - 源码审计确认 vLLM 0.18 的 `request_states` 以 internal ID 为键，而 veRL 旧取消服务错误地用 external ID 直接查询。V4 改用 `external_req_ids` 验证注册状态并调用公开 `AsyncLLM.abort(external_id)`，保留 `reset_prefix_cache=False`。
 - `llin-abort-gate-tp8-dp2-6of4-8k-1step-20260801-04` 已以退出码 0 完成：4 个 group 共 8 个落后候选全部物理取消，`active_requests=8`、`abort_acks=8`、`physical_aborts=8`、`retry_exhausted=0`、`failures=0`；训练 step 的 queue wait/actor update/完整耗时为 `0.051/57.045/65.101s`。
 - V4 结束后仅重启本项目两个 `llin` 容器；两机均无 Ray、vLLM、Megatron 或 NPU 运行进程，16 张 NPU 每卡仅保留约 `2.88–3.13 GiB` 驱动基线 HBM，训练和 rollout 显存已释放。
+- `llin-pi-formal-frozen-baseline-20260803-04` 已在完整 PI 四工具、48K 上下文和正式 200-task 合集上以退出码 `0` 完成冻结模型基线；总时长 `2h 29m 38s`，结果为 `200/200`，verifier 异常为 0。
+- 冻结基线平均 reward 为 `0.07175`；严格最终答案正确 `4/200`、SQL 证据正确 `6/200`、使用必需表 `150/200`、产生最终答案 `67/200`，工具协议和 bash 成功率均为 `200/200`。该结果作为正式 GRPO 前的未训练能力基线，不表示训练收敛。
+- 冻结基线四次启动依次修复了 val-only 误建完整 Adam、Fastest-K 对标准配置强依赖 `async_training`、以及同源基础模型评测仍重复首次全量权重广播的问题；最终运行同时暴露 200 条单批 barrier 和 TP8×DP2 后段负载不均的评测长尾。
 
 ## 参考实现
 
@@ -128,6 +132,12 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [veRL 昇腾模型与算法支持](https://github.com/verl-project/verl/blob/main/docs/ascend_tutorial/model_support/model_and_algorithm_support.md)
 
 ## 版本记录
+
+### v0.18.0 — 2026-08-03
+
+- 完成完整 PI Agent、48K 上下文、贪心 `n=1` 的 200-task 冻结模型基线；退出码 0、结果 200/200、总时长 `2h 29m 38s`，两机训练和推理显存均已释放。
+- 记录平均 reward `0.07175`、严格最终答案正确 `4/200`、SQL 证据正确 `6/200`、工具协议有效 `200/200` 等正式训练前基线指标，明确区分严格正确率与 verifier 满分 `acc`。
+- 新增完整复盘文档，串联 `-01` 到 `-04`：修复 val-only 优化器误初始化、可选 Fastest-K 配置兼容和冗余首次权重同步，并记录全量评测的 barrier 长尾与 DP 后段失衡。
 
 ### v0.17.0 — 2026-08-03
 
