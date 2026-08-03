@@ -236,6 +236,7 @@ def main() -> None:
 
     args.output_dir.mkdir(parents=True, exist_ok=True)
     all_verifiers: list[dict[str, Any]] = []
+    all_records: list[dict[str, Any]] = []
     global_index = 0
     from datasets import Dataset
 
@@ -245,7 +246,13 @@ def main() -> None:
             records.append(build_training_record(verifier, split, global_index))
             global_index += 1
         Dataset.from_list(records).to_parquet(str(args.output_dir / f"pi_formal_{split}.parquet"))
+        all_records.extend(records)
         all_verifiers.extend({**verifier, "split": split} for verifier in selected[split])
+
+    # A deterministic union is used by the frozen-model baseline.  Keeping the
+    # original split label in extra_info lets the report recover train/val/test
+    # metrics without weakening the three physically isolated split files.
+    Dataset.from_list(all_records).to_parquet(str(args.output_dir / "pi_formal_all.parquet"))
 
     with (args.output_dir / "pi_formal_verifier_manifest.jsonl").open("w", encoding="utf-8", newline="\n") as handle:
         for verifier in all_verifiers:
