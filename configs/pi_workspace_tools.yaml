@@ -1,0 +1,84 @@
+tools:
+  - class_name: "llin_verl.pi_workspace_tools.PiWorkspaceTool"
+    config: &pi_tool_config
+      type: "native"
+      operation: "bash"
+      sandbox_root: "/pi_sandbox"
+      run_root: "/workspace/grpo_run/pi_workspaces"
+      max_tool_timeout: 60
+      max_tool_output: 200000
+    tool_schema:
+      type: function
+      function:
+        name: bash
+        description: "Execute a shell command in the current sandbox workspace."
+        parameters:
+          type: object
+          additionalProperties: false
+          properties:
+            command: {type: string, description: "Shell command to execute."}
+            timeout: {type: integer, minimum: 1, description: "Optional timeout in seconds."}
+          required: [command]
+  - class_name: "llin_verl.pi_workspace_tools.PiWorkspaceTool"
+    config:
+      <<: *pi_tool_config
+      operation: "read"
+    tool_schema:
+      type: function
+      function:
+        name: read
+        description: "Read text from a file in the sandbox workspace."
+        parameters:
+          type: object
+          additionalProperties: false
+          properties:
+            path: {type: string, description: "File path to read."}
+            offset: {type: integer, minimum: 0, description: "Optional zero-based line offset."}
+            limit: {type: integer, minimum: 1, description: "Optional maximum number of lines to return."}
+          required: [path]
+  - class_name: "llin_verl.pi_workspace_tools.PiWorkspaceTool"
+    config:
+      <<: *pi_tool_config
+      operation: "write"
+    tool_schema:
+      type: function
+      function:
+        name: write
+        description: "Create or overwrite a text file in the sandbox workspace."
+        parameters:
+          type: object
+          additionalProperties: false
+          properties:
+            path: {type: string, description: "File path to write."}
+            content: {type: string, description: "Complete file content."}
+          required: [path, content]
+  - class_name: "llin_verl.pi_workspace_tools.PiWorkspaceTool"
+    config:
+      <<: *pi_tool_config
+      operation: "edit"
+    tool_schema:
+      type: function
+      function:
+        name: edit
+        description: "Edit a text file using either an edits array or one oldText/newText replacement."
+        parameters:
+          type: object
+          additionalProperties: false
+          properties:
+            path: {type: string, description: "File path to edit."}
+            edits:
+              type: array
+              items:
+                type: object
+                additionalProperties: false
+                properties:
+                  oldText: {type: string}
+                  newText: {type: string}
+                required: [oldText, newText]
+            oldText: {type: string}
+            newText: {type: string}
+          required: [path]
+          anyOf:
+            - required: [edits]
+            - required: [oldText, newText]
+

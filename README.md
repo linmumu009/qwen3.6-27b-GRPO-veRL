@@ -10,7 +10,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - HCCL 固定使用 `eno0` 和 `192.168.202.0/24` 内网，并为 host/NPU socket 分配互不重叠的端口范围，避免自动选中不可达的管理网卡。
 - actor 模型参数常驻 NPU，不做参数卸载；Adam 优化器与梯度卸载到 5 号机内存，并开启全量激活重计算。LoRA 已关闭（`lora_rank=0`）。
 - rollout 开启 Continuous Token、prefix caching 和两路 vLLM cache 计数；checkpoint 每 20 步保存一次，仅保存 `model,extra` 并只保留 1 份。
-- 长上下文配置将最大上下文设为 `49,152` tokens（默认初始 prompt `4,096` + 多轮 response `45,056`），assistant/tool 交互上限设为 `25/24` 轮，单轮最多 4 个并行工具调用，单次工具返回放宽到 `32,768` 字符；vLLM 保持 `8,192`-token chunked prefill 和每副本最多 16 个活跃序列。
+- 长上下文配置将最大上下文设为 `49,152` tokens（默认初始 prompt `4,096` + 多轮 response `45,056`）；正式 PI 配置将允许最多 25 次工具反馈和随后 1 次最终回答，单轮最多 4 个并行工具调用，单次工具返回放宽到 `32,768` 字符；vLLM 保持 `8,192`-token chunked prefill 和每副本最多 16 个活跃序列。
 - 数据转换优先保留源轨迹的 system prompt；只有源记录没有 system message 时才使用项目的物流分析 fallback prompt。
 - 20-step One-Step-Off-Policy 的长尾切换判据已触发；后续推荐使用 bounded fully-async：一个 prompt 的 4 条 GRPO 轨迹作为不可拆分 group。48K 配置的 queued-token 上限至少容纳一个最坏情况训练 batch（默认 `786,432` tokens），group 数上限继续控制 staleness，满载时背压而不是丢弃旧样本。
 - bounded fully-async 已支持 Fastest-K 过量采样：默认物理生成 6 条候选、最先完成的 4 条组成完整 GRPO group，剩余候选取消；可用 `OVERSAMPLE_CANDIDATES=4` 恢复无过量采样的 baseline。该能力已验证吞吐收益，但仍需多步质量 A/B 后才能作为正式训练默认策略。
@@ -32,12 +32,13 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 老板原有的 `trajectories_v15_27B_table.tar.gz` 是 PI agent 事件轨迹，共包含 1,500 个 JSONL 文件。它包含提示、模型消息、工具调用和工具输出，但没有可直接供 GRPO 使用的显式 reward，因此不能原样传给 veRL。
 
-本项目采用以下转换：
+早期 smoke 采用只读 `query_sqlite`；正式数据阶段已切换到以下完整 PI 契约：
 
-1. 从已验证轨迹中提取 prompt、环境 ID 和 verifier。
-2. 转换成 veRL 的 prompt-only Parquet，并指定 `tool_agent`。
-3. rollout 期间通过只读 `query_sqlite` 工具查询每个任务的 `logistics.sqlite`。
-4. 只有实际查询了必需表，且**最终可见 assistant answer** 给出验证数值时才获得满分；think、tool call 或 tool result 中出现目标值只记录为证据诊断，不再替代最终答案正确性。
+1. 完整保留老板 PI 的 system prompt，并提供同名、同 schema 的 `bash/read/write/edit` 四工具。
+2. 每条轨迹从对应 `sft/<version>` 环境复制独立可写工作区；四个工具在整条轨迹中共享状态，结束后统一清理。
+3. 昇腾 veRL 镜像缺少 `sqlite3` CLI，项目提供只读兼容代理，保持模型仍按原 system prompt 在 Bash 中调用 `sqlite3`。
+4. 奖励 V2 以最终答案正确性为主，同时重新执行 agent SQL，与隐藏的 gold `verification_sql` 结果进行独立比对；只提到表名或在工具输出里出现目标值不能获得满分。
+5. 首批正式数据为 200 条可执行验证的 DWH numeric/table 任务：v15 train 160、v20 val 20、v21 test 20；task ID、instruction hash 和 environment 均跨 split 隔离。
 
 原始轨迹、验证清单、Parquet、模型、checkpoint 和运行日志均不会提交到 Git。
 
@@ -50,9 +51,12 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [`docs/fastest_k_efficiency_20step_20260731.html`](docs/fastest_k_efficiency_20step_20260731.html)：五组拓扑/过量采样矩阵、8-group 预热的 20-step fully-async 时序、奖励泄漏复核和下一步效率实验的自包含技术报告。
 - [`docs/fastest_k_abort_debug_20260801.html`](docs/fastest_k_abort_debug_20260801.html)：严格奖励在线门禁、Fastest-K V2–V4 假取消故障链、external/internal request ID 根因、最终 8/8 物理取消和显存释放的完整技术复盘。
 - `llin_verl/pi_sqlite_tool.py`：只读 SQLite 轨迹工具。
-- `llin_verl/pi_reward.py`：数值结果、工具证据和必需表联合奖励。
+- `llin_verl/pi_workspace_tools.py`、`llin_verl/pi_agent_loop.py`：完整 PI 四工具、轨迹级共享沙箱、事件审计和统一清理。
+- `llin_verl/pi_sqlite_cli.py`：为官方昇腾镜像补齐的受限只读 sqlite3 CLI 兼容层。
+- `llin_verl/pi_reward.py`：最终答案、可执行 SQL 证据、必需表和安全协议联合奖励 V2。
 - `runtime/sitecustomize.py`：将训练池固定到 5 号机、rollout 池固定到 6 号机。
 - `scripts/prepare_pi_dataset.py`：验证轨迹到 veRL Parquet 的转换程序。
+- `scripts/prepare_pi_formal_dataset.py`、`scripts/audit_pi_formal_dataset.py`：200 条正式 PI 数据构建、gold SQL 执行、split 隔离和独立质量门禁。
 - `scripts/start_ray_m05.sh`、`scripts/start_ray_m06.sh`：两机 Ray 启动程序。
 - `scripts/check_ray_roles.py`：跨机角色落点验证。
 - `scripts/check_hccl.py`：两机基础 HCCL all-reduce 验证。
@@ -79,7 +83,10 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - 两台机器均完成官方镜像的软件栈和 Qwen3.6-27B 模型识别检查。
 - Ray 两节点集群已连通，可见 32 张 NPU；角色测试确认训练任务落在 5 号机、rollout 任务落在 6 号机。
 - 4 条真实验证任务已转换为 Parquet；两台机器上的只读数据库查询和奖励闭环均为 `4/4` 满分。
-- 本地覆盖 Megatron 拓扑、Continuous Token、TP8/DP2 权重同步、监控分析、48K 容量估算、bounded fully-async 队列、Fastest-K、精确阶段计时、严格奖励 replay 和 vLLM public abort，项目测试为 `43 passed`。
+- 本地覆盖 Megatron 拓扑、Continuous Token、TP8/DP2 权重同步、监控分析、48K 容量估算、bounded fully-async 队列、Fastest-K、完整 PI 工具、奖励 V2、正式数据门禁和 vLLM public abort，项目测试为 `54 passed`。
+- 完整 PI Agent 已通过 6 号机真实 veRL 容器门禁：`bash/read/write/edit` 全部加载，同一轨迹共享可写沙箱，sqlite3 只读代理可查询 v15 数据，失败状态正确记录，轨迹释放后工作区不存在；门禁结束后容器已停止。
+- 正式数据 `/data3/llin/qwen3.6-27b-verl-grpo/data/formal_pi_v2_20260803` 已生成并通过独立审计：train/val/test 为 `160/20/20`，共 200 个唯一 task 和 instruction hash，跨 split 重叠为 0；每条 gold SQL 均重新执行并与标签一致。
+- 正式 prompt 连同四工具 schema 的 token 范围为 train `773–809`、val `775–799`、test `775–806`，均远低于 4,096-token 初始 prompt 预算；三个 Parquet 的 SHA256 已写入服务器侧审计报告。
 - 经明确授权，两个新建的 `llin` 容器已重建为特权容器；两侧 NPU 探针均通过，未改动其他人的镜像、容器或目录。
 - 两机 2-rank HCCL all-reduce 和 1→16 rollout fan-out 均通过；256 MiB stateless PyHCCL 广播、普通 broadcast 与 all-reduce 均验证成功。正式配置使用 3 GiB 权重广播 bucket，并将 vLLM HBM 利用率限制为 60%。
 - `llin-pi-grpo-one-step-20260730-08` 已完成 1 个真实 GRPO 更新并以退出码 `0` 结束：16 条轨迹均完成 8 轮交互，平均奖励 `0.096875`（最小 `0.05`、最大 `0.20`），actor loss `0.013279`，梯度范数 `0.855277`。
@@ -121,6 +128,14 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [veRL 昇腾模型与算法支持](https://github.com/verl-project/verl/blob/main/docs/ascend_tutorial/model_support/model_and_algorithm_support.md)
 
 ## 版本记录
+
+### v0.13.0 — 2026-08-03
+
+- 将正式 rollout 环境从简化 `query_sqlite` 升级为老板 PI 的 `bash/read/write/edit` 四工具契约；实现轨迹级共享沙箱、工具事件审计、统一清理和安全边界。
+- 定位并修复官方 veRL 昇腾镜像缺少 sqlite3 CLI 的环境差异，加入只读兼容代理；真实容器四工具闭环、状态共享、SQL 查询和清理门禁通过。
+- 上线 evidence-grounded 奖励 V2：最终答案占主导，agent SQL 必须在隐藏环境中执行并与 gold SQL 结果一致； unsafe/非法协议硬置零。
+- 从 v15/v20/v21 三个独立环境构建 200 条 numeric/table DWH 正式任务，按 `160/20/20` 隔离 train/val/test；执行所有 gold SQL、剔除 7 条标签不一致候选并完成独立复审。
+- 修复 mixed numeric/table gold 无法写入 Arrow 的序列化 bug，以及 tokenizer 审计误报 2 tokens 的统计 bug；项目回归测试更新为 `54 passed`。
 
 ### v0.12.0 — 2026-08-01
 

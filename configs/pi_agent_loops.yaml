@@ -1,0 +1,3 @@
+- name: pi_agent
+  _target_: llin_verl.pi_agent_loop.PiAgentLoop
+
