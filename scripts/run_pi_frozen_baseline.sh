@@ -31,6 +31,9 @@ bash "${PROJECT_ROOT}/scripts/run_pi_grpo_megatron_tp4_pp2_cp2.sh" \
   data.val_files="${EVAL_FILE}" \
   actor_rollout_ref.rollout.multi_turn.tool_config_path="${PROJECT_ROOT}/configs/pi_workspace_tools.yaml" \
   actor_rollout_ref.rollout.agent.agent_loop_config_path="${PROJECT_ROOT}/configs/pi_agent_loops.yaml" \
+  actor_rollout_ref.actor.megatron.forward_only=True \
+  actor_rollout_ref.actor.megatron.optimizer_offload=False \
+  actor_rollout_ref.actor.megatron.grad_offload=False \
   actor_rollout_ref.rollout.val_kwargs.n=1 \
   actor_rollout_ref.rollout.val_kwargs.temperature=0 \
   actor_rollout_ref.rollout.val_kwargs.do_sample=False \

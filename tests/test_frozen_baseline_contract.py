@@ -13,6 +13,9 @@ def test_frozen_baseline_is_read_only_and_uses_full_pi_contract():
     assert "pi_agent_loops.yaml" in script
     assert "trainer.val_only=True" in script
     assert "trainer.val_before_train=True" in script
+    assert "actor_rollout_ref.actor.megatron.forward_only=True" in script
+    assert "actor_rollout_ref.actor.megatron.optimizer_offload=False" in script
+    assert "actor_rollout_ref.actor.megatron.grad_offload=False" in script
     assert "trainer.save_freq=-1" in script
     assert "actor_rollout_ref.rollout.val_kwargs.n=1" in script
     assert "actor_rollout_ref.rollout.val_kwargs.do_sample=False" in script

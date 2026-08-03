@@ -129,6 +129,11 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 版本记录
 
+### v0.15.0 — 2026-08-03
+
+- 冻结基线首次启动在 step 0 暴露 veRL `val_only` 仍构建完整 Adam 并申请锁页主机内存的问题，尚未生成任何评测轨迹；失败证据保留在 `llin-pi-formal-frozen-baseline-20260803-01`。
+- 将冻结 actor 显式切换为 Megatron `forward_only`，同时关闭 optimizer/gradient offload，使评估只初始化模型与跨机 rollout 权重，不再创建、卸载或保存优化器和梯度状态。
+
 ### v0.14.0 — 2026-08-03
 
 - 新增 200 条正式任务的统一冻结模型评测文件 `pi_formal_all.parquet`，保留每条任务原始 train/val/test 标记，便于在不混淆数据血缘的前提下建立全量能力基线。
