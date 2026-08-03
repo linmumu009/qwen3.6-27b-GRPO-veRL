@@ -34,6 +34,7 @@ def test_formal_50step_is_exact_4of4_with_periodic_greedy_validation():
         'STALENESS_THRESHOLD="${STALENESS_THRESHOLD:-1.0}"',
         'FASTEST_K=4',
         'OVERSAMPLE_CANDIDATES=4',
+        'actor_rollout_ref.actor.megatron.optimizer_offload=False',
         'actor_rollout_ref.rollout.val_kwargs.n=1',
         'actor_rollout_ref.rollout.val_kwargs.temperature=0',
         'actor_rollout_ref.rollout.val_kwargs.do_sample=False',

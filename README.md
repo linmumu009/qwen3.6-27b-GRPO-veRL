@@ -135,6 +135,12 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 版本记录
 
+### v0.21.0 — 2026-08-03
+
+- 正式 `-02` 已完成双机数据门禁、首批完整 PI rollout 和 actor 前反向，但在更新退出阶段把 FP32 optimizer master shard 以 `non_blocking=True` 搬回 CPU 时触发 CANN host-pinned allocator OOM；主机当时仍有约 `1.9 TiB available`，不是普通主机内存耗尽，也不是 NPU 前反向显存不足。
+- 正式配置保留 MindSpeed `optimizer_cpu_offload=True`，Adam 状态继续位于 5 号机 CPU；仅关闭 veRL engine 的二次阶段 `megatron.optimizer_offload`，使 FP32 master shard 常驻 NPU，避免每步巨量锁页 D2H/H2D 复制。
+- 预计每卡增加约 `6–8 GiB` 常驻 HBM；48K 容量门禁实测 reserved 峰值 `37.78 GiB`、相对每卡可用 HBM 仍有约 `23.49 GiB`，因此先用真实第 1 步验证后再继续 50-step。
+
 ### v0.20.0 — 2026-08-03
 
 - 正式 50-step 首次启动在 step 0 暴露双机数据可见性问题：fully-async rollouter 位于 6 号机并会直接读取 train/val Parquet，而正式数据当时只部署在 5 号机；本次没有发生 rollout 或参数更新。
