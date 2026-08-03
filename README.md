@@ -66,6 +66,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/launch_pi_grpo_smoke.sh`：带退出码、起止时间和完整日志的后台实验启动器。
 - `scripts/run_pi_grpo_megatron_tp4_pp2_cp2.sh`：16-NPU Megatron TP4/PP2/CP2 全参轨迹 GRPO 配置。
 - `scripts/launch_pi_grpo_megatron_smoke.sh`：Megatron 单步实验的日志、时间和退出码启动器。
+- `scripts/run_pi_formal_50step.sh`、`scripts/launch_pi_formal_50step.sh`：正式 160-task train / 20-task val 的 `4→4`、50-step 全参数 GRPO 及后台生命周期入口；每 10 step 贪心验证并保存一份滚动 checkpoint，test split 保持封存。
 - `scripts/run_pi_grpo_fully_async_tp4_pp2_cp2.sh`：TP4/PP2/CP2 训练、TP8/DP2 rollout 的 bounded fully-async 配置，按完整 GRPO group 入队并以 queued tokens 做背压。
 - `scripts/patch_verl_fastest_k_oversampling.py`：给 fully-async AgentLoop 增加可配置候选过量采样、最快 K quorum、完整 GRPO group 选择和逐请求 vLLM 取消链路。
 - `scripts/patch_verl_fastest_k_abort_observability.py`、`scripts/patch_verl_fastest_k_abort_retry.py`：区分无活跃请求、服务端确认、自然完成、重试耗尽与取消失败，并关闭 Fastest-K 取消注册竞争。
@@ -84,7 +85,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - 两台机器均完成官方镜像的软件栈和 Qwen3.6-27B 模型识别检查。
 - Ray 两节点集群已连通，可见 32 张 NPU；角色测试确认训练任务落在 5 号机、rollout 任务落在 6 号机。
 - 4 条真实验证任务已转换为 Parquet；两台机器上的只读数据库查询和奖励闭环均为 `4/4` 满分。
-- 本地覆盖 Megatron 拓扑、Continuous Token、TP8/DP2 权重同步、监控分析、48K 容量估算、bounded fully-async 队列、Fastest-K、完整 PI 工具、奖励 V2、正式数据门禁、冻结基线兼容和 vLLM public abort，项目测试为 `57 passed`。
+- 本地覆盖 Megatron 拓扑、Continuous Token、TP8/DP2 权重同步、监控分析、48K 容量估算、bounded fully-async 队列、Fastest-K、完整 PI 工具、奖励 V2、正式数据门禁、冻结基线兼容、正式训练契约和 vLLM public abort，项目测试为 `60 passed`。
 - 完整 PI Agent 已通过 6 号机真实 veRL 容器门禁：`bash/read/write/edit` 全部加载，同一轨迹共享可写沙箱，sqlite3 只读代理可查询 v15 数据，失败状态正确记录，轨迹释放后工作区不存在；门禁结束后容器已停止。
 - 正式数据 `/data3/llin/qwen3.6-27b-verl-grpo/data/formal_pi_v2_20260803` 已生成并通过独立审计：train/val/test 为 `160/20/20`，共 200 个唯一 task 和 instruction hash，跨 split 重叠为 0；每条 gold SQL 均重新执行并与标签一致。
 - 正式 prompt 连同四工具 schema 的 token 范围为 train `773–809`、val `775–799`、test `775–806`，均远低于 4,096-token 初始 prompt 预算；三个 Parquet 的 SHA256 已写入服务器侧审计报告。
@@ -132,6 +133,12 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [veRL 昇腾模型与算法支持](https://github.com/verl-project/verl/blob/main/docs/ascend_tutorial/model_support/model_and_algorithm_support.md)
 
 ## 版本记录
+
+### v0.19.0 — 2026-08-03
+
+- 新增正式 50-step 全参数 GRPO 入口：完整 PI 四工具、奖励 V2、48K 上下文、TP4/PP2/CP2 训练和 TP8/DP2 rollout，固定 `4→4` 而不创建过量候选。
+- 数据严格使用 train 160 条训练、val 20 条每 10 step 贪心 `n=1` 验证，test 20 条不进入运行；学习率默认 `1e-7`，每 10 step 保存并仅保留一份 `model,extra` checkpoint。
+- bounded fully-async 预热 8 个完整 group、队列最多 8 group/`1,572,864` tokens、staleness 上限 1 个 policy version；新增启动参数和数据隔离契约测试。
 
 ### v0.18.0 — 2026-08-03
 

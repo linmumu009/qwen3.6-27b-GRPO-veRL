@@ -1,0 +1,52 @@
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def test_formal_50step_uses_isolated_data_and_full_pi_contract():
+    script = (ROOT / "scripts" / "run_pi_formal_50step.sh").read_text(encoding="utf-8")
+
+    assert "pi_formal_train.parquet" in script
+    assert "pi_formal_val.parquet" in script
+    assert "pi_formal_test.parquet" not in script
+    assert "pi_workspace_tools.yaml" in script
+    assert "pi_agent_loops.yaml" in script
+    assert 'MAX_ASSISTANT_TURNS=26' in script
+    assert 'MAX_USER_TURNS=25' in script
+    assert 'MAX_CONTEXT_TOKENS="${MAX_CONTEXT_TOKENS}"' in script
+
+
+def test_formal_50step_is_exact_4of4_with_periodic_greedy_validation():
+    script = (ROOT / "scripts" / "run_pi_formal_50step.sh").read_text(encoding="utf-8")
+
+    expected = (
+        'TOTAL_TRAINING_STEPS="${TOTAL_TRAINING_STEPS:-50}"',
+        'GROUPS_PER_STEP="${GROUPS_PER_STEP:-4}"',
+        'EVAL_FREQ="${EVAL_FREQ:-10}"',
+        'SAVE_FREQ="${SAVE_FREQ:-10}"',
+        'LEARNING_RATE="${LEARNING_RATE:-1e-7}"',
+        'PREWARM_GROUPS="${PREWARM_GROUPS:-8}"',
+        'STALENESS_THRESHOLD="${STALENESS_THRESHOLD:-1.0}"',
+        'FASTEST_K=4',
+        'OVERSAMPLE_CANDIDATES=4',
+        'actor_rollout_ref.rollout.val_kwargs.n=1',
+        'actor_rollout_ref.rollout.val_kwargs.temperature=0',
+        'actor_rollout_ref.rollout.val_kwargs.do_sample=False',
+        'trainer.test_freq="${EVAL_FREQ}"',
+        'trainer.validation_data_dir="${OUTPUT_DIR}/validation"',
+        'trainer.max_actor_ckpt_to_keep=1',
+        'async_training.use_trainer_do_validate=False',
+    )
+    for item in expected:
+        assert item in script
+
+
+def test_formal_launcher_records_lifecycle_and_exit_code():
+    script = (ROOT / "scripts" / "launch_pi_formal_50step.sh").read_text(encoding="utf-8")
+
+    assert "run_pi_formal_50step.sh" in script
+    assert 'driver.pid' in script
+    assert 'started_at' in script
+    assert 'exit_code' in script
+    assert 'finished_at' in script
