@@ -14,7 +14,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - 数据转换优先保留源轨迹的 system prompt；只有源记录没有 system message 时才使用项目的物流分析 fallback prompt。
 - 20-step One-Step-Off-Policy 的长尾切换判据已触发；后续推荐使用 bounded fully-async：一个 prompt 的 4 条 GRPO 轨迹作为不可拆分 group。48K 配置的 queued-token 上限至少容纳一个最坏情况训练 batch（默认 `786,432` tokens），group 数上限继续控制 staleness，满载时背压而不是丢弃旧样本。
 - bounded fully-async 已支持 Fastest-K 过量采样：默认物理生成 6 条候选、最先完成的 4 条组成完整 GRPO group，剩余候选取消；可用 `OVERSAMPLE_CANDIDATES=4` 恢复无过量采样的 baseline。该能力已验证吞吐收益，但仍需多步质量 A/B 后才能作为正式训练默认策略。
-- Fastest-K 的逐请求取消已改为 vLLM 0.18 的公开 external-request API；V4 门禁实测 8/8 个落后候选完成物理取消，且不清空 prefix cache。当前实验已停止，两台 `llin` 容器保持空闲。
+- Fastest-K 的逐请求取消已改为 vLLM 0.18 的公开 external-request API；V4 门禁实测 8/8 个落后候选完成物理取消，且不清空 prefix cache。Fastest-K 专项实验已经停止；当前运行的是不启用过量采样的正式 `4→4`、50-step GRPO。
 - 所有新增镜像、容器、工作目录和实验名均以 `llin` 开头，不复用或修改其他人的环境。
 
 当前服务器部署：
@@ -26,7 +26,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 | 容器 | `llin-verl-trainer-m05-20260730` | `llin-verl-rollout-m06-20260730` |
 | 镜像 | `llin-verl-a3:20260730` | `llin-verl-a3:20260730` |
 | 容器权限 | 特权模式（仅重建上述 `llin` 容器） | 特权模式（仅重建上述 `llin` 容器） |
-| 当前实验 NPU | 0（实验已停止；容器空闲） | 0（实验已停止；容器空闲） |
+| 当前实验 NPU | 16（正式 `-03` 训练运行中） | 16（正式 `-03` rollout 运行中） |
 
 ## 数据结论
 
@@ -51,6 +51,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [`docs/fastest_k_efficiency_20step_20260731.html`](docs/fastest_k_efficiency_20step_20260731.html)：五组拓扑/过量采样矩阵、8-group 预热的 20-step fully-async 时序、奖励泄漏复核和下一步效率实验的自包含技术报告。
 - [`docs/fastest_k_abort_debug_20260801.html`](docs/fastest_k_abort_debug_20260801.html)：严格奖励在线门禁、Fastest-K V2–V4 假取消故障链、external/internal request ID 根因、最终 8/8 物理取消和显存释放的完整技术复盘。
 - [`docs/frozen_model_baseline_20260803.md`](docs/frozen_model_baseline_20260803.md)：完整 PI Agent、48K 上下文和 200 条正式任务的冻结模型基线，以及四次启动的故障与修复复盘。
+- [`docs/formal_pi_failure_reproduction_20260803.md`](docs/formal_pi_failure_reproduction_20260803.md)：冻结基线 `-01～-04` 与正式 50-step `-01～-03` 的逐次配置、原始报错、根因、修复、验证和复现排障手册。
 - `llin_verl/pi_sqlite_tool.py`：只读 SQLite 轨迹工具。
 - `llin_verl/pi_workspace_tools.py`、`llin_verl/pi_agent_loop.py`：完整 PI 四工具、轨迹级共享沙箱、事件审计和统一清理。
 - `llin_verl/pi_sqlite_cli.py`：为官方昇腾镜像补齐的受限只读 sqlite3 CLI 兼容层。
@@ -134,6 +135,12 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [veRL 昇腾模型与算法支持](https://github.com/verl-project/verl/blob/main/docs/ascend_tutorial/model_support/model_and_algorithm_support.md)
 
 ## 版本记录
+
+### v0.22.0 — 2026-08-03
+
+- 新增正式 PI 故障复盘与复现文档，按七次关键运行逐项记录环境、数据、配置、决定性错误、根因、修复、验证证据和安全复现条件。
+- 明确区分冻结 `val_only` 误建优化器与正式训练 FP32 master shard 二次锁页卸载这两类 207001 OOM，并补充双机 Parquet 可见性、可选 Fastest-K 配置、冗余首次同步及全量 barrier 长尾的诊断方法。
+- 将 Apex/ModelOpt/Triton/SciPy/KV connector、`mstx.range_end` 等非致命信息与真正致命异常分表记录；正式 `-03` 截至证据快照已完成 `4/50`，文档明确保留“运行中”边界，不提前宣称整轮成功。
 
 ### v0.21.0 — 2026-08-03
 
