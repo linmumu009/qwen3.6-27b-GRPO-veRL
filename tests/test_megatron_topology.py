@@ -379,12 +379,25 @@ def test_fastest_k_oversampling_patch_is_idempotent_and_preserves_group_size(tmp
     assert "LLIN_FASTEST_K_OVERSAMPLE_BATCH" in rollouter_text
     assert "full_batch[:1].repeat(" in rollouter_text
     assert "fastest_k != expected_group_size" in rollouter_text
+    assert "self.config.async_training.get" not in rollouter_text
 
     agent_text = targets["agent"][0].read_text(encoding="utf-8")
     assert "LLIN_FASTEST_K_QUORUM" in agent_text
     assert "return_when=asyncio.FIRST_COMPLETED" in agent_text
     assert "reset_prefix_cache=False" in agent_text
     assert "selected_non_tensor_batch" in agent_text
+    assert 'self.config.get("async_training", {}).get' in agent_text
+
+    # Upgrade containers that already carry the older marker-bearing patch.
+    legacy_agent = targets["agent"][0]
+    legacy_text = agent_text.replace(
+        'self.config.get("async_training", {}).get',
+        "self.config.async_training.get",
+    )
+    legacy_agent.write_text(legacy_text, encoding="utf-8")
+    assert module.patch_agent_loop(legacy_agent) == "upgraded"
+    assert "self.config.async_training.get" not in legacy_agent.read_text(encoding="utf-8")
+    assert module.patch_agent_loop(legacy_agent) == "already-patched"
 
     tool_text = targets["tool"][0].read_text(encoding="utf-8")
     assert 'kwargs.get("__llin_request_id")' in tool_text

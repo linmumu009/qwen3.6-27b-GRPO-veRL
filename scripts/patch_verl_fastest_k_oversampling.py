@@ -26,9 +26,21 @@ def _replace_once(text: str, old: str, new: str, path: Path) -> str:
     return text.replace(old, new, 1)
 
 
+def _upgrade_optional_async_config(text: str) -> tuple[str, bool]:
+    """Let the inactive Fastest-K patch coexist with standard PPO configs."""
+    old = 'self.config.async_training.get('
+    new = 'self.config.get("async_training", {}).get('
+    upgraded = old in text
+    return text.replace(old, new), upgraded
+
+
 def patch_rollouter(path: Path) -> str:
     text = path.read_text(encoding="utf-8")
     if ROLLOUTER_MARKER in text:
+        text, upgraded = _upgrade_optional_async_config(text)
+        if upgraded:
+            path.write_text(text, encoding="utf-8")
+            return "upgraded"
         return "already-patched"
 
     old = """\
@@ -42,8 +54,9 @@ def patch_rollouter(path: Path) -> str:
             # LLIN_FASTEST_K_OVERSAMPLE_BATCH: rollout.n remains the atomic
             # GRPO group size consumed by the trainer. Only the physical
             # generation batch is expanded; the worker returns fastest_k.
-            fastest_k = int(self.config.async_training.get("fastest_k", 0))
-            oversample_candidates = int(self.config.async_training.get("oversample_candidates", 0))
+            async_training = self.config.get("async_training", {})
+            fastest_k = int(async_training.get("fastest_k", 0))
+            oversample_candidates = int(async_training.get("oversample_candidates", 0))
             if oversample_candidates > 0:
                 expected_group_size = int(self.config.actor_rollout_ref.rollout.n)
                 if fastest_k != expected_group_size:
@@ -183,6 +196,10 @@ def patch_llm_client(path: Path) -> str:
 def patch_agent_loop(path: Path) -> str:
     text = path.read_text(encoding="utf-8")
     if AGENT_MARKER in text:
+        text, upgraded = _upgrade_optional_async_config(text)
+        if upgraded:
+            path.write_text(text, encoding="utf-8")
+            return "upgraded"
         return "already-patched"
 
     text = _replace_once(text, "import random\n", "import random\nimport time\n", path)
@@ -226,7 +243,7 @@ def patch_agent_loop(path: Path) -> str:
 
         # LLIN_FASTEST_K_QUORUM: return as soon as fastest_k successful
         # trajectories finish, then physically abort and cancel stragglers.
-        fastest_k = int(self.config.async_training.get("fastest_k", 0))
+        fastest_k = int(self.config.get("async_training", {}).get("fastest_k", 0))
         selected_indices = list(range(len(tasks)))
         if fastest_k > 0 and len(tasks) > fastest_k:
             started_at = time.monotonic()

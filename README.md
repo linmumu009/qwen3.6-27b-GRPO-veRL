@@ -129,6 +129,11 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 版本记录
 
+### v0.16.0 — 2026-08-03
+
+- 冻结基线第二次启动已成功越过 forward-only、模型装载、TP8×DP2 vLLM 与完整四工具初始化，但在 0/200 处发现 Fastest-K 补丁假定所有运行都存在 `async_training` 配置；失败证据保留在 `llin-pi-formal-frozen-baseline-20260803-02`。
+- 将 Fastest-K 设为真正可选能力：标准 One-Step/val-only 没有 `async_training` 时自动视为关闭；同时支持对容器内已带旧 marker 的补丁做前向幂等升级，避免只能重建镜像才能修复。
+
 ### v0.15.0 — 2026-08-03
 
 - 冻结基线首次启动在 step 0 暴露 veRL `val_only` 仍构建完整 Adam 并申请锁页主机内存的问题，尚未生成任何评测轨迹；失败证据保留在 `llin-pi-formal-frozen-baseline-20260803-01`。
