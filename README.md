@@ -58,6 +58,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [`docs/boss_reward_shadow_validation_20260804.md`](docs/boss_reward_shadow_validation_20260804.md)：老板 KB/DWH 评测逻辑复用边界、1000 条 task-id 精确影子回放、奖励防投机设计和正式接入门槛。
 - [`docs/dwh_kb_reward_divergence_examples_20260804.html`](docs/dwh_kb_reward_divergence_examples_20260804.html)：从老板 v15 原始任务和完整 PI 轨迹中各选一个 DWH/KB 高分差案例，逐项对照老板奖励、本项目影子奖励、原始证据、误判来源和修正建议。
 - [`docs/v15_dwh_full277_reward_alignment_20260804.html`](docs/v15_dwh_full277_reward_alignment_20260804.html)：277 条老板 v15 DWH 的全量使用、237/20/20 防泄漏分割、语义预警、老板主奖励与严格证据护栏审计。
+- [`docs/v15_dwh_frozen_baseline_20260804.md`](docs/v15_dwh_frozen_baseline_20260804.md)：固定 val20 冻结模型指标、`None` 聚合故障、安全硬归零观测补强、主动中止的 step0 运行和最终 5-step 门禁。
 - `llin_verl/pi_sqlite_tool.py`：只读 SQLite 轨迹工具。
 - `llin_verl/pi_workspace_tools.py`、`llin_verl/pi_agent_loop.py`：完整 PI 四工具、轨迹级共享沙箱、事件审计和统一清理。
 - `llin_verl/pi_sqlite_cli.py`：为官方昇腾镜像补齐的受限只读 sqlite3 CLI 兼容层。
@@ -68,6 +69,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/prepare_pi_formal_dataset.py`：只保留旧 V2 历史复现，默认阻断，必须显式传 `--allow-legacy-v2`。
 - `scripts/prepare_boss_aligned_dataset.py`、`scripts/export_boss_task_manifest.py`、`scripts/check_boss_alignment_contract.py`：按真实 task_id 连接老板轨迹与 task、全量/显式 pilot 分流、review queue、GRPO/SFT 隔离及正式启动硬门禁。
 - `scripts/select_v15_dwh_batch.py`、`scripts/check_boss_reward_dataset.py`：按老板 v15 原始任务契约审核 277 条 DWH、分层切分并防止重复 prompt 跨 split 泄漏，随后在真实 Parquet 上验证奖励字段与任务族。
+- `scripts/analyze_boss_validation.py`：不重跑 rollout，直接汇总老板主奖励 validation JSONL，并检查空值、混合奖励公式、分类型正确率和安全命令重放。
 - `scripts/analyze_formal_grpo_50step.py`、`scripts/audit_formal_instruction_gold_alignment.py`：完整 50-step 训练信号、奖励组件、GRPO group 方差、工具行为及 instruction/gold 语义复核触发器。
 - `scripts/start_ray_m05.sh`、`scripts/start_ray_m06.sh`：两机 Ray 启动程序。
 - `scripts/check_ray_roles.py`：跨机角色落点验证。
@@ -151,6 +153,14 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [veRL 昇腾模型与算法支持](https://github.com/verl-project/verl/blob/main/docs/ascend_tutorial/model_support/model_and_algorithm_support.md)
 
 ## 版本记录
+
+### v0.28.0 — 2026-08-04
+
+- 复用已完整落盘的固定 val20 轨迹建立冻结基线：混合分数/老板奖励/严格证据均值为 `0.243075 / 0.452250 / 0.132500`，老板数字答案正确 `2/20`、严格最终答案正确 `1/20`、SQL 证据与 strict acc 均为 `0/20`；reward 公式不匹配和 verifier 异常均为 0。
+- 修复 3 条无 `must_use_fields` 任务把 `boss_fields_used=None` 交给 veRL reducer 后触发的 NumPy 求平均错误；内部 process 权重不变，对外指标统一为可聚合数值。
+- 新增在线安全原因数值指标和离线验证汇总器；网络、破坏性、宿主路径、Python 网络和根目录扫描分别计数，避免 `safe=0` 只有结果、没有原因。
+- `llin-v15-dwh-bossreward-5step-20260804-02` 在 `global_step=0` 主动终止以补安全观测，没有更新权重；清洁重启后的最终门禁运行 `-03` 已通过老板 full277 契约并开始初始化。
+- 项目完整回归门禁为 `107 passed`；奖励类型、安全原因、验证离线重放和历史训练分析均保持兼容。
 
 ### v0.27.0 — 2026-08-04
 

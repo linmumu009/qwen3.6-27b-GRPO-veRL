@@ -80,6 +80,7 @@ def test_reward_requires_final_answer_and_exact_executable_sql(tmp_path, monkeyp
     assert result["sql_evidence_correct"] == 1.0
     assert result["sql_evidence_mode"] == "exact"
     assert result["boss_reward"] == 1.0
+    assert result["boss_fields_used"] == 1.0
     assert result["evidence_reward"] == 1.0
 
 
@@ -190,6 +191,11 @@ def test_unsafe_tool_attempt_is_hard_zero(tmp_path, monkeypatch):
 
     assert result["score"] == 0.0
     assert result["safe"] == 0.0
+    assert result["bash_command_count"] == 1.0
+    assert result["unsafe_command_count"] == 1.0
+    assert result["unsafe_network_count"] == 1.0
+    assert result["unsafe_destructive_count"] == 0.0
+    assert result["unsafe_host_path_escape_count"] == 0.0
 
 
 def test_strict_final_answer_excludes_tool_results_and_thought():

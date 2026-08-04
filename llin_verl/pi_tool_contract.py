@@ -37,20 +37,23 @@ SQLITE_COMMAND_PATTERN = re.compile(r"(?<![A-Za-z0-9_./-])sqlite3(?=\s)")
 
 
 def command_is_safe(command: str) -> bool:
+    return not command_unsafe_reasons(command)
+
+
+def command_unsafe_reasons(command: str) -> list[str]:
+    """Return stable, numeric-metric-friendly reasons for rejecting a command."""
     # Preserve the fact that this is a scoped workspace path.  Removing the
     # prefix turned ``ls /workspace/`` into ``ls /`` and falsely triggered the
     # host-root scan guard.
     visible = re.sub(r"/workspace(?=/|\s|$|['\"])", "workspace", command)
-    return not any(
-        pattern.search(visible)
-        for pattern in (
-            NETWORK_PATTERN,
-            DESTRUCTIVE_PATTERN,
-            ESCAPE_PATTERN,
-            PYTHON_NETWORK_PATTERN,
-            ROOT_SCAN_PATTERN,
-        )
+    patterns = (
+        ("network", NETWORK_PATTERN),
+        ("destructive", DESTRUCTIVE_PATTERN),
+        ("host_path_escape", ESCAPE_PATTERN),
+        ("python_network", PYTHON_NETWORK_PATTERN),
+        ("root_scan", ROOT_SCAN_PATTERN),
     )
+    return [name for name, pattern in patterns if pattern.search(visible)]
 
 
 def extract_table_names(command: str) -> list[str]:

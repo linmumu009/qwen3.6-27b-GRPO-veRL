@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from collections import Counter
 import json
 import math
 import os
@@ -11,7 +12,7 @@ from pathlib import Path
 from typing import Any, Iterable
 from urllib.parse import quote
 
-from llin_verl.pi_tool_contract import command_is_safe, extract_table_names
+from llin_verl.pi_tool_contract import command_unsafe_reasons, extract_table_names
 
 
 _NUMBER_RE = re.compile(r"(?<![\w.])[-+]?(?:\d+(?:,\d{3})*(?:\.\d+)?|\.\d+)(?:[eE][-+]?\d+)?")
@@ -525,7 +526,10 @@ def compute_score(
     selects = extract_selects(commands)
     allowed_tools = {"bash", "read", "write", "edit"}
     valid_protocol = bool(events) and all(event.get("name") in allowed_tools for event in events)
-    safe = all(command_is_safe(command) for command in commands)
+    command_reasons = [command_unsafe_reasons(command) for command in commands]
+    unsafe_reason_counts = Counter(reason for reasons in command_reasons for reason in reasons)
+    unsafe_command_count = sum(bool(reasons) for reasons in command_reasons)
+    safe = unsafe_command_count == 0
     successful_bash = any(event.get("name") == "bash" and event.get("ok") for event in events)
 
     required_tables = {str(value).casefold() for value in ground_truth.get("required_tables", [])}
@@ -620,7 +624,10 @@ def compute_score(
         "boss_efficiency_score": boss["efficiency_score"],
         "boss_answer_correct": boss["answer_correct"],
         "boss_numbers_match": boss["numbers_match"],
-        "boss_fields_used": boss["fields_used"],
+        # veRL averages every numeric reward field during validation.  The
+        # upstream process score omits the field criterion when a task has no
+        # required fields, but the emitted metric must never be ``None``.
+        "boss_fields_used": 1.0 if boss["fields_used"] is None else boss["fields_used"],
         "boss_task_fit": boss["task_fit"],
         "evidence_reward": round(evidence_reward, 6),
         "final_answer_correct": float(answer_ok),
@@ -629,6 +636,13 @@ def compute_score(
         "required_table_used": float(required_table_used),
         "successful_bash": float(successful_bash),
         "safe": float(safe),
+        "bash_command_count": float(len(commands)),
+        "unsafe_command_count": float(unsafe_command_count),
+        "unsafe_network_count": float(unsafe_reason_counts["network"]),
+        "unsafe_destructive_count": float(unsafe_reason_counts["destructive"]),
+        "unsafe_host_path_escape_count": float(unsafe_reason_counts["host_path_escape"]),
+        "unsafe_python_network_count": float(unsafe_reason_counts["python_network"]),
+        "unsafe_root_scan_count": float(unsafe_reason_counts["root_scan"]),
         "valid_tool_protocol": float(valid_protocol),
         "has_final_answer": float(has_final),
         "gold_sql_verified": float(gold_sql_verified),
