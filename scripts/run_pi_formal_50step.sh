@@ -9,9 +9,10 @@ RUN_NAME="${RUN_NAME:-llin-pi-formal-grpo-4of4-50step-$(date +%Y%m%d-%H%M%S)}"
 OUTPUT_DIR="${OUTPUT_DIR:-${PROJECT_ROOT}/runs/${RUN_NAME}}"
 
 TOTAL_TRAINING_STEPS="${TOTAL_TRAINING_STEPS:-50}"
-GROUPS_PER_STEP="${GROUPS_PER_STEP:-4}"
+GROUPS_PER_STEP="${GROUPS_PER_STEP:-2}"
 EVAL_FREQ="${EVAL_FREQ:-10}"
-SAVE_FREQ="${SAVE_FREQ:-10}"
+# Save exactly once, after the final optimizer update.
+SAVE_FREQ="${TOTAL_TRAINING_STEPS}"
 LEARNING_RATE="${LEARNING_RATE:-1e-7}"
 PREWARM_GROUPS="${PREWARM_GROUPS:-8}"
 STALENESS_THRESHOLD="${STALENESS_THRESHOLD:-1.0}"
@@ -30,12 +31,12 @@ for path in "${TRAIN_FILE}" "${VAL_FILE}"; do
     exit 2
   fi
 done
-if (( TOTAL_TRAINING_STEPS <= 0 || GROUPS_PER_STEP != 4 )); then
-  printf 'Formal run requires positive steps and exactly 4 groups per update\n' >&2
+if (( TOTAL_TRAINING_STEPS <= 0 || GROUPS_PER_STEP != 2 )); then
+  printf 'Formal run requires positive steps and exactly 2 groups per update\n' >&2
   exit 2
 fi
-if (( EVAL_FREQ <= 0 || SAVE_FREQ <= 0 )); then
-  printf 'Evaluation and checkpoint frequencies must be positive\n' >&2
+if (( EVAL_FREQ <= 0 )); then
+  printf 'Evaluation frequency must be positive\n' >&2
   exit 2
 fi
 if (( PREWARM_GROUPS > MAX_QUEUE_GROUPS )); then
@@ -49,9 +50,10 @@ python3 "${PROJECT_ROOT}/scripts/check_formal_data_on_ray.py" \
   --val-file "${VAL_FILE}" \
   --ray-address "${RAY_ADDRESS:-192.168.202.5:26379}"
 
-# Exact 4->4 sampling: no fastest-K surplus candidates are created. The test
-# split remains sealed; all reviewed train tasks and the source-isolated
-# validation split enter this run. Validation is greedy n=1 every EVAL_FREQ.
+# Each update consumes 2 prompt groups with 4 responses per group. Exact 4->4
+# sampling creates no fastest-K surplus candidates. The test split remains
+# sealed; all reviewed train tasks and the source-isolated validation split
+# enter this run. Validation is greedy n=1 every EVAL_FREQ.
 RUN_NAME="${RUN_NAME}" \
 OUTPUT_DIR="${OUTPUT_DIR}" \
 DATA_FILE="${TRAIN_FILE}" \

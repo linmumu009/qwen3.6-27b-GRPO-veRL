@@ -162,6 +162,11 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 版本记录
 
+### v0.31.0 — 2026-08-04
+
+- 正式长文本 GRPO 默认改为每次参数更新消费 `2 groups × 4 responses = 8 trajectories`，训练总步数保持 `50`，其余 rollout、48K 上下文、25 轮工具反馈、学习率、验证和拓扑配置不变。
+- checkpoint 频率绑定到总训练步数，50-step 正式运行只在 step 50 保存一次最终 `model,extra` Megatron distributed checkpoint，不再写入中间模型；最终完整性验证和 fail-closed 门禁保持启用。
+
 ### v0.30.0 — 2026-08-04
 
 - 完成 v15 DWH 48K 五步训练的单步耗时复核：预热库存耗尽后的 step 3–5 平均 `23.79min`，其中等待 4 个完整 group 平均 `20.18min`、Actor 更新 `3.48min`，确认主要瓶颈是 rollout 长期供给而非训练计算。
