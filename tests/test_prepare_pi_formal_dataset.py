@@ -86,3 +86,19 @@ def test_training_record_uses_full_pi_contract():
     assert set(record["extra_info"]["tools_kwargs"]) == {"bash", "read", "write", "edit"}
     assert record["reward_model"]["ground_truth"]["verification_sql"].startswith("SELECT")
     assert record["reward_model"]["ground_truth"]["expected_value_json"] == "20.5"
+
+
+def test_source_system_prompt_is_preserved_and_fallback_names_workspace(tmp_path):
+    make_environment(tmp_path, "v1")
+    source = manifest_row("v1", "source", "任务")
+    source["system_prompt"] = "老板原始 system"
+    fallback = manifest_row("v1", "fallback", "另一任务")
+
+    values, rejected = validate_candidates([source, fallback], tmp_path, Path("manifest.jsonl"))
+
+    assert not rejected
+    assert values[0]["system_prompt"] == "老板原始 system"
+    assert values[0]["system_prompt_source"] == "source"
+    assert values[1]["system_prompt"] == SYSTEM_PROMPT
+    assert values[1]["system_prompt_source"] == "fallback"
+    assert "/workspace/logistics.sqlite" in SYSTEM_PROMPT

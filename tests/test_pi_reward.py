@@ -7,6 +7,7 @@ from llin_verl.pi_reward import (
     extract_final_assistant_answer,
     extract_selects,
 )
+from llin_verl.pi_tool_contract import command_is_safe
 
 
 def make_database(root: Path) -> None:
@@ -127,3 +128,11 @@ def test_strict_final_answer_is_empty_when_trajectory_ends_with_tool_call():
 user
 <tool_response>{"value": 621.62}</tool_response>"""
     assert extract_final_assistant_answer(response) == ""
+
+
+def test_workspace_guard_blocks_root_enumeration_but_allows_workspace_queries():
+    assert not command_is_safe("find / -name '*.sqlite'")
+    assert not command_is_safe("ls -la /")
+    assert command_is_safe(
+        'sqlite3 /workspace/logistics.sqlite "SELECT COUNT(*) FROM fact_quality_incident"'
+    )

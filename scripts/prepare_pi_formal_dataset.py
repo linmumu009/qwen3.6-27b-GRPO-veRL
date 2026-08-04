@@ -14,8 +14,11 @@ from llin_verl.pi_reward import execute_readonly_sql
 
 
 SYSTEM_PROMPT = (
-    "你是一个物流数据分析师。你可以使用 Bash 工具执行 sqlite3 命令查询数据库。"
-    "分析数据时，先思考需要什么数据，再写 SQL 查询，最后根据查询结果给出分析结论。"
+    "你是一个物流数据分析师。当前任务唯一允许访问的工作区是 /workspace，"
+    "数据库固定为 /workspace/logistics.sqlite；禁止扫描根目录或其他环境。"
+    "你可以使用 Bash 工具执行 sqlite3 只读查询，也可在 /workspace 内使用 read/write/edit。"
+    "分析数据时，先检查当前数据库结构，再执行必要且尽量少的 SQL，"
+    "最后在可见回答中明确写出问题要求的数值、类别及结论。"
 )
 TOOL_NAMES = ["bash", "read", "write", "edit"]
 
@@ -120,6 +123,8 @@ def validate_candidates(
                 "rel_tol": 1e-5,
             },
             "source_manifest": source_manifest.name,
+            "system_prompt": str(row.get("system_prompt") or "").strip() or SYSTEM_PROMPT,
+            "system_prompt_source": "source" if str(row.get("system_prompt") or "").strip() else "fallback",
         }
         candidate["verifier_id"] = f"{candidate['environment_id']}:{task_id}"
         valid.append(candidate)
@@ -174,7 +179,7 @@ def build_training_record(verifier: dict[str, Any], split: str, index: int) -> d
         "data_source": "llin_pi_dwh_v2",
         "agent_name": "pi_agent",
         "prompt": [
-            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "system", "content": verifier.get("system_prompt") or SYSTEM_PROMPT},
             {"role": "user", "content": verifier["instruction"]},
         ],
         "ability": "full_pi_dwh",

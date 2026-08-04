@@ -11,10 +11,10 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - actor 模型参数常驻 NPU，不做参数卸载；Adam 优化器与梯度卸载到 5 号机内存，并开启全量激活重计算。LoRA 已关闭（`lora_rank=0`）。
 - rollout 开启 Continuous Token、prefix caching 和两路 vLLM cache 计数；checkpoint 每 20 步保存一次，仅保存 `model,extra` 并只保留 1 份。
 - 长上下文配置将最大上下文设为 `49,152` tokens（默认初始 prompt `4,096` + 多轮 response `45,056`）；正式 PI 配置将允许最多 25 次工具反馈和随后 1 次最终回答，单轮最多 4 个并行工具调用，单次工具返回放宽到 `32,768` 字符；vLLM 保持 `8,192`-token chunked prefill 和每副本最多 16 个活跃序列。
-- 数据转换优先保留源轨迹的 system prompt；只有源记录没有 system message 时才使用项目的物流分析 fallback prompt。
+- 数据转换现已显式保留 manifest 中的 source system prompt，并记录 `source/fallback` 血缘；正式 V2 旧数据实际缺少 source system、使用了 fallback，不能再表述为与老板 prompt 完全一致。
 - 20-step One-Step-Off-Policy 的长尾切换判据已触发；后续推荐使用 bounded fully-async：一个 prompt 的 4 条 GRPO 轨迹作为不可拆分 group。48K 配置的 queued-token 上限至少容纳一个最坏情况训练 batch（默认 `786,432` tokens），group 数上限继续控制 staleness，满载时背压而不是丢弃旧样本。
 - bounded fully-async 已支持 Fastest-K 过量采样：默认物理生成 6 条候选、最先完成的 4 条组成完整 GRPO group，剩余候选取消；可用 `OVERSAMPLE_CANDIDATES=4` 恢复无过量采样的 baseline。该能力已验证吞吐收益，但仍需多步质量 A/B 后才能作为正式训练默认策略。
-- Fastest-K 的逐请求取消已改为 vLLM 0.18 的公开 external-request API；V4 门禁实测 8/8 个落后候选完成物理取消，且不清空 prefix cache。Fastest-K 专项实验已经停止；当前运行的是不启用过量采样的正式 `4→4`、50-step GRPO。
+- Fastest-K 的逐请求取消已改为 vLLM 0.18 的公开 external-request API；V4 门禁实测 8/8 个落后候选完成物理取消，且不清空 prefix cache。正式 `4→4`、50-step GRPO 已结束；当前暂停训练并优先重建 V3 数据，不启用过量采样。
 - 所有新增镜像、容器、工作目录和实验名均以 `llin` 开头，不复用或修改其他人的环境。
 
 当前服务器部署：
@@ -26,7 +26,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 | 容器 | `llin-verl-trainer-m05-20260730` | `llin-verl-rollout-m06-20260730` |
 | 镜像 | `llin-verl-a3:20260730` | `llin-verl-a3:20260730` |
 | 容器权限 | 特权模式（仅重建上述 `llin` 容器） | 特权模式（仅重建上述 `llin` 容器） |
-| 当前实验 NPU | 16（正式 `-03` 训练运行中） | 16（正式 `-03` rollout 运行中） |
+| 当前实验 NPU | 0（正式 `-03` 已结束并释放） | 0（正式 `-03` 已结束并释放） |
 
 ## 数据结论
 
@@ -34,9 +34,9 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 早期 smoke 采用只读 `query_sqlite`；正式数据阶段已切换到以下完整 PI 契约：
 
-1. 完整保留老板 PI 的 system prompt，并提供同名、同 schema 的 `bash/read/write/edit` 四工具。
+1. 提供同名、同 schema 的 `bash/read/write/edit` 四工具；source system prompt 只有在数据 manifest 明确携带时才原样保留，旧 formal V2 不满足该条件。
 2. 每条轨迹从对应 `sft/<version>` 环境复制独立可写工作区；四个工具在整条轨迹中共享状态，结束后统一清理。
-3. 昇腾 veRL 镜像缺少 `sqlite3` CLI，项目提供只读兼容代理，保持模型仍按原 system prompt 在 Bash 中调用 `sqlite3`。
+3. 昇腾 veRL 镜像缺少 `sqlite3` CLI，项目提供只读兼容代理，使模型可按当前数据中实际携带的 system prompt 在 Bash 中调用 `sqlite3`。
 4. 奖励 V2 以最终答案正确性为主，同时重新执行 agent SQL，与隐藏的 gold `verification_sql` 结果进行独立比对；只提到表名或在工具输出里出现目标值不能获得满分。
 5. 首批正式数据为 200 条可执行验证的 DWH numeric/table 任务：v15 train 160、v20 val 20、v21 test 20；task ID、instruction hash 和 environment 均跨 split 隔离。
 
@@ -52,6 +52,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [`docs/fastest_k_abort_debug_20260801.html`](docs/fastest_k_abort_debug_20260801.html)：严格奖励在线门禁、Fastest-K V2–V4 假取消故障链、external/internal request ID 根因、最终 8/8 物理取消和显存释放的完整技术复盘。
 - [`docs/frozen_model_baseline_20260803.md`](docs/frozen_model_baseline_20260803.md)：完整 PI Agent、48K 上下文和 200 条正式任务的冻结模型基线，以及四次启动的故障与修复复盘。
 - [`docs/formal_pi_failure_reproduction_20260803.md`](docs/formal_pi_failure_reproduction_20260803.md)：冻结基线 `-01～-04` 与正式 50-step `-01～-03` 的逐次配置、原始报错、根因、修复、验证和复现排障手册。
+- [`docs/formal_grpo_50step_quality_diagnosis_20260804.md`](docs/formal_grpo_50step_quality_diagnosis_20260804.md)：正式 50-step 完成结果、800 条奖励分解、GRPO 组内方差、instruction/gold 对齐、system prompt 与沙箱隔离问题及 V3 训练建议。
 - `llin_verl/pi_sqlite_tool.py`：只读 SQLite 轨迹工具。
 - `llin_verl/pi_workspace_tools.py`、`llin_verl/pi_agent_loop.py`：完整 PI 四工具、轨迹级共享沙箱、事件审计和统一清理。
 - `llin_verl/pi_sqlite_cli.py`：为官方昇腾镜像补齐的受限只读 sqlite3 CLI 兼容层。
@@ -59,6 +60,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `runtime/sitecustomize.py`：将训练池固定到 5 号机、rollout 池固定到 6 号机。
 - `scripts/prepare_pi_dataset.py`：验证轨迹到 veRL Parquet 的转换程序。
 - `scripts/prepare_pi_formal_dataset.py`、`scripts/audit_pi_formal_dataset.py`：200 条正式 PI 数据构建、gold SQL 执行、split 隔离和独立质量门禁。
+- `scripts/analyze_formal_grpo_50step.py`、`scripts/audit_formal_instruction_gold_alignment.py`：完整 50-step 训练信号、奖励组件、GRPO group 方差、工具行为及 instruction/gold 语义复核触发器。
 - `scripts/start_ray_m05.sh`、`scripts/start_ray_m06.sh`：两机 Ray 启动程序。
 - `scripts/check_ray_roles.py`：跨机角色落点验证。
 - `scripts/check_hccl.py`：两机基础 HCCL all-reduce 验证。
@@ -126,6 +128,9 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `llin-pi-formal-frozen-baseline-20260803-04` 已在完整 PI 四工具、48K 上下文和正式 200-task 合集上以退出码 `0` 完成冻结模型基线；总时长 `2h 29m 38s`，结果为 `200/200`，verifier 异常为 0。
 - 冻结基线平均 reward 为 `0.07175`；严格最终答案正确 `4/200`、SQL 证据正确 `6/200`、使用必需表 `150/200`、产生最终答案 `67/200`，工具协议和 bash 成功率均为 `200/200`。该结果作为正式 GRPO 前的未训练能力基线，不表示训练收敛。
 - 冻结基线四次启动依次修复了 val-only 误建完整 Adam、Fastest-K 对标准配置强依赖 `async_training`、以及同源基础模型评测仍重复首次全量权重广播的问题；最终运行同时暴露 200 条单批 barrier 和 TP8×DP2 后段负载不均的评测长尾。
+- `llin-pi-formal-grpo-4of4-50step-20260803-03` 已完成 50/50 全参数更新并以退出码 0 结束；总时长 `12h 21m 44s`，50 个 fully-async step 的平均队列等待/actor 更新/完整 step 为 `486.55/159.41/655.08s`，等待占比 `74.27%`。
+- 本轮 800 条训练 rollout 的平均 reward 为 `0.068`，严格正确 `4/800`；最后十步 reward 和安全/收尾率有弱改善，但 step 10/20/30/40/50 的 20-task 贪心 validation 在最终答案、SQL 证据和 strict acc 上始终为 0，因此 checkpoint 只记作工程成功，不记作质量收敛。
+- 质量审计确认正式 V2 的主要阻塞是 instruction/gold 语义错位、source system prompt 缺失和沙箱根目录枚举，而不是显存或 HCCL；在 V3 数据人工复核完成前暂停 V2 续训和 Fastest-K 正式化。
 
 ## 参考实现
 
@@ -135,6 +140,15 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [veRL 昇腾模型与算法支持](https://github.com/verl-project/verl/blob/main/docs/ascend_tutorial/model_support/model_and_algorithm_support.md)
 
 ## 版本记录
+
+### v0.23.0 — 2026-08-04
+
+- 正式 `llin-pi-formal-grpo-4of4-50step-20260803-03` 已完成 `50/50`、退出码 0；800 条 rollout 完整、奖励重放 0 差异、verifier 0 异常，最终 `global_step_50` checkpoint 约 48 GiB，两机 NPU 已释放。
+- 完成训练质量诊断：严格正确仅 `4/800`，最终答对 `24/800`、SQL 证据正确 `19/800`；200 个 GRPO group 中 43 个零奖励方差，同一 prompt 平均仅 1.25 次 group exposure。五次 validation strict/final/SQL 均为 0，reward 的小幅上升来自安全和最终回答率。
+- 审计 200 条正式 V2 数据，191 条命中至少一个语义复核触发器：161 条“最新/最近”没有时间 SQL、71 条 `LIMIT` 无 `ORDER BY`、99 条广泛分析问题用唯一 hidden target 打分；暂停 V2 续训，下一步重建人工确认的 V3。
+- 修复 fully-async validation 轨迹覆盖：trainer 将真实 policy step 传给 rollouter，后者验证期间临时使用并恢复数据计数；两台 Ray 启动前幂等应用，后续应保留 `10/20/30/40/50.jsonl`。
+- 禁止 `find/ls/du/tree /` 枚举容器根目录；fallback prompt 明确唯一 `/workspace/logistics.sqlite`。正式 builder 现保留 source system 并记录血缘，不再把 fallback 冒充为老板原始 prompt。
+- 新增可复现的 50-step 分析器、instruction/gold 对齐审计及回归测试；项目门禁为 `73 passed`。当前没有直接改奖励权重，避免在错位数据上把目标变化与权重变化混在一起。
 
 ### v0.22.0 — 2026-08-03
 

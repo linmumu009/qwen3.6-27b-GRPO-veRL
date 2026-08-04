@@ -24,6 +24,10 @@ PYTHON_NETWORK_PATTERN = re.compile(
     r"(?:socket|urllib|requests|httpx|aiohttp|ftplib|smtplib)\s*[.(]",
     re.IGNORECASE,
 )
+ROOT_SCAN_PATTERN = re.compile(
+    r"(?:^|[;&|]\s*)(?:find|ls|du|tree)\s+(?:-[^\s]+\s+)*/(?:\s|$|\*)",
+    re.IGNORECASE,
+)
 TABLE_PATTERN = re.compile(
     r"\b(?:from|join)\s+[`\"\[]?([A-Za-z_][A-Za-z0-9_]*)",
     re.IGNORECASE,
@@ -36,7 +40,13 @@ def command_is_safe(command: str) -> bool:
     visible = command.replace("/workspace", "")
     return not any(
         pattern.search(visible)
-        for pattern in (NETWORK_PATTERN, DESTRUCTIVE_PATTERN, ESCAPE_PATTERN, PYTHON_NETWORK_PATTERN)
+        for pattern in (
+            NETWORK_PATTERN,
+            DESTRUCTIVE_PATTERN,
+            ESCAPE_PATTERN,
+            PYTHON_NETWORK_PATTERN,
+            ROOT_SCAN_PATTERN,
+        )
     )
 
 

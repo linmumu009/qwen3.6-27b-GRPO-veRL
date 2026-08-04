@@ -8,7 +8,7 @@
 
 - 冻结模型基线经历 `-01` 至 `-04` 四次启动，最终 `-04` 完成 `200/200`，退出码为 `0`。
 - 正式训练 `-01` 因 6 号机缺少 Parquet 在 step 0 退出；`-02` 在首批 rollout 和 actor 前反向完成后，因 CANN 锁页主机内存申请失败退出。
-- 正式训练 `-03` 应用双机数据门禁和优化器驻留修复后，已连续完成 `4/50` 个真实全参数更新；截至 `2026-08-03 13:22 UTC` 未再次出现 pinned-host OOM。它仍在运行，因此本文只把它记为“修复验证已越过原失败点”，不提前宣称 50-step 已全部成功。
+- 正式训练 `-03` 应用双机数据门禁和优化器驻留修复后完成 `50/50` 个真实全参数更新，退出码为 `0`，未再次出现 pinned-host OOM；最终 `global_step_50` checkpoint 约 `48 GiB`，训练和 rollout NPU 已释放。
 - 日志中的 Apex、ModelOpt、SciPy、Triton、KV connector 和 `mstx.range_end` 信息并不都代表作业失败。本文单独给出判别表，避免以后看到 `ERROR` 字样就误判根因。
 
 这批问题不是“旧工程流程突然失效”，而是工作负载发生了实质变化：从 4 个短 prompt、简化 SQLite 工具和小规模更新，切换为完整四工具沙箱、48K 上下文、200 条正式任务、冻结全量评测以及持续 50-step fully-async 训练。新路径首次触发了 val-only 优化器生命周期、可选 Fastest-K 配置、双机文件可见性和每步大规模 optimizer master shard 搬运等旧 smoke 没覆盖的分支。
@@ -25,7 +25,7 @@
 | 冻结基线 | `llin-pi-formal-frozen-baseline-20260803-04` | 退出码 `0` | 成功，但有全量 barrier 长尾和 DP 后段失衡 |
 | 正式训练 | `llin-pi-formal-grpo-4of4-50step-20260803-01` | 退出码 `1` | rollout 节点缺少正式 Parquet |
 | 正式训练 | `llin-pi-formal-grpo-4of4-50step-20260803-02` | 退出码 `1` | FP32 optimizer master shard 二次卸载触发 pinned-host OOM |
-| 正式训练 | `llin-pi-formal-grpo-4of4-50step-20260803-03` | 运行中 | 修复后已越过原失败点，快照为 `4/50` |
+| 正式训练 | `llin-pi-formal-grpo-4of4-50step-20260803-03` | 退出码 `0` | 50/50 成功；另发现 validation 文件名复用 rollouter 数据计数并覆盖 |
 
 ### 1.2 证据来源
 
@@ -57,7 +57,7 @@
 
 - 模型：Qwen3.6-27B，LoRA 关闭，正式训练为全参数更新。
 - 上下文：`49,152` tokens，其中初始 prompt 上限 `4,096`，多轮 response 上限 `45,056`。
-- Agent：保留老板源 system prompt，使用 `bash/read/write/edit` 四工具。
+- Agent：使用 `bash/read/write/edit` 四工具。事后审计确认正式 V2 builder 实际使用项目 fallback system prompt，并未从老板轨迹保留原始 system prompt；这属于数据契约偏差，后续版本必须显式区分 source/fallback。
 - 多轮上限：`26` 个 assistant turns、`25` 个工具反馈批次；第 25 次工具调用后仍允许生成最终答案。
 - 单轮并行工具调用上限：`4`；单次工具返回上限：`32,768` 字符。
 - Continuous Token、prefix cache、8K chunked prefill 均开启。
@@ -346,12 +346,12 @@ optimizer_offload_fraction=1
 
 ### 8.7 验证与复现提示
 
-- 正式 `-03` 已连续完成 4 个全参数更新，越过 `-02` 的首步退出点，未再次出现 207001。
+- 正式 `-03` 已完成 50 个全参数更新，越过 `-02` 的首步退出点，未再次出现 207001。
 - 最小复现条件：在同一正式负载下恢复 `actor.megatron.optimizer_offload=True`，同时保持 CPU Adam；预计在训练上下文退出时复现。该操作代价高，不建议在正式机器上主动复现。
 - 防回归：`tests/test_formal_training_contract.py` 固定检查正式入口必须覆盖为 `False`。
-- 尚待验证：50-step 全程、每 10-step validation 和 checkpoint 保存是否全部稳定，必须等 `-03` 自然结束后再更新最终结论。
+- 50-step、五次在线 validation 与最终 checkpoint 保存均执行完成；validation 指标在 driver 日志中完整，但轨迹文件因步号 bug 只保留了 `177.jsonl` 和最终覆盖后的 `200.jsonl`。
 
-## 9. 正式训练 `-03`：当前修复验证状态
+## 9. 正式训练 `-03`：最终结果与新增问题
 
 ### 9.1 相比 `-02` 的唯一关键配置差异
 
@@ -365,27 +365,23 @@ actor_rollout_ref.actor.megatron.optimizer_offload=False
 
 数据、奖励、Agent、并行拓扑、48K、多轮上限、4→4、学习率、validation 和 checkpoint 频率保持不变，因此它能够作为 optimizer engine offload 修复的直接验证。
 
-### 9.2 证据快照
+### 9.2 最终证据
 
-截至 `2026-08-03 13:22 UTC`：
+- 启动：`2026-08-03T12:20:05+00:00`；结束：`2026-08-04T00:41:49+00:00`；总时长 `12h 21m 44s`。
+- `exit_code=0`；50 个 rollout 文件、每文件 16 条，共 `800/800` 条；奖励公式重放不一致为 0，verifier 异常为 0。
+- fully-async 50 个阶段记录的平均完整 step 为 `655.08s`：队列等待 `486.55s`、actor 更新 `159.41s`，队列等待占 `74.27%`。
+- 五次 validation 均在 step `10/20/30/40/50` 完成；严格准确率、最终答案正确率和 SQL 证据正确率均为 0，reward 为 `0.08/0.07/0.085/0.0925/0.0925`。
+- 最终 checkpoint 位于 `global_step_50`，约 `48 GiB`；只保留 model/extra，没有保存 Adam；两机 NPU 回到驱动基线。
 
-```text
-global_steps: 4
-Training Progress: 4/50
-queue_wait_s=114.230161
-update_actor_s=136.040174
-step_s=258.401232
-```
+### 9.3 validation 文件覆盖 bug
 
-- 4 次实际 actor update 已完成。
-- 两个 TP8 rollout EngineCore 均存活。
-- 16 张 rollout NPU 均有活动。
-- 未出现 `allocate_host_memory`、207001 或 NPU OOM。
-- 首次 validation 在 step 10，当前尚未发生；因此 validation/checkpoint 路径仍是未验证项。
+trainer 使用 `current_param_version` 正确触发了五次验证，但远端 rollouter 的 `_dump_generations()` 读取的是自身 `global_steps`（rollout 数据计数）。该计数先到 177、后到 200；step 20–50 全部使用 `200.jsonl`，后一次覆盖前一次，导致只能从 driver 保留五个指标点，无法逐条比较五批 validation 轨迹。
 
-### 9.3 当前可下的结论
+修复方式：trainer RPC 显式传入 `current_param_version`；rollouter 在 `_validate()` 期间临时把该值暴露为 `global_steps`，结束后恢复原数据计数。补丁在两台 Ray 启动前幂等应用，下一次应生成 `10/20/30/40/50.jsonl`。
 
-可以确认 `megatron.optimizer_offload=False` 已越过 `-02` 的决定性故障点；不能确认整个 50-step、五次 validation 或末次 checkpoint 已成功。后续文档应在运行结束后补充退出码、最终步数、validation 指标和 checkpoint 完整性。
+### 9.4 当前可下的结论
+
+`megatron.optimizer_offload=False` 的工程修复已被完整 50-step 证明有效；工程流程成功不等于训练质量成功。质量侧严格 validation 仍为 0，且正式数据、system prompt、沙箱隔离和奖励密度存在独立问题，详见新的质量诊断报告。
 
 ## 10. 非致命告警与真正故障的判别
 
@@ -417,14 +413,14 @@ step_s=258.401232
 
 ### 11.2 数据和奖励本身没有直接造成已知框架异常
 
-截至当前证据：
+框架异常方面，截至最终证据：
 
-- 正式数据通过 160/20/20 隔离、gold SQL 重执行和双机 SHA 门禁。
+- 正式数据通过 160/20/20 文件隔离、gold SQL 重执行和双机 SHA 门禁；这些门禁只证明文件和 SQL 可执行，不证明 instruction 与 hidden gold 语义一致。
 - baseline 200/200 的 verifier 异常为 0。
 - 正式 `-02` 已完成 rollout、奖励和前反向，失败栈位于 optimizer context switch。
-- 正式 `-03` 已完成 4 次更新。
+- 正式 `-03` 已完成 50 次更新并正常退出。
 
-因此已发生的致命问题主要属于生命周期、配置兼容、部署和内存传输路径，而不是“奖励函数把训练算坏了”或“数据文件内容无法解析”。
+因此已发生的致命退出主要属于生命周期、配置兼容、部署和内存传输路径，而不是数据文件无法解析。训练质量不提升则与数据语义和稀疏奖励直接相关：后续审计对 200 条数据标记了 191 条需要人工复核，不能沿用“SQL 能执行即数据正确”的判断。
 
 ## 12. 以后复现和排障的固定顺序
 
@@ -490,19 +486,21 @@ step_s=258.401232
 | 二次 pinned optimizer offload | 正式入口覆盖 engine `optimizer_offload=False` |
 | test 泄漏 | 正式入口只传 train/val；test 保持封存 |
 | 巨型 checkpoint 占盘 | 只保存 `model,extra`，最多保留一份 |
+| validation 轨迹覆盖 | trainer 传真实 policy step；rollouter 临时使用并恢复自身计数；幂等测试 |
+| 根目录枚举其他沙箱 | 禁止 `find/ls/du/tree /`；fallback prompt 明确唯一 `/workspace` |
 | 把 warning 当 fatal | 本文的告警分类表和退出码/阶段判据 |
 
 ## 14. 限制与待补证据
 
-- 正式 `-03` 在本文写作时仍运行；最终退出码、step 10/20/30/40/50 validation、checkpoint 完整性和最终显存释放尚未获得。
+- 五次 validation 指标完整，但中间逐条轨迹已被覆盖，不能事后恢复；修复只能保证后续运行不再发生。
 - `mstx.range_end` 虽已证明不会阻止前 4 步，但它仍属于应修复的观测噪声；不能永久忽略所有相同 `[ERROR]`。
-- `-03` 的前 4 步证明 optimizer 修复有效，不等于证明奖励改善或模型收敛；质量判断必须比较冻结基线和后续 validation。
+- `-03` 的 50 步证明 optimizer 修复有效，不等于证明奖励改善或模型收敛；五次 validation 严格正确率均为 0。
 - 主机 `1.9 TiB available` 与每卡 HBM 余量来自故障现场和既有 48K 门禁，不应外推到更大模型、更高并发或取消激活重计算的配置。
 
 ## 15. 下一步
 
-1. 让正式 `-03` 自然运行，不因本文写作重启 Ray 或容器。
-2. 到 step 10 后首先审计 20 条 val：严格最终答案正确、SQL 证据、reward、工具协议、安全率和 verifier 异常。
-3. 同时验证第一个滚动 checkpoint 的索引与分片完整性。
-4. 50-step 结束后在本文追加最终运行结论；若中途再失败，沿用同一模板增加“配置—症状—根因—修复—验证”条目，而不是覆盖历史证据。
-5. 完成质量判断前不恢复 `6→最快4`，避免吞吐选择偏差干扰正式奖励曲线。
+1. 保留 `global_step_50` 作为工程成功 checkpoint，不把它当作质量已提升的模型。
+2. 暂停在正式 V2 数据上续训；先完成 instruction/gold 人工复核和 V3 重建。
+3. 对 source system prompt、唯一工作区、确定性 SQL、显式答案口径增加数据门禁。
+4. 在小规模对齐数据上重新做 reward 密度与学习率 A/B，再决定是否开始 100+ step 正式训练。
+5. 质量门禁通过前不恢复 `6→最快4`，避免吞吐选择偏差掩盖数据和奖励问题。

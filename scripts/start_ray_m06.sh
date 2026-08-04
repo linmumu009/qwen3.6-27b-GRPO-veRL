@@ -40,6 +40,9 @@ python3 "${PROJECT_ROOT}/scripts/patch_verl_vllm_abort_api.py" \
 python3 "${PROJECT_ROOT}/scripts/patch_verl_fully_async_observability.py" \
   --trainer "/verl/verl/experimental/fully_async_policy/fully_async_trainer.py" \
   --main "/verl/verl/experimental/fully_async_policy/fully_async_main.py"
+python3 "${PROJECT_ROOT}/scripts/patch_verl_fully_async_validation_step.py" \
+  --trainer "/verl/verl/experimental/fully_async_policy/fully_async_trainer.py" \
+  --rollouter "/verl/verl/experimental/fully_async_policy/fully_async_rollouter.py"
 
 ray start \
   --address=192.168.202.5:26379 \
