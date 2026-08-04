@@ -51,6 +51,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [`docs/fastest_k_oversampling_validation_20260731.md`](docs/fastest_k_oversampling_validation_20260731.md)：`4→4` 与 `6→最快4` 的严格单步 A/B、吞吐收益、质量选择偏差和物理 vLLM 取消证据边界。
 - [`docs/fastest_k_efficiency_20step_20260731.html`](docs/fastest_k_efficiency_20step_20260731.html)：五组拓扑/过量采样矩阵、8-group 预热的 20-step fully-async 时序、奖励泄漏复核和下一步效率实验的自包含技术报告。
 - [`docs/fastest_k_abort_debug_20260801.html`](docs/fastest_k_abort_debug_20260801.html)：严格奖励在线门禁、Fastest-K V2–V4 假取消故障链、external/internal request ID 根因、最终 8/8 物理取消和显存释放的完整技术复盘。
+- [`docs/step_efficiency_investigation_20260804.html`](docs/step_efficiency_investigation_20260804.html)：48K v15 五步队列等待诊断、2-group batch 容量估算、纯 Fastest-K 质量偏差与延迟备用方案的技术报告。
 - [`docs/frozen_model_baseline_20260803.md`](docs/frozen_model_baseline_20260803.md)：完整 PI Agent、48K 上下文和 200 条正式任务的冻结模型基线，以及四次启动的故障与修复复盘。
 - [`docs/formal_pi_failure_reproduction_20260803.md`](docs/formal_pi_failure_reproduction_20260803.md)：冻结基线 `-01～-04` 与正式 50-step `-01～-03` 的逐次配置、原始报错、根因、修复、验证和复现排障手册。
 - [`docs/formal_grpo_50step_quality_diagnosis_20260804.md`](docs/formal_grpo_50step_quality_diagnosis_20260804.md)：正式 50-step 完成结果、800 条奖励分解、GRPO 组内方差、instruction/gold 对齐、system prompt 与沙箱隔离问题及 V3 训练建议。
@@ -160,6 +161,12 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [veRL 昇腾模型与算法支持](https://github.com/verl-project/verl/blob/main/docs/ascend_tutorial/model_support/model_and_algorithm_support.md)
 
 ## 版本记录
+
+### v0.30.0 — 2026-08-04
+
+- 完成 v15 DWH 48K 五步训练的单步耗时复核：预热库存耗尽后的 step 3–5 平均 `23.79min`，其中等待 4 个完整 group 平均 `20.18min`、Actor 更新 `3.48min`，确认主要瓶颈是 rollout 长期供给而非训练计算。
+- 核清当前 batch 为 `4 groups × 4 responses = 16 trajectories/update`；给出 `2 groups/update` 约 `12–14min/step` 的容量估算，并明确其不会自动提高等样本总吞吐，且会增加更新次数和梯度噪声。
+- 复核纯 `6→最快4` 旧 A/B 的 `-21.50%` 整步收益与 reward/正确率下降风险；建议改测“4 个主候选 + 2 个延迟备用”，并以等 40 groups、selected/shadow-discarded 质量差异作为上线门禁。
 
 ### v0.29.0 — 2026-08-04
 

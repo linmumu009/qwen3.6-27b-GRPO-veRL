@@ -1,0 +1,325 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "48K GRPO 单步耗时与提效方案调查",
+    "description": "基于 v15 DWH 五步实跑和既有 Fastest-K A/B，诊断队列等待、batch 语义与过量采样的效率和质量风险。",
+    "generatedAt": "2026-08-04T20:00:00+08:00",
+    "charts": [
+      {
+        "id": "step_wall_chart",
+        "title": "五个训练步的完整墙钟时间",
+        "subtitle": "前两步消费预热库存；第 3 和第 5 步重新被 rollout 供给拖慢。",
+        "type": "bar",
+        "dataset": "step_timing",
+        "sourceId": "v15_five_step_run",
+        "encodings": {
+          "x": {
+            "field": "step",
+            "type": "ordinal",
+            "label": "训练步"
+          },
+          "y": {
+            "field": "step_s",
+            "type": "quantitative",
+            "label": "完整 step",
+            "unit": "s"
+          }
+        },
+        "valueFormat": "number",
+        "unit": "s",
+        "layout": "full",
+        "maxRows": 5
+      }
+    ],
+    "tables": [
+      {
+        "id": "step_timing_table",
+        "title": "五步实测耗时",
+        "subtitle": "每步消费 4 个完整 GRPO group，即 16 条训练轨迹。",
+        "dataset": "step_timing",
+        "sourceId": "v15_five_step_run",
+        "columns": [
+          {"field": "step", "label": "Step", "format": "number"},
+          {"field": "queue_wait_s", "label": "等待 4 groups(s)", "format": "number"},
+          {"field": "actor_s", "label": "Actor 更新(s)", "format": "number"},
+          {"field": "step_s", "label": "整步(s)", "format": "number"},
+          {"field": "step_min", "label": "整步(min)", "format": "number"},
+          {"field": "context", "label": "状态"}
+        ],
+        "layout": "full"
+      },
+      {
+        "id": "option_table",
+        "title": "提效方案的证据与风险",
+        "subtitle": "估算值只用于选择实验方向，不等同于 48K 实测结果。",
+        "dataset": "options",
+        "sourceId": "efficiency_synthesis",
+        "columns": [
+          {"field": "option", "label": "方案"},
+          {"field": "accepted_per_update", "label": "每次更新轨迹", "format": "number"},
+          {"field": "time_effect", "label": "时间影响"},
+          {"field": "quality_risk", "label": "主要质量风险"},
+          {"field": "evidence", "label": "证据状态"},
+          {"field": "recommendation", "label": "判断"}
+        ],
+        "layout": "full"
+      },
+      {
+        "id": "experiment_table",
+        "title": "建议的等样本 A/B",
+        "subtitle": "各方案比较相同的 40 个 prompt groups，避免用 step 数制造虚假的速度提升。",
+        "dataset": "experiment_design",
+        "sourceId": "efficiency_synthesis",
+        "columns": [
+          {"field": "arm", "label": "实验臂"},
+          {"field": "updates", "label": "更新次数", "format": "number"},
+          {"field": "groups_per_update", "label": "Groups/更新", "format": "number"},
+          {"field": "sampling", "label": "采样"},
+          {"field": "purpose", "label": "回答的问题"}
+        ],
+        "layout": "full"
+      }
+    ],
+    "sources": [
+      {
+        "id": "v15_five_step_run",
+        "label": "v15 DWH 五步训练复盘",
+        "path": "docs/v15_dwh_bossreward_5step_20260804.md"
+      },
+      {
+        "id": "fastest_k_ab",
+        "label": "Fastest-K 单步 A/B",
+        "path": "docs/fastest_k_oversampling_validation_20260731.md"
+      },
+      {
+        "id": "formal_config",
+        "label": "正式 fully-async 配置",
+        "path": "scripts/run_pi_formal_50step.sh"
+      },
+      {
+        "id": "efficiency_synthesis",
+        "label": "效率方案综合判断",
+        "path": "docs/step_efficiency_investigation_20260804.artifact.json"
+      }
+    ],
+    "blocks": [
+      {
+        "id": "title",
+        "type": "markdown",
+        "body": "# 48K GRPO 单步耗时与提效方案调查",
+        "layout": "full"
+      },
+      {
+        "id": "technical_summary",
+        "type": "markdown",
+        "body": "## 技术结论\n\n**当前并非每个 step 都固定超过半小时。** 8-group 预热库存耗尽后，第 3–5 步平均为 23.79 分钟，最慢为 31.64 分钟；其中平均 20.18 分钟在等 4 个完整 group，Actor 更新只有 3.48 分钟。当前瓶颈是 rollout group 的长期生产率，而不是训练计算或权重同步。\n\n**把 4 groups/update 改成 2 groups/update 可以把显示出来的单步时间大致压到约 12–14 分钟，但不会让每小时产生的 group 翻倍。** 同样消费 4 个 group 将变成两次 optimizer update，增加一次权重同步和一次更新固定开销，并把每次更新覆盖的独立 prompt 从 4 个降到 2 个。\n\n**不建议直接恢复纯 `6→最快4` 作为正式默认。** 旧的严格单步 A/B 中，它将完整 step 缩短 21.50%，但平均 reward 从 0.5000 降到 0.2906，完全答对从 6/16 降到 2/16。更稳妥的方向是“4 个主候选 + 2 个延迟备用”：备用只替换超过硬 deadline 的主候选，不在全部候选中永久偏爱最快答案。",
+        "layout": "full"
+      },
+      {
+        "id": "current_result",
+        "type": "markdown",
+        "body": "## 半小时主要消耗在等 rollout\n\n前两步几乎不用等待，是因为训练前先花 32.67 分钟生成了 8 个 group；这不是免费提速，只是把等待搬到了进度条开始之前。库存耗尽后，第 3–5 步的队列等待占整步 84.83%。参数同步每次约 7.3–8.1 秒，对半小时级耗时影响很小。",
+        "sourceId": "v15_five_step_run",
+        "layout": "full"
+      },
+      {
+        "id": "step_chart_block",
+        "type": "chart",
+        "chartId": "step_wall_chart",
+        "layout": "full"
+      },
+      {
+        "id": "step_table_block",
+        "type": "table",
+        "tableId": "step_timing_table",
+        "layout": "full"
+      },
+      {
+        "id": "definitions",
+        "type": "markdown",
+        "body": "## 当前 batch 的准确含义\n\n- 一个 GRPO group 是同一个 prompt 的 4 条 response；`rollout.n=4` 不变。优势在这 4 条内部归一化。\n- 当前每次 optimizer update 消费 4 个完整 group，即 4 个 prompt、16 条轨迹。\n- `ppo_mini_batch_size=4` 的单位是 prompt groups，不是 4 条单独轨迹；每卡 micro-batch 为 1。\n- fully-async 的 `data.train_batch_size=0` 表示不使用传统静态 dataloader batch，训练批次由完整 group 队列提供。\n- 正式入口目前明确拒绝 `GROUPS_PER_STEP != 4`，因此改成 2 需要同步修改启动门禁、测试、队列 token 下限和训练步/样本数口径。",
+        "sourceId": "formal_config",
+        "layout": "full"
+      },
+      {
+        "id": "two_group_analysis",
+        "type": "markdown",
+        "body": "## 2 groups/update 能缩短 step，但不等于整体吞吐翻倍\n\n在第 3–5 步期间，12 个 group 从空队列到可消费大约用了 4,128 秒，折合约 344 秒/group。按均匀到达做一阶估算，凑 2 个 group 约需 11.5 分钟；Actor 工作量若近似减半，单步约落在 12–14 分钟。真实结果会因 group 成批完成和长尾而波动。\n\n但是相同的 4 个 group 会变成两次更新：两次 2-group step 合计未必比一次 4-group step 更快，反而会多一次约 8 秒的权重同步和 optimizer 固定开销。更重要的是，每次只含 2 个独立 prompt，梯度更容易被两个任务支配。\n\n因此评价 2-group 方案必须比较“处理相同 40 groups 的总墙钟、有效训练 tokens/s、reward/KL/grad norm”，不能只比较单步分钟数。若要保留 4-group 的有效 batch，更理想但实现更复杂的方案是：每到 2 groups 就先做 forward/backward，累计两次后再 optimizer step。",
+        "sourceId": "efficiency_synthesis",
+        "layout": "full"
+      },
+      {
+        "id": "fastest_k_analysis",
+        "type": "markdown",
+        "body": "## 纯最快选择存在明显的延迟选择偏差\n\nFastest-K 不读取 reward 再选样本，所以它不是传统意义上直接利用奖励函数漏洞；但完成速度与 response 长度、工具探索深度和任务难度相关。最快 4 条更容易是短回答、少工具调用或提前结束的路径，长期训练后模型可能被间接推向“尽快结束”。\n\n旧 A/B 已经出现方向一致的警报：完整 step 减少 21.50%，同时平均 reward 下降 41.88%、完全答对下降 66.67%、输出字符下降 12.62%。该实验只有一个 8K 随机 step，不能直接外推到当前 v15 48K，但足以否定“质量无损”的假设。\n\n更稳妥的备用策略是预先固定 4 个主候选；到 soft deadline 才启动 2 个备用，并只在主候选超过 hard deadline 后按固定槽位替换。选择逻辑不得查看 reward。另保留 5%–10% 的影子样本让被替换候选继续完成，用于比较 selected/discarded 的 reward、正确率、长度和工具轮数。",
+        "sourceId": "fastest_k_ab",
+        "layout": "full"
+      },
+      {
+        "id": "option_table_block",
+        "type": "table",
+        "tableId": "option_table",
+        "layout": "full"
+      },
+      {
+        "id": "methodology",
+        "type": "markdown",
+        "body": "## 估算方法与比较边界\n\n当前耗时直接取自五步运行的 `LLIN_QUEUE_STAGE` 和 `LLIN_TRAIN_STAGE`。所谓稳态使用 backlog 已耗尽的第 3–5 步；前两步因 8-group 预热而排除。2-group 等待按这段窗口内 12 个 group 的平均到达间隔估算，Actor 时间按当前 4-group 更新量级近似减半并保留固定开销，因此只给区间。Fastest-K 数字来自旧的 8K 单步 A/B，不与当前 48K 五步结果拼成实测结论。",
+        "sourceId": "efficiency_synthesis",
+        "layout": "full"
+      },
+      {
+        "id": "limitations",
+        "type": "markdown",
+        "body": "## 不确定性与稳健性限制\n\n- 当前 48K run 没有第 5、第 6 候选，无法离线重建 `6→4` 在同批任务上的反事实时间和奖励。\n- group 完成是突发而非均匀到达，因此 2-group 的 12–14 分钟是容量估算，不是承诺值。\n- 旧 Fastest-K 只有一个 8K step，质量差异同时含随机采样噪声；需要同 prompt、多步、等样本 A/B。\n- 旧的 300 秒超时来自短上下文实验，不适用于本轮 48K。当前 group processing p95 可达到约 1,048–1,758 秒，deadline 必须重新标定。\n- 2-group 会改变 optimizer 更新次数。固定 step 数比较会改变总样本量，必须固定 group 数。",
+        "layout": "full"
+      },
+      {
+        "id": "recommendation",
+        "type": "markdown",
+        "body": "## 建议按两阶段实验推进\n\n1. **先做 4 groups 与 2 groups 的等样本 A/B，关闭过量采样。** A 臂 10 updates × 4 groups，B 臂 20 updates × 2 groups；两边都消费相同 40 groups、固定 prompt 顺序、不保存 checkpoint、不做中途验证。该实验先回答小 batch 是改善有效吞吐，还是仅把一个长 step 拆成两个短 step。\n2. **再测试延迟备用，不直接测试纯最快训练。** 使用胜出 batch 配置，4 个主候选正常生成；根据新采集的逐轨迹 p90/p95 设置 soft/hard deadline，最多启动 2 个备用。5%–10% group 不取消落后候选，形成质量偏差审计样本。\n3. **上线门槛同时看效率和质量。** 主要效率指标是 groups/hour、accepted tokens/hour、trainer queue starvation；质量护栏是老板 reward、严格正确率、group reward 方差、KL、grad norm，以及 selected 与 shadow-discarded 的差异。",
+        "sourceId": "efficiency_synthesis",
+        "layout": "full"
+      },
+      {
+        "id": "experiment_table_block",
+        "type": "table",
+        "tableId": "experiment_table",
+        "layout": "full"
+      },
+      {
+        "id": "further_questions",
+        "type": "markdown",
+        "body": "## 后续仍需回答\n\n- 2-group 的 actor 更新是否近似减半，还是 Megatron 固定开销占比显著上升？\n- 当前 48K 的逐候选 latency 与 reward、正确率、response tokens、工具轮数相关性有多强？\n- soft/hard deadline 应按绝对秒数、token 进度还是工具回合数动态设置？\n- 能否实现跨两次 2-group 到达的梯度累计，以兼得较低 barrier 和 4-group 有效 batch？",
+        "layout": "full"
+      }
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "generatedAt": "2026-08-04T20:00:00+08:00",
+    "status": "ready",
+    "datasets": {
+      "step_phase_chart": [
+        {"step": 1, "phase": "等待 4 groups", "seconds": 0.164},
+        {"step": 1, "phase": "Actor 更新", "seconds": 280.495},
+        {"step": 2, "phase": "等待 4 groups", "seconds": 0.157},
+        {"step": 2, "phase": "Actor 更新", "seconds": 136.258},
+        {"step": 3, "phase": "等待 4 groups", "seconds": 1645.392},
+        {"step": 3, "phase": "Actor 更新", "seconds": 245.364},
+        {"step": 4, "phase": "等待 4 groups", "seconds": 421.940},
+        {"step": 4, "phase": "Actor 更新", "seconds": 235.119},
+        {"step": 5, "phase": "等待 4 groups", "seconds": 1564.969},
+        {"step": 5, "phase": "Actor 更新", "seconds": 145.934}
+      ],
+      "step_timing": [
+        {"step": 1, "queue_wait_s": 0.164, "actor_s": 280.495, "step_s": 288.951, "step_min": 4.82, "context": "消费预热库存"},
+        {"step": 2, "queue_wait_s": 0.157, "actor_s": 136.258, "step_s": 144.425, "step_min": 2.41, "context": "消费预热库存"},
+        {"step": 3, "queue_wait_s": 1645.392, "actor_s": 245.364, "step_s": 1898.607, "step_min": 31.64, "context": "队列耗尽"},
+        {"step": 4, "queue_wait_s": 421.940, "actor_s": 235.119, "step_s": 664.832, "step_min": 11.08, "context": "部分重叠"},
+        {"step": 5, "queue_wait_s": 1564.969, "actor_s": 145.934, "step_s": 1718.457, "step_min": 28.64, "context": "队列耗尽"}
+      ],
+      "options": [
+        {
+          "option": "当前：4→4，4 groups/update",
+          "accepted_per_update": 16,
+          "time_effect": "第 3–5 步实测均值 23.79min",
+          "quality_risk": "基线",
+          "evidence": "当前 48K 五步实测",
+          "recommendation": "对照组"
+        },
+        {
+          "option": "4→4，2 groups/update",
+          "accepted_per_update": 8,
+          "time_effect": "估算约 12–14min/step；相同 4 groups 需两步",
+          "quality_risk": "每次仅 2 个 prompt，梯度噪声增大",
+          "evidence": "容量估算，待 48K A/B",
+          "recommendation": "优先做等样本 A/B"
+        },
+        {
+          "option": "6→最快4，4 groups/update",
+          "accepted_per_update": 16,
+          "time_effect": "旧 8K A/B 整步 -21.50%",
+          "quality_risk": "奖励 -41.88%，正确数 6→2",
+          "evidence": "单个 8K step，不可直接外推",
+          "recommendation": "不作为正式默认"
+        },
+        {
+          "option": "4 主候选 + 2 延迟备用",
+          "accepted_per_update": 16,
+          "time_effect": "只裁剪极端尾部，收益待测",
+          "quality_risk": "仍有 timeout censoring，但弱于纯最快",
+          "evidence": "设计方案，尚未实跑",
+          "recommendation": "Fastest-K 的推荐替代"
+        }
+      ],
+      "experiment_design": [
+        {"arm": "A：现有 batch", "updates": 10, "groups_per_update": 4, "sampling": "4→4", "purpose": "40 groups 的当前吞吐和稳定性基线"},
+        {"arm": "B：小 batch", "updates": 20, "groups_per_update": 2, "sampling": "4→4", "purpose": "判断短 step 是否带来真实 groups/hour 提升"},
+        {"arm": "C：延迟备用", "updates": 10, "groups_per_update": 4, "sampling": "4 primary + 最多2 backup", "purpose": "在限制极端尾部时测量效率和选择偏差"}
+      ]
+    }
+  },
+  "sources": [
+    {
+      "id": "v15_five_step_run",
+      "label": "v15 DWH 五步训练复盘",
+      "path": "docs/v15_dwh_bossreward_5step_20260804.md",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM (VALUES (1,0.164,280.495,288.951,4.82,'消费预热库存'),(2,0.157,136.258,144.425,2.41,'消费预热库存'),(3,1645.392,245.364,1898.607,31.64,'队列耗尽'),(4,421.940,235.119,664.832,11.08,'部分重叠'),(5,1564.969,145.934,1718.457,28.64,'队列耗尽')) AS t(step,queue_wait_s,actor_s,step_s,step_min,context)",
+        "description": "从五步运行的 LLIN_PREWARM、LLIN_QUEUE_STAGE 和 LLIN_TRAIN_STAGE 指标提取队列等待、Actor 更新和整步时间。",
+        "executed_at": "2026-08-04T20:00:00+08:00",
+        "filters": ["正式 v15 DWH 5-step 运行", "每步 4 groups / 16 trajectories", "第 3–5 步作为 backlog 耗尽后的观察窗口"],
+        "metric_definitions": ["queue wait = trainer 等待凑齐完整 group 的墙钟时间", "actor update = 全参数更新阶段耗时", "steady observation = 预热库存耗尽后的 step 3–5"],
+        "tables_used": ["LLIN_PREWARM", "LLIN_QUEUE_STAGE", "LLIN_TRAIN_STAGE"]
+      }
+    },
+    {
+      "id": "fastest_k_ab",
+      "label": "Fastest-K 单步 A/B",
+      "path": "docs/fastest_k_oversampling_validation_20260731.md",
+      "query": {
+        "engine": "report-audit",
+        "language": "text",
+        "description": "复核相同 8K 数据和并行拓扑下 4→4 与 6→最快4 的单步时间、奖励、正确数和输出长度。",
+        "executed_at": "2026-08-04T20:00:00+08:00",
+        "filters": ["单个全参数更新", "4 groups / 16 accepted trajectories", "仅候选数从4变为6"],
+        "metric_definitions": ["完整 step 降幅 = 1 - Fastest-K step / baseline step", "reward 降幅 = 1 - Fastest-K reward / baseline reward"],
+        "tables_used": ["吞吐 A/B", "轨迹质量与选择偏差"]
+      }
+    },
+    {
+      "id": "formal_config",
+      "label": "正式 fully-async 配置",
+      "path": "scripts/run_pi_formal_50step.sh",
+      "query": {
+        "engine": "source-audit",
+        "language": "bash",
+        "description": "核对 GROUPS_PER_STEP、rollout.n、ppo_mini_batch_size、队列边界和正式入口门禁。",
+        "executed_at": "2026-08-04T20:00:00+08:00",
+        "filters": ["当前 main 分支正式训练入口"],
+        "metric_definitions": ["一个 group = 同一 prompt 的4条 response", "当前 update batch = 4 groups = 16 trajectories"],
+        "tables_used": ["run_pi_formal_50step.sh", "run_pi_grpo_fully_async_tp4_pp2_cp2.sh"]
+      }
+    },
+    {
+      "id": "efficiency_synthesis",
+      "label": "效率方案综合判断",
+      "path": "docs/step_efficiency_investigation_20260804.artifact.json",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM (VALUES ('当前：4→4，4 groups/update',16,'第3–5步实测均值23.79min','基线','当前48K五步实测','对照组'),('4→4，2 groups/update',8,'估算约12–14min/step；相同4 groups需两步','每次仅2个prompt，梯度噪声增大','容量估算，待48K A/B','优先做等样本A/B'),('6→最快4，4 groups/update',16,'旧8K A/B整步-21.50%','奖励-41.88%，正确数6→2','单个8K step，不可直接外推','不作为正式默认'),('4主候选+2延迟备用',16,'只裁剪极端尾部，收益待测','仍有timeout censoring，但弱于纯最快','设计方案，尚未实跑','Fastest-K的推荐替代')) AS t(option,accepted_per_update,time_effect,quality_risk,evidence,recommendation)",
+        "description": "以第3–5步实测和旧 Fastest-K A/B 为边界，计算稳态均值、group 到达速率和两种方案的可比实验口径。",
+        "executed_at": "2026-08-04T20:00:00+08:00",
+        "filters": ["2-group 结果标记为估算", "Fastest-K 8K 结果不外推为48K实测"],
+        "metric_definitions": ["post-prewarm step mean = step3–5整步均值", "group arrival estimate = 12 groups / 4128 seconds", "equal-sample A/B = 每臂消费40 groups"],
+        "tables_used": ["step_timing", "options", "experiment_design"]
+      }
+    }
+  ]
+}
