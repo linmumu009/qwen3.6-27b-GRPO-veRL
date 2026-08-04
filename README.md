@@ -15,7 +15,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - 20-step One-Step-Off-Policy 的长尾切换判据已触发；后续推荐使用 bounded fully-async：一个 prompt 的 4 条 GRPO 轨迹作为不可拆分 group。48K 配置的 queued-token 上限至少容纳一个最坏情况训练 batch（默认 `786,432` tokens），group 数上限继续控制 staleness，满载时背压而不是丢弃旧样本。
 - bounded fully-async 已支持 Fastest-K 过量采样：默认物理生成 6 条候选、最先完成的 4 条组成完整 GRPO group，剩余候选取消；可用 `OVERSAMPLE_CANDIDATES=4` 恢复无过量采样的 baseline。该能力已验证吞吐收益，但仍需多步质量 A/B 后才能作为正式训练默认策略。
 - Fastest-K 的逐请求取消已改为 vLLM 0.18 的公开 external-request API；V4 门禁实测 8/8 个落后候选完成物理取消，且不清空 prefix cache。正式 `4→4`、50-step GRPO 已结束；当前暂停训练并优先重建 V3 数据，不启用过量采样。
-- 老板 KB/DWH 评测逻辑已完成 1,000 条历史影子回放：277 条 DWH 通过 gold SQL 自洽门禁，KB 因缺少已校准语义 judge 全部保持 shadow-only；正式训练奖励尚未切换。
+- 老板 KB/DWH 评测逻辑已完成 1,000 条历史影子回放：277 条 DWH 通过 gold SQL 自洽门禁，KB 因缺少已校准语义 judge 全部保持 shadow-only；DWH 5-step 已正式使用 `0.7 × boss_reward + 0.3 × strict evidence`，KB 仍不进入在线训练。
 - 所有新增镜像、容器、工作目录和实验名均以 `llin` 开头，不复用或修改其他人的环境。
 
 当前服务器部署：
@@ -59,6 +59,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [`docs/dwh_kb_reward_divergence_examples_20260804.html`](docs/dwh_kb_reward_divergence_examples_20260804.html)：从老板 v15 原始任务和完整 PI 轨迹中各选一个 DWH/KB 高分差案例，逐项对照老板奖励、本项目影子奖励、原始证据、误判来源和修正建议。
 - [`docs/v15_dwh_full277_reward_alignment_20260804.html`](docs/v15_dwh_full277_reward_alignment_20260804.html)：277 条老板 v15 DWH 的全量使用、237/20/20 防泄漏分割、语义预警、老板主奖励与严格证据护栏审计。
 - [`docs/v15_dwh_frozen_baseline_20260804.md`](docs/v15_dwh_frozen_baseline_20260804.md)：固定 val20 冻结模型指标、`None` 聚合故障、安全硬归零观测补强、主动中止的 step0 运行和最终 5-step 门禁。
+- [`docs/v15_dwh_bossreward_5step_20260804.md`](docs/v15_dwh_bossreward_5step_20260804.md)：真实 DWH 5-step 的逐步耗时、80 条训练轨迹、冻结基线对比、长尾队列、非致命日志问题和 PP=2 checkpoint 缺层复盘。
 - `llin_verl/pi_sqlite_tool.py`：只读 SQLite 轨迹工具。
 - `llin_verl/pi_workspace_tools.py`、`llin_verl/pi_agent_loop.py`：完整 PI 四工具、轨迹级共享沙箱、事件审计和统一清理。
 - `llin_verl/pi_sqlite_cli.py`：为官方昇腾镜像补齐的受限只读 sqlite3 CLI 兼容层。
@@ -70,6 +71,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/prepare_boss_aligned_dataset.py`、`scripts/export_boss_task_manifest.py`、`scripts/check_boss_alignment_contract.py`：按真实 task_id 连接老板轨迹与 task、全量/显式 pilot 分流、review queue、GRPO/SFT 隔离及正式启动硬门禁。
 - `scripts/select_v15_dwh_batch.py`、`scripts/check_boss_reward_dataset.py`：按老板 v15 原始任务契约审核 277 条 DWH、分层切分并防止重复 prompt 跨 split 泄漏，随后在真实 Parquet 上验证奖励字段与任务族。
 - `scripts/analyze_boss_validation.py`：不重跑 rollout，直接汇总老板主奖励 validation JSONL，并检查空值、混合奖励公式、分类型正确率和安全命令重放。
+- `scripts/verify_checkpoint_integrity.py`：在正式启动器发布成功退出码前检查 HF tensor key/分片或 Megatron distributed checkpoint 元数据与分片，缺失时 fail closed。
 - `scripts/analyze_formal_grpo_50step.py`、`scripts/audit_formal_instruction_gold_alignment.py`：完整 50-step 训练信号、奖励组件、GRPO group 方差、工具行为及 instruction/gold 语义复核触发器。
 - `scripts/start_ray_m05.sh`、`scripts/start_ray_m06.sh`：两机 Ray 启动程序。
 - `scripts/check_ray_roles.py`：跨机角色落点验证。
@@ -100,7 +102,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - 两台机器均完成官方镜像的软件栈和 Qwen3.6-27B 模型识别检查。
 - Ray 两节点集群已连通，可见 32 张 NPU；角色测试确认训练任务落在 5 号机、rollout 任务落在 6 号机。
 - 4 条真实验证任务已转换为 Parquet；两台机器上的只读数据库查询和奖励闭环均为 `4/4` 满分。
-- 本地覆盖 Megatron 拓扑、Continuous Token、TP8/DP2 权重同步、48K、fully-async、Fastest-K、完整 PI 工具、奖励、boss-aligned source join/人工审核门禁、冻结基线、vLLM public abort 和老板 KB/DWH 影子回放，项目测试为 `92 passed`。
+- 本地覆盖 Megatron 拓扑、Continuous Token、TP8/DP2 权重同步、48K、fully-async、Fastest-K、完整 PI 工具、奖励、boss-aligned source join/人工审核门禁、冻结基线、checkpoint 完整性、vLLM public abort 和老板 KB/DWH 影子回放，项目测试为 `110 passed`。
 - 老板评测影子回放使用 1,500/1,500 唯一 task_id 的同源 Qwen3.6 v15 文件；KB/DWH 共 1,000 条完整评估，DWH `277/280` 结构化 verifier 自洽、严格正确 6 条，KB 500 条全部保持非在线可用。
 - 影子回放定位并修复 `/workspace/` 被字符串删除后误判为宿主 `/` 的安全规则缺陷；真实根目录和宿主路径扫描仍被阻止。
 - 完整 PI Agent 已通过 6 号机真实 veRL 容器门禁：`bash/read/write/edit` 全部加载，同一轨迹共享可写沙箱，sqlite3 只读代理可查询 v15 数据，失败状态正确记录，轨迹释放后工作区不存在；门禁结束后容器已停止。
@@ -144,6 +146,11 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `llin-pi-formal-grpo-4of4-50step-20260803-03` 已完成 50/50 全参数更新并以退出码 0 结束；总时长 `12h 21m 44s`，50 个 fully-async step 的平均队列等待/actor 更新/完整 step 为 `486.55/159.41/655.08s`，等待占比 `74.27%`。
 - 本轮 800 条训练 rollout 的平均 reward 为 `0.068`，严格正确 `4/800`；最后十步 reward 和安全/收尾率有弱改善，但 step 10/20/30/40/50 的 20-task 贪心 validation 在最终答案、SQL 证据和 strict acc 上始终为 0，因此 checkpoint 只记作工程成功，不记作质量收敛。
 - 质量审计确认正式 V2 的主要阻塞是 instruction/gold 语义错位、source system prompt 缺失和沙箱根目录枚举，而不是显存或 HCCL；在 V3 数据人工复核完成前暂停 V2 续训和 Fastest-K 正式化。
+- `llin-v15-dwh-bossreward-5step-20260804-03` 已在同源 v15 DWH、老板 system/四工具和 48K 上完成 5/5 次全参数更新并以训练退出码 0 结束；80 条训练 rollout 的平均 score/boss/evidence 为 `0.352856/0.413812/0.215000`，reward 公式不匹配和 verifier 异常均为 0。
+- 固定 val20 的混合分数/老板奖励/strict evidence 从冻结基线 `0.243075/0.452250/0.132500` 变为 `0.391000/0.490000/0.160000`；SQL 证据从 `0/20` 到 `1/20`，但老板答案正确仍为 `2/20`、strict acc 仍为 `0/20`，只记作短程正向信号。
+- 5 步平均队列等待/actor 更新/整步为 `726.52/208.63/943.05s`，等待占比 `77.04%`；8-group 预热耗时 `1960.22s`、累计 `846,859 tokens`，证明完整 PI 48K 的长期瓶颈仍是 rollout 生产率。
+- 本轮 HF checkpoint 虽返回成功，但独立核验只包含基础模型 `905/1199` tensors，缺失第 32–63 层等 294 个 tensor，已标记 `CHECKPOINT_INVALID`、不可续训或部署。正式配置现改存 Megatron distributed model checkpoint，并新增成功退出前的 fail-closed 完整性门禁。
+- 实验完成后两个 `llin` 容器均已停止；两机 NPU 无运行进程，16 张卡 HBM 均回到约 `2.88–3.13 GiB` 驱动基线。
 
 ## 参考实现
 
@@ -153,6 +160,13 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [veRL 昇腾模型与算法支持](https://github.com/verl-project/verl/blob/main/docs/ascend_tutorial/model_support/model_and_algorithm_support.md)
 
 ## 版本记录
+
+### v0.29.0 — 2026-08-04
+
+- 完成老板 v15 DWH 主奖励 5-step 真实训练与固定 val20：5/5 全参数更新、80 条训练 rollout、最终贪心验证均完成；记录逐步队列等待、actor 更新、长轨迹 token/轮次、安全原因和 numeric/table 分项。
+- 确认短程混合分数与老板奖励改善但 strict acc 未改善，明确禁止把 5-step 工程成功写成质量收敛。
+- 发现 PP=2 mbridge 在线 HF 导出静默缺失后半 pipeline 的 294 个 tensor；本轮 checkpoint 标记无效，正式训练改用 Megatron distributed model checkpoint，并新增成功退出前的 checkpoint fail-closed 验证器及测试。
+- 记录 `mstx.range_end`、NPU→CPU 算子回退、最终聚合行缺失等非致命观测问题；修复短跑分析器硬编码 50 步的缺步误报；实验后停止两个 `llin` 容器并验证显存释放。
 
 ### v0.28.0 — 2026-08-04
 

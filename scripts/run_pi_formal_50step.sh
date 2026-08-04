@@ -76,6 +76,7 @@ bash "${PROJECT_ROOT}/scripts/run_pi_grpo_fully_async_tp4_pp2_cp2.sh" \
   actor_rollout_ref.rollout.agent.agent_loop_config_path="${PROJECT_ROOT}/configs/pi_agent_loops.yaml" \
   actor_rollout_ref.actor.optim.lr="${LEARNING_RATE}" \
   actor_rollout_ref.actor.megatron.optimizer_offload=False \
+  actor_rollout_ref.actor.megatron.use_dist_checkpointing=True \
   actor_rollout_ref.rollout.val_kwargs.n=1 \
   actor_rollout_ref.rollout.val_kwargs.temperature=0 \
   actor_rollout_ref.rollout.val_kwargs.do_sample=False \

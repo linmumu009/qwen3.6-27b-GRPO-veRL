@@ -325,7 +325,7 @@ def summarize_rollouts(directory: Path, expected_steps: int, expected_rows_per_s
     }
 
 
-def parse_driver(path: Path) -> dict[str, Any]:
+def parse_driver(path: Path, expected_steps: int = 50) -> dict[str, Any]:
     text = path.read_text(encoding="utf-8", errors="replace")
     steps = []
     validations: list[dict[str, Any]] = []
@@ -380,7 +380,7 @@ def parse_driver(path: Path) -> dict[str, Any]:
     return {
         "steps": len(steps),
         "step_ids": step_ids,
-        "missing_step_metrics": sorted(set(range(1, 51)) - set(step_ids)),
+        "missing_step_metrics": sorted(set(range(1, expected_steps + 1)) - set(step_ids)),
         "metrics": {
             key: describe(step[key] for step in steps if key in step) for key in metric_keys
         },
@@ -436,7 +436,7 @@ def main() -> None:
             expected_steps=args.expected_steps,
             expected_rows_per_step=args.expected_rows_per_step,
         ),
-        "driver": parse_driver(args.driver_log),
+        "driver": parse_driver(args.driver_log, expected_steps=args.expected_steps),
     }
     rendered = json.dumps(result, ensure_ascii=False, indent=2)
     if args.output:

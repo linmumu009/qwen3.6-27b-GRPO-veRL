@@ -77,9 +77,10 @@ def test_driver_audit_compares_first_and_last_windows(tmp_path: Path):
         encoding="utf-8",
     )
 
-    result = parse_driver(path)
+    result = parse_driver(path, expected_steps=2)
 
     assert result["steps"] == 2
+    assert result["missing_step_metrics"] == []
     assert result["metrics"]["critic/score/mean"]["mean"] == pytest.approx(0.15)
     assert result["metrics"]["actor/ppo_kl"]["max"] == 0.002
     assert result["validation"][0]["step"] == 10

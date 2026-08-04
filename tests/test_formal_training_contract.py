@@ -37,6 +37,7 @@ def test_formal_50step_is_exact_4of4_with_periodic_greedy_validation():
         'FASTEST_K=4',
         'OVERSAMPLE_CANDIDATES=4',
         'actor_rollout_ref.actor.megatron.optimizer_offload=False',
+        'actor_rollout_ref.actor.megatron.use_dist_checkpointing=True',
         'actor_rollout_ref.rollout.val_kwargs.n=1',
         'actor_rollout_ref.rollout.val_kwargs.temperature=0',
         'actor_rollout_ref.rollout.val_kwargs.do_sample=False',
@@ -58,6 +59,10 @@ def test_formal_launcher_records_lifecycle_and_exit_code():
     assert 'started_at' in script
     assert 'exit_code' in script
     assert 'finished_at' in script
+    assert 'verify_checkpoint_integrity.py' in script
+    assert 'checkpoint_integrity.json' in script
+    assert 'CHECKPOINT_INVALID' in script
+    assert 'exit_code=8' in script
 
 
 def test_five_step_gate_waits_for_successful_frozen_baseline():
