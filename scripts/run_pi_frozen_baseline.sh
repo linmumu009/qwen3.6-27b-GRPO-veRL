@@ -2,9 +2,9 @@
 set -euo pipefail
 
 PROJECT_ROOT="${PROJECT_ROOT:-/workspace/llin-verl-grpo}"
-DATA_DIR="${DATA_DIR:-${PROJECT_ROOT}/data/formal_pi_v2_20260803}"
-TRAIN_FILE="${TRAIN_FILE:-${DATA_DIR}/pi_formal_train.parquet}"
-EVAL_FILE="${EVAL_FILE:-${DATA_DIR}/pi_formal_all.parquet}"
+DATA_DIR="${DATA_DIR:-${PROJECT_ROOT}/data/boss_v15_dwh_full277_20260804/dataset}"
+TRAIN_FILE="${TRAIN_FILE:-${DATA_DIR}/boss_pi_train.parquet}"
+EVAL_FILE="${EVAL_FILE:-${DATA_DIR}/boss_pi_val.parquet}"
 RUN_NAME="${RUN_NAME:-llin-pi-formal-frozen-baseline-$(date +%Y%m%d-%H%M%S)}"
 OUTPUT_DIR="${OUTPUT_DIR:-${PROJECT_ROOT}/runs/${RUN_NAME}}"
 

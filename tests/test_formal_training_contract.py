@@ -60,6 +60,21 @@ def test_formal_launcher_records_lifecycle_and_exit_code():
     assert 'finished_at' in script
 
 
+def test_five_step_gate_waits_for_successful_frozen_baseline():
+    script = (ROOT / "scripts" / "launch_v15_dwh_gate_after_baseline.sh").read_text(
+        encoding="utf-8"
+    )
+
+    assert 'while [[ ! -f "${BASELINE_DIR}/exit_code" ]]' in script
+    assert 'if [[ "${baseline_exit}" != "0" ]]' in script
+    assert 'TOTAL_TRAINING_STEPS=5' in script
+    assert 'EVAL_FREQ=5' in script
+    assert 'SAVE_FREQ=5' in script
+    assert 'launch_pi_formal_50step.sh' in script
+    assert 'baseline_failed' in script
+    assert 'target_failed' in script
+
+
 def test_formal_data_manifest_requires_identical_files_on_both_roles(tmp_path: Path):
     train = tmp_path / "train.parquet"
     val = tmp_path / "val.parquet"

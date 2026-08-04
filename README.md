@@ -57,6 +57,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [`docs/boss_data_alignment_correction_20260804.md`](docs/boss_data_alignment_correction_20260804.md)：逐项记录固定 200 条、fallback system、工具 schema/runtime、Qwen3.7/Qwen3.6 manifest 混用、hidden reward 与 GRPO/SFT 分流的根因和更正。
 - [`docs/boss_reward_shadow_validation_20260804.md`](docs/boss_reward_shadow_validation_20260804.md)：老板 KB/DWH 评测逻辑复用边界、1000 条 task-id 精确影子回放、奖励防投机设计和正式接入门槛。
 - [`docs/dwh_kb_reward_divergence_examples_20260804.html`](docs/dwh_kb_reward_divergence_examples_20260804.html)：从老板 v15 原始任务和完整 PI 轨迹中各选一个 DWH/KB 高分差案例，逐项对照老板奖励、本项目影子奖励、原始证据、误判来源和修正建议。
+- [`docs/v15_dwh_full277_reward_alignment_20260804.html`](docs/v15_dwh_full277_reward_alignment_20260804.html)：277 条老板 v15 DWH 的全量使用、237/20/20 防泄漏分割、语义预警、老板主奖励与严格证据护栏审计。
 - `llin_verl/pi_sqlite_tool.py`：只读 SQLite 轨迹工具。
 - `llin_verl/pi_workspace_tools.py`、`llin_verl/pi_agent_loop.py`：完整 PI 四工具、轨迹级共享沙箱、事件审计和统一清理。
 - `llin_verl/pi_sqlite_cli.py`：为官方昇腾镜像补齐的受限只读 sqlite3 CLI 兼容层。
@@ -66,6 +67,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/prepare_pi_dataset.py`：验证轨迹到 veRL Parquet 的转换程序。
 - `scripts/prepare_pi_formal_dataset.py`：只保留旧 V2 历史复现，默认阻断，必须显式传 `--allow-legacy-v2`。
 - `scripts/prepare_boss_aligned_dataset.py`、`scripts/export_boss_task_manifest.py`、`scripts/check_boss_alignment_contract.py`：按真实 task_id 连接老板轨迹与 task、全量/显式 pilot 分流、review queue、GRPO/SFT 隔离及正式启动硬门禁。
+- `scripts/select_v15_dwh_batch.py`、`scripts/check_boss_reward_dataset.py`：按老板 v15 原始任务契约审核 277 条 DWH、分层切分并防止重复 prompt 跨 split 泄漏，随后在真实 Parquet 上验证奖励字段与任务族。
 - `scripts/analyze_formal_grpo_50step.py`、`scripts/audit_formal_instruction_gold_alignment.py`：完整 50-step 训练信号、奖励组件、GRPO group 方差、工具行为及 instruction/gold 语义复核触发器。
 - `scripts/start_ray_m05.sh`、`scripts/start_ray_m06.sh`：两机 Ray 启动程序。
 - `scripts/check_ray_roles.py`：跨机角色落点验证。
@@ -76,6 +78,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/run_pi_grpo_megatron_tp4_pp2_cp2.sh`：16-NPU Megatron TP4/PP2/CP2 全参轨迹 GRPO 配置。
 - `scripts/launch_pi_grpo_megatron_smoke.sh`：Megatron 单步实验的日志、时间和退出码启动器。
 - `scripts/run_pi_formal_50step.sh`、`scripts/launch_pi_formal_50step.sh`：只接受 full、已审核、哈希完整的 boss-aligned train/val；旧 V2 和 pilot 会在模型加载前被拒绝。
+- `scripts/launch_v15_dwh_gate_after_baseline.sh`：等待冻结 val20 成功退出后自动启动 5-step GRPO；基线失败时阻断训练并记录监督状态。
 - `scripts/check_formal_data_on_ray.py`：正式运行前分别在 `llin_trainer` 和 `llin_rollout` Ray 节点计算 train/val 文件大小与 SHA256，任一节点缺失或内容不一致即在模型加载前失败。
 - `scripts/run_pi_grpo_fully_async_tp4_pp2_cp2.sh`：TP4/PP2/CP2 训练、TP8/DP2 rollout 的 bounded fully-async 配置，按完整 GRPO group 入队并以 queued tokens 做背压。
 - `scripts/patch_verl_fastest_k_oversampling.py`：给 fully-async AgentLoop 增加可配置候选过量采样、最快 K quorum、完整 GRPO group 选择和逐请求 vLLM 取消链路。
@@ -148,6 +151,14 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [veRL 昇腾模型与算法支持](https://github.com/verl-project/verl/blob/main/docs/ascend_tutorial/model_support/model_and_algorithm_support.md)
 
 ## 版本记录
+
+### v0.27.0 — 2026-08-04
+
+- 以老板 v15 原始 instruction、gold、同源 sandbox 和 evaluator 为权威契约，277 条可执行 DWH 全部纳入正式数据资产；确定性分割为 `237 train / 20 val / 20 test`，唯一重复 prompt 组留在同一 split，跨 split prompt 泄漏为 0。
+- 正式在线奖励改为 `70% boss_reward + 30% strict_evidence_reward`；危险工具、无效协议、不可执行或空 gold SQL 直接归零，并分别落盘老板奖励、严格证据奖励和 strict acc。
+- 新增数据选择、真实 Parquet 契约检查、老板奖励重放字段、分析器和 277 条审计报告；272 条语义预警继续保留，明确“评测器对齐”不等于“自然语言语义已经人工证明无误”。
+- 新增冻结 val20 成功后自动衔接 5-step GRPO 的监督启动器；基线非零退出时硬阻断训练，并分别记录基线与目标运行状态。
+- 项目完整回归门禁为 `104 passed`；两台服务器上的 train/val/test/contract SHA256 一致，真实 Parquet 的奖励契约与必需字段检查通过。
 
 ### v0.26.0 — 2026-08-04
 

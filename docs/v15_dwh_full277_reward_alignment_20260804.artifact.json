@@ -1,0 +1,290 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "老板 v15 DWH 277 条数据：全量使用与奖励对齐审计",
+    "description": "审计 277 条可执行 DWH 任务是否能全部用于 GRPO，并固化 train/val/test 分割、老板主奖励、严格证据护栏和正式训练门禁。",
+    "generatedAt": "2026-08-04T19:30:00+08:00",
+    "charts": [
+      {
+        "id": "warning_distribution_chart",
+        "title": "277 条任务的非排他式语义预警",
+        "subtitle": "同一任务可以命中多个预警；预警不推翻老板 v15 的任务/评测契约，但用于解释训练与真实语义可能不一致的风险。",
+        "type": "bar",
+        "dataset": "warning_distribution",
+        "sourceId": "selection_audit",
+        "source": {
+          "id": "warning_distribution_query",
+          "label": "277 条 DWH 选择审计",
+          "path": "data/boss_v15_dwh_full277_20260804/selection_audit.json",
+          "query": {
+            "engine": "duckdb",
+            "language": "sql",
+            "sql": "SELECT * FROM (VALUES ('latest 指令缺少时间 SQL',220),('后续任务定义漂移',193),('宽泛问题绑定精确 hidden target',137),('LIMIT 无 ORDER BY',92),('宽泛问题缩成行数',28),('数字 gold 无聚合',21)) AS t(warning,rows)",
+            "description": "从 selection_audit.warning_counts 展开主要非排他预警。"
+          }
+        },
+        "encodings": {
+          "x": {"field": "warning", "type": "nominal", "label": "预警类型"},
+          "y": {"field": "rows", "type": "quantitative", "label": "任务数"}
+        },
+        "valueFormat": "number",
+        "layout": "full",
+        "maxRows": 6
+      }
+    ],
+    "tables": [
+      {
+        "id": "split_summary_table",
+        "title": "正式数据分割",
+        "subtitle": "所有 277 条均被使用；训练、调参与最终评测职责严格分离。",
+        "dataset": "split_summary",
+        "sourceId": "dataset_contract",
+        "source": {
+          "id": "split_summary_query",
+          "label": "正式分割摘要",
+          "path": "data/boss_v15_dwh_full277_20260804/dataset/boss_alignment_contract.json",
+          "query": {
+            "engine": "duckdb",
+            "language": "sql",
+            "sql": "SELECT * FROM (VALUES ('train',237,'GRPO 参数更新','是'),('val',20,'基线与超参选择','否'),('test',20,'候选 checkpoint 最终评测','否')) AS t(split,rows,purpose,used_for_update)",
+            "description": "从数据契约读取三份 Parquet 的审核任务数和用途。"
+          }
+        },
+        "columns": [
+          {"field": "split", "label": "分割"},
+          {"field": "rows", "label": "任务数", "format": "number"},
+          {"field": "purpose", "label": "用途"},
+          {"field": "used_for_update", "label": "参与参数更新"}
+        ],
+        "layout": "full"
+      },
+      {
+        "id": "population_summary_table",
+        "title": "277 条任务构成",
+        "subtitle": "结构化答案全部为 numeric 或 table；历史奖励档位仅用于分层，不作为本次 gold 正确性的替代。",
+        "dataset": "population_summary",
+        "sourceId": "selection_audit",
+        "source": {
+          "id": "population_summary_query",
+          "label": "任务构成摘要",
+          "path": "data/boss_v15_dwh_full277_20260804/selection_audit.json",
+          "query": {
+            "engine": "duckdb",
+            "language": "sql",
+            "sql": "SELECT * FROM (VALUES ('answer_type','numeric',159),('answer_type','table',118),('historical_reward_band','low_signal',238),('historical_reward_band','answer_only',25),('historical_reward_band','sql_evidence_only',8),('historical_reward_band','strict_or_near_strict',6)) AS t(dimension,category,rows)",
+            "description": "从 selection_audit 汇总答案类型和历史奖励档位。"
+          }
+        },
+        "columns": [
+          {"field": "dimension", "label": "维度"},
+          {"field": "category", "label": "类别"},
+          {"field": "rows", "label": "任务数", "format": "number"}
+        ],
+        "layout": "full"
+      },
+      {
+        "id": "reward_contract_table",
+        "title": "在线奖励契约",
+        "subtitle": "老板评测是训练目标主信号，严格证据与安全规则防止答案数字碰撞、伪 SQL 和危险工具调用。",
+        "dataset": "reward_contract",
+        "sourceId": "online_reward",
+        "source": {
+          "id": "reward_contract_query",
+          "label": "在线奖励组成",
+          "path": "llin_verl/pi_reward.py",
+          "query": {
+            "engine": "duckdb",
+            "language": "sql",
+            "sql": "SELECT * FROM (VALUES ('boss_reward','70%','对齐老板 DWH 结果、过程和效率评测'),('strict_evidence_reward','30%','最终答案、可执行 SQL、必需表和收尾证据'),('hard-zero gate','强制','危险工具、无效协议、不可执行或空 gold 直接归零'),('strict_acc','独立监控','不参与混合解释，单独判断完整可验证正确')) AS t(component,weight,meaning)",
+            "description": "从 compute_score 的正式训练标量和独立监控字段整理奖励契约。"
+          }
+        },
+        "columns": [
+          {"field": "component", "label": "组成"},
+          {"field": "weight", "label": "权重"},
+          {"field": "meaning", "label": "含义"}
+        ],
+        "layout": "full"
+      }
+    ],
+    "sources": [
+      {"id": "selection_audit", "label": "老板 v15 DWH 277 条选择审计", "path": "data/boss_v15_dwh_full277_20260804/selection_audit.json"},
+      {"id": "dataset_contract", "label": "老板对齐数据契约", "path": "data/boss_v15_dwh_full277_20260804/dataset/boss_alignment_contract.json"},
+      {"id": "selector_source", "label": "DWH 全池选择与防泄漏实现", "path": "scripts/select_v15_dwh_batch.py"},
+      {"id": "dataset_source", "label": "老板原始 prompt/gold 数据转换", "path": "scripts/prepare_boss_aligned_dataset.py"},
+      {"id": "online_reward", "label": "老板主奖励与严格证据护栏", "path": "llin_verl/pi_reward.py"},
+      {"id": "boss_evaluator", "label": "老板 v15 DWH judge 与 reward_judge", "path": "boss-v15/reward_judge.py"}
+    ],
+    "blocks": [
+      {
+        "id": "title",
+        "type": "markdown",
+        "body": "# 老板 v15 DWH 277 条数据：全量使用与奖励对齐审计",
+        "layout": "full"
+      },
+      {
+        "id": "technical_summary",
+        "type": "markdown",
+        "body": "## 技术摘要\n\n**277 条可以全部使用，但不能全部作为训练样本。** 本项目把老板 v15 原始 instruction、原始 gold、同源 sandbox 和老板 evaluator 定义为唯一权威契约。277 条均通过来源连接、hash、DWH 类型、结构化 gold、gold SQL 可执行且非空、在线资格等硬门禁，因此全部进入正式数据资产；其中 `237` 条用于 GRPO 更新，`20` 条作为 validation，`20` 条作为最终 test。\n\n这一定义解决的是“与老板评测一致”，并不等于“277 条任务语义都没有问题”。启发式复核发现 277 条中 272 条至少有一项语义预警，只有 5 条没有命中当前预警。我们不再用后续改写过的任务定义否决老板 v15 原任务，但会保留这些预警，监控模型是否只学会了 hidden SQL/数值目标，而没有真正满足自然语言问题。\n\n在线训练分数采用 `0.7 × boss_reward + 0.3 × strict_evidence_reward`。任何危险工具调用、无效工具协议、不可执行或空的 gold SQL 都直接归零；老板奖励、严格正确率和证据奖励分别记录，不用一个混合标量掩盖质量问题。",
+        "sourceId": "selection_audit",
+        "layout": "full"
+      },
+      {
+        "id": "key_findings",
+        "type": "markdown",
+        "body": "## 关键结论\n\n1. `277/277` 通过老板 v15 来源与可执行 gold 硬门禁；没有 KB、混合任务或非结构化答案进入。\n2. 分割为 `237/20/20`，train/val/test 的 task_id 无重叠；唯一一组重复 prompt 被原子放入同一 split，跨 split prompt 重叠为 0。\n3. 159 条为 numeric、118 条为 table。历史回放中 238 条属于 low-signal，说明现有基础模型能力弱，不能把历史低分误解为任务无效。\n4. 272 条有语义预警，因此“全部可用”的准确含义是“全部适合按老板评测契约开展实验”，不是“全部已经由人工证明 instruction 与 hidden gold 语义完全一致”。\n5. 正式扩长训练前，先固定 20 条 val 的冻结模型基线，再做 5-step GRPO 门禁；只有老板奖励、严格 acc 和人工抽检同时改善，才进入更长训练。",
+        "sourceId": "selection_audit",
+        "layout": "full"
+      },
+      {
+        "id": "split_summary_block",
+        "type": "table",
+        "tableId": "split_summary_table",
+        "layout": "full"
+      },
+      {
+        "id": "scope_definitions",
+        "type": "markdown",
+        "body": "## 范围与定义\n\n- **权威任务定义**：老板 v15 原始 instruction，不使用项目 fallback，也不使用后续版本改写的 instruction 替换它。\n- **权威 gold**：老板 v15 与任务绑定的数值/表格 gold、verification SQL、预期表和字段。\n- **权威运行环境**：与该 v15 任务同源的 sandbox；gold SQL 必须真实执行成功且结果非空。\n- **权威评测目标**：老板 DWH judge 与标量 reward_judge。\n- **严格护栏**：项目额外检查可执行 Agent SQL、必需表、最终答案标签/数值、安全命令、工具协议和 gold 自洽性。\n- **可用**：通过上述硬门禁，可以进入 train/val/test 之一。语义预警只影响解释、分层和人工抽检，不再因后续 task-definition drift 自动丢弃老板原任务。",
+        "sourceId": "dataset_contract",
+        "layout": "full"
+      },
+      {
+        "id": "warning_intro",
+        "type": "markdown",
+        "body": "## 语义预警不能被忽略\n\n全量使用并不意味着闭眼使用。下图展示的是非排他预警：同一条任务可以同时出现“宽泛 instruction 绑定精确 hidden target”和“LIMIT 无 ORDER BY”。这些任务仍与老板的正式评测一致，但如果模型 reward 上升而严格 acc、人工抽检或最终 test 不升，就说明模型可能在优化评测器捷径。",
+        "sourceId": "selection_audit",
+        "layout": "full"
+      },
+      {
+        "id": "warning_chart_block",
+        "type": "chart",
+        "chartId": "warning_distribution_chart",
+        "layout": "full"
+      },
+      {
+        "id": "warning_interpretation",
+        "type": "markdown",
+        "body": "最常见预警是“latest/当前”表述没有在 gold SQL 中体现时间条件（220 条）和后续任务定义与 v15 原始 instruction 漂移（193 条）。我们选择以老板 v15 为准，是为了保证训练与最终评测一致；但报告、监控和人工样例必须继续暴露这些风险，不能把 reward 提升直接翻译为真实业务正确率提升。",
+        "sourceId": "selection_audit",
+        "layout": "full"
+      },
+      {
+        "id": "population_summary_block",
+        "type": "table",
+        "tableId": "population_summary_table",
+        "layout": "full"
+      },
+      {
+        "id": "reward_definition",
+        "type": "markdown",
+        "body": "## 奖励函数与正确率\n\n### 老板主奖励\n\nDWH 老板标量由结果、过程和效率组成：`0.4 × result + 0.4 × process + 0.2 × efficiency`。结果看最终回答是否完整、是否包含全部 gold 数字；过程看预期表、字段和 SQL/task fit；效率对无条件全表扫描、重复 SQL/命令和自动重试扣分。老板规则允许最终答案包含额外数字，只要全部 gold 数字出现。\n\n### 严格证据奖励\n\n项目同时计算：最终答案正确 `0.60`、可执行且语义安全的 SQL 证据 `0.25`、必需表 `0.10`、有最终回答 `0.05`。表格答案还要保留标签；SQL 附加列只在源表、聚合、过滤条件和结果列可唯一映射时作为安全投影通过。\n\n### 训练标量和监控\n\n`train_score = 0.7 × boss_reward + 0.3 × strict_evidence_reward`。若出现危险命令、工具协议无效或 gold SQL 不可执行/为空，则 `train_score=0`。`boss_reward`、`evidence_reward`、`strict_acc` 分别落盘。这样既优先对齐老板正式评测，又不鼓励只在答案里碰撞数字或伪造证据。",
+        "sourceId": "online_reward",
+        "layout": "full"
+      },
+      {
+        "id": "reward_contract_block",
+        "type": "table",
+        "tableId": "reward_contract_table",
+        "layout": "full"
+      },
+      {
+        "id": "methodology",
+        "type": "markdown",
+        "body": "## 方法\n\n1. 用 task_id 或规范化 instruction 精确连接老板 v15 review queue 与 1,500 条 manifest；拒绝模糊匹配。\n2. 只保留 DWH、numeric/table gold、完整 instruction/gold hash、至少一个预期表的任务。\n3. 在同源 sandbox 执行 gold SQL；只有 `gold_sql_verified=1` 且 `online_eligible=1` 的任务进入 277 条池。\n4. 按答案类型、主表和历史奖励档位确定性分层；相同 prompt 作为原子组分配，避免跨 split 泄漏。\n5. 两台服务器独立校验 Parquet hash、reward contract、task family 和必需字段；任一不一致都在模型加载前失败。\n6. 训练前先在固定 20 条 val 上跑冻结模型贪心基线；再做 5-step GRPO，比较同一 val 的老板奖励、严格 acc、SQL 证据和人工样例。",
+        "sourceId": "selector_source",
+        "layout": "full"
+      },
+      {
+        "id": "limitations",
+        "type": "markdown",
+        "body": "## 局限与稳健性\n\n- 272 条预警说明当前可执行 gold 门禁不能证明自然语言与 hidden SQL 完全同义。它证明的是评测器可执行、来源一致和训练目标明确。\n- 老板 numeric fallback 容忍等价 SQL 表达，也可能奖励答案里的偶然数字；严格证据分量用于降低这种投机，但 30% 权重仍需通过训练后样例验证。\n- 只有一个重复 prompt 组，但已经固定在单一 split。若未来加入更多数据，必须继续按 prompt hash 或任务族去重。\n- 20 条 val 和 20 条 test 样本较小，只适合工程门禁和方向判断；不能用 5-step 的小幅波动宣称模型收敛。\n- test 在训练方案确定前保持封存；日常调参与超参选择只能查看 train/val。",
+        "sourceId": "selection_audit",
+        "layout": "full"
+      },
+      {
+        "id": "next_steps",
+        "type": "markdown",
+        "body": "## 下一步\n\n1. 完成固定 20 条 val 的冻结模型基线，记录 boss reward、evidence reward、strict acc、SQL evidence、工具协议和耗时。\n2. 用 237 条 train 运行 5-step 全参数 GRPO 门禁，在第 5 步对同一 20 条 val 复评。\n3. 只有在老板奖励与严格 acc 至少一个改善、另一个不显著恶化，且人工抽检没有明显 reward hacking 时，才扩到 20–50 step。\n4. 长跑继续使用 20 val 调参；20 test 只在候选 checkpoint 冻结后评一次。\n5. 单独维护“评测器一致性”和“业务语义正确性”两套结论，避免把前者误报成后者。",
+        "layout": "full"
+      },
+      {
+        "id": "further_questions",
+        "type": "markdown",
+        "body": "## 后续需要回答的问题\n\n- 5-step 后提升主要来自最终答案数字命中、真实 SQL 证据，还是过程/效率分？\n- 272 条预警任务中，reward 提升是否显著高于 5 条无预警任务，提示模型在学习评测捷径？\n- numeric 与 table 两类的严格正确率是否同向改善？\n- 老板 reward 与 strict acc 的相关性在训练前后是否稳定？\n- 若 test 与 val 方向相反，是否需要扩大人工语义复核集，而不是继续训练？",
+        "layout": "full"
+      }
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "generatedAt": "2026-08-04T19:30:00+08:00",
+    "status": "ready",
+    "datasets": {
+      "warning_distribution": [
+        {"warning": "latest 指令缺少时间 SQL", "rows": 220},
+        {"warning": "后续任务定义漂移", "rows": 193},
+        {"warning": "宽泛问题绑定精确 hidden target", "rows": 137},
+        {"warning": "LIMIT 无 ORDER BY", "rows": 92},
+        {"warning": "宽泛问题缩成行数", "rows": 28},
+        {"warning": "数字 gold 无聚合", "rows": 21}
+      ],
+      "split_summary": [
+        {"split": "train", "rows": 237, "purpose": "GRPO 参数更新", "used_for_update": "是"},
+        {"split": "val", "rows": 20, "purpose": "基线与超参选择", "used_for_update": "否"},
+        {"split": "test", "rows": 20, "purpose": "候选 checkpoint 最终评测", "used_for_update": "否"}
+      ],
+      "population_summary": [
+        {"dimension": "answer_type", "category": "numeric", "rows": 159},
+        {"dimension": "answer_type", "category": "table", "rows": 118},
+        {"dimension": "historical_reward_band", "category": "low_signal", "rows": 238},
+        {"dimension": "historical_reward_band", "category": "answer_only", "rows": 25},
+        {"dimension": "historical_reward_band", "category": "sql_evidence_only", "rows": 8},
+        {"dimension": "historical_reward_band", "category": "strict_or_near_strict", "rows": 6}
+      ],
+      "reward_contract": [
+        {"component": "boss_reward", "weight": "70%", "meaning": "对齐老板 DWH 结果、过程和效率评测"},
+        {"component": "strict_evidence_reward", "weight": "30%", "meaning": "最终答案、可执行 SQL、必需表和收尾证据"},
+        {"component": "hard-zero gate", "weight": "强制", "meaning": "危险工具、无效协议、不可执行或空 gold 直接归零"},
+        {"component": "strict_acc", "weight": "独立监控", "meaning": "不参与混合解释，单独判断完整可验证正确"}
+      ]
+    }
+  },
+  "sources": [
+    {
+      "id": "selection_audit",
+      "label": "老板 v15 DWH 277 条选择审计",
+      "path": "data/boss_v15_dwh_full277_20260804/selection_audit.json",
+      "query": {
+        "engine": "python",
+        "language": "python",
+        "query": "select_batch(review_queue, manifest, shadow_results, {'train': 237, 'val': 20, 'test': 20}, seed, [])",
+        "description": "按老板 v15 来源、gold、sandbox 和 evaluator 门禁 277 条 DWH，并对重复 prompt 做原子分割。"
+      }
+    },
+    {
+      "id": "dataset_contract",
+      "label": "老板对齐数据契约",
+      "path": "data/boss_v15_dwh_full277_20260804/dataset/boss_alignment_contract.json",
+      "query": {
+        "engine": "contract-audit",
+        "language": "json",
+        "query": "Verify source hashes, system/tools hashes, split overlap, approved task ids and parquet hashes on m05/m06.",
+        "description": "确认两台服务器的 237/20/20 Parquet 与正式老板来源契约完全一致。"
+      }
+    },
+    {
+      "id": "online_reward",
+      "label": "老板主奖励与严格证据护栏",
+      "path": "llin_verl/pi_reward.py",
+      "query": {
+        "engine": "source-audit",
+        "language": "python",
+        "query": "compute_score(solution_str, ground_truth, extra_info)",
+        "description": "计算 boss_reward、strict evidence reward、混合训练标量和独立 strict_acc。"
+      }
+    }
+  ]
+}

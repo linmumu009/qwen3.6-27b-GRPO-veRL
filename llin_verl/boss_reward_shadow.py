@@ -24,7 +24,7 @@ from llin_verl.pi_reward import (
     extract_numbers,
     extract_selects,
     final_answer_correct,
-    rows_equal,
+    sql_evidence_mode,
 )
 from llin_verl.pi_tool_contract import command_is_safe, extract_table_names
 
@@ -317,6 +317,7 @@ def _score_dwh(
     )
 
     sql_evidence = False
+    evidence_mode = "none"
     gold_verified = False
     verifier_error = ""
     try:
@@ -324,20 +325,26 @@ def _score_dwh(
             os.environ.get("PI_AGENT_SANDBOX_LOWER", "/pi_sandbox"),
             str(ground_truth.get("environment_id") or ""),
         )
-        gold_rows = execute_readonly_sql(database, str(ground_truth.get("verification_sql") or ""))
+        verification_sql = str(ground_truth.get("verification_sql") or "")
+        gold_rows = execute_readonly_sql(database, verification_sql)
         gold_verified = bool(gold_rows) and gold_supported_by_rows(
             answer_type, expected_value, gold_rows, abs_tol, rel_tol
         )
         if gold_verified:
             for sql in extract_selects(commands):
                 try:
-                    if rows_equal(
+                    mode = sql_evidence_mode(
+                        sql,
                         execute_readonly_sql(database, sql),
+                        verification_sql,
                         gold_rows,
+                        required_tables,
                         abs_tol,
                         rel_tol,
-                    ):
+                    )
+                    if mode != "none":
                         sql_evidence = True
+                        evidence_mode = mode
                         break
                 except (ValueError, OSError, sqlite3.Error):
                     continue
@@ -376,6 +383,7 @@ def _score_dwh(
         "requires_semantic_judge": 0.0,
         "final_answer_correct": float(answer_ok),
         "sql_evidence_correct": float(sql_evidence),
+        "sql_evidence_mode": evidence_mode,
         "gold_sql_verified": float(gold_verified),
         "required_table_used": float(tables_ok),
         "successful_bash": float(successful_bash),

@@ -61,6 +61,27 @@ def test_dwh_strict_shadow_reward_requires_answer_sql_and_verified_gold(tmp_path
     assert result["deployment_status"] == "shadow_only"
 
 
+def test_dwh_shadow_accepts_safe_projection_but_records_evidence_mode(tmp_path, monkeypatch):
+    make_database(tmp_path)
+    monkeypatch.setenv("PI_AGENT_SANDBOX_LOWER", str(tmp_path))
+    truth = boss_task_to_ground_truth(dwh_task())
+
+    result = compute_shadow_score(
+        "shadow",
+        "最终结果为 621.62。",
+        truth,
+        {
+            "pi_tool_events": [
+                bash_event("SELECT COUNT(*), SUM(value), AVG(value), MIN(value), MAX(value) FROM metric")
+            ]
+        },
+    )
+
+    assert result["score"] == 1.0
+    assert result["acc"] == 1.0
+    assert result["sql_evidence_mode"] == "safe_projection"
+
+
 def test_dwh_number_collision_without_sql_is_capped_at_point_15(tmp_path, monkeypatch):
     make_database(tmp_path)
     monkeypatch.setenv("PI_AGENT_SANDBOX_LOWER", str(tmp_path))

@@ -198,6 +198,9 @@ def build_grpo_record(candidate: dict[str, Any], system_prompt: str, tool_names:
         "expected_value_json": canonical_json(gold["value"]),
         "verification_sql": gold["verification_sql"],
         "required_tables": candidate["required_tables"],
+        "must_use_fields": candidate["must_use_fields"],
+        "task_family": "dwh",
+        "reward_contract": "boss-primary-70-strict-evidence-30-v1",
         "abs_tol": 1e-3,
         "rel_tol": 1e-5,
     }
@@ -323,6 +326,12 @@ def collect_source(
             "environment_id": f"sft/{version}",
             "verifier_id": f"sft/{version}:{task_id}",
             "required_tables": sorted({str(value).casefold() for value in manifest_row.get("expected_tables") or []}),
+            "must_use_fields": sorted(
+                {
+                    str(value).casefold()
+                    for value in (manifest_row.get("verification_criteria") or {}).get("must_use_fields") or []
+                }
+            ),
         }
         candidates.append(candidate)
     return candidates, conversations, review_queue, rejected

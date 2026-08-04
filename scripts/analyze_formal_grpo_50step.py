@@ -143,6 +143,14 @@ def expected_reward(row: dict[str, Any]) -> float:
     protocol = as_float(row, "valid_tool_protocol") > 0
     if not safe or not protocol:
         return 0.0
+    if "boss_reward" in row or "evidence_reward" in row:
+        if as_float(row, "gold_sql_verified") <= 0:
+            return 0.0
+        return round(
+            0.70 * as_float(row, "boss_reward")
+            + 0.30 * as_float(row, "evidence_reward"),
+            6,
+        )
     return round(
         0.60 * as_float(row, "final_answer_correct")
         + 0.25 * float(
@@ -191,6 +199,10 @@ def summarize_rollouts(directory: Path, expected_steps: int, expected_rows_per_s
 
     component_keys = (
         "acc",
+        "boss_reward",
+        "boss_answer_correct",
+        "boss_numbers_match",
+        "evidence_reward",
         "final_answer_correct",
         "sql_evidence_correct",
         "required_table_used",
@@ -198,6 +210,8 @@ def summarize_rollouts(directory: Path, expected_steps: int, expected_rows_per_s
         "safe",
         "valid_tool_protocol",
         "has_final_answer",
+        "gold_sql_verified",
+        "online_eligible",
     )
     score_values = [as_float(row, "score") for row in rows]
     mismatches = [

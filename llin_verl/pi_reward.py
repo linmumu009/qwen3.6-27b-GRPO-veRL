@@ -1,4 +1,4 @@
-"""Evidence-grounded reward V2 for full PI DWH trajectories."""
+"""Boss-aligned DWH reward with executable-evidence safety guards."""
 
 from __future__ import annotations
 
@@ -19,6 +19,44 @@ _ASSISTANT_SPLIT_RE = re.compile(r"(?:^|\n)assistant\n")
 _NEXT_ROLE_RE = re.compile(r"\n(?:user|tool|system)\n")
 _THINK_RE = re.compile(r"<think>.*?</think>", re.DOTALL)
 _TOOL_CALL_RE = re.compile(r"<tool_call>.*?</tool_call>", re.DOTALL)
+_AGGREGATE_RE = re.compile(
+    r"\b(sum|count|avg|min|max)\s*\(\s*(distinct\s+)?([A-Za-z_][A-Za-z0-9_.]*|\*)\s*\)",
+    re.IGNORECASE,
+)
+_WHERE_RE = re.compile(
+    r"\bwhere\b(.*?)(?=\bgroup\s+by\b|\bhaving\b|\border\s+by\b|\blimit\b|$)",
+    re.IGNORECASE | re.DOTALL,
+)
+_SELECT_RE = re.compile(r"\bselect\b(.*?)\bfrom\b", re.IGNORECASE | re.DOTALL)
+_STRING_LITERAL_RE = re.compile(r"'((?:''|[^'])*)'")
+_NUMERIC_LITERAL_RE = re.compile(r"(?<![A-Za-z0-9_.])[-+]?\d+(?:\.\d+)?(?![A-Za-z0-9_.])")
+_IDENTIFIER_RE = re.compile(r"\b[A-Za-z_][A-Za-z0-9_]*\b")
+_PROJECTION_FORBIDDEN_RE = re.compile(r"\b(?:union|intersect|except|case)\b", re.IGNORECASE)
+_SQL_KEYWORDS = {
+    "and",
+    "asc",
+    "as",
+    "between",
+    "date",
+    "datetime",
+    "desc",
+    "false",
+    "in",
+    "is",
+    "like",
+    "not",
+    "null",
+    "or",
+    "select",
+    "sum",
+    "count",
+    "avg",
+    "min",
+    "max",
+    "strftime",
+    "time",
+    "true",
+}
 
 
 def extract_numbers(text: str) -> list[float]:
@@ -129,6 +167,173 @@ def rows_equal(
     return True
 
 
+def rows_contain_unique_projection(
+    candidate: list[tuple[Any, ...]],
+    expected: list[tuple[Any, ...]],
+    abs_tol: float,
+    rel_tol: float,
+) -> bool:
+    """Return true when expected is one unique column projection of candidate.
+
+    Row count and order must remain identical.  Requiring a unique injective
+    column mapping prevents a coincidental value copied into multiple output
+    columns from being treated as independently executable evidence.
+    """
+    if not candidate or not expected or len(candidate) != len(expected):
+        return False
+    candidate_width = len(candidate[0])
+    expected_width = len(expected[0])
+    if expected_width <= 0 or candidate_width <= expected_width:
+        return False
+    if any(len(row) != candidate_width for row in candidate):
+        return False
+    if any(len(row) != expected_width for row in expected):
+        return False
+
+    options: list[list[int]] = []
+    for expected_column in range(expected_width):
+        matches = []
+        for candidate_column in range(candidate_width):
+            if all(
+                _values_equal(
+                    candidate[row_index][candidate_column],
+                    expected[row_index][expected_column],
+                    abs_tol,
+                    rel_tol,
+                )
+                for row_index in range(len(expected))
+            ):
+                matches.append(candidate_column)
+        if not matches:
+            return False
+        options.append(matches)
+
+    mappings = 0
+
+    def count_mappings(index: int, used: set[int]) -> None:
+        nonlocal mappings
+        if mappings > 1:
+            return
+        if index == len(options):
+            mappings += 1
+            return
+        for column in options[index]:
+            if column not in used:
+                count_mappings(index + 1, used | {column})
+
+    count_mappings(0, set())
+    return mappings == 1
+
+
+def _aggregate_signature(sql: str) -> set[tuple[str, bool, str]]:
+    return {
+        (match.group(1).casefold(), bool(match.group(2)), match.group(3).split(".")[-1].casefold())
+        for match in _AGGREGATE_RE.finditer(sql or "")
+    }
+
+
+def _where_clause(sql: str) -> str:
+    match = _WHERE_RE.search(sql or "")
+    return match.group(1) if match else ""
+
+
+def _select_identifiers(sql: str) -> set[str]:
+    match = _SELECT_RE.search(sql or "")
+    if not match:
+        return set()
+    clause = _STRING_LITERAL_RE.sub(" ", match.group(1))
+    return {
+        token.casefold()
+        for token in _IDENTIFIER_RE.findall(clause)
+        if token.casefold() not in _SQL_KEYWORDS
+    }
+
+
+def _where_identifiers(sql: str) -> set[str]:
+    clause = _STRING_LITERAL_RE.sub(" ", _where_clause(sql))
+    return {
+        token.casefold()
+        for token in _IDENTIFIER_RE.findall(clause)
+        if token.casefold() not in _SQL_KEYWORDS
+    }
+
+
+def _where_string_literals(sql: str) -> list[str]:
+    return [match.group(1).replace("''", "'").strip().casefold() for match in _STRING_LITERAL_RE.finditer(_where_clause(sql))]
+
+
+def _where_numeric_literals(sql: str) -> set[str]:
+    clause = _STRING_LITERAL_RE.sub(" ", _where_clause(sql))
+    return {match.group(0) for match in _NUMERIC_LITERAL_RE.finditer(clause)}
+
+
+def _literal_is_covered(expected: str, candidate: str) -> bool:
+    if candidate == expected:
+        return True
+    # DATE(column) = 'YYYY-MM-DD' is commonly expressed as a half-open
+    # timestamp range beginning at 'YYYY-MM-DD 00:00:00'.
+    return bool(re.fullmatch(r"\d{4}-\d{2}-\d{2}", expected)) and (
+        candidate.startswith(expected + " ") or candidate.startswith(expected + "t")
+    )
+
+
+def safe_projection_sql(
+    candidate_sql: str,
+    expected_sql: str,
+    required_tables: set[str],
+) -> bool:
+    """Conservatively admit an equivalent aggregate query with extra columns.
+
+    This is intentionally stricter than checking whether a gold number appears
+    anywhere in a result.  The source tables must be identical, every expected
+    aggregate expression must occur in the candidate, and the expected filter
+    identifiers/literals must be retained.  Complex set/case expressions fall
+    back to exact-result matching only.
+    """
+    if _PROJECTION_FORBIDDEN_RE.search(candidate_sql or ""):
+        return False
+    expected_tables = set(extract_table_names(expected_sql))
+    candidate_tables = set(extract_table_names(candidate_sql))
+    if not expected_tables or candidate_tables != expected_tables:
+        return False
+    if required_tables and not required_tables.issubset(candidate_tables):
+        return False
+    expected_aggregates = _aggregate_signature(expected_sql)
+    if expected_aggregates:
+        if not expected_aggregates.issubset(_aggregate_signature(candidate_sql)):
+            return False
+    elif not _select_identifiers(expected_sql).issubset(_select_identifiers(candidate_sql)):
+        return False
+    if not _where_identifiers(expected_sql).issubset(_where_identifiers(candidate_sql)):
+        return False
+    candidate_literals = _where_string_literals(candidate_sql)
+    strings_covered = all(
+        any(_literal_is_covered(expected, candidate) for candidate in candidate_literals)
+        for expected in _where_string_literals(expected_sql)
+    )
+    return strings_covered and _where_numeric_literals(expected_sql).issubset(
+        _where_numeric_literals(candidate_sql)
+    )
+
+
+def sql_evidence_mode(
+    candidate_sql: str,
+    candidate_rows: list[tuple[Any, ...]],
+    expected_sql: str,
+    expected_rows: list[tuple[Any, ...]],
+    required_tables: set[str],
+    abs_tol: float,
+    rel_tol: float,
+) -> str:
+    if not safe_projection_sql(candidate_sql, expected_sql, required_tables):
+        return "none"
+    if rows_equal(candidate_rows, expected_rows, abs_tol, rel_tol):
+        return "exact"
+    if rows_contain_unique_projection(candidate_rows, expected_rows, abs_tol, rel_tol):
+        return "safe_projection"
+    return "none"
+
+
 def _table_answer_correct(
     answer: str,
     expected: list[Any],
@@ -164,6 +369,133 @@ def final_answer_correct(
     return False
 
 
+def boss_gold_numbers(expected_value: Any) -> list[float]:
+    """Extract the numeric subset used by the boss DWH judge.
+
+    The upstream evaluator intentionally ignores table labels and accepts an
+    answer containing all gold numbers even when it contains extra numbers.
+    Keeping this signal separate from ``final_answer_correct`` lets training
+    match the boss metric while retaining the stricter label-aware accuracy as
+    an independent guardrail.
+    """
+    if isinstance(expected_value, list):
+        values = [item.get("value") for item in expected_value if isinstance(item, dict)]
+    else:
+        values = [expected_value]
+    output: list[float] = []
+    for value in values:
+        if isinstance(value, bool):
+            continue
+        try:
+            number = float(str(value).replace(",", ""))
+        except (TypeError, ValueError):
+            continue
+        if math.isfinite(number):
+            output.append(number)
+    return output
+
+
+def boss_numbers_match(answer: str, expected_value: Any) -> bool:
+    """Port the boss evaluator's all-gold-numbers-in-answer comparison."""
+    gold_numbers = boss_gold_numbers(expected_value)
+    answer_numbers = extract_numbers(answer)
+    if not gold_numbers:
+        return False
+    return all(
+        any(
+            abs(gold - actual) < 1e-6
+            or (gold != 0 and abs(gold - actual) / abs(gold) < 1e-6)
+            for actual in answer_numbers
+        )
+        for gold in gold_numbers
+    )
+
+
+def _boss_fields_used(commands: list[str], must_use_fields: list[str]) -> float | None:
+    if not must_use_fields:
+        return None
+    command_text = " ".join(commands).casefold()
+    hit = sum(1 for field in must_use_fields if str(field).casefold() in command_text)
+    return round(hit / len(must_use_fields), 4)
+
+
+def _boss_task_fit(commands: list[str], selects: list[str]) -> float:
+    if selects:
+        return 1.0
+    return 0.5 if any(re.search(r"\bsqlite3\b", command, re.IGNORECASE) for command in commands) else 0.0
+
+
+def _boss_efficiency(commands: list[str], selects: list[str], events: list[dict[str, Any]]) -> tuple[float, dict[str, int]]:
+    full_scan = sum(
+        bool(re.search(r"select\s+\*", sql, re.IGNORECASE))
+        and not bool(re.search(r"\bwhere\b", sql, re.IGNORECASE))
+        and not bool(re.search(r"\blimit\b", sql, re.IGNORECASE))
+        for sql in selects
+    )
+    normalized_sql = [" ".join(sql.casefold().split()) for sql in selects]
+    duplicate_sql = len(normalized_sql) - len(set(normalized_sql))
+    command_keys = [command.strip()[:40] for command in commands]
+    duplicate_commands = len(command_keys) - len(set(command_keys))
+    auto_retry = sum(event.get("type") == "auto_retry_start" for event in events)
+    penalty = min(
+        1.0,
+        0.1 * full_scan
+        + 0.05 * (duplicate_sql + min(duplicate_commands, 20))
+        + 0.2 * auto_retry,
+    )
+    return 1.0 - penalty, {
+        "full_scan_answer": int(full_scan),
+        "duplicate_sql": duplicate_sql,
+        "duplicate_commands": duplicate_commands,
+        "auto_retry": auto_retry,
+    }
+
+
+def boss_reward_components(
+    answer: str,
+    expected_value: Any,
+    commands: list[str],
+    selects: list[str],
+    required_tables: set[str],
+    used_tables: set[str],
+    must_use_fields: list[str],
+    sql_evidence: bool,
+    events: list[dict[str, Any]],
+) -> dict[str, Any]:
+    """Compute the deterministic DWH portion of the boss reward_judge.py."""
+    has_answer = bool(answer) and len(re.sub(r"\s+", "", answer)) >= 20
+    numbers = boss_gold_numbers(expected_value)
+    numbers_ok = boss_numbers_match(answer, expected_value)
+    # The boss judge accepts numeric fallback without a matching SQL.  When a
+    # gold table has no numeric values, only an executable matching SQL can
+    # establish result correctness.
+    answer_ok = numbers_ok if numbers else bool(sql_evidence)
+    tables_ok = required_tables.issubset(used_tables) if required_tables else True
+    fields_used = _boss_fields_used(commands, must_use_fields)
+    task_fit = _boss_task_fit(commands, selects)
+    process_items = [(float(tables_ok), 0.3), (task_fit, 0.2)]
+    if fields_used is not None:
+        process_items.append((fields_used, 0.3))
+    process_weight = sum(weight for _, weight in process_items)
+    process_score = sum(value * weight for value, weight in process_items) / process_weight
+    efficiency_score, efficiency = _boss_efficiency(commands, selects, events)
+    result_score = 0.5 * float(has_answer) + 0.5 * float(answer_ok)
+    total = 0.0 if not has_answer else 0.4 * result_score + 0.4 * process_score + 0.2 * efficiency_score
+    return {
+        "reward": round(total, 6),
+        "result_score": round(result_score, 6),
+        "process_score": round(process_score, 6),
+        "efficiency_score": round(efficiency_score, 6),
+        "has_answer": float(has_answer),
+        "answer_correct": float(answer_ok),
+        "numbers_match": float(numbers_ok),
+        "tables_hit": float(tables_ok),
+        "fields_used": fields_used,
+        "task_fit": task_fit,
+        **efficiency,
+    }
+
+
 def _event_commands(events: list[dict[str, Any]]) -> list[str]:
     return [
         str((event.get("arguments") or {}).get("command"))
@@ -179,17 +511,18 @@ def compute_score(
     extra_info: dict[str, Any],
     **_: Any,
 ) -> dict[str, Any]:
-    """Score final correctness plus independently executable SQL evidence.
+    """Return the boss-primary online reward and strict guardrail metrics.
 
-    Weights are intentionally outcome-dominant: final answer 0.60, exact SQL
-    evidence 0.25, required tables 0.10, and terminal answer presence 0.05.
-    Unsafe or malformed tool protocols receive zero regardless of answer text.
+    The train score is 70% boss-compatible deterministic DWH reward and 30%
+    strict executable-evidence reward. Unsafe tools, malformed protocols, or an
+    unexecutable gold query hard-zero both signals.
     """
     del data_source
     events = extra_info.get("pi_tool_events") or []
     if not isinstance(events, list):
         events = []
     commands = _event_commands(events)
+    selects = extract_selects(commands)
     allowed_tools = {"bash", "read", "write", "edit"}
     valid_protocol = bool(events) and all(event.get("name") in allowed_tools for event in events)
     safe = all(command_is_safe(command) for command in commands)
@@ -198,6 +531,7 @@ def compute_score(
     required_tables = {str(value).casefold() for value in ground_truth.get("required_tables", [])}
     used_tables = {table for command in commands for table in extract_table_names(command)}
     required_table_used = required_tables.issubset(used_tables) if required_tables else True
+    must_use_fields = [str(value) for value in ground_truth.get("must_use_fields", []) if str(value)]
 
     answer = extract_final_assistant_answer(solution_str)
     abs_tol = float(ground_truth.get("abs_tol", 1e-3))
@@ -217,17 +551,31 @@ def compute_score(
     )
 
     sql_evidence = False
+    evidence_mode = "none"
     verifier_error = ""
+    gold_sql_verified = False
     try:
         database = _database_path(
             os.environ.get("PI_AGENT_SANDBOX_LOWER", "/pi_sandbox"),
             str(ground_truth["environment_id"]),
         )
-        expected_rows = execute_readonly_sql(database, str(ground_truth["verification_sql"]))
-        for sql in extract_selects(commands):
+        verification_sql = str(ground_truth["verification_sql"])
+        expected_rows = execute_readonly_sql(database, verification_sql)
+        gold_sql_verified = bool(expected_rows)
+        for sql in selects:
             try:
-                if rows_equal(execute_readonly_sql(database, sql), expected_rows, abs_tol, rel_tol):
+                mode = sql_evidence_mode(
+                    sql,
+                    execute_readonly_sql(database, sql),
+                    verification_sql,
+                    expected_rows,
+                    required_tables,
+                    abs_tol,
+                    rel_tol,
+                )
+                if mode != "none":
                     sql_evidence = True
+                    evidence_mode = mode
                     break
             except (ValueError, OSError, sqlite3.Error):
                 continue
@@ -235,25 +583,55 @@ def compute_score(
         verifier_error = f"{type(exc).__name__}: {exc}"
 
     has_final = bool(answer)
-    if not safe or not valid_protocol:
-        score = 0.0
-    else:
-        score = (
+    evidence_reward = (
             0.60 * float(answer_ok)
             + 0.25 * float(sql_evidence and successful_bash)
             + 0.10 * float(required_table_used)
             + 0.05 * float(has_final)
-        )
-    strict_correct = bool(answer_ok and sql_evidence and required_table_used and successful_bash and safe)
+    )
+    boss = boss_reward_components(
+        answer,
+        expected_value,
+        commands,
+        selects,
+        required_tables,
+        used_tables,
+        must_use_fields,
+        sql_evidence,
+        events,
+    )
+    eligible = bool(safe and valid_protocol and gold_sql_verified)
+    score = 0.7 * boss["reward"] + 0.3 * evidence_reward if eligible else 0.0
+    strict_correct = bool(
+        answer_ok
+        and sql_evidence
+        and required_table_used
+        and successful_bash
+        and safe
+        and valid_protocol
+        and gold_sql_verified
+    )
     return {
         "score": round(score, 6),
         "acc": float(strict_correct),
+        "boss_reward": boss["reward"],
+        "boss_result_score": boss["result_score"],
+        "boss_process_score": boss["process_score"],
+        "boss_efficiency_score": boss["efficiency_score"],
+        "boss_answer_correct": boss["answer_correct"],
+        "boss_numbers_match": boss["numbers_match"],
+        "boss_fields_used": boss["fields_used"],
+        "boss_task_fit": boss["task_fit"],
+        "evidence_reward": round(evidence_reward, 6),
         "final_answer_correct": float(answer_ok),
         "sql_evidence_correct": float(sql_evidence),
+        "sql_evidence_mode": evidence_mode,
         "required_table_used": float(required_table_used),
         "successful_bash": float(successful_bash),
         "safe": float(safe),
         "valid_tool_protocol": float(valid_protocol),
         "has_final_answer": float(has_final),
+        "gold_sql_verified": float(gold_sql_verified),
+        "online_eligible": float(eligible),
         "verifier_error": verifier_error,
     }

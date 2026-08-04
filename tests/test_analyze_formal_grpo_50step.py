@@ -4,6 +4,7 @@ from pathlib import Path
 import pytest
 
 from scripts.analyze_formal_grpo_50step import (
+    expected_reward,
     extract_bash_commands,
     parse_driver,
     summarize_rollouts,
@@ -49,6 +50,19 @@ def test_rollout_audit_finds_zero_variance_groups_and_reward_contract(tmp_path: 
     assert result["groups"]["total"] == 2
     assert result["groups"]["zero_reward_variance"] == 1
     assert result["components"]["final_answer_correct"]["count"] == 2
+
+
+def test_current_boss_primary_reward_is_reconstructed_with_hard_gate():
+    row = {
+        "safe": 1.0,
+        "valid_tool_protocol": 1.0,
+        "gold_sql_verified": 1.0,
+        "boss_reward": 0.8,
+        "evidence_reward": 0.5,
+    }
+
+    assert expected_reward(row) == pytest.approx(0.71)
+    assert expected_reward({**row, "gold_sql_verified": 0.0}) == 0.0
 
 
 def test_driver_audit_compares_first_and_last_windows(tmp_path: Path):
