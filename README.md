@@ -27,7 +27,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 | 容器 | `llin-verl-trainer-m05-20260730` | `llin-verl-rollout-m06-20260730` |
 | 镜像 | `llin-verl-a3:20260730` | `llin-verl-a3:20260730` |
 | 容器权限 | 特权模式（仅重建上述 `llin` 容器） | 特权模式（仅重建上述 `llin` 容器） |
-| 当前实验 NPU | 0（`-01` step 0 退出，等待修复后重启） | 0（`-01` step 0 退出，等待修复后重启） |
+| 当前实验 NPU | `-02` 模型初始化中（NPU 进程已出现） | `-02` 等待训练模型初始化与首次同步 |
 
 ## 数据结论
 
@@ -161,6 +161,11 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [veRL 昇腾模型与算法支持](https://github.com/verl-project/verl/blob/main/docs/ascend_tutorial/model_support/model_and_algorithm_support.md)
 
 ## 版本记录
+
+### v0.34.0 — 2026-08-04
+
+- 将 fresh HF 初始化兼容修复部署到两台节点并完成清洁容器/Ray 重启；训练/rollout 角色、双机 train/val 哈希和脚本语法门禁再次通过。
+- 已后台启动 `llin-v15-dwh-bossreward-2groups-50step-20260804-02`；实际参数保持 `2 groups/update`、50 步、每 10 步验证和仅 step 50 保存，运行已越过 `-01` 的 `stat(None)` 失败时间点且主进程继续存活。
 
 ### v0.33.0 — 2026-08-04
 
