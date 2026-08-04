@@ -88,6 +88,8 @@ export CUDA_DEVICE_MAX_CONNECTIONS=1
 
 python3 "${PROJECT_ROOT}/scripts/patch_verl_megatron_bridge_compat.py" \
   --target "${VERL_ROOT}/verl/models/mcore/bridge.py"
+python3 "${PROJECT_ROOT}/scripts/patch_verl_megatron_dist_checkpoint_init.py" \
+  --target "${VERL_ROOT}/verl/workers/engine/megatron/transformer_impl.py"
 python3 "${PROJECT_ROOT}/scripts/patch_verl_vllm_dp_weight_sync.py" \
   --target "${VERL_ROOT}/verl/workers/rollout/vllm_rollout/utils.py"
 python3 "${PROJECT_ROOT}/scripts/patch_verl_fully_async_continuous_token.py" \

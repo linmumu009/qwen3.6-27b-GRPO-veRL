@@ -27,7 +27,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 | 容器 | `llin-verl-trainer-m05-20260730` | `llin-verl-rollout-m06-20260730` |
 | 镜像 | `llin-verl-a3:20260730` | `llin-verl-a3:20260730` |
 | 容器权限 | 特权模式（仅重建上述 `llin` 容器） | 特权模式（仅重建上述 `llin` 容器） |
-| 当前实验 NPU | 16（`2 groups/update` 50-step 初始化中） | 16（`2 groups/update` 50-step 初始化中） |
+| 当前实验 NPU | 0（`-01` step 0 退出，等待修复后重启） | 0（`-01` step 0 退出，等待修复后重启） |
 
 ## 数据结论
 
@@ -103,7 +103,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - 两台机器均完成官方镜像的软件栈和 Qwen3.6-27B 模型识别检查。
 - Ray 两节点集群已连通，可见 32 张 NPU；角色测试确认训练任务落在 5 号机、rollout 任务落在 6 号机。
 - 4 条真实验证任务已转换为 Parquet；两台机器上的只读数据库查询和奖励闭环均为 `4/4` 满分。
-- 本地覆盖 Megatron 拓扑、Continuous Token、TP8/DP2 权重同步、48K、fully-async、Fastest-K、完整 PI 工具、奖励、boss-aligned source join/人工审核门禁、冻结基线、checkpoint 完整性、vLLM public abort 和老板 KB/DWH 影子回放，项目测试为 `110 passed`。
+- 本地覆盖 Megatron 拓扑、Continuous Token、TP8/DP2 权重同步、48K、fully-async、Fastest-K、完整 PI 工具、奖励、boss-aligned source join/人工审核门禁、冻结基线、checkpoint 完整性、vLLM public abort 和老板 KB/DWH 影子回放，项目测试为 `112 passed`。
 - 老板评测影子回放使用 1,500/1,500 唯一 task_id 的同源 Qwen3.6 v15 文件；KB/DWH 共 1,000 条完整评估，DWH `277/280` 结构化 verifier 自洽、严格正确 6 条，KB 500 条全部保持非在线可用。
 - 影子回放定位并修复 `/workspace/` 被字符串删除后误判为宿主 `/` 的安全规则缺陷；真实根目录和宿主路径扫描仍被阻止。
 - 完整 PI Agent 已通过 6 号机真实 veRL 容器门禁：`bash/read/write/edit` 全部加载，同一轨迹共享可写沙箱，sqlite3 只读代理可查询 v15 数据，失败状态正确记录，轨迹释放后工作区不存在；门禁结束后容器已停止。
@@ -161,6 +161,12 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [veRL 昇腾模型与算法支持](https://github.com/verl-project/verl/blob/main/docs/ascend_tutorial/model_support/model_and_algorithm_support.md)
 
 ## 版本记录
+
+### v0.33.0 — 2026-08-04
+
+- `llin-v15-dwh-bossreward-2groups-50step-20260804-01` 在 step 0 模型初始化时退出：`use_dist_checkpointing=True` 且 fresh run 没有 `dist_checkpointing_path`，veRL 将 `None` 传给 Megatron loader 并触发 `TypeError: stat(None)`；没有 rollout、参数更新或 checkpoint，两机 NPU 已释放。
+- 新增幂等的 Megatron 初始化兼容补丁：只有真实 dist checkpoint 路径存在时才从分布式权重加载；fresh run 继续从基础 HF 模型初始化，同时保留最终 `model` 槽使用 Megatron distributed checkpoint 的保存语义。
+- 完整项目回归为 `112 passed`；补丁已在容器真实 veRL 源码临时副本上通过首次应用、重复应用和编译门禁。
 
 ### v0.32.0 — 2026-08-04
 

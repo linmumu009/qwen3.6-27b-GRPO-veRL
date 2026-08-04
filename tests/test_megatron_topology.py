@@ -560,6 +560,38 @@ def test_bridge_patch_is_idempotent(tmp_path: Path) -> None:
     assert peft_text.index("if peft_cls is not None") < peft_text.index("create_peft_hook")
 
 
+def test_dist_checkpoint_init_patch_preserves_fresh_hf_loading(tmp_path: Path) -> None:
+    import importlib.util
+
+    patch_path = ROOT / "scripts" / "patch_verl_megatron_dist_checkpoint_init.py"
+    spec = importlib.util.spec_from_file_location("dist_checkpoint_init_patch", patch_path)
+    assert spec and spec.loader
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+
+    target = tmp_path / "transformer_impl.py"
+    target.write_text(module.OLD, encoding="utf-8")
+
+    assert module.patch(target) == "patched"
+    assert module.patch(target) == "already-patched"
+    text = target.read_text(encoding="utf-8")
+    assert module.MARKER in text
+    assert (
+        "use_dist_checkpointing and self.engine_config.dist_checkpointing_path"
+        in text
+    )
+    assert "else:" in text
+
+
+def test_fully_async_applies_dist_checkpoint_init_patch_before_launch() -> None:
+    text = FULLY_ASYNC_SCRIPT.read_text(encoding="utf-8")
+    patch_call = 'python3 "${PROJECT_ROOT}/scripts/patch_verl_megatron_dist_checkpoint_init.py"'
+    launch_call = "python3 -m verl.experimental.fully_async_policy.fully_async_main"
+
+    assert patch_call in text
+    assert text.index(patch_call) < text.index(launch_call)
+
+
 def test_bridge_compat_backports_provider_finalization() -> None:
     text = (ROOT / "llin_verl" / "megatron_bridge_compat.py").read_text(encoding="utf-8")
 
