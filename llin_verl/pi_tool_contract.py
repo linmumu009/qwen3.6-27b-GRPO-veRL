@@ -37,7 +37,10 @@ SQLITE_COMMAND_PATTERN = re.compile(r"(?<![A-Za-z0-9_./-])sqlite3(?=\s)")
 
 
 def command_is_safe(command: str) -> bool:
-    visible = command.replace("/workspace", "")
+    # Preserve the fact that this is a scoped workspace path.  Removing the
+    # prefix turned ``ls /workspace/`` into ``ls /`` and falsely triggered the
+    # host-root scan guard.
+    visible = re.sub(r"/workspace(?=/|\s|$|['\"])", "workspace", command)
     return not any(
         pattern.search(visible)
         for pattern in (

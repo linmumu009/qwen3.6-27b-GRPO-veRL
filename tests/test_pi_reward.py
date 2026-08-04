@@ -133,6 +133,8 @@ user
 def test_workspace_guard_blocks_root_enumeration_but_allows_workspace_queries():
     assert not command_is_safe("find / -name '*.sqlite'")
     assert not command_is_safe("ls -la /")
+    assert command_is_safe("ls -la /workspace/")
+    assert command_is_safe("find /workspace -name '*.md'")
     assert command_is_safe(
         'sqlite3 /workspace/logistics.sqlite "SELECT COUNT(*) FROM fact_quality_incident"'
     )
