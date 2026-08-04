@@ -27,7 +27,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 | 容器 | `llin-verl-trainer-m05-20260730` | `llin-verl-rollout-m06-20260730` |
 | 镜像 | `llin-verl-a3:20260730` | `llin-verl-a3:20260730` |
 | 容器权限 | 特权模式（仅重建上述 `llin` 容器） | 特权模式（仅重建上述 `llin` 容器） |
-| 当前实验 NPU | `-02` 模型初始化中（NPU 进程已出现） | `-02` 等待训练模型初始化与首次同步 |
+| 当前实验 NPU | `-02` step 0 退出，等待比例化预热修复 | `-02` step 0 退出，等待比例化预热修复 |
 
 ## 数据结论
 
@@ -161,6 +161,11 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [veRL 昇腾模型与算法支持](https://github.com/verl-project/verl/blob/main/docs/ascend_tutorial/model_support/model_and_algorithm_support.md)
 
 ## 版本记录
+
+### v0.35.0 — 2026-08-04
+
+- `llin-v15-dwh-bossreward-2groups-50step-20260804-02` 成功越过 fresh HF 初始化并创建 fully-async 组件，但在 step 0 被预热门禁阻止：2 groups/update 使 staleness=1.0 对应的物理队列容量为 4 groups，旧固定 `PREWARM_GROUPS=8` 超过容量；没有 rollout 文件、参数更新或 checkpoint。
+- 正式入口将预热量和队列 group 预算改为 `2 × GROUPS_PER_STEP`：当前即 4 groups，仍保持两个 update batch 的预热深度与 staleness=1.0，不通过硬扩 8-group 队列引入额外 policy-version 陈旧度。
 
 ### v0.34.0 — 2026-08-04
 
