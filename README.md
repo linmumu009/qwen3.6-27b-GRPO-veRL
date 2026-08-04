@@ -56,6 +56,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [`docs/formal_grpo_50step_quality_diagnosis_20260804.md`](docs/formal_grpo_50step_quality_diagnosis_20260804.md)：正式 50-step 完成结果、800 条奖励分解、GRPO 组内方差、instruction/gold 对齐、system prompt 与沙箱隔离问题及 V3 训练建议。
 - [`docs/boss_data_alignment_correction_20260804.md`](docs/boss_data_alignment_correction_20260804.md)：逐项记录固定 200 条、fallback system、工具 schema/runtime、Qwen3.7/Qwen3.6 manifest 混用、hidden reward 与 GRPO/SFT 分流的根因和更正。
 - [`docs/boss_reward_shadow_validation_20260804.md`](docs/boss_reward_shadow_validation_20260804.md)：老板 KB/DWH 评测逻辑复用边界、1000 条 task-id 精确影子回放、奖励防投机设计和正式接入门槛。
+- [`docs/dwh_kb_reward_divergence_examples_20260804.html`](docs/dwh_kb_reward_divergence_examples_20260804.html)：从老板 v15 原始任务和完整 PI 轨迹中各选一个 DWH/KB 高分差案例，逐项对照老板奖励、本项目影子奖励、原始证据、误判来源和修正建议。
 - `llin_verl/pi_sqlite_tool.py`：只读 SQLite 轨迹工具。
 - `llin_verl/pi_workspace_tools.py`、`llin_verl/pi_agent_loop.py`：完整 PI 四工具、轨迹级共享沙箱、事件审计和统一清理。
 - `llin_verl/pi_sqlite_cli.py`：为官方昇腾镜像补齐的受限只读 sqlite3 CLI 兼容层。
@@ -147,6 +148,12 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [veRL 昇腾模型与算法支持](https://github.com/verl-project/verl/blob/main/docs/ascend_tutorial/model_support/model_and_algorithm_support.md)
 
 ## 版本记录
+
+### v0.26.0 — 2026-08-04
+
+- 完成 DWH 与 KB 奖励判分差异案例审计：DWH `task_000001` 的老板/本项目分数为 `0.92/0.15`，KB `KT-LOG-0301` 为 `0.69/0.05`。
+- 报告写明老板 `judge_trajectory + reward_judge` 与本项目 `boss_reward_shadow` 的实际奖励定义，并保留原始 instruction、gold、SQL、文档访问和最终回答摘录。
+- 区分两类根因：DWH 为严格全结果相等误杀语义正确的附加投影；KB 为 `unanswerable + 空 source_documents` 与真实可读冷链文档冲突，需先修数据血缘而非直接调高规则奖励。
 
 ### v0.25.0 — 2026-08-04
 

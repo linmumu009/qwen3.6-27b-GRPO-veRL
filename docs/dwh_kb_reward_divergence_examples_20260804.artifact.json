@@ -1,0 +1,306 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "DWH 与 KB 奖励判分差异：两个原始案例审计",
+    "description": "从老板 v15 原始任务与完整 PI 轨迹中各选一个 DWH、KB 高分差案例，对照老板判分器与本项目影子奖励的定义、证据和结果。",
+    "generatedAt": "2026-08-04T18:00:00+08:00",
+    "charts": [
+      {
+        "id": "case_reward_chart",
+        "title": "两个原始案例的奖励差异",
+        "subtitle": "此图只展示两个精确案例，不代表 DWH/KB 总体分布。",
+        "type": "bar",
+        "dataset": "case_reward_chart",
+        "sourceId": "shadow_replay",
+        "source": {
+          "id": "case_reward_chart_query",
+          "label": "两个案例的配对奖励查询",
+          "path": "docs/boss_reward_shadow_validation_20260804.md",
+          "query": {
+            "engine": "duckdb",
+            "language": "sql",
+            "sql": "SELECT * FROM (VALUES ('DWH / task_000001','老板奖励',0.92),('DWH / task_000001','本项目影子奖励',0.15),('KB / KT-LOG-0301','老板奖励',0.69),('KB / KT-LOG-0301','本项目影子奖励',0.05)) AS t(type,scorer,reward)",
+            "description": "把同一原始轨迹经两套实际判分器重算的标量奖励整理为配对图数据。"
+          }
+        },
+        "encodings": {
+          "x": {"field": "type", "type": "nominal", "label": "任务类型"},
+          "y": {"field": "reward", "type": "quantitative", "label": "标量奖励"},
+          "color": {"field": "scorer", "type": "nominal", "label": "判分器"}
+        },
+        "valueFormat": "number",
+        "layout": "full",
+        "maxRows": 4
+      }
+    ],
+    "tables": [
+      {
+        "id": "case_summary_table",
+        "title": "两个高分差原始案例",
+        "subtitle": "分差按老板标量奖励减去本项目影子奖励计算；两例均未进入正式在线训练奖励。",
+        "dataset": "case_summary",
+        "sourceId": "shadow_replay",
+        "source": {
+          "id": "case_summary_query",
+          "label": "案例摘要查询",
+          "path": "docs/boss_reward_shadow_validation_20260804.md",
+          "query": {
+            "engine": "duckdb",
+            "language": "sql",
+            "sql": "SELECT * FROM (VALUES ('DWH','task_000001','correct',0.92,0.15,0.77,'等价 SQL 返回附加聚合列；老板用答案数字回退，我们 exact-result 判 SQL 证据失败'),('KB','KT-LOG-0301','correct',0.69,0.05,0.64,'unanswerable/空 gold 与真实可读冷链文档冲突；两套规则都缺少可靠语义真值')) AS t(type,task_id,boss_verdict,boss_reward,our_reward,reward_gap,primary_cause)",
+            "description": "从两个案例的实际重算结果生成摘要表。"
+          }
+        },
+        "defaultSort": {"field": "reward_gap", "direction": "desc"},
+        "columns": [
+          {"field": "type", "label": "类型"},
+          {"field": "task_id", "label": "原始任务 ID"},
+          {"field": "boss_verdict", "label": "老板 verdict"},
+          {"field": "boss_reward", "label": "老板奖励", "format": "number"},
+          {"field": "our_reward", "label": "我们的奖励", "format": "number"},
+          {"field": "reward_gap", "label": "分差", "format": "number"},
+          {"field": "primary_cause", "label": "主要原因"}
+        ],
+        "layout": "full"
+      },
+      {
+        "id": "dwh_evidence_table",
+        "title": "DWH：task_000001 的逐项判分证据",
+        "subtitle": "Agent 的 SQL 语义正确，但返回了 gold SUM 之外的附加统计列。",
+        "dataset": "dwh_evidence",
+        "sourceId": "boss_dwh_source",
+        "source": {
+          "id": "dwh_evidence_query",
+          "label": "DWH 案例证据查询",
+          "path": "boss_v15/task_000001.jsonl",
+          "query": {
+            "engine": "duckdb",
+            "language": "sql",
+            "sql": "SELECT * FROM (VALUES ('Gold SQL 自洽','gold 结果 [[7084]]','gold_sql_verified=1','两边一致，gold 本身可执行且与 7084 一致'),('Agent SQL','agent_result=null；精确结果未匹配','sql_evidence_correct=0','Agent 一行返回 5 个聚合列，gold 只有 SUM 一列'),('最终答案','answer_ok=true','final_answer_correct=1','最终答案明确包含 7,084 分钟'),('必需表','tables_ok=true','required_table_used=1','均使用 fact_waybill_event'),('工具与安全','过程/效率计入标量奖励','successful_bash=1, safe=1, protocol=1','轨迹工具执行成功且无危险操作'),('最终结果','verdict=correct, reward=0.92','score=0.15, acc=0, online_eligible=1','主要分差来自 SQL 结果形状，而非事实答案')) AS t(evidence,boss,ours,explanation)",
+            "description": "从 task_000001 原始任务、工具轨迹和两套重算结果抽取逐项证据。"
+          }
+        },
+        "columns": [
+          {"field": "evidence", "label": "证据项"},
+          {"field": "boss", "label": "老板判定"},
+          {"field": "ours", "label": "我们的判定"},
+          {"field": "explanation", "label": "差异解释"}
+        ],
+        "layout": "full"
+      },
+      {
+        "id": "kb_evidence_table",
+        "title": "KB：KT-LOG-0301 的逐项判分证据",
+        "subtitle": "任务元数据称不可回答、source_documents 为空，但真实沙箱中存在并被读取了多份冷链文档。",
+        "dataset": "kb_evidence",
+        "sourceId": "boss_kb_source",
+        "source": {
+          "id": "kb_evidence_query",
+          "label": "KB 案例证据查询",
+          "path": "boss_v15/KT-LOG-0301.jsonl",
+          "query": {
+            "engine": "duckdb",
+            "language": "sql",
+            "sql": "SELECT * FROM (VALUES ('任务标签','subtype=unanswerable','answerable=0','两边读取同一原始标签'),('Gold/来源','gold_answer=null, source_documents=[]','required_source_docs=0','没有可用于事实核验的显式真值'),('真实工具行为','轨迹读取多份冷链文档，但基础 judge 不校验来源','manifest 未指定文档，不能记 required-doc 命中','运行环境与 manifest 矛盾'),('最终答案','完整且足够长，空 gold 的数字条件通过','has_final_answer=1, abstained=0','老板机械判 correct；我们只给收尾基础分'),('语义核验','LLM_JUDGE=False','semantic_judge_required=1','两边都没有在该次重放中证明每个冷链事实正确'),('最终结果','verdict=correct, reward=0.69','score=0.05, acc=0, online_eligible=0','高分差本质是标签/文档血缘缺陷，不应直接用于 GRPO')) AS t(evidence,boss,ours,explanation)",
+            "description": "从 KT-LOG-0301 原始任务、文档访问轨迹和两套重算结果抽取逐项证据。"
+          }
+        },
+        "columns": [
+          {"field": "evidence", "label": "证据项"},
+          {"field": "boss", "label": "老板判定"},
+          {"field": "ours", "label": "我们的判定"},
+          {"field": "explanation", "label": "差异解释"}
+        ],
+        "layout": "full"
+      }
+    ],
+    "sources": [
+      {"id": "shadow_replay", "label": "1000 条老板 KB/DWH 历史影子回放", "path": "docs/boss_reward_shadow_validation_20260804.md"},
+      {"id": "our_reward_source", "label": "本项目老板奖励影子实现", "path": "llin_verl/boss_reward_shadow.py"},
+      {"id": "boss_reward_source", "label": "老板 judge_trajectory 与 reward_judge 逻辑快照", "path": "boss/scripts/data/reward_judge.py"},
+      {"id": "boss_dwh_source", "label": "老板 v15 DWH 原始任务与 PI 轨迹：task_000001", "path": "boss_v15/task_000001.jsonl"},
+      {"id": "boss_kb_source", "label": "老板 v15 KB 原始任务与 PI 轨迹：KT-LOG-0301", "path": "boss_v15/KT-LOG-0301.jsonl"}
+    ],
+    "blocks": [
+      {
+        "id": "title",
+        "type": "markdown",
+        "body": "# DWH 与 KB 奖励判分差异：两个原始案例审计",
+        "layout": "full"
+      },
+      {
+        "id": "technical_summary",
+        "type": "markdown",
+        "body": "## 技术摘要\n\n本报告从老板 v15 的原始任务、完整 PI 轨迹和老板判分代码中，各选取一个 DWH 与 KB 的高分差案例，并使用本项目当前 `boss_reward_shadow` 影子奖励重放。DWH `task_000001` 的老板奖励为 **0.92**、我们的奖励为 **0.15**；KB `KT-LOG-0301` 的老板奖励为 **0.69**、我们的奖励为 **0.05**。\n\n两个案例不能用同一个结论解释：\n\n- **DWH 是验证口径冲突。** Agent 查询的过滤条件、表和 SUM 都正确，最终答案也给出 7084；但它额外返回 COUNT/AVG/MIN/MAX。老板通过最终答案中的 gold 数字回退判为正确，我们要求 Agent SQL 的完整结果必须与 gold SQL 结果完全相等，因此把语义正确的“超集投影”判成 SQL 证据失败。\n- **KB 是数据标签与运行环境冲突。** 元数据把任务标为 unanswerable，`source_documents=[]`；真实沙箱却存在并被 Agent 读取了多份冷链操作文档。老板的空 gold 规则让“足够长的完整回答”机械通过，我们则因没有可验证 reference/source_documents 只给 0.05。\n\n因此，DWH 下一步应修正严格验证器的投影语义；KB 不应直接调松奖励，而应先修复原始标签、参考事实和文档血缘。",
+        "sourceId": "shadow_replay",
+        "layout": "full"
+      },
+      {
+        "id": "key_findings",
+        "type": "markdown",
+        "body": "## 关键发现\n\n1. 老板的 `verdict=correct` 与标量 reward 不是同一层：`judge_trajectory` 先产生正确/部分/错误 verdict，`reward_judge` 再把结果、过程和效率加权成标量。\n2. 我们的影子奖励更强调可执行证据和在线资格：DWH 要求 gold SQL 自洽、Agent SQL 结果匹配、最终答案正确；KB 在缺少已校准语义 judge 时始终 `online_eligible=0`。\n3. 老板的宽松回退能容忍 DWH 的等价 SQL 表达，却也可能因为答案中偶然出现 gold 数字而误判；我们的 exact-result 能防止数字碰撞，却会误杀附加列、附加统计等安全的等价查询。\n4. KB 的高分差首先是数据质量信号。空 gold、空 source_documents 与实际可读文档同时出现时，任何纯规则 reward 都无法可靠判断回答是否正确。",
+        "sourceId": "shadow_replay",
+        "layout": "full"
+      },
+      {"id": "case_reward_chart_block", "type": "chart", "chartId": "case_reward_chart", "layout": "full"},
+      {"id": "case_summary_block", "type": "table", "tableId": "case_summary_table", "layout": "full"},
+      {
+        "id": "reward_definitions",
+        "type": "markdown",
+        "body": "## 两套奖励函数分别是什么\n\n### 老板的判分与标量奖励\n\n老板实现分两层。\n\n**第一层：任务判分。**\n\n- DWH：执行 gold SQL；从 Agent 工具轨迹中提取 SQL 并执行。若某条 Agent SQL 的结果与 gold SQL 结果完全一致，则 `answer_ok=true`；若没有 SQL 精确匹配，则回退检查最终回答是否包含 gold 数值。`tables_ok` 检查预期表是否被使用。\n- KB：从 gold answer 提取数字，要求最终回答包含全部 gold 数字并达到最小完整长度；无数字时使用少量文本锚点。对于 `gold_answer=null` 的不可回答任务，数字条件天然通过，因而长且完整的回答可能被判为 correct。基础规则没有验证回答是否真的来自 `source_documents`。\n\n**第二层：`reward_judge.py` 标量奖励。**\n\n`result_score = 0.5 × has_answer + 0.5 × answer_ok`\n\n`process_score = 0.3 × tables_hit + 0.3 × fields_hit + 0.2 × docs_hit + 0.2 × task_fit`\n\n`efficiency_score = 1 - capped_penalty`\n\n`total_reward = 0.4 × result_score + 0.4 × process_score + 0.2 × efficiency_score`\n\n默认 `LLM_JUDGE=False`，所以上述案例没有经过大模型语义复核。\n\n### 我们当前的影子奖励\n\n**DWH 候选规则：**先执行 gold SQL 并验证 gold 本身；再执行 Agent SQL、检查必需表、最终答案、安全协议和成功工具调用。按证据档位给分：严格全部正确 `1.00`；答案与 SQL 正确但过程不完整 `0.85`；只有 SQL `0.20`；只有最终答案 `0.15`；只有安全收尾 `0.05`；不安全、协议错误或 gold 无效为 `0`。\n\n**KB 规则：**当前仅作 shadow 信号，最高 `0.25`：存在最终答案 `+0.05`；成功读取 manifest 指定文档 `+0.10`；数字/锚点弱匹配 `+0.10`。不可回答任务只有明确拒答才再得到 `0.05`。无论分数多少，KB 当前均设置 `acc=0`、`online_eligible=0`，必须等有校准的语义 judge 和可靠文档血缘后才能进入在线 GRPO。",
+        "sourceId": "boss_reward_source",
+        "layout": "full"
+      },
+      {
+        "id": "dwh_case",
+        "type": "markdown",
+        "body": "## DWH 原始案例：task_000001\n\n**原始 instruction**\n\n> 计算运单事件在2026-06-23的停留时长（分钟）合计。\n\n**原始 gold**\n\n- 类型：numeric\n- 期望值：`7084`\n- Gold SQL：`SELECT SUM(dwell_minutes) FROM fact_waybill_event WHERE DATE(occurred_at) = '2026-06-23'`\n- 必需表：`fact_waybill_event`\n\n**Agent 实际 SQL**\n\n```sql\nSELECT\n  COUNT(*) AS event_count,\n  SUM(dwell_minutes) AS total_dwell_minutes,\n  AVG(dwell_minutes) AS avg_dwell_minutes,\n  MIN(dwell_minutes) AS min_dwell_minutes,\n  MAX(dwell_minutes) AS max_dwell_minutes\nFROM fact_waybill_event\nWHERE occurred_at >= '2026-06-23 00:00:00'\n  AND occurred_at < '2026-06-24 00:00:00'\n  AND dwell_minutes IS NOT NULL;\n```\n\n**Agent 最终回答原文**\n\n> **2026-06-23 运单事件停留分钟统计**：事件总数 15 条；累计停留分钟数 7,084 分钟（约118小时）；平均停留 472.3 分钟；最小停留 11 分钟；最大停留 1,667 分钟（约27.8小时）。\n\n这条轨迹在事实层面是正确的：时间过滤与 `DATE='2026-06-23'` 等价，`SUM(dwell_minutes)=7084`，表也正确。分差来自结果形状：gold SQL 返回 `[[7084]]`，Agent SQL 返回包含 5 个聚合列的一行。老板的 SQL 精确比较失败后，使用最终回答中的 7084 回退，仍判 correct；我们的验证器没有“安全超集投影”规则，因此 SQL 证据为 0，只保留最终答案正确的 0.15。",
+        "sourceId": "boss_dwh_source",
+        "layout": "full"
+      },
+      {"id": "dwh_evidence_block", "type": "table", "tableId": "dwh_evidence_table", "layout": "full"},
+      {
+        "id": "kb_case",
+        "type": "markdown",
+        "body": "## KB 原始案例：KT-LOG-0301\n\n**原始 instruction**\n\n> 请提供关于冷链运单的详细操作指南和注意事项。\n\n**原始标签与 gold**\n\n- subtype：`unanswerable`\n- `gold_answer=null`\n- `source_documents=[]`\n\n**Agent 实际读取的原始文档**\n\n- `doc_032_冷链运单操作手册.md`\n- `doc_015_运单全流程培训教材.md`\n- `doc_019_冷链运单管理规范.md`\n- `doc_034_温度记录操作手册.md`\n- `doc_025_温控货物管理规范.md`\n- `doc_005_异常件处理规范.md`\n- `doc_027_货损记录管理规范.md`\n\n**Agent 最终回答摘录**\n\n> 好的，资料已收集完整。下面给你一份基于系统知识库和数据库实际结构的冷链运单全流程操作说明。\n\n回答随后给出冷冻/冷藏/恒温温区、传感器记录频率、异常响应、全流程操作阶段、风险控制和 KPI 建议。也就是说，这不是一个明显的“胡乱长回答”：Agent 确实读取了与问题高度相关的冷链文档；问题在于任务 manifest 却声称没有可用来源、没有参考答案。\n\n老板规则在 `gold_answer=null` 时没有需要核对的 gold 数字，完整长度条件通过后把它判成 correct，再结合过程与效率得到 0.69。我们没有 manifest 指定文档和参考事实可核验，只能给“有最终回答”的 0.05，并保持 `online_eligible=0`。这里不应简单把我们的分数调高，而应先把任务从 unanswerable 重新标注为 answerable，补齐真实 `source_documents` 和可验证 reference facts。",
+        "sourceId": "boss_kb_source",
+        "layout": "full"
+      },
+      {"id": "kb_evidence_block", "type": "table", "tableId": "kb_evidence_table", "layout": "full"},
+      {
+        "id": "scope_and_metrics",
+        "type": "markdown",
+        "body": "## 范围、数据与指标定义\n\n- 候选范围：老板 v15 同源 Qwen3.6 任务与完整 PI 事件轨迹；影子回放共覆盖 DWH 500 条、KB 500 条。\n- DWH 自洽门禁：500 条中 277 条结构化 gold SQL 可在同源沙箱执行并与 gold 值一致；本报告只从可验证集合中选例。\n- KB 门禁：500 条均保持 shadow-only，不把规则分数当准确率。\n- `boss_reward`：用老板 `reward_judge.compute_reward` 在原始轨迹上实际重算的 total。\n- `our_reward`：用本项目 `boss_reward_shadow` 在同一任务、同一轨迹和同一沙箱上重放的 score。\n- `reward_gap = boss_reward - our_reward`。本报告选择的是解释性案例，不是总体分差分布的统计估计。",
+        "sourceId": "shadow_replay",
+        "layout": "full"
+      },
+      {
+        "id": "methodology",
+        "type": "markdown",
+        "body": "## 方法\n\n1. 按唯一 `task_id` 连接老板原始 task manifest、Qwen3.6 v15 PI 轨迹和对应沙箱。\n2. 使用老板原始 `judge_trajectory.py` 与 `reward_judge.py` 重算 verdict 和标量 reward，不复用历史缓存分数。\n3. 使用本项目影子奖励在同一轨迹上重放，并记录 gold SQL 验证、Agent SQL、必需表、文档访问、最终答案、安全和在线资格。\n4. 分别筛选 DWH 与 KB 的大正分差案例，再回看原始 instruction、gold、工具调用、工具结果和最终回答，排除单纯解析失败或缺失轨迹。\n5. 奖励柱图仅用于直观呈现两个精确案例的配对差异；不绘制分布图，也不把两个观察值解释为总体分布。完整判断以逐项证据表和原文为准。",
+        "sourceId": "shadow_replay",
+        "layout": "full"
+      },
+      {
+        "id": "limitations",
+        "type": "markdown",
+        "body": "## 局限与稳健性\n\n- 每个类型只展示一个代表案例，不能据此推断总体误判率；总体结论仍应以 1000 条影子回放统计为准。\n- 老板不同脚本版本对答案长度和 SQL 提取存在差异；本报告以本次实际 `reward_judge.compute_reward` 输出为标量奖励证据，并用原始轨迹人工核对关键事实。\n- DWH 的安全超集投影不能退化为“任意结果中出现 gold 数字即正确”，否则会重新引入数字碰撞和无关查询投机。\n- KB 最终回答看起来合理不等于每个事实都正确；没有 reference facts、引用片段与语义 judge 时，不能把 0.69 或 0.05解释为真实准确率。\n- 影子奖励尚未接入正式训练，本报告不会改变现有 GRPO 在线 reward。",
+        "sourceId": "shadow_replay",
+        "layout": "full"
+      },
+      {
+        "id": "recommendations",
+        "type": "markdown",
+        "body": "## 建议\n\n### DWH\n\n1. 在 exact-result 之前增加 SQL 规范化和 verifier projection：允许 Agent 返回 gold 聚合列的安全超集，但必须同时满足相同源表、相同过滤范围、相同聚合表达式和可唯一映射的结果列。\n2. 仍禁止只凭最终回答中的数字给满分；答案回退最多作为弱分，满分必须有可执行证据。\n3. 为 `COUNT + SUM + AVG + MIN + MAX` 这类附加统计建立回归样例，确保 task_000001 从 0.15 提升到正确档位，同时无关查询仍为 0。\n\n### KB\n\n1. 把 KT-LOG-0301 从训练候选中隔离，核对 intended sandbox 后重新标注 answerable/unanswerable。\n2. 如果 answerable：把实际冷链文档写入 `source_documents`，抽取 reference facts/引用片段，并用 calibrated semantic judge 做引用支持和事实一致性判分。\n3. 如果 intended environment 本应没有文档：修复沙箱内容泄漏，再要求模型明确拒答；不能同时保留相关文档却标为不可回答。\n4. 在 KB 数据修复前继续 shadow-only，不允许该类规则奖励驱动 GRPO。",
+        "sourceId": "our_reward_source",
+        "layout": "full"
+      },
+      {
+        "id": "further_questions",
+        "type": "markdown",
+        "body": "## 后续需要回答的问题\n\n- 277 条可验证 DWH 中，有多少低分案例属于安全的投影超集、列顺序差异或等价时间谓词？\n- KB 500 条中，标为 unanswerable 但真实沙箱存在相关文档的比例是多少？\n- 老板的 `source_documents` 是否由另一套生成流程补齐，当前 v15 task manifest 是否丢失了字段？\n- 校准语义 judge 后，老板 rule verdict、我们的 shadow signal 与人工专家标签分别有多高的一致率？",
+        "layout": "full"
+      }
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "generatedAt": "2026-08-04T18:00:00+08:00",
+    "status": "ready",
+    "datasets": {
+      "case_reward_chart": [
+        {"type": "DWH / task_000001", "scorer": "老板奖励", "reward": 0.92},
+        {"type": "DWH / task_000001", "scorer": "本项目影子奖励", "reward": 0.15},
+        {"type": "KB / KT-LOG-0301", "scorer": "老板奖励", "reward": 0.69},
+        {"type": "KB / KT-LOG-0301", "scorer": "本项目影子奖励", "reward": 0.05}
+      ],
+      "case_summary": [
+        {"type": "DWH", "task_id": "task_000001", "boss_verdict": "correct", "boss_reward": 0.92, "our_reward": 0.15, "reward_gap": 0.77, "primary_cause": "等价 SQL 返回附加聚合列；老板用答案数字回退，我们 exact-result 判 SQL 证据失败"},
+        {"type": "KB", "task_id": "KT-LOG-0301", "boss_verdict": "correct", "boss_reward": 0.69, "our_reward": 0.05, "reward_gap": 0.64, "primary_cause": "unanswerable/空 gold 与真实可读冷链文档冲突；两套规则都缺少可靠语义真值"}
+      ],
+      "dwh_evidence": [
+        {"evidence": "Gold SQL 自洽", "boss": "gold 结果 [[7084]]", "ours": "gold_sql_verified=1", "explanation": "两边一致，gold 本身可执行且与 7084 一致"},
+        {"evidence": "Agent SQL", "boss": "agent_result=null；精确结果未匹配", "ours": "sql_evidence_correct=0", "explanation": "Agent 一行返回 5 个聚合列，gold 只有 SUM 一列"},
+        {"evidence": "最终答案", "boss": "answer_ok=true", "ours": "final_answer_correct=1", "explanation": "最终答案明确包含 7,084 分钟"},
+        {"evidence": "必需表", "boss": "tables_ok=true", "ours": "required_table_used=1", "explanation": "均使用 fact_waybill_event"},
+        {"evidence": "工具与安全", "boss": "过程/效率计入标量奖励", "ours": "successful_bash=1, safe=1, protocol=1", "explanation": "轨迹工具执行成功且无危险操作"},
+        {"evidence": "最终结果", "boss": "verdict=correct, reward=0.92", "ours": "score=0.15, acc=0, online_eligible=1", "explanation": "主要分差来自 SQL 结果形状，而非事实答案"}
+      ],
+      "kb_evidence": [
+        {"evidence": "任务标签", "boss": "subtype=unanswerable", "ours": "answerable=0", "explanation": "两边读取同一原始标签"},
+        {"evidence": "Gold/来源", "boss": "gold_answer=null, source_documents=[]", "ours": "required_source_docs=0", "explanation": "没有可用于事实核验的显式真值"},
+        {"evidence": "真实工具行为", "boss": "轨迹读取多份冷链文档，但基础 judge 不校验来源", "ours": "manifest 未指定文档，不能记 required-doc 命中", "explanation": "运行环境与 manifest 矛盾"},
+        {"evidence": "最终答案", "boss": "完整且足够长，空 gold 的数字条件通过", "ours": "has_final_answer=1, abstained=0", "explanation": "老板机械判 correct；我们只给收尾基础分"},
+        {"evidence": "语义核验", "boss": "LLM_JUDGE=False", "ours": "semantic_judge_required=1", "explanation": "两边都没有在该次重放中证明每个冷链事实正确"},
+        {"evidence": "最终结果", "boss": "verdict=correct, reward=0.69", "ours": "score=0.05, acc=0, online_eligible=0", "explanation": "高分差本质是标签/文档血缘缺陷，不应直接用于 GRPO"}
+      ]
+    }
+  },
+  "sources": [
+    {
+      "id": "shadow_replay",
+      "label": "1000 条老板 KB/DWH 历史影子回放",
+      "path": "docs/boss_reward_shadow_validation_20260804.md",
+      "query": {
+        "engine": "python",
+        "language": "python",
+        "query": "Join task, trajectory and sandbox by unique task_id; recompute boss reward and project shadow reward; inspect high positive reward gaps.",
+        "description": "同源回放 DWH 500 条与 KB 500 条；案例分数来自同一原始轨迹的两套判分重算。",
+        "executed_at": "2026-08-04T18:00:00+08:00",
+        "filters": ["唯一 task_id", "完整 agent_end 轨迹", "DWH gold SQL 通过自洽门禁", "按 reward gap 筛选后人工复核原文"],
+        "metric_definitions": ["reward_gap = boss reward_judge total - boss_reward_shadow score", "案例审计不代表总体分差分布"],
+        "tables_used": ["boss v15 task manifest", "Qwen3.6 v15 original trajectories", "DWH/KB sandboxes", "shadow replay results"]
+      }
+    },
+    {
+      "id": "our_reward_source",
+      "label": "本项目老板奖励影子实现",
+      "path": "llin_verl/boss_reward_shadow.py",
+      "query": {
+        "engine": "source-audit",
+        "language": "python",
+        "query": "Trace DWH evidence tiers, KB shadow components, acc and online_eligible gates.",
+        "description": "审计本项目影子奖励的实际代码路径；正式训练 reward 未被替换。",
+        "executed_at": "2026-08-04T18:00:00+08:00"
+      }
+    },
+    {
+      "id": "boss_reward_source",
+      "label": "老板 judge_trajectory 与 reward_judge 逻辑快照",
+      "path": "boss/scripts/data/reward_judge.py",
+      "query": {
+        "engine": "source-audit",
+        "language": "python",
+        "query": "Trace DWH/KB rule verdicts and result/process/efficiency scalar aggregation with LLM_JUDGE disabled.",
+        "description": "只读审计老板评测脚本，并在原始轨迹上调用 compute_reward 重算案例标量奖励。",
+        "executed_at": "2026-08-04T18:00:00+08:00"
+      }
+    },
+    {
+      "id": "boss_dwh_source",
+      "label": "老板 v15 DWH 原始任务与 PI 轨迹：task_000001",
+      "path": "boss_v15/task_000001.jsonl",
+      "query": {
+        "engine": "source-audit",
+        "language": "jsonl",
+        "query": "Extract instruction, gold, expected_tables, tool calls, tool results and final answer for task_000001.",
+        "description": "报告载荷仅保留必要摘录；原始数据不提交仓库。",
+        "executed_at": "2026-08-04T18:00:00+08:00"
+      }
+    },
+    {
+      "id": "boss_kb_source",
+      "label": "老板 v15 KB 原始任务与 PI 轨迹：KT-LOG-0301",
+      "path": "boss_v15/KT-LOG-0301.jsonl",
+      "query": {
+        "engine": "source-audit",
+        "language": "jsonl",
+        "query": "Extract instruction, subtype, gold_answer, source_documents, document reads and final answer for KT-LOG-0301.",
+        "description": "报告载荷仅保留必要摘录；原始数据不提交仓库。",
+        "executed_at": "2026-08-04T18:00:00+08:00"
+      }
+    }
+  ]
+}
