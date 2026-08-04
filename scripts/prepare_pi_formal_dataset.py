@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""Build a verified, leakage-controlled 200-task full-PI DWH dataset."""
+"""Reproduce the deprecated 200-task V2 dataset for audit purposes only.
+
+New training data must use ``prepare_boss_aligned_dataset.py``.  V2 mixed a
+Qwen3.7-Max manifest with Qwen3.6 conversations and may not be launched as a
+formal run.
+"""
 
 from __future__ import annotations
 
@@ -208,11 +213,17 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--val-size", type=int, default=20)
     parser.add_argument("--test-size", type=int, default=20)
     parser.add_argument("--seed", default="llin-pi-formal-v2-20260803")
+    parser.add_argument("--allow-legacy-v2", action="store_true")
     return parser.parse_args()
 
 
 def main() -> None:
     args = parse_args()
+    if not args.allow_legacy_v2:
+        raise SystemExit(
+            "formal PI V2 is deprecated and blocked; use prepare_boss_aligned_dataset.py "
+            "or pass --allow-legacy-v2 only for historical reproduction"
+        )
     sources = {
         "train": args.train_manifest,
         "val": args.val_manifest,

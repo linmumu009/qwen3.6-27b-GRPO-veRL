@@ -38,6 +38,27 @@ def cap_text(value: str, limit: int) -> str:
     return value[:limit] + f"\n[truncated {len(value) - limit} characters]"
 
 
+def truncate_tool_text(
+    value: str,
+    max_bytes: int,
+    max_lines: int,
+    *,
+    keep_tail: bool,
+) -> tuple[str, bool]:
+    """Apply the original PI 2000-line/50KB text-output contract."""
+    lines = value.splitlines(keepends=True)
+    line_truncated = len(lines) > max_lines
+    if line_truncated:
+        lines = lines[-max_lines:] if keep_tail else lines[:max_lines]
+    selected = "".join(lines)
+    raw = selected.encode("utf-8")
+    byte_truncated = len(raw) > max_bytes
+    if byte_truncated:
+        raw = raw[-max_bytes:] if keep_tail else raw[:max_bytes]
+        selected = raw.decode("utf-8", errors="ignore")
+    return selected, line_truncated or byte_truncated
+
+
 def resolve_workspace_path(workspace: Path, raw_value: Any) -> Path:
     if not isinstance(raw_value, str) or not raw_value.strip():
         raise ValueError("path must be a non-empty string")
@@ -157,7 +178,8 @@ class PiWorkspaceTool(BaseTool):
         self.run_root = Path(config.get("run_root", "/workspace/grpo_run/pi_workspaces"))
         self.run_tag = str(config.get("run_tag") or os.environ.get("PI_AGENT_RUN_TAG", "unscoped"))
         self.max_tool_timeout = int(config.get("max_tool_timeout", 60))
-        self.max_tool_output = int(config.get("max_tool_output", 200_000))
+        self.max_tool_output = int(config.get("max_tool_output", 50 * 1024))
+        self.max_tool_lines = int(config.get("max_tool_lines", 2000))
 
     @staticmethod
     def _create_kwargs(agent_data: Any, name: str) -> dict[str, Any]:
@@ -259,26 +281,50 @@ class PiWorkspaceTool(BaseTool):
             )
         except subprocess.TimeoutExpired as exc:
             partial = (exc.stdout or "") + (exc.stderr or "")
-            return (
-                cap_text(f"{partial}\nCommand timed out after {timeout} seconds.".strip(), self.max_tool_output),
-                False,
-            )
+            output = f"{partial}\nCommand timed out after {timeout} seconds.".strip()
+            return self._format_bash_output(workspace, output), False
         output = process.stdout
         if process.stderr:
             output += ("\n" if output else "") + process.stderr
         if not output.strip():
             output = f"Command completed with exit code {process.returncode}."
-        return cap_text(output, self.max_tool_output), process.returncode == 0
+        return self._format_bash_output(workspace, output), process.returncode == 0
+
+    def _format_bash_output(self, workspace: Path, output: str) -> str:
+        visible, truncated = truncate_tool_text(
+            output,
+            self.max_tool_output,
+            self.max_tool_lines,
+            keep_tail=True,
+        )
+        if not truncated:
+            return visible
+        output_dir = workspace / ".pi_tool_outputs"
+        output_dir.mkdir(parents=True, exist_ok=True)
+        output_path = output_dir / f"bash-{time.time_ns()}.log"
+        output_path.write_text(output, encoding="utf-8", errors="replace")
+        relative = output_path.relative_to(workspace).as_posix()
+        return f"[output truncated; full output saved to /workspace/{relative}]\n{visible}"
 
     def _read(self, workspace: Path, parameters: dict[str, Any]) -> str:
         path = resolve_workspace_path(workspace, parameters.get("path"))
         if not path.is_file():
             raise FileNotFoundError(f"file not found: {parameters.get('path')}")
-        offset = max(int(parameters.get("offset", 0)), 0)
+        # Boss PI declares a 1-indexed offset; omitting it starts at line 1.
+        offset = max(int(parameters.get("offset", 1)) - 1, 0)
         limit = min(max(int(parameters.get("limit", 2000)), 1), 10_000)
         with path.open(encoding="utf-8", errors="replace") as handle:
             lines = handle.readlines()
-        return cap_text("".join(lines[offset : offset + limit]), self.max_tool_output)
+        visible, truncated = truncate_tool_text(
+            "".join(lines[offset : offset + limit]),
+            self.max_tool_output,
+            self.max_tool_lines,
+            keep_tail=False,
+        )
+        if truncated:
+            next_offset = offset + visible.count("\n") + 1
+            visible += f"\n[output truncated; continue with offset={next_offset}]"
+        return visible
 
     def _write(self, workspace: Path, parameters: dict[str, Any]) -> str:
         path = resolve_workspace_path(workspace, parameters.get("path"))

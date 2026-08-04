@@ -11,9 +11,11 @@ ROOT = Path(__file__).resolve().parents[1]
 def test_formal_50step_uses_isolated_data_and_full_pi_contract():
     script = (ROOT / "scripts" / "run_pi_formal_50step.sh").read_text(encoding="utf-8")
 
-    assert "pi_formal_train.parquet" in script
-    assert "pi_formal_val.parquet" in script
-    assert "pi_formal_test.parquet" not in script
+    assert "boss_pi_train.parquet" in script
+    assert "boss_pi_val.parquet" in script
+    assert "boss_pi_test.parquet" not in script
+    assert "formal_pi_v2_20260803" not in script
+    assert "check_boss_alignment_contract.py" in script
     assert "pi_workspace_tools.yaml" in script
     assert "pi_agent_loops.yaml" in script
     assert 'MAX_ASSISTANT_TURNS=26' in script

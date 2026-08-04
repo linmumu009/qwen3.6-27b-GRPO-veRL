@@ -9,6 +9,13 @@ from scripts.prepare_pi_formal_dataset import (
 )
 
 
+def test_legacy_v2_builder_is_clearly_deprecated():
+    source = Path(__file__).resolve().parents[1] / "scripts" / "prepare_pi_formal_dataset.py"
+    text = source.read_text(encoding="utf-8")
+    assert "--allow-legacy-v2" in text
+    assert "prepare_boss_aligned_dataset.py" in text
+
+
 def make_environment(root: Path, version: str) -> None:
     database = root / "sft" / version / "logistics.sqlite"
     database.parent.mkdir(parents=True)

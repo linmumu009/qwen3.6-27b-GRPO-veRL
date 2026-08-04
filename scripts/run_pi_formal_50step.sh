@@ -2,9 +2,9 @@
 set -euo pipefail
 
 PROJECT_ROOT="${PROJECT_ROOT:-/workspace/llin-verl-grpo}"
-DATA_DIR="${DATA_DIR:-${PROJECT_ROOT}/data/formal_pi_v2_20260803}"
-TRAIN_FILE="${TRAIN_FILE:-${DATA_DIR}/pi_formal_train.parquet}"
-VAL_FILE="${VAL_FILE:-${DATA_DIR}/pi_formal_val.parquet}"
+DATA_DIR="${DATA_DIR:-${PROJECT_ROOT}/data/boss_pi_aligned_v1}"
+TRAIN_FILE="${TRAIN_FILE:-${DATA_DIR}/boss_pi_train.parquet}"
+VAL_FILE="${VAL_FILE:-${DATA_DIR}/boss_pi_val.parquet}"
 RUN_NAME="${RUN_NAME:-llin-pi-formal-grpo-4of4-50step-$(date +%Y%m%d-%H%M%S)}"
 OUTPUT_DIR="${OUTPUT_DIR:-${PROJECT_ROOT}/runs/${RUN_NAME}}"
 
@@ -18,6 +18,11 @@ STALENESS_THRESHOLD="${STALENESS_THRESHOLD:-1.0}"
 MAX_CONTEXT_TOKENS="${MAX_CONTEXT_TOKENS:-49152}"
 MAX_QUEUE_GROUPS="${MAX_QUEUE_GROUPS:-8}"
 MAX_QUEUE_TOKENS="${MAX_QUEUE_TOKENS:-$((MAX_QUEUE_GROUPS * 4 * MAX_CONTEXT_TOKENS))}"
+
+# A formal run may only consume the source-joined, reviewed boss contract.
+# The old formal_pi_v2_* dataset is intentionally rejected here.
+python3 "${PROJECT_ROOT}/scripts/check_boss_alignment_contract.py" \
+  --data-dir "${DATA_DIR}"
 
 for path in "${TRAIN_FILE}" "${VAL_FILE}"; do
   if [[ ! -f "${path}" ]]; then
@@ -45,8 +50,8 @@ python3 "${PROJECT_ROOT}/scripts/check_formal_data_on_ray.py" \
   --ray-address "${RAY_ADDRESS:-192.168.202.5:26379}"
 
 # Exact 4->4 sampling: no fastest-K surplus candidates are created. The test
-# split remains sealed; only the 160-task train and 20-task validation files
-# enter this run. Validation is greedy n=1 every EVAL_FREQ policy updates.
+# split remains sealed; all reviewed train tasks and the source-isolated
+# validation split enter this run. Validation is greedy n=1 every EVAL_FREQ.
 RUN_NAME="${RUN_NAME}" \
 OUTPUT_DIR="${OUTPUT_DIR}" \
 DATA_FILE="${TRAIN_FILE}" \

@@ -11,7 +11,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - actor 模型参数常驻 NPU，不做参数卸载；Adam 优化器与梯度卸载到 5 号机内存，并开启全量激活重计算。LoRA 已关闭（`lora_rank=0`）。
 - rollout 开启 Continuous Token、prefix caching 和两路 vLLM cache 计数；checkpoint 每 20 步保存一次，仅保存 `model,extra` 并只保留 1 份。
 - 长上下文配置将最大上下文设为 `49,152` tokens（默认初始 prompt `4,096` + 多轮 response `45,056`）；正式 PI 配置将允许最多 25 次工具反馈和随后 1 次最终回答，单轮最多 4 个并行工具调用，单次工具返回放宽到 `32,768` 字符；vLLM 保持 `8,192`-token chunked prefill 和每副本最多 16 个活跃序列。
-- 数据转换现已显式保留 manifest 中的 source system prompt，并记录 `source/fallback` 血缘；正式 V2 旧数据实际缺少 source system、使用了 fallback，不能再表述为与老板 prompt 完全一致。
+- 新正式数据入口改为 `boss-pi-aligned-grpo-v1`：system 与四工具 schema 直接冻结自老板 `pi_to_openai.py` 并校验 SHA256，不再存在项目 fallback；旧 formal V2 已被正式启动器硬拒绝。
 - 20-step One-Step-Off-Policy 的长尾切换判据已触发；后续推荐使用 bounded fully-async：一个 prompt 的 4 条 GRPO 轨迹作为不可拆分 group。48K 配置的 queued-token 上限至少容纳一个最坏情况训练 batch（默认 `786,432` tokens），group 数上限继续控制 staleness，满载时背压而不是丢弃旧样本。
 - bounded fully-async 已支持 Fastest-K 过量采样：默认物理生成 6 条候选、最先完成的 4 条组成完整 GRPO group，剩余候选取消；可用 `OVERSAMPLE_CANDIDATES=4` 恢复无过量采样的 baseline。该能力已验证吞吐收益，但仍需多步质量 A/B 后才能作为正式训练默认策略。
 - Fastest-K 的逐请求取消已改为 vLLM 0.18 的公开 external-request API；V4 门禁实测 8/8 个落后候选完成物理取消，且不清空 prefix cache。正式 `4→4`、50-step GRPO 已结束；当前暂停训练并优先重建 V3 数据，不启用过量采样。
@@ -32,13 +32,13 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 老板原有的 `trajectories_v15_27B_table.tar.gz` 是 PI agent 事件轨迹，共包含 1,500 个 JSONL 文件。它包含提示、模型消息、工具调用和工具输出，但没有可直接供 GRPO 使用的显式 reward，因此不能原样传给 veRL。
 
-早期 smoke 采用只读 `query_sqlite`；正式数据阶段已切换到以下完整 PI 契约：
+早期 smoke 采用只读 `query_sqlite`；当前 boss-aligned 数据阶段使用以下严格 PI 契约：
 
-1. 提供同名、同 schema 的 `bash/read/write/edit` 四工具；source system prompt 只有在数据 manifest 明确携带时才原样保留，旧 formal V2 不满足该条件。
+1. `bash/read/edit/write` 四工具 schema 与老板 `DEFAULT_TOOLS` 做规范化精确比较；system 固定为老板 `DEFAULT_SYSTEM`，二者均记录源文件与内容哈希。
 2. 每条轨迹从对应 `sft/<version>` 环境复制独立可写工作区；四个工具在整条轨迹中共享状态，结束后统一清理。
 3. 昇腾 veRL 镜像缺少 `sqlite3` CLI，项目提供只读兼容代理，使模型可按当前数据中实际携带的 system prompt 在 Bash 中调用 `sqlite3`。
-4. 奖励 V2 以最终答案正确性为主，同时重新执行 agent SQL，与隐藏的 gold `verification_sql` 结果进行独立比对；只提到表名或在工具输出里出现目标值不能获得满分。
-5. 首批正式数据为 200 条可执行验证的 DWH numeric/table 任务：v15 train 160、v20 val 20、v21 test 20；task ID、instruction hash 和 environment 均跨 split 隔离。
+4. GRPO 只接收真实 source task 的 numeric/table verifier，并要求 instruction/gold 哈希经过显式 alignment review；未审核、报告型、KB/Hybrid 和无严格 verifier 的样本只进入 SFT/reference。
+5. 旧 200-task V2 混用了 Qwen3.7-Max manifest 与 Qwen3.6 conversation，已废止。当前从 v15 原始 Qwen3.6 事件文件按 `task_id` 连接同源 sandbox task：1,500 条完整轨迹中，1,000 条 KB/Hybrid 和 220 条无严格 verifier 样本进入 SFT，3 条 gold 不一致被拒绝，277 条进入待审核队列；审核完成前不生成正式 GRPO Parquet。
 
 原始轨迹、验证清单、Parquet、模型、checkpoint 和运行日志均不会提交到 Git。
 
@@ -53,13 +53,15 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [`docs/frozen_model_baseline_20260803.md`](docs/frozen_model_baseline_20260803.md)：完整 PI Agent、48K 上下文和 200 条正式任务的冻结模型基线，以及四次启动的故障与修复复盘。
 - [`docs/formal_pi_failure_reproduction_20260803.md`](docs/formal_pi_failure_reproduction_20260803.md)：冻结基线 `-01～-04` 与正式 50-step `-01～-03` 的逐次配置、原始报错、根因、修复、验证和复现排障手册。
 - [`docs/formal_grpo_50step_quality_diagnosis_20260804.md`](docs/formal_grpo_50step_quality_diagnosis_20260804.md)：正式 50-step 完成结果、800 条奖励分解、GRPO 组内方差、instruction/gold 对齐、system prompt 与沙箱隔离问题及 V3 训练建议。
+- [`docs/boss_data_alignment_correction_20260804.md`](docs/boss_data_alignment_correction_20260804.md)：逐项记录固定 200 条、fallback system、工具 schema/runtime、Qwen3.7/Qwen3.6 manifest 混用、hidden reward 与 GRPO/SFT 分流的根因和更正。
 - `llin_verl/pi_sqlite_tool.py`：只读 SQLite 轨迹工具。
 - `llin_verl/pi_workspace_tools.py`、`llin_verl/pi_agent_loop.py`：完整 PI 四工具、轨迹级共享沙箱、事件审计和统一清理。
 - `llin_verl/pi_sqlite_cli.py`：为官方昇腾镜像补齐的受限只读 sqlite3 CLI 兼容层。
 - `llin_verl/pi_reward.py`：最终答案、可执行 SQL 证据、必需表和安全协议联合奖励 V2。
 - `runtime/sitecustomize.py`：将训练池固定到 5 号机、rollout 池固定到 6 号机。
 - `scripts/prepare_pi_dataset.py`：验证轨迹到 veRL Parquet 的转换程序。
-- `scripts/prepare_pi_formal_dataset.py`、`scripts/audit_pi_formal_dataset.py`：200 条正式 PI 数据构建、gold SQL 执行、split 隔离和独立质量门禁。
+- `scripts/prepare_pi_formal_dataset.py`：只保留旧 V2 历史复现，默认阻断，必须显式传 `--allow-legacy-v2`。
+- `scripts/prepare_boss_aligned_dataset.py`、`scripts/export_boss_task_manifest.py`、`scripts/check_boss_alignment_contract.py`：按真实 task_id 连接老板轨迹与 task、全量/显式 pilot 分流、review queue、GRPO/SFT 隔离及正式启动硬门禁。
 - `scripts/analyze_formal_grpo_50step.py`、`scripts/audit_formal_instruction_gold_alignment.py`：完整 50-step 训练信号、奖励组件、GRPO group 方差、工具行为及 instruction/gold 语义复核触发器。
 - `scripts/start_ray_m05.sh`、`scripts/start_ray_m06.sh`：两机 Ray 启动程序。
 - `scripts/check_ray_roles.py`：跨机角色落点验证。
@@ -69,7 +71,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/launch_pi_grpo_smoke.sh`：带退出码、起止时间和完整日志的后台实验启动器。
 - `scripts/run_pi_grpo_megatron_tp4_pp2_cp2.sh`：16-NPU Megatron TP4/PP2/CP2 全参轨迹 GRPO 配置。
 - `scripts/launch_pi_grpo_megatron_smoke.sh`：Megatron 单步实验的日志、时间和退出码启动器。
-- `scripts/run_pi_formal_50step.sh`、`scripts/launch_pi_formal_50step.sh`：正式 160-task train / 20-task val 的 `4→4`、50-step 全参数 GRPO 及后台生命周期入口；每 10 step 贪心验证并保存一份滚动 checkpoint，test split 保持封存。
+- `scripts/run_pi_formal_50step.sh`、`scripts/launch_pi_formal_50step.sh`：只接受 full、已审核、哈希完整的 boss-aligned train/val；旧 V2 和 pilot 会在模型加载前被拒绝。
 - `scripts/check_formal_data_on_ray.py`：正式运行前分别在 `llin_trainer` 和 `llin_rollout` Ray 节点计算 train/val 文件大小与 SHA256，任一节点缺失或内容不一致即在模型加载前失败。
 - `scripts/run_pi_grpo_fully_async_tp4_pp2_cp2.sh`：TP4/PP2/CP2 训练、TP8/DP2 rollout 的 bounded fully-async 配置，按完整 GRPO group 入队并以 queued tokens 做背压。
 - `scripts/patch_verl_fastest_k_oversampling.py`：给 fully-async AgentLoop 增加可配置候选过量采样、最快 K quorum、完整 GRPO group 选择和逐请求 vLLM 取消链路。
@@ -89,9 +91,9 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - 两台机器均完成官方镜像的软件栈和 Qwen3.6-27B 模型识别检查。
 - Ray 两节点集群已连通，可见 32 张 NPU；角色测试确认训练任务落在 5 号机、rollout 任务落在 6 号机。
 - 4 条真实验证任务已转换为 Parquet；两台机器上的只读数据库查询和奖励闭环均为 `4/4` 满分。
-- 本地覆盖 Megatron 拓扑、Continuous Token、TP8/DP2 权重同步、监控分析、48K 容量估算、bounded fully-async 队列、Fastest-K、完整 PI 工具、奖励 V2、正式数据门禁、冻结基线兼容、正式训练契约和 vLLM public abort，项目测试为 `62 passed`。
+- 本地覆盖 Megatron 拓扑、Continuous Token、TP8/DP2 权重同步、48K、fully-async、Fastest-K、完整 PI 工具、奖励、boss-aligned source join/人工审核门禁、冻结基线和 vLLM public abort，项目测试为 `81 passed`。
 - 完整 PI Agent 已通过 6 号机真实 veRL 容器门禁：`bash/read/write/edit` 全部加载，同一轨迹共享可写沙箱，sqlite3 只读代理可查询 v15 数据，失败状态正确记录，轨迹释放后工作区不存在；门禁结束后容器已停止。
-- 正式数据 `/data3/llin/qwen3.6-27b-verl-grpo/data/formal_pi_v2_20260803` 已生成并通过独立审计：train/val/test 为 `160/20/20`，共 200 个唯一 task 和 instruction hash，跨 split 重叠为 0；每条 gold SQL 均重新执行并与标签一致。
+- 历史 V2 数据 `/data3/llin/qwen3.6-27b-verl-grpo/data/formal_pi_v2_20260803` 曾完成 `160/20/20` 工程审计，但后续发现其混用 Qwen3.7-Max manifest、Qwen3.6 conversation 和项目 fallback，现仅保留复现用途，正式入口已拒绝。
 - 正式 prompt 连同四工具 schema 的 token 范围为 train `773–809`、val `775–799`、test `775–806`，均远低于 4,096-token 初始 prompt 预算；三个 Parquet 的 SHA256 已写入服务器侧审计报告。
 - 经明确授权，两个新建的 `llin` 容器已重建为特权容器；两侧 NPU 探针均通过，未改动其他人的镜像、容器或目录。
 - 两机 2-rank HCCL all-reduce 和 1→16 rollout fan-out 均通过；256 MiB stateless PyHCCL 广播、普通 broadcast 与 all-reduce 均验证成功。正式配置使用 3 GiB 权重广播 bucket，并将 vLLM HBM 利用率限制为 60%。
@@ -140,6 +142,14 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [veRL 昇腾模型与算法支持](https://github.com/verl-project/verl/blob/main/docs/ascend_tutorial/model_support/model_and_algorithm_support.md)
 
 ## 版本记录
+
+### v0.24.0 — 2026-08-04
+
+- 废止固定 `160/20/20` 的 formal V2 默认链路；旧构建器改为必须显式 `--allow-legacy-v2`，正式 50-step 入口只接受 full、已审核、带完整哈希的 `boss-pi-aligned-grpo-v1`，并在模型加载前拒绝 V2、pilot、fallback 和未审核数据。
+- 从老板 `pi_to_openai.py` 原样冻结 `DEFAULT_SYSTEM` 与 `bash/read/edit/write` schema，记录源脚本和内容 SHA256；runtime 修正为 1-based read offset、2,000 行/50 KiB 输出和 900 秒工具边界，同时明确保留网络/宿主机/破坏性命令安全隔离这一差异。
+- 追溯确认旧 V2 manifest 来自 Qwen3.7-Max，而讨论/对比对象为 Qwen3.6 conversation；改用 v15 原始 Qwen3.6 事件文件名 `task_id` 连接同一 sandbox task，不再按 row order、模糊文本或跨模型 manifest 拼接。
+- v15 1,500 条源轨迹已全量进入 SFT/reference；1,000 条 KB/Hybrid、220 条无严格 verifier 样本不进入当前 GRPO，3 条 gold 执行不一致被拒绝，277 条可执行 DWH numeric/table 进入显式 alignment review queue。当前批准 GRPO 为 0，未启动新训练。
+- 新增 boss-aligned 构建器、task manifest 无损导出、正式契约门禁、逐项复盘和回归测试；项目门禁为 `81 passed`。
 
 ### v0.23.0 — 2026-08-04
 

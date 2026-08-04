@@ -1,3 +1,8 @@
+from pathlib import Path
+
+import yaml
+
+from llin_verl.boss_pi_contract import canonical_json, load_boss_pi_contract
 from llin_verl.pi_tool_contract import command_is_safe, extract_table_names, route_sqlite_cli
 
 
@@ -18,3 +23,11 @@ def test_missing_image_sqlite_binary_is_transparently_routed():
     assert route_sqlite_cli(command) == (
         'cd /workspace && python3 -m llin_verl.pi_sqlite_cli logistics.sqlite "SELECT 1"'
     )
+
+
+def test_runtime_tool_schemas_are_byte_semantically_equal_to_boss_contract():
+    root = Path(__file__).resolve().parents[1]
+    config = yaml.safe_load((root / "configs" / "pi_workspace_tools.yaml").read_text(encoding="utf-8"))
+    runtime_schemas = [item["tool_schema"] for item in config["tools"]]
+
+    assert canonical_json(runtime_schemas) == canonical_json(load_boss_pi_contract()["tools"])
