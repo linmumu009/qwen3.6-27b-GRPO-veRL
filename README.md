@@ -27,7 +27,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 | 容器 | `llin-verl-trainer-m05-20260730` | `llin-verl-rollout-m06-20260730` |
 | 镜像 | `llin-verl-a3:20260730` | `llin-verl-a3:20260730` |
 | 容器权限 | 特权模式（仅重建上述 `llin` 容器） | 特权模式（仅重建上述 `llin` 容器） |
-| 当前实验 NPU | 16（`llin-v15-dwh-bossreward-4groups-50step-20260805-02` 训练初始化中） | 16（同一运行的两个 TP8 vLLM 副本已加载模型） |
+| 当前实验 NPU | 0（4-group 运行在 11/50 主动停止，容器已停） | 0（4-group 运行在 11/50 主动停止，容器已停） |
 
 ## 数据结论
 
@@ -161,6 +161,11 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [veRL 昇腾模型与算法支持](https://github.com/verl-project/verl/blob/main/docs/ascend_tutorial/model_support/model_and_algorithm_support.md)
 
 ## 版本记录
+
+### v0.38.0 — 2026-08-05
+
+- 按明确指令停止 `llin-v15-dwh-bossreward-4groups-50step-20260805-02`：最终完成 `11/50` 次更新并保留 11 份 rollout，启动器记录退出码 `1`；由于只在 step 50 保存，本轮没有 checkpoint。
+- 先停止 6 号机 rollout 容器、再停止 5 号机 trainer 容器；两容器最终均为 `Exited (137)`，两机 32 张 NPU 均无运行进程，AICore 回到 0、HBM 回到约 `2.9–3.1 GiB/卡` 驱动基线。
 
 ### v0.37.0 — 2026-08-05
 
