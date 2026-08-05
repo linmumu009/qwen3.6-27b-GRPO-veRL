@@ -1,0 +1,333 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "48K GRPO 推理容量与并发提效评估",
+    "description": "基于最近 11 步正式运行、当前 fully-async 调度实现和 vLLM/vLLM Ascend 官方参数语义，评估 0.85 显存利用率、16K batch token 与更高并发的收益、耦合和上线门槛。",
+    "generatedAt": "2026-08-05T16:00:00+08:00",
+    "charts": [
+      {
+        "id": "amdahl_ceiling_chart",
+        "title": "不同 rollout 提速下的稳态单步理论下限",
+        "subtitle": "以第 3–9 步为基线；仅将 queue wait 按 rollout 倍率缩放，Actor 与固定开销保持不变。",
+        "type": "bar",
+        "dataset": "throughput_ceiling",
+        "sourceId": "throughput_model",
+        "encodings": {
+          "x": {"field": "scenario", "type": "ordinal", "label": "rollout 生产率情景"},
+          "y": {"field": "step_minutes", "type": "quantitative", "label": "稳态 step", "unit": "min"}
+        },
+        "valueFormat": "number",
+        "unit": "min",
+        "layout": "full",
+        "maxRows": 5
+      }
+    ],
+    "tables": [
+      {
+        "id": "parameter_matrix_table",
+        "title": "三个推理参数与上游调度的真实作用",
+        "subtitle": "参数必须按依赖关系调整；单独放大上限不一定产生更多工作。",
+        "dataset": "parameter_matrix",
+        "sourceId": "parameter_synthesis",
+        "columns": [
+          {"field": "setting", "label": "设置"},
+          {"field": "proposed", "label": "候选值"},
+          {"field": "direct_effect", "label": "直接作用"},
+          {"field": "speed_condition", "label": "何时才会提速"},
+          {"field": "main_risk", "label": "主要风险"},
+          {"field": "judgment", "label": "判断"}
+        ],
+        "layout": "full"
+      },
+      {
+        "id": "experiment_matrix_table",
+        "title": "建议的逐级容量 A/B",
+        "subtitle": "每一臂只新增一个主要变量；先通过容量门禁，再扩大正式在途样本。",
+        "dataset": "experiment_matrix",
+        "sourceId": "experiment_design",
+        "columns": [
+          {"field": "arm", "label": "实验臂"},
+          {"field": "memory_util", "label": "显存利用率"},
+          {"field": "batched_tokens", "label": "Batch tokens", "format": "number"},
+          {"field": "max_seqs", "label": "Seqs/副本", "format": "number"},
+          {"field": "active_groups", "label": "在途 groups", "format": "number"},
+          {"field": "staleness", "label": "Staleness"},
+          {"field": "purpose", "label": "回答的问题"}
+        ],
+        "layout": "full"
+      },
+      {
+        "id": "guardrail_table",
+        "title": "容量压测的通过门槛",
+        "subtitle": "同时覆盖启动 profile、最长轨迹、工具等待和多次权重同步。",
+        "dataset": "guardrails",
+        "sourceId": "experiment_design",
+        "columns": [
+          {"field": "area", "label": "检查面"},
+          {"field": "must_measure", "label": "必须记录"},
+          {"field": "pass_condition", "label": "建议通过条件"},
+          {"field": "why", "label": "原因"}
+        ],
+        "layout": "full"
+      }
+    ],
+    "sources": [
+      {"id": "formal_run", "label": "最近 4-group 正式运行日志", "path": "runs/llin-v15-dwh-bossreward-4groups-50step-20260805-02/driver.log"},
+      {"id": "formal_config", "label": "当前 48K fully-async 正式配置", "path": "scripts/run_pi_grpo_fully_async_tp4_pp2_cp2.sh"},
+      {"id": "verl_async", "label": "veRL fully-async 并发与新鲜度实现", "path": "reference/verl/verl/experimental/fully_async_policy/fully_async_rollouter.py"},
+      {"id": "vllm_018", "label": "vLLM 0.18 Optimization and Tuning", "path": "https://docs.vllm.ai/en/v0.18.0/configuration/optimization/"},
+      {"id": "vllm_ascend_018", "label": "vLLM Ascend 0.18 FAQ", "path": "https://docs.vllm.ai/projects/ascend/en/v0.18.0/faqs.html"},
+      {"id": "qwen_ascend", "label": "Qwen3.5-27B / Qwen3.6-27B vLLM Ascend 参数说明", "path": "https://docs.vllm.ai/projects/ascend/en/v0.24.0rc/tutorials/models/Qwen3.5-27B-Qwen3.6-27B.html"},
+      {"id": "throughput_model", "label": "基于稳态步骤的 Amdahl 上限模型", "path": "docs/rollout_capacity_tuning_20260805.artifact.json"},
+      {"id": "parameter_synthesis", "label": "推理容量参数综合判断", "path": "docs/rollout_capacity_tuning_20260805.artifact.json"},
+      {"id": "experiment_design", "label": "逐级容量实验与门禁设计", "path": "docs/rollout_capacity_tuning_20260805.artifact.json"}
+    ],
+    "blocks": [
+      {"id": "title", "type": "markdown", "body": "# 48K GRPO 推理容量与并发提效评估", "layout": "full"},
+      {
+        "id": "technical_summary",
+        "type": "markdown",
+        "body": "## 技术结论\n\n**`GPU_MEMORY_UTILIZATION=0.85` 可以压测，但不应被当成单独的提速开关。** 它主要扩大 KV/状态缓存预算；只有当前存在缓存不足、抢占重算或并发请求因缓存容量受限时，才会直接提高吞吐。最近 driver 日志没有保留 KV cache usage、capacity 或 preemption 指标，因此现有证据不足以证明 0.60 已经是缓存瓶颈。\n\n**`max_num_batched_tokens` 建议测试 `16384`，但应在 0.85 通过最坏负载显存门禁后单独加入。** 更大的 token budget 能减少长 prefill 的切块轮数，但同时增加 profile/运行期 activation 峰值，并在固定显存利用率下挤掉一部分 KV cache；不能假设“0.85 的新增空间”和“16K 的吞吐收益”可以简单相加。\n\n**真正扩大推理并发不能只提高 `max_num_seqs`。** 当前两套 TP8 副本共 32 个 sequence slots，恰好对应 8 个在途 group × 4 条轨迹。把每副本从 16 提到 24，只有在上游同时提供 12 个在途 group 时才有意义；而当前 veRL 公式要求 staleness 从 1.0 提到 2.0，意味着用更旧的策略样本换吞吐。推荐先完成 `0.60/8K/16 → 0.85/8K/16 → 0.85/16K/16`，再把 10-group 并发作为独立质量 A/B，而不是一次把三个旋钮全拧满。",
+        "layout": "full"
+      },
+      {
+        "id": "bottleneck",
+        "type": "markdown",
+        "body": "## 当前稳态 85.8% 的时间在等待 rollout\n\n最近运行的第 3–9 步排除预热库存后，平均整步为 1,180.63 秒，其中队列等待 1,012.54 秒、Actor 更新 159.97 秒，其余固定开销约 8.11 秒。8-group 预热本身用了 1,690.63 秒并生成 822,785 tokens。当前首要目标确实应是提高 rollout group/hour，而不是继续优化两三分钟的训练更新。\n\n不过，日志还显示每步工具调用阶段可占 147–417 秒，AICore 快照通常只有约 12%–18%。这类多轮 agent workload 会在“模型生成—工具执行—再次生成”之间反复切换；扩大在途 group 有机会隐藏工具等待，但也可能把 CPU、SQLite/DWH、文件 I/O 或 sandbox 队列变成新瓶颈。",
+        "sourceId": "formal_run",
+        "layout": "full"
+      },
+      {
+        "id": "amdahl_explanation",
+        "type": "markdown",
+        "body": "## 即使 rollout 翻倍，稳态 step 的理论降幅也只有 42.9%\n\n下图不是性能预测，而是上限模型：假设 rollout 生产率按比例提升，训练更新和固定开销完全不变。rollout 提升 20% 时，稳态 step 最多约缩短 14.3%；提升 50% 时最多约缩短 28.6%；即使翻倍，也仍需约 11.24 分钟。它用于防止把某个底层参数的局部收益误读成端到端同幅度收益。",
+        "sourceId": "throughput_model",
+        "layout": "full"
+      },
+      {"id": "amdahl_chart_block", "type": "chart", "chartId": "amdahl_ceiling_chart", "layout": "full"},
+      {
+        "id": "memory_analysis",
+        "type": "markdown",
+        "body": "## 0.85 有容量依据，但瞬态余量并不宽松\n\n官方参数语义是：可用 cache 约等于 `gpu_memory_utilization × HBM - profile run 峰值`。从 0.60 提到 0.85，在 64 GiB NPU 上把 vLLM 目标预算提高约 16 GiB。上一轮 0.60 运行时的整卡观测约 41.8–43.0 GiB；如果外部开销近似不变，线性外推到 0.85 约为 57.8–59.0 GiB，只剩约 5–6 GiB。该外推不包含不同 profile 峰值、allocator 碎片和权重同步瞬态，因此只能说明“可能可行”，不能证明“长期安全”。\n\n当前还使用 3,072 MiB 权重更新 bucket，并每步向两套推理副本同步参数。0.85 必须覆盖启动 profile、48K 极长轨迹、至少 10 次连续权重同步和验证切换；仅完成模型加载不算通过。若支持，应同时评估 `PYTORCH_NPU_ALLOC_CONF=expandable_segments:True` 对碎片的改善，但它也必须作为独立可回滚设置验证。",
+        "layout": "full"
+      },
+      {
+        "id": "batched_token_analysis",
+        "type": "markdown",
+        "body": "## 16K batch token 值得测，但它主要优化 prefill\n\n当前已启用 chunked prefill。vLLM 0.18 的调度会优先 decode，再用剩余 token budget 调度 prefill；大于 budget 的 prefill 会被切块。官方建议吞吐优先场景测试高于 8,192 的值，并给出 16,384 示例。对我们的 48K 上限而言，16K 可以减少长 prefill 的调度轮数，但大量时间仍在逐 token decode 和外部工具调用，所以端到端收益可能显著小于纯 prefill benchmark。\n\n更重要的是，Qwen3.6 Ascend 文档明确说明更大的 `max_num_batched_tokens` 会增加 activation HBM 压力；profile 峰值上升后，在同一个 0.85 预算内可留给 cache 的空间反而减少。因此先比较 8K 与 16K，不直接跳到 32K；若 16K 让 preemption、HBM 峰值或 decode ITL 恶化，应回到 12,288 或 8,192。",
+        "layout": "full"
+      },
+      {"id": "parameter_table_block", "type": "table", "tableId": "parameter_matrix_table", "layout": "full"},
+      {
+        "id": "concurrency_analysis",
+        "type": "markdown",
+        "body": "## 更高并发的代价是更多旧策略样本\n\n当前调度器计算 `max_required_samples = groups_per_update × (1 + staleness_threshold) × sync_interval`。在 4 groups/update、sync interval=1 下：staleness=1.0 对应 8 个在途 group；1.5 对应 10 个；2.0 对应 12 个。`max_concurrent_samples` 又取物理副本容量和该上限的较小值，所以单独改 `max_num_seqs` 或 `concurrent_samples_per_replica` 都无法突破 8 groups。\n\n10 groups 需要 40 条 sequence slots，即每个 DP 副本 `max_num_seqs=20`，同时把 agent workers 提到 10。12 groups 则需要每副本 24 slots、12 个 agent workers，并允许最多两步陈旧。这个 trade-off 是异步训练本身的因果约束：训练端每消费 4 groups 就更新一次参数，剩余在途工作自然由旧参数启动。除非改变 update batch、取消/重启旧请求或引入严格的 off-policy correction，否则不存在“只加并发、不加陈旧度”的免费方案。",
+        "sourceId": "verl_async",
+        "layout": "full"
+      },
+      {
+        "id": "methodology",
+        "type": "markdown",
+        "body": "## 证据与估算方法\n\n运行证据来自 `llin-v15-dwh-bossreward-4groups-50step-20260805-02` 的 `LLIN_PREWARM`、`LLIN_TRAIN_STAGE` 和 fully-async 监控行。稳态窗口取第 3–9 步，排除预热库存导致的前两步近零等待和第 10 步验证后的额外重叠。理论 step 使用 `queue_wait / rollout_multiplier + actor_update + fixed_overhead`，只描述吞吐改善的端到端上限。\n\n参数语义优先采用当前安装版本对应的 vLLM/vLLM Ascend 0.18 文档；Qwen3.6 专用页面来自更新的 vLLM Ascend 0.24 RC，仅用于解释模型特定的 cache、batch token 和 prefix caching 行为，所有建议仍需在当前 0.18 容器实测。",
+        "layout": "full"
+      },
+      {
+        "id": "limitations",
+        "type": "markdown",
+        "body": "## 现有证据不能证明 KV cache 已经是瓶颈\n\n- driver 日志没有转存启动时的 `KV cache size`、49,152-token 最大并发估算、运行期 cache usage 或 cumulative preemption；没有看到抢占文本不等于确定没有抢占。\n- 41.8–43.0 GiB 是运行快照，不是逐阶段峰值；0.85 的 57.8–59.0 GiB 是线性容量估算。\n- 当前运行只有 11 步，任务长度和工具回合差异很大；A/B 必须固定 prompt 顺序并同时报告 groups/hour 与 generated tokens/hour。\n- 调度参数可能改变随机采样时序和输出长度，端到端时间不能只按 wall-clock 比较。\n- 新版 Qwen3.6 文档推荐的 graph mode、MTP speculative decoding 和 async scheduling 可能带来更大收益，但当前训练权重同步、采样分布一致性和 vLLM 0.18 兼容性尚未验证，不应与本轮三个参数同时引入。",
+        "layout": "full"
+      },
+      {
+        "id": "recommendation",
+        "type": "markdown",
+        "body": "## 推荐先定容量，再定 batch，最后定并发\n\n1. **容量臂：0.85 / 8K / 16 / 8 groups。** 与 0.60 基线使用同一批真实 48K prompts；记录启动 cache 容量、HBM 峰值、preemption 和 10 次权重同步。若仅 cache 变大而 groups/hour 不变，这是正常的负结果。\n2. **调度臂：0.85 / 16K / 16 / 8 groups。** 只新增 batch token 变量，比较 prefill tokens/s、decode tokens/s、group wall time 和端到端 tokens/hour。\n3. **并发臂先到 10 groups，不直接到 12。** 使用 0.85 / 16K / 20 seqs/副本、10 agent workers、staleness=1.5；与 8-group 臂固定相同总 groups，比较吞吐和 policy-version/partial-span/reward/KL。只有在质量护栏持平且工具后端未饱和时，才测试 12 groups、24 seqs/副本、staleness=2.0。\n4. **正式默认的候选值暂定 0.85 + 16K，但并发仍保持 8 groups。** 这两个值只有通过最坏负载门禁后才应写入正式入口；更高并发应作为单独的算法/质量决策，而不是基础设施默认。",
+        "sourceId": "experiment_design",
+        "layout": "full"
+      },
+      {"id": "experiment_table_block", "type": "table", "tableId": "experiment_matrix_table", "layout": "full"},
+      {
+        "id": "guardrail_intro",
+        "type": "markdown",
+        "body": "## 通过门槛必须覆盖瞬态与新瓶颈\n\n压测要同时观察推理卡、工具后端和异步样本新鲜度。最危险的误判是：短 smoke 没有 OOM，就直接把 0.85、16K 和 12 groups 写成正式默认；这样一旦出现问题，无法区分是 profile activation、KV cache、权重同步、工具队列还是旧样本暴露造成的。",
+        "layout": "full"
+      },
+      {"id": "guardrail_table_block", "type": "table", "tableId": "guardrail_table", "layout": "full"},
+      {
+        "id": "further_questions",
+        "type": "markdown",
+        "body": "## 下一轮还应回答\n\n- 当前每个 TP8 副本实际分配了多少 cache tokens，49,152-token 请求的估算并发是多少？\n- 8K→16K 的收益来自 prompt prefill、工具后多轮 re-prefill，还是只是改变了调度等待？\n- 10-group 并发增加后，工具执行 p95、CPU iowait 和 DWH/SQLite 锁等待是否先于 NPU 饱和？\n- prefix caching 在多轮轨迹内的命中率是多少？Qwen3.6 的大 block size 是否让公共短前缀无效，但长对话续写仍能受益？\n- 在完成基础参数 A/B 后，是否值得单独验证 `FULL_DECODE_ONLY` graph mode 与 Qwen3.6 MTP speculative decoding？",
+        "layout": "full"
+      }
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "generatedAt": "2026-08-05T16:00:00+08:00",
+    "status": "ready",
+    "datasets": {
+      "throughput_ceiling": [
+        {"scenario": "当前 1.0×", "rollout_multiplier": 1.0, "step_minutes": 19.68, "max_step_reduction_pct": 0.0, "queue_minutes": 16.88, "actor_and_fixed_minutes": 2.80},
+        {"scenario": "rollout 1.2×", "rollout_multiplier": 1.2, "step_minutes": 16.86, "max_step_reduction_pct": 14.3, "queue_minutes": 14.06, "actor_and_fixed_minutes": 2.80},
+        {"scenario": "rollout 1.3×", "rollout_multiplier": 1.3, "step_minutes": 15.78, "max_step_reduction_pct": 19.8, "queue_minutes": 12.98, "actor_and_fixed_minutes": 2.80},
+        {"scenario": "rollout 1.5×", "rollout_multiplier": 1.5, "step_minutes": 14.05, "max_step_reduction_pct": 28.6, "queue_minutes": 11.25, "actor_and_fixed_minutes": 2.80},
+        {"scenario": "rollout 2.0×", "rollout_multiplier": 2.0, "step_minutes": 11.24, "max_step_reduction_pct": 42.9, "queue_minutes": 8.44, "actor_and_fixed_minutes": 2.80}
+      ],
+      "parameter_matrix": [
+        {"setting": "gpu_memory_utilization", "proposed": "0.60 → 0.85", "direct_effect": "扩大 cache 预算约 16 GiB/卡", "speed_condition": "当前存在 cache 压力、抢占或容量限流", "main_risk": "profile/同步瞬态与碎片 OOM", "judgment": "可压测；不单独承诺提速"},
+        {"setting": "max_num_batched_tokens", "proposed": "8,192 → 16,384", "direct_effect": "减少长 prefill 切块轮数", "speed_condition": "prefill/再 prefill 占比足够高", "main_risk": "activation 增大、挤占 cache、decode ITL 变差", "judgment": "第二阶段优先 A/B"},
+        {"setting": "max_num_seqs", "proposed": "16 → 20/24 每副本", "direct_effect": "提高每个 DP 副本的调度上限", "speed_condition": "上游实际提供 40/48 条同时活跃轨迹", "main_risk": "cache 压力、TPOT、抢占", "judgment": "不能脱离 group 并发单改"},
+        {"setting": "在途 groups / agent workers", "proposed": "8 → 10 → 12", "direct_effect": "隐藏工具等待，提高 NPU 可运行请求密度", "speed_condition": "工具后端和 CPU/I/O 尚有余量", "main_risk": "staleness 1.5/2.0、工具队列拥塞", "judgment": "单独做质量 A/B"},
+        {"setting": "prefix caching", "proposed": "保持开启并补指标", "direct_effect": "复用多轮轨迹的历史前缀", "speed_condition": "实际前缀超过有效 block 且命中率高", "main_risk": "Qwen3.6 hybrid cache 的大 block 使短前缀无效", "judgment": "先测 hit rate，不盲关"}
+      ],
+      "experiment_matrix": [
+        {"arm": "A0 基线", "memory_util": "0.60", "batched_tokens": 8192, "max_seqs": 16, "active_groups": 8, "agent_workers": 8, "staleness": "1.0", "purpose": "恢复现有 groups/hour、tokens/hour 与显存基线"},
+        {"arm": "A1 Cache 容量", "memory_util": "0.85", "batched_tokens": 8192, "max_seqs": 16, "active_groups": 8, "agent_workers": 8, "staleness": "1.0", "purpose": "隔离显存预算的收益和 OOM 风险"},
+        {"arm": "A2 Prefill 调度", "memory_util": "0.85", "batched_tokens": 16384, "max_seqs": 16, "active_groups": 8, "agent_workers": 8, "staleness": "1.0", "purpose": "隔离 16K batch token 的端到端收益"},
+        {"arm": "A3 适度并发", "memory_util": "0.85", "batched_tokens": 16384, "max_seqs": 20, "active_groups": 10, "agent_workers": 10, "staleness": "1.5", "purpose": "验证隐藏工具等待的收益与陈旧度代价"},
+        {"arm": "A4 上限并发", "memory_util": "0.85", "batched_tokens": 16384, "max_seqs": 24, "active_groups": 12, "agent_workers": 12, "staleness": "2.0", "purpose": "仅在 A3 质量与容量门禁通过后测试"}
+      ],
+      "guardrails": [
+        {"area": "Cache 容量", "must_measure": "每副本 cache tokens、49,152-token 最大并发、cache usage、preemption count", "pass_condition": "无持续抢占；容量覆盖目标并发", "why": "确认 0.85 真正解决的是 cache 瓶颈"},
+        {"area": "HBM", "must_measure": "启动 profile、稳态 decode、最长轨迹、参数同步峰值", "pass_condition": "全程无 OOM；峰值建议低于约 60 GiB/卡并保留瞬态余量", "why": "0.85 线性外推只剩约 5–6 GiB"},
+        {"area": "吞吐", "must_measure": "groups/hour、generated tokens/hour、prefill/decode tokens/s、step queue wait", "pass_condition": "相同 prompt/总 groups 下端到端吞吐稳定改善", "why": "避免只优化局部 TTFT 或显示 step"},
+        {"area": "工具后端", "must_measure": "tool wall p50/p95、CPU、iowait、SQLite/DWH/sandbox 队列", "pass_condition": "并发提高后工具 p95 不出现系统性恶化", "why": "当前数百秒工具阶段可能成为新瓶颈"},
+        {"area": "样本新鲜度", "must_measure": "policy-version age、partial span、dropped stale、queue depth", "pass_condition": "A3/A4 不出现失控陈旧或大量丢弃", "why": "10/12 groups 必然提高 staleness 上限"},
+        {"area": "训练质量", "must_measure": "boss reward、strict acc、KL、grad norm、长度与工具轮数", "pass_condition": "等样本 A/B 不出现实质退化", "why": "吞吐收益不能靠更旧或更短的轨迹换取"}
+      ]
+    }
+  },
+  "sources": [
+    {
+      "id": "formal_run",
+      "label": "最近 4-group 正式运行日志",
+      "path": "runs/llin-v15-dwh-bossreward-4groups-50step-20260805-02/driver.log",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM (VALUES (3,1764.825548,120.728261,1893.328918),(4,666.707725,249.709583,924.786089),(5,1405.669252,125.087497,1538.422319),(6,238.391132,125.097977,371.266200),(7,1178.426723,246.095213,1434.152962),(8,646.988654,120.789343,775.529569),(9,1186.783423,132.306733,1326.896527)) AS t(step,queue_wait_s,actor_s,step_s)",
+        "description": "从 LLIN_TRAIN_STAGE 提取预热库存耗尽后的第 3–9 步；另核对 LLIN_PREWARM、工具调用时间和 fully-async 监控字段。",
+        "executed_at": "2026-08-05T16:00:00+08:00",
+        "filters": ["4 groups/update", "4 responses/group", "48K max context", "排除预热库存步骤 1–2"],
+        "metric_definitions": ["steady queue wait = step 3–9 trainer 等待 4 个完整 group 的墙钟均值", "steady step = step 3–9 LLIN_TRAIN_STAGE step_s 均值", "tool wall = agent_loop/tool_calls 聚合墙钟"],
+        "tables_used": ["LLIN_PREWARM", "LLIN_TRAIN_STAGE", "FullyAsyncRollouter Statistics"]
+      }
+    },
+    {
+      "id": "formal_config",
+      "label": "当前 48K fully-async 正式配置",
+      "path": "scripts/run_pi_grpo_fully_async_tp4_pp2_cp2.sh",
+      "query": {
+        "engine": "source-audit",
+        "language": "bash",
+        "description": "核对 TP8×DP2、0.60 显存利用率、8K batch tokens、16 seqs/副本、8 agent workers 和 48K 上下文。",
+        "executed_at": "2026-08-05T16:00:00+08:00",
+        "filters": ["main 分支当前正式入口"],
+        "metric_definitions": ["总 sequence slots = max_num_seqs × data_parallel_size", "一个 group = 4 条 response"],
+        "tables_used": ["run_pi_grpo_fully_async_tp4_pp2_cp2.sh", "run_pi_formal_50step.sh"]
+      }
+    },
+    {
+      "id": "verl_async",
+      "label": "veRL fully-async 并发与新鲜度实现",
+      "path": "reference/verl/verl/experimental/fully_async_policy/fully_async_rollouter.py",
+      "query": {
+        "engine": "source-audit",
+        "language": "python",
+        "description": "核对 max_required_samples 与 max_concurrent_samples 的计算及 staleness 语义。",
+        "executed_at": "2026-08-05T16:00:00+08:00",
+        "filters": ["当前 vendored veRL 实现"],
+        "metric_definitions": ["max_required_samples = required_samples × (1 + staleness_threshold) × trigger_parameter_sync_step", "max_concurrent_samples = min(active_servers × concurrent_samples_per_replica, max_required_samples)"],
+        "tables_used": ["fully_async_rollouter.py", "fully_async README"]
+      }
+    },
+    {
+      "id": "vllm_018",
+      "label": "vLLM 0.18 Optimization and Tuning",
+      "path": "https://docs.vllm.ai/en/v0.18.0/configuration/optimization/",
+      "query": {
+        "engine": "document-audit",
+        "language": "text",
+        "description": "核对 preemption、chunked prefill 和 max_num_batched_tokens 的官方语义。",
+        "executed_at": "2026-08-05T16:00:00+08:00",
+        "filters": ["vLLM 0.18", "V1 scheduler"],
+        "metric_definitions": ["preemption = KV cache 不足时重算被抢占请求", "max_num_batched_tokens = 单个 scheduler step 的 token budget"],
+        "tables_used": ["Preemption", "Performance Tuning with Chunked Prefill"]
+      }
+    },
+    {
+      "id": "vllm_ascend_018",
+      "label": "vLLM Ascend 0.18 FAQ",
+      "path": "https://docs.vllm.ai/projects/ascend/en/v0.18.0/faqs.html",
+      "query": {
+        "engine": "document-audit",
+        "language": "text",
+        "description": "核对 HBM 碎片、显存利用率、cache usage 和 preemption 的诊断方式。",
+        "executed_at": "2026-08-05T16:00:00+08:00",
+        "filters": ["vLLM Ascend 0.18"],
+        "metric_definitions": ["cache capacity 与 maximum concurrency 为单 DP group 的启动估算", "持续接近 100% cache usage 可触发 preemption"],
+        "tables_used": ["OOM FAQ", "TPOT and preemption FAQ"]
+      }
+    },
+    {
+      "id": "qwen_ascend",
+      "label": "Qwen3.5-27B / Qwen3.6-27B vLLM Ascend 参数说明",
+      "path": "https://docs.vllm.ai/projects/ascend/en/v0.24.0rc/tutorials/models/Qwen3.5-27B-Qwen3.6-27B.html",
+      "query": {
+        "engine": "document-audit",
+        "language": "text",
+        "description": "核对模型专用的 max_num_seqs、batch token、gpu memory utilization 和 prefix caching 说明。",
+        "executed_at": "2026-08-05T16:00:00+08:00",
+        "filters": ["更新版模型专用文档，仅作参数语义参考", "当前容器仍需 v0.18 实测"],
+        "metric_definitions": ["cache budget = gpu_memory_utilization × HBM - profile peak", "较大 batch token 通常降低总体延迟但增加 activation HBM"],
+        "tables_used": ["Key Parameter Descriptions"]
+      }
+    },
+    {
+      "id": "throughput_model",
+      "label": "基于稳态步骤的 Amdahl 上限模型",
+      "path": "docs/rollout_capacity_tuning_20260805.artifact.json",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM (VALUES ('当前 1.0×',1.0,19.68,0.0,16.88,2.80),('rollout 1.2×',1.2,16.86,14.3,14.06,2.80),('rollout 1.3×',1.3,15.78,19.8,12.98,2.80),('rollout 1.5×',1.5,14.05,28.6,11.25,2.80),('rollout 2.0×',2.0,11.24,42.9,8.44,2.80)) AS t(scenario,rollout_multiplier,step_minutes,max_step_reduction_pct,queue_minutes,actor_and_fixed_minutes)",
+        "description": "用稳态 queue wait / rollout 倍率 + Actor 与固定开销计算端到端理论下限。",
+        "executed_at": "2026-08-05T16:00:00+08:00",
+        "filters": ["第 3–9 步均值", "只缩放 queue wait", "不是性能预测"],
+        "metric_definitions": ["step_minutes = 1012.5418 / rollout_multiplier / 60 + (159.9735 + 8.1108) / 60", "max reduction = 1 - modeled step / 1180.6261"],
+        "tables_used": ["throughput_ceiling"]
+      }
+    },
+    {
+      "id": "parameter_synthesis",
+      "label": "推理容量参数综合判断",
+      "path": "docs/rollout_capacity_tuning_20260805.artifact.json",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM (VALUES ('gpu_memory_utilization','0.60 → 0.85','扩大 cache 预算约 16 GiB/卡','当前存在 cache 压力、抢占或容量限流','profile/同步瞬态与碎片 OOM','可压测；不单独承诺提速'),('max_num_batched_tokens','8,192 → 16,384','减少长 prefill 切块轮数','prefill/再 prefill 占比足够高','activation 增大、挤占 cache、decode ITL 变差','第二阶段优先 A/B'),('max_num_seqs','16 → 20/24 每副本','提高每个 DP 副本的调度上限','上游实际提供 40/48 条同时活跃轨迹','cache 压力、TPOT、抢占','不能脱离 group 并发单改'),('在途 groups / agent workers','8 → 10 → 12','隐藏工具等待，提高 NPU 可运行请求密度','工具后端和 CPU/I/O 尚有余量','staleness 1.5/2.0、工具队列拥塞','单独做质量 A/B'),('prefix caching','保持开启并补指标','复用多轮轨迹的历史前缀','实际前缀超过有效 block 且命中率高','Qwen3.6 hybrid cache 的大 block 使短前缀无效','先测 hit rate，不盲关')) AS t(setting,proposed,direct_effect,speed_condition,main_risk,judgment)",
+        "description": "综合当前配置、官方参数语义和 fully-async 调度约束，区分容量上限、真实供给和训练质量代价。",
+        "executed_at": "2026-08-05T16:00:00+08:00",
+        "filters": ["48K Qwen3.6-27B", "TP8×DP2", "4 responses/group"],
+        "metric_definitions": ["sequence slots = max_num_seqs × DP", "active trajectories = active groups × 4"],
+        "tables_used": ["parameter_matrix"]
+      }
+    },
+    {
+      "id": "experiment_design",
+      "label": "逐级容量实验与门禁设计",
+      "path": "docs/rollout_capacity_tuning_20260805.artifact.json",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM (VALUES ('A0 基线','0.60',8192,16,8,8,'1.0','恢复现有基线'),('A1 Cache 容量','0.85',8192,16,8,8,'1.0','隔离显存预算'),('A2 Prefill 调度','0.85',16384,16,8,8,'1.0','隔离 batch token'),('A3 适度并发','0.85',16384,20,10,10,'1.5','验证并发与陈旧度'),('A4 上限并发','0.85',16384,24,12,12,'2.0','仅在 A3 通过后测试')) AS t(arm,memory_util,batched_tokens,max_seqs,active_groups,agent_workers,staleness,purpose)",
+        "description": "设计一次只增加一个主要变量的容量、调度和并发 A/B，并定义 HBM、吞吐、工具、新鲜度与质量门禁。",
+        "executed_at": "2026-08-05T16:00:00+08:00",
+        "filters": ["固定 prompt 顺序", "按相同总 groups 比较", "每臂记录 generated tokens"],
+        "metric_definitions": ["A1 只改变 cache 预算", "A2 只新增 batch token", "A3/A4 同时改变物理并发和算法 staleness，必须独立评估质量"],
+        "tables_used": ["experiment_matrix", "guardrails"]
+      }
+    }
+  ]
+}

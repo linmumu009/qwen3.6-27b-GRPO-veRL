@@ -162,6 +162,12 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 版本记录
 
+### v0.39.0 — 2026-08-05
+
+- 完成 48K GRPO 推理容量与并发提效评估：结合最近 11 步正式运行、当前 TP8×DP2/8-group 调度和 vLLM/vLLM Ascend 官方参数语义，明确 `gpu_memory_utilization=0.85` 主要扩大 cache 容量，不等同于直接提速。
+- 给出逐级 A/B：先比较 `0.60/8K/16` 与 `0.85/8K/16`，再单独加入 `16K max_num_batched_tokens`；更高并发从 10 groups/20 seqs/副本开始，并把 staleness=1.5 的质量代价单独验证，不直接将 12 groups/staleness=2 写成正式默认。
+- 新增 HBM 瞬态、KV cache/preemption、prefill/decode 吞吐、工具后端、新鲜度和训练质量门禁，以及端到端 Amdahl 上限模型，避免把局部吞吐收益当作等比例 step 提速。
+
 ### v0.38.0 — 2026-08-05
 
 - 按明确指令停止 `llin-v15-dwh-bossreward-4groups-50step-20260805-02`：最终完成 `11/50` 次更新并保留 11 份 rollout，启动器记录退出码 `1`；由于只在 step 50 保存，本轮没有 checkpoint。
