@@ -27,6 +27,7 @@ def test_formal_50step_uses_four_groups_and_only_saves_the_final_model():
     script = (ROOT / "scripts" / "run_pi_formal_50step.sh").read_text(encoding="utf-8")
 
     expected = (
+        'export PYTHONPATH="${PROJECT_ROOT}/runtime:${PROJECT_ROOT}:${PYTHONPATH:-}"',
         'TOTAL_TRAINING_STEPS="${TOTAL_TRAINING_STEPS:-50}"',
         'GROUPS_PER_STEP="${GROUPS_PER_STEP:-4}"',
         'EVAL_FREQ="${EVAL_FREQ:-10}"',

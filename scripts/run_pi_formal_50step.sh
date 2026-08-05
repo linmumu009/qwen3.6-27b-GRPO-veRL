@@ -2,6 +2,7 @@
 set -euo pipefail
 
 PROJECT_ROOT="${PROJECT_ROOT:-/workspace/llin-verl-grpo}"
+export PYTHONPATH="${PROJECT_ROOT}/runtime:${PROJECT_ROOT}:${PYTHONPATH:-}"
 DATA_DIR="${DATA_DIR:-${PROJECT_ROOT}/data/boss_v15_dwh_full277_20260804/dataset}"
 TRAIN_FILE="${TRAIN_FILE:-${DATA_DIR}/boss_pi_train.parquet}"
 VAL_FILE="${VAL_FILE:-${DATA_DIR}/boss_pi_val.parquet}"

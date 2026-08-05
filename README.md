@@ -162,6 +162,11 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 版本记录
 
+### v0.37.0 — 2026-08-05
+
+- 首次从完全停止的容器启动 `llin-v15-dwh-bossreward-4groups-50step-20260805-01` 时，正式入口在数据契约门禁阶段因缺少项目 `PYTHONPATH` 立即退出；尚未加载模型、生成 rollout 或占用 NPU，失败目录原样保留用于审计。
+- 正式 50-step 入口现在自行导出项目与 runtime Python 路径，不再依赖容器重启前的交互式会话环境；新增契约测试覆盖冷启动所需的导入路径。
+
 ### v0.36.0 — 2026-08-05
 
 - 按明确指令停止 `llin-v15-dwh-bossreward-2groups-50step-20260804-03`：已完成 `36/50` 次更新并落盘 36 份 rollout；由于只在 step 50 保存，本轮没有最终 checkpoint。两个项目容器均已停止，32 张 NPU 的 AICore 回到 0、HBM 回到约 `2.9–3.1 GiB/卡` 驱动基线，已有日志和 rollout 保留。
