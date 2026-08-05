@@ -69,6 +69,55 @@ def test_formal_launcher_records_lifecycle_and_exit_code():
     assert 'exit_code=8' in script
 
 
+def test_formal_100step_uses_twelve_inflight_groups_and_final_only_artifacts():
+    script = (
+        ROOT / "scripts" / "run_pi_formal_100step_12groups.sh"
+    ).read_text(encoding="utf-8")
+
+    expected = (
+        'TOTAL_TRAINING_STEPS=100',
+        'GROUPS_PER_STEP=4',
+        'FINAL_EVAL_STEP="${TOTAL_TRAINING_STEPS}"',
+        'FINAL_SAVE_STEP="${TOTAL_TRAINING_STEPS}"',
+        'PREWARM_GROUPS=8',
+        'MAX_QUEUE_GROUPS=8',
+        'STALENESS_THRESHOLD=2.0',
+        'TARGET_CONCURRENT_GROUPS=12',
+        'ROLLOUT_GPU_MEMORY_UTILIZATION=0.85',
+        'ROLLOUT_MAX_BATCHED_TOKENS=16384',
+        'ROLLOUT_MAX_SEQS=24',
+        'AGENT_WORKERS=12',
+        'TOTAL_ROLLOUT_GROUPS="$((TOTAL_TRAINING_STEPS * GROUPS_PER_STEP))"',
+        'FASTEST_K=4',
+        'OVERSAMPLE_CANDIDATES=4',
+        'trainer.val_before_train=False',
+        'trainer.test_freq="${FINAL_EVAL_STEP}"',
+        'trainer.save_freq="${FINAL_SAVE_STEP}"',
+        'trainer.max_actor_ckpt_to_keep=1',
+        'async_training.use_trainer_do_validate=False',
+    )
+    for item in expected:
+        assert item in script
+
+    assert 'EVAL_FREQ=' not in script
+    assert 'SAVE_FREQ="${FINAL_SAVE_STEP}"' in script
+    assert 'OVERSAMPLE_CANDIDATES=6' not in script
+
+
+def test_formal_100step_launcher_requires_exact_final_checkpoint():
+    script = (
+        ROOT / "scripts" / "launch_pi_formal_100step_12groups.sh"
+    ).read_text(encoding="utf-8")
+
+    assert "run_pi_formal_100step_12groups.sh" in script
+    assert 'latest_iteration' in script
+    assert 'if [[ "${latest_iteration}" != "100" ]]' in script
+    assert 'expected_global_step_100_got_%s' in script
+    assert 'verify_checkpoint_integrity.py' in script
+    assert 'CHECKPOINT_INVALID' in script
+    assert 'exit_code=8' in script
+
+
 def test_five_step_gate_waits_for_successful_frozen_baseline():
     script = (ROOT / "scripts" / "launch_v15_dwh_gate_after_baseline.sh").read_text(
         encoding="utf-8"

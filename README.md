@@ -9,8 +9,8 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - 两台机器通过内网 Ray 集群通信；训练权重使用 veRL 的 `nccl` 检查点后端，在昇腾环境中实际注册为 HCCL 广播。
 - HCCL 固定使用 `eno0` 和 `192.168.202.0/24` 内网，并为 host/NPU socket 分配互不重叠的端口范围，避免自动选中不可达的管理网卡。
 - actor 模型参数常驻 NPU，不做参数卸载；Adam 优化器与梯度卸载到 5 号机内存，并开启全量激活重计算。LoRA 已关闭（`lora_rank=0`）。
-- rollout 开启 Continuous Token、prefix caching 和两路 vLLM cache 计数；通用 20-step 入口默认在最终步保存，当前正式 50-step 入口同样只在最终 step 50 保存一次 `model,extra`。
-- 长上下文配置将最大上下文设为 `49,152` tokens（默认初始 prompt `4,096` + 多轮 response `45,056`）；正式 PI 配置将允许最多 25 次工具反馈和随后 1 次最终回答，单轮最多 4 个并行工具调用，单次工具返回放宽到 `32,768` 字符；vLLM 保持 `8,192`-token chunked prefill 和每副本最多 16 个活跃序列。
+- rollout 开启 Continuous Token、prefix caching 和两路 vLLM cache 计数；新的正式 100-step/12-group 入口在第 1–99 步均不验证、不保存，只在第 100 步验证一次并保存一个完整 `model,extra`。
+- 长上下文配置将最大上下文设为 `49,152` tokens（默认初始 prompt `4,096` + 多轮 response `45,056`）；正式 PI 配置将允许最多 25 次工具反馈和随后 1 次最终回答，单轮最多 4 个并行工具调用，单次工具返回放宽到 `32,768` 字符；100-step/12-group 入口将 vLLM cache 预算设为 `0.85`、chunked prefill batch 设为 `16,384` tokens、每个 TP8 副本最多 24 个活跃序列。
 - 新正式数据入口改为 `boss-pi-aligned-grpo-v1`：system 与四工具 schema 直接冻结自老板 `pi_to_openai.py` 并校验 SHA256，不再存在项目 fallback；旧 formal V2 已被正式启动器硬拒绝。
 - 20-step One-Step-Off-Policy 的长尾切换判据已触发；后续推荐使用 bounded fully-async：一个 prompt 的 4 条 GRPO 轨迹作为不可拆分 group。正式 48K 配置每次更新消费 4 groups，8-group 队列的 queued-token 上限为 `1,572,864` tokens，继续以 group 数控制 `staleness=1`，满载时背压而不是丢弃旧样本。
 - bounded fully-async 已支持 Fastest-K 过量采样：默认物理生成 6 条候选、最先完成的 4 条组成完整 GRPO group，剩余候选取消；可用 `OVERSAMPLE_CANDIDATES=4` 恢复无过量采样的 baseline。该能力已验证吞吐收益，但仍需多步质量 A/B 后才能作为正式训练默认策略。
@@ -82,7 +82,8 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/launch_pi_grpo_smoke.sh`：带退出码、起止时间和完整日志的后台实验启动器。
 - `scripts/run_pi_grpo_megatron_tp4_pp2_cp2.sh`：16-NPU Megatron TP4/PP2/CP2 全参轨迹 GRPO 配置。
 - `scripts/launch_pi_grpo_megatron_smoke.sh`：Megatron 单步实验的日志、时间和退出码启动器。
-- `scripts/run_pi_formal_50step.sh`、`scripts/launch_pi_formal_50step.sh`：只接受 full、已审核、哈希完整的 boss-aligned train/val；旧 V2 和 pilot 会在模型加载前被拒绝。
+- `scripts/run_pi_formal_50step.sh`、`scripts/launch_pi_formal_50step.sh`：保留原 50-step 正式入口。
+- `scripts/run_pi_formal_100step_12groups.sh`、`scripts/launch_pi_formal_100step_12groups.sh`：固定 `4 groups/update × 4 responses`、12 个在途 groups、100 步、仅第 100 步验证与保存；同样只接受 full、已审核、哈希完整的 boss-aligned train/val。
 - `scripts/launch_v15_dwh_gate_after_baseline.sh`：等待冻结 val20 成功退出后自动启动 5-step GRPO；基线失败时阻断训练并记录监督状态。
 - `scripts/check_formal_data_on_ray.py`：正式运行前分别在 `llin_trainer` 和 `llin_rollout` Ray 节点计算 train/val 文件大小与 SHA256，任一节点缺失或内容不一致即在模型加载前失败。
 - `scripts/run_pi_grpo_fully_async_tp4_pp2_cp2.sh`：TP4/PP2/CP2 训练、TP8/DP2 rollout 的 bounded fully-async 配置，按完整 GRPO group 入队并以 queued tokens 做背压。
@@ -161,6 +162,12 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [veRL 昇腾模型与算法支持](https://github.com/verl-project/verl/blob/main/docs/ascend_tutorial/model_support/model_and_algorithm_support.md)
 
 ## 版本记录
+
+### v0.40.0 — 2026-08-05
+
+- 新增独立的 100-step/12-group 正式训练入口：每次参数更新仍消费 `4 groups × 4 responses`，100 步共消费 400 个完整 groups、1,600 条轨迹；`staleness=2.0`、12 个 Agent workers 与两路 TP8 各 24 个 sequence slots 共同形成 12-group 在途上限。
+- 按最终口径关闭所有中途验证与保存：第 1–99 步不验证、不写 checkpoint，仅第 100 步执行一次 val20 并保存 `global_step_100`；启动器要求最终迭代严格等于 100，随后执行 checkpoint 完整性门禁，最多保留一个模型。
+- 正式推理容量固定为 `gpu_memory_utilization=0.85`、`max_num_batched_tokens=16,384`、`max_num_seqs=24/副本`，保持 48K 上下文、4→4 无过量采样、8-group 预热和 8-group 完成队列，其余训练与老板奖励契约不变。
 
 ### v0.39.0 — 2026-08-05
 
