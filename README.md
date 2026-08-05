@@ -12,9 +12,9 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - rollout 开启 Continuous Token、prefix caching 和两路 vLLM cache 计数；通用 20-step 入口默认在最终步保存，当前正式 50-step 入口同样只在最终 step 50 保存一次 `model,extra`。
 - 长上下文配置将最大上下文设为 `49,152` tokens（默认初始 prompt `4,096` + 多轮 response `45,056`）；正式 PI 配置将允许最多 25 次工具反馈和随后 1 次最终回答，单轮最多 4 个并行工具调用，单次工具返回放宽到 `32,768` 字符；vLLM 保持 `8,192`-token chunked prefill 和每副本最多 16 个活跃序列。
 - 新正式数据入口改为 `boss-pi-aligned-grpo-v1`：system 与四工具 schema 直接冻结自老板 `pi_to_openai.py` 并校验 SHA256，不再存在项目 fallback；旧 formal V2 已被正式启动器硬拒绝。
-- 20-step One-Step-Off-Policy 的长尾切换判据已触发；后续推荐使用 bounded fully-async：一个 prompt 的 4 条 GRPO 轨迹作为不可拆分 group。48K 配置的 queued-token 上限至少容纳一个最坏情况训练 batch（默认 `786,432` tokens），group 数上限继续控制 staleness，满载时背压而不是丢弃旧样本。
+- 20-step One-Step-Off-Policy 的长尾切换判据已触发；后续推荐使用 bounded fully-async：一个 prompt 的 4 条 GRPO 轨迹作为不可拆分 group。正式 48K 配置每次更新消费 4 groups，8-group 队列的 queued-token 上限为 `1,572,864` tokens，继续以 group 数控制 `staleness=1`，满载时背压而不是丢弃旧样本。
 - bounded fully-async 已支持 Fastest-K 过量采样：默认物理生成 6 条候选、最先完成的 4 条组成完整 GRPO group，剩余候选取消；可用 `OVERSAMPLE_CANDIDATES=4` 恢复无过量采样的 baseline。该能力已验证吞吐收益，但仍需多步质量 A/B 后才能作为正式训练默认策略。
-- Fastest-K 的逐请求取消已改为 vLLM 0.18 的公开 external-request API；V4 门禁实测 8/8 个落后候选完成物理取消，且不清空 prefix cache。当前正式运行保持无过量采样的 `4→4` group 内采样，并改为每次更新消费 2 个 group。
+- Fastest-K 的逐请求取消已改为 vLLM 0.18 的公开 external-request API；V4 门禁实测 8/8 个落后候选完成物理取消，且不清空 prefix cache。正式入口保持无过量采样的 `4→4` group 内采样，每次更新消费 4 个 group；8-group 安全在途深度对应 32 条轨迹，与两个 TP8 副本的序列容量对齐。
 - 老板 KB/DWH 评测逻辑已完成 1,000 条历史影子回放：277 条 DWH 通过 gold SQL 自洽门禁，KB 因缺少已校准语义 judge 全部保持 shadow-only；DWH 5-step 已正式使用 `0.7 × boss_reward + 0.3 × strict evidence`，KB 仍不进入在线训练。
 - 所有新增镜像、容器、工作目录和实验名均以 `llin` 开头，不复用或修改其他人的环境。
 
@@ -27,7 +27,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 | 容器 | `llin-verl-trainer-m05-20260730` | `llin-verl-rollout-m06-20260730` |
 | 镜像 | `llin-verl-a3:20260730` | `llin-verl-a3:20260730` |
 | 容器权限 | 特权模式（仅重建上述 `llin` 容器） | 特权模式（仅重建上述 `llin` 容器） |
-| 当前实验 NPU | `-02` step 0 退出，等待比例化预热修复 | `-02` step 0 退出，等待比例化预热修复 |
+| 当前实验 NPU | 0（2-group 运行在 36/50 主动停止，容器已停） | 0（2-group 运行在 36/50 主动停止，容器已停） |
 
 ## 数据结论
 
@@ -161,6 +161,12 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [veRL 昇腾模型与算法支持](https://github.com/verl-project/verl/blob/main/docs/ascend_tutorial/model_support/model_and_algorithm_support.md)
 
 ## 版本记录
+
+### v0.36.0 — 2026-08-05
+
+- 按明确指令停止 `llin-v15-dwh-bossreward-2groups-50step-20260804-03`：已完成 `36/50` 次更新并落盘 36 份 rollout；由于只在 step 50 保存，本轮没有最终 checkpoint。两个项目容器均已停止，32 张 NPU 的 AICore 回到 0、HBM 回到约 `2.9–3.1 GiB/卡` 驱动基线，已有日志和 rollout 保留。
+- 从并发容量重新校准正式入口：默认恢复为 `4 groups/update × 4 responses = 16 trajectories/update`，`PREWARM_GROUPS` 与 `MAX_QUEUE_GROUPS` 继续按两个 update batch 计算为 8；在 `staleness=1` 下最多暴露 8 个完整 group、32 条轨迹，与现有 `TP8×DP2`、每副本 16 sequences 的容量对齐。
+- 50 步、48K、完整 PI 工具、学习率、每 10 步固定验证、无 Fastest-K 过量采样和仅 step 50 保存最终分布式 checkpoint 的其余语义不变。
 
 ### v0.35.0 — 2026-08-04
 

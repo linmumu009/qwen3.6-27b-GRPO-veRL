@@ -23,12 +23,12 @@ def test_formal_50step_uses_isolated_data_and_full_pi_contract():
     assert 'MAX_CONTEXT_TOKENS="${MAX_CONTEXT_TOKENS}"' in script
 
 
-def test_formal_50step_uses_two_groups_and_only_saves_the_final_model():
+def test_formal_50step_uses_four_groups_and_only_saves_the_final_model():
     script = (ROOT / "scripts" / "run_pi_formal_50step.sh").read_text(encoding="utf-8")
 
     expected = (
         'TOTAL_TRAINING_STEPS="${TOTAL_TRAINING_STEPS:-50}"',
-        'GROUPS_PER_STEP="${GROUPS_PER_STEP:-2}"',
+        'GROUPS_PER_STEP="${GROUPS_PER_STEP:-4}"',
         'EVAL_FREQ="${EVAL_FREQ:-10}"',
         'SAVE_FREQ="${TOTAL_TRAINING_STEPS}"',
         'LEARNING_RATE="${LEARNING_RATE:-1e-7}"',
@@ -50,7 +50,7 @@ def test_formal_50step_uses_two_groups_and_only_saves_the_final_model():
     for item in expected:
         assert item in script
     assert "check_formal_data_on_ray.py" in script
-    assert 'GROUPS_PER_STEP != 2' in script
+    assert 'GROUPS_PER_STEP != 4' in script
     assert 'SAVE_FREQ="${SAVE_FREQ:-' not in script
 
 

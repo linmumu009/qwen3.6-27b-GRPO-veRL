@@ -9,7 +9,7 @@ RUN_NAME="${RUN_NAME:-llin-pi-formal-grpo-4of4-50step-$(date +%Y%m%d-%H%M%S)}"
 OUTPUT_DIR="${OUTPUT_DIR:-${PROJECT_ROOT}/runs/${RUN_NAME}}"
 
 TOTAL_TRAINING_STEPS="${TOTAL_TRAINING_STEPS:-50}"
-GROUPS_PER_STEP="${GROUPS_PER_STEP:-2}"
+GROUPS_PER_STEP="${GROUPS_PER_STEP:-4}"
 EVAL_FREQ="${EVAL_FREQ:-10}"
 # Save exactly once, after the final optimizer update.
 SAVE_FREQ="${TOTAL_TRAINING_STEPS}"
@@ -31,8 +31,8 @@ for path in "${TRAIN_FILE}" "${VAL_FILE}"; do
     exit 2
   fi
 done
-if (( TOTAL_TRAINING_STEPS <= 0 || GROUPS_PER_STEP != 2 )); then
-  printf 'Formal run requires positive steps and exactly 2 groups per update\n' >&2
+if (( TOTAL_TRAINING_STEPS <= 0 || GROUPS_PER_STEP != 4 )); then
+  printf 'Formal run requires positive steps and exactly 4 groups per update\n' >&2
   exit 2
 fi
 if (( EVAL_FREQ <= 0 )); then
@@ -50,8 +50,10 @@ python3 "${PROJECT_ROOT}/scripts/check_formal_data_on_ray.py" \
   --val-file "${VAL_FILE}" \
   --ray-address "${RAY_ADDRESS:-192.168.202.5:26379}"
 
-# Each update consumes 2 prompt groups with 4 responses per group. Exact 4->4
-# sampling creates no fastest-K surplus candidates. The test split remains
+# Each update consumes 4 prompt groups with 4 responses per group. With
+# staleness=1, the proportional 8-group prewarm/queue depth covers two update
+# batches and exposes 32 trajectories to the two TP8 rollout replicas. Exact
+# 4->4 sampling creates no fastest-K surplus candidates. The test split remains
 # sealed; all reviewed train tasks and the source-isolated validation split
 # enter this run. Validation is greedy n=1 every EVAL_FREQ.
 RUN_NAME="${RUN_NAME}" \
