@@ -10,7 +10,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - HCCL 固定使用 `eno0` 和 `192.168.202.0/24` 内网，并为 host/NPU socket 分配互不重叠的端口范围，避免自动选中不可达的管理网卡。
 - actor 模型参数常驻 NPU，不做参数卸载；Adam 优化器与梯度卸载到 5 号机内存，并开启全量激活重计算。LoRA 已关闭（`lora_rank=0`）。
 - rollout 开启 Continuous Token、prefix caching 和两路 vLLM cache 计数；新的正式 100-step/12-group 入口在第 1–99 步均不验证、不保存，只在第 100 步验证一次并保存一个完整 `model,extra`。
-- 长上下文配置将最大上下文设为 `49,152` tokens（默认初始 prompt `4,096` + 多轮 response `45,056`）；正式 PI 配置将允许最多 25 次工具反馈和随后 1 次最终回答，单轮最多 4 个并行工具调用，单次工具返回放宽到 `32,768` 字符；100-step/12-group 入口将 vLLM cache 预算设为 `0.80`、chunked prefill batch 设为 `16,384` tokens、每个 TP8 副本最多 24 个活跃序列。
+- 长上下文配置将最大上下文设为 `49,152` tokens（默认初始 prompt `4,096` + 多轮 response `45,056`）；正式 PI 配置将允许最多 25 次工具反馈和随后 1 次最终回答，单轮最多 4 个并行工具调用，单次工具返回放宽到 `32,768` 字符；100-step/12-group 入口将 vLLM cache 预算设为 `0.80`、chunked prefill batch 设为 `16,384` tokens、每个 TP8 副本最多 24 个活跃序列，并用可容纳最大 embedding 张量的 `2560 MiB` 权重同步 bucket。
 - 新正式数据入口改为 `boss-pi-aligned-grpo-v1`：system 与四工具 schema 直接冻结自老板 `pi_to_openai.py` 并校验 SHA256，不再存在项目 fallback；旧 formal V2 已被正式启动器硬拒绝。
 - 20-step One-Step-Off-Policy 的长尾切换判据已触发；后续推荐使用 bounded fully-async：一个 prompt 的 4 条 GRPO 轨迹作为不可拆分 group。正式 100-step 配置每次更新消费 4 groups，queued-token 上限为 `1,572,864` tokens（等价于 8 个全部跑满 48K 的 groups），以 `staleness=2` 将在途上限控制为 12 groups，满载时背压而不是丢弃旧样本。
 - bounded fully-async 已支持 Fastest-K 过量采样：默认物理生成 6 条候选、最先完成的 4 条组成完整 GRPO group，剩余候选取消；可用 `OVERSAMPLE_CANDIDATES=4` 恢复无过量采样的 baseline。该能力已验证吞吐收益，但仍需多步质量 A/B 后才能作为正式训练默认策略。
@@ -163,11 +163,17 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 版本记录
 
+### v0.43.0 — 2026-08-05
+
+- `llin-v15-dwh-bossreward-12groups-100step-20260805-02` 已证明 `gpu_memory_utilization=0.80` 可以完成两路 TP8 vLLM 模型加载，但首次权重同步在发送前 fail closed：Qwen3.6-27B 的 `model.language_model.embed_tokens.weight` 为 `[248320, 5120]` BF16，单个不可拆分张量约 `2425 MiB`，不能装入 v0.42.0 误设的 `512 MiB` bucket；本轮尚未 rollout 或更新参数，退出码 `1`。
+- 正式入口将同步 bucket 修正为 `2560 MiB`，这是能容纳该最大张量的最小实用对齐档位；按 HCCL send/receive 缓冲与昇腾 PyHCCL 广播输出估算，同步瞬态约 `7.5 GiB/卡`，仍比原 `3072 MiB` bucket 的约 `9 GiB/卡` 低 `16.7%`。
+- 保持 `gpu_memory_utilization=0.80`、`max_num_batched_tokens=16,384`、`max_num_seqs=24/副本`、12 Agent workers、12 个在途 groups、48K 上下文、100 步及仅末步验证/保存不变；能否保留这些并发参数以后续首次更新后的真实同步 HBM 峰值为最终门禁。
+
 ### v0.42.0 — 2026-08-05
 
 - `llin-v15-dwh-bossreward-12groups-100step-20260805-01` 在 12 个在途 groups 中完成 11 个、训练端消费首批 4 groups 并执行第 1 次 actor 更新后，于新权重同步阶段 OOM；退出码 `1`，未完成 step 指标落盘、未验证、未保存 checkpoint，因此该内存更新不可恢复。
 - 根因是 `gpu_memory_utilization=0.85` 的 vLLM 常驻预算与 `3072 MiB` 权重 bucket 叠加：HCCL send/receive 双缓冲加昇腾 PyHCCL 同尺寸广播输出，使同步瞬态接近三个 bucket；日志对应表现为已经分配 6 GiB 后再次申请 3 GiB，而每卡只余 `65–473 MiB`。
-- 修正版将 vLLM 预算降至 `0.80`，并把正式入口的同步 bucket 降至 `512 MiB`，把该部分理论瞬态从约 9 GiB 降至约 1.5 GiB；保留 16K batched tokens、24 seqs/副本、12 Agent workers、12 个在途 groups、48K 上下文和其他训练/奖励参数不变。
+- 修正版将 vLLM 预算降至 `0.80`，并曾把正式入口的同步 bucket 降至 `512 MiB`；后续 `-02` 启动证明该档位小于约 `2425 MiB` 的最大 embedding 张量，已由 v0.43.0 修正为 `2560 MiB`。16K batched tokens、24 seqs/副本、12 Agent workers、12 个在途 groups、48K 上下文和其他训练/奖励参数保持不变。
 
 ### v0.41.0 — 2026-08-05
 

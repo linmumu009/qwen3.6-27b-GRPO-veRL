@@ -87,7 +87,7 @@ def test_formal_100step_uses_twelve_inflight_groups_and_final_only_artifacts():
         'ROLLOUT_MAX_BATCHED_TOKENS=16384',
         'ROLLOUT_MAX_SEQS=24',
         'AGENT_WORKERS=12',
-        'WEIGHT_BUCKET_MB=512',
+        'WEIGHT_BUCKET_MB=2560',
         'TOTAL_ROLLOUT_GROUPS="$((TOTAL_TRAINING_STEPS * GROUPS_PER_STEP))"',
         'FASTEST_K=4',
         'OVERSAMPLE_CANDIDATES=4',

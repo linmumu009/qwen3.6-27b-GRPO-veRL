@@ -25,10 +25,12 @@ ROLLOUT_GPU_MEMORY_UTILIZATION=0.80
 ROLLOUT_MAX_BATCHED_TOKENS=16384
 ROLLOUT_MAX_SEQS=24
 AGENT_WORKERS=12
-# HCCL keeps send+receive buffers and Ascend PyHCCL creates a same-sized
-# broadcast output. 512 MiB therefore bounds the sync transient near 1.5 GiB
-# per rollout NPU instead of the unsafe ~9 GiB transient of a 3072 MiB bucket.
-WEIGHT_BUCKET_MB=512
+# The largest indivisible parameter is the 248320 x 5120 BF16 embedding
+# (2425 MiB), so the HCCL bucket must exceed it. HCCL keeps send+receive
+# buffers and Ascend PyHCCL creates another same-sized broadcast output;
+# 2560 MiB is the smallest practical aligned bucket and trims the theoretical
+# sync transient from ~9 GiB at 3072 MiB to ~7.5 GiB.
+WEIGHT_BUCKET_MB=2560
 ROLLOUT_DP=2
 RESPONSES_PER_GROUP=4
 
