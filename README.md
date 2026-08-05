@@ -27,7 +27,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 | 容器 | `llin-verl-trainer-m05-20260730` | `llin-verl-rollout-m06-20260730` |
 | 镜像 | `llin-verl-a3:20260730` | `llin-verl-a3:20260730` |
 | 容器权限 | 特权模式（仅重建上述 `llin` 容器） | 特权模式（仅重建上述 `llin` 容器） |
-| 当前实验 NPU | 0（2-group 运行在 36/50 主动停止，容器已停） | 0（2-group 运行在 36/50 主动停止，容器已停） |
+| 当前实验 NPU | 16（`llin-v15-dwh-bossreward-4groups-50step-20260805-02` 训练初始化中） | 16（同一运行的两个 TP8 vLLM 副本已加载模型） |
 
 ## 数据结论
 
@@ -166,6 +166,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 - 首次从完全停止的容器启动 `llin-v15-dwh-bossreward-4groups-50step-20260805-01` 时，正式入口在数据契约门禁阶段因缺少项目 `PYTHONPATH` 立即退出；尚未加载模型、生成 rollout 或占用 NPU，失败目录原样保留用于审计。
 - 正式 50-step 入口现在自行导出项目与 runtime Python 路径，不再依赖容器重启前的交互式会话环境；新增契约测试覆盖冷启动所需的导入路径。
+- 修复后启动 `llin-v15-dwh-bossreward-4groups-50step-20260805-02`：boss-aligned 契约与两机 Parquet 哈希门禁通过，16 个 Megatron 训练 worker 和两个 TP8 vLLM 副本均已创建，两个推理副本各完成 `15/15` 个 safetensors 分片加载；作业继续运行并等待 8-group 预热完成。
 
 ### v0.36.0 — 2026-08-05
 
