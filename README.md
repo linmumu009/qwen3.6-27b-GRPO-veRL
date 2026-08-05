@@ -12,9 +12,9 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - rollout 开启 Continuous Token、prefix caching 和两路 vLLM cache 计数；新的正式 100-step/12-group 入口在第 1–99 步均不验证、不保存，只在第 100 步验证一次并保存一个完整 `model,extra`。
 - 长上下文配置将最大上下文设为 `49,152` tokens（默认初始 prompt `4,096` + 多轮 response `45,056`）；正式 PI 配置将允许最多 25 次工具反馈和随后 1 次最终回答，单轮最多 4 个并行工具调用，单次工具返回放宽到 `32,768` 字符；100-step/12-group 入口将 vLLM cache 预算设为 `0.85`、chunked prefill batch 设为 `16,384` tokens、每个 TP8 副本最多 24 个活跃序列。
 - 新正式数据入口改为 `boss-pi-aligned-grpo-v1`：system 与四工具 schema 直接冻结自老板 `pi_to_openai.py` 并校验 SHA256，不再存在项目 fallback；旧 formal V2 已被正式启动器硬拒绝。
-- 20-step One-Step-Off-Policy 的长尾切换判据已触发；后续推荐使用 bounded fully-async：一个 prompt 的 4 条 GRPO 轨迹作为不可拆分 group。正式 48K 配置每次更新消费 4 groups，8-group 队列的 queued-token 上限为 `1,572,864` tokens，继续以 group 数控制 `staleness=1`，满载时背压而不是丢弃旧样本。
+- 20-step One-Step-Off-Policy 的长尾切换判据已触发；后续推荐使用 bounded fully-async：一个 prompt 的 4 条 GRPO 轨迹作为不可拆分 group。正式 100-step 配置每次更新消费 4 groups，queued-token 上限为 `1,572,864` tokens（等价于 8 个全部跑满 48K 的 groups），以 `staleness=2` 将在途上限控制为 12 groups，满载时背压而不是丢弃旧样本。
 - bounded fully-async 已支持 Fastest-K 过量采样：默认物理生成 6 条候选、最先完成的 4 条组成完整 GRPO group，剩余候选取消；可用 `OVERSAMPLE_CANDIDATES=4` 恢复无过量采样的 baseline。该能力已验证吞吐收益，但仍需多步质量 A/B 后才能作为正式训练默认策略。
-- Fastest-K 的逐请求取消已改为 vLLM 0.18 的公开 external-request API；V4 门禁实测 8/8 个落后候选完成物理取消，且不清空 prefix cache。正式入口保持无过量采样的 `4→4` group 内采样，每次更新消费 4 个 group；8-group 安全在途深度对应 32 条轨迹，与两个 TP8 副本的序列容量对齐。
+- Fastest-K 的逐请求取消已改为 vLLM 0.18 的公开 external-request API；V4 门禁实测 8/8 个落后候选完成物理取消，且不清空 prefix cache。正式入口保持无过量采样的 `4→4` group 内采样，每次更新消费 4 个 group；新的 12-group 在途深度对应 48 条轨迹，与两个 TP8 副本各 24 个序列槽位对齐。
 - 老板 KB/DWH 评测逻辑已完成 1,000 条历史影子回放：277 条 DWH 通过 gold SQL 自洽门禁，KB 因缺少已校准语义 judge 全部保持 shadow-only；DWH 5-step 已正式使用 `0.7 × boss_reward + 0.3 × strict evidence`，KB 仍不进入在线训练。
 - 所有新增镜像、容器、工作目录和实验名均以 `llin` 开头，不复用或修改其他人的环境。
 
@@ -27,7 +27,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 | 容器 | `llin-verl-trainer-m05-20260730` | `llin-verl-rollout-m06-20260730` |
 | 镜像 | `llin-verl-a3:20260730` | `llin-verl-a3:20260730` |
 | 容器权限 | 特权模式（仅重建上述 `llin` 容器） | 特权模式（仅重建上述 `llin` 容器） |
-| 当前实验 NPU | 0（4-group 运行在 11/50 主动停止，容器已停） | 0（4-group 运行在 11/50 主动停止，容器已停） |
+| 当前实验 NPU | 16（100-step/12-group 正式运行中，初始化约 `32.6–33.9 GiB/卡`） | 16（两路 TP8 正式运行中，12 groups 带载约 `58.9–59.3 GiB/卡`） |
 
 ## 数据结论
 
@@ -163,11 +163,17 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 版本记录
 
+### v0.41.0 — 2026-08-05
+
+- 已启动正式实验 `llin-v15-dwh-bossreward-12groups-100step-20260805-01`：boss-aligned 237/20/20 契约门禁通过，两机 train/val Parquet 大小与 SHA256 完全一致，Ray 角色确认训练固定在 5 号机、rollout 固定在 6 号机。
+- 5 号机 16 个 Megatron worker 与 6 号机两路 TP8 vLLM 均成功加载；两路 vLLM 各完成 15/15 个 safetensors 分片，在 `gpu_memory_utilization=0.85` 下初始化 HBM 为约 `55.4–55.7 GiB/卡`，12 groups 实际带载后约 `58.9–59.3 GiB/卡`，仍余约 `6.2–6.6 GiB/卡`，未出现 OOM。
+- 首次跨机权重同步耗时 `13.99s`；fully-async 运行时监控实测 `active_tasks_size=12`、`max_concurrent_samples=12`、`staleness_samples=12`，证明当前确实同时生成 12 个完整 groups（48 条轨迹），不是只修改静态上限。第 1–99 步不验证、不保存，只有第 100 步执行最终验证并保存一个模型。
+
 ### v0.40.0 — 2026-08-05
 
 - 新增独立的 100-step/12-group 正式训练入口：每次参数更新仍消费 `4 groups × 4 responses`，100 步共消费 400 个完整 groups、1,600 条轨迹；`staleness=2.0`、12 个 Agent workers 与两路 TP8 各 24 个 sequence slots 共同形成 12-group 在途上限。
 - 按最终口径关闭所有中途验证与保存：第 1–99 步不验证、不写 checkpoint，仅第 100 步执行一次 val20 并保存 `global_step_100`；启动器要求最终迭代严格等于 100，随后执行 checkpoint 完整性门禁，最多保留一个模型。
-- 正式推理容量固定为 `gpu_memory_utilization=0.85`、`max_num_batched_tokens=16,384`、`max_num_seqs=24/副本`，保持 48K 上下文、4→4 无过量采样、8-group 预热和 8-group 完成队列，其余训练与老板奖励契约不变。
+- 正式推理容量固定为 `gpu_memory_utilization=0.85`、`max_num_batched_tokens=16,384`、`max_num_seqs=24/副本`，保持 48K 上下文、4→4 无过量采样、8-group 预热和可容纳 8 个满 48K groups 的 queued-token 预算，其余训练与老板奖励契约不变。
 
 ### v0.39.0 — 2026-08-05
 
