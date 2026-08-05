@@ -27,7 +27,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 | 容器 | `llin-verl-trainer-m05-20260730` | `llin-verl-rollout-m06-20260730` |
 | 镜像 | `llin-verl-a3:20260730` | `llin-verl-a3:20260730` |
 | 容器权限 | 特权模式（仅重建上述 `llin` 容器） | 特权模式（仅重建上述 `llin` 容器） |
-| 当前实验 NPU | 0（`-01` 在首次更新后同步权重时 OOM，进程已退出） | 0（进程已退出，HBM 回到约 `2.9–3.1 GiB/卡`） |
+| 当前实验 NPU | 16（`llin-v15-dwh-bossreward-12groups-100step-20260805-03` 已完成第 1 步并继续运行） | 16（同一 `-03` 的 TP8×DP2 rollout；同步后约 `54.4–54.7 GiB/卡`） |
 
 ## 数据结论
 
@@ -162,6 +162,12 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [veRL 昇腾模型与算法支持](https://github.com/verl-project/verl/blob/main/docs/ascend_tutorial/model_support/model_and_algorithm_support.md)
 
 ## 版本记录
+
+### v0.44.0 — 2026-08-05
+
+- 修正后的正式实验 `llin-v15-dwh-bossreward-12groups-100step-20260805-03` 已通过真实运行门禁：两路 TP8 各加载 15/15 个模型分片，`2560 MiB` bucket 的初始权重同步耗时 `13.06s`，并连续实测 `active_tasks_size=12`、`staleness_samples=12`，确认 12 个完整 groups 实际满载。
+- `gpu_memory_utilization=0.80` 下，12-group rollout 带载 HBM 约 `53.8–56.1 GiB/卡`；首个 actor 更新后的新权重同步成功，耗时 `8.69s`，同步后 HBM 约 `54.4–54.7 GiB/卡`，仍余约 `10.8–11.1 GiB/卡`，未出现 OOM 或最大张量断言。
+- 首次预热完成 8 groups、`743,730` tokens，耗时 `1709.87s`；第 1 步 actor 更新耗时 `266.72s`、整步 `275.73s`，参数版本推进到 1。第 2 步已从库存直接取满 4 groups，队列等待约 `0.09s`；因此保留 0.80、16K batched tokens、24 seqs/副本、12 workers 和 12-group 并发，无需同步下调其他参数。
 
 ### v0.43.0 — 2026-08-05
 
