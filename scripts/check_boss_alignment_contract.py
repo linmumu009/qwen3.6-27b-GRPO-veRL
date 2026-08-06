@@ -17,6 +17,7 @@ REQUIRED_ZERO_INVARIANTS = (
     "project_tool_schema_fallback_count",
     "generated_instruction_count",
     "generated_gold_or_sql_count",
+    "conflicting_instruction_gold_count",
     "unreviewed_grpo_count",
     "assistant_or_tool_messages_in_grpo_input",
 )

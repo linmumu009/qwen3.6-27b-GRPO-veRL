@@ -3,7 +3,7 @@ set -euo pipefail
 
 PROJECT_ROOT="${PROJECT_ROOT:-/workspace/llin-verl-grpo}"
 export PYTHONPATH="${PROJECT_ROOT}/runtime:${PROJECT_ROOT}:${PYTHONPATH:-}"
-DATA_DIR="${DATA_DIR:-${PROJECT_ROOT}/data/boss_v15_dwh_full277_20260804/dataset}"
+DATA_DIR="${DATA_DIR:-${PROJECT_ROOT}/data/boss_v15_dwh_full276_20260806/dataset}"
 TRAIN_FILE="${TRAIN_FILE:-${DATA_DIR}/boss_pi_train.parquet}"
 VAL_FILE="${VAL_FILE:-${DATA_DIR}/boss_pi_val.parquet}"
 RUN_NAME="${RUN_NAME:-llin-pi-formal-grpo-4of4-50step-$(date +%Y%m%d-%H%M%S)}"

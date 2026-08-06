@@ -162,6 +162,38 @@ def test_pilot_is_explicit_and_cannot_be_mislabeled_full(tmp_path: Path):
     assert report["invariants"]["uses_all_approved_by_default"] is False
 
 
+def test_identical_instruction_with_conflicting_gold_is_rejected(tmp_path: Path):
+    spec, sandbox_root, gold = make_source(tmp_path)
+    conversations = json.loads(spec.conversations.read_text(encoding="utf-8"))
+    conversations["task_id"] = "task_1"
+    second = {**conversations, "task_id": "task_2"}
+    write_jsonl(spec.conversations, [conversations, second])
+    manifests = json.loads(spec.manifest.read_text(encoding="utf-8"))
+    second_gold = {
+        "answer_type": "numeric",
+        "value": 20.5,
+        "verification_sql": "SELECT value FROM metric",
+    }
+    write_jsonl(
+        spec.manifest,
+        [manifests, {**manifests, "task_id": "task_2", "gold_answer": second_gold}],
+    )
+    second_approval = {
+        **approval(second_gold),
+        "task_id": "task_2",
+    }
+
+    with pytest.raises(ValueError, match="identical instructions with conflicting gold"):
+        build_dataset(
+            [spec],
+            sandbox_root,
+            {("v1", "task_1"): approval(gold), ("v1", "task_2"): second_approval},
+            {},
+            "seed",
+            load_boss_pi_contract(),
+        )
+
+
 def test_formal_gate_rejects_pilot_and_accepts_integrity_checked_full_data(tmp_path: Path):
     train = tmp_path / "boss_pi_train.parquet"
     val = tmp_path / "boss_pi_val.parquet"
@@ -180,6 +212,7 @@ def test_formal_gate_rejects_pilot_and_accepts_integrity_checked_full_data(tmp_p
             "project_tool_schema_fallback_count": 0,
             "generated_instruction_count": 0,
             "generated_gold_or_sql_count": 0,
+            "conflicting_instruction_gold_count": 0,
             "unreviewed_grpo_count": 0,
             "assistant_or_tool_messages_in_grpo_input": 0,
         },

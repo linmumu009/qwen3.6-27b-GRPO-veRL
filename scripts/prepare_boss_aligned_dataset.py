@@ -391,6 +391,25 @@ def build_dataset(
         for split, count in pilot_sizes.items():
             selected[split] = stable_select(selected[split], count, seed + ":" + split)
 
+    instruction_gold: dict[str, dict[str, set[str]]] = defaultdict(lambda: defaultdict(set))
+    for split, rows in selected.items():
+        for row in rows:
+            instruction_gold[row["instruction_sha256"]][row["gold_sha256"]].add(
+                f"{split}:{row['task_id']}"
+            )
+    conflicting_instruction_gold = {
+        instruction_hash: {
+            gold_hash: sorted(task_ids) for gold_hash, task_ids in sorted(gold_tasks.items())
+        }
+        for instruction_hash, gold_tasks in sorted(instruction_gold.items())
+        if len(gold_tasks) > 1
+    }
+    if conflicting_instruction_gold:
+        raise ValueError(
+            "approved tasks contain identical instructions with conflicting gold labels: "
+            + canonical_json(conflicting_instruction_gold)
+        )
+
     task_ids: dict[str, set[str]] = {
         split: {row["task_id"] for row in rows} for split, rows in selected.items()
     }
@@ -432,6 +451,7 @@ def build_dataset(
             "project_tool_schema_fallback_count": 0,
             "generated_instruction_count": 0,
             "generated_gold_or_sql_count": 0,
+            "conflicting_instruction_gold_count": 0,
             "unreviewed_grpo_count": 0,
             "assistant_or_tool_messages_in_grpo_input": 0,
             "source_responses_exported_only_for_sft_and_regression": True,

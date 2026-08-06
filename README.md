@@ -15,7 +15,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - 20-step One-Step-Off-Policy 的长尾切换判据已触发；后续推荐使用 bounded fully-async：一个 prompt 的 4 条 GRPO 轨迹作为不可拆分 group。正式 100-step 配置每次更新消费 4 groups，queued-token 上限为 `1,572,864` tokens（等价于 8 个全部跑满 48K 的 groups），以 `staleness=2` 将在途上限控制为 12 groups，满载时背压而不是丢弃旧样本。
 - bounded fully-async 已支持 Fastest-K 过量采样：默认物理生成 6 条候选、最先完成的 4 条组成完整 GRPO group，剩余候选取消；可用 `OVERSAMPLE_CANDIDATES=4` 恢复无过量采样的 baseline。该能力已验证吞吐收益，但仍需多步质量 A/B 后才能作为正式训练默认策略。
 - Fastest-K 的逐请求取消已改为 vLLM 0.18 的公开 external-request API；V4 门禁实测 8/8 个落后候选完成物理取消，且不清空 prefix cache。正式入口保持无过量采样的 `4→4` group 内采样，每次更新消费 4 个 group；新的 12-group 在途深度对应 48 条轨迹，与两个 TP8 副本各 24 个序列槽位对齐。
-- 老板 KB/DWH 评测逻辑已完成 1,000 条历史影子回放：277 条 DWH 通过 gold SQL 自洽门禁，KB 因缺少已校准语义 judge 全部保持 shadow-only；DWH 5-step 已正式使用 `0.7 × boss_reward + 0.3 × strict evidence`，KB 仍不进入在线训练。
+- 老板 KB/DWH 评测逻辑已完成 1,000 条历史影子回放：原 277 条 DWH 通过 gold SQL 自洽门禁；进一步来源复核发现唯一一组相同 prompt 绑定冲突 gold，现保留相对更贴近题意的 `task_000147`、剔除 `task_000033`，未来正式资产为 `236/20/20`。KB 因缺少已校准语义 judge 全部保持 shadow-only；DWH 在线奖励继续使用 `0.7 × boss_reward + 0.3 × strict evidence`。
 - 所有新增镜像、容器、工作目录和实验名均以 `llin` 开头，不复用或修改其他人的环境。
 
 当前服务器部署：
@@ -41,6 +41,8 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 4. GRPO 只接收真实 source task 的 numeric/table verifier，并要求 instruction/gold 哈希经过显式 alignment review；未审核、报告型、KB/Hybrid 和无严格 verifier 的样本只进入 SFT/reference。
 5. 旧 200-task V2 混用了 Qwen3.7-Max manifest 与 Qwen3.6 conversation，已废止。当前从 v15 原始 Qwen3.6 事件文件按 `task_id` 连接同源 sandbox task：1,500 条完整轨迹中，1,000 条 KB/Hybrid 和 220 条无严格 verifier 样本进入 SFT，3 条 gold 不一致被拒绝，277 条进入待审核队列；审核完成前不生成正式 GRPO Parquet。
 
+来源复核进一步确认：归档事件中的生成模型字段为 `provider=my-local, model=Qwen3.6-27B`，它的历史回答只进入 SFT/reference，不会放入 GRPO prompt；GRPO 的 hidden label 来自老板 v15 task manifest 的 `verification_sql + gold_answer`。修正后 `276/276` 条 SQL 均可执行、非空且与 expected value 一致，但 `271/276` 条仍命中至少一个语义预警，因此只能称为“数据库层机械自洽”，不能称为“已完成人工逐题语义确认”。
+
 原始轨迹、验证清单、Parquet、模型、checkpoint 和运行日志均不会提交到 Git。
 
 ## 目录
@@ -59,6 +61,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [`docs/boss_reward_shadow_validation_20260804.md`](docs/boss_reward_shadow_validation_20260804.md)：老板 KB/DWH 评测逻辑复用边界、1000 条 task-id 精确影子回放、奖励防投机设计和正式接入门槛。
 - [`docs/dwh_kb_reward_divergence_examples_20260804.html`](docs/dwh_kb_reward_divergence_examples_20260804.html)：从老板 v15 原始任务和完整 PI 轨迹中各选一个 DWH/KB 高分差案例，逐项对照老板奖励、本项目影子奖励、原始证据、误判来源和修正建议。
 - [`docs/v15_dwh_full277_reward_alignment_20260804.html`](docs/v15_dwh_full277_reward_alignment_20260804.html)：277 条老板 v15 DWH 的全量使用、237/20/20 防泄漏分割、语义预警、老板主奖励与严格证据护栏审计。
+- [`docs/training_data_provenance_quality_audit_20260806.html`](docs/training_data_provenance_quality_audit_20260806.html)：追溯任务、Qwen3.6 源轨迹、hidden label 与 GRPO 输入的区别，比较重复 prompt 的两条冲突 gold，并记录修正后的 236/20/20 资产和正确性证据边界。
 - [`docs/v15_dwh_frozen_baseline_20260804.md`](docs/v15_dwh_frozen_baseline_20260804.md)：固定 val20 冻结模型指标、`None` 聚合故障、安全硬归零观测补强、主动中止的 step0 运行和最终 5-step 门禁。
 - [`docs/v15_dwh_bossreward_5step_20260804.md`](docs/v15_dwh_bossreward_5step_20260804.md)：真实 DWH 5-step 的逐步耗时、80 条训练轨迹、冻结基线对比、长尾队列、非致命日志问题和 PP=2 checkpoint 缺层复盘。
 - [`docs/boss_exact_pre_post_100step_20260806.md`](docs/boss_exact_pre_post_100step_20260806.md)：同一固定 val20 上直接调用老板原始 manifest、数据库和三份评分脚本，对比冻结模型与 step-100 的总奖励、正确性、过程质量和完整收尾。
@@ -167,6 +170,14 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [veRL 昇腾模型与算法支持](https://github.com/verl-project/verl/blob/main/docs/ascend_tutorial/model_support/model_and_algorithm_support.md)
 
 ## 版本记录
+
+### v0.49.0 — 2026-08-06
+
+- 追溯唯一重复 prompt 的老板 v15 task manifest 与两条原始 Qwen3.6-27B 事件轨迹；保留相对更贴近题意的 `task_000147`，从 train 剔除 `task_000033`，val/test 保持原 20/20 不变。
+- 新增相同 instruction 绑定不同 gold 的 fail-closed 构建门禁、可审计质量剔除器和全量标签重放器；未来正式入口切换为 `boss_v15_dwh_full276_20260806` 的 `236/20/20`。
+- 两台服务器的数据契约与三份 Parquet SHA256 独立一致；修正后 `276/276` 条 hidden SQL 可执行、非空且 expected value 匹配，冲突数为 0。语义审计仍有 `271/276` 条预警，明确不把机械自洽冒充人工语义正确。
+- 新增来源与正确性技术审计报告，确认归档轨迹为 `my-local Qwen3.6-27B` 且只供 SFT/reference；GRPO 输入不包含其答案，hidden label 来自老板 task manifest。
+- 全项目回归测试为 `129 passed`；报告 canonical payload、来源结构和语义 fallback 通过，因本机 Chromium 与增强 reader 不兼容采用 `structural_only` 验收。
 
 ### v0.48.0 — 2026-08-06
 

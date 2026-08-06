@@ -1,0 +1,444 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "老板 v15 DWH 训练标签：来源、正确性与重复任务处置审计",
+    "description": "追溯 237 条原训练数据的 prompt、轨迹与 hidden gold 来源，比较唯一冲突 prompt 的两条标签，并交付修正后的 236/20/20 数据资产。",
+    "generatedAt": "2026-08-06T16:10:00+08:00",
+    "charts": [
+      {
+        "id": "evidence_layers_chart",
+        "title": "机械自洽与语义可信度不是同一层证据",
+        "subtitle": "276 条修正后全量数据均通过 SQL 结果重放；仅 5 条未命中现有语义预警。预警是筛查信号，不等同于已判错。",
+        "type": "bar",
+        "dataset": "evidence_layers",
+        "sourceId": "label_audit",
+        "source": {
+          "id": "evidence_layers_chart_query",
+          "label": "修正后标签质量审计",
+          "path": "data/boss_v15_dwh_full276_20260806/label_quality_audit.json",
+          "query": {
+            "engine": "duckdb",
+            "language": "sql",
+            "sql": "SELECT * FROM (VALUES ('SQL 与 expected value 一致',276),('未命中语义预警',5)) AS t(evidence_layer,rows)",
+            "description": "从逐条 SQL 重放与语义预警审计汇总两个证据层。"
+          }
+        },
+        "encodings": {
+          "x": {"field": "evidence_layer", "type": "nominal", "label": "证据层"},
+          "y": {"field": "rows", "type": "quantitative", "label": "任务数"}
+        },
+        "valueFormat": "number",
+        "layout": "full",
+        "maxRows": 2
+      }
+    ],
+    "tables": [
+      {
+        "id": "evidence_layers_table",
+        "title": "机械自洽与语义可信度不是同一层证据",
+        "subtitle": "276 条修正后全量数据均通过 SQL 结果重放；仅 5 条未命中现有语义预警。预警是筛查信号，不等同于已判错。",
+        "dataset": "evidence_layers",
+        "sourceId": "label_audit",
+        "source": {
+          "id": "evidence_layers_query",
+          "label": "修正后标签质量审计",
+          "path": "data/boss_v15_dwh_full276_20260806/label_quality_audit.json",
+          "query": {
+            "engine": "duckdb",
+            "language": "sql",
+            "sql": "SELECT * FROM (VALUES ('SQL 与 expected value 一致',276),('未命中语义预警',5)) AS t(evidence_layer,rows)",
+            "description": "从逐条 SQL 重放与语义预警审计汇总两个证据层。"
+          }
+        },
+        "columns": [
+          {"field": "evidence_layer", "label": "证据层"},
+          {"field": "rows", "label": "任务数", "format": "number"}
+        ],
+        "layout": "full"
+      },
+      {
+        "id": "duplicate_decision_table",
+        "title": "冲突 prompt 的两条标签比较",
+        "subtitle": "两条都没有真正实现“最新一期 + 多指标”；保留项仅代表相对更接近题意。",
+        "dataset": "duplicate_decision",
+        "sourceId": "boss_tasks",
+        "source": {
+          "id": "duplicate_decision_query",
+          "label": "老板 v15 原始任务与 Qwen3.6 事件轨迹",
+          "path": "dwh_tasks.jsonl + trajectories_v15_27B_table",
+          "query": {
+          "engine": "duckdb",
+          "language": "sql",
+          "sql": "SELECT * FROM (VALUES ('task_000147','保留','按承运商名称汇总准时率，LIMIT 3','否','源轨迹实际做月度六指标报告；hidden target 仅部分覆盖','单轮任务、业务名称可读，二者中相对更接近'),('task_000033','剔除','按承运商 ID 汇总投诉率，LIMIT 5','否','三轮任务的源轨迹实际做单日六指标报告；hidden target 更窄','同 prompt 冲突且语义更弱')) AS t(task_id,decision,hidden_target,latest_filter,trajectory_alignment,judgment)",
+            "description": "对同 prompt 冲突 gold 做源任务与原始轨迹的逐项复核。"
+          }
+        },
+        "columns": [
+          {
+            "field": "task_id",
+            "label": "任务"
+          },
+          {
+            "field": "decision",
+            "label": "处置"
+          },
+          {
+            "field": "hidden_target",
+            "label": "隐藏目标"
+          },
+          {
+            "field": "latest_filter",
+            "label": "含最新期过滤"
+          },
+          {
+            "field": "trajectory_alignment",
+            "label": "与原轨迹的关系"
+          },
+          {
+            "field": "judgment",
+            "label": "判断"
+          }
+        ],
+        "layout": "full"
+      },
+      {
+        "id": "provenance_table",
+        "title": "这批数据到底来自哪里",
+        "subtitle": "区分任务、源模型轨迹、hidden label 与实际 GRPO 输入，避免把四者混为“商业模型答案”。",
+        "dataset": "provenance",
+        "sourceId": "dataset_contract",
+        "source": {
+          "id": "provenance_query",
+          "label": "boss-aligned 数据契约与源文件",
+          "path": "boss_alignment_contract.json + dwh_tasks.jsonl + event JSONL",
+          "query": {
+          "engine": "duckdb",
+          "language": "sql",
+          "sql": "SELECT * FROM (VALUES ('任务/指令','老板 v15 sandbox 的 dwh_tasks.jsonl；实际使用 variant index 0','不是商业模型答案','作为 user prompt'),('源事件轨迹','provider=my-local, model=Qwen3.6-27B','本地模型生成，不是外部 API 答案','仅 SFT/reference；回答不进入 prompt'),('hidden label','老板 task manifest 的 verification_sql + gold_answer','不是 Qwen3.6 最终回答','在线奖励目标'),('当前 rollout','基础/训练后的 Qwen3.6-27B 在独立 sandbox 实时生成','本项目本地推理','计算 GRPO advantage 并更新参数')) AS t(layer,source,commercial_model,used_in_grpo)",
+            "description": "按 task_id 和文件哈希追溯正式数据的四层来源。"
+          }
+        },
+        "columns": [
+          {
+            "field": "layer",
+            "label": "层"
+          },
+          {
+            "field": "source",
+            "label": "来源"
+          },
+          {
+            "field": "commercial_model",
+            "label": "是否商业模型答案"
+          },
+          {
+            "field": "used_in_grpo",
+            "label": "在 GRPO 中的用途"
+          }
+        ],
+        "layout": "full"
+      },
+      {
+        "id": "quality_summary_table",
+        "title": "修正后的数据质量结论",
+        "subtitle": "机械结果匹配与自然语言语义验证分开报告。",
+        "dataset": "quality_summary",
+        "sourceId": "label_audit",
+        "source": {
+          "id": "quality_summary_query",
+          "label": "修正后标签质量审计",
+          "path": "data/boss_v15_dwh_full276_20260806/label_quality_audit.json",
+          "query": {
+            "engine": "duckdb",
+            "language": "sql",
+            "sql": "SELECT * FROM (VALUES ('train','SQL 可执行且 expected 匹配',236,236),('val','SQL 可执行且 expected 匹配',20,20),('test','SQL 可执行且 expected 匹配',20,20),('all','命中至少一个语义预警',271,276),('all','人工逐题语义确认','未建立','276')) AS t(scope,check_name,passed,total)",
+            "description": "汇总逐条 SQL 重放、语义预警和人工确认覆盖边界。"
+          }
+        },
+        "columns": [
+          {
+            "field": "scope",
+            "label": "范围"
+          },
+          {
+            "field": "check_name",
+            "label": "检查"
+          },
+          {
+            "field": "passed",
+            "label": "通过/命中"
+          },
+          {
+            "field": "total",
+            "label": "总数"
+          }
+        ],
+        "layout": "full"
+      }
+    ],
+    "sources": [
+      {
+        "id": "label_audit",
+        "label": "修正后 276 条标签质量审计",
+        "path": "data/boss_v15_dwh_full276_20260806/label_quality_audit.json"
+      },
+      {
+        "id": "quality_rejection",
+        "label": "重复任务质量剔除记录",
+        "path": "data/boss_v15_dwh_full276_20260806/quality_rejection_audit.json"
+      },
+      {
+        "id": "dataset_contract",
+        "label": "修正后 boss-aligned 数据契约",
+        "path": "data/boss_v15_dwh_full276_20260806/dataset/boss_alignment_contract.json"
+      },
+      {
+        "id": "boss_tasks",
+        "label": "老板 v15 原始 DWH task manifest",
+        "path": "boss-v15/dwh_tasks.jsonl"
+      },
+      {
+        "id": "source_trajectories",
+        "label": "老板归档的 Qwen3.6-27B PI 事件轨迹",
+        "path": "boss-v15/trajectories_v15_27B_table/"
+      }
+    ],
+    "blocks": [
+      {
+        "id": "title",
+        "type": "markdown",
+        "body": "# 老板 v15 DWH 训练标签：来源、正确性与重复任务处置审计",
+        "layout": "full"
+      },
+      {
+        "id": "technical_summary",
+        "type": "markdown",
+        "body": "## 技术摘要\n\n**重复任务已经处理：保留 `task_000147`，剔除 `task_000033`。** 两者的可见 prompt 完全相同，但 hidden gold 不同；两条 SQL 都能返回与 expected value 一致的结果，却都没有真正实现“最新一期”的时间过滤，也都只覆盖一个指标。`task_000147` 相对更可信，因为它是单轮任务，目标为承运商名称连接后的准时率；`task_000033` 是三轮任务的首轮，却把隐藏目标缩成承运商 ID 的投诉率汇总。这个决定是相对判断，不是宣称 `000147` 已达到人工语义金标准。\n\n修正后的正式资产为 `236 train / 20 val / 20 test`。两台服务器独立门禁与三份 Parquet SHA256 完全一致；`276/276` 条 verification SQL 可执行、非空，并与 expected value 匹配，冲突 instruction→gold 数为 0。\n\n**这批 GRPO 数据不是 237 段商业模型答案。** task 与 gold 来自老板 v15 sandbox manifest；归档轨迹由 `my-local` 提供的 `Qwen3.6-27B` 生成，只进入 SFT/reference，GRPO prompt 中不含它的回答。hidden gold 是老板 task manifest 中的 SQL/结构化结果，由同源 SQLite 重放确认。",
+        "sourceId": "quality_rejection",
+        "layout": "full"
+      },
+      {
+        "id": "key_findings",
+        "type": "markdown",
+        "body": "## 关键结论\n\n1. 原 train 237 条的 expected value 在数据库层均自洽；删除冲突项后，train `236/236`、val `20/20`、test `20/20` 仍全部重放通过。\n2. 数据库自洽不等于题意正确。修正后 `271/276` 条命中至少一项语义预警，其中 `219` 条“最新/当前”没有时间条件、`192` 条源轨迹 instruction 与当前 task 定义发生漂移、`91` 条 `LIMIT` 没有 `ORDER BY`。\n3. 因此不能回答“237 条答案都对”。准确说法是：**数值/表格与各自 hidden SQL 全部一致；hidden SQL 是否是自然语言任务的唯一正确答案，尚未完成人工逐题确认。**\n4. 源 Qwen3.6 轨迹不是训练标签，也没有放入 GRPO 输入；当前训练学习的是在线 rollout 经老板/严格证据奖励后的相对优势。\n5. 新门禁会在相同 instruction 绑定不同 gold 时直接失败；旧 `full277` 只保留为已完成实验的历史证据，未来正式入口切换到 `full276`。",
+        "sourceId": "label_audit",
+        "layout": "full"
+      },
+      {
+        "id": "evidence_table_block",
+        "type": "table",
+        "tableId": "evidence_layers_table",
+        "layout": "full"
+      },
+      {
+        "id": "evidence_chart_block",
+        "type": "chart",
+        "chartId": "evidence_layers_chart",
+        "layout": "full"
+      },
+      {
+        "id": "scope",
+        "type": "markdown",
+        "body": "## 范围、数据与判定定义\n\n- **机械正确**：verification SQL 在同源 `logistics.sqlite` 只读执行成功、结果非空，且能支持 `expected_value_json`。\n- **语义正确**：hidden SQL/expected value 与自然语言指令的业务口径、时间范围、指标集合和输出粒度一致。\n- **语义预警**：静态规则命中“latest 无时间条件”“宽泛问题绑定精确单目标”“LIMIT 无排序”等风险；预警不是人工判错。\n- **商业模型答案**：由外部闭源/商业 API 生成并直接作为答案监督。本批 GRPO 不存在这种输入形式。\n- **当前数据**：修正后正式入口为 236/20/20；用户所说的 237 是已完成 step-100 训练使用的历史 train split。",
+        "sourceId": "dataset_contract",
+        "layout": "full"
+      },
+      {
+        "id": "duplicate_table_block",
+        "type": "table",
+        "tableId": "duplicate_decision_table",
+        "layout": "full"
+      },
+      {
+        "id": "provenance_table_block",
+        "type": "table",
+        "tableId": "provenance_table",
+        "layout": "full"
+      },
+      {
+        "id": "quality_table_block",
+        "type": "table",
+        "tableId": "quality_summary_table",
+        "layout": "full"
+      },
+      {
+        "id": "methodology",
+        "type": "markdown",
+        "body": "## 方法\n\n1. 从老板 v15 `dwh_tasks.jsonl` 提取两条 task 的自然语言、turn_count、expected fields、sample SQL、gold 和验证元数据。\n2. 从 1,500 条归档事件轨迹中按精确 task_id 找回 `000033/000147`，核对模型/provider、真实工具查询和最终报告。\n3. 比较两个 hidden SQL 是否包含最新期过滤、是否覆盖“关键指标”复数、输出是否有业务名称，以及是否与任务轮次匹配。\n4. 保留原 split 分配，仅从 train 的 alignment review 删除 `000033`；重新构建 236/20/20 Parquet。\n5. 在同源 sandbox 逐条执行全部 276 个 hidden SQL，校验非空和 expected value；再运行语义预警审计。\n6. 在 5、6 号机分别验证 boss contract 与 Parquet 哈希，确保训练/rollout 读取完全相同的数据。",
+        "sourceId": "label_audit",
+        "layout": "full"
+      },
+      {
+        "id": "limitations",
+        "type": "markdown",
+        "body": "## 局限、不确定性与稳健性\n\n- `task_000147` 只是两条中较可信；它仍缺少时间过滤、只汇总准时率且 `LIMIT 3` 无 `ORDER BY`，不能当作理想人工 gold。\n- `271/276` 是启发式预警覆盖，不是错误率；某些表可能已预聚合“当前期”，也可能使无显式时间条件仍有业务合理性，需要逐题结合 schema/文档复核。\n- `_qa_status=passed` 与 `checked_against_database=true` 证明生成管线做过 SQLite 校验，但没有字段证明 276 条都经过人类业务专家语义确认。\n- 两条 task 的 manifest 都含一个由 `aliyun/deepseek-v3.2` 生成的 v2 改写候选，但 `instruction_variant_index=0`；实际源轨迹使用的不是该改写候选。\n- 已完成的 step-100 checkpoint 无法“忘掉”被删除的 `000033`；修正只影响未来训练与复评数据。",
+        "sourceId": "boss_tasks",
+        "layout": "full"
+      },
+      {
+        "id": "next_steps",
+        "type": "markdown",
+        "body": "## 下一步\n\n1. 未来正式训练只允许 `boss_v15_dwh_full276_20260806`，旧 full277 门禁因缺少冲突标签 invariant 将失败。\n2. 优先人工复核 `latest_instruction_without_temporal_sql` 与 `broad_instruction_exact_hidden_target` 的交集，而不是随机均匀抽样。\n3. 为每条人工确认记录业务口径、时间窗、SQL、结果和 reviewer；确认失败的任务进入 SFT/reference 或重写后重新评测，不直接在线奖励。\n4. 将“老板评分提升”与“人工语义正确率提升”并列报告，防止评测器一致性被误报为真实能力。",
+        "layout": "full"
+      },
+      {
+        "id": "further_questions",
+        "type": "markdown",
+        "body": "## 后续需要回答的问题\n\n- 219 条 latest 预警中，多少张表本身已是当前期快照，多少确实缺少时间过滤？\n- 137 条宽泛 instruction 的 hidden target 是否覆盖任务定义中的全部 expected fields？\n- 经过分层人工复核后，可保留的高置信 train 规模是多少？\n- 用高置信子集继续训练时，老板 reward 与人工语义正确率是否同向变化？",
+        "layout": "full"
+      }
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "generatedAt": "2026-08-06T16:10:00+08:00",
+    "status": "ready",
+    "datasets": {
+      "evidence_layers": [
+        {
+          "evidence_layer": "SQL 与 expected value 一致",
+          "rows": 276
+        },
+        {
+          "evidence_layer": "未命中语义预警",
+          "rows": 5
+        }
+      ],
+      "duplicate_decision": [
+        {
+          "task_id": "task_000147",
+          "decision": "保留",
+          "hidden_target": "按承运商名称汇总准时率，LIMIT 3",
+          "latest_filter": "否",
+          "trajectory_alignment": "源轨迹实际做月度六指标报告；hidden target 仅部分覆盖",
+          "judgment": "单轮任务、业务名称可读，二者中相对更接近"
+        },
+        {
+          "task_id": "task_000033",
+          "decision": "剔除",
+          "hidden_target": "按承运商 ID 汇总投诉率，LIMIT 5",
+          "latest_filter": "否",
+          "trajectory_alignment": "三轮任务的源轨迹实际做单日六指标报告；hidden target 更窄",
+          "judgment": "同 prompt 冲突且语义更弱"
+        }
+      ],
+      "provenance": [
+        {
+          "layer": "任务/指令",
+          "source": "老板 v15 sandbox 的 dwh_tasks.jsonl；实际使用 variant index 0",
+          "commercial_model": "不是商业模型答案",
+          "used_in_grpo": "作为 user prompt"
+        },
+        {
+          "layer": "源事件轨迹",
+          "source": "provider=my-local, model=Qwen3.6-27B",
+          "commercial_model": "本地模型生成，不是外部 API 答案",
+          "used_in_grpo": "仅 SFT/reference；回答不进入 prompt"
+        },
+        {
+          "layer": "hidden label",
+          "source": "老板 task manifest 的 verification_sql + gold_answer",
+          "commercial_model": "不是 Qwen3.6 最终回答",
+          "used_in_grpo": "在线奖励目标"
+        },
+        {
+          "layer": "当前 rollout",
+          "source": "基础/训练后的 Qwen3.6-27B 在独立 sandbox 实时生成",
+          "commercial_model": "本项目本地推理",
+          "used_in_grpo": "计算 GRPO advantage 并更新参数"
+        }
+      ],
+      "quality_summary": [
+        {
+          "scope": "train",
+          "check_name": "SQL 可执行且 expected 匹配",
+          "passed": 236,
+          "total": 236
+        },
+        {
+          "scope": "val",
+          "check_name": "SQL 可执行且 expected 匹配",
+          "passed": 20,
+          "total": 20
+        },
+        {
+          "scope": "test",
+          "check_name": "SQL 可执行且 expected 匹配",
+          "passed": 20,
+          "total": 20
+        },
+        {
+          "scope": "all",
+          "check_name": "命中至少一个语义预警",
+          "passed": 271,
+          "total": 276
+        },
+        {
+          "scope": "all",
+          "check_name": "人工逐题语义确认",
+          "passed": "未建立",
+          "total": 276
+        }
+      ]
+    }
+  },
+  "sources": [
+    {
+      "id": "label_audit",
+      "label": "修正后 276 条标签质量审计",
+      "path": "data/boss_v15_dwh_full276_20260806/label_quality_audit.json",
+      "query": {
+        "engine": "python",
+        "language": "python",
+        "query": "audit_boss_dataset_labels.py --data-dir .../dataset --sandbox-root /pi_sandbox --review-queue ...",
+        "description": "逐条执行 hidden SQL，比较 expected value，并统计 instruction/gold 冲突和语义预警。"
+      }
+    },
+    {
+      "id": "quality_rejection",
+      "label": "重复任务质量剔除记录",
+      "path": "data/boss_v15_dwh_full276_20260806/quality_rejection_audit.json",
+      "query": {
+        "engine": "python",
+        "language": "python",
+        "query": "filter_boss_alignment_review.py --reject-task task_000033=duplicate_prompt_conflicting_gold_less_semantically_aligned_than_task_000147",
+        "description": "保留 split 分配，仅剔除较弱冲突标签。"
+      }
+    },
+    {
+      "id": "dataset_contract",
+      "label": "修正后 boss-aligned 数据契约",
+      "path": "data/boss_v15_dwh_full276_20260806/dataset/boss_alignment_contract.json",
+      "query": {
+        "engine": "contract-audit",
+        "language": "json",
+        "query": "Validate boss source/system/tools hashes, zero conflicting_instruction_gold_count, split overlap and Parquet SHA256 independently on m05/m06.",
+        "description": "两机确认 236/20/20 正式资产与哈希一致。"
+      }
+    },
+    {
+      "id": "boss_tasks",
+      "label": "老板 v15 原始 DWH task manifest",
+      "path": "boss-v15/dwh_tasks.jsonl",
+      "query": {
+        "engine": "source-review",
+        "language": "jsonl",
+        "query": "Select task_id IN ('task_000033','task_000147')",
+        "description": "比较任务轮次、字段、SQL、gold、QA 与改写元数据。"
+      }
+    },
+    {
+      "id": "source_trajectories",
+      "label": "老板归档 Qwen3.6-27B PI 事件轨迹",
+      "path": "boss-v15/trajectories_v15_27B_table/",
+      "query": {
+        "engine": "event-review",
+        "language": "jsonl",
+        "query": "Read session, agent_end and final assistant messages for sft_20260628_v15_dwh_task_000033.jsonl and task_000147.jsonl.",
+        "description": "确认实际 provider/model、真实任务执行和最终报告内容。"
+      }
+    }
+  ]
+}
