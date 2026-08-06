@@ -27,7 +27,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 | 容器 | `llin-verl-trainer-m05-20260730` | `llin-verl-rollout-m06-20260730` |
 | 镜像 | `llin-verl-a3:20260730` | `llin-verl-a3:20260730` |
 | 容器权限 | 特权模式（仅重建上述 `llin` 容器） | 特权模式（仅重建上述 `llin` 容器） |
-| 当前实验 NPU | 16（`llin-v15-dwh-bossreward-12groups-100step-20260805-03` 已完成第 1 步并继续运行） | 16（同一 `-03` 的 TP8×DP2 rollout；同步后约 `54.4–54.7 GiB/卡`） |
+| 当前实验 NPU | 16（`llin-v15-dwh-bossreward-12groups-100step-20260805-03` 已完成 100/100 步并通过最终 checkpoint 门禁） | 16（同一 `-03` 已完成最终 val20；老板原版前后复评已结束） |
 
 ## 数据结论
 
@@ -61,6 +61,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [`docs/v15_dwh_full277_reward_alignment_20260804.html`](docs/v15_dwh_full277_reward_alignment_20260804.html)：277 条老板 v15 DWH 的全量使用、237/20/20 防泄漏分割、语义预警、老板主奖励与严格证据护栏审计。
 - [`docs/v15_dwh_frozen_baseline_20260804.md`](docs/v15_dwh_frozen_baseline_20260804.md)：固定 val20 冻结模型指标、`None` 聚合故障、安全硬归零观测补强、主动中止的 step0 运行和最终 5-step 门禁。
 - [`docs/v15_dwh_bossreward_5step_20260804.md`](docs/v15_dwh_bossreward_5step_20260804.md)：真实 DWH 5-step 的逐步耗时、80 条训练轨迹、冻结基线对比、长尾队列、非致命日志问题和 PP=2 checkpoint 缺层复盘。
+- [`docs/boss_exact_pre_post_100step_20260806.md`](docs/boss_exact_pre_post_100step_20260806.md)：同一固定 val20 上直接调用老板原始 manifest、数据库和三份评分脚本，对比冻结模型与 step-100 的总奖励、正确性、过程质量和完整收尾。
 - `llin_verl/pi_sqlite_tool.py`：只读 SQLite 轨迹工具。
 - `llin_verl/pi_workspace_tools.py`、`llin_verl/pi_agent_loop.py`：完整 PI 四工具、轨迹级共享沙箱、事件审计和统一清理。
 - `llin_verl/pi_sqlite_cli.py`：为官方昇腾镜像补齐的受限只读 sqlite3 CLI 兼容层。
@@ -72,6 +73,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/prepare_boss_aligned_dataset.py`、`scripts/export_boss_task_manifest.py`、`scripts/check_boss_alignment_contract.py`：按真实 task_id 连接老板轨迹与 task、全量/显式 pilot 分流、review queue、GRPO/SFT 隔离及正式启动硬门禁。
 - `scripts/select_v15_dwh_batch.py`、`scripts/check_boss_reward_dataset.py`：按老板 v15 原始任务契约审核 277 条 DWH、分层切分并防止重复 prompt 跨 split 泄漏，随后在真实 Parquet 上验证奖励字段与任务族。
 - `scripts/analyze_boss_validation.py`：不重跑 rollout，直接汇总老板主奖励 validation JSONL，并检查空值、混合奖励公式、分类型正确率和安全命令重放。
+- `scripts/prepare_boss_exact_evaluation.py`：把 veRL 保存的 Qwen 多轮文本轨迹无损还原为老板原版 OpenAI messages，严格按 task_id 复制原始 task manifest，并审计并行工具调用、缺失响应、最终回答和输入哈希。
 - `scripts/verify_checkpoint_integrity.py`：在正式启动器发布成功退出码前检查 HF tensor key/分片或 Megatron distributed checkpoint 元数据与分片，缺失时 fail closed。
 - `scripts/analyze_formal_grpo_50step.py`、`scripts/audit_formal_instruction_gold_alignment.py`：完整 50-step 训练信号、奖励组件、GRPO group 方差、工具行为及 instruction/gold 语义复核触发器。
 - `scripts/start_ray_m05.sh`、`scripts/start_ray_m06.sh`：两机 Ray 启动程序。
@@ -104,7 +106,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - 两台机器均完成官方镜像的软件栈和 Qwen3.6-27B 模型识别检查。
 - Ray 两节点集群已连通，可见 32 张 NPU；角色测试确认训练任务落在 5 号机、rollout 任务落在 6 号机。
 - 4 条真实验证任务已转换为 Parquet；两台机器上的只读数据库查询和奖励闭环均为 `4/4` 满分。
-- 本地覆盖 Megatron 拓扑、Continuous Token、TP8/DP2 权重同步、48K、fully-async、Fastest-K、完整 PI 工具、奖励、boss-aligned source join/人工审核门禁、冻结基线、checkpoint 完整性、vLLM public abort 和老板 KB/DWH 影子回放，项目测试为 `112 passed`。
+- 本地覆盖 Megatron 拓扑、Continuous Token、TP8/DP2 权重同步、48K、fully-async、Fastest-K、完整 PI 工具、奖励、boss-aligned source join/人工审核门禁、冻结基线、checkpoint 完整性、vLLM public abort、老板 KB/DWH 影子回放和老板原版前后配对评测，项目测试为 `119 passed`。
 - 老板评测影子回放使用 1,500/1,500 唯一 task_id 的同源 Qwen3.6 v15 文件；KB/DWH 共 1,000 条完整评估，DWH `277/280` 结构化 verifier 自洽、严格正确 6 条，KB 500 条全部保持非在线可用。
 - 影子回放定位并修复 `/workspace/` 被字符串删除后误判为宿主 `/` 的安全规则缺陷；真实根目录和宿主路径扫描仍被阻止。
 - 完整 PI Agent 已通过 6 号机真实 veRL 容器门禁：`bash/read/write/edit` 全部加载，同一轨迹共享可写沙箱，sqlite3 只读代理可查询 v15 数据，失败状态正确记录，轨迹释放后工作区不存在；门禁结束后容器已停止。
@@ -162,6 +164,13 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [veRL 昇腾模型与算法支持](https://github.com/verl-project/verl/blob/main/docs/ascend_tutorial/model_support/model_and_algorithm_support.md)
 
 ## 版本记录
+
+### v0.45.0 — 2026-08-06
+
+- 使用老板原始 `judge_trajectory.py`、`judge_trajectory_openai.py`、`reward_judge.py`、v15 task manifest 和原始 `logistics.sqlite`，在同一固定 val20 上严格配对重算冻结模型与 step-100；两轮均 20/20 task_id 匹配，manifest SHA256 完全一致。
+- 老板原版总奖励均值从 `0.479065` 降至 `0.443750`（`-7.37%`）；数值正确从 `2/20` 增至 `3/20`、verdict correct 从 `1/20` 增至 `2/20`、过程分从 `0.670625` 增至 `0.765000`，但完整收尾从 `15/20` 降至 `13/20`，新增硬门控归零抵消了能力收益。
+- 新增 fail-closed 的 Qwen 文本轨迹到 OpenAI messages 适配器，支持单轮并行工具调用并忠实记录缺失 tool response；逐题配对为 6 胜、5 负、9 平，两轮都完成的 10 题均值从 `0.61188` 升至 `0.70938`，确认下一轮应优先修复最终回答预算和重复探索，而不是原样增加训练步数。
+- 全项目回归测试为 `119 passed`。
 
 ### v0.44.0 — 2026-08-05
 
