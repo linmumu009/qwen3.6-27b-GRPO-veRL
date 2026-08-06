@@ -92,6 +92,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/launch_pi_grpo_megatron_smoke.sh`：Megatron 单步实验的日志、时间和退出码启动器。
 - `scripts/run_pi_formal_50step.sh`、`scripts/launch_pi_formal_50step.sh`：保留原 50-step 正式入口。
 - `scripts/run_pi_formal_100step_12groups.sh`、`scripts/launch_pi_formal_100step_12groups.sh`：固定 `4 groups/update × 4 responses`、12 个在途 groups、100 步、仅第 100 步验证与保存；同样只接受 full、已审核、哈希完整的 boss-aligned train/val。
+- `scripts/prepare_pi_step100_resume_view.sh`、`scripts/run_pi_formal_step100_to_step200_12groups.sh`、`scripts/launch_pi_formal_step100_to_step200_12groups.sh`：从现有 step-100 完整模型/RNG 恢复到累计 step-200，保持 12-group 正式配置，新增恰好 100 次更新；因原 checkpoint 未保存 Adam 状态而显式重置 optimizer，并因 train237 修正为 train236 而丢弃旧 dataloader 游标。
 - `scripts/launch_v15_dwh_gate_after_baseline.sh`：等待冻结 val20 成功退出后自动启动 5-step GRPO；基线失败时阻断训练并记录监督状态。
 - `scripts/check_formal_data_on_ray.py`：正式运行前分别在 `llin_trainer` 和 `llin_rollout` Ray 节点计算 train/val 文件大小与 SHA256，任一节点缺失或内容不一致即在模型加载前失败。
 - `scripts/run_pi_grpo_fully_async_tp4_pp2_cp2.sh`：TP4/PP2/CP2 训练、TP8/DP2 rollout 的 bounded fully-async 配置，按完整 GRPO group 入队并以 queued tokens 做背压。
@@ -112,7 +113,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - 两台机器均完成官方镜像的软件栈和 Qwen3.6-27B 模型识别检查。
 - Ray 两节点集群已连通，可见 32 张 NPU；角色测试确认训练任务落在 5 号机、rollout 任务落在 6 号机。
 - 4 条真实验证任务已转换为 Parquet；两台机器上的只读数据库查询和奖励闭环均为 `4/4` 满分。
-- 本地覆盖 Megatron 拓扑、Continuous Token、TP8/DP2 权重同步、48K、fully-async、Fastest-K、完整 PI 工具、奖励、boss-aligned source join/人工审核门禁、冻结基线、checkpoint 完整性、vLLM public abort、老板 KB/DWH 影子回放和老板原版前后配对评测，项目测试为 `119 passed`。
+- 本地覆盖 Megatron 拓扑、Continuous Token、TP8/DP2 权重同步、48K、fully-async、Fastest-K、完整 PI 工具、奖励、boss-aligned source join/人工审核门禁、冻结基线、checkpoint 完整性、vLLM public abort、老板 KB/DWH 影子回放和老板原版前后配对评测，项目测试为 `132 passed`。
 - 老板评测影子回放使用 1,500/1,500 唯一 task_id 的同源 Qwen3.6 v15 文件；KB/DWH 共 1,000 条完整评估，DWH `277/280` 结构化 verifier 自洽、严格正确 6 条，KB 500 条全部保持非在线可用。
 - 影子回放定位并修复 `/workspace/` 被字符串删除后误判为宿主 `/` 的安全规则缺陷；真实根目录和宿主路径扫描仍被阻止。
 - 完整 PI Agent 已通过 6 号机真实 veRL 容器门禁：`bash/read/write/edit` 全部加载，同一轨迹共享可写沙箱，sqlite3 只读代理可查询 v15 数据，失败状态正确记录，轨迹释放后工作区不存在；门禁结束后容器已停止。
@@ -170,6 +171,12 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [veRL 昇腾模型与算法支持](https://github.com/verl-project/verl/blob/main/docs/ascend_tutorial/model_support/model_and_algorithm_support.md)
 
 ## 版本记录
+
+### v0.50.0 — 2026-08-06
+
+- 新增 step-100 → step-200 专用续训入口：累计训练目标 200、rollout 目标 800，对应从恢复计数新增 100 次参数更新和 400 个完整 groups；其余 48K、`4 groups/update × 4 responses`、12 个在途 groups、0.80 vLLM cache、16K batched tokens、24 seq/副本、12 workers、学习率 `1e-7` 配置保持不变。
+- 新增角色隔离的 resume view：训练节点恢复 step-100 的完整 Megatron model/RNG，rollout 节点不加载与旧 train237 绑定的 `data.pt`，改在修正后的 train236 上重置数据游标；原 checkpoint 没有 Adam 状态，因此续训使用同配置但重新初始化的 optimizer，并在运行目录写入明确契约。
+- 最终验证和保存均仅在累计 step-200 触发；启动器要求唯一最终 checkpoint 为 `global_step_200`，并继续执行完整性门禁。
 
 ### v0.49.0 — 2026-08-06
 

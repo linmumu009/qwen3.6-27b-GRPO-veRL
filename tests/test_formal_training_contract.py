@@ -120,6 +120,63 @@ def test_formal_100step_launcher_requires_exact_final_checkpoint():
     assert 'exit_code=8' in script
 
 
+def test_step100_to_step200_continuation_runs_exactly_100_new_updates():
+    script = (
+        ROOT / "scripts" / "run_pi_formal_step100_to_step200_12groups.sh"
+    ).read_text(encoding="utf-8")
+
+    expected = (
+        'START_POLICY_STEP=100',
+        'FINAL_POLICY_STEP=200',
+        'TOTAL_TRAINING_STEPS="${FINAL_POLICY_STEP}"',
+        'GROUPS_PER_STEP=4',
+        'TOTAL_ROLLOUT_GROUPS="$((FINAL_POLICY_STEP * GROUPS_PER_STEP))"',
+        'TARGET_CONCURRENT_GROUPS=12',
+        'ROLLOUT_GPU_MEMORY_UTILIZATION=0.80',
+        'ROLLOUT_MAX_BATCHED_TOKENS=16384',
+        'ROLLOUT_MAX_SEQS=24',
+        'AGENT_WORKERS=12',
+        'FASTEST_K=4',
+        'OVERSAMPLE_CANDIDATES=4',
+        "'actor_rollout_ref.actor.checkpoint.load_contents=[model,extra]'",
+        'trainer.resume_mode=resume_path',
+        'trainer.resume_from_path="${RESUME_CHECKPOINT}"',
+        'trainer.del_local_ckpt_after_load=False',
+        'trainer.test_freq="${FINAL_EVAL_STEP}"',
+        'trainer.save_freq="${FINAL_SAVE_STEP}"',
+        'trainer.max_actor_ckpt_to_keep=1',
+    )
+    for item in expected:
+        assert item in script
+
+    assert 'optimizer_state=reset_missing_from_source' in script
+    assert 'dataloader_state=reset_for_corrected_train236' in script
+
+
+def test_step100_resume_view_resets_only_the_incompatible_data_cursor():
+    script = (ROOT / "scripts" / "prepare_pi_step100_resume_view.sh").read_text(
+        encoding="utf-8"
+    )
+
+    assert 'ln -s "${SOURCE_CHECKPOINT}/actor" "${RESUME_CHECKPOINT}/actor"' in script
+    assert 'Refusing stale dataloader state' in script
+    assert 'dataloader_state=reset_for_train236' in script
+    assert 'rm ' not in script
+
+
+def test_step100_to_step200_launcher_requires_exact_final_checkpoint():
+    script = (
+        ROOT / "scripts" / "launch_pi_formal_step100_to_step200_12groups.sh"
+    ).read_text(encoding="utf-8")
+
+    assert "run_pi_formal_step100_to_step200_12groups.sh" in script
+    assert 'if [[ "${latest_iteration}" != "200" ]]' in script
+    assert 'expected_global_step_200_got_%s' in script
+    assert 'verify_checkpoint_integrity.py' in script
+    assert 'CHECKPOINT_INVALID' in script
+    assert 'exit_code=8' in script
+
+
 def test_five_step_gate_waits_for_successful_frozen_baseline():
     script = (ROOT / "scripts" / "launch_v15_dwh_gate_after_baseline.sh").read_text(
         encoding="utf-8"
