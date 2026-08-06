@@ -62,6 +62,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [`docs/v15_dwh_frozen_baseline_20260804.md`](docs/v15_dwh_frozen_baseline_20260804.md)：固定 val20 冻结模型指标、`None` 聚合故障、安全硬归零观测补强、主动中止的 step0 运行和最终 5-step 门禁。
 - [`docs/v15_dwh_bossreward_5step_20260804.md`](docs/v15_dwh_bossreward_5step_20260804.md)：真实 DWH 5-step 的逐步耗时、80 条训练轨迹、冻结基线对比、长尾队列、非致命日志问题和 PP=2 checkpoint 缺层复盘。
 - [`docs/boss_exact_pre_post_100step_20260806.md`](docs/boss_exact_pre_post_100step_20260806.md)：同一固定 val20 上直接调用老板原始 manifest、数据库和三份评分脚本，对比冻结模型与 step-100 的总奖励、正确性、过程质量和完整收尾。
+- [`docs/step100_checkpoint_hf_export_20260806.md`](docs/step100_checkpoint_hf_export_20260806.md)：step-100 可续训 Megatron checkpoint 与独立 HF 导出的路径、1199-tensor 完整性、MTP 继承边界和 TP8 vLLM 最小生成验收。
 - [`docs/boss_exact_pre_post_100step_20260806_external.md`](docs/boss_exact_pre_post_100step_20260806_external.md)：面向外部汇报的精简版，保留核心结论和聚合指标，移除评测集规模、逐题标识、内部路径、文件哈希等内部信息。
 - `llin_verl/pi_sqlite_tool.py`：只读 SQLite 轨迹工具。
 - `llin_verl/pi_workspace_tools.py`、`llin_verl/pi_agent_loop.py`：完整 PI 四工具、轨迹级共享沙箱、事件审计和统一清理。
@@ -165,6 +166,13 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [veRL 昇腾模型与算法支持](https://github.com/verl-project/verl/blob/main/docs/ascend_tutorial/model_support/model_and_algorithm_support.md)
 
 ## 版本记录
+
+### v0.47.0 — 2026-08-06
+
+- 原样保留 step-100 的 32-shard Megatron distributed checkpoint；复检 `54,720,369,973 bytes`、格式和元数据均有效，可继续训练。
+- 新增 Qwen3.6 专用离线导出器：在 CPU/Gloo TP1/PP1/CP1 上恢复完整 64 层，再由 Megatron Bridge 流式写入 HF safetensors；针对上游未实现的 MTP 映射，仅从基础模型继承训练中未启用的 15 个 MTP tensor。
+- 独立 HF 目录通过 `1199/1199` tensor、15/15 shard、0–63 层、GDN 权重族和零 shape mismatch 门禁；全新 TP8 vLLM 成功加载并生成 `HF export works`，验收后 8 张 NPU 全部释放。
+- 新增可复现的 HF 导出、严格校验和 vLLM 最小生成脚本及路径隔离/MTP fallback 测试；清理本次失败尝试的约 49 GiB 临时目录，正式模型、日志和恢复 checkpoint 保留；全项目回归测试为 `125 passed`。
 
 ### v0.46.0 — 2026-08-06
 
