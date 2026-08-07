@@ -1,6 +1,8 @@
 import json
 from pathlib import Path
 
+import pytest
+
 from scripts.build_boss_exact_step100_step200_report import build_artifact
 
 
@@ -17,6 +19,7 @@ def test_report_preserves_comparison_and_adds_driver_diagnosis():
         _load("boss_exact_step200_20260807_adapter_summary.json"),
         _load("boss_exact_step100_step200_20260807_audit.json"),
         _load("boss_exact_step100_step200_20260807_diagnosis.json"),
+        _load("boss_exact_step100_step200_20260807_first100_training_signal.json"),
         _load("boss_exact_step100_step200_20260807_training_signal.json"),
         _load("boss_exact_step100_step200_20260807_failure_review.json"),
         _load("boss_exact_step100_step200_20260807_runtime_audit.json"),
@@ -27,8 +30,13 @@ def test_report_preserves_comparison_and_adds_driver_diagnosis():
     assert "driver_contribution_block" in block_ids
     assert "failure_task_table_block" in block_ids
     assert "training_signal_chart_block" in block_ids
+    assert "phase_signal_table_block" in block_ids
     assert sum(
         row["reward_sum_delta"]
         for row in artifact["snapshot"]["datasets"]["driver_contributions"]
     ) == -0.8813
     assert len(artifact["snapshot"]["datasets"]["failure_rows"]) == 6
+    mixed = artifact["snapshot"]["datasets"]["phase_signal_comparison"][0]
+    assert mixed["first100_rate"] == 0.1875
+    assert mixed["second100_rate"] == 0.18
+    assert mixed["delta_percentage_points"] == pytest.approx(-0.75)

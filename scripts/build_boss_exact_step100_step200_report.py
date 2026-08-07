@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Any
 
 
-GENERATED_AT = "2026-08-07T13:55:00+08:00"
+GENERATED_AT = "2026-08-07T15:35:00+08:00"
 
 
 def _source(
@@ -53,6 +53,7 @@ def build_artifact(
     adapter: dict[str, Any],
     audit: dict[str, Any],
     diagnosis: dict[str, Any],
+    first100_training_signal: dict[str, Any],
     training_signal: dict[str, Any],
     failure_review: dict[str, Any],
     runtime_audit: dict[str, Any],
@@ -121,6 +122,33 @@ def build_artifact(
                 }
             )
 
+    first_group = first100_training_signal["within_group_signal"]
+    second_group = training_signal["within_group_signal"]
+    phase_signal_comparison = []
+    for key, label, interpretation in (
+        ("numeric_correctness_mixed", "数值正确性有对有错", "直接提供二值正确性的组内相对信号"),
+        ("numeric_correctness_all_wrong", "四条全错", "二值正确性分量无法区分组内优劣"),
+        ("numeric_correctness_all_correct", "四条全对", "二值正确性分量无法区分组内优劣"),
+        ("completion_mixed", "最终回答状态有差异", "可提供是否收尾的组内相对信号"),
+        ("fields_used_mixed", "字段使用有差异", "可提供字段覆盖的组内相对信号"),
+    ):
+        count_key = f"{key}_count"
+        first_count = first_group[count_key]
+        second_count = second_group[count_key]
+        denominator = first_group["total_groups"]
+        phase_signal_comparison.append(
+            {
+                "metric": label,
+                "first100_count": first_count,
+                "first100_rate": first_count / denominator,
+                "second100_count": second_count,
+                "second100_rate": second_count / second_group["total_groups"],
+                "delta_percentage_points": 100
+                * (second_count / second_group["total_groups"] - first_count / denominator),
+                "interpretation": interpretation,
+            }
+        )
+
     failure_rows = [
         {
             "task_id": row["task_id"],
@@ -148,6 +176,7 @@ def build_artifact(
     adapter_path = "docs/boss_exact_step200_20260807_adapter_summary.json"
     audit_path = "docs/boss_exact_step100_step200_20260807_audit.json"
     diagnosis_path = "docs/boss_exact_step100_step200_20260807_diagnosis.json"
+    first100_training_path = "docs/boss_exact_step100_step200_20260807_first100_training_signal.json"
     training_path = "docs/boss_exact_step100_step200_20260807_training_signal.json"
     failure_path = "docs/boss_exact_step100_step200_20260807_failure_review.json"
     runtime_path = "docs/boss_exact_step100_step200_20260807_runtime_audit.json"
@@ -203,6 +232,31 @@ def build_artifact(
             "last_minus_first 为后 25 步均值减前 25 步均值",
         ],
     )
+    phase_comparison_source = {
+        "id": "training_phase_signal_comparison",
+        "label": "前100步与后100步组内训练信号同口径比较",
+        "path": f"{first100_training_path} + {training_path}",
+        "query": {
+            "engine": "duckdb",
+            "language": "sql",
+            "sql": (
+                f"SELECT '前100步' AS phase, * FROM read_json_auto('{first100_training_path}') "
+                f"UNION ALL SELECT '后100步' AS phase, * FROM read_json_auto('{training_path}')"
+            ),
+            "description": "用同一分析器比较两个连续100步阶段各400个完整GRPO group的组内信号分布。",
+            "executed_at": GENERATED_AT,
+            "filters": [
+                "前100步与后100步均为100个更新、每步16条轨迹、每组4条response",
+                "mixed correctness 指同一prompt的4条response同时包含正确与错误",
+                "两个阶段均要求 invalid_group_size_count=0",
+            ],
+            "metric_definitions": [
+                "mixed correctness rate = 数值正确性有对有错group数 / 400",
+                "delta_percentage_points = 后100步比例 - 前100步比例",
+            ],
+            "tables_used": [first100_training_path, training_path],
+        },
+    }
     failure_source = _source(
         "failure_trajectory_review",
         "6 道退化题轨迹人工复核",
@@ -328,6 +382,24 @@ def build_artifact(
                     ],
                     "layout": "full",
                 },
+                {
+                    "id": "phase_signal_table",
+                    "title": "前100步与后100步的组内信号",
+                    "subtitle": "两个阶段各400个完整group；变化为后100步减前100步。",
+                    "dataset": "phase_signal_comparison",
+                    "sourceId": "training_phase_signal_comparison",
+                    "defaultSort": {"field": "metric", "direction": "asc"},
+                    "columns": [
+                        {"field": "metric", "label": "组内状态"},
+                        {"field": "first100_count", "label": "前100步组数"},
+                        {"field": "first100_rate", "label": "前100步比例", "format": "percent"},
+                        {"field": "second100_count", "label": "后100步组数"},
+                        {"field": "second100_rate", "label": "后100步比例", "format": "percent"},
+                        {"field": "delta_percentage_points", "label": "变化（百分点）", "movement": True},
+                        {"field": "interpretation", "label": "训练含义"},
+                    ],
+                    "layout": "full",
+                },
             ],
             "sources": [
                 {"id": comparison_source["id"], "label": comparison_source["label"], "path": comparison_source["path"]},
@@ -335,6 +407,7 @@ def build_artifact(
                 {"id": audit_source["id"], "label": audit_source["label"], "path": audit_source["path"]},
                 {"id": diagnosis_source["id"], "label": diagnosis_source["label"], "path": diagnosis_source["path"]},
                 {"id": training_source["id"], "label": training_source["label"], "path": training_source["path"]},
+                {"id": phase_comparison_source["id"], "label": phase_comparison_source["label"], "path": phase_comparison_source["path"]},
                 {"id": failure_source["id"], "label": failure_source["label"], "path": failure_source["path"]},
                 {"id": runtime_source["id"], "label": runtime_source["label"], "path": runtime_source["path"]},
             ],
@@ -343,7 +416,7 @@ def build_artifact(
                 {
                     "id": "executive_summary",
                     "type": "markdown",
-                    "body": f"## Executive Summary\n\n- **老板原版总奖励下降。** Step 100 为 `0.443750`，Step 200 为 `0.399685`，绝对下降 `0.044065`，相对下降 `{abs(relative_reward_change):.2%}`。\n- **直接损失主要是数值正确性。** 20 题总奖励合计少 `0.8813`；数值正确性贡献 `-0.5000`（`56.7%`），过程与字段质量贡献 `-0.2876`（`32.6%`），完成状态净变化贡献 `-0.0937`（`10.6%`）。\n- **训练信号在奖励代理上变好，但正确性几乎不动。** 后 25 步相对前 25 步，在线老板奖励提高 `0.0225`、过程分提高 `0.0388`、最终回答率提高 `4.75pp`，但数值正确率只提高 `0.25pp`。\n- **根因是正确性相对信号太稀疏。** 400 个 GRPO group 中只有 `72` 个（`18%`）同时出现正确与错误 response；其余 `82%` 对二值正确性没有直接组内区分信号。继续原样堆步数，更容易强化完成和过程代理，而不是稳定提升最终数值。",
+                    "body": f"## Executive Summary\n\n- **老板原版总奖励下降。** Step 100 为 `0.443750`，Step 200 为 `0.399685`，绝对下降 `0.044065`，相对下降 `{abs(relative_reward_change):.2%}`。\n- **直接损失主要是数值正确性。** 20 题总奖励合计少 `0.8813`；数值正确性贡献 `-0.5000`（`56.7%`），过程与字段质量贡献 `-0.2876`（`32.6%`），完成状态净变化贡献 `-0.0937`（`10.6%`）。\n- **训练信号在奖励代理上变好，但正确性几乎不动。** 后 25 步相对前 25 步，在线老板奖励提高 `0.0225`、过程分提高 `0.0388`、最终回答率提高 `4.75pp`，但数值正确率只提高 `0.25pp`。\n- **正确性相对信号一直稀疏，并非后100步才突然恶化。** 有对有错group从前100步的 `75/400`（`18.75%`）降至后100步的 `72/400`（`18.00%`），只下降 `0.75pp`；两个阶段都约有82%的group无法从二值正确性上形成直接组内区分。",
                     "layout": "full",
                 },
                 {
@@ -385,6 +458,14 @@ def build_artifact(
                     "sourceId": "training_signal_drift",
                     "layout": "full",
                 },
+                {
+                    "id": "phase_signal_stability",
+                    "type": "markdown",
+                    "body": "## 有对有错比例只小幅下降，低信号是持续性问题\n\n前100步为 `75/400`（`18.75%`），后100步为 `72/400`（`18.00%`），下降 `0.75` 个百分点，只少了3个group。四条全错则从313组变为314组，四条全对从12组变为14组。两个阶段均为400个完整group且没有缺组，因此不能把Step 200退化解释为后100步正确性信号突然塌陷；更准确的结论是两个阶段一直都严重缺少组内正确性对比，后100步仅略微更低。",
+                    "sourceId": "training_phase_signal_comparison",
+                    "layout": "full",
+                },
+                {"id": "phase_signal_table_block", "type": "table", "tableId": "phase_signal_table", "layout": "full"},
                 {
                     "id": "driver_finding",
                     "type": "markdown",
@@ -452,6 +533,7 @@ def build_artifact(
                 "metric_table": metric_table,
                 "driver_contributions": driver_contributions,
                 "training_signal_comparison": training_signal_comparison,
+                "phase_signal_comparison": phase_signal_comparison,
                 "failure_rows": failure_rows,
             },
         },
@@ -461,6 +543,7 @@ def build_artifact(
             audit_source,
             diagnosis_source,
             training_source,
+            phase_comparison_source,
             failure_source,
             runtime_source,
         ],
@@ -473,6 +556,7 @@ def main() -> None:
     parser.add_argument("--adapter", type=Path, required=True)
     parser.add_argument("--audit", type=Path, required=True)
     parser.add_argument("--diagnosis", type=Path, required=True)
+    parser.add_argument("--first100-training-signal", type=Path, required=True)
     parser.add_argument("--training-signal", type=Path, required=True)
     parser.add_argument("--failure-review", type=Path, required=True)
     parser.add_argument("--runtime-audit", type=Path, required=True)
@@ -483,6 +567,7 @@ def main() -> None:
         json.loads(args.adapter.read_text(encoding="utf-8")),
         json.loads(args.audit.read_text(encoding="utf-8")),
         json.loads(args.diagnosis.read_text(encoding="utf-8")),
+        json.loads(args.first100_training_signal.read_text(encoding="utf-8")),
         json.loads(args.training_signal.read_text(encoding="utf-8")),
         json.loads(args.failure_review.read_text(encoding="utf-8")),
         json.loads(args.runtime_audit.read_text(encoding="utf-8")),

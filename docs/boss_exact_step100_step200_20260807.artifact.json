@@ -5,7 +5,7 @@
     "surface": "report",
     "title": "Step 200 没有超过 Step 100",
     "description": "固定 val20 上使用老板原版评分器的逐题配对复评。",
-    "generatedAt": "2026-08-07T13:55:00+08:00",
+    "generatedAt": "2026-08-07T15:35:00+08:00",
     "charts": [
       {
         "id": "score_comparison_chart",
@@ -177,6 +177,51 @@
           }
         ],
         "layout": "full"
+      },
+      {
+        "id": "phase_signal_table",
+        "title": "前100步与后100步的组内信号",
+        "subtitle": "两个阶段各400个完整group；变化为后100步减前100步。",
+        "dataset": "phase_signal_comparison",
+        "sourceId": "training_phase_signal_comparison",
+        "defaultSort": {
+          "field": "metric",
+          "direction": "asc"
+        },
+        "columns": [
+          {
+            "field": "metric",
+            "label": "组内状态"
+          },
+          {
+            "field": "first100_count",
+            "label": "前100步组数"
+          },
+          {
+            "field": "first100_rate",
+            "label": "前100步比例",
+            "format": "percent"
+          },
+          {
+            "field": "second100_count",
+            "label": "后100步组数"
+          },
+          {
+            "field": "second100_rate",
+            "label": "后100步比例",
+            "format": "percent"
+          },
+          {
+            "field": "delta_percentage_points",
+            "label": "变化（百分点）",
+            "movement": true
+          },
+          {
+            "field": "interpretation",
+            "label": "训练含义"
+          }
+        ],
+        "layout": "full"
       }
     ],
     "sources": [
@@ -206,6 +251,11 @@
         "path": "docs/boss_exact_step100_step200_20260807_training_signal.json"
       },
       {
+        "id": "training_phase_signal_comparison",
+        "label": "前100步与后100步组内训练信号同口径比较",
+        "path": "docs/boss_exact_step100_step200_20260807_first100_training_signal.json + docs/boss_exact_step100_step200_20260807_training_signal.json"
+      },
+      {
         "id": "failure_trajectory_review",
         "label": "6 道退化题轨迹人工复核",
         "path": "docs/boss_exact_step100_step200_20260807_failure_review.json"
@@ -226,7 +276,7 @@
       {
         "id": "executive_summary",
         "type": "markdown",
-        "body": "## Executive Summary\n\n- **老板原版总奖励下降。** Step 100 为 `0.443750`，Step 200 为 `0.399685`，绝对下降 `0.044065`，相对下降 `9.93%`。\n- **直接损失主要是数值正确性。** 20 题总奖励合计少 `0.8813`；数值正确性贡献 `-0.5000`（`56.7%`），过程与字段质量贡献 `-0.2876`（`32.6%`），完成状态净变化贡献 `-0.0937`（`10.6%`）。\n- **训练信号在奖励代理上变好，但正确性几乎不动。** 后 25 步相对前 25 步，在线老板奖励提高 `0.0225`、过程分提高 `0.0388`、最终回答率提高 `4.75pp`，但数值正确率只提高 `0.25pp`。\n- **根因是正确性相对信号太稀疏。** 400 个 GRPO group 中只有 `72` 个（`18%`）同时出现正确与错误 response；其余 `82%` 对二值正确性没有直接组内区分信号。继续原样堆步数，更容易强化完成和过程代理，而不是稳定提升最终数值。",
+        "body": "## Executive Summary\n\n- **老板原版总奖励下降。** Step 100 为 `0.443750`，Step 200 为 `0.399685`，绝对下降 `0.044065`，相对下降 `9.93%`。\n- **直接损失主要是数值正确性。** 20 题总奖励合计少 `0.8813`；数值正确性贡献 `-0.5000`（`56.7%`），过程与字段质量贡献 `-0.2876`（`32.6%`），完成状态净变化贡献 `-0.0937`（`10.6%`）。\n- **训练信号在奖励代理上变好，但正确性几乎不动。** 后 25 步相对前 25 步，在线老板奖励提高 `0.0225`、过程分提高 `0.0388`、最终回答率提高 `4.75pp`，但数值正确率只提高 `0.25pp`。\n- **正确性相对信号一直稀疏，并非后100步才突然恶化。** 有对有错group从前100步的 `75/400`（`18.75%`）降至后100步的 `72/400`（`18.00%`），只下降 `0.75pp`；两个阶段都约有82%的group无法从二值正确性上形成直接组内区分。",
         "layout": "full"
       },
       {
@@ -286,6 +336,19 @@
         "type": "markdown",
         "body": "## GRPO 组内正确性信号只有 18%\n\n400 个四响应 group 中，`314` 个四条全错、`14` 个四条全对，只有 `72` 个同时含正确与错误答案。GRPO 的相对优势在同 prompt 的四条 response 内计算，因此前两类 group 的二值正确性分量无法区分哪条更好；相比之下，`189` 个 group 的最终回答状态有差异，`99` 个 group 的字段使用有差异。当前训练天然更容易学到“要收尾、要覆盖过程字段”，而不是“要选对统计窗口并给出正确数值”。",
         "sourceId": "training_signal_drift",
+        "layout": "full"
+      },
+      {
+        "id": "phase_signal_stability",
+        "type": "markdown",
+        "body": "## 有对有错比例只小幅下降，低信号是持续性问题\n\n前100步为 `75/400`（`18.75%`），后100步为 `72/400`（`18.00%`），下降 `0.75` 个百分点，只少了3个group。四条全错则从313组变为314组，四条全对从12组变为14组。两个阶段均为400个完整group且没有缺组，因此不能把Step 200退化解释为后100步正确性信号突然塌陷；更准确的结论是两个阶段一直都严重缺少组内正确性对比，后100步仅略微更低。",
+        "sourceId": "training_phase_signal_comparison",
+        "layout": "full"
+      },
+      {
+        "id": "phase_signal_table_block",
+        "type": "table",
+        "tableId": "phase_signal_table",
         "layout": "full"
       },
       {
@@ -357,7 +420,7 @@
   },
   "snapshot": {
     "version": 1,
-    "generatedAt": "2026-08-07T13:55:00+08:00",
+    "generatedAt": "2026-08-07T15:35:00+08:00",
     "status": "ready",
     "datasets": {
       "score_comparison": [
@@ -606,6 +669,53 @@
           "step_range": "177–201"
         }
       ],
+      "phase_signal_comparison": [
+        {
+          "metric": "数值正确性有对有错",
+          "first100_count": 75,
+          "first100_rate": 0.1875,
+          "second100_count": 72,
+          "second100_rate": 0.18,
+          "delta_percentage_points": -0.7500000000000007,
+          "interpretation": "直接提供二值正确性的组内相对信号"
+        },
+        {
+          "metric": "四条全错",
+          "first100_count": 313,
+          "first100_rate": 0.7825,
+          "second100_count": 314,
+          "second100_rate": 0.785,
+          "delta_percentage_points": 0.2500000000000058,
+          "interpretation": "二值正确性分量无法区分组内优劣"
+        },
+        {
+          "metric": "四条全对",
+          "first100_count": 12,
+          "first100_rate": 0.03,
+          "second100_count": 14,
+          "second100_rate": 0.035,
+          "delta_percentage_points": 0.5000000000000004,
+          "interpretation": "二值正确性分量无法区分组内优劣"
+        },
+        {
+          "metric": "最终回答状态有差异",
+          "first100_count": 213,
+          "first100_rate": 0.5325,
+          "second100_count": 189,
+          "second100_rate": 0.4725,
+          "delta_percentage_points": -6.0,
+          "interpretation": "可提供是否收尾的组内相对信号"
+        },
+        {
+          "metric": "字段使用有差异",
+          "first100_count": 89,
+          "first100_rate": 0.2225,
+          "second100_count": 99,
+          "second100_rate": 0.2475,
+          "delta_percentage_points": 2.4999999999999996,
+          "interpretation": "可提供字段覆盖的组内相对信号"
+        }
+      ],
       "failure_rows": [
         {
           "task_id": "task_000048",
@@ -656,7 +766,7 @@
         "language": "sql",
         "sql": "SELECT * FROM read_json_auto('docs/boss_exact_step100_step200_20260807_summary.json')",
         "description": "读取两轮 reward_judge 输出并按 task_id 配对，复算总奖励、结果分、过程分、行为指标和胜负平。",
-        "executed_at": "2026-08-07T13:55:00+08:00",
+        "executed_at": "2026-08-07T15:35:00+08:00",
         "filters": [
           "固定 v15 DWH val20，贪心 n=1",
           "Step 100 与 Step 200 按 task_id 一一配对",
@@ -683,7 +793,7 @@
         "language": "sql",
         "sql": "SELECT * FROM read_json_auto('docs/boss_exact_step200_20260807_adapter_summary.json')",
         "description": "核对评测行数、task_id、工具调用、截断调用、输入与 manifest 哈希。",
-        "executed_at": "2026-08-07T13:55:00+08:00",
+        "executed_at": "2026-08-07T15:35:00+08:00",
         "filters": [
           "固定 v15 DWH val20，贪心 n=1",
           "Step 100 与 Step 200 按 task_id 一一配对",
@@ -710,7 +820,7 @@
         "language": "sql",
         "sql": "SELECT * FROM read_json_auto('docs/boss_exact_step100_step200_20260807_audit.json')",
         "description": "记录评分脚本、数据库和两轮 selected manifest 的 SHA256，并核对逐题输入与评分匹配率。",
-        "executed_at": "2026-08-07T13:55:00+08:00",
+        "executed_at": "2026-08-07T15:35:00+08:00",
         "filters": [
           "固定 v15 DWH val20，贪心 n=1",
           "Step 100 与 Step 200 按 task_id 一一配对",
@@ -737,7 +847,7 @@
         "language": "sql",
         "sql": "SELECT * FROM read_json_auto('docs/boss_exact_step100_step200_20260807_diagnosis.json')",
         "description": "按老板奖励门控公式把 20 道配对题的总分变化拆为完成状态、数值正确性和过程质量三个互斥组件。",
-        "executed_at": "2026-08-07T13:55:00+08:00",
+        "executed_at": "2026-08-07T15:35:00+08:00",
         "filters": [
           "同一固定 val20，按 task_id 一一配对",
           "完成状态发生切换时，将整题变化归入完成状态组件",
@@ -764,7 +874,7 @@
         "language": "sql",
         "sql": "SELECT * FROM read_json_auto('docs/boss_exact_step100_step200_20260807_training_signal.json')",
         "description": "按训练 step 汇总老板奖励、过程分、完成、数值正确、字段与组内相对信号；不保存原始轨迹文本。",
-        "executed_at": "2026-08-07T13:55:00+08:00",
+        "executed_at": "2026-08-07T15:35:00+08:00",
         "filters": [
           "100 个更新、每步 16 条轨迹、共 400 个完整 GRPO group",
           "前四分位为文件 step 102–126，后四分位为 177–201",
@@ -781,6 +891,31 @@
       }
     },
     {
+      "id": "training_phase_signal_comparison",
+      "label": "前100步与后100步组内训练信号同口径比较",
+      "path": "docs/boss_exact_step100_step200_20260807_first100_training_signal.json + docs/boss_exact_step100_step200_20260807_training_signal.json",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT '前100步' AS phase, * FROM read_json_auto('docs/boss_exact_step100_step200_20260807_first100_training_signal.json') UNION ALL SELECT '后100步' AS phase, * FROM read_json_auto('docs/boss_exact_step100_step200_20260807_training_signal.json')",
+        "description": "用同一分析器比较两个连续100步阶段各400个完整GRPO group的组内信号分布。",
+        "executed_at": "2026-08-07T15:35:00+08:00",
+        "filters": [
+          "前100步与后100步均为100个更新、每步16条轨迹、每组4条response",
+          "mixed correctness 指同一prompt的4条response同时包含正确与错误",
+          "两个阶段均要求 invalid_group_size_count=0"
+        ],
+        "metric_definitions": [
+          "mixed correctness rate = 数值正确性有对有错group数 / 400",
+          "delta_percentage_points = 后100步比例 - 前100步比例"
+        ],
+        "tables_used": [
+          "docs/boss_exact_step100_step200_20260807_first100_training_signal.json",
+          "docs/boss_exact_step100_step200_20260807_training_signal.json"
+        ]
+      }
+    },
+    {
       "id": "failure_trajectory_review",
       "label": "6 道退化题轨迹人工复核",
       "path": "docs/boss_exact_step100_step200_20260807_failure_review.json",
@@ -789,7 +924,7 @@
         "language": "sql",
         "sql": "SELECT * FROM read_json_auto('docs/boss_exact_step100_step200_20260807_failure_review.json')",
         "description": "逐题核对最终答案、统计窗口、期望表、必需字段和是否触发 26 回合边界。",
-        "executed_at": "2026-08-07T13:55:00+08:00",
+        "executed_at": "2026-08-07T15:35:00+08:00",
         "filters": [
           "仅包含 Step 200 reward_total 低于 Step 100 的 6 道题"
         ],
@@ -810,7 +945,7 @@
         "language": "sql",
         "sql": "SELECT * FROM read_json_auto('docs/boss_exact_step100_step200_20260807_runtime_audit.json')",
         "description": "记录 optimizer/data cursor 重置、staleness 阈值、处理与丢弃计数，用于界定潜在干扰因素。",
-        "executed_at": "2026-08-07T13:55:00+08:00",
+        "executed_at": "2026-08-07T15:35:00+08:00",
         "filters": [
           "最终 global step 200 的 resume_contract 与 driver 指标"
         ],
