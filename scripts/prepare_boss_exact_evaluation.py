@@ -29,6 +29,10 @@ PARAMETER_RE = re.compile(
 )
 TOOL_CALL_RE = re.compile(r"<tool_call>\s*(.*?)\s*</tool_call>", re.DOTALL)
 TOOL_RESPONSE_RE = re.compile(r"<tool_response>\s*(.*?)\s*</tool_response>", re.DOTALL)
+TRUNCATED_FUNCTION_RE = re.compile(
+    r"^\s*<tool_call>\s*<function=([^>\s]+)>\s*(.*)$", re.DOTALL
+)
+TRUNCATED_PARAMETER_RE = re.compile(r"<parameter=([^>\s]+)>\s*", re.DOTALL)
 
 
 def read_jsonl(path: Path) -> list[dict[str, Any]]:
@@ -75,6 +79,39 @@ def _parse_tool_call(block: str, call_number: int) -> dict[str, Any]:
         if key in arguments:
             raise ValueError(f"tool call {call_number}: duplicate parameter {key!r}")
         arguments[key] = value.strip()
+    return {
+        "id": f"call_{call_number:04d}",
+        "type": "function",
+        "function": {
+            "name": name,
+            "arguments": json.dumps(arguments, ensure_ascii=False, separators=(",", ":")),
+        },
+    }
+
+
+def _parse_truncated_terminal_tool_call(block: str, call_number: int) -> dict[str, Any]:
+    """Preserve one token-truncated final tool call as an unanswered call.
+
+    The call remains incomplete because no tool response is synthesized.  This
+    lets the original evaluator apply its normal completion gate without
+    treating the preceding reasoning text as a fabricated final answer.
+    """
+    match = TRUNCATED_FUNCTION_RE.fullmatch(block)
+    if not match or TOOL_CALL_END in block:
+        raise ValueError(f"tool call {call_number}: unsupported truncated terminal block")
+    name, parameter_blob = match.groups()
+    starts = list(TRUNCATED_PARAMETER_RE.finditer(parameter_blob))
+    if not starts:
+        raise ValueError(f"tool call {call_number}: truncated block has no parameters")
+    arguments: dict[str, str] = {}
+    for index, parameter in enumerate(starts):
+        key = parameter.group(1)
+        if key in arguments:
+            raise ValueError(f"tool call {call_number}: duplicate parameter {key!r}")
+        value_end = starts[index + 1].start() if index + 1 < len(starts) else len(parameter_blob)
+        value = parameter_blob[parameter.end() : value_end]
+        value = re.sub(r"\s*</parameter>\s*(?:</function>)?\s*$", "", value).strip()
+        arguments[key] = value
     return {
         "id": f"call_{call_number:04d}",
         "type": "function",
@@ -150,17 +187,33 @@ def qwen_output_to_openai_messages(output: str) -> tuple[list[dict[str, Any]], d
 
     terminal = output[cursor:]
     terminal_call_blocks = TOOL_CALL_RE.findall(terminal)
+    terminal_open_calls = terminal.count(TOOL_CALL_START)
+    truncated_terminal_calls = 0
     terminal_nonempty = False
-    if terminal_call_blocks:
+    if terminal_call_blocks or terminal_open_calls:
         terminal_calls: list[dict[str, Any]] = []
         for block in terminal_call_blocks:
             call_number += 1
             terminal_calls.append(_parse_tool_call(block, call_number))
+        if terminal_open_calls != len(terminal_call_blocks):
+            if terminal_open_calls != len(terminal_call_blocks) + 1:
+                raise ValueError(
+                    "terminal assistant contains more than one truncated tool call"
+                )
+            truncated_start = terminal.rfind(TOOL_CALL_START)
+            call_number += 1
+            terminal_calls.append(
+                _parse_truncated_terminal_tool_call(terminal[truncated_start:], call_number)
+            )
+            truncated_terminal_calls = 1
+            terminal_content = TOOL_CALL_RE.sub("", terminal[:truncated_start]).strip()
+        else:
+            terminal_content = TOOL_CALL_RE.sub("", terminal).strip()
         missing_tool_responses += len(terminal_calls)
         messages.append(
             {
                 "role": "assistant",
-                "content": TOOL_CALL_RE.sub("", terminal).strip(),
+                "content": terminal_content,
                 "tool_calls": terminal_calls,
             }
         )
@@ -176,12 +229,15 @@ def qwen_output_to_openai_messages(output: str) -> tuple[list[dict[str, Any]], d
             f"lossy conversion: parsed_calls={call_number}, raw_calls={raw_calls}, "
             f"parsed_responses={response_number}, raw_responses={raw_responses}"
         )
-    return messages, {
+    audit = {
         "tool_calls": call_number,
         "tool_responses": raw_responses,
         "missing_tool_responses": missing_tool_responses,
         "terminal_assistant": terminal_nonempty,
     }
+    if truncated_terminal_calls:
+        audit["truncated_terminal_tool_calls"] = truncated_terminal_calls
+    return messages, audit
 
 
 def _index_unique(rows: list[dict[str, Any]], label: str, key: str) -> dict[str, dict[str, Any]]:
@@ -233,6 +289,7 @@ def prepare(
     tool_calls = 0
     missing_tool_responses = 0
     terminal_answers = 0
+    truncated_terminal_tool_calls = 0
     for row in validation:
         ground_truth = row.get("gts") or {}
         task_id = str(ground_truth.get("task_id") or "").strip()
@@ -253,6 +310,7 @@ def prepare(
         tool_calls += int(audit["tool_calls"])
         missing_tool_responses += int(audit["missing_tool_responses"])
         terminal_answers += int(audit["terminal_assistant"])
+        truncated_terminal_tool_calls += int(audit.get("truncated_terminal_tool_calls", 0))
 
     if set(prompts) != seen:
         raise ValueError(
@@ -266,6 +324,7 @@ def prepare(
         "tool_calls": tool_calls,
         "missing_tool_responses": missing_tool_responses,
         "terminal_assistant_answers": terminal_answers,
+        "truncated_terminal_tool_calls": truncated_terminal_tool_calls,
         "all_terminal": terminal_answers == len(validation),
         "trajectory_output": str(trajectory_output),
         "trajectory_sha256": sha256(trajectory_output),

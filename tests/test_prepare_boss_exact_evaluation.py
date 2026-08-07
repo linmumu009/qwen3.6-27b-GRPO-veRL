@@ -80,6 +80,25 @@ def test_qwen_output_to_openai_messages_preserves_unanswered_terminal_call():
     assert audit["terminal_assistant"] is False
 
 
+def test_qwen_output_to_openai_messages_preserves_token_truncated_terminal_call():
+    messages, audit = qwen_output_to_openai_messages(
+        "分析已完成。\n<tool_call>\n<function=bash>\n<parameter=command>\n"
+        'sqlite3 /workspace/logistics.sqlite "SELECT AVG(value)'
+    )
+
+    assert len(messages) == 1
+    assert messages[0]["content"] == "分析已完成。"
+    call = messages[0]["tool_calls"][0]
+    assert call["function"]["name"] == "bash"
+    assert json.loads(call["function"]["arguments"]) == {
+        "command": 'sqlite3 /workspace/logistics.sqlite "SELECT AVG(value)'
+    }
+    assert audit["tool_calls"] == 1
+    assert audit["missing_tool_responses"] == 1
+    assert audit["truncated_terminal_tool_calls"] == 1
+    assert audit["terminal_assistant"] is False
+
+
 def test_qwen_output_to_openai_messages_preserves_parallel_tool_group():
     output = """并行检查两个文件。
 <tool_call>

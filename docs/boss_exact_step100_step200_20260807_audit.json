@@ -1,0 +1,23 @@
+{
+  "evaluated_at": "2026-08-07T13:00:00+08:00",
+  "llm_judge": false,
+  "task_count": 20,
+  "task_ids_identical": true,
+  "identical_system_user_prompts": 20,
+  "scorer_match_count": 20,
+  "scorer_missing_count": 0,
+  "sha256": {
+    "step100_selected_manifest": "5d7efda67f9f2bafff5b7ba99076e56a0bd946b7a7a365819524995d35192f87",
+    "step200_selected_manifest": "5d7efda67f9f2bafff5b7ba99076e56a0bd946b7a7a365819524995d35192f87",
+    "logistics_sqlite": "6d9c90cb5869dca751ba4865d4e682578105f984b52837a7f75adfdc8d9ef5f8",
+    "judge_trajectory.py": "2ada6fa95f80ae71331eae587182a829ae4be39c69cabc074d1771df4357ffbd",
+    "judge_trajectory_openai.py": "1e8c3b53300ae2f45aecbd33bb1af5a3ff555c01f5f19172a4c32ac8e551c725",
+    "reward_judge.py": "cd6f798938057cfc6fc671cf9cb020961f2a933d9f38e860705850d80e7637f2"
+  },
+  "database": {
+    "filename": "logistics.sqlite",
+    "size_bytes": 5025792,
+    "last_modified": "2026-07-07T20:42:36.707669376+08:00",
+    "predates_both_evaluations": true
+  }
+}

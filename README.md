@@ -27,7 +27,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 | 容器 | `llin-verl-trainer-m05-20260730` | `llin-verl-rollout-m06-20260730` |
 | 镜像 | `llin-verl-a3:20260730` | `llin-verl-a3:20260730` |
 | 容器权限 | 特权模式（仅重建上述 `llin` 容器） | 特权模式（仅重建上述 `llin` 容器） |
-| 当前实验 NPU | 16（`llin-v15-dwh-bossreward-12groups-100step-20260805-03` 已完成 100/100 步并通过最终 checkpoint 门禁） | 16（同一 `-03` 已完成最终 val20；老板原版前后复评已结束） |
+| 当前实验 NPU | 16（step100→step200 已完成新增 100 步，最终 `model,optimizer,extra` checkpoint 通过完整性验证） | 16（同轮最终 val20 与老板原版 Step 100/200 配对复评已结束） |
 
 ## 数据结论
 
@@ -67,6 +67,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [`docs/boss_exact_pre_post_100step_20260806.md`](docs/boss_exact_pre_post_100step_20260806.md)：同一固定 val20 上直接调用老板原始 manifest、数据库和三份评分脚本，对比冻结模型与 step-100 的总奖励、正确性、过程质量和完整收尾。
 - [`docs/step100_checkpoint_hf_export_20260806.md`](docs/step100_checkpoint_hf_export_20260806.md)：step-100 可续训 Megatron checkpoint 与独立 HF 导出的路径、1199-tensor 完整性、MTP 继承边界和 TP8 vLLM 最小生成验收。
 - [`docs/boss_exact_pre_post_100step_20260806_external.md`](docs/boss_exact_pre_post_100step_20260806_external.md)：面向外部汇报的精简版，保留核心结论和聚合指标，移除评测集规模、逐题标识、内部路径、文件哈希等内部信息。
+- [`docs/boss_exact_step100_step200_20260807.html`](docs/boss_exact_step100_step200_20260807.html)：同一固定 val20 上直接调用老板原版评分器的 Step 100/200 配对复评；包含核心分数、胜负平、输入一致性审计和下一步建议。
 - [`docs/leadership_experiment_update_methodology_20260806.md`](docs/leadership_experiment_update_methodology_20260806.md)：从多轮实际修订中提炼的领导汇报方法论，固化四段结构、数字精度、口径边界、抗奖励投机表述、行动项口吻和自检清单。
 - `llin_verl/pi_sqlite_tool.py`：只读 SQLite 轨迹工具。
 - `llin_verl/pi_workspace_tools.py`、`llin_verl/pi_agent_loop.py`：完整 PI 四工具、轨迹级共享沙箱、事件审计和统一清理。
@@ -114,7 +115,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - 两台机器均完成官方镜像的软件栈和 Qwen3.6-27B 模型识别检查。
 - Ray 两节点集群已连通，可见 32 张 NPU；角色测试确认训练任务落在 5 号机、rollout 任务落在 6 号机。
 - 4 条真实验证任务已转换为 Parquet；两台机器上的只读数据库查询和奖励闭环均为 `4/4` 满分。
-- 本地覆盖 Megatron 拓扑、Continuous Token、TP8/DP2 权重同步、48K、fully-async、Fastest-K、完整 PI 工具、奖励、boss-aligned source join/人工审核门禁、冻结基线、checkpoint 完整性、vLLM public abort、老板 KB/DWH 影子回放和老板原版前后配对评测，项目测试为 `135 passed`。
+- 本地覆盖 Megatron 拓扑、Continuous Token、TP8/DP2 权重同步、48K、fully-async、Fastest-K、完整 PI 工具、奖励、boss-aligned source join/人工审核门禁、冻结基线、checkpoint 完整性、vLLM public abort、老板 KB/DWH 影子回放和老板原版前后配对评测，项目测试为 `137 passed`。
 - 老板评测影子回放使用 1,500/1,500 唯一 task_id 的同源 Qwen3.6 v15 文件；KB/DWH 共 1,000 条完整评估，DWH `277/280` 结构化 verifier 自洽、严格正确 6 条，KB 500 条全部保持非在线可用。
 - 影子回放定位并修复 `/workspace/` 被字符串删除后误判为宿主 `/` 的安全规则缺陷；真实根目录和宿主路径扫描仍被阻止。
 - 完整 PI Agent 已通过 6 号机真实 veRL 容器门禁：`bash/read/write/edit` 全部加载，同一轨迹共享可写沙箱，sqlite3 只读代理可查询 v15 数据，失败状态正确记录，轨迹释放后工作区不存在；门禁结束后容器已停止。
@@ -172,6 +173,12 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [veRL 昇腾模型与算法支持](https://github.com/verl-project/verl/blob/main/docs/ascend_tutorial/model_support/model_and_algorithm_support.md)
 
 ## 版本记录
+
+### v0.52.0 — 2026-08-07
+
+- 完成 Step 200 老板原版评分器复评：20/20 task_id 匹配，Step 100/200 的 system+user 输入逐题完全一致；原版总奖励从 `0.443750` 降至 `0.399685`（`-9.93%`），逐题为 3 胜、6 负、11 平。
+- 退化主要来自数值正确从 `3/20` 降到 `1/20`、过程分从 `0.765000` 降到 `0.723750`、必需字段命中均值下降 `0.117647`；完整收尾保持 `13/20`，因此不能归因于完成率变化。
+- 原版评测转换器现在能把 token 边界截断的最终工具调用保留为“未响应调用”，不会把调用前的推理文字伪造成最终答案；新增可复现的老板评测配对汇总器和 canonical HTML 报告。
 
 ### v0.51.0 — 2026-08-07
 

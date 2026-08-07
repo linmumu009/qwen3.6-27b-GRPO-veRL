@@ -1,0 +1,16 @@
+{
+  "validation_rows": 20,
+  "unique_task_ids": 20,
+  "tool_calls": 587,
+  "missing_tool_responses": 22,
+  "terminal_assistant_answers": 13,
+  "truncated_terminal_tool_calls": 1,
+  "all_terminal": false,
+  "trajectory_output": "evaluations/boss_exact_step100_step200_20260807/step200.openai.jsonl",
+  "trajectory_sha256": "56e048c6c5fdefffc1ee2e9619503e0c28fd6342ec1240e58dadf83cf728fb8e",
+  "manifest_output": "evaluations/boss_exact_step100_step200_20260807/step200.manifest.jsonl",
+  "manifest_sha256": "5d7efda67f9f2bafff5b7ba99076e56a0bd946b7a7a365819524995d35192f87",
+  "source_validation_sha256": "a570cc5a0c6a4fadb6f190376cd65e50e3de023ed9d7c4bc9d175e808cb27470",
+  "source_parquet_sha256": "0fa49b2ba2a1ea662887017b96c65de9142bc39af8aad74774817cfc0373c08c",
+  "source_task_manifest_sha256": "37ba8da75c599cf325e554583bf8f3b08f20db9612cf2d40a05680bbdcd008dd"
+}

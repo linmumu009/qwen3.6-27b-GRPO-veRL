@@ -1,0 +1,436 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "Step 200 没有超过 Step 100",
+    "description": "固定 val20 上使用老板原版评分器的逐题配对复评。",
+    "generatedAt": "2026-08-07T13:15:00+08:00",
+    "charts": [
+      {
+        "id": "score_comparison_chart",
+        "title": "老板原版评分：Step 100 与 Step 200",
+        "subtitle": "同一固定 val20、贪心 n=1；三项分数均为 0–1。",
+        "type": "bar",
+        "dataset": "score_comparison",
+        "sourceId": "boss_exact_comparison",
+        "encodings": {
+          "x": {
+            "field": "metric",
+            "type": "nominal",
+            "label": "评分指标"
+          },
+          "y": {
+            "field": "value",
+            "type": "quantitative",
+            "label": "均值"
+          },
+          "color": {
+            "field": "checkpoint",
+            "type": "nominal",
+            "label": "Checkpoint"
+          }
+        },
+        "valueFormat": "number",
+        "layout": "full",
+        "maxRows": 6
+      },
+      {
+        "id": "paired_outcome_chart",
+        "title": "20 道题的逐题配对胜负",
+        "subtitle": "以 Step 200 相对 Step 100 的单题 reward_total 判定。",
+        "type": "bar",
+        "dataset": "paired_outcomes",
+        "sourceId": "boss_exact_comparison",
+        "encodings": {
+          "x": {
+            "field": "outcome",
+            "type": "nominal",
+            "label": "配对结果"
+          },
+          "y": {
+            "field": "count",
+            "type": "quantitative",
+            "label": "题数"
+          }
+        },
+        "valueFormat": "number",
+        "unit": "题",
+        "layout": "full",
+        "maxRows": 3
+      }
+    ],
+    "tables": [
+      {
+        "id": "metric_table",
+        "title": "关键指标精确对比",
+        "subtitle": "同一 20 道 DWH 任务；变化为 Step 200 减 Step 100。",
+        "dataset": "metric_table",
+        "sourceId": "boss_exact_comparison",
+        "defaultSort": {
+          "field": "metric",
+          "direction": "asc"
+        },
+        "columns": [
+          {
+            "field": "metric",
+            "label": "指标"
+          },
+          {
+            "field": "step100",
+            "label": "Step 100"
+          },
+          {
+            "field": "step200",
+            "label": "Step 200"
+          },
+          {
+            "field": "delta",
+            "label": "变化",
+            "movement": true
+          },
+          {
+            "field": "meaning",
+            "label": "解释"
+          }
+        ],
+        "layout": "full"
+      }
+    ],
+    "sources": [
+      {
+        "id": "boss_exact_comparison",
+        "label": "Step 100 与 Step 200 老板原版评分配对汇总",
+        "path": "docs/boss_exact_step100_step200_20260807_summary.json"
+      },
+      {
+        "id": "step200_adapter_audit",
+        "label": "Step 200 OpenAI 轨迹转换审计",
+        "path": "docs/boss_exact_step200_20260807_adapter_summary.json"
+      },
+      {
+        "id": "boss_exact_audit",
+        "label": "老板原版评分器、数据库与输入一致性审计",
+        "path": "docs/boss_exact_step100_step200_20260807_audit.json"
+      }
+    ],
+    "blocks": [
+      {
+        "id": "title",
+        "type": "markdown",
+        "body": "# Step 200 没有超过 Step 100",
+        "layout": "full"
+      },
+      {
+        "id": "executive_summary",
+        "type": "markdown",
+        "body": "## Executive Summary\n\n- **老板原版总奖励下降。** Step 100 为 `0.443750`，Step 200 为 `0.399685`，绝对下降 `0.044065`，相对下降 `9.93%`。\n- **下降不是完成率造成的。** 两轮均有 `13/20` 完整收尾；主要退化来自数值正确从 `3/20` 降至 `1/20`，同时过程分从 `0.7650` 降至 `0.7238`。\n- **逐题证据不支持改善。** Step 200 相对 Step 100 为 `3` 胜、`6` 负、`11` 平。当前结论应是继续原策略训练 100 步没有带来老板评分提升。",
+        "sourceId": "boss_exact_comparison",
+        "layout": "full"
+      },
+      {
+        "id": "score_finding",
+        "type": "markdown",
+        "body": "## 三项核心评分同时走低\n\n老板总奖励、结果分与过程分全部下降，说明这不是某一个聚合权重造成的表面波动。Step 200 查询更多 SQL、答案更长，但没有把额外探索转化为更准确的数值或更好的字段命中。继续单纯增加训练步数，当前证据下更可能扩大无效探索，而不是自然恢复。",
+        "sourceId": "boss_exact_comparison",
+        "layout": "full"
+      },
+      {
+        "id": "score_chart_block",
+        "type": "chart",
+        "chartId": "score_comparison_chart",
+        "layout": "full"
+      },
+      {
+        "id": "driver_finding",
+        "type": "markdown",
+        "body": "## 退化来自正确性和字段使用，不是收尾率\n\n完整收尾稳定在 65%，必需表命中也保持 15/20；但数值正确少了 2 题，必需字段命中均值下降 0.1176。与此同时平均 SQL 增加 1.8 条、答案增加约 972 字符。含义很直接：Step 200 仍会展开较长调查，却更少围绕真正决定答案的字段形成正确结果。",
+        "sourceId": "boss_exact_comparison",
+        "layout": "full"
+      },
+      {
+        "id": "metric_table_block",
+        "type": "table",
+        "tableId": "metric_table",
+        "layout": "full"
+      },
+      {
+        "id": "paired_finding",
+        "type": "markdown",
+        "body": "## 逐题配对也偏向退化\n\n20 道题中只有 3 道提高，6 道下降，其余 11 道持平。胜负比为 1:2；因此均值下降并非由单个极端题独自驱动。样本量仍小，不能据此估计全量任务的泛化差异，但足以否定“Step 200 已经在这套固定评测上优于 Step 100”。",
+        "sourceId": "boss_exact_comparison",
+        "layout": "full"
+      },
+      {
+        "id": "paired_chart_block",
+        "type": "chart",
+        "chartId": "paired_outcome_chart",
+        "layout": "full"
+      },
+      {
+        "id": "comparison_consistency",
+        "type": "markdown",
+        "body": "## 比较口径经过一致性核对\n\n- 两轮均为固定 v15 DWH val20、贪心 `n=1`，同一 task_id 集合。\n- `20/20` 道题的 system 与 user 输入逐题完全一致；两轮 selected manifest SHA256 同为 `5d7efda6…f87`。\n- 老板三份原始评分脚本 SHA256 与 Step 100 评测时一致，且未启用 LLM judge。\n- `logistics.sqlite` 的最后修改时间早于两轮评测，当前 SHA256 已记录；Step 200 原版评分器 20/20 匹配、无缺题。",
+        "sourceId": "boss_exact_audit",
+        "layout": "full"
+      },
+      {
+        "id": "adapter_behavior",
+        "type": "markdown",
+        "body": "## 截断轨迹没有被伪造成答案\n\nStep 200 转换共保留 `587` 个工具调用；其中 1 个最终工具调用被 token 边界截断，转换器将其保留为“未响应调用”。这条轨迹仍由老板原版完成门禁判为 incomplete、奖励为 0，没有把调用前的推理文字误算成最终答案。",
+        "sourceId": "step200_adapter_audit",
+        "layout": "full"
+      },
+      {
+        "id": "next_steps",
+        "type": "markdown",
+        "body": "## 下一轮不要继续原样堆步数\n\n1. 暂停以当前策略从 Step 200 继续追加长期训练；保留 checkpoint 作为可恢复实验点。\n2. 先针对数值正确与必需字段命中做失败题复盘，区分 reward 信号不足、训练数据 gold 口径和长轨迹注意力稀释。\n3. 设计固定样本量的小规模 A/B：降低无效 SQL 探索、显式预留最终回答预算，并保持老板原版 val20 作为唯一比较口径。\n4. 若要决定模型是否可交付，再对 sealed test20 做一次独立评测；不要继续在 val20 上反复选择后把它当泛化证据。",
+        "layout": "full"
+      },
+      {
+        "id": "further_questions",
+        "type": "markdown",
+        "body": "## 仍需回答的问题\n\n- 两个从正确退化的任务，是被错误字段带偏，还是在更长链路中丢失了已获得的正确证据？\n- 训练 reward 曲线较平时，是否因为 4 条组内优势多数接近零，导致真正的正确性信号被大量过程相似样本稀释？\n- Step 200 在 sealed test20 上是否也下降；若不一致，val20 的波动有多大？",
+        "layout": "full"
+      },
+      {
+        "id": "caveats",
+        "type": "markdown",
+        "body": "## 局限与假设\n\n- 分母只有 20 道题，差异适合做方向性门禁，不足以给出窄置信区间或宣称全量泛化退化。\n- 两轮虽为贪心解码且输入完全相同，但底层工具环境的数据库内容被核验为同一路径而非做逐页快照；本次使用的老板 logistics.sqlite 与评分脚本版本未变化。\n- 本报告比较的是老板原版规则评分，不等价于人工业务专家对答案可用性的最终判断。\n- 原始轨迹、数据库、模型和 checkpoint 仅保留在服务器；仓库只保存聚合、配对结果与 SHA256 审计信息。",
+        "layout": "full"
+      }
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "generatedAt": "2026-08-07T13:15:00+08:00",
+    "status": "ready",
+    "datasets": {
+      "score_comparison": [
+        {
+          "metric": "老板总奖励",
+          "checkpoint": "Step 100",
+          "value": 0.44375,
+          "task_count": 20,
+          "absolute_delta_step200_vs_step100": -0.044064999999999965,
+          "same_prompt_count": 20
+        },
+        {
+          "metric": "老板总奖励",
+          "checkpoint": "Step 200",
+          "value": 0.399685,
+          "task_count": 20,
+          "absolute_delta_step200_vs_step100": -0.044064999999999965,
+          "same_prompt_count": 20
+        },
+        {
+          "metric": "结果分",
+          "checkpoint": "Step 100",
+          "value": 0.4,
+          "task_count": 20,
+          "absolute_delta_step200_vs_step100": -0.050000000000000044,
+          "same_prompt_count": 20
+        },
+        {
+          "metric": "结果分",
+          "checkpoint": "Step 200",
+          "value": 0.35,
+          "task_count": 20,
+          "absolute_delta_step200_vs_step100": -0.050000000000000044,
+          "same_prompt_count": 20
+        },
+        {
+          "metric": "过程分",
+          "checkpoint": "Step 100",
+          "value": 0.765,
+          "task_count": 20,
+          "absolute_delta_step200_vs_step100": -0.04125000000000001,
+          "same_prompt_count": 20
+        },
+        {
+          "metric": "过程分",
+          "checkpoint": "Step 200",
+          "value": 0.72375,
+          "task_count": 20,
+          "absolute_delta_step200_vs_step100": -0.04125000000000001,
+          "same_prompt_count": 20
+        }
+      ],
+      "paired_outcomes": [
+        {
+          "outcome": "Step 200 胜",
+          "count": 3,
+          "share": 0.15,
+          "task_count": 20
+        },
+        {
+          "outcome": "Step 200 负",
+          "count": 6,
+          "share": 0.3,
+          "task_count": 20
+        },
+        {
+          "outcome": "持平",
+          "count": 11,
+          "share": 0.55,
+          "task_count": 20
+        }
+      ],
+      "metric_table": [
+        {
+          "metric": "老板总奖励均值",
+          "step100": "0.443750",
+          "step200": "0.399685",
+          "delta": "-0.044065",
+          "meaning": "相对下降 9.93%"
+        },
+        {
+          "metric": "结果分均值",
+          "step100": "0.400000",
+          "step200": "0.350000",
+          "delta": "-0.050000",
+          "meaning": "结果能力下降"
+        },
+        {
+          "metric": "过程分均值",
+          "step100": "0.765000",
+          "step200": "0.723750",
+          "delta": "-0.041250",
+          "meaning": "过程命中也下降"
+        },
+        {
+          "metric": "完整收尾",
+          "step100": "13/20",
+          "step200": "13/20",
+          "delta": "0",
+          "meaning": "没有改善"
+        },
+        {
+          "metric": "数值正确",
+          "step100": "3/20",
+          "step200": "1/20",
+          "delta": "-2",
+          "meaning": "主要退化来源"
+        },
+        {
+          "metric": "必需表命中",
+          "step100": "15/20",
+          "step200": "15/20",
+          "delta": "0",
+          "meaning": "保持不变"
+        },
+        {
+          "metric": "必需字段命中均值",
+          "step100": "0.647059",
+          "step200": "0.529412",
+          "delta": "-0.117647",
+          "meaning": "明显下降"
+        },
+        {
+          "metric": "平均 SQL 数",
+          "step100": "11.70",
+          "step200": "13.50",
+          "delta": "+1.80",
+          "meaning": "查询更多但未换来更好结果"
+        },
+        {
+          "metric": "平均重复命令数",
+          "step100": "21.55",
+          "step200": "20.20",
+          "delta": "-1.35",
+          "meaning": "重复略有改善"
+        },
+        {
+          "metric": "平均答案长度",
+          "step100": "4,349",
+          "step200": "5,321",
+          "delta": "+972",
+          "meaning": "答案更长"
+        }
+      ]
+    }
+  },
+  "sources": [
+    {
+      "id": "boss_exact_comparison",
+      "label": "Step 100 与 Step 200 老板原版评分配对汇总",
+      "path": "docs/boss_exact_step100_step200_20260807_summary.json",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM read_json_auto('docs/boss_exact_step100_step200_20260807_summary.json')",
+        "description": "读取两轮 reward_judge 输出并按 task_id 配对，复算总奖励、结果分、过程分、行为指标和胜负平。",
+        "executed_at": "2026-08-07T13:15:00+08:00",
+        "filters": [
+          "固定 v15 DWH val20，贪心 n=1",
+          "Step 100 与 Step 200 按 task_id 一一配对",
+          "直接调用老板原始 reward_judge.py，未启用 LLM judge",
+          "原始轨迹、模型和数据库不进入报告载荷"
+        ],
+        "metric_definitions": [
+          "reward_total = 0.5 × result_score + 0.5 × process_score；has_answer=0 时硬门控为 0",
+          "result_score = 0.5 × has_answer + 0.5 × numeric answer correctness",
+          "process_score 对 tables、fields、docs、task fit 按 0.3/0.3/0.2/0.2 加权，None 维度跳过并归一",
+          "paired win/loss/tie 按同一 task_id 的 Step 200 reward_total 相对 Step 100 判定"
+        ],
+        "tables_used": [
+          "docs/boss_exact_step100_step200_20260807_summary.json"
+        ]
+      }
+    },
+    {
+      "id": "step200_adapter_audit",
+      "label": "Step 200 OpenAI 轨迹转换审计",
+      "path": "docs/boss_exact_step200_20260807_adapter_summary.json",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM read_json_auto('docs/boss_exact_step200_20260807_adapter_summary.json')",
+        "description": "核对评测行数、task_id、工具调用、截断调用、输入与 manifest 哈希。",
+        "executed_at": "2026-08-07T13:15:00+08:00",
+        "filters": [
+          "固定 v15 DWH val20，贪心 n=1",
+          "Step 100 与 Step 200 按 task_id 一一配对",
+          "直接调用老板原始 reward_judge.py，未启用 LLM judge",
+          "原始轨迹、模型和数据库不进入报告载荷"
+        ],
+        "metric_definitions": [
+          "reward_total = 0.5 × result_score + 0.5 × process_score；has_answer=0 时硬门控为 0",
+          "result_score = 0.5 × has_answer + 0.5 × numeric answer correctness",
+          "process_score 对 tables、fields、docs、task fit 按 0.3/0.3/0.2/0.2 加权，None 维度跳过并归一",
+          "paired win/loss/tie 按同一 task_id 的 Step 200 reward_total 相对 Step 100 判定"
+        ],
+        "tables_used": [
+          "docs/boss_exact_step200_20260807_adapter_summary.json"
+        ]
+      }
+    },
+    {
+      "id": "boss_exact_audit",
+      "label": "老板原版评分器、数据库与输入一致性审计",
+      "path": "docs/boss_exact_step100_step200_20260807_audit.json",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM read_json_auto('docs/boss_exact_step100_step200_20260807_audit.json')",
+        "description": "记录评分脚本、数据库和两轮 selected manifest 的 SHA256，并核对逐题输入与评分匹配率。",
+        "executed_at": "2026-08-07T13:15:00+08:00",
+        "filters": [
+          "固定 v15 DWH val20，贪心 n=1",
+          "Step 100 与 Step 200 按 task_id 一一配对",
+          "直接调用老板原始 reward_judge.py，未启用 LLM judge",
+          "原始轨迹、模型和数据库不进入报告载荷"
+        ],
+        "metric_definitions": [
+          "reward_total = 0.5 × result_score + 0.5 × process_score；has_answer=0 时硬门控为 0",
+          "result_score = 0.5 × has_answer + 0.5 × numeric answer correctness",
+          "process_score 对 tables、fields、docs、task fit 按 0.3/0.3/0.2/0.2 加权，None 维度跳过并归一",
+          "paired win/loss/tie 按同一 task_id 的 Step 200 reward_total 相对 Step 100 判定"
+        ],
+        "tables_used": [
+          "docs/boss_exact_step100_step200_20260807_audit.json"
+        ]
+      }
+    }
+  ]
+}
