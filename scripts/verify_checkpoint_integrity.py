@@ -102,7 +102,8 @@ def verify_checkpoint(checkpoint_dir: Path, base_model_dir: Path | None = None) 
             "errors": [f"checkpoint manifest missing: {manifest_path}"],
         }
     manifest = _read_json(manifest_path)
-    model_entry = ((manifest.get("contents") or {}).get("model") or {})
+    contents = manifest.get("contents") or {}
+    model_entry = (contents.get("model") or {})
     model_format = str(model_entry.get("format") or "")
     relative_path = str(model_entry.get("path") or "")
     model_dir = checkpoint_dir / "actor" / relative_path
@@ -123,10 +124,35 @@ def verify_checkpoint(checkpoint_dir: Path, base_model_dir: Path | None = None) 
             "valid": False,
             "errors": [f"unsupported or missing checkpoint model format: {model_format!r}"],
         }
+    optimizer_declared = "optimizer" in (manifest.get("save_contents") or [])
+    optimizer_entry = contents.get("optimizer") or {}
+    optimizer_result: dict[str, Any] | None = None
+    if optimizer_declared:
+        optimizer_format = str(optimizer_entry.get("format") or "")
+        optimizer_path = str(optimizer_entry.get("path") or "")
+        if optimizer_format != "megatron_dist_checkpoint" or not optimizer_path:
+            optimizer_result = {
+                "format": optimizer_format or None,
+                "valid": False,
+                "errors": ["optimizer is declared but its manifest entry is missing or unsupported"],
+            }
+        else:
+            optimizer_result = verify_megatron_dist_checkpoint(
+                checkpoint_dir / "actor" / optimizer_path
+            )
+        if not optimizer_result["valid"]:
+            result["valid"] = False
+            result["errors"].extend(
+                f"optimizer: {error}" for error in optimizer_result["errors"]
+            )
+
     return {
         "checkpoint_dir": str(checkpoint_dir),
         "global_step": manifest.get("global_step"),
         "manifest_model_path": relative_path,
+        "save_contents": manifest.get("save_contents"),
+        "optimizer_declared": optimizer_declared,
+        "optimizer": optimizer_result,
         **result,
     }
 

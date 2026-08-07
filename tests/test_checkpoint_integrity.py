@@ -74,3 +74,42 @@ def test_megatron_dist_checkpoint_requires_metadata_and_shards(tmp_path: Path):
 
     assert complete["valid"]
     assert complete["shard_count"] == 1
+
+
+def test_megatron_checkpoint_requires_declared_optimizer_shards(tmp_path: Path):
+    checkpoint = tmp_path / "checkpoint"
+    model = checkpoint / "actor" / "model" / "dist_ckpt"
+    model.mkdir(parents=True)
+    (model / ".metadata").write_bytes(b"metadata")
+    (model / "__0_0.distcp").write_bytes(b"weights")
+    _write_json(
+        checkpoint / "actor" / "ckpt_contents.json",
+        {
+            "global_step": 200,
+            "save_contents": ["model", "optimizer", "extra"],
+            "contents": {
+                "model": {
+                    "format": "megatron_dist_checkpoint",
+                    "path": "model/dist_ckpt",
+                },
+                "optimizer": {
+                    "format": "megatron_dist_checkpoint",
+                    "path": "optimizer/dist_ckpt",
+                },
+            },
+        },
+    )
+
+    missing = verify_checkpoint(checkpoint)
+    assert not missing["valid"]
+    assert missing["optimizer_declared"]
+    assert any(error.startswith("optimizer:") for error in missing["errors"])
+
+    optimizer = checkpoint / "actor" / "optimizer" / "dist_ckpt"
+    optimizer.mkdir(parents=True)
+    (optimizer / ".metadata").write_bytes(b"metadata")
+    (optimizer / "__0_0.distcp").write_bytes(b"adam")
+
+    complete = verify_checkpoint(checkpoint)
+    assert complete["valid"]
+    assert complete["optimizer"]["shard_count"] == 1
