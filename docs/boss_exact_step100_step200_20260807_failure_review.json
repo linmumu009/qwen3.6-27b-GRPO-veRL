@@ -1,0 +1,48 @@
+{
+  "reviewed_at": "2026-08-07T13:50:00+08:00",
+  "scope": "six paired tasks whose boss-original reward_total declined from Step 100 to Step 200",
+  "source_sha256": {
+    "step100_reward": "43c0fe4a237f929f2470acae6e5e5cec344903210017158584d458043feac00f",
+    "step200_reward": "2b1214e4d50809636a18b42fb51a77de7dc295125ac90743e58332744680ab06",
+    "step100_trajectories": "f67517ff0060957a3781d0c8078d9007acc939ec7e89b9df0fc06e9ca1541342",
+    "step200_trajectories": "56e048c6c5fdefffc1ee2e9619503e0c28fd6342ec1240e58dadf83cf728fb8e"
+  },
+  "tasks": [
+    {
+      "task_id": "task_000048",
+      "reward_delta": -0.35,
+      "verified_failure": "Step 200 查到了相同的 12 条明细和分状态统计，但最终回答漏掉整体平均、最短、最长与合计耗时；numeric correct 由 1 变 0，task fit 由 1.0 变 0.5。",
+      "category": "关键汇总遗漏"
+    },
+    {
+      "task_id": "task_000270",
+      "reward_delta": -0.25,
+      "verified_failure": "Step 100 将最新一期解释为 2026-06-22 至 06-28 的最新周；Step 200 改成整个 2026 年 6 月，统计窗口错位，numeric correct 由 1 变 0。",
+      "category": "统计周期错位"
+    },
+    {
+      "task_id": "task_000062",
+      "reward_delta": -0.1875,
+      "verified_failure": "Step 200 SQL 从 3 增至 16，但未查询期望的 dim_carrier，导致 required tables 命中由 1 变 0；数值正确性两轮均为 0。",
+      "category": "多查但漏关键表"
+    },
+    {
+      "task_id": "task_000238",
+      "reward_delta": -0.1875,
+      "verified_failure": "Step 200 仍查询 fact_cost_record，但 must-use cost_id 命中由 1.0 变 0.0；数值正确性两轮均为 0。",
+      "category": "必需字段遗漏"
+    },
+    {
+      "task_id": "task_000269",
+      "reward_delta": -0.5625,
+      "verified_failure": "Step 200 在目标温度下限的分组口径间反复切换，达到 26 assistant 回合后只留下 think 内容，没有最终回答。",
+      "category": "歧义探索超时"
+    },
+    {
+      "task_id": "task_000286",
+      "reward_delta": -0.6562,
+      "verified_failure": "Step 200 已找到 fact_temperature_record，但继续跨 fact_route 等表寻找区域定义，达到 26 assistant 回合后未输出最终答案。",
+      "category": "歧义探索超时"
+    }
+  ]
+}

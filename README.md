@@ -115,7 +115,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - 两台机器均完成官方镜像的软件栈和 Qwen3.6-27B 模型识别检查。
 - Ray 两节点集群已连通，可见 32 张 NPU；角色测试确认训练任务落在 5 号机、rollout 任务落在 6 号机。
 - 4 条真实验证任务已转换为 Parquet；两台机器上的只读数据库查询和奖励闭环均为 `4/4` 满分。
-- 本地覆盖 Megatron 拓扑、Continuous Token、TP8/DP2 权重同步、48K、fully-async、Fastest-K、完整 PI 工具、奖励、boss-aligned source join/人工审核门禁、冻结基线、checkpoint 完整性、vLLM public abort、老板 KB/DWH 影子回放和老板原版前后配对评测，项目测试为 `137 passed`。
+- 本地覆盖 Megatron 拓扑、Continuous Token、TP8/DP2 权重同步、48K、fully-async、Fastest-K、完整 PI 工具、奖励、boss-aligned source join/人工审核门禁、冻结基线、checkpoint 完整性、vLLM public abort、老板 KB/DWH 影子回放、老板原版前后配对评测和 Step 100→200 退化归因，项目测试为 `141 passed`。
 - 老板评测影子回放使用 1,500/1,500 唯一 task_id 的同源 Qwen3.6 v15 文件；KB/DWH 共 1,000 条完整评估，DWH `277/280` 结构化 verifier 自洽、严格正确 6 条，KB 500 条全部保持非在线可用。
 - 影子回放定位并修复 `/workspace/` 被字符串删除后误判为宿主 `/` 的安全规则缺陷；真实根目录和宿主路径扫描仍被阻止。
 - 完整 PI Agent 已通过 6 号机真实 veRL 容器门禁：`bash/read/write/edit` 全部加载，同一轨迹共享可写沙箱，sqlite3 只读代理可查询 v15 数据，失败状态正确记录，轨迹释放后工作区不存在；门禁结束后容器已停止。
@@ -173,6 +173,13 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [veRL 昇腾模型与算法支持](https://github.com/verl-project/verl/blob/main/docs/ascend_tutorial/model_support/model_and_algorithm_support.md)
 
 ## 版本记录
+
+### v0.53.0 — 2026-08-07
+
+- 完成 Step 100→200 老板评分下降的逐题可加总诊断：20 题总奖励净少 `0.8813`，其中数值正确性贡献 `-0.5000`（`56.7%`）、过程与字段质量贡献 `-0.2876`（`32.6%`）、完成状态切换净贡献 `-0.0937`（`10.6%`）。
+- 复核 6 道退化题，确认失败集中在遗漏整体汇总、最新一期统计周期错位、遗漏期望表/必需字段，以及两道歧义温度任务达到 26 回合后仍未给最终答案。
+- 新增 1,600 条续训 rollout 的首末四分位与组内信号分析：在线老板奖励和过程分改善，但数值正确率仅提高 `0.25pp`；400 个 GRPO group 中只有 `72` 个（`18%`）含正确/错误混合 response，说明当前相对正确性信号过稀。
+- 更新现有 Step 100/200 canonical HTML 报告，加入精确归因图、训练信号对比、六题失败表、optimizer/data cursor 重置与 fully-async staleness 的证据边界；新增可复现诊断脚本和测试。
 
 ### v0.52.0 — 2026-08-07
 

@@ -1,0 +1,23 @@
+{
+  "audited_at": "2026-08-07T13:52:00+08:00",
+  "run": "llin-v15-dwh-bossreward-step100-to-step200-12groups-20260806-01",
+  "resume_contract": {
+    "source_policy_step": 100,
+    "final_policy_step": 200,
+    "new_optimizer_updates": 100,
+    "checkpoint_load_contents": [
+      "model",
+      "extra"
+    ],
+    "optimizer_state": "reset_missing_from_source",
+    "dataloader_state": "reset_for_corrected_train236"
+  },
+  "fully_async_final_counters": {
+    "training_global_step": 200,
+    "staleness_threshold": 2,
+    "stale_trajectory_processed": 907,
+    "dropped_stale_samples": 0,
+    "rollout_rows_used": 1600
+  },
+  "interpretation_boundary": "Optimizer reset and bounded staleness can add optimization noise, but this audit does not identify either as a causal explanation for the fixed-val20 decline."
+}

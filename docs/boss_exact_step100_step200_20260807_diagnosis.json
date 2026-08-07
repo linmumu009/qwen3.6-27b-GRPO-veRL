@@ -1,0 +1,2492 @@
+{
+  "comparison": "step100_vs_step200_boss_reward_driver_diagnosis",
+  "task_count": 20,
+  "task_ids_identical": true,
+  "reward_sum_delta": -0.8813,
+  "reward_mean_delta": -0.044065,
+  "decomposition_reconciles": true,
+  "driver_rows": [
+    {
+      "driver": "完成状态切换",
+      "bucket": "completion_churn",
+      "reward_sum_delta": -0.0937,
+      "reward_mean_delta": -0.004685,
+      "share_of_net_decline": 0.10632020878248044,
+      "affected_task_count": 4
+    },
+    {
+      "driver": "数值正确性变化",
+      "bucket": "numeric_correctness",
+      "reward_sum_delta": -0.5,
+      "reward_mean_delta": -0.025,
+      "share_of_net_decline": 0.5673436968115284,
+      "affected_task_count": 2
+    },
+    {
+      "driver": "过程与字段质量变化",
+      "bucket": "process_quality",
+      "reward_sum_delta": -0.28759999999999997,
+      "reward_mean_delta": -0.014379999999999999,
+      "share_of_net_decline": 0.3263360944059911,
+      "affected_task_count": 4
+    }
+  ],
+  "component_totals": {
+    "completion_churn": -0.0937,
+    "numeric_correctness": -0.5,
+    "process_quality": -0.28759999999999997
+  },
+  "bucket_totals": {
+    "completion_churn": -0.0937,
+    "numeric_correctness": -0.6,
+    "process_quality": -0.1876,
+    "unchanged_incomplete": 0.0
+  },
+  "loss_tasks": [
+    {
+      "task_id": "task_000286",
+      "driver_bucket": "completion_churn",
+      "step100": {
+        "reward_total": 0.6562,
+        "complete": 1,
+        "has_answer": 1,
+        "correct_numeric": 0,
+        "process_score": 0.8124999999999999,
+        "tables_hit": 1.0,
+        "fields_used": 0.5,
+        "task_fit": 1.0,
+        "n_turns": 15,
+        "n_sql": 12,
+        "n_cmds": 17,
+        "dup_cmd": 12,
+        "answer_len": 1000,
+        "verdict": "partial",
+        "verdict_fine": "result_wrong_process_ok",
+        "expected_tables": [
+          "fact_temperature_record"
+        ],
+        "must_use_fields": [
+          "fact_warehouse_id",
+          "record_id"
+        ],
+        "tables_queried": [
+          "fact_temperature_record",
+          "fact_warehouse"
+        ]
+      },
+      "step200": {
+        "reward_total": 0.0,
+        "complete": 0,
+        "has_answer": 0,
+        "correct_numeric": 0,
+        "process_score": 0.8124999999999999,
+        "tables_hit": 1.0,
+        "fields_used": 0.5,
+        "task_fit": 1.0,
+        "n_turns": 26,
+        "n_sql": 13,
+        "n_cmds": 23,
+        "dup_cmd": 17,
+        "answer_len": 86,
+        "verdict": "incomplete",
+        "verdict_fine": "timeout",
+        "expected_tables": [
+          "fact_temperature_record"
+        ],
+        "must_use_fields": [
+          "fact_warehouse_id",
+          "record_id"
+        ],
+        "tables_queried": [
+          "dim_carrier",
+          "dim_department",
+          "fact_route",
+          "fact_temperature_record",
+          "fact_warehouse",
+          "sqlite_master"
+        ]
+      },
+      "delta": {
+        "reward_total": -0.6562,
+        "completion_contribution": -0.6562,
+        "numeric_correctness_contribution": 0.0,
+        "process_quality_contribution": 0.0,
+        "scorer_rounding_residual": 0.0,
+        "process_score": 0.0,
+        "fields_used": 0.0,
+        "task_fit": 0.0,
+        "n_turns": 11,
+        "n_sql": 1,
+        "n_cmds": 6,
+        "dup_cmd": 5,
+        "answer_len": -914
+      },
+      "tables_added": [
+        "dim_carrier",
+        "dim_department",
+        "fact_route",
+        "sqlite_master"
+      ],
+      "tables_removed": []
+    },
+    {
+      "task_id": "task_000269",
+      "driver_bucket": "completion_churn",
+      "step100": {
+        "reward_total": 0.5625,
+        "complete": 1,
+        "has_answer": 1,
+        "correct_numeric": 0,
+        "process_score": 0.625,
+        "tables_hit": 1.0,
+        "fields_used": 0.0,
+        "task_fit": 1.0,
+        "n_turns": 12,
+        "n_sql": 12,
+        "n_cmds": 17,
+        "dup_cmd": 13,
+        "answer_len": 64805,
+        "verdict": "partial",
+        "verdict_fine": "result_wrong_process_ok",
+        "expected_tables": [
+          "fact_temperature_record"
+        ],
+        "must_use_fields": [
+          "fact_refrigeration_equipment_id"
+        ],
+        "tables_queried": [
+          "dim_dws_temperature_compliance_analysis",
+          "fact_cold_chain_consignment",
+          "fact_temperature_record",
+          "sqlite_master"
+        ]
+      },
+      "step200": {
+        "reward_total": 0.0,
+        "complete": 0,
+        "has_answer": 0,
+        "correct_numeric": 0,
+        "process_score": 0.625,
+        "tables_hit": 1.0,
+        "fields_used": 0.0,
+        "task_fit": 1.0,
+        "n_turns": 26,
+        "n_sql": 34,
+        "n_cmds": 42,
+        "dup_cmd": 37,
+        "answer_len": 1827,
+        "verdict": "incomplete",
+        "verdict_fine": "timeout",
+        "expected_tables": [
+          "fact_temperature_record"
+        ],
+        "must_use_fields": [
+          "fact_refrigeration_equipment_id"
+        ],
+        "tables_queried": [
+          "dim_dws_temperature_compliance_analysis",
+          "fact_cold_chain_consignment",
+          "fact_temperature_record"
+        ]
+      },
+      "delta": {
+        "reward_total": -0.5625,
+        "completion_contribution": -0.5625,
+        "numeric_correctness_contribution": 0.0,
+        "process_quality_contribution": 0.0,
+        "scorer_rounding_residual": 0.0,
+        "process_score": 0.0,
+        "fields_used": 0.0,
+        "task_fit": 0.0,
+        "n_turns": 14,
+        "n_sql": 22,
+        "n_cmds": 25,
+        "dup_cmd": 24,
+        "answer_len": -62978
+      },
+      "tables_added": [],
+      "tables_removed": [
+        "sqlite_master"
+      ]
+    },
+    {
+      "task_id": "task_000048",
+      "driver_bucket": "numeric_correctness",
+      "step100": {
+        "reward_total": 1.0,
+        "complete": 1,
+        "has_answer": 1,
+        "correct_numeric": 1,
+        "process_score": 1.0,
+        "tables_hit": 1.0,
+        "fields_used": null,
+        "task_fit": 1.0,
+        "n_turns": 20,
+        "n_sql": 4,
+        "n_cmds": 18,
+        "dup_cmd": 6,
+        "answer_len": 2293,
+        "verdict": "correct",
+        "verdict_fine": "result_ok_process_ok",
+        "expected_tables": [
+          "fact_transit"
+        ],
+        "must_use_fields": [],
+        "tables_queried": [
+          "fact_transit"
+        ]
+      },
+      "step200": {
+        "reward_total": 0.65,
+        "complete": 1,
+        "has_answer": 1,
+        "correct_numeric": 0,
+        "process_score": 0.8,
+        "tables_hit": 1.0,
+        "fields_used": null,
+        "task_fit": 0.5,
+        "n_turns": 8,
+        "n_sql": 0,
+        "n_cmds": 6,
+        "dup_cmd": 1,
+        "answer_len": 1632,
+        "verdict": "partial",
+        "verdict_fine": "result_wrong_process_ok",
+        "expected_tables": [
+          "fact_transit"
+        ],
+        "must_use_fields": [],
+        "tables_queried": [
+          "fact_transit"
+        ]
+      },
+      "delta": {
+        "reward_total": -0.35,
+        "completion_contribution": 0.0,
+        "numeric_correctness_contribution": -0.25,
+        "process_quality_contribution": -0.09999999999999998,
+        "scorer_rounding_residual": 0.0,
+        "process_score": -0.19999999999999996,
+        "fields_used": null,
+        "task_fit": -0.5,
+        "n_turns": -12,
+        "n_sql": -4,
+        "n_cmds": -12,
+        "dup_cmd": -5,
+        "answer_len": -661
+      },
+      "tables_added": [],
+      "tables_removed": []
+    },
+    {
+      "task_id": "task_000270",
+      "driver_bucket": "numeric_correctness",
+      "step100": {
+        "reward_total": 1.0,
+        "complete": 1,
+        "has_answer": 1,
+        "correct_numeric": 1,
+        "process_score": 1.0,
+        "tables_hit": 1.0,
+        "fields_used": 1.0,
+        "task_fit": 1.0,
+        "n_turns": 16,
+        "n_sql": 8,
+        "n_cmds": 44,
+        "dup_cmd": 37,
+        "answer_len": 3306,
+        "verdict": "correct",
+        "verdict_fine": "result_ok_process_ok",
+        "expected_tables": [
+          "fact_transit"
+        ],
+        "must_use_fields": [
+          "transit_id",
+          "waybill_no"
+        ],
+        "tables_queried": [
+          "dim_carrier",
+          "dim_vehicle",
+          "fact_route",
+          "fact_transit"
+        ]
+      },
+      "step200": {
+        "reward_total": 0.75,
+        "complete": 1,
+        "has_answer": 1,
+        "correct_numeric": 0,
+        "process_score": 1.0,
+        "tables_hit": 1.0,
+        "fields_used": 1.0,
+        "task_fit": 1.0,
+        "n_turns": 7,
+        "n_sql": 9,
+        "n_cmds": 16,
+        "dup_cmd": 11,
+        "answer_len": 3696,
+        "verdict": "partial",
+        "verdict_fine": "result_wrong_process_ok",
+        "expected_tables": [
+          "fact_transit"
+        ],
+        "must_use_fields": [
+          "transit_id",
+          "waybill_no"
+        ],
+        "tables_queried": [
+          "fact_transit"
+        ]
+      },
+      "delta": {
+        "reward_total": -0.25,
+        "completion_contribution": 0.0,
+        "numeric_correctness_contribution": -0.25,
+        "process_quality_contribution": 0.0,
+        "scorer_rounding_residual": 0.0,
+        "process_score": 0.0,
+        "fields_used": 0.0,
+        "task_fit": 0.0,
+        "n_turns": -9,
+        "n_sql": 1,
+        "n_cmds": -28,
+        "dup_cmd": -26,
+        "answer_len": 390
+      },
+      "tables_added": [],
+      "tables_removed": [
+        "dim_carrier",
+        "dim_vehicle",
+        "fact_route"
+      ]
+    },
+    {
+      "task_id": "task_000062",
+      "driver_bucket": "process_quality",
+      "step100": {
+        "reward_total": 0.75,
+        "complete": 1,
+        "has_answer": 1,
+        "correct_numeric": 0,
+        "process_score": 1.0,
+        "tables_hit": 1.0,
+        "fields_used": 1.0,
+        "task_fit": 1.0,
+        "n_turns": 17,
+        "n_sql": 3,
+        "n_cmds": 42,
+        "dup_cmd": 36,
+        "answer_len": 585,
+        "verdict": "partial",
+        "verdict_fine": "result_wrong_process_ok",
+        "expected_tables": [
+          "dim_carrier",
+          "fact_dws_cost_summary"
+        ],
+        "must_use_fields": [
+          "warehouse_name"
+        ],
+        "tables_queried": [
+          "dim_carrier",
+          "dim_cost_analysis",
+          "dim_dws_cargo_damage_analysis",
+          "dim_dws_energy_cost_analysis",
+          "dim_dws_equipment_fault_analysis",
+          "dim_dws_temperature_compliance_analysis",
+          "dim_kpi_dashboard",
+          "fact_cost_record",
+          "fact_dws_cost_summary",
+          "fact_dws_service_quality_analysis",
+          "fact_dws_timeliness_analysis",
+          "fact_kpi_weekly",
+          "fact_product",
+          "fact_warehouse"
+        ]
+      },
+      "step200": {
+        "reward_total": 0.5625,
+        "complete": 1,
+        "has_answer": 1,
+        "correct_numeric": 0,
+        "process_score": 0.625,
+        "tables_hit": 0.0,
+        "fields_used": 1.0,
+        "task_fit": 1.0,
+        "n_turns": 18,
+        "n_sql": 16,
+        "n_cmds": 49,
+        "dup_cmd": 43,
+        "answer_len": 982,
+        "verdict": "incorrect",
+        "verdict_fine": "result_wrong_process_mismatch",
+        "expected_tables": [
+          "dim_carrier",
+          "fact_dws_cost_summary"
+        ],
+        "must_use_fields": [
+          "warehouse_name"
+        ],
+        "tables_queried": [
+          "dim_dws_cargo_damage_analysis",
+          "dim_dws_energy_cost_analysis",
+          "dim_dws_equipment_fault_analysis",
+          "fact_dws_cost_summary",
+          "fact_dws_service_quality_analysis",
+          "fact_dws_timeliness_analysis"
+        ]
+      },
+      "delta": {
+        "reward_total": -0.1875,
+        "completion_contribution": 0.0,
+        "numeric_correctness_contribution": 0.0,
+        "process_quality_contribution": -0.1875,
+        "scorer_rounding_residual": 0.0,
+        "process_score": -0.375,
+        "fields_used": 0.0,
+        "task_fit": 0.0,
+        "n_turns": 1,
+        "n_sql": 13,
+        "n_cmds": 7,
+        "dup_cmd": 7,
+        "answer_len": 397
+      },
+      "tables_added": [],
+      "tables_removed": [
+        "dim_carrier",
+        "dim_cost_analysis",
+        "dim_dws_temperature_compliance_analysis",
+        "dim_kpi_dashboard",
+        "fact_cost_record",
+        "fact_kpi_weekly",
+        "fact_product",
+        "fact_warehouse"
+      ]
+    },
+    {
+      "task_id": "task_000238",
+      "driver_bucket": "process_quality",
+      "step100": {
+        "reward_total": 0.6875,
+        "complete": 1,
+        "has_answer": 1,
+        "correct_numeric": 0,
+        "process_score": 0.8749999999999999,
+        "tables_hit": 1.0,
+        "fields_used": 1.0,
+        "task_fit": 0.5,
+        "n_turns": 13,
+        "n_sql": 0,
+        "n_cmds": 36,
+        "dup_cmd": 31,
+        "answer_len": 713,
+        "verdict": "partial",
+        "verdict_fine": "result_wrong_process_ok",
+        "expected_tables": [
+          "fact_cost_record"
+        ],
+        "must_use_fields": [
+          "cost_id"
+        ],
+        "tables_queried": [
+          "dim_carrier",
+          "dim_cost_analysis",
+          "dim_dws_energy_cost_analysis",
+          "fact_cost_record",
+          "fact_dws_cost_summary",
+          "fact_warehouse"
+        ]
+      },
+      "step200": {
+        "reward_total": 0.5,
+        "complete": 1,
+        "has_answer": 1,
+        "correct_numeric": 0,
+        "process_score": 0.5,
+        "tables_hit": 1.0,
+        "fields_used": 0.0,
+        "task_fit": 0.5,
+        "n_turns": 13,
+        "n_sql": 0,
+        "n_cmds": 36,
+        "dup_cmd": 31,
+        "answer_len": 752,
+        "verdict": "partial",
+        "verdict_fine": "result_wrong_process_ok",
+        "expected_tables": [
+          "fact_cost_record"
+        ],
+        "must_use_fields": [
+          "cost_id"
+        ],
+        "tables_queried": [
+          "dim_dws_energy_cost_analysis",
+          "fact_cost_record",
+          "fact_dws_cost_summary",
+          "fact_warehouse"
+        ]
+      },
+      "delta": {
+        "reward_total": -0.1875,
+        "completion_contribution": 0.0,
+        "numeric_correctness_contribution": 0.0,
+        "process_quality_contribution": -0.18749999999999994,
+        "scorer_rounding_residual": -5.551115123125783e-17,
+        "process_score": -0.3749999999999999,
+        "fields_used": -1.0,
+        "task_fit": 0.0,
+        "n_turns": 0,
+        "n_sql": 0,
+        "n_cmds": 0,
+        "dup_cmd": 0,
+        "answer_len": 39
+      },
+      "tables_added": [],
+      "tables_removed": [
+        "dim_carrier",
+        "dim_cost_analysis"
+      ]
+    }
+  ],
+  "win_tasks": [
+    {
+      "task_id": "task_000150",
+      "driver_bucket": "completion_churn",
+      "step100": {
+        "reward_total": 0.0,
+        "complete": 0,
+        "has_answer": 0,
+        "correct_numeric": 0,
+        "process_score": 0.8749999999999999,
+        "tables_hit": 1.0,
+        "fields_used": 1.0,
+        "task_fit": 0.5,
+        "n_turns": 26,
+        "n_sql": 0,
+        "n_cmds": 21,
+        "dup_cmd": 10,
+        "answer_len": 135,
+        "verdict": "incomplete",
+        "verdict_fine": "timeout",
+        "expected_tables": [
+          "dim_dws_equipment_fault_analysis"
+        ],
+        "must_use_fields": [
+          "stat_date"
+        ],
+        "tables_queried": [
+          "dim_dws_equipment_fault_analysis",
+          "fact_equipment_fault_event",
+          "weekly_stats"
+        ]
+      },
+      "step200": {
+        "reward_total": 0.75,
+        "complete": 1,
+        "has_answer": 1,
+        "correct_numeric": 0,
+        "process_score": 1.0,
+        "tables_hit": 1.0,
+        "fields_used": 1.0,
+        "task_fit": 1.0,
+        "n_turns": 19,
+        "n_sql": 1,
+        "n_cmds": 17,
+        "dup_cmd": 11,
+        "answer_len": 2524,
+        "verdict": "partial",
+        "verdict_fine": "result_wrong_process_ok",
+        "expected_tables": [
+          "dim_dws_equipment_fault_analysis"
+        ],
+        "must_use_fields": [
+          "stat_date"
+        ],
+        "tables_queried": [
+          "dim_dws_equipment_fault_analysis",
+          "fact_equipment_fault_event",
+          "sqlite_master"
+        ]
+      },
+      "delta": {
+        "reward_total": 0.75,
+        "completion_contribution": 0.75,
+        "numeric_correctness_contribution": 0.0,
+        "process_quality_contribution": 0.0,
+        "scorer_rounding_residual": 0.0,
+        "process_score": 0.1250000000000001,
+        "fields_used": 0.0,
+        "task_fit": 0.5,
+        "n_turns": -7,
+        "n_sql": 1,
+        "n_cmds": -4,
+        "dup_cmd": 1,
+        "answer_len": 2389
+      },
+      "tables_added": [
+        "sqlite_master"
+      ],
+      "tables_removed": [
+        "weekly_stats"
+      ]
+    },
+    {
+      "task_id": "task_000133",
+      "driver_bucket": "completion_churn",
+      "step100": {
+        "reward_total": 0.0,
+        "complete": 0,
+        "has_answer": 0,
+        "correct_numeric": 0,
+        "process_score": 0.625,
+        "tables_hit": 0.0,
+        "fields_used": 1.0,
+        "task_fit": 1.0,
+        "n_turns": 26,
+        "n_sql": 12,
+        "n_cmds": 24,
+        "dup_cmd": 16,
+        "answer_len": 1031,
+        "verdict": "incomplete",
+        "verdict_fine": "timeout",
+        "expected_tables": [
+          "fact_pickup",
+          "fact_waybill"
+        ],
+        "must_use_fields": [
+          "waybill_no"
+        ],
+        "tables_queried": [
+          "fact_delivery",
+          "fact_pickup",
+          "fact_sorting",
+          "fact_waybill_event"
+        ]
+      },
+      "step200": {
+        "reward_total": 0.375,
+        "complete": 1,
+        "has_answer": 1,
+        "correct_numeric": 0,
+        "process_score": 0.25,
+        "tables_hit": 0.0,
+        "fields_used": 0.0,
+        "task_fit": 1.0,
+        "n_turns": 20,
+        "n_sql": 13,
+        "n_cmds": 18,
+        "dup_cmd": 13,
+        "answer_len": 82385,
+        "verdict": "incorrect",
+        "verdict_fine": "result_wrong_process_mismatch",
+        "expected_tables": [
+          "fact_pickup",
+          "fact_waybill"
+        ],
+        "must_use_fields": [
+          "waybill_no"
+        ],
+        "tables_queried": [
+          "fact_pickup",
+          "fact_waybill_event",
+          "sqlite_master"
+        ]
+      },
+      "delta": {
+        "reward_total": 0.375,
+        "completion_contribution": 0.375,
+        "numeric_correctness_contribution": 0.0,
+        "process_quality_contribution": 0.0,
+        "scorer_rounding_residual": 0.0,
+        "process_score": -0.375,
+        "fields_used": -1.0,
+        "task_fit": 0.0,
+        "n_turns": -6,
+        "n_sql": 1,
+        "n_cmds": -6,
+        "dup_cmd": -3,
+        "answer_len": 81354
+      },
+      "tables_added": [
+        "sqlite_master"
+      ],
+      "tables_removed": [
+        "fact_delivery",
+        "fact_sorting"
+      ]
+    },
+    {
+      "task_id": "task_000278",
+      "driver_bucket": "process_quality",
+      "step100": {
+        "reward_total": 0.4688,
+        "complete": 1,
+        "has_answer": 1,
+        "correct_numeric": 0,
+        "process_score": 0.43749999999999994,
+        "tables_hit": 0.0,
+        "fields_used": 0.5,
+        "task_fit": 1.0,
+        "n_turns": 18,
+        "n_sql": 19,
+        "n_cmds": 31,
+        "dup_cmd": 25,
+        "answer_len": 3916,
+        "verdict": "incorrect",
+        "verdict_fine": "result_wrong_process_mismatch",
+        "expected_tables": [
+          "fact_pod",
+          "fact_waybill"
+        ],
+        "must_use_fields": [
+          "pod_id",
+          "waybill_no"
+        ],
+        "tables_queried": [
+          "fact_delivery",
+          "fact_pickup",
+          "fact_pod",
+          "fact_sorting",
+          "fact_transit",
+          "fact_waybill_event"
+        ]
+      },
+      "step200": {
+        "reward_total": 0.6562,
+        "complete": 1,
+        "has_answer": 1,
+        "correct_numeric": 0,
+        "process_score": 0.8124999999999999,
+        "tables_hit": 1.0,
+        "fields_used": 0.5,
+        "task_fit": 1.0,
+        "n_turns": 17,
+        "n_sql": 20,
+        "n_cmds": 26,
+        "dup_cmd": 20,
+        "answer_len": 2456,
+        "verdict": "partial",
+        "verdict_fine": "result_wrong_process_ok",
+        "expected_tables": [
+          "fact_pod",
+          "fact_waybill"
+        ],
+        "must_use_fields": [
+          "pod_id",
+          "waybill_no"
+        ],
+        "tables_queried": [
+          "fact_pod",
+          "fact_waybill",
+          "fact_waybill_event"
+        ]
+      },
+      "delta": {
+        "reward_total": 0.1874,
+        "completion_contribution": 0.0,
+        "numeric_correctness_contribution": 0.0,
+        "process_quality_contribution": 0.18749999999999997,
+        "scorer_rounding_residual": -9.999999999996123e-05,
+        "process_score": 0.37499999999999994,
+        "fields_used": 0.0,
+        "task_fit": 0.0,
+        "n_turns": -1,
+        "n_sql": 1,
+        "n_cmds": -5,
+        "dup_cmd": -5,
+        "answer_len": -1460
+      },
+      "tables_added": [
+        "fact_waybill"
+      ],
+      "tables_removed": [
+        "fact_delivery",
+        "fact_pickup",
+        "fact_sorting",
+        "fact_transit"
+      ]
+    }
+  ],
+  "all_tasks": [
+    {
+      "task_id": "task_000012",
+      "driver_bucket": "process_quality",
+      "step100": {
+        "reward_total": 0.6875,
+        "complete": 1,
+        "has_answer": 1,
+        "correct_numeric": 0,
+        "process_score": 0.8749999999999999,
+        "tables_hit": 1.0,
+        "fields_used": 1.0,
+        "task_fit": 0.5,
+        "n_turns": 12,
+        "n_sql": 0,
+        "n_cmds": 10,
+        "dup_cmd": 5,
+        "answer_len": 642,
+        "verdict": "partial",
+        "verdict_fine": "result_wrong_process_ok",
+        "expected_tables": [
+          "dim_dws_cargo_damage_analysis"
+        ],
+        "must_use_fields": [
+          "stat_date"
+        ],
+        "tables_queried": [
+          "dim_dws_cargo_damage_analysis",
+          "fact_cargo_damage_record"
+        ]
+      },
+      "step200": {
+        "reward_total": 0.6875,
+        "complete": 1,
+        "has_answer": 1,
+        "correct_numeric": 0,
+        "process_score": 0.8749999999999999,
+        "tables_hit": 1.0,
+        "fields_used": 1.0,
+        "task_fit": 0.5,
+        "n_turns": 15,
+        "n_sql": 0,
+        "n_cmds": 13,
+        "dup_cmd": 8,
+        "answer_len": 682,
+        "verdict": "partial",
+        "verdict_fine": "result_wrong_process_ok",
+        "expected_tables": [
+          "dim_dws_cargo_damage_analysis"
+        ],
+        "must_use_fields": [
+          "stat_date"
+        ],
+        "tables_queried": [
+          "dim_dws_cargo_damage_analysis",
+          "fact_cargo_damage_record"
+        ]
+      },
+      "delta": {
+        "reward_total": 0.0,
+        "completion_contribution": 0.0,
+        "numeric_correctness_contribution": 0.0,
+        "process_quality_contribution": 0.0,
+        "scorer_rounding_residual": 0.0,
+        "process_score": 0.0,
+        "fields_used": 0.0,
+        "task_fit": 0.0,
+        "n_turns": 3,
+        "n_sql": 0,
+        "n_cmds": 3,
+        "dup_cmd": 3,
+        "answer_len": 40
+      },
+      "tables_added": [],
+      "tables_removed": []
+    },
+    {
+      "task_id": "task_000048",
+      "driver_bucket": "numeric_correctness",
+      "step100": {
+        "reward_total": 1.0,
+        "complete": 1,
+        "has_answer": 1,
+        "correct_numeric": 1,
+        "process_score": 1.0,
+        "tables_hit": 1.0,
+        "fields_used": null,
+        "task_fit": 1.0,
+        "n_turns": 20,
+        "n_sql": 4,
+        "n_cmds": 18,
+        "dup_cmd": 6,
+        "answer_len": 2293,
+        "verdict": "correct",
+        "verdict_fine": "result_ok_process_ok",
+        "expected_tables": [
+          "fact_transit"
+        ],
+        "must_use_fields": [],
+        "tables_queried": [
+          "fact_transit"
+        ]
+      },
+      "step200": {
+        "reward_total": 0.65,
+        "complete": 1,
+        "has_answer": 1,
+        "correct_numeric": 0,
+        "process_score": 0.8,
+        "tables_hit": 1.0,
+        "fields_used": null,
+        "task_fit": 0.5,
+        "n_turns": 8,
+        "n_sql": 0,
+        "n_cmds": 6,
+        "dup_cmd": 1,
+        "answer_len": 1632,
+        "verdict": "partial",
+        "verdict_fine": "result_wrong_process_ok",
+        "expected_tables": [
+          "fact_transit"
+        ],
+        "must_use_fields": [],
+        "tables_queried": [
+          "fact_transit"
+        ]
+      },
+      "delta": {
+        "reward_total": -0.35,
+        "completion_contribution": 0.0,
+        "numeric_correctness_contribution": -0.25,
+        "process_quality_contribution": -0.09999999999999998,
+        "scorer_rounding_residual": 0.0,
+        "process_score": -0.19999999999999996,
+        "fields_used": null,
+        "task_fit": -0.5,
+        "n_turns": -12,
+        "n_sql": -4,
+        "n_cmds": -12,
+        "dup_cmd": -5,
+        "answer_len": -661
+      },
+      "tables_added": [],
+      "tables_removed": []
+    },
+    {
+      "task_id": "task_000058",
+      "driver_bucket": "unchanged_incomplete",
+      "step100": {
+        "reward_total": 0.0,
+        "complete": 0,
+        "has_answer": 0,
+        "correct_numeric": 0,
+        "process_score": 0.625,
+        "tables_hit": 1.0,
+        "fields_used": 0.0,
+        "task_fit": 1.0,
+        "n_turns": 16,
+        "n_sql": 14,
+        "n_cmds": 40,
+        "dup_cmd": 33,
+        "answer_len": 677,
+        "verdict": "incomplete",
+        "verdict_fine": "timeout",
+        "expected_tables": [
+          "fact_equipment_fault_event",
+          "fact_refrigeration_equipment"
+        ],
+        "must_use_fields": [
+          "fact_quality_incident_id"
+        ],
+        "tables_queried": [
+          "dim_dws_equipment_fault_analysis",
+          "dim_dws_temperature_compliance_analysis",
+          "document_lineage",
+          "fact_equipment_fault_event",
+          "fact_refrigeration_equipment",
+          "pragma_foreign_key_list",
+          "sqlite_master"
+        ]
+      },
+      "step200": {
+        "reward_total": 0.0,
+        "complete": 0,
+        "has_answer": 0,
+        "correct_numeric": 0,
+        "process_score": 0.625,
+        "tables_hit": 1.0,
+        "fields_used": 0.0,
+        "task_fit": 1.0,
+        "n_turns": 13,
+        "n_sql": 25,
+        "n_cmds": 36,
+        "dup_cmd": 19,
+        "answer_len": 662,
+        "verdict": "incomplete",
+        "verdict_fine": "timeout",
+        "expected_tables": [
+          "fact_equipment_fault_event",
+          "fact_refrigeration_equipment"
+        ],
+        "must_use_fields": [
+          "fact_quality_incident_id"
+        ],
+        "tables_queried": [
+          "dim_dws_equipment_fault_analysis",
+          "dim_dws_temperature_compliance_analysis",
+          "document_lineage",
+          "fact_equipment_fault_event",
+          "fact_refrigeration_equipment",
+          "sqlite_master"
+        ]
+      },
+      "delta": {
+        "reward_total": 0.0,
+        "completion_contribution": 0.0,
+        "numeric_correctness_contribution": 0.0,
+        "process_quality_contribution": 0.0,
+        "scorer_rounding_residual": 0.0,
+        "process_score": 0.0,
+        "fields_used": 0.0,
+        "task_fit": 0.0,
+        "n_turns": -3,
+        "n_sql": 11,
+        "n_cmds": -4,
+        "dup_cmd": -14,
+        "answer_len": -15
+      },
+      "tables_added": [],
+      "tables_removed": [
+        "pragma_foreign_key_list"
+      ]
+    },
+    {
+      "task_id": "task_000059",
+      "driver_bucket": "unchanged_incomplete",
+      "step100": {
+        "reward_total": 0.0,
+        "complete": 0,
+        "has_answer": 0,
+        "correct_numeric": 0,
+        "process_score": 1.0,
+        "tables_hit": 1.0,
+        "fields_used": null,
+        "task_fit": 1.0,
+        "n_turns": 26,
+        "n_sql": 52,
+        "n_cmds": 76,
+        "dup_cmd": 71,
+        "answer_len": 373,
+        "verdict": "incomplete",
+        "verdict_fine": "timeout",
+        "expected_tables": [
+          "dim_carrier"
+        ],
+        "must_use_fields": [],
+        "tables_queried": [
+          "dim_attribution_report",
+          "dim_carrier",
+          "dim_daily_report",
+          "dim_date",
+          "dim_kpi_dashboard",
+          "dim_vehicle",
+          "fact_cargo_damage_record",
+          "fact_cold_chain_consignment",
+          "fact_dws_service_quality_analysis",
+          "fact_kpi_weekly",
+          "fact_quality_incident",
+          "fact_route",
+          "fact_transit",
+          "sqlite_master"
+        ]
+      },
+      "step200": {
+        "reward_total": 0.0,
+        "complete": 0,
+        "has_answer": 0,
+        "correct_numeric": 0,
+        "process_score": 1.0,
+        "tables_hit": 1.0,
+        "fields_used": null,
+        "task_fit": 1.0,
+        "n_turns": 14,
+        "n_sql": 20,
+        "n_cmds": 36,
+        "dup_cmd": 31,
+        "answer_len": 779,
+        "verdict": "incomplete",
+        "verdict_fine": "timeout",
+        "expected_tables": [
+          "dim_carrier"
+        ],
+        "must_use_fields": [],
+        "tables_queried": [
+          "dim_attribution_report",
+          "dim_carrier",
+          "dim_kpi_dashboard",
+          "fact_dws_service_quality_analysis",
+          "fact_quality_incident",
+          "sqlite_master"
+        ]
+      },
+      "delta": {
+        "reward_total": 0.0,
+        "completion_contribution": 0.0,
+        "numeric_correctness_contribution": 0.0,
+        "process_quality_contribution": 0.0,
+        "scorer_rounding_residual": 0.0,
+        "process_score": 0.0,
+        "fields_used": null,
+        "task_fit": 0.0,
+        "n_turns": -12,
+        "n_sql": -32,
+        "n_cmds": -40,
+        "dup_cmd": -40,
+        "answer_len": 406
+      },
+      "tables_added": [],
+      "tables_removed": [
+        "dim_daily_report",
+        "dim_date",
+        "dim_vehicle",
+        "fact_cargo_damage_record",
+        "fact_cold_chain_consignment",
+        "fact_kpi_weekly",
+        "fact_route",
+        "fact_transit"
+      ]
+    },
+    {
+      "task_id": "task_000062",
+      "driver_bucket": "process_quality",
+      "step100": {
+        "reward_total": 0.75,
+        "complete": 1,
+        "has_answer": 1,
+        "correct_numeric": 0,
+        "process_score": 1.0,
+        "tables_hit": 1.0,
+        "fields_used": 1.0,
+        "task_fit": 1.0,
+        "n_turns": 17,
+        "n_sql": 3,
+        "n_cmds": 42,
+        "dup_cmd": 36,
+        "answer_len": 585,
+        "verdict": "partial",
+        "verdict_fine": "result_wrong_process_ok",
+        "expected_tables": [
+          "dim_carrier",
+          "fact_dws_cost_summary"
+        ],
+        "must_use_fields": [
+          "warehouse_name"
+        ],
+        "tables_queried": [
+          "dim_carrier",
+          "dim_cost_analysis",
+          "dim_dws_cargo_damage_analysis",
+          "dim_dws_energy_cost_analysis",
+          "dim_dws_equipment_fault_analysis",
+          "dim_dws_temperature_compliance_analysis",
+          "dim_kpi_dashboard",
+          "fact_cost_record",
+          "fact_dws_cost_summary",
+          "fact_dws_service_quality_analysis",
+          "fact_dws_timeliness_analysis",
+          "fact_kpi_weekly",
+          "fact_product",
+          "fact_warehouse"
+        ]
+      },
+      "step200": {
+        "reward_total": 0.5625,
+        "complete": 1,
+        "has_answer": 1,
+        "correct_numeric": 0,
+        "process_score": 0.625,
+        "tables_hit": 0.0,
+        "fields_used": 1.0,
+        "task_fit": 1.0,
+        "n_turns": 18,
+        "n_sql": 16,
+        "n_cmds": 49,
+        "dup_cmd": 43,
+        "answer_len": 982,
+        "verdict": "incorrect",
+        "verdict_fine": "result_wrong_process_mismatch",
+        "expected_tables": [
+          "dim_carrier",
+          "fact_dws_cost_summary"
+        ],
+        "must_use_fields": [
+          "warehouse_name"
+        ],
+        "tables_queried": [
+          "dim_dws_cargo_damage_analysis",
+          "dim_dws_energy_cost_analysis",
+          "dim_dws_equipment_fault_analysis",
+          "fact_dws_cost_summary",
+          "fact_dws_service_quality_analysis",
+          "fact_dws_timeliness_analysis"
+        ]
+      },
+      "delta": {
+        "reward_total": -0.1875,
+        "completion_contribution": 0.0,
+        "numeric_correctness_contribution": 0.0,
+        "process_quality_contribution": -0.1875,
+        "scorer_rounding_residual": 0.0,
+        "process_score": -0.375,
+        "fields_used": 0.0,
+        "task_fit": 0.0,
+        "n_turns": 1,
+        "n_sql": 13,
+        "n_cmds": 7,
+        "dup_cmd": 7,
+        "answer_len": 397
+      },
+      "tables_added": [],
+      "tables_removed": [
+        "dim_carrier",
+        "dim_cost_analysis",
+        "dim_dws_temperature_compliance_analysis",
+        "dim_kpi_dashboard",
+        "fact_cost_record",
+        "fact_kpi_weekly",
+        "fact_product",
+        "fact_warehouse"
+      ]
+    },
+    {
+      "task_id": "task_000070",
+      "driver_bucket": "process_quality",
+      "step100": {
+        "reward_total": 0.5625,
+        "complete": 1,
+        "has_answer": 1,
+        "correct_numeric": 0,
+        "process_score": 0.625,
+        "tables_hit": 0.0,
+        "fields_used": 1.0,
+        "task_fit": 1.0,
+        "n_turns": 25,
+        "n_sql": 33,
+        "n_cmds": 49,
+        "dup_cmd": 41,
+        "answer_len": 978,
+        "verdict": "incorrect",
+        "verdict_fine": "result_wrong_process_mismatch",
+        "expected_tables": [
+          "dim_carrier",
+          "fact_dws_service_quality_analysis"
+        ],
+        "must_use_fields": [
+          "carrier_name"
+        ],
+        "tables_queried": [
+          "analysis_task",
+          "dim_attribution_report",
+          "dim_kpi_dashboard",
+          "fact_delivery",
+          "fact_dws_service_quality_analysis",
+          "fact_warehouse",
+          "fact_waybill",
+          "report"
+        ]
+      },
+      "step200": {
+        "reward_total": 0.5625,
+        "complete": 1,
+        "has_answer": 1,
+        "correct_numeric": 0,
+        "process_score": 0.625,
+        "tables_hit": 0.0,
+        "fields_used": 1.0,
+        "task_fit": 1.0,
+        "n_turns": 25,
+        "n_sql": 44,
+        "n_cmds": 56,
+        "dup_cmd": 50,
+        "answer_len": 2066,
+        "verdict": "incorrect",
+        "verdict_fine": "result_wrong_process_mismatch",
+        "expected_tables": [
+          "dim_carrier",
+          "fact_dws_service_quality_analysis"
+        ],
+        "must_use_fields": [
+          "carrier_name"
+        ],
+        "tables_queried": [
+          "analysis_task",
+          "document_lineage",
+          "fact_delivery",
+          "fact_dws_service_quality_analysis",
+          "fact_pickup",
+          "fact_sorting",
+          "fact_transit",
+          "fact_waybill",
+          "sqlite_master"
+        ]
+      },
+      "delta": {
+        "reward_total": 0.0,
+        "completion_contribution": 0.0,
+        "numeric_correctness_contribution": 0.0,
+        "process_quality_contribution": 0.0,
+        "scorer_rounding_residual": 0.0,
+        "process_score": 0.0,
+        "fields_used": 0.0,
+        "task_fit": 0.0,
+        "n_turns": 0,
+        "n_sql": 11,
+        "n_cmds": 7,
+        "dup_cmd": 9,
+        "answer_len": 1088
+      },
+      "tables_added": [
+        "document_lineage",
+        "fact_pickup",
+        "fact_sorting",
+        "fact_transit",
+        "sqlite_master"
+      ],
+      "tables_removed": [
+        "dim_attribution_report",
+        "dim_kpi_dashboard",
+        "fact_warehouse",
+        "report"
+      ]
+    },
+    {
+      "task_id": "task_000080",
+      "driver_bucket": "unchanged_incomplete",
+      "step100": {
+        "reward_total": 0.0,
+        "complete": 0,
+        "has_answer": 0,
+        "correct_numeric": 0,
+        "process_score": 1.0,
+        "tables_hit": 1.0,
+        "fields_used": 1.0,
+        "task_fit": 1.0,
+        "n_turns": 26,
+        "n_sql": 13,
+        "n_cmds": 24,
+        "dup_cmd": 18,
+        "answer_len": 78,
+        "verdict": "incomplete",
+        "verdict_fine": "timeout",
+        "expected_tables": [
+          "fact_outlet"
+        ],
+        "must_use_fields": [
+          "outlet_code"
+        ],
+        "tables_queried": [
+          "analysis_task",
+          "dim_attribution_report",
+          "dim_kpi_dashboard",
+          "fact_outlet",
+          "fact_warehouse"
+        ]
+      },
+      "step200": {
+        "reward_total": 0.0,
+        "complete": 0,
+        "has_answer": 0,
+        "correct_numeric": 0,
+        "process_score": 1.0,
+        "tables_hit": 1.0,
+        "fields_used": 1.0,
+        "task_fit": 1.0,
+        "n_turns": 18,
+        "n_sql": 24,
+        "n_cmds": 39,
+        "dup_cmd": 34,
+        "answer_len": 319,
+        "verdict": "incomplete",
+        "verdict_fine": "timeout",
+        "expected_tables": [
+          "fact_outlet"
+        ],
+        "must_use_fields": [
+          "outlet_code"
+        ],
+        "tables_queried": [
+          "dim_attribution_report",
+          "fact_cost_record",
+          "fact_kpi_weekly",
+          "fact_outlet",
+          "fact_warehouse",
+          "fact_waybill_event",
+          "sqlite_master"
+        ]
+      },
+      "delta": {
+        "reward_total": 0.0,
+        "completion_contribution": 0.0,
+        "numeric_correctness_contribution": 0.0,
+        "process_quality_contribution": 0.0,
+        "scorer_rounding_residual": 0.0,
+        "process_score": 0.0,
+        "fields_used": 0.0,
+        "task_fit": 0.0,
+        "n_turns": -8,
+        "n_sql": 11,
+        "n_cmds": 15,
+        "dup_cmd": 16,
+        "answer_len": 241
+      },
+      "tables_added": [
+        "fact_cost_record",
+        "fact_kpi_weekly",
+        "fact_waybill_event",
+        "sqlite_master"
+      ],
+      "tables_removed": [
+        "analysis_task",
+        "dim_kpi_dashboard"
+      ]
+    },
+    {
+      "task_id": "task_000133",
+      "driver_bucket": "completion_churn",
+      "step100": {
+        "reward_total": 0.0,
+        "complete": 0,
+        "has_answer": 0,
+        "correct_numeric": 0,
+        "process_score": 0.625,
+        "tables_hit": 0.0,
+        "fields_used": 1.0,
+        "task_fit": 1.0,
+        "n_turns": 26,
+        "n_sql": 12,
+        "n_cmds": 24,
+        "dup_cmd": 16,
+        "answer_len": 1031,
+        "verdict": "incomplete",
+        "verdict_fine": "timeout",
+        "expected_tables": [
+          "fact_pickup",
+          "fact_waybill"
+        ],
+        "must_use_fields": [
+          "waybill_no"
+        ],
+        "tables_queried": [
+          "fact_delivery",
+          "fact_pickup",
+          "fact_sorting",
+          "fact_waybill_event"
+        ]
+      },
+      "step200": {
+        "reward_total": 0.375,
+        "complete": 1,
+        "has_answer": 1,
+        "correct_numeric": 0,
+        "process_score": 0.25,
+        "tables_hit": 0.0,
+        "fields_used": 0.0,
+        "task_fit": 1.0,
+        "n_turns": 20,
+        "n_sql": 13,
+        "n_cmds": 18,
+        "dup_cmd": 13,
+        "answer_len": 82385,
+        "verdict": "incorrect",
+        "verdict_fine": "result_wrong_process_mismatch",
+        "expected_tables": [
+          "fact_pickup",
+          "fact_waybill"
+        ],
+        "must_use_fields": [
+          "waybill_no"
+        ],
+        "tables_queried": [
+          "fact_pickup",
+          "fact_waybill_event",
+          "sqlite_master"
+        ]
+      },
+      "delta": {
+        "reward_total": 0.375,
+        "completion_contribution": 0.375,
+        "numeric_correctness_contribution": 0.0,
+        "process_quality_contribution": 0.0,
+        "scorer_rounding_residual": 0.0,
+        "process_score": -0.375,
+        "fields_used": -1.0,
+        "task_fit": 0.0,
+        "n_turns": -6,
+        "n_sql": 1,
+        "n_cmds": -6,
+        "dup_cmd": -3,
+        "answer_len": 81354
+      },
+      "tables_added": [
+        "sqlite_master"
+      ],
+      "tables_removed": [
+        "fact_delivery",
+        "fact_sorting"
+      ]
+    },
+    {
+      "task_id": "task_000140",
+      "driver_bucket": "process_quality",
+      "step100": {
+        "reward_total": 0.75,
+        "complete": 1,
+        "has_answer": 1,
+        "correct_numeric": 0,
+        "process_score": 1.0,
+        "tables_hit": 1.0,
+        "fields_used": 1.0,
+        "task_fit": 1.0,
+        "n_turns": 21,
+        "n_sql": 4,
+        "n_cmds": 19,
+        "dup_cmd": 4,
+        "answer_len": 1758,
+        "verdict": "partial",
+        "verdict_fine": "result_wrong_process_ok",
+        "expected_tables": [
+          "dim_dws_energy_cost_analysis"
+        ],
+        "must_use_fields": [
+          "stat_date"
+        ],
+        "tables_queried": [
+          "dim_dws_energy_cost_analysis"
+        ]
+      },
+      "step200": {
+        "reward_total": 0.75,
+        "complete": 1,
+        "has_answer": 1,
+        "correct_numeric": 0,
+        "process_score": 1.0,
+        "tables_hit": 1.0,
+        "fields_used": 1.0,
+        "task_fit": 1.0,
+        "n_turns": 12,
+        "n_sql": 8,
+        "n_cmds": 15,
+        "dup_cmd": 8,
+        "answer_len": 2228,
+        "verdict": "partial",
+        "verdict_fine": "result_wrong_process_ok",
+        "expected_tables": [
+          "dim_dws_energy_cost_analysis"
+        ],
+        "must_use_fields": [
+          "stat_date"
+        ],
+        "tables_queried": [
+          "dim_dws_energy_cost_analysis"
+        ]
+      },
+      "delta": {
+        "reward_total": 0.0,
+        "completion_contribution": 0.0,
+        "numeric_correctness_contribution": 0.0,
+        "process_quality_contribution": 0.0,
+        "scorer_rounding_residual": 0.0,
+        "process_score": 0.0,
+        "fields_used": 0.0,
+        "task_fit": 0.0,
+        "n_turns": -9,
+        "n_sql": 4,
+        "n_cmds": -4,
+        "dup_cmd": 4,
+        "answer_len": 470
+      },
+      "tables_added": [],
+      "tables_removed": []
+    },
+    {
+      "task_id": "task_000150",
+      "driver_bucket": "completion_churn",
+      "step100": {
+        "reward_total": 0.0,
+        "complete": 0,
+        "has_answer": 0,
+        "correct_numeric": 0,
+        "process_score": 0.8749999999999999,
+        "tables_hit": 1.0,
+        "fields_used": 1.0,
+        "task_fit": 0.5,
+        "n_turns": 26,
+        "n_sql": 0,
+        "n_cmds": 21,
+        "dup_cmd": 10,
+        "answer_len": 135,
+        "verdict": "incomplete",
+        "verdict_fine": "timeout",
+        "expected_tables": [
+          "dim_dws_equipment_fault_analysis"
+        ],
+        "must_use_fields": [
+          "stat_date"
+        ],
+        "tables_queried": [
+          "dim_dws_equipment_fault_analysis",
+          "fact_equipment_fault_event",
+          "weekly_stats"
+        ]
+      },
+      "step200": {
+        "reward_total": 0.75,
+        "complete": 1,
+        "has_answer": 1,
+        "correct_numeric": 0,
+        "process_score": 1.0,
+        "tables_hit": 1.0,
+        "fields_used": 1.0,
+        "task_fit": 1.0,
+        "n_turns": 19,
+        "n_sql": 1,
+        "n_cmds": 17,
+        "dup_cmd": 11,
+        "answer_len": 2524,
+        "verdict": "partial",
+        "verdict_fine": "result_wrong_process_ok",
+        "expected_tables": [
+          "dim_dws_equipment_fault_analysis"
+        ],
+        "must_use_fields": [
+          "stat_date"
+        ],
+        "tables_queried": [
+          "dim_dws_equipment_fault_analysis",
+          "fact_equipment_fault_event",
+          "sqlite_master"
+        ]
+      },
+      "delta": {
+        "reward_total": 0.75,
+        "completion_contribution": 0.75,
+        "numeric_correctness_contribution": 0.0,
+        "process_quality_contribution": 0.0,
+        "scorer_rounding_residual": 0.0,
+        "process_score": 0.1250000000000001,
+        "fields_used": 0.0,
+        "task_fit": 0.5,
+        "n_turns": -7,
+        "n_sql": 1,
+        "n_cmds": -4,
+        "dup_cmd": 1,
+        "answer_len": 2389
+      },
+      "tables_added": [
+        "sqlite_master"
+      ],
+      "tables_removed": [
+        "weekly_stats"
+      ]
+    },
+    {
+      "task_id": "task_000161",
+      "driver_bucket": "process_quality",
+      "step100": {
+        "reward_total": 0.75,
+        "complete": 1,
+        "has_answer": 1,
+        "correct_numeric": 0,
+        "process_score": 1.0,
+        "tables_hit": 1.0,
+        "fields_used": 1.0,
+        "task_fit": 1.0,
+        "n_turns": 14,
+        "n_sql": 7,
+        "n_cmds": 12,
+        "dup_cmd": 7,
+        "answer_len": 736,
+        "verdict": "partial",
+        "verdict_fine": "result_wrong_process_ok",
+        "expected_tables": [
+          "dim_dws_equipment_fault_analysis"
+        ],
+        "must_use_fields": [
+          "stat_date"
+        ],
+        "tables_queried": [
+          "dim_dws_equipment_fault_analysis",
+          "fact_equipment_fault_event",
+          "sqlite_master"
+        ]
+      },
+      "step200": {
+        "reward_total": 0.75,
+        "complete": 1,
+        "has_answer": 1,
+        "correct_numeric": 0,
+        "process_score": 1.0,
+        "tables_hit": 1.0,
+        "fields_used": 1.0,
+        "task_fit": 1.0,
+        "n_turns": 14,
+        "n_sql": 6,
+        "n_cmds": 11,
+        "dup_cmd": 6,
+        "answer_len": 711,
+        "verdict": "partial",
+        "verdict_fine": "result_wrong_process_ok",
+        "expected_tables": [
+          "dim_dws_equipment_fault_analysis"
+        ],
+        "must_use_fields": [
+          "stat_date"
+        ],
+        "tables_queried": [
+          "dim_dws_equipment_fault_analysis",
+          "sqlite_master"
+        ]
+      },
+      "delta": {
+        "reward_total": 0.0,
+        "completion_contribution": 0.0,
+        "numeric_correctness_contribution": 0.0,
+        "process_quality_contribution": 0.0,
+        "scorer_rounding_residual": 0.0,
+        "process_score": 0.0,
+        "fields_used": 0.0,
+        "task_fit": 0.0,
+        "n_turns": 0,
+        "n_sql": -1,
+        "n_cmds": -1,
+        "dup_cmd": -1,
+        "answer_len": -25
+      },
+      "tables_added": [],
+      "tables_removed": [
+        "fact_equipment_fault_event"
+      ]
+    },
+    {
+      "task_id": "task_000192",
+      "driver_bucket": "process_quality",
+      "step100": {
+        "reward_total": 0.625,
+        "complete": 1,
+        "has_answer": 1,
+        "correct_numeric": 1,
+        "process_score": 0.25,
+        "tables_hit": 0.0,
+        "fields_used": 0.0,
+        "task_fit": 1.0,
+        "n_turns": 6,
+        "n_sql": 1,
+        "n_cmds": 4,
+        "dup_cmd": 0,
+        "answer_len": 1254,
+        "verdict": "partial",
+        "verdict_fine": "result_ok_process_mismatch",
+        "expected_tables": [
+          "fact_cost_record",
+          "fact_warehouse"
+        ],
+        "must_use_fields": [
+          "fact_refrigeration_equipment_id"
+        ],
+        "tables_queried": [
+          "fact_cost_record"
+        ]
+      },
+      "step200": {
+        "reward_total": 0.625,
+        "complete": 1,
+        "has_answer": 1,
+        "correct_numeric": 1,
+        "process_score": 0.25,
+        "tables_hit": 0.0,
+        "fields_used": 0.0,
+        "task_fit": 1.0,
+        "n_turns": 6,
+        "n_sql": 1,
+        "n_cmds": 4,
+        "dup_cmd": 0,
+        "answer_len": 1254,
+        "verdict": "partial",
+        "verdict_fine": "result_ok_process_mismatch",
+        "expected_tables": [
+          "fact_cost_record",
+          "fact_warehouse"
+        ],
+        "must_use_fields": [
+          "fact_refrigeration_equipment_id"
+        ],
+        "tables_queried": [
+          "fact_cost_record"
+        ]
+      },
+      "delta": {
+        "reward_total": 0.0,
+        "completion_contribution": 0.0,
+        "numeric_correctness_contribution": 0.0,
+        "process_quality_contribution": 0.0,
+        "scorer_rounding_residual": 0.0,
+        "process_score": 0.0,
+        "fields_used": 0.0,
+        "task_fit": 0.0,
+        "n_turns": 0,
+        "n_sql": 0,
+        "n_cmds": 0,
+        "dup_cmd": 0,
+        "answer_len": 0
+      },
+      "tables_added": [],
+      "tables_removed": []
+    },
+    {
+      "task_id": "task_000196",
+      "driver_bucket": "unchanged_incomplete",
+      "step100": {
+        "reward_total": 0.0,
+        "complete": 0,
+        "has_answer": 0,
+        "correct_numeric": 0,
+        "process_score": 0.625,
+        "tables_hit": 1.0,
+        "fields_used": 0.0,
+        "task_fit": 1.0,
+        "n_turns": 26,
+        "n_sql": 36,
+        "n_cmds": 48,
+        "dup_cmd": 43,
+        "answer_len": 599,
+        "verdict": "incomplete",
+        "verdict_fine": "timeout",
+        "expected_tables": [
+          "fact_route"
+        ],
+        "must_use_fields": [
+          "fact_warehouse_id"
+        ],
+        "tables_queried": [
+          "dim_carrier",
+          "dim_dws_timeliness_analysis",
+          "dim_reporting_line",
+          "dim_vehicle",
+          "fact_cold_chain_consignment",
+          "fact_route",
+          "kpi_indicator",
+          "sqlite_master"
+        ]
+      },
+      "step200": {
+        "reward_total": 0.0,
+        "complete": 0,
+        "has_answer": 0,
+        "correct_numeric": 0,
+        "process_score": 0.625,
+        "tables_hit": 1.0,
+        "fields_used": 0.0,
+        "task_fit": 1.0,
+        "n_turns": 26,
+        "n_sql": 26,
+        "n_cmds": 39,
+        "dup_cmd": 31,
+        "answer_len": 212,
+        "verdict": "incomplete",
+        "verdict_fine": "timeout",
+        "expected_tables": [
+          "fact_route"
+        ],
+        "must_use_fields": [
+          "fact_warehouse_id"
+        ],
+        "tables_queried": [
+          "dim_carrier",
+          "dim_reporting_line",
+          "dim_vehicle",
+          "fact_cold_chain_consignment",
+          "fact_route",
+          "kpi_indicator",
+          "sqlite_master"
+        ]
+      },
+      "delta": {
+        "reward_total": 0.0,
+        "completion_contribution": 0.0,
+        "numeric_correctness_contribution": 0.0,
+        "process_quality_contribution": 0.0,
+        "scorer_rounding_residual": 0.0,
+        "process_score": 0.0,
+        "fields_used": 0.0,
+        "task_fit": 0.0,
+        "n_turns": 0,
+        "n_sql": -10,
+        "n_cmds": -9,
+        "dup_cmd": -12,
+        "answer_len": -387
+      },
+      "tables_added": [],
+      "tables_removed": [
+        "dim_dws_timeliness_analysis"
+      ]
+    },
+    {
+      "task_id": "task_000238",
+      "driver_bucket": "process_quality",
+      "step100": {
+        "reward_total": 0.6875,
+        "complete": 1,
+        "has_answer": 1,
+        "correct_numeric": 0,
+        "process_score": 0.8749999999999999,
+        "tables_hit": 1.0,
+        "fields_used": 1.0,
+        "task_fit": 0.5,
+        "n_turns": 13,
+        "n_sql": 0,
+        "n_cmds": 36,
+        "dup_cmd": 31,
+        "answer_len": 713,
+        "verdict": "partial",
+        "verdict_fine": "result_wrong_process_ok",
+        "expected_tables": [
+          "fact_cost_record"
+        ],
+        "must_use_fields": [
+          "cost_id"
+        ],
+        "tables_queried": [
+          "dim_carrier",
+          "dim_cost_analysis",
+          "dim_dws_energy_cost_analysis",
+          "fact_cost_record",
+          "fact_dws_cost_summary",
+          "fact_warehouse"
+        ]
+      },
+      "step200": {
+        "reward_total": 0.5,
+        "complete": 1,
+        "has_answer": 1,
+        "correct_numeric": 0,
+        "process_score": 0.5,
+        "tables_hit": 1.0,
+        "fields_used": 0.0,
+        "task_fit": 0.5,
+        "n_turns": 13,
+        "n_sql": 0,
+        "n_cmds": 36,
+        "dup_cmd": 31,
+        "answer_len": 752,
+        "verdict": "partial",
+        "verdict_fine": "result_wrong_process_ok",
+        "expected_tables": [
+          "fact_cost_record"
+        ],
+        "must_use_fields": [
+          "cost_id"
+        ],
+        "tables_queried": [
+          "dim_dws_energy_cost_analysis",
+          "fact_cost_record",
+          "fact_dws_cost_summary",
+          "fact_warehouse"
+        ]
+      },
+      "delta": {
+        "reward_total": -0.1875,
+        "completion_contribution": 0.0,
+        "numeric_correctness_contribution": 0.0,
+        "process_quality_contribution": -0.18749999999999994,
+        "scorer_rounding_residual": -5.551115123125783e-17,
+        "process_score": -0.3749999999999999,
+        "fields_used": -1.0,
+        "task_fit": 0.0,
+        "n_turns": 0,
+        "n_sql": 0,
+        "n_cmds": 0,
+        "dup_cmd": 0,
+        "answer_len": 39
+      },
+      "tables_added": [],
+      "tables_removed": [
+        "dim_carrier",
+        "dim_cost_analysis"
+      ]
+    },
+    {
+      "task_id": "task_000269",
+      "driver_bucket": "completion_churn",
+      "step100": {
+        "reward_total": 0.5625,
+        "complete": 1,
+        "has_answer": 1,
+        "correct_numeric": 0,
+        "process_score": 0.625,
+        "tables_hit": 1.0,
+        "fields_used": 0.0,
+        "task_fit": 1.0,
+        "n_turns": 12,
+        "n_sql": 12,
+        "n_cmds": 17,
+        "dup_cmd": 13,
+        "answer_len": 64805,
+        "verdict": "partial",
+        "verdict_fine": "result_wrong_process_ok",
+        "expected_tables": [
+          "fact_temperature_record"
+        ],
+        "must_use_fields": [
+          "fact_refrigeration_equipment_id"
+        ],
+        "tables_queried": [
+          "dim_dws_temperature_compliance_analysis",
+          "fact_cold_chain_consignment",
+          "fact_temperature_record",
+          "sqlite_master"
+        ]
+      },
+      "step200": {
+        "reward_total": 0.0,
+        "complete": 0,
+        "has_answer": 0,
+        "correct_numeric": 0,
+        "process_score": 0.625,
+        "tables_hit": 1.0,
+        "fields_used": 0.0,
+        "task_fit": 1.0,
+        "n_turns": 26,
+        "n_sql": 34,
+        "n_cmds": 42,
+        "dup_cmd": 37,
+        "answer_len": 1827,
+        "verdict": "incomplete",
+        "verdict_fine": "timeout",
+        "expected_tables": [
+          "fact_temperature_record"
+        ],
+        "must_use_fields": [
+          "fact_refrigeration_equipment_id"
+        ],
+        "tables_queried": [
+          "dim_dws_temperature_compliance_analysis",
+          "fact_cold_chain_consignment",
+          "fact_temperature_record"
+        ]
+      },
+      "delta": {
+        "reward_total": -0.5625,
+        "completion_contribution": -0.5625,
+        "numeric_correctness_contribution": 0.0,
+        "process_quality_contribution": 0.0,
+        "scorer_rounding_residual": 0.0,
+        "process_score": 0.0,
+        "fields_used": 0.0,
+        "task_fit": 0.0,
+        "n_turns": 14,
+        "n_sql": 22,
+        "n_cmds": 25,
+        "dup_cmd": 24,
+        "answer_len": -62978
+      },
+      "tables_added": [],
+      "tables_removed": [
+        "sqlite_master"
+      ]
+    },
+    {
+      "task_id": "task_000270",
+      "driver_bucket": "numeric_correctness",
+      "step100": {
+        "reward_total": 1.0,
+        "complete": 1,
+        "has_answer": 1,
+        "correct_numeric": 1,
+        "process_score": 1.0,
+        "tables_hit": 1.0,
+        "fields_used": 1.0,
+        "task_fit": 1.0,
+        "n_turns": 16,
+        "n_sql": 8,
+        "n_cmds": 44,
+        "dup_cmd": 37,
+        "answer_len": 3306,
+        "verdict": "correct",
+        "verdict_fine": "result_ok_process_ok",
+        "expected_tables": [
+          "fact_transit"
+        ],
+        "must_use_fields": [
+          "transit_id",
+          "waybill_no"
+        ],
+        "tables_queried": [
+          "dim_carrier",
+          "dim_vehicle",
+          "fact_route",
+          "fact_transit"
+        ]
+      },
+      "step200": {
+        "reward_total": 0.75,
+        "complete": 1,
+        "has_answer": 1,
+        "correct_numeric": 0,
+        "process_score": 1.0,
+        "tables_hit": 1.0,
+        "fields_used": 1.0,
+        "task_fit": 1.0,
+        "n_turns": 7,
+        "n_sql": 9,
+        "n_cmds": 16,
+        "dup_cmd": 11,
+        "answer_len": 3696,
+        "verdict": "partial",
+        "verdict_fine": "result_wrong_process_ok",
+        "expected_tables": [
+          "fact_transit"
+        ],
+        "must_use_fields": [
+          "transit_id",
+          "waybill_no"
+        ],
+        "tables_queried": [
+          "fact_transit"
+        ]
+      },
+      "delta": {
+        "reward_total": -0.25,
+        "completion_contribution": 0.0,
+        "numeric_correctness_contribution": -0.25,
+        "process_quality_contribution": 0.0,
+        "scorer_rounding_residual": 0.0,
+        "process_score": 0.0,
+        "fields_used": 0.0,
+        "task_fit": 0.0,
+        "n_turns": -9,
+        "n_sql": 1,
+        "n_cmds": -28,
+        "dup_cmd": -26,
+        "answer_len": 390
+      },
+      "tables_added": [],
+      "tables_removed": [
+        "dim_carrier",
+        "dim_vehicle",
+        "fact_route"
+      ]
+    },
+    {
+      "task_id": "task_000278",
+      "driver_bucket": "process_quality",
+      "step100": {
+        "reward_total": 0.4688,
+        "complete": 1,
+        "has_answer": 1,
+        "correct_numeric": 0,
+        "process_score": 0.43749999999999994,
+        "tables_hit": 0.0,
+        "fields_used": 0.5,
+        "task_fit": 1.0,
+        "n_turns": 18,
+        "n_sql": 19,
+        "n_cmds": 31,
+        "dup_cmd": 25,
+        "answer_len": 3916,
+        "verdict": "incorrect",
+        "verdict_fine": "result_wrong_process_mismatch",
+        "expected_tables": [
+          "fact_pod",
+          "fact_waybill"
+        ],
+        "must_use_fields": [
+          "pod_id",
+          "waybill_no"
+        ],
+        "tables_queried": [
+          "fact_delivery",
+          "fact_pickup",
+          "fact_pod",
+          "fact_sorting",
+          "fact_transit",
+          "fact_waybill_event"
+        ]
+      },
+      "step200": {
+        "reward_total": 0.6562,
+        "complete": 1,
+        "has_answer": 1,
+        "correct_numeric": 0,
+        "process_score": 0.8124999999999999,
+        "tables_hit": 1.0,
+        "fields_used": 0.5,
+        "task_fit": 1.0,
+        "n_turns": 17,
+        "n_sql": 20,
+        "n_cmds": 26,
+        "dup_cmd": 20,
+        "answer_len": 2456,
+        "verdict": "partial",
+        "verdict_fine": "result_wrong_process_ok",
+        "expected_tables": [
+          "fact_pod",
+          "fact_waybill"
+        ],
+        "must_use_fields": [
+          "pod_id",
+          "waybill_no"
+        ],
+        "tables_queried": [
+          "fact_pod",
+          "fact_waybill",
+          "fact_waybill_event"
+        ]
+      },
+      "delta": {
+        "reward_total": 0.1874,
+        "completion_contribution": 0.0,
+        "numeric_correctness_contribution": 0.0,
+        "process_quality_contribution": 0.18749999999999997,
+        "scorer_rounding_residual": -9.999999999996123e-05,
+        "process_score": 0.37499999999999994,
+        "fields_used": 0.0,
+        "task_fit": 0.0,
+        "n_turns": -1,
+        "n_sql": 1,
+        "n_cmds": -5,
+        "dup_cmd": -5,
+        "answer_len": -1460
+      },
+      "tables_added": [
+        "fact_waybill"
+      ],
+      "tables_removed": [
+        "fact_delivery",
+        "fact_pickup",
+        "fact_sorting",
+        "fact_transit"
+      ]
+    },
+    {
+      "task_id": "task_000286",
+      "driver_bucket": "completion_churn",
+      "step100": {
+        "reward_total": 0.6562,
+        "complete": 1,
+        "has_answer": 1,
+        "correct_numeric": 0,
+        "process_score": 0.8124999999999999,
+        "tables_hit": 1.0,
+        "fields_used": 0.5,
+        "task_fit": 1.0,
+        "n_turns": 15,
+        "n_sql": 12,
+        "n_cmds": 17,
+        "dup_cmd": 12,
+        "answer_len": 1000,
+        "verdict": "partial",
+        "verdict_fine": "result_wrong_process_ok",
+        "expected_tables": [
+          "fact_temperature_record"
+        ],
+        "must_use_fields": [
+          "fact_warehouse_id",
+          "record_id"
+        ],
+        "tables_queried": [
+          "fact_temperature_record",
+          "fact_warehouse"
+        ]
+      },
+      "step200": {
+        "reward_total": 0.0,
+        "complete": 0,
+        "has_answer": 0,
+        "correct_numeric": 0,
+        "process_score": 0.8124999999999999,
+        "tables_hit": 1.0,
+        "fields_used": 0.5,
+        "task_fit": 1.0,
+        "n_turns": 26,
+        "n_sql": 13,
+        "n_cmds": 23,
+        "dup_cmd": 17,
+        "answer_len": 86,
+        "verdict": "incomplete",
+        "verdict_fine": "timeout",
+        "expected_tables": [
+          "fact_temperature_record"
+        ],
+        "must_use_fields": [
+          "fact_warehouse_id",
+          "record_id"
+        ],
+        "tables_queried": [
+          "dim_carrier",
+          "dim_department",
+          "fact_route",
+          "fact_temperature_record",
+          "fact_warehouse",
+          "sqlite_master"
+        ]
+      },
+      "delta": {
+        "reward_total": -0.6562,
+        "completion_contribution": -0.6562,
+        "numeric_correctness_contribution": 0.0,
+        "process_quality_contribution": 0.0,
+        "scorer_rounding_residual": 0.0,
+        "process_score": 0.0,
+        "fields_used": 0.0,
+        "task_fit": 0.0,
+        "n_turns": 11,
+        "n_sql": 1,
+        "n_cmds": 6,
+        "dup_cmd": 5,
+        "answer_len": -914
+      },
+      "tables_added": [
+        "dim_carrier",
+        "dim_department",
+        "fact_route",
+        "sqlite_master"
+      ],
+      "tables_removed": []
+    },
+    {
+      "task_id": "task_000290",
+      "driver_bucket": "process_quality",
+      "step100": {
+        "reward_total": 0.375,
+        "complete": 1,
+        "has_answer": 1,
+        "correct_numeric": 0,
+        "process_score": 0.25,
+        "tables_hit": 0.0,
+        "fields_used": 0.0,
+        "task_fit": 1.0,
+        "n_turns": 10,
+        "n_sql": 4,
+        "n_cmds": 9,
+        "dup_cmd": 3,
+        "answer_len": 1900,
+        "verdict": "incorrect",
+        "verdict_fine": "result_wrong_process_mismatch",
+        "expected_tables": [
+          "dim_cost_analysis"
+        ],
+        "must_use_fields": [
+          "report_id"
+        ],
+        "tables_queried": [
+          "dim_dws_energy_cost_analysis"
+        ]
+      },
+      "step200": {
+        "reward_total": 0.375,
+        "complete": 1,
+        "has_answer": 1,
+        "correct_numeric": 0,
+        "process_score": 0.25,
+        "tables_hit": 0.0,
+        "fields_used": 0.0,
+        "task_fit": 1.0,
+        "n_turns": 22,
+        "n_sql": 10,
+        "n_cmds": 20,
+        "dup_cmd": 9,
+        "answer_len": 790,
+        "verdict": "incorrect",
+        "verdict_fine": "result_wrong_process_mismatch",
+        "expected_tables": [
+          "dim_cost_analysis"
+        ],
+        "must_use_fields": [
+          "report_id"
+        ],
+        "tables_queried": [
+          "dim_dws_energy_cost_analysis",
+          "fact_cost_record",
+          "ranked"
+        ]
+      },
+      "delta": {
+        "reward_total": 0.0,
+        "completion_contribution": 0.0,
+        "numeric_correctness_contribution": 0.0,
+        "process_quality_contribution": 0.0,
+        "scorer_rounding_residual": 0.0,
+        "process_score": 0.0,
+        "fields_used": 0.0,
+        "task_fit": 0.0,
+        "n_turns": 12,
+        "n_sql": 6,
+        "n_cmds": 11,
+        "dup_cmd": 6,
+        "answer_len": -1110
+      },
+      "tables_added": [
+        "fact_cost_record",
+        "ranked"
+      ],
+      "tables_removed": []
+    },
+    {
+      "task_id": "task_000504",
+      "driver_bucket": "unchanged_incomplete",
+      "step100": {
+        "reward_total": 0.0,
+        "complete": 0,
+        "has_answer": 0,
+        "correct_numeric": 0,
+        "process_score": 0.8,
+        "tables_hit": 1.0,
+        "fields_used": null,
+        "task_fit": 0.5,
+        "n_turns": 8,
+        "n_sql": 0,
+        "n_cmds": 25,
+        "dup_cmd": 20,
+        "answer_len": 206,
+        "verdict": "incomplete",
+        "verdict_fine": "timeout",
+        "expected_tables": [
+          "dim_carrier",
+          "fact_dws_timeliness_analysis"
+        ],
+        "must_use_fields": [],
+        "tables_queried": [
+          "dim_carrier",
+          "dim_dws_timeliness_analysis",
+          "fact_cold_chain_consignment",
+          "fact_dws_timeliness_analysis"
+        ]
+      },
+      "step200": {
+        "reward_total": 0.0,
+        "complete": 0,
+        "has_answer": 0,
+        "correct_numeric": 0,
+        "process_score": 0.8,
+        "tables_hit": 1.0,
+        "fields_used": null,
+        "task_fit": 0.5,
+        "n_turns": 9,
+        "n_sql": 0,
+        "n_cmds": 29,
+        "dup_cmd": 24,
+        "answer_len": 372,
+        "verdict": "incomplete",
+        "verdict_fine": "timeout",
+        "expected_tables": [
+          "dim_carrier",
+          "fact_dws_timeliness_analysis"
+        ],
+        "must_use_fields": [],
+        "tables_queried": [
+          "dim_carrier",
+          "fact_cold_chain_consignment",
+          "fact_dws_timeliness_analysis"
+        ]
+      },
+      "delta": {
+        "reward_total": 0.0,
+        "completion_contribution": 0.0,
+        "numeric_correctness_contribution": 0.0,
+        "process_quality_contribution": 0.0,
+        "scorer_rounding_residual": 0.0,
+        "process_score": 0.0,
+        "fields_used": null,
+        "task_fit": 0.0,
+        "n_turns": 1,
+        "n_sql": 0,
+        "n_cmds": 4,
+        "dup_cmd": 4,
+        "answer_len": 166
+      },
+      "tables_added": [],
+      "tables_removed": [
+        "dim_dws_timeliness_analysis"
+      ]
+    }
+  ]
+}
