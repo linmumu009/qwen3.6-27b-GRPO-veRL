@@ -601,6 +601,7 @@ def compute_score(
     solution_str: str,
     ground_truth: dict[str, Any],
     extra_info: dict[str, Any],
+    _dense_weight_override: float | None = None,
     **_: Any,
 ) -> dict[str, Any]:
     """Return the boss-primary online reward and strict guardrail metrics.
@@ -704,10 +705,13 @@ def compute_score(
     )
     eligible = bool(safe and valid_protocol and gold_sql_verified)
     base_score = 0.7 * boss["reward"] + 0.3 * evidence_reward
-    try:
-        dense_weight = float(os.environ.get("PI_DENSE_CORRECTNESS_WEIGHT", "0"))
-    except ValueError as exc:
-        raise ValueError("PI_DENSE_CORRECTNESS_WEIGHT must be numeric") from exc
+    if _dense_weight_override is None:
+        try:
+            dense_weight = float(os.environ.get("PI_DENSE_CORRECTNESS_WEIGHT", "0"))
+        except ValueError as exc:
+            raise ValueError("PI_DENSE_CORRECTNESS_WEIGHT must be numeric") from exc
+    else:
+        dense_weight = float(_dense_weight_override)
     if not 0.0 <= dense_weight <= 1.0:
         raise ValueError("PI_DENSE_CORRECTNESS_WEIGHT must be in [0, 1]")
     blended_score = (1.0 - dense_weight) * base_score + dense_weight * dense_correctness
@@ -758,3 +762,21 @@ def compute_score(
         "online_eligible": float(eligible),
         "verifier_error": verifier_error,
     }
+
+
+def compute_score_dense30(
+    data_source: str,
+    solution_str: str,
+    ground_truth: dict[str, Any],
+    extra_info: dict[str, Any],
+    **kwargs: Any,
+) -> dict[str, Any]:
+    """Pinned 30% dense-correctness entry point for the Step100→120 trial."""
+    return compute_score(
+        data_source,
+        solution_str,
+        ground_truth,
+        extra_info,
+        _dense_weight_override=0.30,
+        **kwargs,
+    )

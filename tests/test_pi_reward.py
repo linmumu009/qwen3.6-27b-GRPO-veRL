@@ -5,6 +5,7 @@ from llin_verl.pi_reward import (
     boss_numbers_match,
     boss_reward_components,
     compute_score,
+    compute_score_dense30,
     contains_expected_number,
     dense_final_answer_correctness,
     extract_final_assistant_answer,
@@ -311,3 +312,18 @@ def test_dense_reward_weight_is_opt_in_and_preserves_safety_gate(tmp_path, monke
     assert dense["dense_correctness_weight"] == 0.3
     assert dense["score"] != dense["base_score"]
     assert unsafe["score"] == 0.0
+
+
+def test_dense30_entry_point_does_not_depend_on_worker_environment(tmp_path, monkeypatch):
+    make_database(tmp_path)
+    monkeypatch.setenv("PI_AGENT_SANDBOX_LOWER", str(tmp_path))
+    monkeypatch.setenv("PI_DENSE_CORRECTNESS_WEIGHT", "0")
+
+    result = compute_score_dense30(
+        "llin_pi_dwh_v2",
+        "查询与复核已经完成，但最终错误地报告合计结果为 600。",
+        truth(),
+        evidence(),
+    )
+
+    assert result["dense_correctness_weight"] == 0.3

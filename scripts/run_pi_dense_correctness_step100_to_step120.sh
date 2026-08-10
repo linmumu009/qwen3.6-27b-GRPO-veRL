@@ -12,4 +12,6 @@ FINAL_POLICY_STEP=120 \
 PI_DENSE_CORRECTNESS_WEIGHT=0.30 \
 RUN_NAME="${RUN_NAME}" \
 OUTPUT_DIR="${OUTPUT_DIR}" \
-bash "${PROJECT_ROOT}/scripts/run_pi_formal_step100_to_step200_12groups.sh" "$@"
+bash "${PROJECT_ROOT}/scripts/run_pi_formal_step100_to_step200_12groups.sh" \
+  reward.custom_reward_function.name=compute_score_dense30 \
+  "$@"

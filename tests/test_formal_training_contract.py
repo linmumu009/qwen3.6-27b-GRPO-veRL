@@ -165,6 +165,7 @@ def test_dense_correctness_trial_is_twenty_updates_from_step100_with_same_topolo
 
     assert "FINAL_POLICY_STEP=120" in run_script
     assert "PI_DENSE_CORRECTNESS_WEIGHT=0.30" in run_script
+    assert "reward.custom_reward_function.name=compute_score_dense30" in run_script
     assert "run_pi_formal_step100_to_step200_12groups.sh" in run_script
     assert 'if [[ "${latest_iteration}" != "120" ]]' in launcher
     assert "expected_global_step_120_got_%s" in launcher
