@@ -2,9 +2,11 @@ import sqlite3
 from pathlib import Path
 
 from llin_verl.pi_reward import (
+    banded_reward_score,
     boss_numbers_match,
     boss_reward_components,
     compute_score,
+    compute_score_banded_v1,
     compute_score_dense30,
     contains_expected_number,
     dense_final_answer_correctness,
@@ -327,3 +329,61 @@ def test_dense30_entry_point_does_not_depend_on_worker_environment(tmp_path, mon
     )
 
     assert result["dense_correctness_weight"] == 0.3
+
+
+def test_banded_reward_has_non_overlapping_correctness_ranges():
+    wrong_process_perfect = banded_reward_score(
+        eligible=True,
+        has_final_answer=True,
+        final_answer_correct=False,
+        sql_evidence_correct=False,
+        process_quality=1.0,
+    )
+    wrong_final_but_sql_correct = banded_reward_score(
+        eligible=True,
+        has_final_answer=True,
+        final_answer_correct=False,
+        sql_evidence_correct=True,
+        process_quality=1.0,
+    )
+    correct_without_sql = banded_reward_score(
+        eligible=True,
+        has_final_answer=True,
+        final_answer_correct=True,
+        sql_evidence_correct=False,
+        process_quality=0.0,
+    )
+    strict_correct = banded_reward_score(
+        eligible=True,
+        has_final_answer=True,
+        final_answer_correct=True,
+        sql_evidence_correct=True,
+        process_quality=0.0,
+    )
+
+    assert wrong_process_perfect == 0.3
+    assert wrong_final_but_sql_correct == 0.5
+    assert correct_without_sql == 0.65
+    assert strict_correct == 0.8
+    assert banded_reward_score(
+        eligible=False,
+        has_final_answer=True,
+        final_answer_correct=True,
+        sql_evidence_correct=True,
+        process_quality=1.0,
+    ) == 0.0
+
+
+def test_banded_entry_point_is_pinned_and_preserves_hard_gate(tmp_path, monkeypatch):
+    make_database(tmp_path)
+    monkeypatch.setenv("PI_AGENT_SANDBOX_LOWER", str(tmp_path))
+    monkeypatch.setenv("PI_REWARD_MODE", "blend")
+    result = compute_score_banded_v1(
+        "llin_pi_dwh_v2",
+        "查询与复核已经完成，最终确认的合计结果为 621.62。",
+        truth(),
+        evidence(),
+    )
+
+    assert result["banded_reward_enabled"] == 1.0
+    assert result["score"] >= 0.8

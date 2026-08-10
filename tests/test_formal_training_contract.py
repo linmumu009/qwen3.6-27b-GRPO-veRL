@@ -69,6 +69,58 @@ def test_formal_launcher_records_lifecycle_and_exit_code():
     assert 'exit_code=8' in script
 
 
+def test_fully_async_runner_supports_dynamic_group_shape_without_selection():
+    script = (
+        ROOT / "scripts" / "run_pi_grpo_fully_async_tp4_pp2_cp2.sh"
+    ).read_text(encoding="utf-8")
+
+    assert 'RESPONSES_PER_GROUP="${RESPONSES_PER_GROUP:-4}"' in script
+    assert 'actor_rollout_ref.rollout.n="${RESPONSES_PER_GROUP}"' in script
+    assert 'rollout.n="${RESPONSES_PER_GROUP}"' in script
+    assert 'FASTEST_K != RESPONSES_PER_GROUP' in script
+    assert 'CONCURRENT_SAMPLES_PER_REPLICA="${CONCURRENT_SAMPLES_PER_REPLICA:-16}"' in script
+
+
+def test_banded_2x8_resume_contract_and_final_only_checkpoint():
+    run_script = (ROOT / "scripts" / "run_pi_banded_2x8_resume.sh").read_text(
+        encoding="utf-8"
+    )
+    launcher = (ROOT / "scripts" / "launch_pi_banded_2x8_resume.sh").read_text(
+        encoding="utf-8"
+    )
+
+    expected = (
+        "GROUPS_PER_STEP=2",
+        "RESPONSES_PER_GROUP=8",
+        'FASTEST_K="${RESPONSES_PER_GROUP}"',
+        'OVERSAMPLE_CANDIDATES="${RESPONSES_PER_GROUP}"',
+        "CONCURRENT_SAMPLES_PER_REPLICA=6",
+        "reward.custom_reward_function.name=compute_score_banded_v1",
+        'trainer.test_freq="${FINAL_POLICY_STEP}"',
+        'trainer.save_freq="${FINAL_POLICY_STEP}"',
+        "[model,optimizer,extra]",
+    )
+    for item in expected:
+        assert item in run_script
+    assert "expected_global_step_%s_got_%s" in launcher
+    assert "verify_checkpoint_integrity.py" in launcher
+
+
+def test_unattended_pipeline_is_fail_closed_between_stages():
+    script = (
+        ROOT / "scripts" / "run_unattended_accuracy_pipeline_host.sh"
+    ).read_text(encoding="utf-8")
+
+    assert "set -Eeuo pipefail" in script
+    assert "flock -n" in script
+    assert "replay_banded_reward_gate.py" in script
+    assert "analyze_accuracy_gate.py" in script
+    assert "NEW_TRAINING_STEPS=5" in script
+    assert "NEW_TRAINING_STEPS=20" in script
+    assert "CHECKPOINT_INVALID" not in script
+    assert "ray stop --force" in script
+
+
 def test_formal_100step_uses_twelve_inflight_groups_and_final_only_artifacts():
     script = (
         ROOT / "scripts" / "run_pi_formal_100step_12groups.sh"

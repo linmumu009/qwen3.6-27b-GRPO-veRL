@@ -602,6 +602,7 @@ def compute_score(
     ground_truth: dict[str, Any],
     extra_info: dict[str, Any],
     _dense_weight_override: float | None = None,
+    _banded_reward_override: bool | None = None,
     **_: Any,
 ) -> dict[str, Any]:
     """Return the boss-primary online reward and strict guardrail metrics.
@@ -715,7 +716,21 @@ def compute_score(
     if not 0.0 <= dense_weight <= 1.0:
         raise ValueError("PI_DENSE_CORRECTNESS_WEIGHT must be in [0, 1]")
     blended_score = (1.0 - dense_weight) * base_score + dense_weight * dense_correctness
-    score = blended_score if eligible else 0.0
+    if _banded_reward_override is None:
+        banded_reward_enabled = os.environ.get("PI_REWARD_MODE", "blend") == "banded_v1"
+    else:
+        banded_reward_enabled = bool(_banded_reward_override)
+    score = (
+        banded_reward_score(
+            eligible=eligible,
+            has_final_answer=has_final,
+            final_answer_correct=bool(answer_ok),
+            sql_evidence_correct=bool(sql_evidence),
+            process_quality=base_score,
+        )
+        if banded_reward_enabled
+        else (blended_score if eligible else 0.0)
+    )
     strict_correct = bool(
         answer_ok
         and sql_evidence
@@ -730,6 +745,7 @@ def compute_score(
         "base_score": round(base_score if eligible else 0.0, 6),
         "dense_final_answer_correctness": dense_correctness,
         "dense_correctness_weight": dense_weight,
+        "banded_reward_enabled": float(banded_reward_enabled),
         "acc": float(strict_correct),
         "boss_reward": boss["reward"],
         "boss_result_score": boss["result_score"],
@@ -778,5 +794,51 @@ def compute_score_dense30(
         ground_truth,
         extra_info,
         _dense_weight_override=0.30,
+        **kwargs,
+    )
+
+
+def banded_reward_score(
+    *,
+    eligible: bool,
+    has_final_answer: bool,
+    final_answer_correct: bool,
+    sql_evidence_correct: bool,
+    process_quality: float,
+) -> float:
+    """Return a lexicographic reward whose correctness bands never overlap.
+
+    Safety, protocol, and executable-gold eligibility remain hard gates.  A
+    process-complete wrong answer cannot outrank any eligible correct answer,
+    while correct SQL with a wrong final synthesis remains useful intermediate
+    evidence.  ``process_quality`` only orders trajectories inside each band.
+    """
+    if not eligible or not has_final_answer:
+        return 0.0
+    quality = min(1.0, max(0.0, float(process_quality)))
+    if final_answer_correct and sql_evidence_correct:
+        return round(0.80 + 0.20 * quality, 6)
+    if final_answer_correct:
+        return round(0.65 + 0.10 * quality, 6)
+    if sql_evidence_correct:
+        return round(0.40 + 0.10 * quality, 6)
+    return round(0.10 + 0.20 * quality, 6)
+
+
+def compute_score_banded_v1(
+    data_source: str,
+    solution_str: str,
+    ground_truth: dict[str, Any],
+    extra_info: dict[str, Any],
+    **kwargs: Any,
+) -> dict[str, Any]:
+    """Pinned non-overlapping correctness-band entry point for canary runs."""
+    return compute_score(
+        data_source,
+        solution_str,
+        ground_truth,
+        extra_info,
+        _dense_weight_override=0.0,
+        _banded_reward_override=True,
         **kwargs,
     )

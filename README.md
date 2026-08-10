@@ -107,6 +107,8 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/run_pi_formal_100step_12groups.sh`、`scripts/launch_pi_formal_100step_12groups.sh`：固定 `4 groups/update × 4 responses`、12 个在途 groups、100 步、仅第 100 步验证与保存；同样只接受 full、已审核、哈希完整的 boss-aligned train/val。
 - `scripts/prepare_pi_step100_resume_view.sh`、`scripts/run_pi_formal_step100_to_step200_12groups.sh`、`scripts/launch_pi_formal_step100_to_step200_12groups.sh`：从现有 step-100 完整模型/RNG 恢复到累计 step-200，保持 12-group 正式配置，新增恰好 100 次更新；因原 checkpoint 未保存 Adam 状态而显式重置 optimizer，并因 train237 修正为 train236 而丢弃旧 dataloader 游标。
 - `scripts/replay_dense_correctness_gate.py`、`scripts/run_pi_dense_correctness_step100_to_step120.sh`、`scripts/launch_pi_dense_correctness_step100_to_step120.sh`：在前后200步的3,200条轨迹上审计连续正确性组内排序，并从Step 100执行20步、30%候选奖励、仅末步验证/保存的隔离试验。
+- `scripts/run_unattended_accuracy_pipeline_host.sh`：从Step 120自动执行12题三条件oracle诊断、3,200条分层奖励回放、`2 groups × 8 responses`五步金丝雀，并且只在老板准确率、mixed-correct、完成率、过程分与checkpoint门禁全部通过时续跑20步；失败即停止并释放Ray资源。
+- `scripts/run_pi_banded_2x8_resume.sh`、`llin_verl/pi_reward.py::compute_score_banded_v1`：把无答案、错误答案、SQL正确但综合错误、最终答案正确划入不重叠奖励区间；8条同prompt候选全部用于GRPO，不做最快样本选择。
 - `scripts/launch_v15_dwh_gate_after_baseline.sh`：等待冻结 val20 成功退出后自动启动 5-step GRPO；基线失败时阻断训练并记录监督状态。
 - `scripts/check_formal_data_on_ray.py`：正式运行前分别在 `llin_trainer` 和 `llin_rollout` Ray 节点计算 train/val 文件大小与 SHA256，任一节点缺失或内容不一致即在模型加载前失败。
 - `scripts/run_pi_grpo_fully_async_tp4_pp2_cp2.sh`：TP4/PP2/CP2 训练、TP8/DP2 rollout 的 bounded fully-async 配置，按完整 GRPO group 入队并以 queued tokens 做背压。
@@ -127,7 +129,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - 两台机器均完成官方镜像的软件栈和 Qwen3.6-27B 模型识别检查。
 - Ray 两节点集群已连通，可见 32 张 NPU；角色测试确认训练任务落在 5 号机、rollout 任务落在 6 号机。
 - 4 条真实验证任务已转换为 Parquet；两台机器上的只读数据库查询和奖励闭环均为 `4/4` 满分。
-- 本地覆盖 Megatron 拓扑、Continuous Token、TP8/DP2 权重同步、48K、fully-async、Fastest-K、完整 PI 工具、奖励、boss-aligned source join/人工审核门禁、冻结基线、checkpoint 完整性、vLLM public abort、老板 KB/DWH 影子回放、老板原版前后配对评测、Step 100→200 退化归因、连续正确性离线门禁和 Step 120 配对诊断，项目测试为 `155 passed`。
+- 本地覆盖 Megatron 拓扑、Continuous Token、TP8/DP2 权重同步、48K、fully-async、Fastest-K、完整 PI 工具、奖励、boss-aligned source join/人工审核门禁、冻结基线、checkpoint 完整性、vLLM public abort、老板 KB/DWH 影子回放、老板原版前后配对评测、Step 100→200 退化归因、连续正确性离线门禁、Step 120 配对诊断和无人值守准确率流水线，项目测试为 `176 passed`。
 - 老板评测影子回放使用 1,500/1,500 唯一 task_id 的同源 Qwen3.6 v15 文件；KB/DWH 共 1,000 条完整评估，DWH `277/280` 结构化 verifier 自洽、严格正确 6 条，KB 500 条全部保持非在线可用。
 - 影子回放定位并修复 `/workspace/` 被字符串删除后误判为宿主 `/` 的安全规则缺陷；真实根目录和宿主路径扫描仍被阻止。
 - 完整 PI Agent 已通过 6 号机真实 veRL 容器门禁：`bash/read/write/edit` 全部加载，同一轨迹共享可写沙箱，sqlite3 只读代理可查询 v15 数据，失败状态正确记录，轨迹释放后工作区不存在；门禁结束后容器已停止。
@@ -185,6 +187,14 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [veRL 昇腾模型与算法支持](https://github.com/verl-project/verl/blob/main/docs/ascend_tutorial/model_support/model_and_algorithm_support.md)
 
 ## 版本记录
+
+### v0.60.0 — 2026-08-10
+
+- 新增可脱离SSH运行的准确率无人值守流水线：自动完成oracle三条件冻结评测、老板原版评分、分层奖励离线回放、5步金丝雀、条件式20步续训、最终评测、checkpoint完整性检查和两机Ray资源清理。
+- 将fully-async group形状参数化，正式金丝雀固定为 `2 groups/update × 8 responses/group`，总轨迹量仍为16；`fastest_k=oversample_candidates=8`，保证8条响应全部训练，避免速度选择偏差。
+- 新增 `banded_v1` 正确性优先奖励：错误但过程完整的轨迹最高0.50，正确最终答案最低0.65，正确答案与正确SQL最低0.80；安全、协议和gold SQL有效性继续硬归零。
+- 在真实前后100步共3,200条轨迹上预检通过：800/800完整group，133个mixed-correct group的正确轨迹排序率100%，全部必需字段完整，错误奖励上限与正确奖励下限门禁均通过。
+- 本地完整回归测试为 `176 passed`；服务器端三套oracle Parquet schema与离线奖励门禁均已使用真实资产预检通过。
 
 ### v0.59.0 — 2026-08-10
 
