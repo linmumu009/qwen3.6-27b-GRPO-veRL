@@ -1,0 +1,393 @@
+{
+  "analysis": "next_experiment_strategy_after_step120",
+  "generated_at": "2026-08-10T20:30:00+08:00",
+  "decision": "Do not start a formal 96K training run; test finalization control first, then 64K, and reserve 96K for targeted inference-only diagnosis.",
+  "completion_audit": {
+    "rows": 20,
+    "complete_tasks": 16,
+    "incomplete_tasks": 4,
+    "incomplete": {
+      "tasks": 4,
+      "assistant_turns_mean": 26.0,
+      "sql_calls_mean": 24.5,
+      "commands_mean": 38.25,
+      "duplicate_commands_mean": 30.75,
+      "redundancy_oscillation_rate": 1.0,
+      "output_chars_mean": 64223.25
+    },
+    "complete": {
+      "tasks": 16,
+      "assistant_turns_mean": 15.0,
+      "sql_calls_mean": 8.5625,
+      "commands_mean": 25.0,
+      "duplicate_commands_mean": 19.125,
+      "redundancy_oscillation_rate": 0.8125,
+      "output_chars_mean": 46304.875
+    },
+    "incomplete_common_turn_boundary": true,
+    "incomplete_turn_boundary": 26,
+    "incomplete_all_end_with_one_missing_tool_response": true,
+    "incomplete_details": [
+      {
+        "task_id": "task_000070",
+        "has_final_answer": false,
+        "assistant_turns": 26,
+        "tool_calls": 50,
+        "tool_responses": 49,
+        "missing_tool_responses": 1,
+        "sql_calls": 29,
+        "commands": 45,
+        "duplicate_commands": 38,
+        "redundancy_oscillation": true,
+        "output_chars": 67889
+      },
+      {
+        "task_id": "task_000133",
+        "has_final_answer": false,
+        "assistant_turns": 26,
+        "tool_calls": 26,
+        "tool_responses": 25,
+        "missing_tool_responses": 1,
+        "sql_calls": 17,
+        "commands": 25,
+        "duplicate_commands": 18,
+        "redundancy_oscillation": true,
+        "output_chars": 40002
+      },
+      {
+        "task_id": "task_000080",
+        "has_final_answer": false,
+        "assistant_turns": 26,
+        "tool_calls": 46,
+        "tool_responses": 45,
+        "missing_tool_responses": 1,
+        "sql_calls": 28,
+        "commands": 43,
+        "duplicate_commands": 36,
+        "redundancy_oscillation": true,
+        "output_chars": 77876
+      },
+      {
+        "task_id": "task_000196",
+        "has_final_answer": false,
+        "assistant_turns": 26,
+        "tool_calls": 42,
+        "tool_responses": 41,
+        "missing_tool_responses": 1,
+        "sql_calls": 24,
+        "commands": 40,
+        "duplicate_commands": 31,
+        "redundancy_oscillation": true,
+        "output_chars": 71126
+      }
+    ]
+  },
+  "capacity": {
+    "model_native_max_position_embeddings": 262144,
+    "contexts_within_native_limit": true,
+    "current_formal_rollout_hbm_gib": {
+      "low": 53.8,
+      "high": 56.1
+    },
+    "current_post_sync_hbm_gib": {
+      "low": 54.4,
+      "high": 54.7
+    },
+    "usable_hbm_gib": 61.27,
+    "current_post_sync_headroom_gib": {
+      "low": 10.8,
+      "high": 11.1
+    },
+    "cache_increment_48k_to_96k_per_full_sequence_gib": 0.75,
+    "calibrated_increment_by_concurrency_gib": {
+      "8": 6.0,
+      "12": 9.0,
+      "16": 12.0,
+      "24": 18.0
+    },
+    "scenario_rows": [
+      {
+        "context_tokens": 49152,
+        "context_k": 48,
+        "max_sequences_per_replica": 8,
+        "training_planning_peak_gib": 43.914097552299495,
+        "training_headroom_gib": 17.355902447700508,
+        "cache_per_sequence_gib": 0.890625,
+        "rollout_planning_total_gib": 25.41142737865448,
+        "rollout_80pct_budget_gib": 49.016000000000005,
+        "rollout_budget_headroom_gib": 23.604572621345525,
+        "rollout_planning_fit": true
+      },
+      {
+        "context_tokens": 49152,
+        "context_k": 48,
+        "max_sequences_per_replica": 12,
+        "training_planning_peak_gib": 43.914097552299495,
+        "training_headroom_gib": 17.355902447700508,
+        "cache_per_sequence_gib": 0.890625,
+        "rollout_planning_total_gib": 28.97392737865448,
+        "rollout_80pct_budget_gib": 49.016000000000005,
+        "rollout_budget_headroom_gib": 20.042072621345525,
+        "rollout_planning_fit": true
+      },
+      {
+        "context_tokens": 49152,
+        "context_k": 48,
+        "max_sequences_per_replica": 16,
+        "training_planning_peak_gib": 43.914097552299495,
+        "training_headroom_gib": 17.355902447700508,
+        "cache_per_sequence_gib": 0.890625,
+        "rollout_planning_total_gib": 32.53642737865448,
+        "rollout_80pct_budget_gib": 49.016000000000005,
+        "rollout_budget_headroom_gib": 16.479572621345525,
+        "rollout_planning_fit": true
+      },
+      {
+        "context_tokens": 49152,
+        "context_k": 48,
+        "max_sequences_per_replica": 24,
+        "training_planning_peak_gib": 43.914097552299495,
+        "training_headroom_gib": 17.355902447700508,
+        "cache_per_sequence_gib": 0.890625,
+        "rollout_planning_total_gib": 39.66142737865448,
+        "rollout_80pct_budget_gib": 49.016000000000005,
+        "rollout_budget_headroom_gib": 9.354572621345525,
+        "rollout_planning_fit": true
+      },
+      {
+        "context_tokens": 65536,
+        "context_k": 64,
+        "max_sequences_per_replica": 8,
+        "training_planning_peak_gib": 45.486363177299495,
+        "training_headroom_gib": 15.783636822700508,
+        "cache_per_sequence_gib": 1.140625,
+        "rollout_planning_total_gib": 27.41142737865448,
+        "rollout_80pct_budget_gib": 49.016000000000005,
+        "rollout_budget_headroom_gib": 21.604572621345525,
+        "rollout_planning_fit": true
+      },
+      {
+        "context_tokens": 65536,
+        "context_k": 64,
+        "max_sequences_per_replica": 12,
+        "training_planning_peak_gib": 45.486363177299495,
+        "training_headroom_gib": 15.783636822700508,
+        "cache_per_sequence_gib": 1.140625,
+        "rollout_planning_total_gib": 31.97392737865448,
+        "rollout_80pct_budget_gib": 49.016000000000005,
+        "rollout_budget_headroom_gib": 17.042072621345525,
+        "rollout_planning_fit": true
+      },
+      {
+        "context_tokens": 65536,
+        "context_k": 64,
+        "max_sequences_per_replica": 16,
+        "training_planning_peak_gib": 45.486363177299495,
+        "training_headroom_gib": 15.783636822700508,
+        "cache_per_sequence_gib": 1.140625,
+        "rollout_planning_total_gib": 36.53642737865448,
+        "rollout_80pct_budget_gib": 49.016000000000005,
+        "rollout_budget_headroom_gib": 12.479572621345525,
+        "rollout_planning_fit": true
+      },
+      {
+        "context_tokens": 65536,
+        "context_k": 64,
+        "max_sequences_per_replica": 24,
+        "training_planning_peak_gib": 45.486363177299495,
+        "training_headroom_gib": 15.783636822700508,
+        "cache_per_sequence_gib": 1.140625,
+        "rollout_planning_total_gib": 45.66142737865448,
+        "rollout_80pct_budget_gib": 49.016000000000005,
+        "rollout_budget_headroom_gib": 3.3545726213455254,
+        "rollout_planning_fit": true
+      },
+      {
+        "context_tokens": 81920,
+        "context_k": 80,
+        "max_sequences_per_replica": 8,
+        "training_planning_peak_gib": 47.058628802299495,
+        "training_headroom_gib": 14.211371197700508,
+        "cache_per_sequence_gib": 1.390625,
+        "rollout_planning_total_gib": 29.41142737865448,
+        "rollout_80pct_budget_gib": 49.016000000000005,
+        "rollout_budget_headroom_gib": 19.604572621345525,
+        "rollout_planning_fit": true
+      },
+      {
+        "context_tokens": 81920,
+        "context_k": 80,
+        "max_sequences_per_replica": 12,
+        "training_planning_peak_gib": 47.058628802299495,
+        "training_headroom_gib": 14.211371197700508,
+        "cache_per_sequence_gib": 1.390625,
+        "rollout_planning_total_gib": 34.97392737865448,
+        "rollout_80pct_budget_gib": 49.016000000000005,
+        "rollout_budget_headroom_gib": 14.042072621345525,
+        "rollout_planning_fit": true
+      },
+      {
+        "context_tokens": 81920,
+        "context_k": 80,
+        "max_sequences_per_replica": 16,
+        "training_planning_peak_gib": 47.058628802299495,
+        "training_headroom_gib": 14.211371197700508,
+        "cache_per_sequence_gib": 1.390625,
+        "rollout_planning_total_gib": 40.53642737865448,
+        "rollout_80pct_budget_gib": 49.016000000000005,
+        "rollout_budget_headroom_gib": 8.479572621345525,
+        "rollout_planning_fit": true
+      },
+      {
+        "context_tokens": 81920,
+        "context_k": 80,
+        "max_sequences_per_replica": 24,
+        "training_planning_peak_gib": 47.058628802299495,
+        "training_headroom_gib": 14.211371197700508,
+        "cache_per_sequence_gib": 1.390625,
+        "rollout_planning_total_gib": 51.66142737865448,
+        "rollout_80pct_budget_gib": 49.016000000000005,
+        "rollout_budget_headroom_gib": -2.6454273786544746,
+        "rollout_planning_fit": false
+      },
+      {
+        "context_tokens": 98304,
+        "context_k": 96,
+        "max_sequences_per_replica": 8,
+        "training_planning_peak_gib": 48.630894427299495,
+        "training_headroom_gib": 12.639105572700508,
+        "cache_per_sequence_gib": 1.640625,
+        "rollout_planning_total_gib": 31.41142737865448,
+        "rollout_80pct_budget_gib": 49.016000000000005,
+        "rollout_budget_headroom_gib": 17.604572621345525,
+        "rollout_planning_fit": true
+      },
+      {
+        "context_tokens": 98304,
+        "context_k": 96,
+        "max_sequences_per_replica": 12,
+        "training_planning_peak_gib": 48.630894427299495,
+        "training_headroom_gib": 12.639105572700508,
+        "cache_per_sequence_gib": 1.640625,
+        "rollout_planning_total_gib": 37.97392737865448,
+        "rollout_80pct_budget_gib": 49.016000000000005,
+        "rollout_budget_headroom_gib": 11.042072621345525,
+        "rollout_planning_fit": true
+      },
+      {
+        "context_tokens": 98304,
+        "context_k": 96,
+        "max_sequences_per_replica": 16,
+        "training_planning_peak_gib": 48.630894427299495,
+        "training_headroom_gib": 12.639105572700508,
+        "cache_per_sequence_gib": 1.640625,
+        "rollout_planning_total_gib": 44.53642737865448,
+        "rollout_80pct_budget_gib": 49.016000000000005,
+        "rollout_budget_headroom_gib": 4.479572621345525,
+        "rollout_planning_fit": true
+      },
+      {
+        "context_tokens": 98304,
+        "context_k": 96,
+        "max_sequences_per_replica": 24,
+        "training_planning_peak_gib": 48.630894427299495,
+        "training_headroom_gib": 12.639105572700508,
+        "cache_per_sequence_gib": 1.640625,
+        "rollout_planning_total_gib": 57.66142737865448,
+        "rollout_80pct_budget_gib": 49.016000000000005,
+        "rollout_budget_headroom_gib": -8.645427378654475,
+        "rollout_planning_fit": false
+      }
+    ]
+  },
+  "runtime_and_experiments": {
+    "observed_mean_step_s": 611.6647125000001,
+    "observed_full_val20_s": 4054.6326324779075,
+    "observed_checkpoint_save_s": 89.0,
+    "training_cost_projection": [
+      {
+        "steps": 5,
+        "update_hours": 0.8495343229166668,
+        "with_full_val_and_save_hours": 2.000543387493863
+      },
+      {
+        "steps": 10,
+        "update_hours": 1.6990686458333335,
+        "with_full_val_and_save_hours": 2.8500777104105297
+      },
+      {
+        "steps": 20,
+        "update_hours": 3.398137291666667,
+        "with_full_val_and_save_hours": 4.549146356243863
+      },
+      {
+        "steps": 100,
+        "update_hours": 16.990686458333336,
+        "with_full_val_and_save_hours": 18.14169552291053
+      }
+    ],
+    "ranked_experiments": [
+      {
+        "priority": 1,
+        "experiment": "48K 强制收尾哨兵集",
+        "training_steps": 0,
+        "new_trajectories": 6,
+        "estimated_gpu_hours_excluding_cold_start": "0.4–0.8",
+        "change": "在第22轮或剩余4K token时禁止继续调用工具，要求基于已有证据直接作答",
+        "decision_gate": "4道既有未收尾题至少救回2道，且2道已答对/高分题不退化"
+      },
+      {
+        "priority": 2,
+        "experiment": "64K + 32轮哨兵集",
+        "training_steps": 0,
+        "new_trajectories": 6,
+        "estimated_gpu_hours_excluding_cold_start": "0.6–1.2",
+        "change": "仅在强制收尾未充分救回时，增加到64K并把工具反馈上限提高到32轮",
+        "decision_gate": "相对48K强制收尾额外救回至少1道，且单位题耗时增幅不超过60%"
+      },
+      {
+        "priority": 3,
+        "experiment": "96K 定向诊断",
+        "training_steps": 0,
+        "new_trajectories": 4,
+        "estimated_gpu_hours_excluding_cold_start": "0.8–1.8",
+        "change": "仅运行64K仍未完成的题；先做1 prompt × 4 responses容量探针，max_num_seqs=8/副本",
+        "decision_gate": "至少救回64K仍失败任务的一半；否则不把96K带入训练"
+      },
+      {
+        "priority": 4,
+        "experiment": "离线奖励与反循环回放",
+        "training_steps": 0,
+        "new_trajectories": 0,
+        "estimated_gpu_hours_excluding_cold_start": "0",
+        "change": "在既有轨迹上扫描完成硬门控、重复命令/无新证据惩罚与dense权重30/50/70%",
+        "decision_gate": "提高mixed-signal比例，同时保持正确响应相对错误响应的排序一致性"
+      },
+      {
+        "priority": 5,
+        "experiment": "5步可学习性金丝雀",
+        "training_steps": 5,
+        "new_trajectories": 40,
+        "estimated_gpu_hours_excluding_cold_start": "1.0–2.0",
+        "change": "2 groups/update，使用历史dense方差较高的train prompt；启用完成硬门控和反循环惩罚",
+        "decision_gate": "训练prompt上dense正确性明显提高，独立哨兵不退化；否则停止扩步"
+      },
+      {
+        "priority": 6,
+        "experiment": "离线纠错SFT/DPO原型",
+        "training_steps": 0,
+        "new_trajectories": 0,
+        "estimated_gpu_hours_excluding_cold_start": "无rollout，主要是训练侧",
+        "change": "从train236的未收尾历史轨迹构造“长轨迹→正确最终回答”纠错样本或偏好对",
+        "decision_gate": "先证明能提高收尾与正确性，再决定是否替代昂贵的在线GRPO探索"
+      }
+    ]
+  },
+  "recommended_sequence": [
+    "48K force-final sentinel6",
+    "64K plus 32 turns sentinel6 only if needed",
+    "96K targeted remaining failures after a max_num_seqs=8 capacity probe",
+    "offline reward/anti-loop replay",
+    "5-step learnability canary before any 20- or 100-step run"
+  ]
+}

@@ -18,6 +18,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - 老板 KB/DWH 评测逻辑已完成 1,000 条历史影子回放：原 277 条 DWH 通过 gold SQL 自洽门禁；进一步来源复核发现唯一一组相同 prompt 绑定冲突 gold，现保留相对更贴近题意的 `task_000147`、剔除 `task_000033`，未来正式资产为 `236/20/20`。KB 因缺少已校准语义 judge 全部保持 shadow-only；DWH 在线奖励继续使用 `0.7 × boss_reward + 0.3 × strict evidence`。
 - 连续最终答案正确性奖励已通过既有 3,200 条轨迹离线门禁，并以 `PI_DENSE_CORRECTNESS_WEIGHT` 作为默认关闭的可选训练分量；首轮试验固定为 `30%`，其余安全硬门控与正式拓扑保持不变。
 - Step 100→120 的 20-step dense30 试验已完成并保存完整 `model,optimizer,extra`。老板原版 val20 总奖励方向性升至 `0.563745`，但 dense30 同口径复算几乎不变、最终数值正确未提高；当前保留 Step 120，暂停直接续训，先扩大密封评测并增强组内正确性信号。
+- 重新诊断确认 Step 120 的 4 道未收尾题全部在同一 26 回合边界停止、均留下 1 个未返回工具调用，平均有 30.75 条重复命令；下一步不直接扩到 96K 或 100 步，而是先做 48K 强制收尾 sentinel6、必要时升到 64K+32轮，96K只保留为 8 seq/副本起步的定向推理诊断。
 - 所有新增镜像、容器、工作目录和实验名均以 `llin` 开头，不复用或修改其他人的环境。
 
 当前服务器部署：
@@ -73,6 +74,9 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [`docs/step120_dense_trial_20260810.html`](docs/step120_dense_trial_20260810.html)：Step 100/120/200 同题老板原版评分、dense30 同公式复算、配对不确定性与结束阶段耗时诊断的自包含技术报告。
 - [`docs/step120_dense_trial_20260810_summary.json`](docs/step120_dense_trial_20260810_summary.json)：不含原始轨迹与机器绝对路径的聚合分析、逐题配对结果、输入一致性和运行时审计。
 - [`notebooks/step120_dense_trial_analysis_20260810.ipynb`](notebooks/step120_dense_trial_analysis_20260810.ipynb)：从汇总 JSON 从头执行通过的可复现分析与图表 notebook。
+- [`docs/next_experiment_strategy_20260810.html`](docs/next_experiment_strategy_20260810.html)：Step 120未收尾根因、64K/80K/96K训练与rollout容量、100步成本和分级快速实验门禁的自包含技术报告。
+- [`docs/next_experiment_strategy_20260810_summary.json`](docs/next_experiment_strategy_20260810_summary.json)：不含原始轨迹与机器路径的回合边界、显存规划、墙钟成本与实验优先级聚合。
+- [`notebooks/next_experiment_strategy_20260810.ipynb`](notebooks/next_experiment_strategy_20260810.ipynb)：从头执行通过的96K容量、并发增量和快速实验成本分析 notebook。
 - [`docs/leadership_experiment_update_methodology_20260806.md`](docs/leadership_experiment_update_methodology_20260806.md)：从多轮实际修订中提炼的领导汇报方法论，固化四段结构、数字精度、口径边界、抗奖励投机表述、行动项口吻和自检清单。
 - `llin_verl/pi_sqlite_tool.py`：只读 SQLite 轨迹工具。
 - `llin_verl/pi_workspace_tools.py`、`llin_verl/pi_agent_loop.py`：完整 PI 四工具、轨迹级共享沙箱、事件审计和统一清理。
@@ -121,7 +125,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - 两台机器均完成官方镜像的软件栈和 Qwen3.6-27B 模型识别检查。
 - Ray 两节点集群已连通，可见 32 张 NPU；角色测试确认训练任务落在 5 号机、rollout 任务落在 6 号机。
 - 4 条真实验证任务已转换为 Parquet；两台机器上的只读数据库查询和奖励闭环均为 `4/4` 满分。
-- 本地覆盖 Megatron 拓扑、Continuous Token、TP8/DP2 权重同步、48K、fully-async、Fastest-K、完整 PI 工具、奖励、boss-aligned source join/人工审核门禁、冻结基线、checkpoint 完整性、vLLM public abort、老板 KB/DWH 影子回放、老板原版前后配对评测、Step 100→200 退化归因、连续正确性离线门禁和 Step 120 配对诊断，项目测试为 `152 passed`。
+- 本地覆盖 Megatron 拓扑、Continuous Token、TP8/DP2 权重同步、48K、fully-async、Fastest-K、完整 PI 工具、奖励、boss-aligned source join/人工审核门禁、冻结基线、checkpoint 完整性、vLLM public abort、老板 KB/DWH 影子回放、老板原版前后配对评测、Step 100→200 退化归因、连续正确性离线门禁和 Step 120 配对诊断，项目测试为 `155 passed`。
 - 老板评测影子回放使用 1,500/1,500 唯一 task_id 的同源 Qwen3.6 v15 文件；KB/DWH 共 1,000 条完整评估，DWH `277/280` 结构化 verifier 自洽、严格正确 6 条，KB 500 条全部保持非在线可用。
 - 影子回放定位并修复 `/workspace/` 被字符串删除后误判为宿主 `/` 的安全规则缺陷；真实根目录和宿主路径扫描仍被阻止。
 - 完整 PI Agent 已通过 6 号机真实 veRL 容器门禁：`bash/read/write/edit` 全部加载，同一轨迹共享可写沙箱，sqlite3 只读代理可查询 v15 数据，失败状态正确记录，轨迹释放后工作区不存在；门禁结束后容器已停止。
@@ -179,6 +183,13 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [veRL 昇腾模型与算法支持](https://github.com/verl-project/verl/blob/main/docs/ascend_tutorial/model_support/model_and_algorithm_support.md)
 
 ## 版本记录
+
+### v0.57.0 — 2026-08-10
+
+- 逐题解析 Step 120 固定 val20：4 道未收尾题全部走到 26 回合、以 1 个未返回工具调用结束，平均 24.5 条 SQL、30.75 条重复命令且 4/4 出现冗余振荡；已收尾题平均为 15 回合、8.56 条 SQL 和 19.13 条重复命令。因此单独把上下文从48K升到96K并不对症。
+- 核对服务器模型配置，Qwen3.6-27B 原生 `max_position_embeddings=262144`；96K无需RoPE外推。训练侧规划峰值约 `48.6 GiB/卡`、仍低于 `61.27 GiB`，但48K→96K每个跑满序列增加约 `0.75 GiB`缓存，24序列/副本最坏增加18 GiB，超过当前同步后约11 GiB余量。
+- 给出自适应快速实验顺序：先做48K强制收尾sentinel6，失败时再测64K+32轮；96K仅对剩余失败题做定向推理并从8序列/副本容量探针开始。同时做零GPU奖励/反循环回放，最终候选必须通过5步、2 groups/update的可学习性金丝雀。
+- 按 Step 120 实测耗时，100步更新加一次完整val20和保存约 `18.14h`，5步约 `2.00h`；新增可复现分析脚本、notebook、聚合JSON与技术报告，避免用100步盲跑验证单一假设。
 
 ### v0.56.0 — 2026-08-10
 
