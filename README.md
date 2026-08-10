@@ -78,6 +78,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [`docs/next_experiment_strategy_20260810_summary.json`](docs/next_experiment_strategy_20260810_summary.json)：不含原始轨迹与机器路径的回合边界、显存规划、墙钟成本与实验优先级聚合。
 - [`notebooks/next_experiment_strategy_20260810.ipynb`](notebooks/next_experiment_strategy_20260810.ipynb)：从头执行通过的96K容量、并发增量和快速实验成本分析 notebook。
 - [`docs/force_final_sentinel_20260810.md`](docs/force_final_sentinel_20260810.md)：Step 120 的 48K 强制收尾 sentinel6 与单题提前收口实跑、老板原版评分、失败归因和进入训练前门槛。
+- [`docs/accuracy_improvement_strategy_20260810.html`](docs/accuracy_improvement_strategy_20260810.html)：结合 Step 100/120/200、前后两个100步组内信号和强制收尾实验的准确率瓶颈诊断；给出 oracle 梯度、纠错 SFT、奖励分层及 `2 groups × 8 responses` 金丝雀路线。
 - [`docs/leadership_experiment_update_methodology_20260806.md`](docs/leadership_experiment_update_methodology_20260806.md)：从多轮实际修订中提炼的领导汇报方法论，固化四段结构、数字精度、口径边界、抗奖励投机表述、行动项口吻和自检清单。
 - `llin_verl/pi_sqlite_tool.py`：只读 SQLite 轨迹工具。
 - `llin_verl/pi_workspace_tools.py`、`llin_verl/pi_agent_loop.py`：完整 PI 四工具、轨迹级共享沙箱、事件审计和统一清理。
@@ -184,6 +185,12 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [veRL 昇腾模型与算法支持](https://github.com/verl-project/verl/blob/main/docs/ascend_tutorial/model_support/model_and_algorithm_support.md)
 
 ## 版本记录
+
+### v0.59.0 — 2026-08-10
+
+- 复核 Step 100/120/200 老板原版同题结果，确认总奖励与准确率脱钩：Step 120 完成与过程改善但数值正确由 `3/20` 降为 `2/20`，Step 200 继续降至 `1/20`。
+- 对前后两个100步共800个完整GRPO group重新归因：全错组分别占 `78.25%/78.5%`，mixed-correct仅 `18.75%/18%`，证明多数更新缺少二值正确性方向，单纯增加正确性奖励权重不足。
+- 固化新的准确率提升顺序：先做同运行 oracle 梯度诊断，再用人工确认的train子集做纠错SFT，随后以 `2 groups/update × 8 responses/group` 跑5步GRPO金丝雀；正确率门禁通过前继续冻结64K/96K和长程训练。
 
 ### v0.58.0 — 2026-08-10
 

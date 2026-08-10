@@ -1,0 +1,308 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "下一轮应先补正确答案信号，而不是继续堆上下文和步数",
+    "description": "结合 Step 100/120/200、前后两个100步训练信号和48K强制收尾实验，对准确率瓶颈、优先级和快速验证路径的决策报告。",
+    "generatedAt": "2026-08-10T22:10:00+08:00",
+    "charts": [
+      {
+        "id": "checkpoint_metrics_chart",
+        "title": "三个 checkpoint 的固定 val20 指标",
+        "subtitle": "老板原版评分；比例和均值均为 0–1，正确率分母为同一20题。",
+        "type": "bar",
+        "dataset": "checkpoint_metrics",
+        "sourceId": "checkpoint_comparison",
+        "encodings": {
+          "x": {"field": "checkpoint", "type": "nominal", "label": "Checkpoint"},
+          "y": {"field": "value", "type": "quantitative", "label": "比例 / 均值"},
+          "color": {"field": "metric", "type": "nominal", "label": "指标"},
+          "tooltip": [
+            {"field": "count", "type": "quantitative", "label": "题数"}
+          ]
+        },
+        "options": {"grouping": "grouped"},
+        "valueFormat": "number",
+        "layout": "full",
+        "maxRows": 12
+      },
+      {
+        "id": "group_signal_chart",
+        "title": "前后两个100步的组内正确性构成",
+        "subtitle": "每阶段400个完整GRPO group；每个group含4条轨迹。",
+        "type": "bar",
+        "dataset": "group_signal",
+        "sourceId": "training_group_signal",
+        "encodings": {
+          "x": {"field": "phase", "type": "nominal", "label": "训练阶段"},
+          "y": {"field": "rate", "type": "quantitative", "label": "Group占比"},
+          "color": {"field": "signal", "type": "nominal", "label": "正确性构成"},
+          "tooltip": [
+            {"field": "groups", "type": "quantitative", "label": "Group数"}
+          ]
+        },
+        "options": {"grouping": "stacked100"},
+        "valueFormat": "percent",
+        "layout": "full",
+        "maxRows": 6
+      },
+      {
+        "id": "decline_driver_chart",
+        "title": "Step 100→200 老板总分下降归因",
+        "subtitle": "20道同题配对；各组件对净下降的可加总贡献占比。",
+        "type": "bar",
+        "dataset": "decline_drivers",
+        "sourceId": "decline_diagnosis",
+        "encodings": {
+          "x": {"field": "driver", "type": "nominal", "label": "驱动"},
+          "y": {"field": "share", "type": "quantitative", "label": "净下降贡献占比"},
+          "tooltip": [
+            {"field": "reward_mean_delta", "type": "quantitative", "label": "平均奖励贡献"},
+            {"field": "affected_tasks", "type": "quantitative", "label": "涉及题数"}
+          ]
+        },
+        "options": {"orientation": "horizontal"},
+        "valueFormat": "percent",
+        "layout": "full",
+        "maxRows": 3
+      }
+    ],
+    "tables": [],
+    "sources": [
+      {"id": "checkpoint_comparison", "label": "Step 100/120/200老板原版同题比较", "path": "docs/step120_dense_trial_20260810_summary.json + docs/boss_exact_step100_step200_20260807_summary.json"},
+      {"id": "training_group_signal", "label": "前后两个100步的组内训练信号", "path": "docs/boss_exact_step100_step200_20260807_first100_training_signal.json + docs/boss_exact_step100_step200_20260807_training_signal.json"},
+      {"id": "decline_diagnosis", "label": "Step 100→200老板总分下降可加总归因", "path": "docs/boss_exact_step100_step200_20260807_diagnosis.json"},
+      {"id": "force_final_experiment", "label": "48K强制收尾sentinel实跑", "path": "docs/force_final_sentinel_20260810.md"},
+      {"id": "label_quality", "label": "修正后276条标签质量与语义预警审计", "path": "docs/training_data_provenance_quality_audit_20260806.html"},
+      {"id": "oracle_design", "label": "Oracle梯度诊断设计", "path": "docs/accuracy_improvement_strategy_20260810_source_notes.md"},
+      {"id": "priority_design", "label": "准确率干预优先级与门槛", "path": "docs/accuracy_improvement_strategy_20260810_source_notes.md"},
+      {"id": "strategy_synthesis", "label": "基于现有实验的准确率干预方案", "path": "docs/accuracy_improvement_strategy_20260810_source_notes.md"}
+    ],
+    "blocks": [
+      {"id": "title", "type": "markdown", "body": "# 下一轮应先补正确答案信号，而不是继续堆上下文和步数", "layout": "full"},
+      {
+        "id": "executive_summary",
+        "type": "markdown",
+        "body": "## Executive Summary\n\n- **最主要的瓶颈是正确性信号稀疏，不是上下文长度。** 前后两个100步中，分别有 `78.25%` 和 `78.5%` 的4轨迹group全错；mixed-correct只有 `18.75%` 和 `18%`。多数更新无法形成“哪条答案更正确”的GRPO advantage。\n- **现有训练主要学会了完成和过程，尚未学会稳定算对。** Step 120相对Step 100完成题数 `13→16`、老板总奖励 `0.4438→0.5637`，但数值正确 `3→2`；Step 200继续下降到 `1/20`。\n- **强制收尾应保留为护栏，但不能作为准确率主方案。** 它在6题门禁中救回3/4未收尾题，单独把task_000196从0分变成0.5625分，却仍然数值错误。\n- **推荐路线是：oracle梯度诊断 → 高置信纠错SFT → `2 groups × 8 responses`短GRPO金丝雀。** 在正确率门禁通过前，不扩64K/96K，不再直接跑20或100步。",
+        "layout": "full"
+      },
+      {
+        "id": "checkpoint_finding",
+        "type": "markdown",
+        "body": "## 奖励上升与准确率已经发生脱钩\n\nStep 120的老板原版总奖励比Step 100高约0.12，过程分和完成率也更好；但准确题少了1道。Step 200又把正确数降到1/20。说明当前混合奖励能够推动“找到表、覆盖字段、给出答案”，却没有稳定推动“统计口径和最终数值正确”。\n\n**含义：** 后续模型选择必须把老板原版数值正确率设为第一质量指标，把总奖励、完成率和过程分作为解释指标，而不能再用总奖励替代正确率。",
+        "sourceId": "checkpoint_comparison",
+        "layout": "full"
+      },
+      {"id": "checkpoint_chart_block", "type": "chart", "chartId": "checkpoint_metrics_chart", "layout": "full"},
+      {
+        "id": "group_signal_finding",
+        "type": "markdown",
+        "body": "## 约78%的group没有二值正确性方向\n\n每个GRPO group有4条同prompt轨迹。前100步400个group中，313个全错、75个mixed、12个全对；后100步是314个全错、72个mixed、14个全对。把dense correctness权重调到30%后，固定val20的dense30分几乎不变，符合这个结构性限制：如果一个group中的轨迹都错，增加二值正确权重不会产生相对优势。\n\n**含义：** 下一轮必须同时改变“绝对正确监督来源”和“同prompt采样深度”，而不是只改一个reward系数。",
+        "sourceId": "training_group_signal",
+        "layout": "full"
+      },
+      {"id": "group_signal_chart_block", "type": "chart", "chartId": "group_signal_chart", "layout": "full"},
+      {
+        "id": "decline_finding",
+        "type": "markdown",
+        "body": "## Step 100→200的下降主要来自数值正确性\n\n同题配对的总奖励净下降中，56.7%可加总归因于数值正确性变化，32.6%来自过程与字段质量，10.6%来自完成状态切换。人工复核还发现统计周期错位、关键汇总遗漏、必需字段遗漏和歧义探索超时。\n\n**含义：** 训练目标需要显式覆盖时间窗、粒度、必需字段和最终数字与工具结果的一致性；仅做反循环或缩短答案不能解决多数错误。",
+        "sourceId": "decline_diagnosis",
+        "layout": "full"
+      },
+      {"id": "decline_driver_chart_block", "type": "chart", "chartId": "decline_driver_chart", "layout": "full"},
+      {
+        "id": "force_final_finding",
+        "type": "markdown",
+        "body": "## 收尾策略修复了“没答”，没有修复“答错”\n\n48K下第22回合强制收尾让4道未收尾题中的3道产生最终回答，六题平均老板奖励从0.2750升到0.5458；但最终数值正确仍为0。task_000196提前到第14回合后从未收尾0分变为已收尾0.5625分，老板判定仍是 `result_wrong_process_ok`。\n\n**含义：** 固定回合强制收尾可作为推理安全网，但错误答案的过程分必须设上限；更长上下文只会让错误探索链更长，不能作为当前准确率主投资。",
+        "sourceId": "force_final_experiment",
+        "layout": "full"
+      },
+      {
+        "id": "oracle_finding",
+        "type": "markdown",
+        "body": "## 先用oracle梯度定位错误发生在哪一段\n\n在不训练的情况下，对同一批Step 120失败题做三层同运行配对：\n\n1. **Control：** 不增加信息，复现当前完整agent能力。\n2. **任务契约提示：** 只给时间窗、粒度、必需表/字段检查单，不含答案；若明显提升，优先训练任务拆解和规划。\n3. **Oracle结果提示：** 给gold SQL执行后的已验证结果，但不给最终表述；若仍答错，优先做final synthesis纠错SFT。\n\n该设计可以把错误分成任务理解、证据获取和最终综合三段。它比直接跑100步便宜得多，而且结果会直接决定纠错数据应该教什么。",
+        "layout": "full"
+      },
+      {
+        "id": "supervision_finding",
+        "type": "markdown",
+        "body": "## 第一训练动作应改为高置信纠错SFT\n\n从Step 120出发，先在train236中选择经过人工确认的高风险任务，构造“任务契约核对→最短可执行SQL→工具结果→数值复算→简洁最终回答”的纠错轨迹。优先覆盖统计周期、聚合粒度、必需字段、表格完整性和最终计算五类错误。\n\n当前276条hidden SQL都能执行并匹配expected value，但271条命中过至少一个启发式语义预警；这不是271条错误，却意味着不能直接把全部oracle SQL当作完美监督。应先复核用于SFT的子集，并且不把val/test轨迹加入训练。",
+        "sourceId": "label_quality",
+        "layout": "full"
+      },
+      {
+        "id": "grpo_finding",
+        "type": "markdown",
+        "body": "## GRPO金丝雀应把采样深度从group数量转向同prompt候选数\n\n纠错SFT通过后，再用 `2 groups/update × 8 responses/group` 做5步金丝雀。每次更新仍消费16条轨迹，与 `4×4` 的总轨迹量一致，但每个prompt有8个候选，更有机会形成mixed-correct group。8条候选必须全部用于GRPO，不能按答案或速度挑4条，否则会引入结果选择偏差。\n\nPrompt课程应优先抽取历史上能产生mixed或dense spread的可学习任务，同时保留固定比例的全错难题；目的是提高有效正确性advantage，不是永久回避难题。",
+        "layout": "full"
+      },
+      {
+        "id": "reward_finding",
+        "type": "markdown",
+        "body": "## 奖励应保证正确答案始终压过过程漂亮的错误答案\n\n建议把安全/协议继续作为硬门控，并把标量奖励划成不重叠的质量带：无最终回答最低；有回答但数值错误只能获得受限的过程分；gold-equivalent SQL正确但最终转写错误可获得中间分；最终数值正确进入最高区间。过程子项再显式检查时间窗、粒度、必需表/字段、最终数字是否能追溯到工具结果，以及重复命令是否产生新证据。\n\n具体权重先用既有3,200条轨迹离线重放确定。门槛不是“平均reward更高”，而是正确轨迹在mixed group中稳定排在错误轨迹之前，并且错误但过程完整的轨迹不能超过正确轨迹。",
+        "layout": "full"
+      },
+      {
+        "id": "recommended_steps",
+        "type": "markdown",
+        "body": "## Recommended Next Steps\n\n1. **保留Step 120作为主起点，Step 100作为准确率回归护栏；不使用Step 200继续训练。**\n2. **先跑12道失败题的oracle梯度。** 选择8道已完成但答错、4道未收尾；同一作业内跑control、任务契约提示、oracle结果提示。\n3. **人工复核并构造首批高置信纠错轨迹。** 只从train236取样，覆盖numeric/table和五类已知失败；先做小型LoRA或短程SFT方向验证，避免立即全参长训。\n4. **离线重放新奖励。** 正确性优先级、错误答案上限、时间/字段/结果一致性和反循环同时门禁。\n5. **通过后跑5步 `2×8` GRPO金丝雀。** 只在mixed-correct率、老板原版正确率和同运行护栏同时改善时扩到20步；20步通过后才讨论100步。\n6. **64K/96K继续冻结。** 只有oracle梯度证明正确证据经常因为上下文边界丢失时，才重新打开长上下文实验。",
+        "layout": "full"
+      },
+      {
+        "id": "further_questions",
+        "type": "markdown",
+        "body": "## Further Questions\n\n- 给出oracle查询结果后，Step 120能把多少已完成错误题改成数值正确？这决定主要训练query planning还是final synthesis。\n- `2×8`是否能把mixed-correct group比例从约18%提高到至少30%，同时保持每步总轨迹数和训练显存可控？\n- 高风险标签人工复核后，可用于纠错SFT的高置信train规模是多少？老板评分与人工业务正确率是否同向？\n- 同运行control/treatment能否消除当前多轮工具环境中的回放漂移，并复现强制收尾和新奖励的增益？",
+        "layout": "full"
+      },
+      {
+        "id": "caveats",
+        "type": "markdown",
+        "body": "## Caveats and Assumptions\n\n- 固定val只有20题，正确数3、2、1的差异适合作为方向门禁，不能给出精确泛化提升幅度。\n- 强制收尾六题和task_000196单题是定向诊断，不是随机总体样本；它证明机制边界，不估计总体收益。\n- 前后100步group统计来自不同采样时段，能证明正确性信号持续稀疏，不能单独证明某个奖励项导致Step 200退化。\n- `2×8`提高mixed-correct率是待验证假设；若多数prompt的真实成功概率接近0，仅增加候选数仍不足，必须依赖纠错监督。\n- 271/276语义预警是启发式覆盖，不是错误率；人工复核的目的，是防止把不确定gold直接升级为高强度监督。",
+        "layout": "full"
+      }
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "generatedAt": "2026-08-10T22:10:00+08:00",
+    "status": "ready",
+    "datasets": {
+      "checkpoint_metrics": [
+        {"checkpoint": "Step 100", "metric": "老板总奖励", "value": 0.44375, "count": 20},
+        {"checkpoint": "Step 100", "metric": "完成率", "value": 0.65, "count": 13},
+        {"checkpoint": "Step 100", "metric": "数值正确率", "value": 0.15, "count": 3},
+        {"checkpoint": "Step 100", "metric": "过程分", "value": 0.765, "count": 20},
+        {"checkpoint": "Step 120", "metric": "老板总奖励", "value": 0.563745, "count": 20},
+        {"checkpoint": "Step 120", "metric": "完成率", "value": 0.8, "count": 16},
+        {"checkpoint": "Step 120", "metric": "数值正确率", "value": 0.1, "count": 2},
+        {"checkpoint": "Step 120", "metric": "过程分", "value": 0.84, "count": 20},
+        {"checkpoint": "Step 200", "metric": "老板总奖励", "value": 0.399685, "count": 20},
+        {"checkpoint": "Step 200", "metric": "完成率", "value": 0.65, "count": 13},
+        {"checkpoint": "Step 200", "metric": "数值正确率", "value": 0.05, "count": 1},
+        {"checkpoint": "Step 200", "metric": "过程分", "value": 0.72375, "count": 20}
+      ],
+      "group_signal": [
+        {"phase": "前100步", "signal": "全错", "rate": 0.7825, "groups": 313},
+        {"phase": "前100步", "signal": "Mixed", "rate": 0.1875, "groups": 75},
+        {"phase": "前100步", "signal": "全对", "rate": 0.03, "groups": 12},
+        {"phase": "后100步", "signal": "全错", "rate": 0.785, "groups": 314},
+        {"phase": "后100步", "signal": "Mixed", "rate": 0.18, "groups": 72},
+        {"phase": "后100步", "signal": "全对", "rate": 0.035, "groups": 14}
+      ],
+      "decline_drivers": [
+        {"driver": "数值正确性变化", "share": 0.5673436968, "reward_mean_delta": -0.025, "affected_tasks": 2},
+        {"driver": "过程与字段质量", "share": 0.3263360944, "reward_mean_delta": -0.01438, "affected_tasks": 4},
+        {"driver": "完成状态切换", "share": 0.1063202088, "reward_mean_delta": -0.004685, "affected_tasks": 4}
+      ],
+      "force_final_results": [
+        {"order": 1, "experiment": "第22回合强制收尾", "scope": "6题：4未收尾+2护栏", "reward_change": "+0.2708均值", "completion": "救回3/4未收尾题；最终5/6", "correctness": "最终数值正确0/6", "interpretation": "提高完成率，不提高正确率"},
+        {"order": 2, "experiment": "第14回合强制收尾", "scope": "task_000196", "reward_change": "0→0.5625", "completion": "未收尾→已收尾", "correctness": "数值仍错误", "interpretation": "过程可用，但综合答案错误"}
+      ],
+      "oracle_ladder": [
+        {"order": 1, "condition": "Control", "added_information": "无", "what_it_tests": "复现当前完整agent能力", "decision": "作为同运行基线"},
+        {"order": 2, "condition": "任务契约提示", "added_information": "时间窗、粒度、必需表/字段检查单；不含答案", "what_it_tests": "任务理解和计划遗漏", "decision": "若提升，优先训练instruction decomposition"},
+        {"order": 3, "condition": "Oracle结果提示", "added_information": "gold SQL执行后的已验证结果；不直接给最终表述", "what_it_tests": "证据获取 vs 最终综合", "decision": "若仍错，优先final synthesis纠错SFT"}
+      ],
+      "priority_actions": [
+        {"priority": 1, "action": "Oracle梯度诊断", "why": "把任务理解、证据获取、最终综合三段拆开", "cost": "低：只推理，不训练", "gate": "同运行配对；定位至少一个明确主瓶颈"},
+        {"priority": 2, "action": "高置信纠错SFT", "why": "为全错group补充绝对正确监督", "cost": "中低：无在线rollout", "gate": "固定val老板原版正确数提高，过程/完成不退化"},
+        {"priority": 3, "action": "奖励分层与离线回放", "why": "防止过程漂亮的错误答案获得过高优势", "cost": "低", "gate": "正确轨迹稳定高于错误轨迹；错误奖励设上限"},
+        {"priority": 4, "action": "5步 2×8 GRPO金丝雀", "why": "增加同prompt探索深度和mixed-correct机会", "cost": "中", "gate": "mixed-correct≥30%，老板正确率提高，护栏不退化"},
+        {"priority": 5, "action": "预算感知收尾", "why": "减少超时和重复探索，但不承担正确性主目标", "cost": "低", "gate": "全题有最终回答且正确率不下降"},
+        {"priority": 6, "action": "64K/96K上下文", "why": "只有证据确实被边界截掉时才有价值", "cost": "高", "gate": "oracle诊断证明上下文丢失是主要错误来源"}
+      ]
+    },
+    "accessIssues": []
+  },
+  "sources": [
+    {
+      "id": "checkpoint_comparison",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM (VALUES ('Step 100','老板总奖励',0.44375,20),('Step 100','完成率',0.65,13),('Step 100','数值正确率',0.15,3),('Step 100','过程分',0.765,20),('Step 120','老板总奖励',0.563745,20),('Step 120','完成率',0.8,16),('Step 120','数值正确率',0.1,2),('Step 120','过程分',0.84,20),('Step 200','老板总奖励',0.399685,20),('Step 200','完成率',0.65,13),('Step 200','数值正确率',0.05,1),('Step 200','过程分',0.72375,20)) AS t(checkpoint,metric,value,count)",
+        "description": "读取Step 100/120/200老板原版同题汇总，统一复算完成率、数值正确率、总奖励和过程分。",
+        "executed_at": "2026-08-10T22:00:00+08:00",
+        "tables_used": ["docs/step120_dense_trial_20260810_summary.json", "docs/boss_exact_step100_step200_20260807_summary.json"],
+        "metric_definitions": {"数值正确率": "老板原版result_correct_numeric计数 / 固定val20", "完成率": "result_complete计数 / 固定val20"}
+      }
+    },
+    {
+      "id": "training_group_signal",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM (VALUES ('前100步','全错',0.7825,313),('前100步','Mixed',0.1875,75),('前100步','全对',0.03,12),('后100步','全错',0.785,314),('后100步','Mixed',0.18,72),('后100步','全对',0.035,14)) AS t(phase,signal,rate,groups)",
+        "description": "按完整GRPO group汇总二值数值正确性的全错、mixed和全对构成。",
+        "executed_at": "2026-08-10T22:00:00+08:00",
+        "tables_used": ["docs/boss_exact_step100_step200_20260807_first100_training_signal.json", "docs/boss_exact_step100_step200_20260807_training_signal.json"],
+        "metric_definitions": {"mixed-correct": "同一4轨迹group内至少一条正确且至少一条错误"}
+      }
+    },
+    {
+      "id": "decline_diagnosis",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM (VALUES ('数值正确性变化',0.5673436968,-0.025,2),('过程与字段质量',0.3263360944,-0.01438,4),('完成状态切换',0.1063202088,-0.004685,4)) AS t(driver,share,reward_mean_delta,affected_tasks)",
+        "description": "把Step 100到Step 200的同题老板总奖励净变化拆为完成、数值正确和过程质量组件。",
+        "executed_at": "2026-08-10T22:00:00+08:00",
+        "tables_used": ["docs/boss_exact_step100_step200_20260807_diagnosis.json"]
+      }
+    },
+    {
+      "id": "force_final_experiment",
+      "path": "docs/force_final_sentinel_20260810.md",
+      "description": "记录48K冻结Step 120强制收尾六题和task_000196单题的老板原版评分与审计。",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM (VALUES (1,'第22回合强制收尾','6题：4未收尾+2护栏','+0.2708均值','救回3/4未收尾题；最终5/6','最终数值正确0/6','提高完成率，不提高正确率'),(2,'第14回合强制收尾','task_000196','0→0.5625','未收尾→已收尾','数值仍错误','过程可用，但综合答案错误')) AS t(order_id,experiment,scope,reward_change,completion,correctness,interpretation)",
+        "description": "把Run06和Run07的老板原版聚合结果整理为对比表。",
+        "executed_at": "2026-08-10T22:00:00+08:00",
+        "tables_used": ["docs/force_final_sentinel_20260810.md"]
+      }
+    },
+    {
+      "id": "label_quality",
+      "path": "docs/training_data_provenance_quality_audit_20260806.html",
+      "description": "记录修正后train/val/test的SQL机械自洽、语义预警与人工确认边界。"
+    },
+    {
+      "id": "oracle_design",
+      "path": "docs/accuracy_improvement_strategy_20260810_source_notes.md",
+      "description": "根据现有失败类型设计的同运行分层诊断；属于待执行方案。",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM (VALUES (1,'Control','无','复现当前完整agent能力','作为同运行基线'),(2,'任务契约提示','时间窗、粒度、必需表/字段检查单；不含答案','任务理解和计划遗漏','若提升，优先训练instruction decomposition'),(3,'Oracle结果提示','gold SQL执行后的已验证结果；不直接给最终表述','证据获取 vs 最终综合','若仍错，优先final synthesis纠错SFT')) AS t(order_id,condition,added_information,what_it_tests,decision)",
+        "description": "定义三层oracle梯度及其决策解释。",
+        "executed_at": "2026-08-10T22:00:00+08:00",
+        "tables_used": ["docs/accuracy_improvement_strategy_20260810_source_notes.md"]
+      }
+    },
+    {
+      "id": "priority_design",
+      "path": "docs/accuracy_improvement_strategy_20260810_source_notes.md",
+      "description": "基于全部现有实验的干预优先级；影响方向和门槛均需后续实验验证。",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM (VALUES (1,'Oracle梯度诊断','把任务理解、证据获取、最终综合三段拆开','低：只推理，不训练','同运行配对；定位至少一个明确主瓶颈'),(2,'高置信纠错SFT','为全错group补充绝对正确监督','中低：无在线rollout','固定val老板原版正确数提高，过程/完成不退化'),(3,'奖励分层与离线回放','防止过程漂亮的错误答案获得过高优势','低','正确轨迹稳定高于错误轨迹；错误奖励设上限'),(4,'5步 2×8 GRPO金丝雀','增加同prompt探索深度和mixed-correct机会','中','mixed-correct≥30%，老板正确率提高，护栏不退化'),(5,'预算感知收尾','减少超时和重复探索，但不承担正确性主目标','低','全题有最终回答且正确率不下降'),(6,'64K/96K上下文','只有证据确实被边界截掉时才有价值','高','oracle诊断证明上下文丢失是主要错误来源')) AS t(priority,action,why,cost,gate)",
+        "description": "按证据强度、可诊断性和相对成本排列干预方案。",
+        "executed_at": "2026-08-10T22:00:00+08:00",
+        "tables_used": ["docs/accuracy_improvement_strategy_20260810_source_notes.md"]
+      }
+    },
+    {
+      "id": "strategy_synthesis",
+      "path": "docs/accuracy_improvement_strategy_20260810_source_notes.md",
+      "description": "基于本报告全部来源的干预优先级、图表合同、假设与验证门槛；优先级是建议，不是已实现收益。"
+    }
+  ],
+  "package_info": {
+    "originUrl": "artifact://accuracy-improvement-strategy-20260810",
+    "controls": {"edit": false, "refresh": false}
+  }
+}
