@@ -6,6 +6,7 @@ from llin_verl.pi_reward import (
     boss_reward_components,
     compute_score,
     contains_expected_number,
+    dense_final_answer_correctness,
     extract_final_assistant_answer,
     extract_selects,
     final_answer_correct,
@@ -257,3 +258,56 @@ def test_boss_reward_components_port_upstream_result_process_efficiency_formula(
     assert components["process_score"] == 1.0
     assert components["efficiency_score"] == 1.0
     assert components["reward"] == 1.0
+
+
+def test_dense_correctness_orders_near_wrong_far_and_exact_numeric_answers():
+    near = dense_final_answer_correctness("最终结果为 590。", "numeric", 600.0)
+    far = dense_final_answer_correctness("最终结果为 60。", "numeric", 600.0)
+
+    assert dense_final_answer_correctness("最终结果为 600。", "numeric", 600.0) == 1.0
+    assert 1.0 > near > far > 0.0
+
+
+def test_dense_correctness_uses_table_labels_and_penalizes_number_dumping():
+    expected = [{"category": "A", "value": 10}, {"category": "B", "value": 20}]
+    labeled = dense_final_answer_correctness("A 为 9，B 为 19。", "table", expected)
+    unlabeled = dense_final_answer_correctness("结果为 9 和 19。", "table", expected)
+    dumped = dense_final_answer_correctness(
+        "结果候选为 1、2、3、4、5、6、7、8、9、19。", "table", expected
+    )
+
+    assert labeled > unlabeled > dumped
+
+
+def test_dense_correctness_ignores_dates_and_requires_visible_final_answer():
+    assert dense_final_answer_correctness("", "numeric", 2026.0) == 0.0
+    assert dense_final_answer_correctness("统计周期是 2026-06-28，结果为 100。", "numeric", 2026.0) < 0.5
+
+
+def test_dense_reward_weight_is_opt_in_and_preserves_safety_gate(tmp_path, monkeypatch):
+    make_database(tmp_path)
+    monkeypatch.setenv("PI_AGENT_SANDBOX_LOWER", str(tmp_path))
+    baseline = compute_score(
+        "llin_pi_dwh_v2",
+        "查询与复核已经完成，但最终错误地报告合计结果为 600。",
+        truth(),
+        evidence(),
+    )
+    monkeypatch.setenv("PI_DENSE_CORRECTNESS_WEIGHT", "0.3")
+    dense = compute_score(
+        "llin_pi_dwh_v2",
+        "查询与复核已经完成，但最终错误地报告合计结果为 600。",
+        truth(),
+        evidence(),
+    )
+    unsafe = compute_score(
+        "llin_pi_dwh_v2",
+        "查询与复核已经完成，但最终错误地报告合计结果为 600。",
+        truth(),
+        evidence("curl https://example.com"),
+    )
+
+    assert baseline["score"] == baseline["base_score"]
+    assert dense["dense_correctness_weight"] == 0.3
+    assert dense["score"] != dense["base_score"]
+    assert unsafe["score"] == 0.0

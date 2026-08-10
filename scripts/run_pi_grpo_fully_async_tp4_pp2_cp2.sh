@@ -36,6 +36,7 @@ FASTEST_K="${FASTEST_K:-4}"
 OVERSAMPLE_CANDIDATES="${OVERSAMPLE_CANDIDATES:-6}"
 PREWARM_GROUPS="${PREWARM_GROUPS:-0}"
 STALENESS_THRESHOLD="${STALENESS_THRESHOLD:-0.5}"
+PI_DENSE_CORRECTNESS_WEIGHT="${PI_DENSE_CORRECTNESS_WEIGHT:-0}"
 # One complete training batch is GROUPS_PER_STEP groups × rollout.n=4
 # responses. Keeping this many worst-case tokens prevents an oversized-group
 # producer from blocking before the trainer can collect its first full batch.
@@ -85,6 +86,7 @@ export HCCL_CONNECT_TIMEOUT=7200
 export HCCL_ALGO="${HCCL_ALGO:-broadcast=level0:NA;level1:NHR}"
 export TOKENIZERS_PARALLELISM=true
 export CUDA_DEVICE_MAX_CONNECTIONS=1
+export PI_DENSE_CORRECTNESS_WEIGHT
 
 python3 "${PROJECT_ROOT}/scripts/patch_verl_megatron_bridge_compat.py" \
   --target "${VERL_ROOT}/verl/models/mcore/bridge.py"

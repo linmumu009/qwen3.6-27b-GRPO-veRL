@@ -128,7 +128,7 @@ def test_step100_to_step200_continuation_runs_exactly_100_new_updates():
 
     expected = (
         'START_POLICY_STEP=100',
-        'FINAL_POLICY_STEP=200',
+        'FINAL_POLICY_STEP="${FINAL_POLICY_STEP:-200}"',
         'TOTAL_TRAINING_STEPS="${FINAL_POLICY_STEP}"',
         'GROUPS_PER_STEP=4',
         'TOTAL_ROLLOUT_GROUPS="$((FINAL_POLICY_STEP * GROUPS_PER_STEP))"',
@@ -153,6 +153,22 @@ def test_step100_to_step200_continuation_runs_exactly_100_new_updates():
 
     assert 'optimizer_state=reset_missing_from_source' in script
     assert 'dataloader_state=reset_for_corrected_train236' in script
+
+
+def test_dense_correctness_trial_is_twenty_updates_from_step100_with_same_topology():
+    run_script = (
+        ROOT / "scripts" / "run_pi_dense_correctness_step100_to_step120.sh"
+    ).read_text(encoding="utf-8")
+    launcher = (
+        ROOT / "scripts" / "launch_pi_dense_correctness_step100_to_step120.sh"
+    ).read_text(encoding="utf-8")
+
+    assert "FINAL_POLICY_STEP=120" in run_script
+    assert "PI_DENSE_CORRECTNESS_WEIGHT=0.30" in run_script
+    assert "run_pi_formal_step100_to_step200_12groups.sh" in run_script
+    assert 'if [[ "${latest_iteration}" != "120" ]]' in launcher
+    assert "expected_global_step_120_got_%s" in launcher
+    assert "verify_checkpoint_integrity.py" in launcher
 
 
 def test_step100_resume_view_resets_only_the_incompatible_data_cursor():

@@ -16,6 +16,8 @@ from llin_verl.pi_tool_contract import command_unsafe_reasons, extract_table_nam
 
 
 _NUMBER_RE = re.compile(r"(?<![\w.])[-+]?(?:\d+(?:,\d{3})*(?:\.\d+)?|\.\d+)(?:[eE][-+]?\d+)?")
+_DATE_RE = re.compile(r"\b\d{4}[-/]\d{1,2}[-/]\d{1,2}\b")
+_TIME_RE = re.compile(r"\b\d{1,2}:\d{2}(?::\d{2})?\b")
 _ASSISTANT_SPLIT_RE = re.compile(r"(?:^|\n)assistant\n")
 _NEXT_ROLE_RE = re.compile(r"\n(?:user|tool|system)\n")
 _THINK_RE = re.compile(r"<think>.*?</think>", re.DOTALL)
@@ -70,6 +72,12 @@ def extract_numbers(text: str) -> list[float]:
         if math.isfinite(value):
             values.append(value)
     return values
+
+
+def extract_answer_numbers(text: str) -> list[float]:
+    """Extract result-like numbers while ignoring ordinary dates and times."""
+    without_dates = _DATE_RE.sub(" ", text or "")
+    return extract_numbers(_TIME_RE.sub(" ", without_dates))
 
 
 def contains_expected_number(
@@ -412,6 +420,89 @@ def boss_numbers_match(answer: str, expected_value: Any) -> bool:
     )
 
 
+def _number_closeness(actual: float, gold: float, abs_tol: float, rel_tol: float) -> float:
+    if math.isclose(actual, gold, abs_tol=abs_tol, rel_tol=rel_tol):
+        return 1.0
+    scale = max(abs(gold), 1.0)
+    relative_error = abs(actual - gold) / scale
+    # Preserve a clear margin between the boss evaluator's exact numeric hit
+    # and merely close values, while retaining ordering among wrong answers.
+    return min(0.75, 1.0 / (1.0 + 4.0 * relative_error))
+
+
+def dense_final_answer_correctness(
+    answer: str,
+    answer_type: str,
+    expected_value: Any,
+    abs_tol: float = 1e-3,
+    rel_tol: float = 1e-5,
+) -> float:
+    """Return continuous, final-answer-only correctness in ``[0, 1]``.
+
+    Exact answers retain score 1.  Wrong numeric answers receive partial credit
+    based on relative distance, and table answers additionally receive credit
+    for gold row labels.  A precision factor discourages emitting a long list
+    of unrelated numbers merely to collide with the gold value.
+    """
+    if not answer:
+        return 0.0
+
+    gold_numbers = boss_gold_numbers(expected_value)
+    answer_numbers = extract_answer_numbers(answer)
+    numeric_score = 0.0
+    if gold_numbers and answer_numbers:
+        edges = sorted(
+            (
+                _number_closeness(actual, gold, abs_tol, rel_tol),
+                gold_index,
+                answer_index,
+            )
+            for gold_index, gold in enumerate(gold_numbers)
+            for answer_index, actual in enumerate(answer_numbers)
+        )
+        matched_gold: set[int] = set()
+        matched_answer: set[int] = set()
+        credit = 0.0
+        for closeness, gold_index, answer_index in reversed(edges):
+            if gold_index in matched_gold or answer_index in matched_answer:
+                continue
+            matched_gold.add(gold_index)
+            matched_answer.add(answer_index)
+            credit += closeness
+        numeric_score = credit / len(gold_numbers)
+        free_numbers = max(2 * len(gold_numbers), len(gold_numbers) + 2)
+        if len(answer_numbers) > free_numbers:
+            numeric_score *= math.sqrt(free_numbers / len(answer_numbers))
+
+    if answer_type == "numeric":
+        return round(min(1.0, numeric_score), 6)
+    if answer_type != "table" or not isinstance(expected_value, list):
+        return 0.0
+
+    labels = []
+    for item in expected_value:
+        if isinstance(item, dict):
+            label = item.get("category", item.get("date"))
+            if label is not None:
+                labels.append(str(label).strip().casefold())
+    folded = answer.casefold()
+    label_score = (
+        sum(bool(label) and label in folded for label in labels) / len(labels)
+        if labels
+        else 0.0
+    )
+    if gold_numbers and labels:
+        # The boss endpoint is number-primary and intentionally ignores table
+        # labels.  Labels remain useful partial credit but cannot outrank an
+        # exact gold-number hit.
+        score = 0.85 * numeric_score + 0.15 * label_score
+    elif gold_numbers:
+        score = numeric_score
+    else:
+        score = label_score
+    return round(min(1.0, score), 6)
+
+
 def _boss_fields_used(commands: list[str], must_use_fields: list[str]) -> float | None:
     if not must_use_fields:
         return None
@@ -553,6 +644,13 @@ def compute_score(
         abs_tol,
         rel_tol,
     )
+    dense_correctness = dense_final_answer_correctness(
+        answer,
+        str(ground_truth.get("answer_type") or ""),
+        expected_value,
+        abs_tol,
+        rel_tol,
+    )
 
     sql_evidence = False
     evidence_mode = "none"
@@ -605,7 +703,15 @@ def compute_score(
         events,
     )
     eligible = bool(safe and valid_protocol and gold_sql_verified)
-    score = 0.7 * boss["reward"] + 0.3 * evidence_reward if eligible else 0.0
+    base_score = 0.7 * boss["reward"] + 0.3 * evidence_reward
+    try:
+        dense_weight = float(os.environ.get("PI_DENSE_CORRECTNESS_WEIGHT", "0"))
+    except ValueError as exc:
+        raise ValueError("PI_DENSE_CORRECTNESS_WEIGHT must be numeric") from exc
+    if not 0.0 <= dense_weight <= 1.0:
+        raise ValueError("PI_DENSE_CORRECTNESS_WEIGHT must be in [0, 1]")
+    blended_score = (1.0 - dense_weight) * base_score + dense_weight * dense_correctness
+    score = blended_score if eligible else 0.0
     strict_correct = bool(
         answer_ok
         and sql_evidence
@@ -617,6 +723,9 @@ def compute_score(
     )
     return {
         "score": round(score, 6),
+        "base_score": round(base_score if eligible else 0.0, 6),
+        "dense_final_answer_correctness": dense_correctness,
+        "dense_correctness_weight": dense_weight,
         "acc": float(strict_correct),
         "boss_reward": boss["reward"],
         "boss_result_score": boss["result_score"],
