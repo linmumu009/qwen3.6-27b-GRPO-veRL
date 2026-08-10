@@ -76,6 +76,8 @@ python3 "${PROJECT_ROOT}/scripts/patch_verl_one_step_continuous_token.py" \
   --target "${VERL_ROOT}/verl/experimental/one_step_off_policy/main_ppo.py"
 python3 "${PROJECT_ROOT}/scripts/patch_verl_agent_loop_continuous_token.py" \
   --target "${VERL_ROOT}/verl/experimental/agent_loop/agent_loop.py"
+python3 "${PROJECT_ROOT}/scripts/patch_verl_force_final_config.py" \
+  --target "${VERL_ROOT}/verl/workers/config/rollout.py"
 
 cd "${VERL_ROOT}"
 

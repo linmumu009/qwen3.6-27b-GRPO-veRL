@@ -17,6 +17,9 @@ export HCCL_NPU_SOCKET_PORT_RANGE=60200-60263
 # nonuniform cross-server rank placement on Atlas A3.
 export HCCL_ALGO="broadcast=level0:NA;level1:NHR"
 
+python3 "${PROJECT_ROOT}/scripts/patch_verl_force_final_config.py" \
+  --target "/verl/verl/workers/config/rollout.py"
+
 python3 "${PROJECT_ROOT}/scripts/patch_verl_fully_async_group_token_queue.py" \
   --message-queue "/verl/verl/experimental/fully_async_policy/message_queue.py" \
   --rollouter "/verl/verl/experimental/fully_async_policy/fully_async_rollouter.py"

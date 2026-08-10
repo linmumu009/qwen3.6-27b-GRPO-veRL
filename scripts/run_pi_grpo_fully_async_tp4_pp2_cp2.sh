@@ -98,6 +98,8 @@ python3 "${PROJECT_ROOT}/scripts/patch_verl_fully_async_continuous_token.py" \
   --target "${VERL_ROOT}/verl/experimental/fully_async_policy/fully_async_main.py"
 python3 "${PROJECT_ROOT}/scripts/patch_verl_agent_loop_continuous_token.py" \
   --target "${VERL_ROOT}/verl/experimental/agent_loop/agent_loop.py"
+python3 "${PROJECT_ROOT}/scripts/patch_verl_force_final_config.py" \
+  --target "${VERL_ROOT}/verl/workers/config/rollout.py"
 python3 "${PROJECT_ROOT}/scripts/patch_verl_fully_async_group_token_queue.py" \
   --message-queue "${VERL_ROOT}/verl/experimental/fully_async_policy/message_queue.py" \
   --rollouter "${VERL_ROOT}/verl/experimental/fully_async_policy/fully_async_rollouter.py"

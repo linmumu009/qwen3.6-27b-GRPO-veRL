@@ -69,6 +69,51 @@ assistant
     assert audit["terminal_assistant"] is False
 
 
+def test_qwen_output_to_openai_messages_preserves_terminal_tool_response_without_assistant():
+    output = """<tool_call>
+<function=read><parameter=path>/workspace/result.txt</parameter></function>
+</tool_call>
+user
+<tool_response>
+verified result
+</tool_response>"""
+
+    messages, audit = qwen_output_to_openai_messages(output)
+
+    assert [message["role"] for message in messages] == ["assistant", "tool"]
+    assert messages[-1]["content"].strip() == "verified result"
+    assert audit["missing_tool_responses"] == 0
+    assert audit["terminal_assistant"] is False
+    assert audit["terminal_tool_response_without_assistant"] == 1
+
+
+def test_qwen_output_to_openai_messages_preserves_force_final_correction_user_message():
+    output = """<tool_call>
+<function=bash><parameter=command>pwd</parameter></function>
+</tool_call>
+user
+<tool_response>
+Tool execution is disabled by the finalization policy.
+</tool_response>
+user
+Your tool call was rejected. Do not call tools again. Return only the concise final answer now.
+assistant
+最终答案。"""
+
+    messages, audit = qwen_output_to_openai_messages(output)
+
+    assert [message["role"] for message in messages] == [
+        "assistant",
+        "tool",
+        "user",
+        "assistant",
+    ]
+    assert messages[2]["content"].startswith("Your tool call was rejected")
+    assert messages[-1]["content"] == "最终答案。"
+    assert audit["intervention_user_messages"] == 1
+    assert audit["terminal_assistant"] is True
+
+
 def test_qwen_output_to_openai_messages_preserves_unanswered_terminal_call():
     messages, audit = qwen_output_to_openai_messages(
         "<tool_call><function=bash><parameter=command>pwd</parameter></function></tool_call>"

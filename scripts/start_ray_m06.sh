@@ -17,6 +17,8 @@ export HCCL_ALGO="broadcast=level0:NA;level1:NHR"
 # Rollout and AgentLoop actors import veRL from this container, not from the
 # trainer container. Apply worker-side compatibility fixes before Ray can
 # launch any actors here.
+python3 "${PROJECT_ROOT}/scripts/patch_verl_force_final_config.py" \
+  --target "/verl/verl/workers/config/rollout.py"
 python3 "${PROJECT_ROOT}/scripts/patch_verl_vllm_dp_weight_sync.py" \
   --target "/verl/verl/workers/rollout/vllm_rollout/utils.py"
 python3 "${PROJECT_ROOT}/scripts/patch_verl_agent_loop_continuous_token.py" \

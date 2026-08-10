@@ -18,7 +18,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - 老板 KB/DWH 评测逻辑已完成 1,000 条历史影子回放：原 277 条 DWH 通过 gold SQL 自洽门禁；进一步来源复核发现唯一一组相同 prompt 绑定冲突 gold，现保留相对更贴近题意的 `task_000147`、剔除 `task_000033`，未来正式资产为 `236/20/20`。KB 因缺少已校准语义 judge 全部保持 shadow-only；DWH 在线奖励继续使用 `0.7 × boss_reward + 0.3 × strict evidence`。
 - 连续最终答案正确性奖励已通过既有 3,200 条轨迹离线门禁，并以 `PI_DENSE_CORRECTNESS_WEIGHT` 作为默认关闭的可选训练分量；首轮试验固定为 `30%`，其余安全硬门控与正式拓扑保持不变。
 - Step 100→120 的 20-step dense30 试验已完成并保存完整 `model,optimizer,extra`。老板原版 val20 总奖励方向性升至 `0.563745`，但 dense30 同口径复算几乎不变、最终数值正确未提高；当前保留 Step 120，暂停直接续训，先扩大密封评测并增强组内正确性信号。
-- 重新诊断确认 Step 120 的 4 道未收尾题全部在同一 26 回合边界停止、均留下 1 个未返回工具调用，平均有 30.75 条重复命令；下一步不直接扩到 96K 或 100 步，而是先做 48K 强制收尾 sentinel6、必要时升到 64K+32轮，96K只保留为 8 seq/副本起步的定向推理诊断。
+- Step 120 的 48K 强制收尾门禁已完成：第 22 个助手回合触发时救回 4 道未收尾题中的 3 道，老板原版六题平均奖励由 `0.2750` 升至 `0.5458`，但最终数值正确仍为 0；对剩余 `task_000196` 提前到第 14 回合后可收尾并获 `0.5625`，判定仍为 `result_wrong_process_ok`。因此当前不直接扩到 64K/96K或续训100步，先做预算感知的工具调用拦截、纠正监督和同运行配对门禁。
 - 所有新增镜像、容器、工作目录和实验名均以 `llin` 开头，不复用或修改其他人的环境。
 
 当前服务器部署：
@@ -77,6 +77,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [`docs/next_experiment_strategy_20260810.html`](docs/next_experiment_strategy_20260810.html)：Step 120未收尾根因、64K/80K/96K训练与rollout容量、100步成本和分级快速实验门禁的自包含技术报告。
 - [`docs/next_experiment_strategy_20260810_summary.json`](docs/next_experiment_strategy_20260810_summary.json)：不含原始轨迹与机器路径的回合边界、显存规划、墙钟成本与实验优先级聚合。
 - [`notebooks/next_experiment_strategy_20260810.ipynb`](notebooks/next_experiment_strategy_20260810.ipynb)：从头执行通过的96K容量、并发增量和快速实验成本分析 notebook。
+- [`docs/force_final_sentinel_20260810.md`](docs/force_final_sentinel_20260810.md)：Step 120 的 48K 强制收尾 sentinel6 与单题提前收口实跑、老板原版评分、失败归因和进入训练前门槛。
 - [`docs/leadership_experiment_update_methodology_20260806.md`](docs/leadership_experiment_update_methodology_20260806.md)：从多轮实际修订中提炼的领导汇报方法论，固化四段结构、数字精度、口径边界、抗奖励投机表述、行动项口吻和自检清单。
 - `llin_verl/pi_sqlite_tool.py`：只读 SQLite 轨迹工具。
 - `llin_verl/pi_workspace_tools.py`、`llin_verl/pi_agent_loop.py`：完整 PI 四工具、轨迹级共享沙箱、事件审计和统一清理。
@@ -183,6 +184,12 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [veRL 昇腾模型与算法支持](https://github.com/verl-project/verl/blob/main/docs/ascend_tutorial/model_support/model_and_algorithm_support.md)
 
 ## 版本记录
+
+### v0.58.0 — 2026-08-10
+
+- 实现可配置的 PI 强制收尾策略：按助手回合或剩余 response token 触发，禁用后续工具调用，将最终回答限制为 4K tokens，并对违规工具调用最多纠正重试一次；所有轨迹补齐稳定审计字段，避免异构批次拼接失败。
+- 新增 Step 120 小型冻结门禁的数据准备、启动、配置补丁和配对分析入口；增强老板原版评分适配器，保留终端工具响应与强制收尾纠正消息，不为未收尾轨迹伪造最终答案。
+- 完成 6 题和 `task_000196` 单题实跑：强制收尾改善完成率和老板部分分，但最终数值正确仍未提升；据此暂停直接扩到 64K/96K或续训100步，下一步优先预算感知拦截、纠正监督及同运行配对门禁。
 
 ### v0.57.0 — 2026-08-10
 

@@ -23,6 +23,7 @@ TOOL_CALL_START = "<tool_call>"
 TOOL_CALL_END = "</tool_call>"
 USER_TOOL_RESPONSE_PREFIX = "\nuser\n"
 ASSISTANT_PREFIX = "\nassistant\n"
+FORCE_FINAL_CORRECTION_PREFIX = USER_TOOL_RESPONSE_PREFIX + "Your tool call was rejected."
 FUNCTION_RE = re.compile(r"^\s*<function=([^>\s]+)>\s*(.*?)\s*</function>\s*$", re.DOTALL)
 PARAMETER_RE = re.compile(
     r"<parameter=([^>\s]+)>\s*(.*?)\s*</parameter>", re.DOTALL
@@ -135,6 +136,8 @@ def qwen_output_to_openai_messages(output: str) -> tuple[list[dict[str, Any]], d
     call_number = 0
     response_number = 0
     missing_tool_responses = 0
+    terminal_tool_response_groups = 0
+    intervention_user_messages = 0
     while True:
         user_start = output.find(USER_TOOL_RESPONSE_PREFIX + "<tool_response>", cursor)
         if user_start < 0:
@@ -152,13 +155,32 @@ def qwen_output_to_openai_messages(output: str) -> tuple[list[dict[str, Any]], d
         response_group_start = user_start + len(USER_TOOL_RESPONSE_PREFIX)
         group_suffix = "</tool_response>" + ASSISTANT_PREFIX
         response_group_end = output.find(group_suffix, response_group_start)
-        if response_group_end < 0:
-            raise ValueError(
-                f"tool calls ending at {call_number}: missing response/assistant delimiter"
+        correction_start = output.find(FORCE_FINAL_CORRECTION_PREFIX, response_group_start)
+        correction_content: str | None = None
+        assistant_after_correction = -1
+        if response_group_end < 0 and correction_start >= 0:
+            response_blob = output[response_group_start:correction_start]
+            assistant_after_correction = output.find(ASSISTANT_PREFIX, correction_start)
+            correction_end = (
+                assistant_after_correction
+                if assistant_after_correction >= 0
+                else len(output)
             )
-        response_blob = output[
-            response_group_start : response_group_end + len("</tool_response>")
-        ]
+            correction_content = output[
+                correction_start + len(USER_TOOL_RESPONSE_PREFIX) : correction_end
+            ].strip()
+            terminal_tool_response = assistant_after_correction < 0
+        elif response_group_end < 0:
+            # Preserve a complete trailing tool-response group without inventing
+            # the absent assistant turn.  Malformed or truncated responses still
+            # fail below because TOOL_RESPONSE_RE leaves non-whitespace residue.
+            response_blob = output[response_group_start:]
+            terminal_tool_response = True
+        else:
+            response_blob = output[
+                response_group_start : response_group_end + len("</tool_response>")
+            ]
+            terminal_tool_response = False
         raw_response_blocks = TOOL_RESPONSE_RE.findall(response_blob)
         residue = TOOL_RESPONSE_RE.sub("", response_blob).strip()
         if residue:
@@ -183,7 +205,19 @@ def qwen_output_to_openai_messages(output: str) -> tuple[list[dict[str, Any]], d
                     "content": response,
                 }
             )
-        cursor = response_group_end + len(group_suffix)
+        if correction_content is not None:
+            if not correction_content:
+                raise ValueError("empty force-final correction user message")
+            messages.append({"role": "user", "content": correction_content})
+            intervention_user_messages += 1
+        if terminal_tool_response:
+            terminal_tool_response_groups += 1
+            cursor = len(output)
+            break
+        if assistant_after_correction >= 0:
+            cursor = assistant_after_correction + len(ASSISTANT_PREFIX)
+        else:
+            cursor = response_group_end + len(group_suffix)
 
     terminal = output[cursor:]
     terminal_call_blocks = TOOL_CALL_RE.findall(terminal)
@@ -237,6 +271,10 @@ def qwen_output_to_openai_messages(output: str) -> tuple[list[dict[str, Any]], d
     }
     if truncated_terminal_calls:
         audit["truncated_terminal_tool_calls"] = truncated_terminal_calls
+    if terminal_tool_response_groups:
+        audit["terminal_tool_response_without_assistant"] = terminal_tool_response_groups
+    if intervention_user_messages:
+        audit["intervention_user_messages"] = intervention_user_messages
     return messages, audit
 
 
@@ -290,6 +328,8 @@ def prepare(
     missing_tool_responses = 0
     terminal_answers = 0
     truncated_terminal_tool_calls = 0
+    terminal_tool_responses_without_assistant = 0
+    intervention_user_messages = 0
     for row in validation:
         ground_truth = row.get("gts") or {}
         task_id = str(ground_truth.get("task_id") or "").strip()
@@ -311,6 +351,10 @@ def prepare(
         missing_tool_responses += int(audit["missing_tool_responses"])
         terminal_answers += int(audit["terminal_assistant"])
         truncated_terminal_tool_calls += int(audit.get("truncated_terminal_tool_calls", 0))
+        terminal_tool_responses_without_assistant += int(
+            audit.get("terminal_tool_response_without_assistant", 0)
+        )
+        intervention_user_messages += int(audit.get("intervention_user_messages", 0))
 
     if set(prompts) != seen:
         raise ValueError(
@@ -325,6 +369,8 @@ def prepare(
         "missing_tool_responses": missing_tool_responses,
         "terminal_assistant_answers": terminal_answers,
         "truncated_terminal_tool_calls": truncated_terminal_tool_calls,
+        "terminal_tool_responses_without_assistant": terminal_tool_responses_without_assistant,
+        "intervention_user_messages": intervention_user_messages,
         "all_terminal": terminal_answers == len(validation),
         "trajectory_output": str(trajectory_output),
         "trajectory_sha256": sha256(trajectory_output),
