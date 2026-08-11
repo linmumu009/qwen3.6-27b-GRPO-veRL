@@ -1,0 +1,231 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "How to Improve Accuracy After the Step 125 Canary",
+    "generatedAt": "2026-08-11T14:28:51.9699745+08:00",
+    "blocks": [
+      {
+        "id": "title",
+        "type": "markdown",
+        "body": "# How to Improve Accuracy After the Step 125 Canary"
+      },
+      {
+        "id": "executive_summary",
+        "type": "markdown",
+        "sourceId": "post_step125_summary",
+        "body": "## Executive Summary\n\n- **Do not continue the current Step 127 checkpoint with the same GRPO recipe.** The Step 125 boss-exact gate fell from 2/20 to 1/20 numeric-correct tasks and from 16/20 to 15/20 completed tasks versus Step 120. This is not statistically conclusive on 20 tasks, but it provides no positive evidence for spending another 18 or 100 updates.\n- **The reward is no longer the main failure.** In the five-step window, correct trajectories averaged 0.776 reward versus 0.160 for wrong trajectories, and all four mixed-correct groups ranked every correct trajectory above every wrong one.\n- **The missing ingredient is correct evidence acquisition.** Six of ten prompts still produced eight wrong responses. Contract hints improved completion without improving numeric accuracy, while verified evidence raised oracle accuracy from 1/12 to 8/12.\n- **Best next path: repair SFT first, then correctness-informative GRPO.** Teach concise verified SQL/tool trajectories, require a higher raw mixed-correct rate, skip all-wrong/all-correct groups, and restore at least four independent prompts per optimizer update."
+      },
+      {
+        "id": "reward_works",
+        "type": "markdown",
+        "sourceId": "post_step125_summary",
+        "body": "## Reward ordering works, but most prompts still lack a correct candidate\n\nThe eight-response design raised the canary's mixed-correct share to 4/10 groups. Within those groups, correct responses were separated by an average minimum margin of 0.463, so the GRPO ranking direction was unambiguous. The problem is coverage: 6/10 prompts remained all-wrong, and those groups still had an average 0.115 reward range. They therefore generated gradients for process differences without any evidence about which final answer was correct.\n\n**Implication:** keep the current bands, but stop treating every variable-reward group as accuracy supervision. A group should contribute to the correctness update only when it contains both correct and incorrect responses."
+      },
+      {
+        "id": "canary_signal_table_block",
+        "type": "table",
+        "tableId": "canary_signal_table"
+      },
+      {
+        "id": "evidence_bottleneck",
+        "type": "markdown",
+        "sourceId": "post_step125_summary",
+        "body": "## Verified evidence—not answer formatting—is the binding capability\n\nOn the 12-task oracle ladder, a contract reminder increased completion from 8 to 11 tasks but left numeric correctness at 1. Supplying verified evidence increased numeric correctness to 8 tasks. This isolates the main gap: the model often does not acquire or validate the right database evidence, so a stronger outcome reward arrives too late to teach a solution when every sampled trajectory is wrong.\n\n**Implication:** the next intervention should put correct evidence/tool behavior into the policy directly through mechanically verified repair trajectories. Longer context and more answer-format prompting are secondary."
+      },
+      {
+        "id": "oracle_table_block",
+        "type": "table",
+        "tableId": "oracle_table"
+      },
+      {
+        "id": "checkpoint_finding",
+        "type": "markdown",
+        "sourceId": "post_step125_summary",
+        "body": "## More updates on the same recipe have not produced reliable accuracy gains\n\nAcross the four boss-exact checkpoints, numeric correctness moved 3 → 2 → 1 → 1 out of 20. Step 120 remains the best completion/reward checkpoint, but even it did not beat Step 100 on numeric accuracy. The Wilson intervals overlap widely because n=20, so this comparison should be read as a model-selection warning—not proof that each training stage caused a true population regression.\n\n**Numeric-correct tasks (out of 20)**\n\n```text\nStep 100  ███  3\nStep 120  ██   2\nStep 125  █    1\nStep 200  █    1\n```\n\n**Implication:** retain Step 120 and demand an explicit accuracy win before promoting another checkpoint."
+      },
+      {
+        "id": "numeric_correct_chart_block",
+        "type": "chart",
+        "chartId": "numeric_correct_chart"
+      },
+      {
+        "id": "checkpoint_table_block",
+        "type": "table",
+        "tableId": "checkpoint_table"
+      },
+      {
+        "id": "recommended_sequence",
+        "type": "markdown",
+        "body": "## Recommended sequence: repair first, then make every update informative\n\n1. **Run a 16-example repair overfit smoke.** Use short verified tool/SQL/final-answer trajectories from train236 only. This checks the SFT path without spending time on agent rollout.\n2. **Scale to a 48–64 example correction SFT canary.** Cover evidence acquisition, SQL semantics, arithmetic, and unfinished answers; keep targets concise and mechanically checked.\n3. **Resume GRPO only after the frozen SFT model improves the leading indicators.** Keep eight responses and the existing reward, but collect mixed groups and accumulate at least four independent prompts before each optimizer step.\n4. **Use only two informative GRPO updates for the next canary.** Continue only if numeric accuracy beats Step 120 without completion or process regression.\n5. **Evaluate the untouched test20 once.** The repeatedly used val20 is now a development set, not a sealed final benchmark."
+      },
+      {
+        "id": "experiment_table_block",
+        "type": "table",
+        "tableId": "experiment_table"
+      },
+      {
+        "id": "further_questions",
+        "type": "markdown",
+        "body": "## Further Questions\n\n- Can a small verified SFT set lift SQL-evidence correctness above the current 7.5% before any online update?\n- After SFT, what fraction of unfiltered eight-response groups are mixed-correct? If it remains below 60%, prompt/task curriculum is still required.\n- Do all-wrong groups improve later accuracy when process reward is retained, or do they mainly reinforce polished wrong answers? This needs a fixed-sample masked-versus-unmasked A/B.\n- How much of the Step 125 change is checkpoint variance on the 20-task development set? Only the sealed test can resolve model selection."
+      },
+      {
+        "id": "caveats",
+        "type": "markdown",
+        "sourceId": "post_step125_summary",
+        "body": "## Caveats and Assumptions\n\n- Step 125 versus Step 120 differs by one correct task on n=20; overlapping Wilson intervals mean the observed decline is not a causal or statistically decisive regression. The prespecified gate still failed.\n- The canary used eight responses per prompt, while the historical 100-step runs used four. The higher mixed-group rate is directionally useful but not a controlled response-count comparison.\n- The all-wrong-group dilution mechanism is strongly plausible from the reward traces but has not yet been isolated in a masked-loss A/B.\n- Runtime estimates for correction SFT should be measured in the 16-example smoke rather than extrapolated from GRPO, because fixed-sequence SFT removes the dominant agent-rollout wait."
+      }
+    ],
+    "charts": [
+      {
+        "id": "numeric_correct_chart",
+        "title": "Boss-exact numeric-correct tasks by checkpoint",
+        "subtitle": "Same 20-task development set; counts out of 20",
+        "type": "bar",
+        "dataset": "checkpoint_comparison",
+        "sourceId": "post_step125_summary",
+        "encodings": {
+          "x": {
+            "field": "checkpoint",
+            "type": "nominal"
+          },
+          "y": {
+            "field": "numeric_correct_count",
+            "type": "quantitative"
+          }
+        },
+        "valueFormat": "number",
+        "layout": "full"
+      }
+    ],
+    "tables": [
+      {
+        "id": "canary_signal_table",
+        "title": "Step 125 canary training signal",
+        "subtitle": "Five intended updates, 10 prompts and 80 trajectories",
+        "dataset": "canary_signal",
+        "sourceId": "post_step125_summary",
+        "columns": [
+          {"field": "metric", "label": "Metric"},
+          {"field": "value", "label": "Value"},
+          {"field": "interpretation", "label": "Interpretation"}
+        ],
+        "defaultSort": {"field": "metric", "direction": "asc"}
+      },
+      {
+        "id": "oracle_table",
+        "title": "Step 120 oracle ladder",
+        "subtitle": "Same 12 tasks under three inference interventions",
+        "dataset": "oracle_ladder",
+        "sourceId": "post_step125_summary",
+        "columns": [
+          {"field": "arm", "label": "Arm"},
+          {"field": "numeric_correct_count", "label": "Numeric correct"},
+          {"field": "complete_count", "label": "Complete"},
+          {"field": "reward_total_mean", "label": "Boss reward", "format": "number"},
+          {"field": "process_score_mean", "label": "Process score", "format": "number"}
+        ],
+        "defaultSort": {"field": "numeric_correct_count", "direction": "desc"}
+      },
+      {
+        "id": "checkpoint_table",
+        "title": "Boss-exact checkpoint comparison",
+        "subtitle": "Same 20-task development set; accuracy intervals are Wilson 95%",
+        "dataset": "checkpoint_comparison",
+        "sourceId": "post_step125_summary",
+        "columns": [
+          {"field": "checkpoint", "label": "Checkpoint"},
+          {"field": "numeric_correct_count", "label": "Numeric correct"},
+          {"field": "numeric_accuracy", "label": "Accuracy", "format": "percent"},
+          {"field": "completion_rate", "label": "Completion", "format": "percent"},
+          {"field": "reward_total_mean", "label": "Boss reward", "format": "number"},
+          {"field": "process_score_mean", "label": "Process score", "format": "number"},
+          {"field": "wilson_low", "label": "95% low", "format": "percent"},
+          {"field": "wilson_high", "label": "95% high", "format": "percent"}
+        ],
+        "defaultSort": {"field": "numeric_correct_count", "direction": "desc"}
+      },
+      {
+        "id": "experiment_table",
+        "title": "Recommended experiment sequence",
+        "subtitle": "Each phase stops unless its accuracy-oriented gate passes",
+        "dataset": "experiment_sequence",
+        "sourceId": "post_step125_summary",
+        "columns": [
+          {"field": "order", "label": "#"},
+          {"field": "phase", "label": "Phase"},
+          {"field": "change", "label": "Change"},
+          {"field": "gate", "label": "Continue only if"}
+        ],
+        "defaultSort": {"field": "order", "direction": "asc"}
+      }
+    ],
+    "sources": [
+      {
+        "id": "post_step125_summary",
+        "label": "Step 125 accuracy diagnosis aggregate",
+        "path": "docs/accuracy_improvement_post_step125_20260811_summary.json"
+      }
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "generatedAt": "2026-08-11T14:28:51.9699745+08:00",
+    "status": "ready",
+    "datasets": {
+      "checkpoint_comparison": [
+        {"checkpoint": "Step 100", "n": 20, "numeric_correct_count": 3, "numeric_accuracy": 0.15, "completion_rate": 0.65, "reward_total_mean": 0.44375, "process_score_mean": 0.765, "wilson_low": 0.052368745896216595, "wilson_high": 0.36041886474075696},
+        {"checkpoint": "Step 120", "n": 20, "numeric_correct_count": 2, "numeric_accuracy": 0.1, "completion_rate": 0.8, "reward_total_mean": 0.563745, "process_score_mean": 0.84, "wilson_low": 0.027866481213768224, "wilson_high": 0.3010336452284873},
+        {"checkpoint": "Step 125", "n": 20, "numeric_correct_count": 1, "numeric_accuracy": 0.05, "completion_rate": 0.75, "reward_total_mean": 0.494995, "process_score_mean": 0.8025, "wilson_low": 0.008881448800795402, "wilson_high": 0.23613119344674205},
+        {"checkpoint": "Step 200", "n": 20, "numeric_correct_count": 1, "numeric_accuracy": 0.05, "completion_rate": 0.65, "reward_total_mean": 0.399685, "process_score_mean": 0.72375, "wilson_low": 0.008881448800795402, "wilson_high": 0.23613119344674205}
+      ],
+      "canary_signal": [
+        {"metric": "Mixed-correct groups", "value": "4/10 (40%)", "interpretation": "Only these prompts supplied correctness direction."},
+        {"metric": "All-wrong groups", "value": "6/10 (60%)", "interpretation": "No response in these prompts was numerically correct."},
+        {"metric": "Correct trajectory rate", "value": "15/80 (18.75%)", "interpretation": "Correct rows were concentrated in four prompts."},
+        {"metric": "Correct vs wrong reward", "value": "0.776 vs 0.160", "interpretation": "The reward bands separated outcomes strongly."},
+        {"metric": "Mixed-group strict ranking", "value": "4/4 (100%)", "interpretation": "Every mixed group ranked correct rows above wrong rows."},
+        {"metric": "All-wrong reward range", "value": "0.115 mean", "interpretation": "All-wrong groups still generated process-oriented gradients."},
+        {"metric": "SQL-evidence correct", "value": "7.5%", "interpretation": "Verified evidence acquisition remained rare."}
+      ],
+      "oracle_ladder": [
+        {"arm": "Control", "n": 12, "numeric_correct_count": 1, "complete_count": 8, "reward_total_mean": 0.453125, "process_score_mean": 0.8020833333333334},
+        {"arm": "Contract hint", "n": 12, "numeric_correct_count": 1, "complete_count": 11, "reward_total_mean": 0.6145833333333334, "process_score_mean": 0.78125},
+        {"arm": "Verified evidence oracle", "n": 12, "numeric_correct_count": 8, "complete_count": 9, "reward_total_mean": 0.6822916666666666, "process_score_mean": 0.875}
+      ],
+      "experiment_sequence": [
+        {"order": 1, "phase": "Repair overfit smoke", "change": "16 verified short repair trajectories; no agent rollout", "gate": "≥90% exact replay on the 16 examples"},
+        {"order": 2, "phase": "Correction SFT canary", "change": "48–64 verified repairs from train236", "gate": "Dev20: ≥3 numeric correct, ≥16 complete, process ≥0.80"},
+        {"order": 3, "phase": "Informative-group GRPO", "change": "8 responses; mixed groups only; ≥4 prompts/update", "gate": "Raw mixed rate ≥60%; after two updates beat Step 120 accuracy"},
+        {"order": 4, "phase": "Sealed selection", "change": "Evaluate untouched test20 once", "gate": "Promote only on a predeclared sealed improvement"}
+      ]
+    }
+  },
+  "sources": [
+    {
+      "id": "post_step125_summary",
+      "label": "Step 125 accuracy diagnosis aggregate",
+      "path": "docs/accuracy_improvement_post_step125_20260811_summary.json",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM read_json_auto('docs/accuracy_improvement_post_step125_20260811_summary.json')",
+        "description": "Loads the reviewed aggregate containing checkpoint, canary-signal, oracle, and experiment-plan records used by this report.",
+        "tables_used": [
+          "docs/accuracy_improvement_post_step125_20260811_summary.json"
+        ],
+        "filters": [
+          "Step 125 rollout window is limited to files 122 through 126",
+          "Boss-exact checkpoint comparisons use the same 20-task development set"
+        ],
+        "metric_definitions": {
+          "numeric_accuracy": "numeric_correct_count divided by n",
+          "completion_rate": "complete_count divided by n",
+          "mixed_correct_group_rate": "groups containing at least one correct and at least one incorrect response divided by valid groups",
+          "all_wrong_group_rate": "groups containing no correct response divided by valid groups"
+        }
+      }
+    }
+  ]
+}

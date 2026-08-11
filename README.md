@@ -19,6 +19,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - 连续最终答案正确性奖励已通过既有 3,200 条轨迹离线门禁，并以 `PI_DENSE_CORRECTNESS_WEIGHT` 作为默认关闭的可选训练分量；首轮试验固定为 `30%`，其余安全硬门控与正式拓扑保持不变。
 - Step 100→120 的 20-step dense30 试验已完成并保存完整 `model,optimizer,extra`。老板原版 val20 总奖励方向性升至 `0.563745`，但 dense30 同口径复算几乎不变、最终数值正确未提高；当前保留 Step 120，暂停直接续训，先扩大密封评测并增强组内正确性信号。
 - Step 120 的 48K 强制收尾门禁已完成：第 22 个助手回合触发时救回 4 道未收尾题中的 3 道，老板原版六题平均奖励由 `0.2750` 升至 `0.5458`，但最终数值正确仍为 0；对剩余 `task_000196` 提前到第 14 回合后可收尾并获 `0.5625`，判定仍为 `result_wrong_process_ok`。因此当前不直接扩到 64K/96K或续训100步，先做预算感知的工具调用拦截、纠正监督和同运行配对门禁。
+- Step 125 的 `2 groups × 8 responses` 五步金丝雀未通过老板原版门禁：相对 Step 120，val20 数值正确由 `2/20` 降至 `1/20`、完整收尾由 `16/20` 降至 `15/20`。五步训练中正确轨迹平均奖励 `0.7758`、错误轨迹 `0.1600`，4/4 个 mixed-correct groups 均严格正确排序，但 `6/10` 个 prompt 仍为全错；下一步停止同配方续训，先做 16 条机械验证纠错 SFT 冒烟，再扩至 48–64 条并只用 mixed-correct groups 做短 GRPO 金丝雀。
 - 所有新增镜像、容器、工作目录和实验名均以 `llin` 开头，不复用或修改其他人的环境。
 
 当前服务器部署：
@@ -79,6 +80,8 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [`notebooks/next_experiment_strategy_20260810.ipynb`](notebooks/next_experiment_strategy_20260810.ipynb)：从头执行通过的96K容量、并发增量和快速实验成本分析 notebook。
 - [`docs/force_final_sentinel_20260810.md`](docs/force_final_sentinel_20260810.md)：Step 120 的 48K 强制收尾 sentinel6 与单题提前收口实跑、老板原版评分、失败归因和进入训练前门槛。
 - [`docs/accuracy_improvement_strategy_20260810.html`](docs/accuracy_improvement_strategy_20260810.html)：结合 Step 100/120/200、前后两个100步组内信号和强制收尾实验的准确率瓶颈诊断；给出 oracle 梯度、纠错 SFT、奖励分层及 `2 groups × 8 responses` 金丝雀路线。
+- [`docs/accuracy_improvement_post_step125_20260811.html`](docs/accuracy_improvement_post_step125_20260811.html)：结合 Step 125 金丝雀、同题老板原版评分、oracle 梯度与组内奖励排序的准确率复盘；给出纠错 SFT、mixed-only GRPO 和密封 test20 的分阶段门禁。
+- [`docs/accuracy_improvement_post_step125_20260811_summary.json`](docs/accuracy_improvement_post_step125_20260811_summary.json)：不含原始轨迹与服务器绝对路径的 Step 125 组内信号、checkpoint 对比、oracle 结果和下一轮实验门槛聚合。
 - [`docs/leadership_experiment_update_methodology_20260806.md`](docs/leadership_experiment_update_methodology_20260806.md)：从多轮实际修订中提炼的领导汇报方法论，固化四段结构、数字精度、口径边界、抗奖励投机表述、行动项口吻和自检清单。
 - `llin_verl/pi_sqlite_tool.py`：只读 SQLite 轨迹工具。
 - `llin_verl/pi_workspace_tools.py`、`llin_verl/pi_agent_loop.py`：完整 PI 四工具、轨迹级共享沙箱、事件审计和统一清理。
@@ -95,6 +98,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/verify_checkpoint_integrity.py`：在正式启动器发布成功退出码前检查 HF tensor key/分片或 Megatron distributed checkpoint 元数据与分片，缺失时 fail closed。
 - `scripts/configure_live_optimizer_checkpoint.py`：对运行中的 veRL Ray WorkerDict 逐 rank 检查或在线切换最终 checkpoint 内容，用于在不中断训练的前提下补启用 `model,optimizer,extra`，并要求所有预期 worker 回读一致。
 - `scripts/analyze_formal_grpo_50step.py`、`scripts/audit_formal_instruction_gold_alignment.py`：完整 50-step 训练信号、奖励组件、GRPO group 方差、工具行为及 instruction/gold 语义复核触发器。
+- `scripts/analyze_canary_rollout_signal.py`：只读汇总指定 rollout 文件窗口的 mixed/all-wrong group、正确/错误奖励分离、组内排序和 SQL 证据率；默认只输出聚合 JSON，不复制原始轨迹。
 - `scripts/start_ray_m05.sh`、`scripts/start_ray_m06.sh`：两机 Ray 启动程序。
 - `scripts/check_ray_roles.py`：跨机角色落点验证。
 - `scripts/check_hccl.py`：两机基础 HCCL all-reduce 验证。
@@ -124,6 +128,13 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `llin_verl/megatron_bridge_compat.py`、`scripts/patch_verl_megatron_bridge_compat.py`：为昇腾验证版 Megatron-Bridge 补齐当前 veRL 所需的最小兼容接口。
 
 ## 已验证状态
+
+### v0.64.0 — 2026-08-11
+
+- 新增 Step 125 五步金丝雀的只读组内信号分析器：在服务器端只输出聚合结果，不传输原始敏感轨迹；确认 10 个 prompt 中 4 个 mixed-correct、6 个 all-wrong，mixed groups 的正确/错误奖励排序为 `4/4` 严格一致。
+- 完成 Step 100/120/125/200 同一 val20、12 题 oracle 梯度和五步训练信号的联合诊断：当前奖励分层能选择已有正确候选，但 evidence/SQL 获取能力不足使多数 prompt 无正确候选，继续同配方更新缺少收益证据。
+- 下一轮固定为低成本三段门禁：16 条机械验证纠错 SFT 过拟合冒烟、48–64 条纠错 SFT 金丝雀、最多 2 个 mixed-only GRPO optimizer updates；保留 Step 120，并把反复使用的 val20 降级为开发集，最终只使用一次 untouched test20。
+- 新增自包含复盘报告、可复查聚合 JSON 和分析器测试；项目测试为 `183 passed`。报告 schema、来源、载荷与 HTML 结构验证通过；本机增强 reader 未就绪，因此浏览器交互验收未声明通过。
 
 ### v0.63.0 — 2026-08-11
 

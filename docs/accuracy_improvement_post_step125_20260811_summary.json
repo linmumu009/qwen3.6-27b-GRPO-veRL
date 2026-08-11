@@ -1,0 +1,204 @@
+{
+  "analysis": "accuracy_improvement_post_step125",
+  "generated_at": "2026-08-11T14:28:51.9699745+08:00",
+  "decision": "Do not continue the Step 127 checkpoint with the current GRPO recipe. Bootstrap verified evidence-acquisition behavior with correction SFT, then resume only with correctness-informative groups and a larger effective prompt batch.",
+  "input_sources": [
+    "docs/step120_dense_trial_20260810_summary.json",
+    "docs/accuracy_improvement_strategy_20260810_summary.json",
+    "llin-accuracy-unattended-20260810-01/oracle_summary.json",
+    "llin-accuracy-unattended-20260810-01/banded_reward_replay_gate.json",
+    "llin-accuracy-unattended-resume-20260811-03/step125_accuracy_gate.json",
+    "llin-accuracy-unattended-resume-20260811-03/canary_signal_summary.json"
+  ],
+  "checkpoint_comparison": [
+    {
+      "checkpoint": "Step 100",
+      "n": 20,
+      "reward_total_mean": 0.44375,
+      "result_score_mean": 0.4,
+      "process_score_mean": 0.765,
+      "complete_count": 13,
+      "completion_rate": 0.65,
+      "numeric_correct_count": 3,
+      "numeric_accuracy": 0.15,
+      "wilson_low": 0.052368745896216595,
+      "wilson_high": 0.36041886474075696
+    },
+    {
+      "checkpoint": "Step 120",
+      "n": 20,
+      "reward_total_mean": 0.563745,
+      "result_score_mean": 0.45,
+      "process_score_mean": 0.84,
+      "complete_count": 16,
+      "completion_rate": 0.8,
+      "numeric_correct_count": 2,
+      "numeric_accuracy": 0.1,
+      "wilson_low": 0.027866481213768224,
+      "wilson_high": 0.3010336452284873
+    },
+    {
+      "checkpoint": "Step 125",
+      "n": 20,
+      "reward_total_mean": 0.494995,
+      "result_score_mean": 0.4,
+      "process_score_mean": 0.8025,
+      "complete_count": 15,
+      "completion_rate": 0.75,
+      "numeric_correct_count": 1,
+      "numeric_accuracy": 0.05,
+      "wilson_low": 0.008881448800795402,
+      "wilson_high": 0.23613119344674205
+    },
+    {
+      "checkpoint": "Step 200",
+      "n": 20,
+      "reward_total_mean": 0.399685,
+      "result_score_mean": 0.35,
+      "process_score_mean": 0.72375,
+      "complete_count": 13,
+      "completion_rate": 0.65,
+      "numeric_correct_count": 1,
+      "numeric_accuracy": 0.05,
+      "wilson_low": 0.008881448800795402,
+      "wilson_high": 0.23613119344674205
+    }
+  ],
+  "step120_to_step125": {
+    "reward_total_mean_delta": -0.06875,
+    "result_score_mean_delta": -0.05,
+    "process_score_mean_delta": -0.0375,
+    "complete_count_delta": -1,
+    "numeric_correct_count_delta": -1,
+    "gate_passed": false
+  },
+  "canary_signal": {
+    "rollout_files": [122, 123, 124, 125, 126],
+    "row_count": 80,
+    "group_count": 10,
+    "group_size": 8,
+    "valid_group_rate": 1.0,
+    "mixed_correct_group_count": 4,
+    "mixed_correct_group_rate": 0.4,
+    "all_wrong_group_count": 6,
+    "all_wrong_group_rate": 0.6,
+    "correct_row_count": 15,
+    "correct_row_rate": 0.1875,
+    "correct_score_mean": 0.7757533333333333,
+    "wrong_score_mean": 0.15995692307692308,
+    "mixed_correct_strict_rank_rate": 1.0,
+    "mixed_correct_rows_mean": 3.75,
+    "mixed_correct_min_margin_mean": 0.46325,
+    "mixed_reward_range_mean": 0.814275,
+    "all_wrong_reward_range_mean": 0.11493333333333333,
+    "has_final_answer_rate": 0.825,
+    "sql_evidence_correct_rate": 0.075
+  },
+  "historical_signal": {
+    "first_100_steps": {
+      "group_size": 4,
+      "mixed_correct_group_rate": 0.1875,
+      "all_wrong_group_rate": 0.7825
+    },
+    "second_100_steps": {
+      "group_size": 4,
+      "mixed_correct_group_rate": 0.18,
+      "all_wrong_group_rate": 0.785
+    },
+    "banded_reward_replay": {
+      "row_count": 3200,
+      "group_count": 800,
+      "mixed_correct_group_count": 133,
+      "mixed_correct_rank_rate": 1.0
+    },
+    "comparability_caveat": "The 10-group Step 125 canary used eight responses per prompt, while the historical runs used four. The higher mixed rate is directionally encouraging but is not a controlled causal comparison."
+  },
+  "oracle_ladder": [
+    {
+      "arm": "Control",
+      "n": 12,
+      "reward_total_mean": 0.453125,
+      "process_score_mean": 0.8020833333333334,
+      "complete_count": 8,
+      "numeric_correct_count": 1
+    },
+    {
+      "arm": "Contract hint",
+      "n": 12,
+      "reward_total_mean": 0.6145833333333334,
+      "process_score_mean": 0.78125,
+      "complete_count": 11,
+      "numeric_correct_count": 1
+    },
+    {
+      "arm": "Verified evidence oracle",
+      "n": 12,
+      "reward_total_mean": 0.6822916666666666,
+      "process_score_mean": 0.875,
+      "complete_count": 9,
+      "numeric_correct_count": 8
+    }
+  ],
+  "diagnosis": [
+    {
+      "finding": "The banded reward separates correct from incorrect trajectories when both exist.",
+      "confidence": "verified",
+      "evidence": "Correct mean score 0.7758 versus 0.1600 for wrong rows; strict correct-over-wrong ordering in 4/4 mixed groups."
+    },
+    {
+      "finding": "Evidence acquisition and SQL reasoning are the primary capability bottleneck.",
+      "confidence": "verified_directionally",
+      "evidence": "Contract hints raised completion from 8/12 to 11/12 without increasing numeric correctness; verified evidence raised numeric correctness from 1/12 to 8/12."
+    },
+    {
+      "finding": "All-wrong groups can dilute accuracy learning by optimizing process-only differences.",
+      "confidence": "likely_not_causal_proof",
+      "evidence": "6/10 groups had no correct response, yet all 10 groups had reward variance; all-wrong groups had a mean score range of 0.1149."
+    },
+    {
+      "finding": "Two independent prompts per optimizer update are too noisy for a full-parameter accuracy canary.",
+      "confidence": "likely_not_isolated",
+      "evidence": "Five updates covered only 10 prompts, and only four prompts supplied any correctness contrast."
+    },
+    {
+      "finding": "Longer context or sharper reward bands are not the next binding lever.",
+      "confidence": "supported",
+      "evidence": "Reward ordering is already strict when positives exist, while oracle evidence changes correctness far more than contract/finish interventions."
+    }
+  ],
+  "recommended_experiment_sequence": [
+    {
+      "phase": "1. Repair overfit smoke",
+      "change": "Train on 16 short, mechanically verified repair trajectories from train236 only.",
+      "purpose": "Prove that the model and SFT path can learn the required evidence/tool/final-answer pattern without agent rollout.",
+      "gate": "At least 90% exact replay success on the 16 examples; no validation claim."
+    },
+    {
+      "phase": "2. Correction SFT canary",
+      "change": "Expand to 48-64 verified repair trajectories covering evidence acquisition, SQL semantics, arithmetic, and unfinished answers; keep targets concise.",
+      "purpose": "Create correct trajectories for prompts that currently produce eight wrong responses.",
+      "gate": "On the reused dev20: at least 3/20 numeric correct, at least 16/20 complete, process score at least 0.80."
+    },
+    {
+      "phase": "3. Informative-group GRPO",
+      "change": "Keep 8 responses and the current banded reward, but do not update from all-wrong/all-correct groups; accumulate at least four mixed prompts per optimizer step using two-group microbatches.",
+      "purpose": "Make each full-parameter update carry correctness direction while retaining asynchronous utilization.",
+      "gate": "Before updating, raw candidate groups should reach at least 60% mixed-correct and at most 40% all-wrong; after two updates, dev20 must beat Step 120 numeric correctness without completion/process regression."
+    },
+    {
+      "phase": "4. Sealed selection",
+      "change": "Evaluate the untouched test20 once only after the development gates pass.",
+      "purpose": "Separate model selection from repeated use of the existing val20.",
+      "gate": "Predeclare the primary endpoint and retain Step 120 unless the sealed result improves."
+    }
+  ],
+  "do_not_prioritize": [
+    "Continue Step 127 to Step 145 or another 100 steps with the same recipe",
+    "Increase context from 48K to 96K before repairing evidence acquisition",
+    "Increase responses from 8 to 16 without changing prompt/task selection",
+    "Sharpen the reward bands further",
+    "Use Fastest-K response selection",
+    "Treat the repeatedly used val20 as a final sealed benchmark"
+  ],
+  "confidence_assessment": "Share with caveats: reward separation and oracle direction are verified, but the Step 120 versus Step 125 accuracy difference is only one task on n=20 and does not establish causal regression. The prespecified continuation gate nevertheless failed, so there is no evidence supporting expensive continuation."
+}
