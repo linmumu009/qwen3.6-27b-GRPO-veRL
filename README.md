@@ -188,6 +188,12 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 版本记录
 
+### v0.61.0 — 2026-08-11
+
+- 无人值守准确率流水线支持从已通过的 oracle/replay 结果直接进入 Stage 4，避免恢复失败后重复执行约 3 小时 42 分钟的三组诊断。
+- Step 120 的结构完整 Adam checkpoint 在 Megatron/MindSpeed HybridDeviceOptimizer 恢复时触发参数映射 `KeyError`；banded 入口新增显式 optimizer 加载开关，本轮从模型与 extra 恢复并重新初始化 Adam，最终 checkpoint 仍保存完整 `model,optimizer,extra`。
+- Stage 4 与 Stage 5 均在运行契约中记录 optimizer 重置原因；断点续跑会复用并重新验证原离线奖励门槛，未通过时保持 fail closed。
+
 ### v0.60.0 — 2026-08-10
 
 - 新增可脱离SSH运行的准确率无人值守流水线：自动完成oracle三条件冻结评测、老板原版评分、分层奖励离线回放、5步金丝雀、条件式20步续训、最终评测、checkpoint完整性检查和两机Ray资源清理。

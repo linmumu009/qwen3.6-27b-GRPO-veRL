@@ -102,6 +102,11 @@ def test_banded_2x8_resume_contract_and_final_only_checkpoint():
     )
     for item in expected:
         assert item in run_script
+    assert 'LOAD_OPTIMIZER_STATE="${LOAD_OPTIMIZER_STATE:-true}"' in run_script
+    assert 'CHECKPOINT_LOAD_CONTENTS="[model,optimizer,extra]"' in run_script
+    assert 'CHECKPOINT_LOAD_CONTENTS="[model,extra]"' in run_script
+    assert "reset_hybrid_cpu_offload_resume_workaround" in run_script
+    assert 'LOAD_OPTIMIZER_STATE="${LOAD_OPTIMIZER_STATE:-true}"' in launcher
     assert "expected_global_step_%s_got_%s" in launcher
     assert "verify_checkpoint_integrity.py" in launcher
 
@@ -117,6 +122,10 @@ def test_unattended_pipeline_is_fail_closed_between_stages():
     assert "analyze_accuracy_gate.py" in script
     assert "NEW_TRAINING_STEPS=5" in script
     assert "NEW_TRAINING_STEPS=20" in script
+    assert 'START_STAGE="${START_STAGE:-stage1}"' in script
+    assert "START_STAGE must be stage1 or stage4" in script
+    assert "refusing stage4 resume because replay gate did not pass" in script
+    assert "LOAD_OPTIMIZER_STATE=false" in script
     assert "CHECKPOINT_INVALID" not in script
     assert "ray stop --force" in script
 

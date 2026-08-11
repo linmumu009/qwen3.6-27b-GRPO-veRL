@@ -21,6 +21,23 @@ MAX_CONTEXT_TOKENS=49152
 MAX_QUEUE_TOKENS="$((MAX_QUEUE_GROUPS * RESPONSES_PER_GROUP * MAX_CONTEXT_TOKENS))"
 TOTAL_ROLLOUT_GROUPS="$((NEW_TRAINING_STEPS * GROUPS_PER_STEP + PREWARM_GROUPS))"
 LEARNING_RATE="${LEARNING_RATE:-1e-7}"
+LOAD_OPTIMIZER_STATE="${LOAD_OPTIMIZER_STATE:-true}"
+
+case "${LOAD_OPTIMIZER_STATE}" in
+  true)
+    CHECKPOINT_LOAD_CONTENTS="[model,optimizer,extra]"
+    OPTIMIZER_STATE="resume_from_source"
+    ;;
+  false)
+    CHECKPOINT_LOAD_CONTENTS="[model,extra]"
+    OPTIMIZER_STATE="reset_hybrid_cpu_offload_resume_workaround"
+    ;;
+  *)
+    printf 'LOAD_OPTIMIZER_STATE must be true or false, got: %s\n' \
+      "${LOAD_OPTIMIZER_STATE}" >&2
+    exit 2
+    ;;
+esac
 
 if (( START_POLICY_STEP < 0 || NEW_TRAINING_STEPS <= 0 )); then
   printf 'Invalid resume interval: start=%s new_steps=%s\n' \
@@ -51,6 +68,8 @@ all_responses_used=true
 context_tokens=${MAX_CONTEXT_TOKENS}
 validation=final_only_boss_val20
 checkpoint=final_only_model_optimizer_extra
+checkpoint_load_contents=${CHECKPOINT_LOAD_CONTENTS}
+optimizer_state=${OPTIMIZER_STATE}
 EOF
 
 PI_REWARD_MODE=banded_v1 \
@@ -100,5 +119,5 @@ bash "${PROJECT_ROOT}/scripts/run_pi_grpo_fully_async_tp4_pp2_cp2.sh" \
   trainer.resume_from_path="${SOURCE_CHECKPOINT}" \
   trainer.del_local_ckpt_after_load=False \
   async_training.use_trainer_do_validate=False \
-  'actor_rollout_ref.actor.checkpoint.load_contents=[model,optimizer,extra]' \
+  "actor_rollout_ref.actor.checkpoint.load_contents=${CHECKPOINT_LOAD_CONTENTS}" \
   'actor_rollout_ref.actor.checkpoint.save_contents=[model,optimizer,extra]'
