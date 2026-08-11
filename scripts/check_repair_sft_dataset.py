@@ -20,6 +20,7 @@ def main() -> None:
     parser.add_argument("--model-path", type=str, required=True)
     parser.add_argument("--max-length", type=int, default=4096)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--quiet", action="store_true", help="write the gate without printing it")
     args = parser.parse_args()
 
     tokenizer = hf_tokenizer(args.model_path, trust_remote_code=True)
@@ -70,7 +71,8 @@ def main() -> None:
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
-    print(json.dumps(summary, indent=2))
+    if not args.quiet:
+        print(json.dumps(summary, indent=2))
 
 
 if __name__ == "__main__":

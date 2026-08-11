@@ -22,6 +22,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - Step 125 的 `2 groups × 8 responses` 五步金丝雀未通过老板原版门禁：相对 Step 120，val20 数值正确由 `2/20` 降至 `1/20`、完整收尾由 `16/20` 降至 `15/20`。五步训练中正确轨迹平均奖励 `0.7758`、错误轨迹 `0.1600`，4/4 个 mixed-correct groups 均严格正确排序，但 `6/10` 个 prompt 仍为全错；下一步停止同配方续训，先做 16 条机械验证纠错 SFT 冒烟，再扩至 48–64 条并只用 mixed-correct groups 做短 GRPO 金丝雀。
 - 两台服务器下的纠错实验按角色流水线执行：5 号机保留 16 卡 Megatron 训练，6 号机负责数据机械核验、回放和 Agent 评测，不做低样本 32 卡跨机 SFT。首个 16 条 go/no-go 预计 `4–6h`；全部门禁通过时，48–64 条纠错 SFT、两次有效 GRPO 更新和一次密封 test20 预计累计 `12–16h`。
 - veRL 官方 `verl.trainer.sft_trainer` 的 Step 120 模型态初始化与单步全参 SFT 已在 5 号机实跑通过：TP4/PP2/CP2、Qwen3.6 完整工具模板、assistant-only loss mask、全新 CPU-offload Adam 均可工作；成功步 loss `0.9603`、grad norm `141.10`、单卡峰值 `26.27 GiB`、整机 CPU 内存 `821.63 GiB`，退出码 `0`。该运行仅为一条合成数据的不可晋升工程门禁，下一步才进入 16 条真实纠错数据机械核验。
+- 16 条真实 train236 纠错轨迹已通过机械核验并完成 5 步 veRL 官方全参 SFT：loss 从 `1.8738` 降至 `0.5764`，墙钟 `11m04s`，最终 model-only Megatron checkpoint 的 32 个分片完整（`54.72 GB`）。同一 16 题的 Step 120/SFT Step 5 老板原始评分器回放已由无人值守流水线启动；该结果只作为同题记忆门禁，不作 held-out 泛化声明。
 - 所有新增镜像、容器、工作目录和实验名均以 `llin` 开头，不复用或修改其他人的环境。
 
 当前服务器部署：
@@ -33,7 +34,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 | 容器 | `llin-verl-trainer-m05-20260730` | `llin-verl-rollout-m06-20260730` |
 | 镜像 | `llin-verl-a3:20260730` | `llin-verl-a3:20260730` |
 | 容器权限 | 特权模式（仅重建上述 `llin` 容器） | 特权模式（仅重建上述 `llin` 容器） |
-| 当前实验 NPU | 0（veRL SFT 单步冒烟完成后项目容器已停止） | 0（当前无 rollout，项目容器已停止） |
+| 当前实验 NPU | Ray trainer/actor 服务在线，等待 16 题基线回放完成 | 两路 TP8 vLLM 正在执行 Step 120 基线回放 |
 
 ## 数据结论
 
@@ -87,6 +88,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [`docs/repair_sft_two_server_time_estimate_20260811.html`](docs/repair_sft_two_server_time_estimate_20260811.html)：用既有 oracle、Step 125 金丝雀、val20 和 checkpoint 实测墙钟，估算两台服务器并行下的纠错 SFT 首个决策点与完整门禁关键路径。
 - [`docs/repair_sft_two_server_time_estimate_20260811_summary.json`](docs/repair_sft_two_server_time_estimate_20260811_summary.json)：两机角色、实测耗时基线、累计里程碑、关键路径区间和 18–24 小时下行情形的安全聚合。
 - [`docs/verl_repair_sft_smoke_20260811.md`](docs/verl_repair_sft_smoke_20260811.md)：veRL 官方 SFT trainer 从 Step 120 分布式模型权重初始化、Qwen3.6 完整工具模板 assistant-only mask、四次隔离启动与最终单步前反向成功证据。
+- [`docs/repair_sft_train236_overfit_20260811.md`](docs/repair_sft_train236_overfit_20260811.md)：16 条 train236 真实纠错轨迹的来源、机械门禁、5 步 veRL 全参 SFT 指标、资源峰值、checkpoint 完整性与同题老板评分器回放边界。
 - [`docs/leadership_experiment_update_methodology_20260806.md`](docs/leadership_experiment_update_methodology_20260806.md)：从多轮实际修订中提炼的领导汇报方法论，固化四段结构、数字精度、口径边界、抗奖励投机表述、行动项口吻和自检清单。
 - `llin_verl/pi_sqlite_tool.py`：只读 SQLite 轨迹工具。
 - `llin_verl/pi_workspace_tools.py`、`llin_verl/pi_agent_loop.py`：完整 PI 四工具、轨迹级共享沙箱、事件审计和统一清理。
@@ -134,8 +136,18 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/prepare_repair_sft_smoke_dataset.py`、`scripts/check_repair_sft_dataset.py`：生成不可晋升的确定性工具调用合成样本，并在占用 NPU 前检查 assistant loss 与非 assistant 上下文遮罩。
 - `scripts/qwen36_assistant_mask_sft_dataset.py`：通过 veRL 官方 `data.custom_cls` 扩展点用 Qwen3.6 完整对话模板构造 assistant-only SFT loss mask。
 - `scripts/run_repair_sft_megatron_smoke.sh`、`scripts/launch_repair_sft_megatron_smoke.sh`：固定 Step 120 模型态初始化、TP4/PP2/CP2 和 extra-only 保存的一步官方 veRL SFT 冒烟入口。
+- `scripts/prepare_repair_sft_dataset.py`、`scripts/run_repair_sft_train236_overfit.sh`：从 train236 审核资产中构建并机械核验 16 条单次 SQL 纠错轨迹，再从 Step 120 执行 5 步官方 veRL SFT。
+- `scripts/run_repair_sft_replay.sh`、`scripts/run_repair_sft_prepost_pipeline_host.sh`：以完全相同的老板四工具、48K/25 工具回合分别回放 Step 120 与 SFT Step 5，自动回收结果、调用老板原始评分器并写入配对门禁。
 
 ## 已验证状态
+
+### v0.67.0 — 2026-08-11
+
+- 从正式 train236 仅选择 16 条已审核、SQL 可执行且与 expected 自洽的真实纠错任务；与 val20/test20 的 task-id 重叠均为 0。Qwen3.6 完整模板 tokenization/mask 门禁为 `16/16`，并修正历史 `function.arguments` 字符串与当前模板要求 mapping 的格式差异。
+- 5 号机使用 Step 120 模型、TP4/PP2/CP2、16 NPU 完成 5 个全参数 SFT 更新：loss `1.8738 → 0.5764`（下降约 `69.2%`），墙钟 `11m04s`，单卡峰值 `26.34 GiB`，CPU Adam 峰值 `1072.06 GiB`。
+- 最终仅保存 model + extra：32 个非空 dist-checkpoint 分片、总计 `54,720,369,973` 字节，完整性校验通过；未保存 optimizer，避免再次产生约 438 GiB 的 Adam 状态。
+- 新增任意 Megatron dist checkpoint 的 val-only 强制权重同步补丁，以及 Step 120/SFT Step 5 同题、greedy、老板四工具、48K/25 回合的无人值守原始评分器前后回放。基线回放已启动并健康运行，完成后会自动接续训练后回放与配对门禁；当前不宣称 held-out 准确率提升。
+- 新增数据准备、训练、回放、自动流水线及契约测试；完整测试结果为 `196 passed`。
 
 ### v0.66.0 — 2026-08-11
 
