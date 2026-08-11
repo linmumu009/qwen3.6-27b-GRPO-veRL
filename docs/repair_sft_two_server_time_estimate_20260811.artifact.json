@@ -1,0 +1,209 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "两台服务器下纠错 SFT 实验时间预算",
+    "generatedAt": "2026-08-11T16:30:00+08:00",
+    "blocks": [
+      {
+        "id": "title",
+        "type": "markdown",
+        "body": "# 两台服务器下纠错 SFT 实验时间预算"
+      },
+      {
+        "id": "executive_summary",
+        "type": "markdown",
+        "body": "## Executive Summary\n\n- **首个可信决策点需要约 4–6 小时。** 这时可以知道 16 条机械验证纠错轨迹能否被 Step 120 学会，并通过至少 90% 的原题精确回放；失败即停止。\n- **完成纠错 SFT 并跑一次 dev20 约需累计 7–10 小时。** 训练计算不是主要成本，首次 SFT 入口、数据核验和实测 67.6 分钟的 Agent 评测才是关键路径。\n- **如果所有门禁通过，包含两次有效 GRPO 更新和一次密封 test20，按 12–16 小时安排。** 最适合做成一个无人值守工作日任务。\n- **两台服务器应按训练与推理流水线并行，而不是组成 32 卡 SFT。** 小数据 SFT 的计算量太少，跨机通信、初始化和 checkpoint 适配的成本会超过加速收益。"
+      },
+      {
+        "id": "milestone_finding",
+        "type": "markdown",
+        "sourceId": "schedule_source",
+        "body": "## 4–6 小时先给结论，只有通过才继续花算力\n\n下面的时间是从任务启动起的累计墙钟，不是把所有阶段串行相加。两台机器在数据准备、训练入口、纠错池扩展和 mixed-group 代码准备上重叠工作；每个门禁失败都会立即结束后续阶段。典型路径在约 5 小时给出 16 条冒烟结论，约 8.5 小时完成 48–64 条纠错 SFT 的 dev20，约 13 小时完成两次有效 GRPO 更新后的 dev20。"
+      },
+      {
+        "id": "milestone_chart_block",
+        "type": "chart",
+        "chartId": "milestone_chart"
+      },
+      {
+        "id": "measured_finding",
+        "type": "markdown",
+        "sourceId": "measured_source",
+        "body": "## 实测基线说明评测比短 SFT 更耗时\n\n已有三条件 oracle 共耗时 3 小时 42 分 30 秒，本轮直接复用，不再重跑；Step 120 的完整 val20 实测为 4,054.6 秒，即 67.6 分钟，而保存完整分布式 checkpoint 只有约 89 秒。Step 125 的五次 `2×8` 更新连同运行收尾耗时 2 小时 36 分 57 秒，可作为后续两次 mixed-only 更新的保守上界参考。\n\n**含义：** 优先减少重复评测和无效更新，收益远高于优化 checkpoint 保存。"
+      },
+      {
+        "id": "measured_table_block",
+        "type": "table",
+        "tableId": "measured_table"
+      },
+      {
+        "id": "allocation_finding",
+        "type": "markdown",
+        "sourceId": "critical_path_source",
+        "body": "## 两台机器按角色并行，避免跨机 SFT 的固定成本\n\n5 号机保留现有 16 卡 Megatron 训练角色，负责 Step 120 加载、前反向和保存；6 号机负责纠错数据机械核验、SQL 循环特征汇总、16 条回放、dev20 和后续 8-response rollout。SFT 训练期间，6 号机继续准备 48–64 条纠错池；评测期间，5 号机可以提前完成 mixed-only GRPO 的门禁代码和 checkpoint 检查。\n\n**含义：** 这能把首轮工程准备与数据准备取最大值，而不是相加。"
+      },
+      {
+        "id": "critical_path_table_block",
+        "type": "table",
+        "tableId": "critical_path_table"
+      },
+      {
+        "id": "recommended_next_steps",
+        "type": "markdown",
+        "body": "## 推荐执行顺序\n\n1. **先实现 16 条冒烟，不先构造全部 64 条。** 同时复用现有 Step 120、oracle、奖励回放和老板评分器。\n2. **选择转换最少的 SFT 路径。** 优先复用当前 Megatron checkpoint；只有现有 trainer 已能直接加载 LoRA 时才用 LoRA，不为一次小试验新建整套适配链。\n3. **4–6 小时检查第一个门禁。** 若 16 条精确回放低于 90%，停止并修正数据或训练入口，不跑 dev20。\n4. **7–10 小时检查纠错 SFT 门禁。** dev20 至少 3/20 数值正确、16/20 完整、过程分不低于 0.80，才进入 GRPO。\n5. **最多再做两次有效更新。** 只累计 mixed-correct prompts；未超过 Step 120 就停止，不触碰 test20。"
+      },
+      {
+        "id": "further_questions",
+        "type": "markdown",
+        "body": "## Further Questions\n\n- Step 120 的分布式 checkpoint 能否直接进入当前 Megatron SFT 路径，还是需要一次模型视图转换？这会决定时间更靠近 12 小时还是 16 小时。\n- 16 条轨迹的平均目标长度是多少？若刻意保持在 2K–6K tokens，训练计算将远小于模型加载与保存。\n- SFT 后原始 8-response groups 的 mixed-correct 比例能否达到 60%？达不到就不应进入在线更新。"
+      },
+      {
+        "id": "caveats",
+        "type": "markdown",
+        "body": "## Caveats and Assumptions\n\n- 仓库目前没有现成的监督微调启动器，因此首次 checkpoint 加载、data loader 和 loss 路径是最大不确定项；若暴露 Megatron 兼容问题，完整路径可能延长到 18–24 小时。\n- 4–6 小时是方向门禁，不是泛化结论；它只证明模型和训练路径能学会纠错行为。\n- 12–16 小时假设两台项目服务器空闲、现有容器与 Step 120 checkpoint 健康，并且不重跑已经完成的 oracle 和奖励回放。\n- 密封 test20 只在全部开发门禁通过后运行一次，因此失败路径通常会显著早于 12 小时结束。"
+      }
+    ],
+    "charts": [
+      {
+        "id": "milestone_chart",
+        "title": "实验决策里程碑的累计墙钟",
+        "subtitle": "两台服务器并行、所有前置门禁均通过；典型小时数",
+        "type": "bar",
+        "dataset": "milestones",
+        "sourceId": "schedule_source",
+        "encodings": {
+          "x": {
+            "field": "milestone",
+            "type": "nominal"
+          },
+          "y": {
+            "field": "typical_hours",
+            "type": "quantitative"
+          }
+        },
+        "valueFormat": "number",
+        "layout": "full",
+        "showDescription": true
+      }
+    ],
+    "tables": [
+      {
+        "id": "measured_table",
+        "title": "已完成实验的墙钟基线",
+        "subtitle": "用于约束新估时；oracle 直接复用，val20 保留为主要评测成本",
+        "dataset": "measured_baselines",
+        "sourceId": "measured_source",
+        "columns": [
+          {"field": "phase", "label": "阶段"},
+          {"field": "hours", "label": "实测小时", "format": "number"},
+          {"field": "use_in_next_run", "label": "本轮处理"}
+        ],
+        "defaultSort": {"field": "hours", "direction": "desc"}
+      },
+      {
+        "id": "critical_path_table",
+        "title": "两机并行关键路径",
+        "subtitle": "阶段区间是增量耗时；失败门禁会取消后续阶段",
+        "dataset": "critical_path",
+        "sourceId": "critical_path_source",
+        "columns": [
+          {"field": "order", "label": "#"},
+          {"field": "work", "label": "工作"},
+          {"field": "allocation", "label": "两机分工"},
+          {"field": "range_hours", "label": "增量耗时"}
+        ],
+        "defaultSort": {"field": "order", "direction": "asc"}
+      }
+    ],
+    "sources": [
+      {
+        "id": "schedule_source",
+        "label": "两机纠错实验里程碑估算",
+        "path": "docs/repair_sft_two_server_time_estimate_20260811_summary.json"
+      },
+      {
+        "id": "measured_source",
+        "label": "既有实验墙钟实测基线",
+        "path": "docs/repair_sft_two_server_time_estimate_20260811_summary.json"
+      },
+      {
+        "id": "critical_path_source",
+        "label": "两台服务器并行关键路径",
+        "path": "docs/repair_sft_two_server_time_estimate_20260811_summary.json"
+      }
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "generatedAt": "2026-08-11T16:30:00+08:00",
+    "status": "ready",
+    "datasets": {
+      "milestones": [
+        {"order": 1, "milestone": "16条冒烟结论", "low_hours": 4, "typical_hours": 5, "high_hours": 6},
+        {"order": 2, "milestone": "48–64条SFT + dev20", "low_hours": 7, "typical_hours": 8.5, "high_hours": 10},
+        {"order": 3, "milestone": "两次有效GRPO + dev20", "low_hours": 10, "typical_hours": 13, "high_hours": 15},
+        {"order": 4, "milestone": "通过后一次test20", "low_hours": 12, "typical_hours": 14.25, "high_hours": 16}
+      ],
+      "measured_baselines": [
+        {"phase": "三条件oracle", "hours": 3.7083333333, "use_in_next_run": "复用，不重跑"},
+        {"phase": "五次2×8金丝雀", "hours": 2.6158333333, "use_in_next_run": "短GRPO规划基线"},
+        {"phase": "老板原版val20", "hours": 1.1262868424, "use_in_next_run": "SFT后和GRPO后各一次"},
+        {"phase": "完整checkpoint保存", "hours": 0.0247222222, "use_in_next_run": "非主要瓶颈"}
+      ],
+      "critical_path": [
+        {"order": 1, "work": "入口与16条纠错数据", "allocation": "5训练预检；6生成/核验", "range_hours": "2.0–3.5h"},
+        {"order": 2, "work": "16条训练与保存", "allocation": "5训练；6扩充纠错池", "range_hours": "0.5–1.0h"},
+        {"order": 3, "work": "16条精确回放", "allocation": "5准备配置；6推理评分", "range_hours": "0.5–1.0h"},
+        {"order": 4, "work": "48–64条SFT和dev20", "allocation": "5训练；6接力评测", "range_hours": "2.5–4.0h"},
+        {"order": 5, "work": "两次有效GRPO和dev20", "allocation": "5更新；6 rollout/评测", "range_hours": "3.0–5.0h"},
+        {"order": 6, "work": "密封test20", "allocation": "5门禁；6一次评测", "range_hours": "1.1–1.5h"}
+      ]
+    }
+  },
+  "sources": [
+    {
+      "id": "schedule_source",
+      "label": "两机纠错实验里程碑估算",
+      "path": "docs/repair_sft_two_server_time_estimate_20260811_summary.json",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM (VALUES (1,'16条冒烟结论',4.0,5.0,6.0),(2,'48–64条SFT + dev20',7.0,8.5,10.0),(3,'两次有效GRPO + dev20',10.0,13.0,15.0),(4,'通过后一次test20',12.0,14.25,16.0)) AS t(order_id,milestone,low_hours,typical_hours,high_hours)",
+        "description": "把并行关键路径、实测评测时间和首次 SFT 工程缓冲合并为从启动起的累计里程碑区间。",
+        "tables_used": ["docs/repair_sft_two_server_time_estimate_20260811_summary.json"],
+        "filters": ["两台项目服务器可用", "所有前置门禁通过时才进入下一里程碑"],
+        "metric_definitions": {"typical_hours": "从任务启动到该里程碑的典型累计墙钟小时数"}
+      }
+    },
+    {
+      "id": "measured_source",
+      "label": "既有实验墙钟实测基线",
+      "path": "docs/repair_sft_two_server_time_estimate_20260811_summary.json",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM (VALUES ('三条件oracle',3.7083333333,'复用，不重跑'),('五次2×8金丝雀',2.6158333333,'短GRPO规划基线'),('老板原版val20',1.1262868424,'SFT后和GRPO后各一次'),('完整checkpoint保存',0.0247222222,'非主要瓶颈')) AS t(phase,hours,use_in_next_run)",
+        "description": "汇总远端已完成流水线时间戳和 Step 120 运行摘要中的实测墙钟。",
+        "tables_used": ["remote pipeline timestamps", "docs/step120_dense_trial_20260810_summary.json"],
+        "filters": ["只使用已完成且有起止时间或日志计时的阶段"],
+        "metric_definitions": {"hours": "阶段实测秒数除以3600"}
+      }
+    },
+    {
+      "id": "critical_path_source",
+      "label": "两台服务器并行关键路径",
+      "path": "docs/repair_sft_two_server_time_estimate_20260811_summary.json",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM (VALUES (1,'入口与16条纠错数据','5训练预检；6生成/核验','2.0–3.5h'),(2,'16条训练与保存','5训练；6扩充纠错池','0.5–1.0h'),(3,'16条精确回放','5准备配置；6推理评分','0.5–1.0h'),(4,'48–64条SFT和dev20','5训练；6接力评测','2.5–4.0h'),(5,'两次有效GRPO和dev20','5更新；6 rollout/评测','3.0–5.0h'),(6,'密封test20','5门禁；6一次评测','1.1–1.5h')) AS t(order_id,work,allocation,range_hours)",
+        "description": "按训练机与推理机角色划分可重叠工作，并保留门禁失败即停止的路径。",
+        "tables_used": ["docs/repair_sft_two_server_time_estimate_20260811_summary.json"],
+        "filters": ["5号机保留训练角色", "6号机保留推理和机械核验角色"],
+        "metric_definitions": {"range_hours": "该阶段对关键路径增加的低高墙钟区间"}
+      }
+    }
+  ]
+}

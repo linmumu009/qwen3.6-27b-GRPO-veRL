@@ -1,0 +1,150 @@
+{
+  "analysis": "repair_sft_two_server_time_estimate",
+  "generated_at": "2026-08-11T16:30:00+08:00",
+  "decision": "Use the two servers as an overlapped pipeline rather than a 32-device SFT job. Expect a first go/no-go in 4-6 hours and the full gated experiment in 12-16 hours if no new infrastructure blocker appears.",
+  "scope": {
+    "starting_checkpoint": "Step 120",
+    "server_05": "16-device Megatron training, checkpoint load/save, SFT and optimizer work",
+    "server_06": "16-device rollout/evaluation plus CPU-side repair generation and mechanical verification",
+    "reused_work": [
+      "Existing three-arm oracle result",
+      "Existing 3200-row reward replay",
+      "Existing Step 120 boss-exact baseline",
+      "Existing train236/val20/test20 split and verifier assets"
+    ]
+  },
+  "measured_baselines": [
+    {
+      "phase": "Three-arm oracle pipeline",
+      "seconds": 13350,
+      "hours": 3.7083333333,
+      "use_in_next_run": "reuse; do not rerun",
+      "evidence": "2026-08-10T22:26:28+08:00 to 2026-08-11T02:08:58+08:00"
+    },
+    {
+      "phase": "Five-update 2x8 canary run",
+      "seconds": 9417,
+      "hours": 2.6158333333,
+      "use_in_next_run": "planning baseline for short GRPO",
+      "evidence": "2026-08-11T02:48:12Z to 2026-08-11T05:25:09Z"
+    },
+    {
+      "phase": "Boss-exact val20",
+      "seconds": 4054.6326324779075,
+      "hours": 1.1262868424,
+      "use_in_next_run": "one run after correction SFT and one after informative GRPO",
+      "evidence": "Step 120 dense trial final validation"
+    },
+    {
+      "phase": "Distributed checkpoint save",
+      "seconds": 89,
+      "hours": 0.0247222222,
+      "use_in_next_run": "not a material bottleneck",
+      "evidence": "Step 120 dense trial final save"
+    }
+  ],
+  "milestones": [
+    {
+      "order": 1,
+      "milestone": "16-example smoke decision",
+      "low_hours": 4,
+      "typical_hours": 5,
+      "high_hours": 6,
+      "deliverable": "SFT path works, at least 90% exact replay, no dev-set claim"
+    },
+    {
+      "order": 2,
+      "milestone": "48-64 repair SFT plus dev20",
+      "low_hours": 7,
+      "typical_hours": 8.5,
+      "high_hours": 10,
+      "deliverable": "At least 3/20 numeric correct, 16/20 complete, process at least 0.80"
+    },
+    {
+      "order": 3,
+      "milestone": "Two informative GRPO updates plus dev20",
+      "low_hours": 10,
+      "typical_hours": 13,
+      "high_hours": 15,
+      "deliverable": "Beat Step 120 numeric accuracy without completion/process regression"
+    },
+    {
+      "order": 4,
+      "milestone": "Untouched test20, only if all gates pass",
+      "low_hours": 12,
+      "typical_hours": 14.25,
+      "high_hours": 16,
+      "deliverable": "One-time sealed model-selection result"
+    }
+  ],
+  "critical_path": [
+    {
+      "order": 1,
+      "work": "Build/reuse SFT entry and prepare 16 verified repairs",
+      "server_05": "SFT launcher, checkpoint preflight and one-batch dry run",
+      "server_06": "Generate/verify repairs and audit SQL-loop features",
+      "low_hours": 2,
+      "high_hours": 3.5,
+      "parallel": true
+    },
+    {
+      "order": 2,
+      "work": "Load Step 120, train and save the 16-example smoke",
+      "server_05": "Training",
+      "server_06": "Continue preparing 48-64 repair pool",
+      "low_hours": 0.5,
+      "high_hours": 1,
+      "parallel": true
+    },
+    {
+      "order": 3,
+      "work": "Run the 16-example exact replay gate",
+      "server_05": "Prepare next training config or stop on failure",
+      "server_06": "Greedy/tool replay and mechanical scoring",
+      "low_hours": 0.5,
+      "high_hours": 1,
+      "parallel": true
+    },
+    {
+      "order": 4,
+      "work": "Train on 48-64 repairs and run dev20",
+      "server_05": "Correction SFT",
+      "server_06": "Evaluation after weight handoff",
+      "low_hours": 2.5,
+      "high_hours": 4,
+      "parallel": false
+    },
+    {
+      "order": 5,
+      "work": "Collect mixed groups, run two optimizer updates and dev20",
+      "server_05": "Accumulate at least four mixed prompts and update",
+      "server_06": "Eight-response rollout and final evaluation",
+      "low_hours": 3,
+      "high_hours": 5,
+      "parallel": true
+    },
+    {
+      "order": 6,
+      "work": "Run sealed test20 only after every prior gate passes",
+      "server_05": "Checkpoint integrity and selection record",
+      "server_06": "One-time test20 rollout",
+      "low_hours": 1.1,
+      "high_hours": 1.5,
+      "parallel": true
+    }
+  ],
+  "efficiency_choices": [
+    "Do not rerun the 3.71-hour oracle or the 3200-row reward replay.",
+    "Do not combine the servers into a 32-device SFT job; the data is too small and cross-machine collectives would increase setup and synchronization cost.",
+    "Use the training-compatible Step 120 checkpoint path that needs the least conversion; do not add a new LoRA stack unless it is already loadable by the existing trainer.",
+    "Stop automatically after the 16-example replay gate or the correction-SFT dev20 gate fails.",
+    "Keep test20 sealed and skip it unless the development gates pass."
+  ],
+  "uncertainty": {
+    "main_unknown": "The repository has no existing supervised-finetuning launcher, so the first clean SFT load/backward path is the largest schedule risk.",
+    "likely_range": "12-16 hours for the full gated path",
+    "first_decision_range": "4-6 hours",
+    "downside_case": "18-24 hours if the first SFT attempt exposes a checkpoint-format or Megatron data-loader incompatibility",
+    "not_a_commitment": "The ranges assume both project containers and the Step 120 checkpoint remain healthy and available."
+  }
+}

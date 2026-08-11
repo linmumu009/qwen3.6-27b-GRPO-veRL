@@ -20,6 +20,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - Step 100→120 的 20-step dense30 试验已完成并保存完整 `model,optimizer,extra`。老板原版 val20 总奖励方向性升至 `0.563745`，但 dense30 同口径复算几乎不变、最终数值正确未提高；当前保留 Step 120，暂停直接续训，先扩大密封评测并增强组内正确性信号。
 - Step 120 的 48K 强制收尾门禁已完成：第 22 个助手回合触发时救回 4 道未收尾题中的 3 道，老板原版六题平均奖励由 `0.2750` 升至 `0.5458`，但最终数值正确仍为 0；对剩余 `task_000196` 提前到第 14 回合后可收尾并获 `0.5625`，判定仍为 `result_wrong_process_ok`。因此当前不直接扩到 64K/96K或续训100步，先做预算感知的工具调用拦截、纠正监督和同运行配对门禁。
 - Step 125 的 `2 groups × 8 responses` 五步金丝雀未通过老板原版门禁：相对 Step 120，val20 数值正确由 `2/20` 降至 `1/20`、完整收尾由 `16/20` 降至 `15/20`。五步训练中正确轨迹平均奖励 `0.7758`、错误轨迹 `0.1600`，4/4 个 mixed-correct groups 均严格正确排序，但 `6/10` 个 prompt 仍为全错；下一步停止同配方续训，先做 16 条机械验证纠错 SFT 冒烟，再扩至 48–64 条并只用 mixed-correct groups 做短 GRPO 金丝雀。
+- 两台服务器下的纠错实验按角色流水线执行：5 号机保留 16 卡 Megatron 训练，6 号机负责数据机械核验、回放和 Agent 评测，不做低样本 32 卡跨机 SFT。首个 16 条 go/no-go 预计 `4–6h`；全部门禁通过时，48–64 条纠错 SFT、两次有效 GRPO 更新和一次密封 test20 预计累计 `12–16h`。
 - 所有新增镜像、容器、工作目录和实验名均以 `llin` 开头，不复用或修改其他人的环境。
 
 当前服务器部署：
@@ -82,6 +83,8 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [`docs/accuracy_improvement_strategy_20260810.html`](docs/accuracy_improvement_strategy_20260810.html)：结合 Step 100/120/200、前后两个100步组内信号和强制收尾实验的准确率瓶颈诊断；给出 oracle 梯度、纠错 SFT、奖励分层及 `2 groups × 8 responses` 金丝雀路线。
 - [`docs/accuracy_improvement_post_step125_20260811.html`](docs/accuracy_improvement_post_step125_20260811.html)：结合 Step 125 金丝雀、同题老板原版评分、oracle 梯度与组内奖励排序的准确率复盘；给出纠错 SFT、mixed-only GRPO 和密封 test20 的分阶段门禁。
 - [`docs/accuracy_improvement_post_step125_20260811_summary.json`](docs/accuracy_improvement_post_step125_20260811_summary.json)：不含原始轨迹与服务器绝对路径的 Step 125 组内信号、checkpoint 对比、oracle 结果和下一轮实验门槛聚合。
+- [`docs/repair_sft_two_server_time_estimate_20260811.html`](docs/repair_sft_two_server_time_estimate_20260811.html)：用既有 oracle、Step 125 金丝雀、val20 和 checkpoint 实测墙钟，估算两台服务器并行下的纠错 SFT 首个决策点与完整门禁关键路径。
+- [`docs/repair_sft_two_server_time_estimate_20260811_summary.json`](docs/repair_sft_two_server_time_estimate_20260811_summary.json)：两机角色、实测耗时基线、累计里程碑、关键路径区间和 18–24 小时下行情形的安全聚合。
 - [`docs/leadership_experiment_update_methodology_20260806.md`](docs/leadership_experiment_update_methodology_20260806.md)：从多轮实际修订中提炼的领导汇报方法论，固化四段结构、数字精度、口径边界、抗奖励投机表述、行动项口吻和自检清单。
 - `llin_verl/pi_sqlite_tool.py`：只读 SQLite 轨迹工具。
 - `llin_verl/pi_workspace_tools.py`、`llin_verl/pi_agent_loop.py`：完整 PI 四工具、轨迹级共享沙箱、事件审计和统一清理。
@@ -128,6 +131,13 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `llin_verl/megatron_bridge_compat.py`、`scripts/patch_verl_megatron_bridge_compat.py`：为昇腾验证版 Megatron-Bridge 补齐当前 veRL 所需的最小兼容接口。
 
 ## 已验证状态
+
+### v0.65.0 — 2026-08-11
+
+- 复核远端无人值守流水线时间戳：三条件 oracle 实测 `3h42m30s`、Step 125 五次 `2×8` 金丝雀运行实测 `2h36m57s`；结合 Step 120 val20 `4054.6s` 和 checkpoint 保存 `89s` 建立下一轮墙钟基线。
+- 固化效率优先的两机调度：5 号机训练、6 号机准备/核验/推理，复用 oracle 和 3,200 条奖励回放；不为小规模 SFT 建立 32 卡跨机拓扑，也不在开发门禁失败时运行密封 test20。
+- 预计启动后 `4–6h` 得到 16 条纠错 SFT 的首个 go/no-go，`7–10h` 完成 48–64 条纠错 SFT 与 dev20；全部门禁通过时，含两次 mixed-only GRPO 更新和一次 test20 的完整路径为 `12–16h`。首次 SFT checkpoint/data-loader 不兼容时下行情形为 `18–24h`。
+- 新增自包含时间预算报告和安全聚合 JSON；报告 schema、来源、载荷与 HTML 结构验证通过，本机增强 reader 间歇性 fallback，因此最终浏览器交互验收未声明通过。
 
 ### v0.64.0 — 2026-08-11
 
