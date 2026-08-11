@@ -21,6 +21,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - Step 120 的 48K 强制收尾门禁已完成：第 22 个助手回合触发时救回 4 道未收尾题中的 3 道，老板原版六题平均奖励由 `0.2750` 升至 `0.5458`，但最终数值正确仍为 0；对剩余 `task_000196` 提前到第 14 回合后可收尾并获 `0.5625`，判定仍为 `result_wrong_process_ok`。因此当前不直接扩到 64K/96K或续训100步，先做预算感知的工具调用拦截、纠正监督和同运行配对门禁。
 - Step 125 的 `2 groups × 8 responses` 五步金丝雀未通过老板原版门禁：相对 Step 120，val20 数值正确由 `2/20` 降至 `1/20`、完整收尾由 `16/20` 降至 `15/20`。五步训练中正确轨迹平均奖励 `0.7758`、错误轨迹 `0.1600`，4/4 个 mixed-correct groups 均严格正确排序，但 `6/10` 个 prompt 仍为全错；下一步停止同配方续训，先做 16 条机械验证纠错 SFT 冒烟，再扩至 48–64 条并只用 mixed-correct groups 做短 GRPO 金丝雀。
 - 两台服务器下的纠错实验按角色流水线执行：5 号机保留 16 卡 Megatron 训练，6 号机负责数据机械核验、回放和 Agent 评测，不做低样本 32 卡跨机 SFT。首个 16 条 go/no-go 预计 `4–6h`；全部门禁通过时，48–64 条纠错 SFT、两次有效 GRPO 更新和一次密封 test20 预计累计 `12–16h`。
+- veRL 官方 `verl.trainer.sft_trainer` 的 Step 120 模型态初始化与单步全参 SFT 已在 5 号机实跑通过：TP4/PP2/CP2、Qwen3.6 完整工具模板、assistant-only loss mask、全新 CPU-offload Adam 均可工作；成功步 loss `0.9603`、grad norm `141.10`、单卡峰值 `26.27 GiB`、整机 CPU 内存 `821.63 GiB`，退出码 `0`。该运行仅为一条合成数据的不可晋升工程门禁，下一步才进入 16 条真实纠错数据机械核验。
 - 所有新增镜像、容器、工作目录和实验名均以 `llin` 开头，不复用或修改其他人的环境。
 
 当前服务器部署：
@@ -32,7 +33,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 | 容器 | `llin-verl-trainer-m05-20260730` | `llin-verl-rollout-m06-20260730` |
 | 镜像 | `llin-verl-a3:20260730` | `llin-verl-a3:20260730` |
 | 容器权限 | 特权模式（仅重建上述 `llin` 容器） | 特权模式（仅重建上述 `llin` 容器） |
-| 当前实验 NPU | 16（step100→step200 已完成新增 100 步，最终 `model,optimizer,extra` checkpoint 通过完整性验证） | 16（同轮最终 val20 与老板原版 Step 100/200 配对复评已结束） |
+| 当前实验 NPU | 0（veRL SFT 单步冒烟完成后项目容器已停止） | 0（当前无 rollout，项目容器已停止） |
 
 ## 数据结论
 
@@ -85,6 +86,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [`docs/accuracy_improvement_post_step125_20260811_summary.json`](docs/accuracy_improvement_post_step125_20260811_summary.json)：不含原始轨迹与服务器绝对路径的 Step 125 组内信号、checkpoint 对比、oracle 结果和下一轮实验门槛聚合。
 - [`docs/repair_sft_two_server_time_estimate_20260811.html`](docs/repair_sft_two_server_time_estimate_20260811.html)：用既有 oracle、Step 125 金丝雀、val20 和 checkpoint 实测墙钟，估算两台服务器并行下的纠错 SFT 首个决策点与完整门禁关键路径。
 - [`docs/repair_sft_two_server_time_estimate_20260811_summary.json`](docs/repair_sft_two_server_time_estimate_20260811_summary.json)：两机角色、实测耗时基线、累计里程碑、关键路径区间和 18–24 小时下行情形的安全聚合。
+- [`docs/verl_repair_sft_smoke_20260811.md`](docs/verl_repair_sft_smoke_20260811.md)：veRL 官方 SFT trainer 从 Step 120 分布式模型权重初始化、Qwen3.6 完整工具模板 assistant-only mask、四次隔离启动与最终单步前反向成功证据。
 - [`docs/leadership_experiment_update_methodology_20260806.md`](docs/leadership_experiment_update_methodology_20260806.md)：从多轮实际修订中提炼的领导汇报方法论，固化四段结构、数字精度、口径边界、抗奖励投机表述、行动项口吻和自检清单。
 - `llin_verl/pi_sqlite_tool.py`：只读 SQLite 轨迹工具。
 - `llin_verl/pi_workspace_tools.py`、`llin_verl/pi_agent_loop.py`：完整 PI 四工具、轨迹级共享沙箱、事件审计和统一清理。
@@ -129,8 +131,19 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/build_fastest_k_efficiency_report.py`：从聚合摘要生成 canonical report artifact，原始轨迹、日志与 checkpoint 不进入报告载荷。
 - `scripts/estimate_48k_capacity.py`：依据已验证的 6K 实测峰值、Qwen3.6 64 层混合 GDN/全注意力结构及 TP/PP/CP 切分，估算 48K 训练激活和 rollout KV/GDN cache 容量。
 - `llin_verl/megatron_bridge_compat.py`、`scripts/patch_verl_megatron_bridge_compat.py`：为昇腾验证版 Megatron-Bridge 补齐当前 veRL 所需的最小兼容接口。
+- `scripts/prepare_repair_sft_smoke_dataset.py`、`scripts/check_repair_sft_dataset.py`：生成不可晋升的确定性工具调用合成样本，并在占用 NPU 前检查 assistant loss 与非 assistant 上下文遮罩。
+- `scripts/qwen36_assistant_mask_sft_dataset.py`：通过 veRL 官方 `data.custom_cls` 扩展点用 Qwen3.6 完整对话模板构造 assistant-only SFT loss mask。
+- `scripts/run_repair_sft_megatron_smoke.sh`、`scripts/launch_repair_sft_megatron_smoke.sh`：固定 Step 120 模型态初始化、TP4/PP2/CP2 和 extra-only 保存的一步官方 veRL SFT 冒烟入口。
 
 ## 已验证状态
+
+### v0.66.0 — 2026-08-11
+
+- 确认并实跑 veRL 官方 `verl.trainer.sft_trainer`：从 Step 120 的 Megatron distributed model checkpoint 只加载模型参数，禁用 GRPO optimizer/dataloader 恢复，重建全新的 SFT Adam。
+- 新增 Qwen3.6 完整对话自定义数据集：解决官方逐消息 `MultiTurnSFTDataset` 与 Qwen3.6 system/tools/user 联合模板不兼容的问题；合成工具样本 418 tokens 中仅 65 个 assistant tokens 进入 loss，353 个 system/user/tool tokens 全部遮罩。
+- 5 号机 16 NPU 的 TP4/PP2/CP2 单步全参 SFT 以退出码 `0` 完成：loss `0.9603356`、grad norm `141.0989`、峰值 `26.27 GiB/卡`、CPU 内存 `821.63 GiB`；总墙钟 `5m00s`，运行目录仅 `282 MiB`，未复制大模型或保存 Adam。
+- 四个隔离运行依次修复 Hydra 覆盖语法、Megatron-Bridge 版本固定和 Megatron `no_padding` 要求；失败与成功目录均不可晋升。测试完成后两台项目容器均已停止并释放 NPU。
+- 新增数据生成、token 掩码门禁、SFT 启动器、Qwen3.6 custom dataset、实验报告和契约测试；项目测试为 `187 passed`。
 
 ### v0.65.0 — 2026-08-11
 
