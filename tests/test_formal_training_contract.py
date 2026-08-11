@@ -95,6 +95,8 @@ def test_banded_2x8_resume_contract_and_final_only_checkpoint():
         'FASTEST_K="${RESPONSES_PER_GROUP}"',
         'OVERSAMPLE_CANDIDATES="${RESPONSES_PER_GROUP}"',
         "CONCURRENT_SAMPLES_PER_REPLICA=6",
+        'ROLLOUT_START_INDEX="$((START_POLICY_STEP * GROUPS_PER_STEP + 1))"',
+        'TOTAL_ROLLOUT_GROUPS="$((FINAL_POLICY_STEP * GROUPS_PER_STEP + PREWARM_GROUPS))"',
         "reward.custom_reward_function.name=compute_score_banded_v1",
         'trainer.test_freq="${FINAL_POLICY_STEP}"',
         'trainer.save_freq="${FINAL_POLICY_STEP}"',
@@ -106,6 +108,7 @@ def test_banded_2x8_resume_contract_and_final_only_checkpoint():
     assert 'CHECKPOINT_LOAD_CONTENTS="[model,optimizer,extra]"' in run_script
     assert 'CHECKPOINT_LOAD_CONTENTS="[model,extra]"' in run_script
     assert "reset_hybrid_cpu_offload_resume_workaround" in run_script
+    assert "NEW_TRAINING_STEPS * GROUPS_PER_STEP + PREWARM_GROUPS" not in run_script
     assert 'LOAD_OPTIMIZER_STATE="${LOAD_OPTIMIZER_STATE:-true}"' in launcher
     assert "expected_global_step_%s_got_%s" in launcher
     assert "verify_checkpoint_integrity.py" in launcher
