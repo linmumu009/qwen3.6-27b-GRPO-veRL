@@ -1,0 +1,285 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "纠错 SFT 为什么 loss 降但准确率没升",
+    "generatedAt": "2026-08-11T13:13:07Z",
+    "cards": [],
+    "charts": [
+      {
+        "id": "teacher_target_probability_chart",
+        "title": "Teacher-forced 目标 token 概率（按监督分项）",
+        "type": "bar",
+        "dataset": "teacher_target_probabilities",
+        "sourceId": "teacher_forced_prepost",
+        "encodings": {
+          "x": {
+            "field": "component",
+            "type": "nominal"
+          },
+          "y": {
+            "field": "geometric_mean_target_probability",
+            "type": "quantitative",
+            "format": "percent"
+          },
+          "color": {
+            "field": "model",
+            "type": "nominal"
+          }
+        },
+        "options": {
+          "orientation": "vertical",
+          "grouping": "grouped"
+        }
+      }
+    ],
+    "tables": [
+      {
+        "id": "free_rollout_table",
+        "title": "老板原始评分器的同题自由回放",
+        "dataset": "free_rollout_metrics",
+        "sourceId": "boss_original_free_rollout",
+        "columns": [
+          {
+            "field": "metric_order",
+            "label": "顺序"
+          },
+          {
+            "field": "metric",
+            "label": "指标"
+          },
+          {
+            "field": "step120",
+            "label": "Step 120"
+          },
+          {
+            "field": "post_sft",
+            "label": "SFT Step 5"
+          },
+          {
+            "field": "delta",
+            "label": "变化",
+            "movement": true
+          }
+        ],
+        "defaultSort": {
+          "field": "metric_order",
+          "direction": "asc"
+        }
+      }
+    ],
+    "sources": [
+      {
+        "id": "teacher_forced_prepost",
+        "label": "Step 120 / SFT Step 5 分项纯前向比较",
+        "path": "docs/repair_sft_teacher_forced_diagnosis_20260811_summary.json",
+        "query": {
+          "sql": "SELECT component, model, geometric_mean_target_probability, mean_nll, token_count, tasks_improved_vs_step120, tasks_probability_above_0_5 FROM teacher_target_probabilities ORDER BY component, model"
+        }
+      },
+      {
+        "id": "boss_original_free_rollout",
+        "label": "老板原始评分器同题自由回放比较",
+        "path": "docs/repair_sft_teacher_forced_diagnosis_20260811_summary.json",
+        "query": {
+          "sql": "SELECT metric_order, metric, step120, post_sft, delta FROM free_rollout_metrics ORDER BY metric_order"
+        }
+      },
+      {
+        "id": "free_run_divergence",
+        "label": "自由回放首处分叉分析",
+        "path": "docs/repair_sft_teacher_forced_diagnosis_20260811_summary.json"
+      }
+    ],
+    "blocks": [
+      {
+        "id": "report_title",
+        "type": "markdown",
+        "body": "# 纠错 SFT 为什么 loss 降但准确率没升"
+      },
+      {
+        "id": "technical_summary",
+        "type": "markdown",
+        "body": "## 技术结论\n\n- **训练有效，但学错了决策层级。** 同一 16 条教师轨迹上，官方 assistant loss 从 1.8738 降至 0.4146，工具结构、SQL 和最终答案的 NLL 均在 16/16 题上改善。\n- **SQL 仍是自由运行的首要瓶颈。** 训练后工具结构和最终答案的每题中位目标概率分别达到 0.857 和 0.696，SQL 只有 0.373；只有 5/16 题的 SQL 目标概率超过 0.5。\n- **回放退化发生在正确证据之前。** Step 120 与 SFT Step 5 均为 16/16 在第一条 SQL 就偏离教师目标，后续也没有执行过目标 SQL；因此当前证据不支持把问题主要归因于“查对后不会停”。\n- **决策：不扩展同一通用 SFT 配方。** 下一轮只做 SQL-focused 小金丝雀：提高 SQL token 权重，并用模型自己的首个错误 SQL 状态构造纠正监督；便宜门禁通过后才重跑自由回放。"
+      },
+      {
+        "id": "teacher_probability_finding",
+        "type": "markdown",
+        "sourceId": "teacher_forced_prepost",
+        "body": "## 训练把格式学得很牢，但 SQL 仍未跨过生成边界\n\n分项纯前向显示，工具结构目标概率提高 6.34×，最终答案提高 2.27×，SQL 也提高 3.92×。但 SQL 的训练后绝对水平仅 0.339（全 token 加权几何均值），显著低于工具结构的 0.855 和最终答案的 0.668。下图使用完全相同的 16 个 task、数据 hash 和 TP4/PP2/CP2 forward-only 口径；概率为 `exp(-mean NLL)`，用于比较模型对教师 token 的条件置信度，不等于整条序列被 greedy 完整选中的概率。"
+      },
+      {
+        "id": "teacher_probability_chart_block",
+        "type": "chart",
+        "chartId": "teacher_target_probability_chart"
+      },
+      {
+        "id": "free_rollout_finding",
+        "type": "markdown",
+        "sourceId": "boss_original_free_rollout",
+        "body": "## 教师目标概率上升没有转化为自由回放收益\n\n老板原始评分器下，正确数维持 2/16，但平均奖励下降 0.09375、完整收尾减少 2 题；平均 SQL 次数增加 3.81，重复命令增加 4.56。配对奖励为 2 胜、4 负、10 平。该表的任务、prompt、工具、48K/25 回合与 greedy 配置前后一致，因此退化不能由评测输入差异解释。"
+      },
+      {
+        "id": "free_rollout_table_block",
+        "type": "table",
+        "tableId": "free_rollout_table"
+      },
+      {
+        "id": "first_divergence_finding",
+        "type": "markdown",
+        "sourceId": "free_run_divergence",
+        "body": "## 首处分叉锁定在 SQL 选择，而非最终答案格式\n\n离线对齐教师轨迹与两份 OpenAI 消息回放后，Step 120 和 SFT Step 5 都是 16/16 第一条 SQL 与教师 SQL 不同，且后续目标 SQL 命中均为 0/16。训练后模型在“已经给定正确 SQL 和正确工具输出”时能较高概率续写教师最终答案，但自由运行从未进入这个条件状态。最符合证据的解释是：通用 assistant-token loss 被 832 个容易的工具结构 token 主导，而真正决定证据获取的 SQL 只有 329 个 token；同时教师轨迹不覆盖模型自己的探索/错误查询所产生的后续状态。"
+      },
+      {
+        "id": "scope_definitions",
+        "type": "markdown",
+        "body": "## 比较口径与指标定义\n\n- **总体 loss：** veRL 官方 SFT loss，仅统计 assistant body、工具调用和结束 token；Step 120 的 forward-only loss 与原训练第 1 步更新前 loss 精确一致。\n- **工具结构：** 第一个 assistant 工具回合中扣除 SQL shell payload 后的模板、说明、函数名、参数结构与结束 token。\n- **SQL：** 冻结 `sqlite3 -json /workspace/logistics.sqlite` 前缀之后的 shell-escaped SQL payload。\n- **最终答案：** 第二个 assistant 回合的答案与结束 token。\n- **目标概率：** `exp(-mean NLL)`；它是教师条件下的 token 几何均值，不是 top-1 命中率，也不是整条 SQL 的联合概率。\n- **范围：** 16 条 train236 同题过拟合门禁，不是 held-out 准确率实验，不能据此宣称泛化提升或退化。"
+      },
+      {
+        "id": "experimental_design",
+        "type": "markdown",
+        "sourceId": "teacher_forced_prepost",
+        "body": "## 纯前向设计排除了优化器与评分器偏差\n\n两次评估均使用 5 号机 16 NPU、TP4/PP2/CP2、相同 Parquet、相同自定义 Qwen3.6 chat template 和 micro-batch 1。Megatron 设置 `forward_only=true`，没有初始化或保存 Adam。两个模型的核心评估运行分别为 45.1 秒和 42.4 秒；包含 tokenizer 门禁、torchrun 启停和模型加载的端到端流水线为 4 分 31 秒。单卡峰值 allocated HBM 12.07 GiB，CPU 约 152 GiB。"
+      },
+      {
+        "id": "limitations_robustness",
+        "type": "markdown",
+        "body": "## 证据边界与稳健性检查\n\n**已验证：** 16/16 component mask 非空并能重建原 loss mask；两次数据 SHA 相同；Step 120 loss 精确复现训练日志；三个核心分项的每题 NLL 均为 16 改善、0 恶化；自由回放 prompt 为 16/16 一致。\n\n**仍未验证：** NLL 不提供 critical token 的 greedy top-1 排名；“SQL 权重不足”和“状态分布偏移”目前是最强解释，但还没有通过 SQL-weighted A/B 做因果验证。训练后两个正确任务的 SQL NLL 方向性低于其余 14 题（0.795 vs 1.057），但正确样本仅 n=2，不能据此做统计推断。"
+      },
+      {
+        "id": "recommended_next_steps",
+        "type": "markdown",
+        "body": "## 下一步：改 SQL 监督，不扩大通用 SFT\n\n1. 将已经学会的工具模板降权，把 SQL payload token 提高 **4–8×**；最终答案保持中等权重。\n2. 从现有 post-SFT 回放抽取每题首个错误/探索 SQL 状态，追加“纠正到已验证 SQL，然后立即收尾”的短轨迹，覆盖模型自己的状态分布。\n3. 先跑不超过 1–2 个 optimizer update 的小金丝雀；要求 16/16 SQL NLL 继续下降、至少 12/16 每题 SQL 目标概率超过 0.5，并出现非零的首条教师 SQL或机械验证等价 SQL命中。\n4. 只有便宜门禁通过，才再次运行 16 题老板原始评分器；正确数或完整率必须上升，且重复命令不能增加。通过后再考虑扩到 48–64 条。"
+      },
+      {
+        "id": "further_questions",
+        "type": "markdown",
+        "body": "## 下一轮需要回答的三个问题\n\n- 哪个 SQL critical token 最先失去 greedy argmax，问题集中在表名、字段、过滤条件还是聚合结构？\n- 单纯提高 SQL token 权重能否让首条查询跨过决策边界，还是必须加入模型状态上的 DAgger/纠正监督？\n- 当正确 SQL 真正进入自由回放后，重复查询是否自然下降；若不下降，再单独加入预算感知停止监督。"
+      }
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "generatedAt": "2026-08-11T13:13:07Z",
+    "status": "ready",
+    "datasets": {
+      "teacher_target_probabilities": [
+        {
+          "component": "工具结构",
+          "model": "Step 120",
+          "geometric_mean_target_probability": 0.1349186846217475,
+          "mean_nll": 2.0030830181561985,
+          "token_count": 832,
+          "tasks_improved_vs_step120": 0,
+          "tasks_probability_above_0_5": 0
+        },
+        {
+          "component": "工具结构",
+          "model": "SFT Step 5",
+          "geometric_mean_target_probability": 0.854750685835007,
+          "mean_nll": 0.15694544808222696,
+          "token_count": 832,
+          "tasks_improved_vs_step120": 16,
+          "tasks_probability_above_0_5": 16
+        },
+        {
+          "component": "SQL payload",
+          "model": "Step 120",
+          "geometric_mean_target_probability": 0.08643163657025242,
+          "mean_nll": 2.448401506186256,
+          "token_count": 329,
+          "tasks_improved_vs_step120": 0,
+          "tasks_probability_above_0_5": 0
+        },
+        {
+          "component": "SQL payload",
+          "model": "SFT Step 5",
+          "geometric_mean_target_probability": 0.33913000159882994,
+          "mean_nll": 1.081371759571203,
+          "token_count": 329,
+          "tasks_improved_vs_step120": 16,
+          "tasks_probability_above_0_5": 5
+        },
+        {
+          "component": "最终答案",
+          "model": "Step 120",
+          "geometric_mean_target_probability": 0.2938110163843795,
+          "mean_nll": 1.2248185197425359,
+          "token_count": 457,
+          "tasks_improved_vs_step120": 0,
+          "tasks_probability_above_0_5": 0
+        },
+        {
+          "component": "最终答案",
+          "model": "SFT Step 5",
+          "geometric_mean_target_probability": 0.6678578433490555,
+          "mean_nll": 0.4036799374503171,
+          "token_count": 457,
+          "tasks_improved_vs_step120": 16,
+          "tasks_probability_above_0_5": 16
+        }
+      ],
+      "free_rollout_metrics": [
+        {
+          "metric_order": 1,
+          "metric": "精确正确",
+          "step120": "2/16",
+          "post_sft": "2/16",
+          "delta": "0"
+        },
+        {
+          "metric_order": 2,
+          "metric": "完整收尾",
+          "step120": "15/16",
+          "post_sft": "13/16",
+          "delta": "-2"
+        },
+        {
+          "metric_order": 3,
+          "metric": "平均奖励",
+          "step120": "0.7000",
+          "post_sft": "0.6063",
+          "delta": "-0.0938"
+        },
+        {
+          "metric_order": 4,
+          "metric": "平均 SQL 次数",
+          "step120": "6.63",
+          "post_sft": "10.44",
+          "delta": "+3.81"
+        },
+        {
+          "metric_order": 5,
+          "metric": "平均重复命令",
+          "step120": "10.25",
+          "post_sft": "14.81",
+          "delta": "+4.56"
+        }
+      ]
+    }
+  },
+  "sources": [
+    {
+      "id": "teacher_forced_prepost",
+      "label": "Step 120 / SFT Step 5 分项纯前向比较",
+      "path": "docs/repair_sft_teacher_forced_diagnosis_20260811_summary.json",
+      "query": {
+        "sql": "SELECT component, model, geometric_mean_target_probability, mean_nll, token_count, tasks_improved_vs_step120, tasks_probability_above_0_5 FROM teacher_target_probabilities ORDER BY component, model"
+      }
+    },
+    {
+      "id": "boss_original_free_rollout",
+      "label": "老板原始评分器同题自由回放比较",
+      "path": "docs/repair_sft_teacher_forced_diagnosis_20260811_summary.json",
+      "query": {
+        "sql": "SELECT metric_order, metric, step120, post_sft, delta FROM free_rollout_metrics ORDER BY metric_order"
+      }
+    },
+    {
+      "id": "free_run_divergence",
+      "label": "自由回放首处分叉分析",
+      "path": "docs/repair_sft_teacher_forced_diagnosis_20260811_summary.json"
+    }
+  ]
+}

@@ -1,0 +1,222 @@
+{
+  "contract": "repair-sft-teacher-forced-diagnosis-summary-v1",
+  "date": "2026-08-11",
+  "scope": {
+    "task_count": 16,
+    "population": "the same train236 repair tasks used by the five-step SFT gate",
+    "heldout": false,
+    "task_ids_identical": true,
+    "prompt_identity": "16/16 identical in the free-rollout comparison",
+    "data_sha256_identical_between_teacher_forced_runs": true
+  },
+  "execution": {
+    "successful_run": "llin-repair-sft-teacher-forced-prepost-20260811-04",
+    "pipeline_exit_code": 0,
+    "step120_exit_code": 0,
+    "post_sft_exit_code": 0,
+    "component_mask_gate_rows": 16,
+    "component_mask_gate_passed": true,
+    "forward_only": true,
+    "optimizer_initialized": false,
+    "topology": "TP4/PP2/CP2 on 16 Ascend NPUs",
+    "step120_wall_seconds": 125,
+    "post_sft_wall_seconds": 123,
+    "pipeline_wall_seconds": 271,
+    "core_forward_runtime_seconds": {
+      "step120": 45.11539167491719,
+      "post_sft": 42.40322970505804,
+      "total": 87.51862137997523
+    },
+    "peak_resources": {
+      "allocated_hbm_gib_per_card": 12.066839218139648,
+      "reserved_hbm_gib_per_card": 12.908203125,
+      "cpu_memory_gib_step120": 152.77822494506836,
+      "cpu_memory_gib_post_sft": 151.99090194702148
+    }
+  },
+  "official_assistant_loss": {
+    "step120": 1.8738141059875488,
+    "post_sft": 0.4146054983139038,
+    "delta": -1.459208607673645,
+    "relative_change": -0.778737134789781,
+    "cross_check": "Step 120 forward-only loss exactly reproduces the pre-update loss logged at SFT step 1."
+  },
+  "teacher_forced_components": [
+    {
+      "component": "assistant overall",
+      "token_count": 1618,
+      "step120_mean_nll": 1.8738141053981332,
+      "post_sft_mean_nll": 0.41460547783171436,
+      "relative_nll_change": -0.778737134789781,
+      "step120_geometric_mean_target_probability": 0.1535369375499916,
+      "post_sft_geometric_mean_target_probability": 0.6606008509813284,
+      "target_probability_ratio": 4.302553258666091,
+      "tasks_improved": 16,
+      "tasks_worsened": 0
+    },
+    {
+      "component": "tool turn",
+      "token_count": 1161,
+      "step120_mean_nll": 2.1292757334943273,
+      "post_sft_mean_nll": 0.4189060500323208,
+      "relative_nll_change": -0.8032635964225924,
+      "step120_geometric_mean_target_probability": 0.11892339490026048,
+      "post_sft_geometric_mean_target_probability": 0.6577659894584404,
+      "target_probability_ratio": 5.531005821101057,
+      "tasks_improved": 16,
+      "tasks_worsened": 0
+    },
+    {
+      "component": "tool structure",
+      "token_count": 832,
+      "step120_mean_nll": 2.0030830181561985,
+      "post_sft_mean_nll": 0.15694544808222696,
+      "relative_nll_change": -0.921648056191554,
+      "step120_geometric_mean_target_probability": 0.1349186846217475,
+      "post_sft_geometric_mean_target_probability": 0.854750685835007,
+      "target_probability_ratio": 6.335302543390124,
+      "tasks_improved": 16,
+      "tasks_worsened": 0
+    },
+    {
+      "component": "SQL shell payload",
+      "token_count": 329,
+      "step120_mean_nll": 2.448401506186256,
+      "post_sft_mean_nll": 1.081371759571203,
+      "relative_nll_change": -0.5583356092377194,
+      "step120_geometric_mean_target_probability": 0.08643163657025242,
+      "post_sft_geometric_mean_target_probability": 0.33913000159882994,
+      "target_probability_ratio": 3.923679049200717,
+      "tasks_improved": 16,
+      "tasks_worsened": 0
+    },
+    {
+      "component": "final answer",
+      "token_count": 457,
+      "step120_mean_nll": 1.2248185197425359,
+      "post_sft_mean_nll": 0.4036799374503171,
+      "relative_nll_change": -0.6704165303320422,
+      "step120_geometric_mean_target_probability": 0.2938110163843795,
+      "post_sft_geometric_mean_target_probability": 0.6678578433490555,
+      "target_probability_ratio": 2.2730864607041408,
+      "tasks_improved": 16,
+      "tasks_worsened": 0
+    }
+  ],
+  "per_task_probability_distribution": {
+    "step120": {
+      "tool_structure_median": 0.13625622766156487,
+      "sql_shell_median": 0.06853474892077491,
+      "final_answer_median": 0.22494071531257326,
+      "sql_tasks_above_0_5": 0
+    },
+    "post_sft": {
+      "tool_structure_median": 0.8574482637730578,
+      "sql_shell_median": 0.37297887019105336,
+      "final_answer_median": 0.6959671539748082,
+      "tool_structure_tasks_above_0_5": 16,
+      "sql_tasks_above_0_5": 5,
+      "final_answer_tasks_above_0_5": 16,
+      "sql_tasks_above_0_8": 0
+    }
+  },
+  "free_rollout": {
+    "step120": {
+      "correct": 2,
+      "complete": 15,
+      "reward_mean": 0.7,
+      "sql_mean": 6.625,
+      "duplicate_command_mean": 10.25
+    },
+    "post_sft": {
+      "correct": 2,
+      "complete": 13,
+      "reward_mean": 0.60625,
+      "sql_mean": 10.4375,
+      "duplicate_command_mean": 14.8125
+    },
+    "deltas": {
+      "correct": 0,
+      "complete": -2,
+      "reward_mean": -0.09375,
+      "sql_mean": 3.8125,
+      "duplicate_command_mean": 4.5625
+    },
+    "paired_reward": {
+      "wins": 2,
+      "losses": 4,
+      "ties": 10
+    }
+  },
+  "first_divergence": {
+    "step120": {
+      "first_sql_diverged": 16,
+      "teacher_sql_seen_anywhere": 0,
+      "teacher_tool_output_observed": 0
+    },
+    "post_sft": {
+      "first_sql_diverged": 16,
+      "teacher_sql_seen_anywhere": 0,
+      "teacher_tool_output_observed": 0
+    }
+  },
+  "directional_accuracy_check": {
+    "post_sft_correct_task_count": 2,
+    "post_sft_other_task_count": 14,
+    "correct_tasks_sql_nll_mean": 0.7947541259185613,
+    "other_tasks_sql_nll_mean": 1.0569607074321619,
+    "interpretation": "The two correct tasks have directionally lower SQL NLL, but n=2 is too small for an inferential claim."
+  },
+  "diagnosis": {
+    "verified": [
+      "The SFT checkpoint, loss mask, data and forward-only metric path are aligned.",
+      "All 16 tasks improved on teacher-forced tool structure, SQL and final-answer NLL.",
+      "Tool structure and final answer are high-confidence only when conditioned on the gold trajectory.",
+      "SQL remains the lowest-confidence target and every free rollout diverges before executing the teacher SQL."
+    ],
+    "likely": [
+      "The current loss spends 832 target tokens on easy tool structure but only 329 on SQL content, so generic assistant-token averaging underweights the actual bottleneck.",
+      "Teacher forcing measures continuation under gold history; it does not train recovery after the model's own exploratory or incorrect SQL changes the tool output and future state.",
+      "Higher target-token probability does not guarantee that every critical SQL token becomes greedy top-1, so a long exact SQL sequence can remain absent from rollout."
+    ],
+    "unresolved": [
+      "Which critical SQL token first loses the greedy argmax competition.",
+      "Whether SQL-only reweighting is enough, or model-state correction examples are required.",
+      "How much of the repeated-query regression comes from early SQL divergence versus inadequate stop/recovery supervision."
+    ]
+  },
+  "recommended_next_gate": {
+    "action": "Do not expand the same generic five-step SFT. Run one SQL-focused canary first.",
+    "recipe": [
+      "Downweight already-solved tool boilerplate and upweight SQL shell-payload tokens by 4-8x.",
+      "Add corrections from the model's own first divergent SQL state so the next supervised action returns to a verified query and then stops.",
+      "Require all 16 SQL mean NLL values to improve, at least 12/16 per-task SQL target probabilities above 0.5, and a nonzero teacher-SQL/verified-equivalent first-query hit rate before another full free rollout.",
+      "Only after the cheap teacher-forced and first-query gates pass, rerun the 16-task boss-original free rollout; expand to 48-64 tasks only if correctness or completion improves without more duplicate commands."
+    ]
+  },
+  "source_inventory": [
+    {
+      "name": "teacher_forced_prepost_comparison",
+      "sha256": "c95894502d71d072bf14aea82cb8becc6408e923b246103553f90224128db974"
+    },
+    {
+      "name": "free_run_first_divergence",
+      "sha256": "7a5dfe5fbbc1fae8633beac5eb0dc6412351c13418536fc811faaa798693d6f4"
+    },
+    {
+      "name": "boss_original_free_rollout_comparison",
+      "sha256": "41e7691f6414854eb2f4702fe7fb3e76f0fcfbc1101c4deff7747dc7f9f8df7d"
+    }
+  ],
+  "chart_map": [
+    {
+      "section": "Teacher-forced target probabilities",
+      "question": "Which supervised component improved, and which remains the bottleneck?",
+      "family": "comparison",
+      "type": "grouped bar",
+      "fields": ["component", "model", "geometric_mean_target_probability"],
+      "takeaway": "Tool structure and final answer become high-confidence under gold history, while SQL remains substantially weaker.",
+      "palette_policy": "hard two-root cap"
+    }
+  ]
+}

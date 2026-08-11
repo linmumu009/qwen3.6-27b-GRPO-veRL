@@ -23,6 +23,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - 两台服务器下的纠错实验按角色流水线执行：5 号机保留 16 卡 Megatron 训练，6 号机负责数据机械核验、回放和 Agent 评测，不做低样本 32 卡跨机 SFT。首个 16 条 go/no-go 预计 `4–6h`；全部门禁通过时，48–64 条纠错 SFT、两次有效 GRPO 更新和一次密封 test20 预计累计 `12–16h`。
 - veRL 官方 `verl.trainer.sft_trainer` 的 Step 120 模型态初始化与单步全参 SFT 已在 5 号机实跑通过：TP4/PP2/CP2、Qwen3.6 完整工具模板、assistant-only loss mask、全新 CPU-offload Adam 均可工作；成功步 loss `0.9603`、grad norm `141.10`、单卡峰值 `26.27 GiB`、整机 CPU 内存 `821.63 GiB`，退出码 `0`。该运行仅为一条合成数据的不可晋升工程门禁，下一步才进入 16 条真实纠错数据机械核验。
 - 16 条真实 train236 纠错轨迹已通过机械核验并完成 5 步 veRL 官方全参 SFT：loss 从 `1.8738` 降至 `0.5764`，墙钟 `11m04s`，最终 model-only Megatron checkpoint 的 32 个分片完整（`54.72 GB`）。但相同 16 题的老板原始评分器门禁未通过：正确数保持 `2/16`，平均奖励 `0.7000 → 0.6063`，完整收尾 `15/16 → 13/16`，因此不扩到 48–64 条，也不作 held-out 泛化声明。
+- 纠错 SFT 的 teacher-forced 分项诊断已完成：官方 assistant loss 在同一 16 题上精确复现 Step 120 的 `1.8738`，SFT Step 5 降至 `0.4146`；工具结构、SQL、最终答案 NLL 均为 `16/16` 改善，但训练后每题 SQL 目标概率中位数仅 `0.373`、仅 `5/16` 超过 0.5，自由回放仍为 `16/16` 第一条 SQL 偏离且目标 SQL 后续命中 `0/16`。当前判定为 SQL 决策边界与自由运行状态分布不匹配，不再扩大通用 assistant-token SFT；下一轮只做 SQL payload 加权和模型首错状态纠正的 1–2 步金丝雀。
 - 所有新增镜像、容器、工作目录和实验名均以 `llin` 开头，不复用或修改其他人的环境。
 
 当前服务器部署：
@@ -34,7 +35,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 | 容器 | `llin-verl-trainer-m05-20260730` | `llin-verl-rollout-m06-20260730` |
 | 镜像 | `llin-verl-a3:20260730` | `llin-verl-a3:20260730` |
 | 容器权限 | 特权模式（仅重建上述 `llin` 容器） | 特权模式（仅重建上述 `llin` 容器） |
-| 当前实验 NPU | Ray trainer 服务在线；16 条 SFT 与前后回放均已完成 | Ray rollout 服务在线；当前前后回放已完成 |
+| 当前实验 NPU | Ray trainer 服务在线；teacher-forced 纯前向诊断已完成，无活动训练 | Ray rollout 服务在线；当前无活动回放 |
 
 ## 数据结论
 
@@ -89,6 +90,9 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [`docs/repair_sft_two_server_time_estimate_20260811_summary.json`](docs/repair_sft_two_server_time_estimate_20260811_summary.json)：两机角色、实测耗时基线、累计里程碑、关键路径区间和 18–24 小时下行情形的安全聚合。
 - [`docs/verl_repair_sft_smoke_20260811.md`](docs/verl_repair_sft_smoke_20260811.md)：veRL 官方 SFT trainer 从 Step 120 分布式模型权重初始化、Qwen3.6 完整工具模板 assistant-only mask、四次隔离启动与最终单步前反向成功证据。
 - [`docs/repair_sft_train236_overfit_20260811.md`](docs/repair_sft_train236_overfit_20260811.md)：16 条 train236 真实纠错轨迹的来源、机械门禁、5 步 veRL 全参 SFT 指标、资源峰值、checkpoint 完整性与同题老板评分器回放边界。
+- [`docs/repair_sft_teacher_forced_diagnosis_20260811.html`](docs/repair_sft_teacher_forced_diagnosis_20260811.html)：Step 120/SFT Step 5 的 teacher-forced 分项概率、老板自由回放、首条 SQL 分叉和下一轮 SQL-focused 门禁的自包含技术报告。
+- [`docs/repair_sft_teacher_forced_diagnosis_20260811_summary.json`](docs/repair_sft_teacher_forced_diagnosis_20260811_summary.json)：不含原始问题、SQL、答案与服务器绝对路径的安全聚合指标、运行资源和证据链。
+- [`docs/repair_sft_teacher_forced_diagnosis_20260811_artifact.json`](docs/repair_sft_teacher_forced_diagnosis_20260811_artifact.json)：上述报告的 canonical Data Analytics artifact、数据集、图表、来源与技术结论定义。
 - [`docs/leadership_experiment_update_methodology_20260806.md`](docs/leadership_experiment_update_methodology_20260806.md)：从多轮实际修订中提炼的领导汇报方法论，固化四段结构、数字精度、口径边界、抗奖励投机表述、行动项口吻和自检清单。
 - `llin_verl/pi_sqlite_tool.py`：只读 SQLite 轨迹工具。
 - `llin_verl/pi_workspace_tools.py`、`llin_verl/pi_agent_loop.py`：完整 PI 四工具、轨迹级共享沙箱、事件审计和统一清理。
@@ -138,8 +142,19 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/run_repair_sft_megatron_smoke.sh`、`scripts/launch_repair_sft_megatron_smoke.sh`：固定 Step 120 模型态初始化、TP4/PP2/CP2 和 extra-only 保存的一步官方 veRL SFT 冒烟入口。
 - `scripts/prepare_repair_sft_dataset.py`、`scripts/run_repair_sft_train236_overfit.sh`：从 train236 审核资产中构建并机械核验 16 条单次 SQL 纠错轨迹，再从 Step 120 执行 5 步官方 veRL SFT。
 - `scripts/run_repair_sft_replay.sh`、`scripts/run_repair_sft_prepost_pipeline_host.sh`：以完全相同的老板四工具、48K/25 工具回合分别回放 Step 120 与 SFT Step 5，自动回收结果、调用老板原始评分器并写入配对门禁。
+- `scripts/teacher_forced_component_masks.py`、`scripts/qwen36_teacher_forced_diagnostic_dataset.py`、`scripts/run_teacher_forced_component_diagnostic.py`：把 assistant 监督严格拆为工具结构、SQL shell payload 与最终答案，在 veRL/Megatron forward-only 模式中输出逐题 NLL 和目标概率，不初始化 optimizer。
+- `scripts/run_repair_sft_teacher_forced_eval.sh`、`scripts/run_repair_sft_teacher_forced_prepost_host.sh`：在相同数据、TP4/PP2/CP2 下自动比较 Step 120 与 SFT Step 5，执行 16/16 token mask 重建门禁并仅回收聚合结果。
+- `scripts/analyze_repair_sft_free_run_divergence.py`：在服务器侧离线对齐教师轨迹与老板原始自由回放，统计第一条 SQL 分叉、目标 SQL 后续命中和正确证据后的继续查询，不输出原始敏感内容。
 
 ## 已验证状态
+
+### v0.69.0 — 2026-08-11
+
+- 新增无 optimizer、无保存的 veRL/Megatron teacher-forced 分项纯前向评估；同一 16 条数据的工具回合、工具结构、SQL payload 和最终答案 mask 均通过非空、互斥及 assistant loss-mask 重建门禁。Step 120/SFT Step 5 端到端流水线 `4m31s`，核心前向合计 `87.5s`，单卡峰值 allocated HBM `12.07 GiB`。
+- 官方 assistant loss 从 `1.873814` 降至 `0.414605`（`-77.87%`），且 Step 120 值与原 SFT 第一步更新前日志精确一致；工具结构、SQL、最终答案的目标概率分别提高到 `0.855/0.339/0.668`，三个分项均为 `16 改善 / 0 恶化`。
+- 老板自由回放的两份模型均为 `16/16` 第一条 SQL 偏离教师目标、目标 SQL 后续命中 `0/16`。因此 checkpoint、mask 和 loss 计算不是主因；通用 loss 中 `832` 个易学结构 token 相对 `329` 个 SQL token 过重，并且教师轨迹不覆盖模型首个错误查询后的状态，是当前最符合证据的解释。
+- 下一轮固定为 1–2 步 SQL-focused 金丝雀：SQL payload 权重提高 `4–8×`，工具模板降权，并加入模型首错状态的短纠正轨迹；只有 SQL NLL 为 `16/16` 改善、至少 `12/16` 的 SQL 目标概率超过 0.5 且自由生成出现非零首条正确/机械等价 SQL，才重跑完整老板回放。
+- 新增纯前向数据集、组件 mask、无人值守前后比较、自由回放首处分叉分析、安全聚合 JSON 与自包含报告；项目完整测试结果为 `203 passed`。报告 schema、来源和自包含构建通过；Windows 浏览器 QA 首轮发现的约一条滚动条宽度横向溢出已加入本地 CSS 修复，最终交互复验未声明通过。
 
 ### v0.68.0 — 2026-08-11
 
