@@ -96,7 +96,9 @@ def test_banded_2x8_resume_contract_and_final_only_checkpoint():
         'OVERSAMPLE_CANDIDATES="${RESPONSES_PER_GROUP}"',
         "CONCURRENT_SAMPLES_PER_REPLICA=6",
         'ROLLOUT_START_INDEX="$((START_POLICY_STEP * GROUPS_PER_STEP + 1))"',
-        'TOTAL_ROLLOUT_GROUPS="$((FINAL_POLICY_STEP * GROUPS_PER_STEP + PREWARM_GROUPS))"',
+        'TOTAL_ROLLOUT_GROUPS="$((FINAL_POLICY_STEP * GROUPS_PER_STEP))"',
+        'NEW_ROLLOUT_GROUPS="$((TOTAL_ROLLOUT_GROUPS - ROLLOUT_START_INDEX + 1))"',
+        'EXPECTED_NEW_ROLLOUT_GROUPS="$((NEW_TRAINING_STEPS * GROUPS_PER_STEP))"',
         "reward.custom_reward_function.name=compute_score_banded_v1",
         'trainer.test_freq="${FINAL_POLICY_STEP}"',
         'trainer.save_freq="${FINAL_POLICY_STEP}"',
@@ -108,7 +110,8 @@ def test_banded_2x8_resume_contract_and_final_only_checkpoint():
     assert 'CHECKPOINT_LOAD_CONTENTS="[model,optimizer,extra]"' in run_script
     assert 'CHECKPOINT_LOAD_CONTENTS="[model,extra]"' in run_script
     assert "reset_hybrid_cpu_offload_resume_workaround" in run_script
-    assert "NEW_TRAINING_STEPS * GROUPS_PER_STEP + PREWARM_GROUPS" not in run_script
+    assert "FINAL_POLICY_STEP * GROUPS_PER_STEP + PREWARM_GROUPS" not in run_script
+    assert "Rollout/update mismatch" in run_script
     assert 'LOAD_OPTIMIZER_STATE="${LOAD_OPTIMIZER_STATE:-true}"' in launcher
     assert "expected_global_step_%s_got_%s" in launcher
     assert "verify_checkpoint_integrity.py" in launcher
@@ -124,13 +127,18 @@ def test_unattended_pipeline_is_fail_closed_between_stages():
     assert "replay_banded_reward_gate.py" in script
     assert "analyze_accuracy_gate.py" in script
     assert "NEW_TRAINING_STEPS=5" in script
-    assert "NEW_TRAINING_STEPS=20" in script
+    assert 'FINAL_POLICY_STEP=145' in script
+    assert 'FINAL_NEW_STEPS="$((FINAL_POLICY_STEP - CANARY_CHECKPOINT_STEP))"' in script
     assert 'START_STAGE="${START_STAGE:-stage1}"' in script
-    assert "START_STAGE must be stage1 or stage4" in script
+    assert "stage4_post_train" in script
+    assert "CANARY_SOURCE_RUN_NAME is required for stage4_post_train" in script
+    assert "--min-rollout-step '${CANARY_GATE_MIN_ROLLOUT_STEP}'" in script
+    assert "--max-rollout-step '${CANARY_GATE_MAX_ROLLOUT_STEP}'" in script
     assert "refusing stage4 resume because replay gate did not pass" in script
     assert "LOAD_OPTIMIZER_STATE=false" in script
     assert "CHECKPOINT_INVALID" not in script
     assert "ray stop --force" in script
+    assert "copy_file_from_ray_resource.py" in script
 
 
 def test_formal_100step_uses_twelve_inflight_groups_and_final_only_artifacts():

@@ -13,9 +13,19 @@ from typing import Any
 from scripts.compare_boss_exact_evaluations import read_jsonl, summarize
 
 
-def rollout_signal(directory: Path, expected_group_size: int) -> dict[str, Any]:
+def rollout_signal(
+    directory: Path,
+    expected_group_size: int,
+    min_rollout_step: int | None = None,
+    max_rollout_step: int | None = None,
+) -> dict[str, Any]:
     groups: dict[tuple[str, str], list[dict[str, Any]]] = defaultdict(list)
     for path in sorted(directory.glob("*.jsonl"), key=lambda item: int(item.stem)):
+        rollout_step = int(path.stem)
+        if min_rollout_step is not None and rollout_step < min_rollout_step:
+            continue
+        if max_rollout_step is not None and rollout_step > max_rollout_step:
+            continue
         for line in path.read_text(encoding="utf-8").splitlines():
             if not line.strip():
                 continue
@@ -47,8 +57,15 @@ def analyze(
     rollout_dir: Path,
     boss_reward: Path,
     expected_group_size: int = 8,
+    min_rollout_step: int | None = None,
+    max_rollout_step: int | None = None,
 ) -> dict[str, Any]:
-    signal = rollout_signal(rollout_dir, expected_group_size)
+    signal = rollout_signal(
+        rollout_dir,
+        expected_group_size,
+        min_rollout_step,
+        max_rollout_step,
+    )
     boss = summarize(read_jsonl(boss_reward))
     checks = {
         "boss_val_has_20_tasks": boss["n"] == 20,
@@ -62,6 +79,10 @@ def analyze(
     }
     return {
         "contract": "banded-v1-2groups-8responses-accuracy-gate",
+        "rollout_step_range": {
+            "min": min_rollout_step,
+            "max": max_rollout_step,
+        },
         "rollout_signal": signal,
         "boss_exact": boss,
         "gate_checks": checks,
@@ -74,10 +95,24 @@ def main() -> None:
     parser.add_argument("--rollout-dir", type=Path, required=True)
     parser.add_argument("--boss-reward", type=Path, required=True)
     parser.add_argument("--expected-group-size", type=int, default=8)
+    parser.add_argument("--min-rollout-step", type=int)
+    parser.add_argument("--max-rollout-step", type=int)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--report-only", action="store_true")
     args = parser.parse_args()
-    result = analyze(args.rollout_dir, args.boss_reward, args.expected_group_size)
+    if (
+        args.min_rollout_step is not None
+        and args.max_rollout_step is not None
+        and args.min_rollout_step > args.max_rollout_step
+    ):
+        parser.error("--min-rollout-step cannot exceed --max-rollout-step")
+    result = analyze(
+        args.rollout_dir,
+        args.boss_reward,
+        args.expected_group_size,
+        args.min_rollout_step,
+        args.max_rollout_step,
+    )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(result, ensure_ascii=False, indent=2))

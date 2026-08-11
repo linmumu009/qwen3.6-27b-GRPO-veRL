@@ -20,7 +20,12 @@ MAX_QUEUE_GROUPS=4
 MAX_CONTEXT_TOKENS=49152
 MAX_QUEUE_TOKENS="$((MAX_QUEUE_GROUPS * RESPONSES_PER_GROUP * MAX_CONTEXT_TOKENS))"
 ROLLOUT_START_INDEX="$((START_POLICY_STEP * GROUPS_PER_STEP + 1))"
-TOTAL_ROLLOUT_GROUPS="$((FINAL_POLICY_STEP * GROUPS_PER_STEP + PREWARM_GROUPS))"
+# total_rollout_steps is a cumulative, inclusive producer limit.  Prewarming
+# controls queue depth; it must not create extra training groups beyond the
+# requested final policy step.
+TOTAL_ROLLOUT_GROUPS="$((FINAL_POLICY_STEP * GROUPS_PER_STEP))"
+NEW_ROLLOUT_GROUPS="$((TOTAL_ROLLOUT_GROUPS - ROLLOUT_START_INDEX + 1))"
+EXPECTED_NEW_ROLLOUT_GROUPS="$((NEW_TRAINING_STEPS * GROUPS_PER_STEP))"
 LEARNING_RATE="${LEARNING_RATE:-1e-7}"
 LOAD_OPTIMIZER_STATE="${LOAD_OPTIMIZER_STATE:-true}"
 
@@ -43,6 +48,11 @@ esac
 if (( START_POLICY_STEP < 0 || NEW_TRAINING_STEPS <= 0 )); then
   printf 'Invalid resume interval: start=%s new_steps=%s\n' \
     "${START_POLICY_STEP}" "${NEW_TRAINING_STEPS}" >&2
+  exit 2
+fi
+if (( NEW_ROLLOUT_GROUPS != EXPECTED_NEW_ROLLOUT_GROUPS )); then
+  printf 'Rollout/update mismatch: generated_groups=%s expected_groups=%s\n' \
+    "${NEW_ROLLOUT_GROUPS}" "${EXPECTED_NEW_ROLLOUT_GROUPS}" >&2
   exit 2
 fi
 if [[ ! -f "${SOURCE_CHECKPOINT}/actor/ckpt_contents.json" ]]; then
@@ -68,6 +78,7 @@ trajectories_per_update=16
 all_responses_used=true
 rollout_start_index=${ROLLOUT_START_INDEX}
 rollout_total_limit=${TOTAL_ROLLOUT_GROUPS}
+new_rollout_groups=${NEW_ROLLOUT_GROUPS}
 context_tokens=${MAX_CONTEXT_TOKENS}
 validation=final_only_boss_val20
 checkpoint=final_only_model_optimizer_extra

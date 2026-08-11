@@ -25,6 +25,24 @@ bash "${PROJECT_ROOT}/scripts/run_pi_banded_2x8_resume.sh" \
 exit_code=$?
 set -e
 
+validation_file="${RUN_DIR}/validation/${FINAL_POLICY_STEP}.jsonl"
+if [[ "${exit_code}" == "0" && ! -f "${validation_file}" ]]; then
+  set +e
+  python3 "${PROJECT_ROOT}/scripts/copy_file_from_ray_resource.py" \
+    --source "${validation_file}" \
+    --output "${validation_file}" \
+    --resource llin_rollout \
+    --ray-address "${RAY_ADDRESS:-192.168.202.5:26379}" \
+    --expected-jsonl-rows 20 \
+    >> "${RUN_DIR}/driver.log" 2>&1
+  validation_exit=$?
+  set -e
+  if [[ "${validation_exit}" != "0" ]]; then
+    printf 'validation_artifact_recovery_failed\n' > "${RUN_DIR}/VALIDATION_INVALID"
+    exit_code=8
+  fi
+fi
+
 latest_iteration_file="${RUN_DIR}/checkpoints/latest_checkpointed_iteration.txt"
 if [[ "${exit_code}" == "0" ]]; then
   if [[ ! -f "${latest_iteration_file}" ]]; then

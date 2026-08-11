@@ -8,6 +8,8 @@ PIPELINE_NAME="${PIPELINE_NAME:-llin-accuracy-unattended-$(date +%Y%m%d-%H%M%S)}
 PIPELINE_DIR="${HOST_PROJECT_ROOT}/runs/${PIPELINE_NAME}"
 CONTAINER_PIPELINE_DIR="${CONTAINER_PROJECT_ROOT}/runs/${PIPELINE_NAME}"
 START_STAGE="${START_STAGE:-stage1}"
+CANARY_SOURCE_RUN_NAME="${CANARY_SOURCE_RUN_NAME:-}"
+CANARY_SOURCE_CHECKPOINT_STEP="${CANARY_SOURCE_CHECKPOINT_STEP:-127}"
 DIAGNOSTIC_PIPELINE_NAME="${DIAGNOSTIC_PIPELINE_NAME:-${PIPELINE_NAME}}"
 DIAGNOSTIC_PIPELINE_DIR="${HOST_PROJECT_ROOT}/runs/${DIAGNOSTIC_PIPELINE_NAME}"
 BOSS_ROOT="${BOSS_ROOT:-/data/renjunxiang/coding/huawei_train}"
@@ -88,6 +90,22 @@ score_boss_exact() {
     --judge-out "${run_host}/boss_exact/${label}.judge.jsonl"
 }
 
+recover_validation() {
+  local run_name="$1"
+  local policy_step="$2"
+  local validation="${CONTAINER_PROJECT_ROOT}/runs/${run_name}/validation/${policy_step}.jsonl"
+  if [[ -f "${HOST_PROJECT_ROOT}/runs/${run_name}/validation/${policy_step}.jsonl" ]]; then
+    return
+  fi
+  docker exec "${TRAINER_CONTAINER}" bash -lc \
+    "python3 '${CONTAINER_PROJECT_ROOT}/scripts/copy_file_from_ray_resource.py' \
+      --source '${validation}' \
+      --output '${validation}' \
+      --resource llin_rollout \
+      --ray-address '192.168.202.5:26379' \
+      --expected-jsonl-rows 20"
+}
+
 case "${START_STAGE}" in
   stage1)
     write_stage "stage1_prepare_oracle"
@@ -127,7 +145,7 @@ case "${START_STAGE}" in
         --expected-group-size 4 \
         --output '${CONTAINER_PIPELINE_DIR}/banded_reward_replay_gate.json'"
     ;;
-  stage4)
+  stage4|stage4_post_train)
     for artifact in oracle_summary.json banded_reward_replay_gate.json; do
       if [[ ! -f "${DIAGNOSTIC_PIPELINE_DIR}/${artifact}" ]]; then
         printf 'required diagnostic artifact missing: %s\n' \
@@ -150,21 +168,48 @@ PY
       "${PIPELINE_DIR}/resumed_from_pipeline"
     ;;
   *)
-    printf 'START_STAGE must be stage1 or stage4, got: %s\n' \
+    printf 'START_STAGE must be stage1, stage4, or stage4_post_train, got: %s\n' \
       "${START_STAGE}" >&2
     exit 2
     ;;
 esac
 
-CANARY_RUN="${PIPELINE_NAME}-banded-2x8-step120-to125"
-write_stage "stage4_train_5step"
-timeout --signal=TERM --kill-after=180 28800 \
-  docker exec "${TRAINER_CONTAINER}" bash -lc \
-    "SOURCE_CHECKPOINT='${STEP120_CHECKPOINT}' START_POLICY_STEP=120 NEW_TRAINING_STEPS=5 \
-     LOAD_OPTIMIZER_STATE=false RUN_NAME='${CANARY_RUN}' \
-     bash '${CONTAINER_PROJECT_ROOT}/scripts/launch_pi_banded_2x8_resume.sh'"
+CANARY_VALIDATION_STEP=125
+CANARY_GATE_MIN_ROLLOUT_STEP=122
+CANARY_GATE_MAX_ROLLOUT_STEP=126
+FINAL_POLICY_STEP=145
+
+case "${START_STAGE}" in
+  stage1|stage4)
+    CANARY_RUN="${PIPELINE_NAME}-banded-2x8-step120-to125"
+    CANARY_CHECKPOINT_STEP=125
+    write_stage "stage4_train_5step"
+    timeout --signal=TERM --kill-after=180 28800 \
+      docker exec "${TRAINER_CONTAINER}" bash -lc \
+        "SOURCE_CHECKPOINT='${STEP120_CHECKPOINT}' START_POLICY_STEP=120 NEW_TRAINING_STEPS=5 \
+         LOAD_OPTIMIZER_STATE=false RUN_NAME='${CANARY_RUN}' \
+         bash '${CONTAINER_PROJECT_ROOT}/scripts/launch_pi_banded_2x8_resume.sh'"
+    ;;
+  stage4_post_train)
+    if [[ -z "${CANARY_SOURCE_RUN_NAME}" ]]; then
+      printf 'CANARY_SOURCE_RUN_NAME is required for stage4_post_train\n' >&2
+      exit 2
+    fi
+    CANARY_RUN="${CANARY_SOURCE_RUN_NAME}"
+    CANARY_CHECKPOINT_STEP="${CANARY_SOURCE_CHECKPOINT_STEP}"
+    write_stage "stage4_recover_completed_canary"
+    docker exec "${TRAINER_CONTAINER}" bash -lc \
+      "python3 '${CONTAINER_PROJECT_ROOT}/scripts/verify_checkpoint_integrity.py' \
+        --checkpoint-dir '${CONTAINER_PROJECT_ROOT}/runs/${CANARY_RUN}/checkpoints/global_step_${CANARY_CHECKPOINT_STEP}' \
+        --base-model-dir '/models/Qwen3.6-27B' \
+        --output '${CONTAINER_PIPELINE_DIR}/canary_checkpoint_integrity.json'"
+    printf '%s\n' "${CANARY_RUN}" > "${PIPELINE_DIR}/reused_canary_run"
+    ;;
+esac
+
+recover_validation "${CANARY_RUN}" "${CANARY_VALIDATION_STEP}"
 score_boss_exact \
-  "step125" "${CANARY_RUN}" 125 \
+  "step125" "${CANARY_RUN}" "${CANARY_VALIDATION_STEP}" \
   "${CONTAINER_PROJECT_ROOT}/data/boss_v15_dwh_full276_20260806/dataset/boss_pi_val.parquet"
 
 write_stage "stage4_gate_5step"
@@ -173,18 +218,27 @@ docker exec "${TRAINER_CONTAINER}" bash -lc \
     --rollout-dir '${CONTAINER_PROJECT_ROOT}/runs/${CANARY_RUN}/rollouts' \
     --boss-reward '${CONTAINER_PROJECT_ROOT}/runs/${CANARY_RUN}/boss_exact/step125.reward.jsonl' \
     --expected-group-size 8 \
+    --min-rollout-step '${CANARY_GATE_MIN_ROLLOUT_STEP}' \
+    --max-rollout-step '${CANARY_GATE_MAX_ROLLOUT_STEP}' \
     --output '${CONTAINER_PIPELINE_DIR}/step125_accuracy_gate.json'"
 
-FINAL_RUN="${PIPELINE_NAME}-banded-2x8-step125-to145"
-write_stage "stage5_train_20step"
+FINAL_NEW_STEPS="$((FINAL_POLICY_STEP - CANARY_CHECKPOINT_STEP))"
+if (( FINAL_NEW_STEPS <= 0 )); then
+  printf 'invalid final interval: checkpoint=%s final=%s\n' \
+    "${CANARY_CHECKPOINT_STEP}" "${FINAL_POLICY_STEP}" >&2
+  exit 2
+fi
+FINAL_RUN="${PIPELINE_NAME}-banded-2x8-step${CANARY_CHECKPOINT_STEP}-to${FINAL_POLICY_STEP}"
+write_stage "stage5_train_${FINAL_NEW_STEPS}step"
 timeout --signal=TERM --kill-after=180 64800 \
   docker exec "${TRAINER_CONTAINER}" bash -lc \
-    "SOURCE_CHECKPOINT='${CONTAINER_PROJECT_ROOT}/runs/${CANARY_RUN}/checkpoints/global_step_125' \
-     START_POLICY_STEP=125 NEW_TRAINING_STEPS=20 LOAD_OPTIMIZER_STATE=false \
+    "SOURCE_CHECKPOINT='${CONTAINER_PROJECT_ROOT}/runs/${CANARY_RUN}/checkpoints/global_step_${CANARY_CHECKPOINT_STEP}' \
+     START_POLICY_STEP='${CANARY_CHECKPOINT_STEP}' NEW_TRAINING_STEPS='${FINAL_NEW_STEPS}' LOAD_OPTIMIZER_STATE=false \
      RUN_NAME='${FINAL_RUN}' \
      bash '${CONTAINER_PROJECT_ROOT}/scripts/launch_pi_banded_2x8_resume.sh'"
+recover_validation "${FINAL_RUN}" "${FINAL_POLICY_STEP}"
 score_boss_exact \
-  "step145" "${FINAL_RUN}" 145 \
+  "step145" "${FINAL_RUN}" "${FINAL_POLICY_STEP}" \
   "${CONTAINER_PROJECT_ROOT}/data/boss_v15_dwh_full276_20260806/dataset/boss_pi_val.parquet"
 
 write_stage "stage5_final_analysis"
