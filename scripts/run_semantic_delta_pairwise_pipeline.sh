@@ -5,7 +5,8 @@ PROJECT_ROOT="${PROJECT_ROOT:-/workspace/llin-verl-grpo}"
 RUN_NAME="${RUN_NAME:-llin-semantic-delta-pairwise-step120-1step-20260812-01}"
 OUTPUT_DIR="${OUTPUT_DIR:-${PROJECT_ROOT}/runs/${RUN_NAME}}"
 DATA_DIR="${DATA_DIR:-${PROJECT_ROOT}/data/semantic_delta_margin_gate_20260812}"
-BASELINE_DIAGNOSTIC="${BASELINE_DIAGNOSTIC:-${PROJECT_ROOT}/runs/llin-semantic-delta-margin-step120-20260812-01/diagnostic.json}"
+BASELINE_RUN_NAME="${BASELINE_RUN_NAME:-${RUN_NAME}-baseline-forward}"
+BASELINE_OUTPUT_DIR="${BASELINE_OUTPUT_DIR:-${PROJECT_ROOT}/runs/${BASELINE_RUN_NAME}}"
 POST_RUN_NAME="${POST_RUN_NAME:-${RUN_NAME}-post-forward}"
 POST_OUTPUT_DIR="${POST_OUTPUT_DIR:-${PROJECT_ROOT}/runs/${POST_RUN_NAME}}"
 DATA_CONTRACT="${DATA_DIR}/contract.json"
@@ -13,10 +14,10 @@ DATA_CONTRACT="${DATA_DIR}/contract.json"
 mkdir -p "${OUTPUT_DIR}"
 export PYTHONPATH="${PROJECT_ROOT}/runtime:${PROJECT_ROOT}:/verl:${PYTHONPATH:-}"
 cd "${PROJECT_ROOT}"
-python3 -m scripts.analyze_semantic_delta_margin_gate \
-  --diagnostic "${BASELINE_DIAGNOSTIC}" \
-  --dataset-contract "${DATA_CONTRACT}" \
-  --output "${OUTPUT_DIR}/baseline_margin_result.json"
+RUN_NAME="${BASELINE_RUN_NAME}" \
+OUTPUT_DIR="${BASELINE_OUTPUT_DIR}" \
+MODEL_LABEL=step120_pairwise_pipeline_baseline \
+bash "${PROJECT_ROOT}/scripts/run_semantic_delta_margin_gate.sh"
 
 RUN_NAME="${RUN_NAME}" \
 OUTPUT_DIR="${OUTPUT_DIR}" \
@@ -40,6 +41,6 @@ MODEL_LABEL=pairwise_step1_semantic_delta_margin \
 bash "${PROJECT_ROOT}/scripts/run_semantic_delta_margin_gate.sh"
 
 python3 -m scripts.compare_semantic_delta_margin_canary \
-  --baseline "${OUTPUT_DIR}/baseline_margin_result.json" \
+  --baseline "${BASELINE_OUTPUT_DIR}/semantic_delta_margin_result.json" \
   --post "${POST_OUTPUT_DIR}/semantic_delta_margin_result.json" \
   --output "${OUTPUT_DIR}/comparison.json"

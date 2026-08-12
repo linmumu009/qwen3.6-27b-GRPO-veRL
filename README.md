@@ -176,6 +176,11 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 已验证状态
 
+### v0.82.1 — 2026-08-12
+
+- pairwise 一步流水线不再复用增加 `pair_index` 列之前的旧 baseline diagnostic；训练前自动用 Step 120 在最终 32 行 Parquet 上重跑同一 forward-only margin，随后训练一步并做 post-forward，确保 baseline/post 的数据文件哈希、token mask 与 pair 顺序完全一致。
+- baseline、训练和 post-forward 各用隔离运行目录，最终比较器只接受 result v2 与相同 16 个 task；额外一次约数分钟的 Step 120 纯前向换取自包含、可复现的严格前后证据链。
+
 ### v0.82.0 — 2026-08-12
 
 - 新增一次 reference-free pairwise plan-to-SQL 金丝雀：数据固定为 16 个相邻 `chosen → rejected` pair，关闭 shuffle，global batch 为 32、microbatch 为 2；loss 只比较两侧 semantic-delta token 的平均 log probability，并以 logistic ranking 直接纠正 Step 120 在 `0/16` 对中偏好实际首错 SQL的问题。

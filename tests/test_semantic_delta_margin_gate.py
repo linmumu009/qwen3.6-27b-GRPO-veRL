@@ -209,6 +209,9 @@ def test_margin_launcher_is_forward_only_and_saves_no_checkpoint():
     assert "trainer.total_training_steps=1" in training
     assert "compare_semantic_delta_margin_canary" in pipeline
     assert "run_semantic_delta_margin_gate.sh" in pipeline
+    assert "BASELINE_RUN_NAME" in pipeline
+    assert "step120_pairwise_pipeline_baseline" in pipeline
+    assert "BASELINE_DIAGNOSTIC" not in pipeline
 
 
 def test_safe_pretraining_summary_freezes_pairwise_gate_without_raw_assets():
