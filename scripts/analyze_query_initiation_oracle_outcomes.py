@@ -12,6 +12,9 @@ from scripts.analyze_disjoint_first_query_outcomes import audit_first_query_outc
 from scripts.analyze_repair_sft_free_run_divergence import read_openai
 from scripts.prepare_query_initiation_oracle_candidates import CONTRACT
 from scripts.prepare_repair_sft_dataset import load_parquet_rows, sha256_file
+from scripts.prepare_structured_sqlite_realization_gate import (
+    CONTRACT as STRUCTURED_SQLITE_CONTRACT,
+)
 
 
 def audit_oracle_outcomes(
@@ -21,8 +24,9 @@ def audit_oracle_outcomes(
     database: Path,
     dataset_contract: dict[str, Any],
 ) -> dict[str, Any]:
-    if dataset_contract.get("contract") != CONTRACT:
-        raise ValueError("query-initiation dataset contract mismatch")
+    source_contract = dataset_contract.get("contract")
+    if source_contract not in {CONTRACT, STRUCTURED_SQLITE_CONTRACT}:
+        raise ValueError("query diagnostic dataset contract mismatch")
     rows = int(dataset_contract.get("rows") or 0)
     if rows <= 0 or len(replay_rows) != rows or len(rollout_messages) != rows:
         raise ValueError("dataset contract, parquet, and rollout row counts differ")
@@ -37,10 +41,14 @@ def audit_oracle_outcomes(
         replay_rows=replay_rows,
         rollout_messages=rollout_messages,
         database=database,
-        model_source="step120_query_initiation_oracle",
+        model_source=(
+            "step120_query_initiation_oracle"
+            if source_contract == CONTRACT
+            else "step120_structured_sqlite_realization"
+        ),
     )
     result["source_query_initiation_contract_rows"] = rows
-    result["source_query_initiation_contract"] = CONTRACT
+    result["source_query_initiation_contract"] = source_contract
     return result
 
 

@@ -190,8 +190,15 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/run_disjoint_pairwise_canary.sh`：只有不重叠 pair 数、CPU token gate 和 Step 120 margin 三门均通过时，才把实际 48–64 对作为一个完整 global batch 做一次 reference-free pairwise 更新；只保存 model+extra，随后必须回到原冻结 16 题做概率门禁。
 - `scripts/analyze_rollout_command_families.py`：以不输出命令、SQL、prompt 或工具结果的方式统计工具类型、Bash 命令族、重复调用与真实工具响应覆盖，用于区分模型工具策略问题和 SQL 解析器漏识别。
 - `scripts/prepare_query_initiation_oracle_candidates.py`、`scripts/analyze_query_initiation_oracle_outcomes.py`、`scripts/analyze_query_initiation_oracle_gate.py`：只抽取 Step 120 完整 25 回合仍未发起只读查询的题目，追加不含答案、表名、字段名、SQL 或字面量的通用查询启动约束；专用适配器核对 Parquet 哈希、3/3 回合和训练关闭合同，再以带真实工具结果的只读查询恢复数区分策略路由与 schema/工具实现问题。
+- `scripts/prepare_structured_sqlite_realization_gate.py`、`scripts/analyze_structured_sqlite_realization_gate.py`：把同一 41 题通用干预替换为冻结的三回合非交互 `path→schema→SELECT/WITH` 工作流，禁止交互 shell 和重复命令；仍不提供 task-specific schema、query 或答案，并以 `31/41` 带结果查询决定运行时约束是否足够。
 
 ## 已验证状态
+
+### v0.96.0 — 2026-08-13
+
+- 新增结构化 SQLite realization 门禁：严格复用 v0.95 的同一 41 个 Step 120 full25 无查询任务和 hidden verifier，只替换通用干预为“路径定位最多一次、schema 检查最多一次、第三回合必须非交互 SELECT/WITH”，禁止交互 shell、重复命令和猜答案。
+- 数据构建器必须验证上游 41 行合同与 Parquet 哈希，并机械移除旧通用干预，防止两条指令叠加；新合同冻结 `3 assistant / 3 tool-result`、`31/41` 恢复线、task-specific 信息零披露和训练/晋级关闭。
+- 结果适配器扩展为显式支持两种诊断合同，结构化判定器同时核对首查询与命令族行数。过线只允许先验证 full64/val20 运行时约束；不过线才进入至少 48 条机械验证 schema-grounded action pairs 数据门，门禁本身不初始化 optimizer。
 
 ### v0.95.1 — 2026-08-13
 
