@@ -26,7 +26,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - Step 120 的一步单变量 SQL 加权金丝雀已完成：工具结构/SQL/最终答案为 `0.25/8/1`，SQL NLL `2.4484 → 2.0612` 且 `16/16` 改善，教师 SQL greedy token `166 → 173`、平均 rank `56.59 → 41.35`。但逐题 SQL 概率超过 0.5 仍为 `0/16`，首条 SQL gold 支持和教师结果等价均仍为 `0/16`；48K 自由回放耗时约 `55m23s`，终止回答仅 `13/16`。候选不晋级、不续训；下一训练目标改为模型首错查询/工具结果条件下的 SQL 恢复监督，不再单独提高 SQL 权重。
 - 状态条件化纠错入口已按严格单变量设计补齐：复用 Step 120、相同 16 题和 `0.25/8/1` 目标权重，仅把模型首个错误 SQL 及实际工具结果加入历史；错误 assistant 回合由选择性 mask 保证 loss 为 0，只监督纠正 SQL 与最终答案。新增全查询只读语义审计，在第 1/2/3 条和任意后续查询上定位首次正确或等价证据；两项 CPU 门禁通过前不占用 NPU。
 - 状态条件化一步金丝雀已完成：纠正 SQL NLL `1.6815 → 1.4118` 且 `16/16` 改善，greedy token `221 → 225`、top-5 `284 → 298`、平均 rank `20.12 → 16.72`；但逐题概率超过 0.5 仍仅 `1/16`（要求 `12/16`），整段全 greedy 仍为 `0/16`。按门禁停止，不跑短/完整回放、不续训；下一目标改为首错语义分类与 critical-token 对比纠错数据。
-- Semantic critical-token 一步金丝雀已完成：把每题首个 semantic non-greedy SQL token 从 `8×` 提到 `32×` 后，SQL NLL `1.2929 → 1.1435` 且 `16/16` 改善，greedy/top-5 各增加 4 个；query-start `3/3` 转为 greedy，但 aggregation `9/9` 仍是首分叉，完整 SQL 概率 `>0.5` 仍为 `2/16`（门槛 `12/16`）。按冻结门禁不做 replay、不续训；下一目标改为机械抽取并核验错误/纠正 SQL 的语义差异 span，而非继续增加单 token 权重或步数。
+- Semantic critical-token 一步金丝雀已完成：把每题首个 semantic non-greedy SQL token 从 `8×` 提到 `32×` 后，SQL NLL `1.2929 → 1.1435` 且 `16/16` 改善，greedy/top-5 各增加 4 个；query-start `3/3` 转为 greedy，但 aggregation `9/9` 仍是首分叉，完整 SQL 概率 `>0.5` 仍为 `2/16`（门槛 `12/16`）。后续训练暂缓，先以同一 16 条首错状态执行 Control / operator oracle / full semantic plan 三臂一次生成门禁，区分 plan selection、schema grounding 与 plan-to-SQL realization。
 - 所有新增镜像、容器、工作目录和实验名均以 `llin` 开头，不复用或修改其他人的环境。
 
 当前服务器部署：
@@ -166,8 +166,16 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/prepare_state_conditioned_repair_sft.py`、`scripts/check_state_conditioned_sft_dataset.py`、`scripts/run_repair_sft_state_conditioned_canary.sh`：从 Step 120 首错 SQL 和真实工具结果构造零-loss 上下文，机械核验纠正查询并执行一步状态条件化金丝雀。
 - `scripts/prepare_critical_token_recovery_sft.py`、`scripts/qwen36_critical_token_sft_dataset.py`、`scripts/check_critical_token_sft_dataset.py`、`scripts/run_repair_sft_critical_token_canary.sh`：冻结 semantic-mask v3 的逐题首个非 greedy SQL token，核对 token ID/offset 并只把该 token 从 `8×` 提到 `32×`。
 - `scripts/analyze_critical_token_canary.py`：在哈希一致的 Step 120/训练后 forward-only 结果中复核冻结 token 是转为 greedy、仍为首个非 greedy，还是被更早的新分叉阻断归因，并将整条 SQL 概率门禁作为唯一 replay 开关。
+- `scripts/prepare_semantic_plan_sufficiency_gate.py`、`scripts/check_semantic_plan_sufficiency_gate.py`：将同一 16 条 Step 120 首错 SQL 与真实工具结果复制为 Control、operator oracle、full semantic plan 三臂；CPU 门禁逐题核对相同基态、bash-only、只读首错 SQL，以及 oracle 不泄漏原 SQL、结果、答案或字面量。
+- `scripts/run_semantic_plan_sufficiency_gate.sh`、`scripts/prepare_semantic_plan_gate_outputs.py`、`scripts/analyze_semantic_plan_sufficiency_gate.py`：一次加载 Step 120 后对 48 行做贪心单助手回合生成，在工具执行前停止；随后只读执行生成 SQL，以 gold 支持或教师结果等价判定恢复，并按冻结阈值自动选择下一训练目标。
 
 ## 已验证状态
+
+### v0.79.0 — 2026-08-12
+
+- 新增无训练的 semantic-plan sufficiency gate：同一 16 条首错状态严格复制为 `control / operator_oracle / full_plan_oracle` 三臂，唯一变量为结构化计划；operator 臂只含聚合、分组、过滤、时间、排序算子与计数，full 臂再加入机械核验的表、join edge 和分角色列，不含原 SQL、结果、最终答案或字面量。
+- 冻结为一次 Step 120 模型加载、48 行贪心 `n=1`、`max_assistant_turns=1`：模型生成下一条 bash SQL 工具调用后即停止，代理不执行该调用；分析阶段才在 immutable/read-only SQLite 上执行并复用既有 gold 支持与教师结果等价口径，且不初始化 optimizer、不保存 checkpoint。
+- 固化自动决策阈值：operator oracle 至少恢复 `4/9` 个 aggregation-critical task 且不回退 Control 已成功题，则转向 plan selection/contrast；否则 full plan 达到 `8/16` 才转向 schema grounding/compositional plan；仍未达到则锁定 plan-to-SQL realization/recovery。新增 5 个单元测试覆盖计划隔离、Parquet 合同、零工具结果、阈值优先级与无训练启动器。
 
 ### v0.78.2 — 2026-08-12
 
