@@ -155,6 +155,11 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 已验证状态
 
+### v0.72.1 — 2026-08-12
+
+- teacher-forced 比较器支持不绑定自由回放的纯 checkpoint NLL/rank 对比，避免把其他模型的 rollout 指标误配给当前候选；既有前后回放流水线继续传入并严格校验 16 个同 prompt 的 rollout comparison。
+- 分项比较新增逐题几何平均目标概率超过 `0.5/0.8` 的计数，便于直接执行 SQL 金丝雀的冻结晋级阈值；无 rollout 时诊断状态显式标记为 pending，不推断自由运行质量。
+
 ### v0.72.0 — 2026-08-12
 
 - 完成 Step 120 与通用 SFT Step 5 的双 checkpoint NPU exact token-rank 门禁：329 个教师 SQL token 的 greedy 命中 `166 → 231`（`50.46% → 70.21%`），top-5 命中 `254 → 302`（`77.20% → 91.79%`），平均 rank `56.59 → 17.53`，但整段全 greedy 仍均为 `0/16`。

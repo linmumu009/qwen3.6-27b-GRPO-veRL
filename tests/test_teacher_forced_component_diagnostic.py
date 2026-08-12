@@ -170,12 +170,18 @@ def test_unattended_pipeline_compares_both_checkpoints_with_free_rollout():
     script = (ROOT / "scripts" / "run_repair_sft_teacher_forced_prepost_host.sh").read_text(
         encoding="utf-8"
     )
+    comparison = (ROOT / "scripts" / "compare_teacher_forced_diagnostics.py").read_text(
+        encoding="utf-8"
+    )
 
     assert "global_step_120/actor/model/dist_ckpt" in script
     assert "global_step_5/model/dist_ckpt" in script
     assert "compare_teacher_forced_diagnostics.py" in script
     assert "comparison.json" in script
     assert "set_stage done" in script
+    assert 'parser.add_argument("--rollout-comparison", type=Path)' in comparison
+    assert '"teacher_forced_targets_improved_pending_free_rollout"' in comparison
+    assert '"post_sft_above_0_5"' in comparison
 
 
 def test_free_run_divergence_detects_teacher_path_and_continuation():

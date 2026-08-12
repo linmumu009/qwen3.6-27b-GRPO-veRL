@@ -20,13 +20,13 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--step120", type=Path, required=True)
     parser.add_argument("--post-sft", type=Path, required=True)
-    parser.add_argument("--rollout-comparison", type=Path, required=True)
+    parser.add_argument("--rollout-comparison", type=Path)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
 
     baseline = load(args.step120)
     post = load(args.post_sft)
-    rollout = load(args.rollout_comparison)
+    rollout = load(args.rollout_comparison) if args.rollout_comparison else None
     expected_contract = "repair-sft-teacher-forced-component-diagnostic-v2"
     if baseline.get("contract") != expected_contract or post.get("contract") != expected_contract:
         raise ValueError("unexpected teacher-forced diagnostic contract")
@@ -34,7 +34,10 @@ def main() -> None:
         raise ValueError("teacher-forced task IDs differ")
     if baseline["data_sha256"] != post["data_sha256"]:
         raise ValueError("teacher-forced data hashes differ")
-    if rollout.get("task_ids_identical") is not True or rollout.get("prompt_identity", {}).get("identical_prompt_count") != 16:
+    if rollout is not None and (
+        rollout.get("task_ids_identical") is not True
+        or rollout.get("prompt_identity", {}).get("identical_prompt_count") != 16
+    ):
         raise ValueError("free-rollout comparison does not use identical 16 prompts")
 
     component_comparison: dict[str, Any] = {}
@@ -52,9 +55,21 @@ def main() -> None:
         )
         wins = losses = ties = 0
         task_deltas: list[float] = []
+        before_probabilities: list[float] = []
+        after_probabilities: list[float] = []
         for task_id in baseline["task_ids"]:
             task_before = per_task_by_model["step120"][task_id]["components"][component]["mean_nll"]
             task_after = per_task_by_model["post_sft"][task_id]["components"][component]["mean_nll"]
+            before_probabilities.append(
+                per_task_by_model["step120"][task_id]["components"][component][
+                    "geometric_mean_target_probability"
+                ]
+            )
+            after_probabilities.append(
+                per_task_by_model["post_sft"][task_id]["components"][component][
+                    "geometric_mean_target_probability"
+                ]
+            )
             delta = task_after - task_before
             task_deltas.append(delta)
             if delta < -1e-9:
@@ -73,6 +88,12 @@ def main() -> None:
             "post_sft_geometric_mean_target_probability": after["geometric_mean_target_probability"],
             "target_probability_ratio": probability_ratio,
             "per_task_nll": {"improved": wins, "worsened": losses, "tied": ties},
+            "per_task_probability": {
+                "step120_above_0_5": sum(value > 0.5 for value in before_probabilities),
+                "post_sft_above_0_5": sum(value > 0.5 for value in after_probabilities),
+                "step120_above_0_8": sum(value > 0.8 for value in before_probabilities),
+                "post_sft_above_0_8": sum(value > 0.8 for value in after_probabilities),
+            },
             "per_task_nll_deltas": task_deltas,
         }
 
@@ -80,10 +101,22 @@ def main() -> None:
     all_teacher_targets_improved = all(
         component_comparison[name]["mean_nll_delta"] < 0 for name in core_components
     )
-    rollout_reward_delta = rollout["numeric_deltas"]["reward_total_mean"]["delta"]
-    rollout_complete_delta = rollout["numeric_deltas"]["complete_count"]["delta"]
-    rollout_worsened = rollout_reward_delta < 0 and rollout_complete_delta < 0
-    if all_teacher_targets_improved and rollout_worsened:
+    rollout_reward_delta = (
+        None if rollout is None else rollout["numeric_deltas"]["reward_total_mean"]["delta"]
+    )
+    rollout_complete_delta = (
+        None if rollout is None else rollout["numeric_deltas"]["complete_count"]["delta"]
+    )
+    rollout_worsened = (
+        None
+        if rollout is None
+        else rollout_reward_delta < 0 and rollout_complete_delta < 0
+    )
+    if rollout is None and all_teacher_targets_improved:
+        diagnosis = "teacher_forced_targets_improved_pending_free_rollout"
+    elif rollout is None:
+        diagnosis = "one_or_more_teacher_forced_target_components_did_not_improve"
+    elif all_teacher_targets_improved and rollout_worsened:
         diagnosis = "teacher_forced_targets_improved_but_free_running_degraded"
     elif not all_teacher_targets_improved:
         diagnosis = "one_or_more_teacher_forced_target_components_did_not_improve"
@@ -115,7 +148,9 @@ def main() -> None:
                 - baseline["sql_token_rank"]["tasks_all_sql_tokens_greedy"]
             ),
         },
-        "free_rollout_reference": {
+        "free_rollout_reference": None
+        if rollout is None
+        else {
             "reward_mean_delta": rollout_reward_delta,
             "complete_count_delta": rollout_complete_delta,
             "correct_count_delta": rollout["numeric_deltas"]["correct_numeric_count"]["delta"],
