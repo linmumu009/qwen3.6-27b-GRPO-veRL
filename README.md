@@ -185,8 +185,15 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/prepare_disjoint_pair_rollout_candidates.py`：只接受上述审计中 strict-available 的 48–64 条身份，把当前权威 instruction/gold 重建回老板 system/tool 格式的推理 Parquet；输出仅供 Step 120 首错采集，显式禁止直接训练或模型晋级。
 - `scripts/prepare_disjoint_first_error_pairs.py`：只把 Step 120 实际生成且机械错误/不足的首条只读 SQL 连同真实工具结果作为零-loss 状态，配对当前定义下已验证的 chosen SQL；正确/等价首查和无 SQL 题被排除，至少 48 对前继续禁止训练。
 - `scripts/check_disjoint_first_error_pairs.py`、`scripts/run_disjoint_pair_margin_gate.sh`、`scripts/analyze_disjoint_pair_margin.py`：对实际 48–64 对数据动态核验 chosen/rejected 邻接、delta mask、候选符号与序号，并以 Step 120 forward-only 统计正确 SQL margin、75% 偏好阈值及首个非 greedy token 家族；全程无 optimizer/checkpoint。
+- `scripts/run_disjoint_pairwise_canary.sh`：只有不重叠 pair 数、CPU token gate 和 Step 120 margin 三门均通过时，才把实际 48–64 对作为一个完整 global batch 做一次 reference-free pairwise 更新；只保存 model+extra，随后必须回到原冻结 16 题做概率门禁。
 
 ## 已验证状态
+
+### v0.90.0 — 2026-08-12
+
+- pairwise trainer 从固定 32 行扩展为“一个正偶数、恰好覆盖全数据集的 global batch”，仍保持 DP=1、顺序 sampler、每个 microbatch 一对相邻 `chosen → rejected` 和一次 optimizer step；原冻结 16 对默认批量继续兼容。
+- 新增不重叠 48–64 对一步金丝雀入口，启动前交叉验证数据合同、token gate 与 Step 120 margin 决策的 pair/row 数和所有 fail-closed 标志；任何旧合同、数量漂移或未授权 margin 都不会初始化 Adam。
+- 新 checkpoint 只保存 model+extra、不保存 optimizer，且不得先跑自由回放；唯一下一门是原冻结 16 题的 `chosen ≥12/16`、margin 改善 `≥12/16`、更早分叉回退为 0。
 
 ### v0.89.0 — 2026-08-12
 

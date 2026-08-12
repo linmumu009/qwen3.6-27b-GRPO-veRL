@@ -53,14 +53,16 @@ def semantic_delta_pairwise_loss(
 
 
 class PairwiseSemanticDeltaTrainer(SFTTrainer):
-    """Keep adjacent pairs deterministic and fail closed outside the frozen DP=1 topology."""
+    """Keep adjacent pairs deterministic and fail closed outside the DP=1 topology."""
 
     def _build_dataloader(self):
         if self.engine.get_data_parallel_size() != 1:
             raise ValueError("semantic-delta pairwise canary requires data parallel size 1")
         self.global_batch_size = int(self.config.data.train_batch_size)
-        if self.global_batch_size != 32:
-            raise ValueError("semantic-delta pairwise canary requires one 32-row global batch")
+        if self.global_batch_size < 2 or self.global_batch_size % 2:
+            raise ValueError("semantic-delta pairwise canary requires a positive even global batch")
+        if self.global_batch_size != len(self.train_dataset):
+            raise ValueError("semantic-delta pairwise canary requires exactly one full-dataset batch")
         self.train_batch_size_per_dp = self.global_batch_size
         self.train_sampler = EpochAwareSequentialSampler(self.train_dataset)
         self.collate_fn = SFTTensorCollator(self.config.data.pad_mode)
