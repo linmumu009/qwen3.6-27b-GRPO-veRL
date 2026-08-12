@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 import torch
@@ -15,6 +16,7 @@ from scripts.teacher_forced_component_masks import (
 from scripts.analyze_repair_sft_free_run_divergence import analyze_task
 from scripts.teacher_forced_token_ranks import (
     ranks_from_full_logits,
+    resolve_model_vocab_size,
     summarize_sql_token_ranks,
 )
 
@@ -115,6 +117,23 @@ def test_exact_teacher_token_rank_uses_strict_greater_logits_and_vocab_boundary(
     ranks = ranks_from_full_logits(logits, labels, vocab_size=4)
 
     assert ranks.tolist() == [[2, 1]]
+
+
+@pytest.mark.parametrize(
+    ("config", "expected"),
+    [
+        (SimpleNamespace(vocab_size=100), 100),
+        (SimpleNamespace(text_config=SimpleNamespace(vocab_size=200)), 200),
+        (SimpleNamespace(language_config={"vocab_size": 300}), 300),
+    ],
+)
+def test_model_vocab_size_supports_flat_and_nested_hf_configs(config, expected):
+    assert resolve_model_vocab_size(config) == expected
+
+
+def test_model_vocab_size_rejects_missing_or_invalid_value():
+    with pytest.raises(ValueError, match="cannot resolve vocab_size"):
+        resolve_model_vocab_size(SimpleNamespace(text_config=SimpleNamespace(vocab_size=0)))
 
 
 def test_rank_summary_locates_first_nongreedy_sql_token_per_task():

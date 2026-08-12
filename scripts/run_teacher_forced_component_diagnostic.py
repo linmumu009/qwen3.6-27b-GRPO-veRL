@@ -22,6 +22,7 @@ from verl.utils.distributed import destroy_global_process_group, initialize_glob
 from verl.workers.utils.losses import sft_loss
 
 from scripts.teacher_forced_token_ranks import (
+    resolve_model_vocab_size,
     sql_token_rank_metrics,
     summarize_sql_token_ranks,
     vocab_parallel_target_ranks,
@@ -156,7 +157,7 @@ def run(config: DictConfig) -> None:
             "temperature": 1.0,
             "distillation_use_topk": True,
             "distillation_only": False,
-            "model_vocab_size": int(trainer.model_config.hf_config.vocab_size),
+            "model_vocab_size": resolve_model_vocab_size(trainer.model_config.hf_config),
             "global_batch_size": trainer.global_batch_size,
             "pad_mode": config.data.pad_mode,
             "pad_token_id": trainer.model_config.tokenizer.pad_token_id,

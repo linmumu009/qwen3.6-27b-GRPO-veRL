@@ -8,6 +8,29 @@ from typing import Any, Callable
 import torch
 
 
+def resolve_model_vocab_size(hf_config) -> int:
+    """Resolve vocabulary size from flat or multimodal Hugging Face configs."""
+
+    candidates = (
+        hf_config,
+        getattr(hf_config, "text_config", None),
+        getattr(hf_config, "language_config", None),
+    )
+    for candidate in candidates:
+        if candidate is None:
+            continue
+        value = (
+            candidate.get("vocab_size")
+            if isinstance(candidate, dict)
+            else getattr(candidate, "vocab_size", None)
+        )
+        if value is not None and int(value) > 0:
+            return int(value)
+    raise ValueError(
+        f"cannot resolve vocab_size from Hugging Face config {type(hf_config).__name__}"
+    )
+
+
 def ranks_from_full_logits(
     logits: torch.Tensor, labels: torch.Tensor, *, vocab_size: int | None = None
 ) -> torch.Tensor:

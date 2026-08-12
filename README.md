@@ -155,6 +155,11 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 已验证状态
 
+### v0.71.1 — 2026-08-12
+
+- 修复 teacher-forced exact token-rank 门禁对 Qwen3.6 嵌套 Hugging Face 配置的兼容读取：优先支持顶层 `vocab_size`，并兼容 `text_config` / `language_config`，缺失或非法值继续 fail closed。
+- 补充平铺、嵌套对象、嵌套字典与非法配置单元测试；失败的 `-01` 运行未进入模型前向、未初始化 optimizer、未训练且未写 checkpoint，后续使用全新运行名重试。
+
 ### v0.71.0 — 2026-08-12
 
 - 完成重复 SQL 因果诊断：Step 120 与通用 SFT Step 5 在同一 16 题上的首条查询均为 `0/16` 支持 gold、`0/16` 与教师结果机械等价，确认准确率故障先于重复循环发生。
