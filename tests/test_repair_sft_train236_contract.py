@@ -40,8 +40,6 @@ def test_sql_weighted_canary_is_one_variable_one_step_from_step120():
     assert "model_state_correction_examples=0" in script
     assert "TOTAL_STEPS=1" in script
     assert "TOTAL_EPOCHS=1" in script
-    assert "MAX_LENGTH=8192" in script
-    assert "--max-length 8192" in script
     assert 'SQL_PAYLOAD_WEIGHT="${SQL_PAYLOAD_WEIGHT:-8.0}"' in script
     assert 'TOOL_STRUCTURE_WEIGHT="${TOOL_STRUCTURE_WEIGHT:-0.25}"' in script
     assert "Qwen36SQLWeightedSFTDataset" in script
@@ -61,6 +59,8 @@ def test_state_conditioned_canary_keeps_wrong_assistant_turn_as_zero_loss_contex
     assert "supervised_assistant_turn_indices=1,2" in script
     assert "TOTAL_STEPS=1" in script
     assert "TOTAL_EPOCHS=1" in script
+    assert "MAX_LENGTH=8192" in script
+    assert "--max-length 8192" in script
     assert "Qwen36SQLWeightedSFTDataset" in script
     assert "python3 -m scripts.check_state_conditioned_sft_dataset" in script
     assert "train236-state-conditioned-repair-sft-dataset-v1" in core
