@@ -9,12 +9,14 @@ import copy
 import hashlib
 import json
 from pathlib import Path
+import shlex
 from typing import Any
 
 import pandas as pd
 
 from scripts.analyze_repair_sft_free_run_divergence import normalize_container, sql_from_command
 from scripts.prepare_semantic_plan_sufficiency_gate import sha256_value
+from scripts.teacher_forced_component_masks import SQLITE_COMMAND_PREFIX
 
 
 CANDIDATES = ("chosen", "rejected")
@@ -35,6 +37,12 @@ def _candidate_row(source: dict[str, Any], label: str) -> dict[str, Any]:
     if label == "rejected":
         rejected_call = copy.deepcopy(messages[2]["tool_calls"][0])
         rejected_call["id"] = f"call_margin_rejected_{source_task_id.removeprefix('task_')}"
+        rejected_sql = sql_from_command(rejected_call["function"]["arguments"]["command"])
+        if rejected_sql is None:
+            raise ValueError(f"{source_task_id}: rejected candidate has no SQL")
+        rejected_call["function"]["arguments"]["command"] = (
+            SQLITE_COMMAND_PREFIX + shlex.quote(rejected_sql)
+        )
         messages[4] = {
             "role": "assistant",
             "content": str(messages[2].get("content") or ""),
@@ -124,6 +132,7 @@ def prepare(critical_data: Path, critical_contract_path: Path, output_dir: Path)
         "critical_token_family_counts": dict(sorted(family_counts.items())),
         "chosen_queries_mechanically_verified_by_source_contract": True,
         "rejected_queries_are_actual_step120_first_errors": True,
+        "rejected_candidate_shell_wrapper_normalized_to_teacher_contract": True,
         "pair_prefix_is_identical_through_observed_error_result": True,
         "output": output.name,
         "output_sha256": sha256_file(output),

@@ -3,6 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from scripts.analyze_semantic_delta_margin_gate import analyze
+from scripts.analyze_repair_sft_free_run_divergence import sql_from_command
 from scripts.prepare_semantic_delta_margin_gate import build_rows
 from scripts.teacher_forced_component_masks import semantic_delta_token_masks
 
@@ -60,9 +61,14 @@ def test_pair_builder_reuses_identical_error_state_and_actual_wrong_query():
     assert len(evidence) == 16
     first_chosen, first_rejected = output[:2]
     assert first_chosen["messages"][:4] == first_rejected["messages"][:4]
-    assert first_rejected["messages"][4]["tool_calls"][0]["function"]["arguments"] == (
-        first_rejected["messages"][2]["tool_calls"][0]["function"]["arguments"]
-    )
+    rejected_candidate = first_rejected["messages"][4]["tool_calls"][0]["function"][
+        "arguments"
+    ]["command"]
+    actual_first_error = first_rejected["messages"][2]["tool_calls"][0]["function"][
+        "arguments"
+    ]["command"]
+    assert rejected_candidate.startswith("sqlite3 -json /workspace/logistics.sqlite ")
+    assert sql_from_command(rejected_candidate) == sql_from_command(actual_first_error)
 
 
 def _diagnostic(chosen_preferred: int):

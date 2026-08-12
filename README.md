@@ -172,6 +172,11 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 已验证状态
 
+### v0.80.1 — 2026-08-12
+
+- 修正真实 Step 120 首错 SQL 与 teacher-forced mask 的 shell 包装合同差异：共享前缀仍保留模型实际调用及实际工具结果，rejected 候选仅把等价 SQL payload 规范化为冻结的 `sqlite3 -json` 包装，SQL 文本、语义与查询哈希不变。
+- 数据合同显式记录该规范化；回归测试同时校验候选包装满足 mask 契约、规范化前后解析出的 SQL 完全相同，避免把工具 wrapper 差异错误计入 semantic-delta margin。
+
 ### v0.80.0 — 2026-08-12
 
 - 新增 Step 120 correct-vs-actual-wrong semantic-delta margin gate：16 题各构造 chosen/rejected 两行，二者共享完全相同的“首错 SQL + 实际工具结果”前缀；chosen 保留机械验证的纠正 SQL，rejected 重放模型真实首错 SQL，不把计划、结果或答案作为新增提示。
