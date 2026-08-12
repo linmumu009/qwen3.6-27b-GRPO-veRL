@@ -22,6 +22,7 @@ bash "${PROJECT_ROOT}/scripts/run_semantic_delta_margin_gate.sh"
 RUN_NAME="${RUN_NAME}" \
 OUTPUT_DIR="${OUTPUT_DIR}" \
 DATA_DIR="${DATA_DIR}" \
+TOKEN_GATE="${BASELINE_OUTPUT_DIR}/token_gate.json" \
 bash "${PROJECT_ROOT}/scripts/run_semantic_delta_pairwise_canary.sh"
 
 POST_MODEL_DIST_CKPT="${OUTPUT_DIR}/checkpoints/global_step_1/model/dist_ckpt"

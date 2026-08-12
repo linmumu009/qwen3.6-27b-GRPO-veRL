@@ -212,6 +212,7 @@ def test_margin_launcher_is_forward_only_and_saves_no_checkpoint():
     assert "BASELINE_RUN_NAME" in pipeline
     assert "step120_pairwise_pipeline_baseline" in pipeline
     assert "BASELINE_DIAGNOSTIC" not in pipeline
+    assert 'TOKEN_GATE="${BASELINE_OUTPUT_DIR}/token_gate.json"' in pipeline
 
 
 def test_safe_pretraining_summary_freezes_pairwise_gate_without_raw_assets():

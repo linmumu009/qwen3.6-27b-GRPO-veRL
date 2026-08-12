@@ -176,6 +176,11 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 已验证状态
 
+### v0.82.2 — 2026-08-12
+
+- 修正自包含 pairwise 流水线的 token gate 交接：训练阶段显式读取刚由最终 32 行 baseline-forward 生成的 `token_gate.json`，不再回落到数据目录中增加 pair-order/sign 校验之前的旧门禁文件。
+- 该交接仍发生在 optimizer 初始化前；若 baseline 的 delta mask、chosen critical target、相邻 pair 顺序、candidate sign 或 pair index 任一不合格，训练直接 fail closed。
+
 ### v0.82.1 — 2026-08-12
 
 - pairwise 一步流水线不再复用增加 `pair_index` 列之前的旧 baseline diagnostic；训练前自动用 Step 120 在最终 32 行 Parquet 上重跑同一 forward-only margin，随后训练一步并做 post-forward，确保 baseline/post 的数据文件哈希、token mask 与 pair 顺序完全一致。
