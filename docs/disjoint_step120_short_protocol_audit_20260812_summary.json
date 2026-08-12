@@ -1,0 +1,53 @@
+{
+  "contract": "disjoint-native-vs-step120-short-protocol-safe-summary-v1",
+  "date": "2026-08-12",
+  "scope": {
+    "tasks": 64,
+    "max_assistant_turns": 3,
+    "same_tasks_prompts_and_greedy_decoding": true,
+    "disjoint_from_frozen16_val20_test20": true,
+    "contains_original_prompts_sql_answers_task_ids_tool_outputs_or_server_paths": false,
+    "complete_task_reward_attribution": false
+  },
+  "native": {
+    "weight_identity": "forensic_base_rollout_from_explicit_skipped_checkpoint_sync",
+    "tool_calls": 252,
+    "bash_calls": 213,
+    "read_calls": 39,
+    "rows_with_recognized_readonly_sqlite": 1,
+    "recognized_readonly_sqlite_calls": 1,
+    "sqlite_unparsed_or_non_readonly_calls": 6,
+    "duplicate_bash_calls": 83,
+    "rows_with_unobserved_tool_calls": 64
+  },
+  "step120": {
+    "weight_identity": "forced_actor_dist_checkpoint_sync_completed_before_rollout",
+    "tool_calls": 377,
+    "bash_calls": 283,
+    "read_calls": 94,
+    "rows_with_recognized_readonly_sqlite": 4,
+    "recognized_readonly_sqlite_calls": 7,
+    "sqlite_unparsed_or_non_readonly_calls": 12,
+    "duplicate_bash_calls": 83,
+    "rows_with_unobserved_tool_calls": 59
+  },
+  "pair_gate": {
+    "minimum_pairs": 48,
+    "observed_pairs": 1,
+    "no_readonly_query": 60,
+    "first_readonly_query_without_observed_tool_result": 3,
+    "gate_passed": false,
+    "optimizer_initialized": false,
+    "checkpoint_saved": false,
+    "training_allowed": false,
+    "promotion_allowed": false
+  },
+  "interpretation": {
+    "short_budget_exploration_pattern_preexisting_in_native": true,
+    "created_by_step120_training": false,
+    "amplified_by_step120_on_observed_early_sql_progress": false,
+    "step120_early_sql_progress_direction": "slightly_better_but_still_inadequate",
+    "reward_hacking_term": "proxy_aligned_failure_pattern_not_evidence_of_model_intent",
+    "next_action": "extend_same_disjoint_step120_collection_budget_then_repeat_48_pair_gate"
+  }
+}

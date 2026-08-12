@@ -79,10 +79,19 @@ def test_safe_native_attribution_summary_has_no_raw_assets():
     assert summary["conditional_margin"]["preexisting_in_native"] is True
     assert summary["conditional_margin"]["amplified_by_step120"] is False
     rollout = summary["natural_rollout_boss_original"]
-    assert rollout["native"]["wrong_result_process_ok_count"] == 13
-    assert rollout["step120"]["wrong_result_process_ok_count"] == 12
-    assert rollout["wrong_result_process_ok_amplified_by_step120"] is False
-    assert summary["interpretation"]["core_failure_created_by_training"] is False
+    assert rollout["valid_for_native_vs_step120_attribution"] is False
+    assert rollout["previous_step120_labeled_metrics_withdrawn"] is True
+    assert rollout["step120_amplification_assessment"] == (
+        "unknown_pending_forced_sync_rerun"
+    )
+    assert rollout["required_rerun_contract"] == {
+        "serialized_force_sync_config": True,
+        "force_sync_log_marker_required": True,
+        "skip_sync_log_marker_forbidden": True,
+    }
+    interpretation = summary["interpretation"]
+    assert interpretation["core_conditional_misranking_created_by_training"] is False
+    assert interpretation["complete_natural_behavior_amplification_by_training"] == "unknown"
     assert "/workspace/" not in payload
     assert "SELECT " not in payload
     assert "task_000" not in payload

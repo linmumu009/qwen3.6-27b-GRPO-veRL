@@ -1,5 +1,5 @@
 {
-  "contract": "native-vs-step120-proxy-behavior-attribution-safe-summary-v1",
+  "contract": "native-vs-step120-proxy-behavior-attribution-safe-summary-v2",
   "date": "2026-08-12",
   "scope": {
     "tasks": 16,
@@ -33,33 +33,16 @@
     "attribution": "preexisting_in_native_not_created_or_amplified_by_step120"
   },
   "natural_rollout_boss_original": {
-    "native": {
-      "reward_total_mean": 0.78125,
-      "process_score_mean": 0.96875,
-      "correct_numeric_count": 3,
-      "complete_count": 16,
-      "wrong_result_process_ok_count": 13,
-      "sql_mean": 8.1875,
-      "duplicate_command_mean": 12.1875
-    },
-    "step120": {
-      "reward_total_mean": 0.7,
-      "process_score_mean": 0.93125,
-      "correct_numeric_count": 2,
-      "complete_count": 15,
-      "wrong_result_process_ok_count": 12,
-      "sql_mean": 6.625,
-      "duplicate_command_mean": 10.25
-    },
-    "paired_reward_step120_vs_native": {
-      "wins": 1,
-      "losses": 4,
-      "ties": 11
-    },
-    "preexisting_wrong_result_process_ok": true,
-    "wrong_result_process_ok_amplified_by_step120": false,
-    "duplicate_commands_amplified_by_step120": false,
-    "attribution": "preexisting_in_native_not_amplified_on_observed_proxies"
+    "valid_for_native_vs_step120_attribution": false,
+    "invalid_reason": "step120_labeled_vllm_rollout_skipped_actor_checkpoint_weight_sync",
+    "previous_step120_labeled_metrics_withdrawn": true,
+    "native_only_run_supports_preexisting_pattern": true,
+    "step120_amplification_assessment": "unknown_pending_forced_sync_rerun",
+    "required_rerun_contract": {
+      "serialized_force_sync_config": true,
+      "force_sync_log_marker_required": true,
+      "skip_sync_log_marker_forbidden": true
+    }
   },
   "execution": {
     "native_margin_forward_only": true,
@@ -68,14 +51,14 @@
     "native_rollout_forward_only": true,
     "native_rollout_optimizer_initialized": false,
     "native_rollout_checkpoint_saved": false,
-    "native_rollout_exit_code": 0,
-    "native_rollout_wall_seconds": 2955,
+    "natural_rollout_attribution_valid": false,
     "trainer_host_npu_processes_after_completion": 0,
     "rollout_host_npu_processes_after_completion": 0
   },
   "interpretation": {
     "reward_hacking_term": "proxy_aligned_failure_pattern_not_evidence_of_model_intent",
-    "core_failure_created_by_training": false,
+    "core_conditional_misranking_created_by_training": false,
+    "complete_natural_behavior_amplification_by_training": "unknown",
     "training_can_change_secondary_manifestation": true,
     "promotion_allowed": false,
     "next_action": "make_verified_result_correctness_primary_and_process_ok_wrong_result_an_explicit_guardrail"
