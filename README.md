@@ -95,6 +95,8 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [`docs/repair_sft_teacher_forced_diagnosis_20260811_artifact.json`](docs/repair_sft_teacher_forced_diagnosis_20260811_artifact.json)：上述报告的 canonical Data Analytics artifact、数据集、图表、来源与技术结论定义。
 - [`docs/repair_sft_pretraining_gate_20260812.md`](docs/repair_sft_pretraining_gate_20260812.md)：首条 SQL 的只读执行、gold 支持与机械等价门禁，以及据此冻结的一步 SQL-only 金丝雀配方。
 - [`docs/repair_sft_pretraining_gate_20260812_summary.json`](docs/repair_sft_pretraining_gate_20260812_summary.json)：不含原始问题、SQL、答案和服务器路径的安全聚合门禁结果与待执行 rank 门禁状态。
+- [`docs/repeated_sql_causal_diagnosis_20260812.html`](docs/repeated_sql_causal_diagnosis_20260812.html)：把首条 SQL 语义门禁、同题自由回放、48K 强制收尾和正确证据 oracle 串成因果链，区分重复查询对准确率、完成率和墙钟的不同作用。
+- [`docs/repeated_sql_causal_diagnosis_20260812.artifact.json`](docs/repeated_sql_causal_diagnosis_20260812.artifact.json)：上述重复 SQL 因果诊断的 canonical report artifact、聚合数据、图表和来源定义。
 - [`docs/leadership_experiment_update_methodology_20260806.md`](docs/leadership_experiment_update_methodology_20260806.md)：从多轮实际修订中提炼的领导汇报方法论，固化四段结构、数字精度、口径边界、抗奖励投机表述、行动项口吻和自检清单。
 - `llin_verl/pi_sqlite_tool.py`：只读 SQLite 轨迹工具。
 - `llin_verl/pi_workspace_tools.py`、`llin_verl/pi_agent_loop.py`：完整 PI 四工具、轨迹级共享沙箱、事件审计和统一清理。
@@ -152,6 +154,13 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/qwen36_sql_weighted_sft_dataset.py`、`scripts/check_sql_weighted_sft_dataset.py`、`scripts/run_repair_sft_sql_weighted_canary.sh`：构造和 CPU 核验 SQL 加权 loss mask，并从 Step 120 启动仅一步、单变量、只保存最终模型的金丝雀。
 
 ## 已验证状态
+
+### v0.71.0 — 2026-08-12
+
+- 完成重复 SQL 因果诊断：Step 120 与通用 SFT Step 5 在同一 16 题上的首条查询均为 `0/16` 支持 gold、`0/16` 与教师结果机械等价，确认准确率故障先于重复循环发生。
+- 同题自由回放显示通用 SFT 后平均 SQL `6.63 → 10.44`、重复命令 `10.25 → 14.81`，正确数保持 `2/16`、完整收尾 `15/16 → 13/16`；据此将重复查询定位为耗时/完成率放大器，而非当前准确率的充分根因。
+- 结合 48K 强制收尾 `3/4` 救回但 sentinel6 数值正确仍为 `0/6`，以及正确证据 oracle 将 12 题正确数 `1 → 8`，冻结下一步顺序为“先修首条 SQL，再做 duplicate-cache 配对 A/B”；不优先扩到 64K/96K。
+- 新增自包含技术报告及 canonical artifact；报告 schema、来源、载荷一致性与语义回退结构验证通过。增强 reader 在本机落入 fallback，因此不声明交互式浏览器验收通过。
 
 ### v0.70.0 — 2026-08-12
 

@@ -1,0 +1,305 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "重复 SQL 是根因，还是首条取证失败后的症状",
+    "generatedAt": "2026-08-12T12:00:00Z",
+    "cards": [],
+    "charts": [
+      {
+        "id": "duplicate_command_chart",
+        "title": "同题自由回放的平均重复命令数",
+        "description": "Step 120 与通用 SFT Step 5；每个模型 16 题",
+        "showDescription": true,
+        "type": "bar",
+        "dataset": "free_rollout_models",
+        "sourceId": "teacher_forced_diagnosis",
+        "encodings": {
+          "x": {
+            "field": "model",
+            "type": "nominal"
+          },
+          "y": {
+            "field": "duplicate_command_mean",
+            "type": "quantitative"
+          }
+        },
+        "options": {
+          "orientation": "vertical",
+          "valueLabels": true,
+          "palette": "blue"
+        }
+      }
+    ],
+    "tables": [
+      {
+        "id": "causal_evidence_table",
+        "title": "因果链各阶段的现有证据",
+        "description": "区分首条取证、重复循环与上下文/收尾三个阶段",
+        "showDescription": true,
+        "dataset": "causal_evidence",
+        "sourceId": "combined_diagnosis",
+        "columns": [
+          {
+            "field": "stage_order",
+            "label": "顺序"
+          },
+          {
+            "field": "stage",
+            "label": "阶段"
+          },
+          {
+            "field": "observation",
+            "label": "观测"
+          },
+          {
+            "field": "implication",
+            "label": "解释"
+          },
+          {
+            "field": "confidence",
+            "label": "置信度"
+          }
+        ],
+        "defaultSort": {
+          "field": "stage_order",
+          "direction": "asc"
+        }
+      }
+    ],
+    "sources": [
+      {
+        "id": "teacher_forced_diagnosis",
+        "label": "16 题 teacher-forced 与自由回放诊断",
+        "path": "docs/repair_sft_teacher_forced_diagnosis_20260811_summary.json",
+        "query": {
+          "description": "读取 Step 120 与通用 SFT Step 5 的同题自由回放正确数、完成数、SQL 次数与重复命令均值。",
+          "language": "jsonpath",
+          "sql": "SELECT model, task_count, correct_count, complete_count, sql_mean, duplicate_command_mean FROM free_rollout_models ORDER BY model_order",
+          "tables_used": [
+            "docs/repair_sft_teacher_forced_diagnosis_20260811_summary.json"
+          ],
+          "filters": [
+            "同一 train236 纠错门禁 16 题",
+            "相同 prompt、greedy、48K/25 工具回合"
+          ],
+          "metric_definitions": {
+            "duplicate_command_mean": "每题被老板评分适配器判为重复的 shell 命令数量均值；它不等同于严格规范化后的重复 SQL 数。"
+          }
+        }
+      },
+      {
+        "id": "first_query_gate",
+        "label": "首条 SQL 只读语义门禁",
+        "path": "docs/repair_sft_pretraining_gate_20260812_summary.json",
+        "query": {
+          "description": "在 immutable SQLite 上执行首条 SELECT/WITH，并按 gold 支持、教师结果等价、错误或不足证据、空结果和执行错误分类。",
+          "language": "jsonpath",
+          "sql": "SELECT model, verified_gold_support, teacher_result_equivalent, executable_wrong_or_insufficient_evidence, executable_empty_evidence, schema_syntax_or_execution_error FROM cpu_first_query_semantic_gate",
+          "tables_used": [
+            "docs/repair_sft_pretraining_gate_20260812_summary.json"
+          ],
+          "filters": [
+            "只读 immutable SQLite",
+            "每个模型同一 16 题的第一条 SQL"
+          ]
+        }
+      },
+      {
+        "id": "force_final_gate",
+        "label": "Step 120 的 48K 强制收尾门禁",
+        "path": "docs/force_final_sentinel_20260810.md",
+        "query": {
+          "description": "冻结 Step 120，在 48K 上下文内提前禁止继续调用工具并要求作答，比较完成率与数值正确性。",
+          "language": "document",
+          "tables_used": [
+            "docs/force_final_sentinel_20260810.md"
+          ],
+          "filters": [
+            "sentinel6：4 道原未收尾题与 2 道完成护栏题",
+            "模型参数不更新"
+          ]
+        }
+      },
+      {
+        "id": "oracle_gate",
+        "label": "Step 120 的 12 题证据 oracle 梯度",
+        "path": "docs/accuracy_improvement_post_step125_20260811_summary.json",
+        "query": {
+          "description": "比较 control、仅收尾约束与直接提供经过验证证据三个条件下的数值正确数。",
+          "language": "jsonpath",
+          "sql": "SELECT arm, n, complete_count, numeric_correct_count FROM oracle_ladder",
+          "tables_used": [
+            "docs/accuracy_improvement_post_step125_20260811_summary.json"
+          ],
+          "filters": [
+            "同一批 12 道 Step 120 失败题"
+          ]
+        }
+      },
+      {
+        "id": "combined_diagnosis",
+        "label": "重复 SQL 因果诊断的跨实验证据表",
+        "path": "docs/repeated_sql_causal_diagnosis_20260812.artifact.json",
+        "query": {
+          "description": "把首条查询语义门禁、同题自由回放、强制收尾和证据 oracle 的安全聚合结果按因果阶段整理。",
+          "language": "jsonpath",
+          "sql": "SELECT stage_order, stage, observation, implication, confidence FROM causal_evidence ORDER BY stage_order",
+          "tables_used": [
+            "docs/repair_sft_pretraining_gate_20260812_summary.json",
+            "docs/repair_sft_teacher_forced_diagnosis_20260811_summary.json",
+            "docs/force_final_sentinel_20260810.md",
+            "docs/accuracy_improvement_post_step125_20260811_summary.json"
+          ]
+        }
+      }
+    ],
+    "blocks": [
+      {
+        "id": "report_title",
+        "type": "markdown",
+        "body": "# 重复 SQL 是根因，还是首条取证失败后的症状"
+      },
+      {
+        "id": "technical_summary",
+        "type": "markdown",
+        "body": "## 技术结论\n\n- **准确率的首要根因不是重复 SQL，而是首次取证就错。** Step 120 与通用 SFT Step 5 在同一 16 题上的第一条查询均为 `0/16` 支持 gold、`0/16` 与教师结果机械等价；答错在进入重复循环前已经发生。\n- **重复 SQL 是显著的耗时与完成率放大器。** 通用 SFT 后平均 SQL 次数从 `6.63` 增至 `10.44`，平均重复命令从 `10.25` 增至 `14.81`；正确数仍为 `2/16`，完整收尾从 `15/16` 降至 `13/16`。\n- **“最后因上下文不够而看不到完整信息”目前不成立。** 48K 强制收尾把 4 道未完成题中的 3 道变成最终回答，但 sentinel6 的数值正确仍为 `0/6`，生成期间没有 length/abort/error。\n- **更准确的因果链是：首条 SQL grounding/语义失败 → 错误证据状态 → 重复探索与上下文污染 → 超长 rollout/不收尾 → 错误或缺失最终答案。** 前半段主导准确率，后半段主导耗时和完成率；上下文污染是否进一步损害已经取得正确证据的样本仍需单独 A/B。"
+      },
+      {
+        "id": "repeat_finding",
+        "type": "markdown",
+        "sourceId": "teacher_forced_diagnosis",
+        "body": "## 重复回退能解释长尾，但不能单独解释答错\n\n同一 16 题、同一自由回放配置下，通用 SFT 让 SQL 和重复命令都明显增加，正确数没有变化，完成数反而下降。这是“循环会消耗墙钟并挤压收尾预算”的直接证据。下图的 `重复命令` 是评分适配器统计的重复 shell command，不等同于严格规范化后的重复 SQL；因此它支持循环退化的方向，但不能把全部重复命令都解释为相同查询。"
+      },
+      {
+        "id": "duplicate_command_chart_block",
+        "type": "chart",
+        "chartId": "duplicate_command_chart"
+      },
+      {
+        "id": "first_query_finding",
+        "type": "markdown",
+        "sourceId": "first_query_gate",
+        "body": "## 准确率故障在第一条查询时已经发生\n\n首条 SQL 只读语义门禁排除了“字符串不同、结果其实等价”的可能：Step 120 为 13 条错误/不足证据和 3 条空结果；通用 SFT Step 5 为 13 条错误/不足、2 条空结果和 1 条执行错误。两者都没有任何首条查询支持 gold。由于该失败发生在任何重复查询之前，重复 SQL 不能是这 16 题准确率差的充分根因；最直接的缺失能力是表/字段 grounding、过滤/聚合/连接语义或问题口径映射。"
+      },
+      {
+        "id": "context_finding",
+        "type": "markdown",
+        "sourceId": "force_final_gate",
+        "body": "## 强制停止循环修复了收尾，没有修复数值正确性\n\n在冻结 Step 120 的 48K 门禁中，强制模型停止调用工具并保留最多 4K token 作答，能让 4 道原未收尾题中的 3 道给出最终答案；但六题数值正确仍为 0。单题更早在第 14 个助手回合收口，也只得到 `result_wrong_process_ok`。这反驳了“主要是来不及回答或窗口触顶”的解释，但尚未完全排除另一种更弱假设：大量重复结果可能通过注意力稀释，降低模型利用早先正确证据的能力。"
+      },
+      {
+        "id": "oracle_finding",
+        "type": "markdown",
+        "sourceId": "oracle_gate",
+        "body": "## 正确证据才是已经验证的准确率杠杆\n\n在 12 道失败题上，单纯增加回答约束把完成数从 `8/12` 提到 `11/12`，数值正确仍为 `1/12`；直接提供经过验证的证据则把数值正确提高到 `8/12`。这与首条查询门禁相互印证：当前优先级应是让第一条或前两条查询取得正确、足够的证据，而不是先增加上下文长度。"
+      },
+      {
+        "id": "causal_table_finding",
+        "type": "markdown",
+        "body": "## 现有实验支持分阶段因果链\n\n下表将四组实验按轨迹先后顺序排列。已验证的是“首次取证失败”和“重复/不停止会拖慢并降低完成率”；尚未验证的是重复结果是否会在已经拿到正确证据的前提下，通过上下文污染进一步降低最终综合准确率。"
+      },
+      {
+        "id": "causal_evidence_table_block",
+        "type": "table",
+        "tableId": "causal_evidence_table"
+      },
+      {
+        "id": "scope_definitions",
+        "type": "markdown",
+        "body": "## 范围与指标定义\n\n- **核心开发集：** train236 中同一 16 道纠错题；这是同题过拟合/门禁集，不是 held-out 泛化评测。\n- **正确证据：** 首条查询结果能够支持 gold，或与教师查询结果机械等价；不是 SQL 字符串精确相等。\n- **重复命令：** 老板评分适配器统计的重复 shell 命令均值；当前安全聚合没有保存原始 SQL，因此不能在报告中重新计算“规范化重复 SQL 率”。\n- **rollout 超长：** 由工具回合、SQL/命令次数、超时和墙钟共同表示；现有 16 题汇总有命令计数与整批墙钟，但没有逐题 token/墙钟相关系数。\n- **上下文假设：** 当前配置为 49,152 token；已排除明显长度中止，但未对注意力稀释做干预式因果检验。"
+      },
+      {
+        "id": "methodology",
+        "type": "markdown",
+        "body": "## 诊断方法\n\n诊断按轨迹时间顺序做最小因果分解：先检查首条查询是否已经得到正确证据，再比较重复命令、SQL 次数、完成与正确性的共同变化，最后用冻结模型强制收尾检验“只是不够时间/上下文作答”。结论只在这些干预直接支持的层级上使用因果措辞；跨实验、不同题集的对比只作方向性佐证。"
+      },
+      {
+        "id": "limitations",
+        "type": "markdown",
+        "body": "## 局限、稳健性与反例\n\n- 16 题门禁的重复指标是 shell command 级，不是严格 SQL AST/结果等价级；“相同 SQL”占比尚未被安全聚合量化。\n- Step 120 与 Step 200 的 val20 中，数值正确从 `2/20` 降到 `1/20`，但重复命令均值反而从 `21.45` 降到 `20.20`；这是“重复越多必然越不准”的反例。\n- 强制收尾改变的是停止策略，不是上下文压缩策略；它能排除纯粹的没时间作答，却不能完全排除重复结果造成的注意力污染。\n- oracle 直接提供正确证据，同时改变了模型状态；它证明证据获取是强杠杆，但不证明首条教师 SQL 是唯一正确路径。\n- 样本量小且多次复用开发题，不能据此估计泛化提升幅度。"
+      },
+      {
+        "id": "recommended_next_steps",
+        "type": "markdown",
+        "body": "## 下一步：先修首条 SQL，再用去重 A/B 隔离次级损害\n\n1. 按已经冻结的设计，先做 Step 120 一步 SQL payload 加权金丝雀；首要门禁是首条查询出现非零正确/机械等价证据命中，而不是完整 rollout 分数。\n2. 在冻结模型、同一运行、同一题集上做 `control` 与 `duplicate-cache` 配对：若规范化 SQL 与数据库状态相同，不再次执行并回填大段结果，只返回“与第 k 次结果相同”的短引用。\n3. 同时报告五个指标：首条正确证据率、唯一正确证据率、最终数值正确率、重复 SQL/总 SQL、每题 token 与墙钟。\n4. 若去重只降低 token/墙钟、准确率不动，则把它作为推理效率护栏；若只在“早先已拿到正确证据”的题上提高最终正确率，才把上下文污染列为第二准确率瓶颈。\n5. 不先升到 64K/96K。更长窗口可能允许更久的错误探索，并不能修复 `0/16` 的首次取证。"
+      },
+      {
+        "id": "further_questions",
+        "type": "markdown",
+        "body": "## 仍需回答的问题\n\n- 重复命令中，严格规范化后相同 SQL、结果等价 SQL和非 SQL shell 命令各占多少？\n- 第一次错误集中在表/字段 grounding，还是过滤、时间口径、聚合和 join 语义？\n- 对已经拿到正确证据的轨迹，压缩重复结果后最终数值正确率是否提高？\n- 去重后长尾墙钟下降多少，能否减少 fully-async 队列等待而不改变训练样本分布？"
+      }
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "generatedAt": "2026-08-12T12:00:00Z",
+    "status": "ready",
+    "datasets": {
+      "free_rollout_models": [
+        {
+          "model_order": 1,
+          "model": "Step 120",
+          "task_count": 16,
+          "correct_count": 2,
+          "correct_rate": 0.125,
+          "complete_count": 15,
+          "completion_rate": 0.9375,
+          "sql_mean": 6.625,
+          "duplicate_command_mean": 10.25,
+          "reward_mean": 0.7
+        },
+        {
+          "model_order": 2,
+          "model": "通用 SFT Step 5",
+          "task_count": 16,
+          "correct_count": 2,
+          "correct_rate": 0.125,
+          "complete_count": 13,
+          "completion_rate": 0.8125,
+          "sql_mean": 10.4375,
+          "duplicate_command_mean": 14.8125,
+          "reward_mean": 0.60625
+        }
+      ],
+      "causal_evidence": [
+        {
+          "stage_order": 1,
+          "stage": "首条取证",
+          "observation": "两个模型均为 0/16 支持 gold，0/16 与教师结果等价",
+          "implication": "准确率故障在重复之前已发生；SQL grounding/语义是首要瓶颈",
+          "confidence": "已验证"
+        },
+        {
+          "stage_order": 2,
+          "stage": "重复探索",
+          "observation": "SFT 后平均 SQL +3.81，重复命令 +4.56；正确数不变",
+          "implication": "重复不是充分准确率根因，但会放大无效探索",
+          "confidence": "已验证方向"
+        },
+        {
+          "stage_order": 3,
+          "stage": "收尾与耗时",
+          "observation": "强制收尾救回 3/4 道未完成题，sentinel6 数值正确仍为 0/6",
+          "implication": "循环显著伤害完成率；停止循环本身不足以修复答案",
+          "confidence": "已验证"
+        },
+        {
+          "stage_order": 4,
+          "stage": "上下文污染",
+          "observation": "48K 生成无 length/abort/error，但尚无重复结果压缩 A/B",
+          "implication": "窗口触顶不是主因；注意力稀释仍是未决的次级假设",
+          "confidence": "未验证"
+        },
+        {
+          "stage_order": 5,
+          "stage": "正确证据 oracle",
+          "observation": "12 题正确数由 1 提高到 8；仅收尾约束仍为 1",
+          "implication": "正确证据获取是当前已验证的最大准确率杠杆",
+          "confidence": "已验证方向"
+        }
+      ]
+    }
+  }
+}
