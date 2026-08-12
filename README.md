@@ -92,6 +92,8 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [`docs/force_final_sentinel_20260810.md`](docs/force_final_sentinel_20260810.md)：Step 120 的 48K 强制收尾 sentinel6 与单题提前收口实跑、老板原版评分、失败归因和进入训练前门槛。
 - [`docs/semantic_plan_and_delta_pretraining_gate_20260812.md`](docs/semantic_plan_and_delta_pretraining_gate_20260812.md)：Step 120 三臂 semantic-plan 一次生成、工具协议合规、correct-vs-actual-wrong semantic-delta margin 与下一步 pairwise 金丝雀停止门槛。
 - [`docs/semantic_plan_and_delta_pretraining_gate_20260812_summary.json`](docs/semantic_plan_and_delta_pretraining_gate_20260812_summary.json)：不含原始问题、SQL、答案和服务器路径的安全聚合结果。
+- [`docs/query_initiation_oracle_gate_20260813.md`](docs/query_initiation_oracle_gate_20260813.md)：Step 120 完整预算无查询任务的通用查询启动干预、SQLite 命令族细分、`0/41` 门禁结论与下一结构化工作流测试。
+- [`docs/query_initiation_oracle_gate_20260813_summary.json`](docs/query_initiation_oracle_gate_20260813_summary.json)：不含原始命令、prompt、SQL、答案、task ID、工具结果或服务器路径的查询启动安全汇总。
 - [`docs/semantic_delta_pairwise_canary_20260812.md`](docs/semantic_delta_pairwise_canary_20260812.md)：一次 reference-free pairwise 更新、工程失败修复、训练资源、同数据概率前后门禁与 fail-closed 决策。
 - [`docs/semantic_delta_pairwise_canary_20260812_summary.json`](docs/semantic_delta_pairwise_canary_20260812_summary.json)：不含原始问题、SQL、答案和服务器路径的一步 pairwise 安全聚合结果。
 - [`docs/native_vs_step120_reward_behavior_attribution_20260812.md`](docs/native_vs_step120_reward_behavior_attribution_20260812.md)：原生模型与 Step 120 的相同错误状态概率对照、同题老板原版自由回放和奖励代理错配归因。
@@ -190,6 +192,12 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/prepare_query_initiation_oracle_candidates.py`、`scripts/analyze_query_initiation_oracle_outcomes.py`、`scripts/analyze_query_initiation_oracle_gate.py`：只抽取 Step 120 完整 25 回合仍未发起只读查询的题目，追加不含答案、表名、字段名、SQL 或字面量的通用查询启动约束；专用适配器核对 Parquet 哈希、3/3 回合和训练关闭合同，再以带真实工具结果的只读查询恢复数区分策略路由与 schema/工具实现问题。
 
 ## 已验证状态
+
+### v0.95.0 — 2026-08-13
+
+- 固化 Step 120 查询启动干预证据包：有效运行 `41/41`、带真实工具结果的只读查询 `0/41 < 31/41`，训练与晋级继续关闭；报告同时保留 `2` 条未观测查询和 `39` 条无查询，避免把截断混入成功。
+- SQLite 细分显示干预后 `41/41` 已进入 SQLite、`18/41` 做过 schema discovery，但 `91` 次停在路径/CLI、`28` 次停在 catalog/schema、重复 Bash `112`。瓶颈收敛为非交互调用、去循环和 schema→SELECT 实现，而不是完全忽略工具指令。
+- 下一无训练门预注册为同 41 题的结构化三回合 `path→schema→SELECT/WITH` 工作流，仍以 `31/41` 带结果查询为通过线；失败后才允许准备 task-specific schema grounding/action supervision，且机械验证训练对仍须至少 48 条。
 
 ### v0.94.3 — 2026-08-13
 
