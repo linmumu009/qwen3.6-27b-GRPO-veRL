@@ -36,6 +36,7 @@ COMPONENT_MASKS = {
     "sql_shell": "sql_shell_mask",
     "final_answer": "final_answer_mask",
 }
+OPTIONAL_COMPONENT_MASKS = {"semantic_delta": "semantic_delta_mask"}
 
 
 def component_sft_loss(
@@ -56,7 +57,11 @@ def component_sft_loss(
     loss, _ = sft_loss(config=config, model_output=model_output, data=data, dp_group=dp_group)
     log_prob = model_output["log_probs"].values()
     metrics: dict[str, torch.Tensor] = {}
-    for component, mask_key in COMPONENT_MASKS.items():
+    active_masks = dict(COMPONENT_MASKS)
+    for component, mask_key in OPTIONAL_COMPONENT_MASKS.items():
+        if mask_key in data:
+            active_masks[component] = mask_key
+    for component, mask_key in active_masks.items():
         mask = torch.roll(data[mask_key].values(), shifts=-1, dims=0).to(log_prob.dtype)
         token_count = mask.sum()
         if token_count.item() <= 0:
@@ -95,7 +100,13 @@ def _summarize(
     metrics: dict[str, Any], task_ids: list[str]
 ) -> tuple[dict, dict, list[dict]]:
     values: dict[str, dict[str, list[float]]] = {}
-    for component in COMPONENT_MASKS:
+    components = list(COMPONENT_MASKS)
+    components.extend(
+        component
+        for component in OPTIONAL_COMPONENT_MASKS
+        if f"component/{component}/nll_sum" in metrics
+    )
+    for component in components:
         values[component] = {}
         for statistic in ("nll_sum", "target_probability_sum", "token_count"):
             key = f"component/{component}/{statistic}"

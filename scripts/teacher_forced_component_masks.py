@@ -4,11 +4,45 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
+from difflib import SequenceMatcher
 import shlex
 from typing import Any
 
 
 SQLITE_COMMAND_PREFIX = "sqlite3 -json /workspace/logistics.sqlite "
+
+
+def semantic_delta_token_masks(
+    chosen_ids: Sequence[int], rejected_ids: Sequence[int]
+) -> tuple[list[int], list[int]]:
+    """Mark token edits between paired SQL candidates, anchoring insert/delete gaps."""
+
+    chosen = [int(value) for value in chosen_ids]
+    rejected = [int(value) for value in rejected_ids]
+    if not chosen or not rejected or chosen == rejected:
+        raise ValueError("semantic-delta candidates must be nonempty and different")
+    chosen_mask = [0] * len(chosen)
+    rejected_mask = [0] * len(rejected)
+    for tag, chosen_start, chosen_end, rejected_start, rejected_end in SequenceMatcher(
+        a=chosen, b=rejected, autojunk=False
+    ).get_opcodes():
+        if tag == "equal":
+            continue
+        if chosen_start == chosen_end:
+            anchor = chosen_start - 1 if chosen_start else chosen_start
+            chosen_mask[min(anchor, len(chosen) - 1)] = 1
+        else:
+            chosen_mask[chosen_start:chosen_end] = [1] * (chosen_end - chosen_start)
+        if rejected_start == rejected_end:
+            anchor = rejected_start - 1 if rejected_start else rejected_start
+            rejected_mask[min(anchor, len(rejected) - 1)] = 1
+        else:
+            rejected_mask[rejected_start:rejected_end] = [1] * (
+                rejected_end - rejected_start
+            )
+    if not any(chosen_mask) or not any(rejected_mask):
+        raise ValueError("semantic-delta alignment produced an empty candidate mask")
+    return chosen_mask, rejected_mask
 
 
 def normalize_assistant_turn_indices(value: Any, turn_count: int) -> list[int]:

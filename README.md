@@ -168,8 +168,15 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/analyze_critical_token_canary.py`：在哈希一致的 Step 120/训练后 forward-only 结果中复核冻结 token 是转为 greedy、仍为首个非 greedy，还是被更早的新分叉阻断归因，并将整条 SQL 概率门禁作为唯一 replay 开关。
 - `scripts/prepare_semantic_plan_sufficiency_gate.py`、`scripts/check_semantic_plan_sufficiency_gate.py`：将同一 16 条 Step 120 首错 SQL 与真实工具结果复制为 Control、operator oracle、full semantic plan 三臂；CPU 门禁逐题核对相同基态、bash-only、只读首错 SQL，以及 oracle 不泄漏原 SQL、结果、答案或字面量。
 - `scripts/run_semantic_plan_sufficiency_gate.sh`、`scripts/prepare_semantic_plan_gate_outputs.py`、`scripts/analyze_semantic_plan_sufficiency_gate.py`：一次加载 Step 120 后对 48 行做贪心单助手回合生成，在工具执行前停止；随后只读执行生成 SQL，以 gold 支持或教师结果等价判定恢复，并按冻结阈值自动选择下一训练目标。
+- `scripts/prepare_semantic_delta_margin_gate.py`、`scripts/qwen36_semantic_delta_margin_dataset.py`、`scripts/run_semantic_delta_margin_gate.sh`：在相同首错状态下配对机械正确 correction SQL 与模型实际首错 SQL，只对 token edit span 做 Step 120 forward-only 概率 margin；同时精确重建冻结的首个 non-greedy token，作为 chosen-vs-rejected 训练前的无回退门禁。
 
 ## 已验证状态
+
+### v0.80.0 — 2026-08-12
+
+- 新增 Step 120 correct-vs-actual-wrong semantic-delta margin gate：16 题各构造 chosen/rejected 两行，二者共享完全相同的“首错 SQL + 实际工具结果”前缀；chosen 保留机械验证的纠正 SQL，rejected 重放模型真实首错 SQL，不把计划、结果或答案作为新增提示。
+- token 级门禁用确定性序列对齐只标记两条 SQL 的 edit span，并为纯插入/删除在另一侧设置相邻锚点，保证两侧长度归一化 NLL 可比；输出正 margin 定义为正确 candidate 的平均 token log-probability 更高，并按既有 critical-token family 分层。
+- 训练前硬校验 32/32 行无截断、delta mask 非空且属于 SQL mask、chosen 的冻结首个 non-greedy offset/target ID 16/16 精确重建；只有正确 semantic delta 未在至少 `12/16` 对中占优时，才允许进入一次 chosen-vs-rejected 训练金丝雀，否则转向受限 SQL planner 与 bash-only 工具策略。全流程 forward-only，不初始化 optimizer、不保存 checkpoint。
 
 ### v0.79.1 — 2026-08-12
 
