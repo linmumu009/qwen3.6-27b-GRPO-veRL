@@ -212,7 +212,10 @@ def build_contract(
         "pair_construction_allowed": False,
         "training_allowed": False,
         "promotion_allowed": False,
-        "next_action": "run_step120_greedy_one_turn_schema_oracle_action_diagnostic",
+        "next_action": (
+            "run_step120_greedy_first_action_plus_one_tool_result_"
+            "schema_oracle_diagnostic"
+        ),
     }
 
 

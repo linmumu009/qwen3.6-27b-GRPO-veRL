@@ -9,6 +9,7 @@ from scripts.analyze_schema_oracle_action_gate import decide
 from scripts.prepare_schema_oracle_action_gate import (
     CONTRACT,
     SOURCE_CONTRACT,
+    build_contract,
     build_rows,
     schema_payload,
 )
@@ -108,6 +109,31 @@ def test_builder_fails_closed_on_unknown_gold_table(tmp_path: Path) -> None:
             database=database,
             expected_rows=1,
         )
+
+
+def test_contract_records_executable_first_action_protocol(tmp_path: Path) -> None:
+    output = tmp_path / "rows.parquet"
+    output.write_bytes(b"sealed")
+    contract = build_contract(
+        rows=[_row("a")],
+        evidence=[
+            {
+                "task_id": "a",
+                "answer_type": "numeric",
+                "table_count": 1,
+                "column_count": 3,
+                "schema_sha256": "s",
+                "prompted_instruction_sha256": "p",
+            }
+        ],
+        output_path=output,
+        correct_floor=1,
+        wrong_pair_floor=1,
+        source_hashes={"candidate_parquet": "p"},
+    )
+    assert contract["max_assistant_turns"] == 2
+    assert contract["max_tool_result_turns"] == 1
+    assert "one_turn" not in contract["next_action"]
 
 
 def _dataset() -> dict:
