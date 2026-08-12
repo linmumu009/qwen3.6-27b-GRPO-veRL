@@ -29,7 +29,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - Semantic critical-token 一步金丝雀已完成：把每题首个 semantic non-greedy SQL token 从 `8×` 提到 `32×` 后，SQL NLL `1.2929 → 1.1435` 且 `16/16` 改善，greedy/top-5 各增加 4 个；query-start `3/3` 转为 greedy，但 aggregation `9/9` 仍是首分叉，完整 SQL 概率 `>0.5` 仍为 `2/16`（门槛 `12/16`）。后续训练暂缓，先以同一 16 条首错状态执行 Control / operator oracle / full semantic plan 三臂一次生成门禁，区分 plan selection、schema grounding 与 plan-to-SQL realization。
 - 三臂 semantic-plan 门禁与 correct-vs-actual-wrong margin 门禁均已完成：Control/operator/full plan 分别恢复 `1/16`、`1/16`、`2/16`，两个 oracle 均未过线；正确 SQL 的 semantic-delta 在 Step 120 下 `0/16` 占优，平均 margin `-1.1877`，且 aggregation/query-start/identifier/clause 全部偏向实际首错 SQL。下一步锁定为一次 pairwise plan-to-SQL 金丝雀；训练后须达到正确 delta `≥12/16` 占优、`≥12/16` margin 改善且无更早分叉回退，才允许短回放。
 - 一步 pairwise plan-to-SQL 金丝雀已完成：`16/16` 逐题 margin 改善，平均 margin `-1.1877 → -0.7646`，但正确候选仅 `3/16` 占优，未达到 `12/16`；更早分叉回退和冻结 target 非法均为 0。按冻结规则不做短回放、不追加同 16 对训练、不晋级 checkpoint；下一步把这 16 对冻结为评价集，先获取不重叠且机械验证的分层训练 pairs。
-- 原生 Qwen3.6-27B 与 Step 120 的相同首错状态概率归因仍有效：两者均为正确 semantic delta `0/16` 占优，平均 margin 为 `-1.2057/-1.1877`，核心 SQL misranking 在原生模型中已经存在。此前同 16 题 Step 120 自由回放因 vLLM 未同步 checkpoint 权重而撤回；新的同输入独立 64 题短协议对照显示原生/真实 Step 120 分别只有 `1/64`、`4/64` 在 3 回合内进入可识别只读 SQL，重复 Bash 均为 `83` 次，说明早期环境探索模式也是原生预存，训练没有新制造或放大它，但完整自然行为仍待强制同步后重跑。
+- 原生 Qwen3.6-27B 与 Step 120 的相同首错状态概率归因仍有效：两者均为正确 semantic delta `0/16` 占优，平均 margin 为 `-1.2057/-1.1877`，核心 SQL misranking 在原生模型中已经存在。完整 64 题、25 工具反馈公平对照进一步确认，高过程分错答为原生 `13`、Step 120 `8`，训练没有新制造或放大代理错配；但 Step 120 的只读 SQL 覆盖 `30→23`、完整回答 `40→35`、平均总奖励 `0.2858→0.2612`，同时 numeric correct `5→7`，暴露出正确性与覆盖/完成的权衡。
 - 新一轮训练前先执行 current-definition 数据池审计：正式 train236 在旧严格筛选下仅有 25 个候选，扣除冻结 16 题后只剩 9 个，禁止直接启动 pairwise 训练。新增审计从老板当前权威任务定义重建漂移 instruction/gold 身份，逐条执行只读 SQL、核对 gold 支持，并同时隔离冻结 16 题、val20、test20 的 task/instruction/SQL 哈希；只有严格可用新任务达到至少 48 条才允许进入 Step 120 首错采集。
 - 所有新增镜像、容器、工作目录和实验名均以 `llin` 开头，不复用或修改其他人的环境。
 
@@ -189,6 +189,12 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/analyze_rollout_command_families.py`：以不输出命令、SQL、prompt 或工具结果的方式统计工具类型、Bash 命令族、重复调用与真实工具响应覆盖，用于区分模型工具策略问题和 SQL 解析器漏识别。
 
 ## 已验证状态
+
+### v0.93.0 — 2026-08-13
+
+- 完成原生 Qwen3.6-27B 与真实 Step 120 的同一 64 题完整 26/25 回合公平对照：两侧均 `exit 0`、`64/64` 落盘、prompt 完全一致，原生明确跳过同步，Step 120 明确完成 dist checkpoint 强制同步；老板原版评分两侧均 `64/64` 成功。
+- 类奖励黑客的 `result_wrong_process_ok` 在原生/Step 120 为 `13/8`，工具调用 `1078/991`、重复 Bash `141/120`，因此缺陷在训练前已存在且未被训练放大。Step 120 numeric correct `5→7`，但只读 SQL 覆盖 `30→23`、完整回答 `40→35`、平均总奖励 `0.2858→0.2612`；逐题差异均未达双侧 `p<0.05`，作为方向性覆盖回退而非确定因果。
+- 新增首 SQL 结果审计、逐题匿名转移比较、完整归因汇总和 native-anchored Pareto 晋级门禁。未来候选必须同时达到 SQL 覆盖 `≥30`、完整回答 `≥40`、numeric correct `≥7`、平均总奖励 `≥0.285840625`、高过程分错答 `≤8`；任一失败都不晋级，门禁本身不授权追加训练。
 
 ### v0.92.0 — 2026-08-13
 

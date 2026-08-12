@@ -1,0 +1,103 @@
+{
+  "contract": "native-vs-step120-full25-attribution-safe-summary-v1",
+  "date": "2026-08-13",
+  "scope": {
+    "tasks": 64,
+    "same_tasks_and_prompts": true,
+    "greedy_n1": true,
+    "context_tokens": 49152,
+    "max_assistant_turns": 26,
+    "max_tool_result_turns": 25,
+    "native_weight_identity": "original_hf_base_weights_with_initial_sync_skipped",
+    "step120_weight_identity": "dist_checkpoint_forced_actor_to_rollout_sync",
+    "boss_original_reward_judge": true,
+    "contains_original_prompts_sql_answers_task_ids_tool_outputs_or_server_paths": false
+  },
+  "native": {
+    "tool_calls": 1078,
+    "bash_calls": 895,
+    "recognized_sqlite_tasks": 30,
+    "recognized_sqlite_calls": 267,
+    "duplicate_bash_calls": 141,
+    "terminal_answers": 40,
+    "no_readonly_query": 34,
+    "first_query_correct_or_equivalent": 3,
+    "observed_first_query_error": 27,
+    "reward_total_mean": 0.285840625,
+    "process_score_mean": 0.4416013671875,
+    "complete_count": 40,
+    "correct_numeric_count": 5,
+    "correct_verdict_count": 2,
+    "wrong_process_ok_count": 13,
+    "timeout_count": 24
+  },
+  "step120": {
+    "tool_calls": 991,
+    "bash_calls": 802,
+    "recognized_sqlite_tasks": 23,
+    "recognized_sqlite_calls": 234,
+    "duplicate_bash_calls": 120,
+    "terminal_answers": 35,
+    "no_readonly_query": 41,
+    "first_query_correct_or_equivalent": 1,
+    "observed_first_query_error": 22,
+    "reward_total_mean": 0.26123125,
+    "process_score_mean": 0.3474607421875,
+    "complete_count": 35,
+    "correct_numeric_count": 7,
+    "correct_verdict_count": 5,
+    "wrong_process_ok_count": 8,
+    "timeout_count": 29
+  },
+  "paired": {
+    "observed_first_query_presence": {
+      "both": 17,
+      "native_only": 13,
+      "step120_only": 6,
+      "neither": 28,
+      "exact_two_sided_p": 0.1670684814453125
+    },
+    "complete": {
+      "both": 30,
+      "native_only": 10,
+      "step120_only": 5,
+      "neither": 19,
+      "exact_two_sided_p": 0.3017578125
+    },
+    "correct_numeric": {
+      "both": 3,
+      "native_only": 2,
+      "step120_only": 4,
+      "neither": 55,
+      "exact_two_sided_p": 0.6875
+    },
+    "reward": {
+      "step120_wins": 10,
+      "step120_losses": 14,
+      "ties": 40,
+      "exact_two_sided_p": 0.5412561893463135
+    }
+  },
+  "attribution": {
+    "proxy_aligned_wrong_process_ok_preexists_in_native": true,
+    "created_by_step120_training": false,
+    "amplified_by_step120_training": false,
+    "directional_step120_query_start_coverage_regression": true,
+    "query_start_regression_statistically_conclusive_at_0_05": false,
+    "tradeoff": "more_correct_answers_but_less_query_coverage_completion_and_total_reward"
+  },
+  "decision": {
+    "training_allowed": false,
+    "promotion_allowed": false,
+    "pair_gate_observed": 22,
+    "pair_gate_required": 48,
+    "next_training_target": "native_anchored_query_initiation_and_completion_repair_with_correctness_preservation",
+    "future_pareto_gate": {
+      "recognized_sqlite_task_floor": 30,
+      "complete_count_floor": 40,
+      "correct_numeric_count_floor": 7,
+      "reward_total_mean_floor": 0.285840625,
+      "wrong_process_ok_ceiling": 8
+    }
+  }
+}
