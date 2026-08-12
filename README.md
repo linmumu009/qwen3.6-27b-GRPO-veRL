@@ -183,8 +183,15 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/run_native_repair_replay.sh`、`scripts/analyze_native_training_attribution.py`：以原生 HF 权重在同 16 题上执行 48K 老板四工具自由回放，并把相同状态 margin 与老板原版评分拆成“训练前已存在”和“训练后是否放大”两层归因。
 - `scripts/analyze_disjoint_pair_candidate_pool.py`：从老板当前权威任务 manifest 重建 train236 的当前 instruction/gold 身份，在 immutable SQLite 上机械核验，并按 strict/review-required/blocked/forbidden-overlap 分桶；安全汇总不输出原始 prompt、SQL、gold 或工具结果。
 - `scripts/prepare_disjoint_pair_rollout_candidates.py`：只接受上述审计中 strict-available 的 48–64 条身份，把当前权威 instruction/gold 重建回老板 system/tool 格式的推理 Parquet；输出仅供 Step 120 首错采集，显式禁止直接训练或模型晋级。
+- `scripts/prepare_disjoint_first_error_pairs.py`：只把 Step 120 实际生成且机械错误/不足的首条只读 SQL 连同真实工具结果作为零-loss 状态，配对当前定义下已验证的 chosen SQL；正确/等价首查和无 SQL 题被排除，至少 48 对前继续禁止训练。
 
 ## 已验证状态
+
+### v0.88.0 — 2026-08-12
+
+- 新增不重叠首错 pair 构建器：逐题只读执行 Step 120 第一条 SQL，并同时检查当前 gold 支持与教师结果等价；只保留确实错误/不足的实际查询，禁止把正确等价查询误标为 rejected。
+- 每对数据冻结模型实际 assistant tool call 与实际工具输出作为相同前缀，chosen 为当前权威 verification SQL、rejected 为同一次回放的实际首错 SQL；两条候选后的工具/答案尾部固定为不计分 stub。
+- pair 数量门禁固定为至少 48；通过数量门禁后仍只授权 Step 120 forward-only token-family/semantic-delta 审计，不直接授权 optimizer 或 checkpoint 晋级。
 
 ### v0.87.1 — 2026-08-12
 
