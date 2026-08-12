@@ -72,7 +72,7 @@ def test_state_conditioned_row_uses_observed_wrong_result_as_zero_loss_context(
     rollout = [
         {
             "role": "assistant",
-            "content": "try all rows",
+            "content": {"analysis": "try all rows"},
             "tool_calls": [
                 {
                     "id": "wrong",
@@ -111,6 +111,7 @@ def test_state_conditioned_row_uses_observed_wrong_result_as_zero_loss_context(
     assert row["supervised_assistant_turn_indices"] == [1, 2]
     assert row["error_context_assistant_turn_index"] == 0
     assert row["messages"][3]["content"] == '[{"value":13}]'
+    assert row["messages"][2]["content"] == '{"analysis":"try all rows"}'
     assert row["messages"][4]["tool_calls"][0]["id"] == "call_recover_000001"
     assert row["messages"][5]["tool_call_id"] == "call_recover_000001"
     assert evidence["correction_verified_or_equivalent"] is True

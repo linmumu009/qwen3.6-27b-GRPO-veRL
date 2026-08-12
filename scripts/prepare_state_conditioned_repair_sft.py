@@ -28,6 +28,16 @@ def sha256_value(value: Any) -> str:
     return hashlib.sha256(canonical_json(value).encode("utf-8")).hexdigest()
 
 
+def message_content_text(value: Any) -> str:
+    """Keep parquet message content on one deterministic string schema."""
+
+    if value is None:
+        return ""
+    if isinstance(value, str):
+        return value
+    return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+
+
 def teacher_rows(path: Path) -> tuple[list[str], dict[str, dict[str, Any]]]:
     frame = pd.read_parquet(path)
     order: list[str] = []
@@ -114,7 +124,7 @@ def build_state_conditioned_row(
         copy.deepcopy(messages[1]),
         {
             "role": "assistant",
-            "content": error_message.get("content"),
+            "content": message_content_text(error_message.get("content")),
             "tool_calls": [error_call],
         },
         {
