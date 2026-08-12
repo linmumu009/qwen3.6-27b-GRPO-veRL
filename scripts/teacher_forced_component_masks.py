@@ -312,3 +312,60 @@ def build_repair_component_masks(
         "sql_shell_mask": sql_shell,
         "final_answer_mask": final_answer,
     }
+
+
+def build_first_action_component_masks(
+    *,
+    input_ids: Sequence[int],
+    offsets: Sequence[Sequence[int]],
+    rendered_text: str,
+    command: str,
+    turn_ranges: Sequence[tuple[int, int]],
+    tool_turn_index: int = 0,
+) -> dict[str, list[int]]:
+    """Split one chosen assistant tool action into structure and SQL masks."""
+
+    if len(offsets) != len(input_ids):
+        raise ValueError("offset and token lengths differ")
+    if not 0 <= tool_turn_index < len(turn_ranges):
+        raise ValueError("tool assistant turn index is out of range")
+    if not command.startswith(SQLITE_COMMAND_PREFIX):
+        raise ValueError("chosen action does not use the frozen sqlite3 prefix")
+    if rendered_text.count(command) != 1:
+        raise ValueError("chosen action command must occur exactly once")
+
+    token_count = len(input_ids)
+    tool_turn = [0] * token_count
+    tool_start, tool_end = turn_ranges[tool_turn_index]
+    if not 0 <= tool_start < tool_end <= token_count:
+        raise ValueError("invalid chosen action assistant range")
+    tool_turn[tool_start:tool_end] = [1] * (tool_end - tool_start)
+
+    command_start = rendered_text.index(command)
+    sql_spans = [
+        (command_start + start, command_start + end)
+        for start, end in semantic_sql_shell_char_spans(command)
+    ]
+    sql_shell = token_mask_for_char_spans(offsets, sql_spans)
+    if any(sql and not tool for sql, tool in zip(sql_shell, tool_turn, strict=True)):
+        raise ValueError("chosen SQL payload is outside the supervised assistant turn")
+    tool_structure = [
+        int(tool and not sql) for tool, sql in zip(tool_turn, sql_shell, strict=True)
+    ]
+    if not any(tool_structure) or not any(sql_shell):
+        raise ValueError("chosen action component mask is empty")
+    if any(
+        structure and sql
+        for structure, sql in zip(tool_structure, sql_shell, strict=True)
+    ):
+        raise ValueError("chosen action structure and SQL masks overlap")
+    if [
+        int(structure or sql)
+        for structure, sql in zip(tool_structure, sql_shell, strict=True)
+    ] != tool_turn:
+        raise ValueError("chosen action component masks do not reconstruct tool turn")
+    return {
+        "tool_turn_mask": tool_turn,
+        "tool_structure_mask": tool_structure,
+        "sql_shell_mask": sql_shell,
+    }

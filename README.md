@@ -197,8 +197,15 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/prepare_structured_sqlite_realization_gate.py`、`scripts/analyze_structured_sqlite_realization_gate.py`：把同一 41 题通用干预替换为冻结的三回合非交互 `path→schema→SELECT/WITH` 工作流，禁止交互 shell 和重复命令；仍不提供 task-specific schema、query 或答案，并以 `31/41` 带结果查询决定运行时约束是否足够。
 - `scripts/prepare_schema_oracle_action_gate.py`、`scripts/analyze_schema_oracle_action_gate.py`：对完整 64 个不重叠严格任务，从 immutable SQLite metadata 提取 gold SQL 涉及表的列类型与选中表间外键，不提供数据行、工具结果、expected value、gold SQL 或答案；第一回合动态定位数据库并执行非交互 SELECT/WITH，真实结果返回后第二回合禁止再调用工具，以 `32` 条正确/等价或 `48` 条带结果错误查询分别决定无 gold 表选择的全库 schema 验证与同状态 pair 构建。
 - `scripts/prepare_chosen_only_schema_action_sft.py`：在 schema-oracle 两门失败后，把同一完整不重叠 64 题转换为仅监督一个正确 bash/SQLite 首动作的 chosen-only 数据；gold SQL 只进入 assistant 标签，prompt 不含 SQL、答案、expected value、数据库行或工具结果，并固定拆分为 48 条拟训练和 16 条校准，CPU tokenization/loss-mask 门通过前禁止 teacher-forced NPU 基线和训练。
+- `scripts/qwen36_first_action_diagnostic_dataset.py`、`scripts/check_chosen_only_schema_action_sft.py`：用 Qwen3.6 完整工具 chat template 对 chosen-only 样本做 CPU fail-closed 门禁；要求 loss 恰好覆盖唯一 assistant tool action，system/user 全部为 0，并把 action 无重叠地拆成 tool structure 与解码 SQL 内容两部分。
 
 ## 已验证状态
+
+### v1.1.0 — 2026-08-13
+
+- 新增 chosen-only Qwen3.6 首动作 tokenization/loss-mask 门：完整渲染 `system,user,assistant(tool_call)` 与老板四工具 schema，`truncation=error`，逐条要求 loss 恰好等于唯一 assistant 动作且非 assistant 上下文 loss 为 0。
+- 首动作 component mask 将监督目标无重叠、无遗漏地拆成工具结构与解码 SQL 内容，SQL shell 外层引用不冒充语义 token；任一空 mask、越界、重复 command、模板 token 漂移或合同哈希不一致都 fail-closed。
+- CPU 门禁通过后只开放 calibration16 的 Step 120 teacher-forced 纯前向基线；training 与 promotion 仍关闭。
 
 ### v1.0.0 — 2026-08-13
 
