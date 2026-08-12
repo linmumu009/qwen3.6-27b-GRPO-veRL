@@ -9,6 +9,40 @@ from collections.abc import Sequence
 SQLITE_COMMAND_PREFIX = "sqlite3 -json /workspace/logistics.sqlite "
 
 
+def build_sql_weighted_loss_mask(
+    *,
+    tool_structure_mask: Sequence[int],
+    sql_shell_mask: Sequence[int],
+    final_answer_mask: Sequence[int],
+    tool_structure_weight: float,
+    sql_payload_weight: float,
+    final_answer_weight: float,
+) -> list[float]:
+    """Compose a positive weighted assistant mask from disjoint components."""
+
+    lengths = {len(tool_structure_mask), len(sql_shell_mask), len(final_answer_mask)}
+    if len(lengths) != 1:
+        raise ValueError("weighted loss component masks have different lengths")
+    weights = (tool_structure_weight, sql_payload_weight, final_answer_weight)
+    if any(not 0 < weight <= 32 for weight in weights):
+        raise ValueError("component weights must be in (0, 32]")
+
+    output: list[float] = []
+    for tool, sql, final in zip(
+        tool_structure_mask, sql_shell_mask, final_answer_mask, strict=True
+    ):
+        if int(bool(tool)) + int(bool(sql)) + int(bool(final)) > 1:
+            raise ValueError("weighted loss component masks overlap")
+        output.append(
+            float(tool) * tool_structure_weight
+            + float(sql) * sql_payload_weight
+            + float(final) * final_answer_weight
+        )
+    if not any(output):
+        raise ValueError("weighted assistant loss mask is empty")
+    return output
+
+
 def find_all(sequence: Sequence[int], needle: Sequence[int]) -> list[int]:
     if not needle:
         raise ValueError("token marker must not be empty")

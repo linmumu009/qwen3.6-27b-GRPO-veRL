@@ -22,8 +22,25 @@ def test_repair_sft_overfit_uses_step120_model_only_and_verified_qwen_dataset():
 
     assert "global_step_120" in script
     assert "checkpoint_initialization=model_only_dist_ckpt" in script
-    assert "data.custom_cls.name=Qwen36AssistantMaskSFTDataset" in script
+    assert 'DATASET_NAME="${DATASET_NAME:-Qwen36AssistantMaskSFTDataset}"' in script
+    assert '"data.custom_cls.name=${DATASET_NAME}"' in script
     assert "engine.tensor_model_parallel_size=${TP}" in script
     assert "engine.pipeline_model_parallel_size=${PP}" in script
     assert "engine.context_parallel_size=${CP}" in script
     assert "replay_gate=at_least_14_of_16_exact_boss_reward_success" in script
+
+
+def test_sql_weighted_canary_is_one_variable_one_step_from_step120():
+    script = (ROOT / "scripts" / "run_repair_sft_sql_weighted_canary.sh").read_text(
+        encoding="utf-8"
+    )
+
+    assert "semantic_gate_verified_first_query_support=0_of_16" in script
+    assert "intervention=sql_payload_weight_only" in script
+    assert "model_state_correction_examples=0" in script
+    assert "TOTAL_STEPS=1" in script
+    assert "TOTAL_EPOCHS=1" in script
+    assert 'SQL_PAYLOAD_WEIGHT="${SQL_PAYLOAD_WEIGHT:-8.0}"' in script
+    assert 'TOOL_STRUCTURE_WEIGHT="${TOOL_STRUCTURE_WEIGHT:-0.25}"' in script
+    assert "Qwen36SQLWeightedSFTDataset" in script
+    assert "python3 -m scripts.check_sql_weighted_sft_dataset" in script

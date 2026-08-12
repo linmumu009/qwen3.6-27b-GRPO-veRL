@@ -23,7 +23,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - 两台服务器下的纠错实验按角色流水线执行：5 号机保留 16 卡 Megatron 训练，6 号机负责数据机械核验、回放和 Agent 评测，不做低样本 32 卡跨机 SFT。首个 16 条 go/no-go 预计 `4–6h`；全部门禁通过时，48–64 条纠错 SFT、两次有效 GRPO 更新和一次密封 test20 预计累计 `12–16h`。
 - veRL 官方 `verl.trainer.sft_trainer` 的 Step 120 模型态初始化与单步全参 SFT 已在 5 号机实跑通过：TP4/PP2/CP2、Qwen3.6 完整工具模板、assistant-only loss mask、全新 CPU-offload Adam 均可工作；成功步 loss `0.9603`、grad norm `141.10`、单卡峰值 `26.27 GiB`、整机 CPU 内存 `821.63 GiB`，退出码 `0`。该运行仅为一条合成数据的不可晋升工程门禁，下一步才进入 16 条真实纠错数据机械核验。
 - 16 条真实 train236 纠错轨迹已通过机械核验并完成 5 步 veRL 官方全参 SFT：loss 从 `1.8738` 降至 `0.5764`，墙钟 `11m04s`，最终 model-only Megatron checkpoint 的 32 个分片完整（`54.72 GB`）。但相同 16 题的老板原始评分器门禁未通过：正确数保持 `2/16`，平均奖励 `0.7000 → 0.6063`，完整收尾 `15/16 → 13/16`，因此不扩到 48–64 条，也不作 held-out 泛化声明。
-- 纠错 SFT 的 teacher-forced 分项诊断已完成：官方 assistant loss 在同一 16 题上精确复现 Step 120 的 `1.8738`，SFT Step 5 降至 `0.4146`；工具结构、SQL、最终答案 NLL 均为 `16/16` 改善，但训练后每题 SQL 目标概率中位数仅 `0.373`、仅 `5/16` 超过 0.5，自由回放仍为 `16/16` 第一条 SQL 偏离且目标 SQL 后续命中 `0/16`。当前判定为 SQL 决策边界与自由运行状态分布不匹配，不再扩大通用 assistant-token SFT；下一轮只做 SQL payload 加权和模型首错状态纠正的 1–2 步金丝雀。
+- 纠错 SFT 的 teacher-forced 分项诊断已完成：官方 assistant loss 在同一 16 题上精确复现 Step 120 的 `1.8738`，SFT Step 5 降至 `0.4146`；工具结构、SQL、最终答案 NLL 均为 `16/16` 改善，但训练后每题 SQL 目标概率中位数仅 `0.373`、仅 `5/16` 超过 0.5。进一步 CPU 语义门禁确认 Step 120 与 SFT Step 5 的首条 SQL 均为 `0/16` 支持 gold、`0/16` 与教师结果机械等价，排除了“只是 SQL 字符串不同”的解释。下一轮固定为从 Step 120 开始的一步单变量 SQL 加权金丝雀（工具结构 `0.25×`、SQL payload `8×`、最终答案 `1×`），首步不混入模型状态纠正样本；训练尚未启动。
 - 所有新增镜像、容器、工作目录和实验名均以 `llin` 开头，不复用或修改其他人的环境。
 
 当前服务器部署：
@@ -93,6 +93,8 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [`docs/repair_sft_teacher_forced_diagnosis_20260811.html`](docs/repair_sft_teacher_forced_diagnosis_20260811.html)：Step 120/SFT Step 5 的 teacher-forced 分项概率、老板自由回放、首条 SQL 分叉和下一轮 SQL-focused 门禁的自包含技术报告。
 - [`docs/repair_sft_teacher_forced_diagnosis_20260811_summary.json`](docs/repair_sft_teacher_forced_diagnosis_20260811_summary.json)：不含原始问题、SQL、答案与服务器绝对路径的安全聚合指标、运行资源和证据链。
 - [`docs/repair_sft_teacher_forced_diagnosis_20260811_artifact.json`](docs/repair_sft_teacher_forced_diagnosis_20260811_artifact.json)：上述报告的 canonical Data Analytics artifact、数据集、图表、来源与技术结论定义。
+- [`docs/repair_sft_pretraining_gate_20260812.md`](docs/repair_sft_pretraining_gate_20260812.md)：首条 SQL 的只读执行、gold 支持与机械等价门禁，以及据此冻结的一步 SQL-only 金丝雀配方。
+- [`docs/repair_sft_pretraining_gate_20260812_summary.json`](docs/repair_sft_pretraining_gate_20260812_summary.json)：不含原始问题、SQL、答案和服务器路径的安全聚合门禁结果与待执行 rank 门禁状态。
 - [`docs/leadership_experiment_update_methodology_20260806.md`](docs/leadership_experiment_update_methodology_20260806.md)：从多轮实际修订中提炼的领导汇报方法论，固化四段结构、数字精度、口径边界、抗奖励投机表述、行动项口吻和自检清单。
 - `llin_verl/pi_sqlite_tool.py`：只读 SQLite 轨迹工具。
 - `llin_verl/pi_workspace_tools.py`、`llin_verl/pi_agent_loop.py`：完整 PI 四工具、轨迹级共享沙箱、事件审计和统一清理。
@@ -145,8 +147,19 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/teacher_forced_component_masks.py`、`scripts/qwen36_teacher_forced_diagnostic_dataset.py`、`scripts/run_teacher_forced_component_diagnostic.py`：把 assistant 监督严格拆为工具结构、SQL shell payload 与最终答案，在 veRL/Megatron forward-only 模式中输出逐题 NLL 和目标概率，不初始化 optimizer。
 - `scripts/run_repair_sft_teacher_forced_eval.sh`、`scripts/run_repair_sft_teacher_forced_prepost_host.sh`：在相同数据、TP4/PP2/CP2 下自动比较 Step 120 与 SFT Step 5，执行 16/16 token mask 重建门禁并仅回收聚合结果。
 - `scripts/analyze_repair_sft_free_run_divergence.py`：在服务器侧离线对齐教师轨迹与老板原始自由回放，统计第一条 SQL 分叉、目标 SQL 后续命中和正确证据后的继续查询，不输出原始敏感内容。
+- `scripts/analyze_repair_sft_first_query_semantics.py`：只读执行两份自由回放的首条 SQL，区分 gold 支持、空结果、执行失败和错误/不足证据，并用教师查询结果排除机械等价 SQL。
+- `scripts/teacher_forced_token_ranks.py`：在 TP 词表分片上计算教师 SQL token 的精确 rank，并定位首个非 greedy 关键 token，不收集完整 logits。
+- `scripts/qwen36_sql_weighted_sft_dataset.py`、`scripts/check_sql_weighted_sft_dataset.py`、`scripts/run_repair_sft_sql_weighted_canary.sh`：构造和 CPU 核验 SQL 加权 loss mask，并从 Step 120 启动仅一步、单变量、只保存最终模型的金丝雀。
 
 ## 已验证状态
+
+### v0.70.0 — 2026-08-12
+
+- 完成不占用 NPU 的首条 SQL 语义门禁：Step 120 与通用 SFT Step 5 均为 `0/16` 首条查询支持 gold、`0/16` 与教师结果机械等价；前者为 13 条错误/不足证据和 3 条空结果，后者为 13 条错误/不足、2 条空结果和 1 条执行错误。
+- 新增 bounded、immutable、只读 SQLite 分类器，拒绝非 `SELECT/WITH`，限制执行时间与返回行数；原始 SQL 不进入安全聚合或 Git。
+- teacher-forced forward-only 入口新增 TP 跨分片 exact token rank、greedy/top-5 命中与首个非 greedy SQL token 定位；该门禁已完成代码和 CPU 单元验证，但因 NPU 正由他人使用尚未实跑。
+- 将下一轮冻结为 Step 120 的一步 SQL-only 单变量金丝雀：工具结构/SQL/最终答案权重为 `0.25/8/1`，不加入模型状态纠正样本；16 行 CPU mask 门禁逐行通过，SQL 占加权 loss mass 均值 `78.05%`。已准备 final-only checkpoint 启动器，训练未启动。
+- 项目完整测试结果为 `213 passed`；Python 编译与新增 shell 入口语法检查通过。
 
 ### v0.69.0 — 2026-08-11
 

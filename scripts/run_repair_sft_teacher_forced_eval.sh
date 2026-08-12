@@ -50,6 +50,8 @@ forward_only=true
 optimizer_initialized=false
 topology=tp${TP}_pp${PP}_cp${CP}
 components=assistant,tool_turn,tool_structure,sql_shell,final_answer
+sql_token_rank=exact_vocab_parallel_rank
+critical_token=first_non_greedy_sql_token
 promotion_allowed=false
 EOF
 

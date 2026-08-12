@@ -21,6 +21,12 @@ TRAIN_BATCH_SIZE="${TRAIN_BATCH_SIZE:-16}"
 TOTAL_STEPS="${TOTAL_STEPS:-5}"
 TOTAL_EPOCHS="${TOTAL_EPOCHS:-5}"
 LEARNING_RATE="${LEARNING_RATE:-1e-6}"
+DATASET_PATH="${DATASET_PATH:-${PROJECT_ROOT}/scripts/qwen36_assistant_mask_sft_dataset.py}"
+DATASET_NAME="${DATASET_NAME:-Qwen36AssistantMaskSFTDataset}"
+SFT_RECIPE="${SFT_RECIPE:-generic_assistant_token}"
+TOOL_STRUCTURE_WEIGHT="${TOOL_STRUCTURE_WEIGHT:-1.0}"
+SQL_PAYLOAD_WEIGHT="${SQL_PAYLOAD_WEIGHT:-1.0}"
+FINAL_ANSWER_WEIGHT="${FINAL_ANSWER_WEIGHT:-1.0}"
 
 if (( TP * PP * CP != NPROC )); then
   printf 'invalid SFT topology: TP(%s) * PP(%s) * CP(%s) != NPROC(%s)\n' \
@@ -102,6 +108,11 @@ intermediate_validation=false
 topology=tp${TP}_pp${PP}_cp${CP}
 replay_gate=at_least_14_of_16_exact_boss_reward_success
 heldout_promotion_gate=separate_48_to_64_repair_canary
+sft_recipe=${SFT_RECIPE}
+dataset_name=${DATASET_NAME}
+tool_structure_weight=${TOOL_STRUCTURE_WEIGHT}
+sql_payload_weight=${SQL_PAYLOAD_WEIGHT}
+final_answer_weight=${FINAL_ANSWER_WEIGHT}
 EOF
 
 export CUDA_DEVICE_MAX_CONNECTIONS=1
@@ -125,8 +136,11 @@ torchrun --standalone --nnodes=1 --nproc_per_node="${NPROC}" \
   data.pad_mode=no_padding \
   data.truncation=error \
   data.ignore_input_ids_mismatch=false \
-  "data.custom_cls.path=${PROJECT_ROOT}/scripts/qwen36_assistant_mask_sft_dataset.py" \
-  data.custom_cls.name=Qwen36AssistantMaskSFTDataset \
+  "data.custom_cls.path=${DATASET_PATH}" \
+  "data.custom_cls.name=${DATASET_NAME}" \
+  "+data.tool_structure_weight=${TOOL_STRUCTURE_WEIGHT}" \
+  "+data.sql_payload_weight=${SQL_PAYLOAD_WEIGHT}" \
+  "+data.final_answer_weight=${FINAL_ANSWER_WEIGHT}" \
   model=hf_model \
   "model.path=${MODEL_PATH}" \
   model.trust_remote_code=true \

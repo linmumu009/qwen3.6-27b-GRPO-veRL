@@ -1,0 +1,70 @@
+{
+  "contract": "repair-sft-pretraining-gate-summary-v1",
+  "date": "2026-08-12",
+  "scope": {
+    "task_count": 16,
+    "population": "the same train236 repair tasks used by the prior generic SFT gate",
+    "heldout": false,
+    "models": [
+      "step120",
+      "generic_sft_step5"
+    ]
+  },
+  "cpu_first_query_semantic_gate": {
+    "read_only": true,
+    "immutable_database": true,
+    "model_or_optimizer_loaded": false,
+    "npu_required": false,
+    "step120": {
+      "verified_gold_support": 0,
+      "teacher_result_equivalent": 0,
+      "executable_wrong_or_insufficient_evidence": 13,
+      "executable_empty_evidence": 3,
+      "schema_syntax_or_execution_error": 0
+    },
+    "generic_sft_step5": {
+      "verified_gold_support": 0,
+      "teacher_result_equivalent": 0,
+      "executable_wrong_or_insufficient_evidence": 13,
+      "executable_empty_evidence": 2,
+      "schema_syntax_or_execution_error": 1
+    },
+    "decision": "sql_grounding_and_semantics"
+  },
+  "prepared_forward_only_gate": {
+    "status": "implementation_complete_not_run_while_npus_are_in_use",
+    "optimizer_initialized": false,
+    "checkpoint_saved": false,
+    "metrics": [
+      "exact teacher SQL token rank across TP vocabulary shards",
+      "greedy and top-5 SQL token rates",
+      "first non-greedy SQL token offset, rank, token id and target probability"
+    ]
+  },
+  "cpu_sql_weighted_mask_gate": {
+    "status": "passed",
+    "rows": 16,
+    "all_component_masks_nonempty": true,
+    "all_weighted_masks_match_contract": true,
+    "sql_loss_mass_share": 0.7805009935277185,
+    "npu_required": false
+  },
+  "frozen_next_canary": {
+    "source_checkpoint": "step120",
+    "training_steps": 1,
+    "intervention": "sql_payload_weight_only",
+    "weights": {
+      "tool_structure": 0.25,
+      "sql_payload": 8.0,
+      "final_answer": 1.0
+    },
+    "model_state_correction_examples": 0,
+    "checkpoint_policy": "final model and extra only; no optimizer checkpoint",
+    "reason_for_one_variable_design": "The CPU gate proves first-query evidence failure on all 16 tasks; adding state correction in the same first canary would confound the causal test."
+  },
+  "remaining_before_optimizer_update": [
+    "Run the prepared forward-only token-rank gate when the 16 trainer NPUs are available."
+  ],
+  "promotion_allowed": false,
+  "training_started": false
+}

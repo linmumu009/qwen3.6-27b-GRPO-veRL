@@ -27,7 +27,7 @@ def main() -> None:
     baseline = load(args.step120)
     post = load(args.post_sft)
     rollout = load(args.rollout_comparison)
-    expected_contract = "repair-sft-teacher-forced-component-diagnostic-v1"
+    expected_contract = "repair-sft-teacher-forced-component-diagnostic-v2"
     if baseline.get("contract") != expected_contract or post.get("contract") != expected_contract:
         raise ValueError("unexpected teacher-forced diagnostic contract")
     if baseline["task_ids"] != post["task_ids"]:
@@ -91,7 +91,7 @@ def main() -> None:
         diagnosis = "teacher_forced_targets_improved_without_joint_free_running_regression"
 
     result = {
-        "contract": "repair-sft-teacher-forced-prepost-comparison-v1",
+        "contract": "repair-sft-teacher-forced-prepost-comparison-v2",
         "task_count": 16,
         "task_ids_identical": True,
         "data_sha256_identical": True,
@@ -103,6 +103,18 @@ def main() -> None:
             "delta": post["official_assistant_loss"] - baseline["official_assistant_loss"],
         },
         "components": component_comparison,
+        "sql_token_rank": {
+            "step120": baseline["sql_token_rank"],
+            "post_sft": post["sql_token_rank"],
+            "greedy_token_rate_delta": (
+                post["sql_token_rank"]["greedy_token_rate"]
+                - baseline["sql_token_rank"]["greedy_token_rate"]
+            ),
+            "tasks_all_sql_tokens_greedy_delta": (
+                post["sql_token_rank"]["tasks_all_sql_tokens_greedy"]
+                - baseline["sql_token_rank"]["tasks_all_sql_tokens_greedy"]
+            ),
+        },
         "free_rollout_reference": {
             "reward_mean_delta": rollout_reward_delta,
             "complete_count_delta": rollout_complete_delta,

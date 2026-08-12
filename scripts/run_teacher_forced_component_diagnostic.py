@@ -21,6 +21,12 @@ from verl.utils.device import auto_set_device
 from verl.utils.distributed import destroy_global_process_group, initialize_global_process_group
 from verl.workers.utils.losses import sft_loss
 
+from scripts.teacher_forced_token_ranks import (
+    sql_token_rank_metrics,
+    summarize_sql_token_ranks,
+    vocab_parallel_target_ranks,
+)
+
 
 COMPONENT_MASKS = {
     "assistant": "loss_mask",
@@ -31,8 +37,20 @@ COMPONENT_MASKS = {
 }
 
 
-def component_sft_loss(model_output, data, dp_group=None, config=None):
+def component_sft_loss(
+    model_output=None,
+    data=None,
+    dp_group=None,
+    config=None,
+    student_logits=None,
+    data_format=None,
+):
     """Return the official SFT loss plus additive per-component statistics."""
+
+    if student_logits is not None:
+        return vocab_parallel_target_ranks(student_logits, data, data_format)
+    if model_output is None:
+        raise ValueError("component diagnostic received neither logits nor model output")
 
     loss, _ = sft_loss(config=config, model_output=model_output, data=data, dp_group=dp_group)
     log_prob = model_output["log_probs"].values()
@@ -47,6 +65,7 @@ def component_sft_loss(model_output, data, dp_group=None, config=None):
             (log_prob.exp() * mask).sum()
         ).detach()
         metrics[f"component/{component}/token_count"] = token_count.detach()
+    metrics.update(sql_token_rank_metrics(model_output, data))
     return loss, metrics
 
 
@@ -71,7 +90,9 @@ def _sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
-def _summarize(metrics: dict[str, Any], task_ids: list[str]) -> tuple[dict, list[dict]]:
+def _summarize(
+    metrics: dict[str, Any], task_ids: list[str]
+) -> tuple[dict, dict, list[dict]]:
     values: dict[str, dict[str, list[float]]] = {}
     for component in COMPONENT_MASKS:
         values[component] = {}
@@ -94,6 +115,10 @@ def _summarize(metrics: dict[str, Any], task_ids: list[str]) -> tuple[dict, list
             "geometric_mean_target_probability": math.exp(-nll),
         }
 
+    sql_token_rank, per_task_rank = summarize_sql_token_ranks(
+        metrics, task_ids, numbers=_numbers
+    )
+
     per_task: list[dict] = []
     for index, task_id in enumerate(task_ids):
         components: dict[str, dict[str, float | int]] = {}
@@ -106,8 +131,10 @@ def _summarize(metrics: dict[str, Any], task_ids: list[str]) -> tuple[dict, list
                 "geometric_mean_target_probability": math.exp(-nll),
                 "arithmetic_mean_target_probability": statistics["target_probability_sum"][index] / tokens,
             }
-        per_task.append({"task_id": task_id, "components": components})
-    return aggregates, per_task
+        per_task.append(
+            {"task_id": task_id, "components": components, "sql_token_rank": per_task_rank[index]}
+        )
+    return aggregates, sql_token_rank, per_task
 
 
 def run(config: DictConfig) -> None:
@@ -127,6 +154,9 @@ def run(config: DictConfig) -> None:
             "max_token_len_per_gpu": config.data.max_token_len_per_gpu,
             "micro_batch_size_per_gpu": config.data.micro_batch_size_per_gpu,
             "temperature": 1.0,
+            "distillation_use_topk": True,
+            "distillation_only": False,
+            "model_vocab_size": int(trainer.model_config.hf_config.vocab_size),
             "global_batch_size": trainer.global_batch_size,
             "pad_mode": config.data.pad_mode,
             "pad_token_id": trainer.model_config.tokenizer.pad_token_id,
@@ -146,12 +176,19 @@ def run(config: DictConfig) -> None:
                 raise ValueError(f"expected one validation batch, got {len(outputs)}")
             metrics = outputs[0]
             task_ids = trainer.val_dataset.dataframe["task_id"].astype(str).tolist()
-            aggregates, per_task = _summarize(metrics, task_ids)
+            aggregates, sql_token_rank, per_task = _summarize(metrics, task_ids)
+            for row in per_task:
+                token_id = row["sql_token_rank"]["first_nongreedy_target_id"]
+                row["sql_token_rank"]["first_nongreedy_target_token"] = (
+                    None
+                    if token_id is None
+                    else trainer.model_config.tokenizer.convert_ids_to_tokens(token_id)
+                )
             data_path = Path(str(config.data.val_files[0] if isinstance(config.data.val_files, list) else config.data.val_files))
             output_path = Path(str(config.diagnostic.output_path))
             output_path.parent.mkdir(parents=True, exist_ok=True)
             result = {
-                "contract": "repair-sft-teacher-forced-component-diagnostic-v1",
+                "contract": "repair-sft-teacher-forced-component-diagnostic-v2",
                 "model_label": str(config.diagnostic.model_label),
                 "source_model_dist_checkpoint": str(config.engine.dist_checkpointing_path),
                 "forward_only": True,
@@ -161,6 +198,7 @@ def run(config: DictConfig) -> None:
                 "data_sha256": _sha256(data_path),
                 "official_assistant_loss": _numbers(metrics["loss"])[0],
                 "components": aggregates,
+                "sql_token_rank": sql_token_rank,
                 "per_task": per_task,
                 "runtime_seconds": time.monotonic() - started,
                 "peak_memory": {
