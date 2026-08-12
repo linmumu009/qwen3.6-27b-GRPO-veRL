@@ -130,7 +130,7 @@ def build_contract(
         "intervention_sha256": sha256_text(INTERVENTION),
         "intervention_discloses_answer_table_field_sql_or_literal": False,
         "max_assistant_turns": 3,
-        "max_tool_result_turns": 2,
+        "max_tool_result_turns": 3,
         "observed_readonly_query_recovery_floor": recovery_floor,
         "unique_task_ids": len({item["task_id"] for item in evidence}),
         "unique_source_instruction_hashes": len(

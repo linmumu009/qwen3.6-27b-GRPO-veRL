@@ -9,6 +9,7 @@ from scripts.analyze_query_initiation_oracle_gate import decide
 from scripts.prepare_query_initiation_oracle_candidates import (
     CONTRACT,
     INTERVENTION,
+    build_contract,
     build_oracle_rows,
 )
 
@@ -103,6 +104,34 @@ def test_builder_fails_closed_when_baseline_subset_size_drifts(tmp_path: Path) -
             database=_database(tmp_path / "db.sqlite"),
             expected_rows=2,
         )
+
+
+def test_contract_allows_observing_a_query_from_the_third_assistant_turn(
+    tmp_path: Path,
+) -> None:
+    output = tmp_path / "oracle.parquet"
+    output.write_bytes(b"diagnostic")
+    contract = build_contract(
+        rows=[{}, {}],
+        evidence=[
+            {
+                "task_id": "a",
+                "source_instruction_sha256": "source-a",
+                "prompted_instruction_sha256": "prompted-a",
+            },
+            {
+                "task_id": "b",
+                "source_instruction_sha256": "source-b",
+                "prompted_instruction_sha256": "prompted-b",
+            },
+        ],
+        output_path=output,
+        recovery_floor=2,
+        source_hashes={},
+    )
+
+    assert contract["max_assistant_turns"] == 3
+    assert contract["max_tool_result_turns"] == 3
 
 
 def _dataset(rows: int, floor: int) -> dict:
