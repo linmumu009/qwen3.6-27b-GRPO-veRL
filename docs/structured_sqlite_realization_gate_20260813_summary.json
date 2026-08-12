@@ -1,0 +1,62 @@
+{
+  "contract": "structured-sqlite-realization-gate-safe-summary-v1",
+  "date": "2026-08-13",
+  "scope": {
+    "rows": 41,
+    "same_tasks_as_query_initiation_oracle": true,
+    "model": "step120_forced_actor_to_rollout_sync",
+    "greedy_n1": true,
+    "max_assistant_turns": 3,
+    "max_tool_result_turns": 3,
+    "forward_only": true,
+    "val_only": true,
+    "exit_code": 0,
+    "optimizer_initialized": false,
+    "checkpoint_saved": false
+  },
+  "conversion": {
+    "validation_rows": 41,
+    "tool_calls": 132,
+    "missing_tool_responses": 48,
+    "terminal_assistant_answers": 0
+  },
+  "first_query": {
+    "observed_correct_or_equivalent": 0,
+    "observed_wrong": 0,
+    "unobserved_recognized_readonly": 0,
+    "no_recognized_readonly": 41
+  },
+  "tools": {
+    "tool_call_name_counts": {
+      "bash": 132
+    },
+    "bash_command_family_counts": {
+      "ls": 28,
+      "pwd": 1,
+      "sqlite_path_or_cli_only": 81,
+      "sqlite_schema_catalog": 15,
+      "sqlite_schema_definition": 7
+    },
+    "rows_with_any_sqlite": 41,
+    "rows_with_schema_discovery_sqlite": 15,
+    "rows_with_recognized_readonly_sqlite": 0,
+    "observed_tool_calls": 84,
+    "unobserved_tool_calls": 48,
+    "duplicate_bash_calls": 107
+  },
+  "gate": {
+    "observed_readonly_query_rows": 0,
+    "required": 31,
+    "passed": false
+  },
+  "decision": {
+    "generic_structured_runtime_workflow_sufficient": false,
+    "next_target": "task_specific_schema_grounding_and_same_state_action_acquisition",
+    "next_gate": "single_turn_schema_oracle_on_disjoint64",
+    "correct_or_equivalent_runtime_floor": 32,
+    "observed_wrong_pair_floor": 48,
+    "training_allowed": false,
+    "promotion_allowed": false
+  },
+  "contains_raw_commands_prompts_sql_answers_task_ids_tool_outputs_or_server_paths": false
+}

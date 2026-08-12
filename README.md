@@ -94,6 +94,8 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [`docs/semantic_plan_and_delta_pretraining_gate_20260812_summary.json`](docs/semantic_plan_and_delta_pretraining_gate_20260812_summary.json)：不含原始问题、SQL、答案和服务器路径的安全聚合结果。
 - [`docs/query_initiation_oracle_gate_20260813.md`](docs/query_initiation_oracle_gate_20260813.md)：Step 120 完整预算无查询任务的通用查询启动干预、SQLite 命令族细分、`0/41` 门禁结论与下一结构化工作流测试。
 - [`docs/query_initiation_oracle_gate_20260813_summary.json`](docs/query_initiation_oracle_gate_20260813_summary.json)：不含原始命令、prompt、SQL、答案、task ID、工具结果或服务器路径的查询启动安全汇总。
+- [`docs/structured_sqlite_realization_gate_20260813.md`](docs/structured_sqlite_realization_gate_20260813.md)：同 41 题结构化非交互 `path→schema→SELECT/WITH` 运行、`0/41` 结论、与通用干预比较及下一 schema-oracle 数据门。
+- [`docs/structured_sqlite_realization_gate_20260813_summary.json`](docs/structured_sqlite_realization_gate_20260813_summary.json)：不含原始命令、prompt、SQL、答案、task ID、工具结果或服务器路径的结构化门禁安全汇总。
 - [`docs/semantic_delta_pairwise_canary_20260812.md`](docs/semantic_delta_pairwise_canary_20260812.md)：一次 reference-free pairwise 更新、工程失败修复、训练资源、同数据概率前后门禁与 fail-closed 决策。
 - [`docs/semantic_delta_pairwise_canary_20260812_summary.json`](docs/semantic_delta_pairwise_canary_20260812_summary.json)：不含原始问题、SQL、答案和服务器路径的一步 pairwise 安全聚合结果。
 - [`docs/native_vs_step120_reward_behavior_attribution_20260812.md`](docs/native_vs_step120_reward_behavior_attribution_20260812.md)：原生模型与 Step 120 的相同错误状态概率对照、同题老板原版自由回放和奖励代理错配归因。
@@ -193,6 +195,12 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/prepare_structured_sqlite_realization_gate.py`、`scripts/analyze_structured_sqlite_realization_gate.py`：把同一 41 题通用干预替换为冻结的三回合非交互 `path→schema→SELECT/WITH` 工作流，禁止交互 shell 和重复命令；仍不提供 task-specific schema、query 或答案，并以 `31/41` 带结果查询决定运行时约束是否足够。
 
 ## 已验证状态
+
+### v0.97.0 — 2026-08-13
+
+- 结构化 SQLite realization 实跑完成：Step 120 强制同步、同一 41 题、greedy 3/3、`exit 0`，但可识别只读查询为 `0/41 < 31/41`；没有未观测 SELECT/WITH，可排除工具结果缺失导致的假阴性。
+- 相比通用提示，总工具调用 `172→132`、重复 Bash `112→107`、未观测调用 `63→48`，但路径/CLI-only 仍有 `81`、schema catalog/definition `22`，`41/41` 均未从探索转成查询。更强通用运行时指令路线停止。
+- 下一无训练门改为完整不重叠 64 题的单回合 task-specific schema oracle：若正确/等价首查询 `≥32/64`，优先 runtime schema injection；否则只有不同任务的带结果错误查询 `≥48`，才允许构造同状态 correct-vs-actual-wrong pairs，训练仍默认关闭。
 
 ### v0.96.0 — 2026-08-13
 
