@@ -91,6 +91,10 @@ def test_one_step_script_is_train48_only_and_model_only_checkpoint() -> None:
     assert "total_training_steps=1" in script
     assert "calibration_rows_excluded=16" in script
     assert "optimizer_state=fresh_cpu_offloaded_adam" in script
+    assert (
+        'export PYTHONPATH="${MEGATRON_BRIDGE_ROOT}:${PROJECT_ROOT}/runtime:'
+        '${PROJECT_ROOT}:/verl:${PYTHONPATH:-}"' in script
+    )
     assert "+optim.override_optimizer_config.optimizer_cpu_offload=true" in script
     assert "'checkpoint.load_contents=[]'" in script
     assert "'checkpoint.save_contents=[model,extra]'" in script

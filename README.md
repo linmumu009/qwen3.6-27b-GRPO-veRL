@@ -205,6 +205,10 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 已验证状态
 
+### v1.4.1 — 2026-08-13
+
+- 修复 chosen-only 一步启动前 CPU 门的模块解析顺序：项目根目录现在位于容器自带 `/verl` 之前，避免其同名 `scripts` 包遮蔽本仓库门禁模块；失败发生在训练启动前，未初始化 optimizer、未更新参数、未生成 checkpoint。
+
 ### v1.4.0 — 2026-08-13
 
 - 新增 chosen-only 首动作加权 dataset：loss 仅由互斥的 tool structure `0.25×` 与解码 SQL `8×` 组成；不含工具结果或最终答案分量。

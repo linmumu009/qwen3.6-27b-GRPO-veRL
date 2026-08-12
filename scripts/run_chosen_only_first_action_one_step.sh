@@ -38,7 +38,10 @@ if [[ ! -d "${MEGATRON_BRIDGE_ROOT}/megatron/bridge" ]]; then
   exit 2
 fi
 
-export PYTHONPATH="${MEGATRON_BRIDGE_ROOT}:${PROJECT_ROOT}/runtime:/verl:${PROJECT_ROOT}:${PYTHONPATH:-}"
+# Keep the project root ahead of /verl.  The container ships a regular
+# /verl/scripts package, which would otherwise shadow this repository's
+# namespace-style scripts directory during the fail-closed CPU gate.
+export PYTHONPATH="${MEGATRON_BRIDGE_ROOT}:${PROJECT_ROOT}/runtime:${PROJECT_ROOT}:/verl:${PYTHONPATH:-}"
 mkdir -p "${OUTPUT_DIR}"
 python3 "${PROJECT_ROOT}/scripts/check_chosen_only_schema_action_sft.py" \
   --data-file "${TRAIN_FILE}" \
