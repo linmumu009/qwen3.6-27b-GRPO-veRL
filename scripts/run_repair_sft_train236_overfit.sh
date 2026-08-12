@@ -62,6 +62,7 @@ contract_name = contract.get("contract")
 if contract_name not in {
     "train236-repair-sft-dataset-v1",
     "train236-state-conditioned-repair-sft-dataset-v1",
+    "train236-critical-token-repair-sft-dataset-v1",
 }:
     errors.append("unexpected data contract")
 if contract.get("rows") != batch_size:
@@ -83,6 +84,13 @@ else:
     )
     if contract.get("first_error_assistant_context_loss_weight") != 0:
         errors.append("state-conditioned error context must have zero loss weight")
+    if contract_name == "train236-critical-token-repair-sft-dataset-v1":
+        required_contract_gates += (
+            "all_critical_offsets_valid",
+            "all_critical_target_ids_present",
+        )
+        if contract.get("aggregation_or_query_start_tasks", 0) < 12:
+            errors.append("critical-token data lacks the required query-plan concentration")
 for key in required_contract_gates:
     if contract.get(key) is not True:
         errors.append(f"data contract gate failed: {key}")
@@ -99,6 +107,15 @@ if contract_name == "train236-state-conditioned-repair-sft-dataset-v1":
         errors.append("one or more rows lack error assistant context")
     if token_gate.get("all_error_context_loss_mass_zero") is not True:
         errors.append("one or more error assistant turns leak into loss")
+elif contract_name == "train236-critical-token-repair-sft-dataset-v1":
+    if token_gate.get("contract") != "repair-sft-critical-token-mask-gate-v1":
+        errors.append("unexpected critical-token gate contract")
+    if token_gate.get("all_error_context_loss_mass_zero") is not True:
+        errors.append("one or more error assistant turns leak into critical-token loss")
+    if token_gate.get("all_critical_token_masks_exactly_one") is not True:
+        errors.append("one or more rows do not select exactly one critical token")
+    if token_gate.get("all_critical_token_weights_match") is not True:
+        errors.append("one or more critical token weights differ from the contract")
 samples = token_gate.get("samples", [])
 if not samples:
     errors.append("tokenization gate has no per-row samples")

@@ -12,6 +12,7 @@ from scripts.teacher_forced_component_masks import (
     assistant_turn_ranges,
     build_repair_component_masks,
     build_sql_weighted_loss_mask,
+    emphasize_critical_sql_token,
     semantic_sql_shell_char_spans,
 )
 from scripts.analyze_repair_sft_free_run_divergence import analyze_task
@@ -96,6 +97,28 @@ def test_sql_weighted_mask_rejects_overlap_and_invalid_weights():
             tool_structure_weight=0.25,
             sql_payload_weight=8.0,
             final_answer_weight=1.0,
+        )
+
+
+def test_critical_token_weight_overrides_exactly_one_sql_offset():
+    weighted, critical = emphasize_critical_sql_token(
+        weighted_loss_mask=[0.25, 8.0, 8.0, 1.0],
+        sql_shell_mask=[0, 1, 1, 0],
+        critical_sql_token_offset=1,
+        critical_weight=32.0,
+    )
+
+    assert weighted == [0.25, 8.0, 32.0, 1.0]
+    assert critical == [0, 0, 1, 0]
+
+
+def test_critical_token_weight_rejects_out_of_range_offset():
+    with pytest.raises(ValueError, match="out of range"):
+        emphasize_critical_sql_token(
+            weighted_loss_mask=[8.0],
+            sql_shell_mask=[1],
+            critical_sql_token_offset=1,
+            critical_weight=32.0,
         )
     with pytest.raises(ValueError, match="weights"):
         build_sql_weighted_loss_mask(

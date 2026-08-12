@@ -65,3 +65,23 @@ def test_state_conditioned_canary_keeps_wrong_assistant_turn_as_zero_loss_contex
     assert "python3 -m scripts.check_state_conditioned_sft_dataset" in script
     assert "train236-state-conditioned-repair-sft-dataset-v1" in core
     assert "all_error_context_loss_mass_zero" in core
+
+
+def test_critical_token_canary_changes_only_first_semantic_nongreedy_weight():
+    script = (ROOT / "scripts" / "run_repair_sft_critical_token_canary.sh").read_text(
+        encoding="utf-8"
+    )
+    core = (ROOT / "scripts" / "run_repair_sft_train236_overfit.sh").read_text(
+        encoding="utf-8"
+    )
+
+    assert "only_causal_change=first_semantic_nongreedy_sql_token_weight_8_to_" in script
+    assert "semantic_query_plan_or_aggregation_tasks=12_of_16" in script
+    assert 'CRITICAL_TOKEN_WEIGHT="${CRITICAL_TOKEN_WEIGHT:-32.0}"' in script
+    assert "TOTAL_STEPS=1" in script
+    assert "TOTAL_EPOCHS=1" in script
+    assert "MAX_LENGTH=8192" in script
+    assert "Qwen36CriticalTokenSFTDataset" in script
+    assert "python3 -m scripts.check_critical_token_sft_dataset" in script
+    assert "train236-critical-token-repair-sft-dataset-v1" in core
+    assert "all_critical_token_masks_exactly_one" in core

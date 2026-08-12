@@ -161,8 +161,15 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/teacher_forced_token_ranks.py`：在 TP 词表分片上计算教师 SQL token 的精确 rank，并定位首个非 greedy 关键 token，不收集完整 logits。
 - `scripts/qwen36_sql_weighted_sft_dataset.py`、`scripts/check_sql_weighted_sft_dataset.py`、`scripts/run_repair_sft_sql_weighted_canary.sh`：构造和 CPU 核验 SQL 加权 loss mask，并从 Step 120 启动仅一步、单变量、只保存最终模型的金丝雀。
 - `scripts/prepare_state_conditioned_repair_sft.py`、`scripts/check_state_conditioned_sft_dataset.py`、`scripts/run_repair_sft_state_conditioned_canary.sh`：从 Step 120 首错 SQL 和真实工具结果构造零-loss 上下文，机械核验纠正查询并执行一步状态条件化金丝雀。
+- `scripts/prepare_critical_token_recovery_sft.py`、`scripts/qwen36_critical_token_sft_dataset.py`、`scripts/check_critical_token_sft_dataset.py`、`scripts/run_repair_sft_critical_token_canary.sh`：冻结 semantic-mask v3 的逐题首个非 greedy SQL token，核对 token ID/offset 并只把该 token 从 `8×` 提到 `32×`。
 
 ## 已验证状态
+
+### v0.77.0 — 2026-08-12
+
+- 真实 16 题联合审计显示：`13/16` 涉及聚合/grouping 差异，主错误 `11/16` 为聚合；semantic critical token 中聚合函数 `9/16`、query start `3/16`，两者合计 `12/16`，另有 identifier/literal `3/16`、clause keyword `1/16`。
+- 冻结下一严格单变量金丝雀：继续使用 Step 120、同一 16 条首错零-loss 状态、相同 `0.25/8/1` 基础权重和一步更新，只把每题 semantic-mask v3 的首个非 greedy SQL token 从 `8×` 提到 `32×`；不加入人工提示、不改变目标 SQL、不增加训练步。
+- 新增 critical-token 数据附标、token ID/offset 复核、恰好单 token `32×` mask 门禁和隔离启动器；CPU 门禁通过前不初始化模型，训练后仍要求整条纠正 SQL 概率门槛而不是只报告被加权 token。
 
 ### v0.76.0 — 2026-08-12
 

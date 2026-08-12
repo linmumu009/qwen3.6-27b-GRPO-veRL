@@ -87,6 +87,31 @@ def build_sql_weighted_loss_mask(
     return output
 
 
+def emphasize_critical_sql_token(
+    *,
+    weighted_loss_mask: Sequence[float],
+    sql_shell_mask: Sequence[int],
+    critical_sql_token_offset: int,
+    critical_weight: float,
+) -> tuple[list[float], list[int]]:
+    """Override exactly one semantic SQL target token by its in-mask offset."""
+
+    if len(weighted_loss_mask) != len(sql_shell_mask):
+        raise ValueError("critical-token loss and SQL masks have different lengths")
+    if not 0 < critical_weight <= 64:
+        raise ValueError("critical SQL token weight must be in (0, 64]")
+    positions = [index for index, value in enumerate(sql_shell_mask) if value]
+    offset = int(critical_sql_token_offset)
+    if not 0 <= offset < len(positions):
+        raise ValueError("critical SQL token offset is out of range")
+    critical_position = positions[offset]
+    output = [float(value) for value in weighted_loss_mask]
+    output[critical_position] = critical_weight
+    critical_mask = [0] * len(output)
+    critical_mask[critical_position] = 1
+    return output, critical_mask
+
+
 def find_all(sequence: Sequence[int], needle: Sequence[int]) -> list[int]:
     if not needle:
         raise ValueError("token marker must not be empty")
