@@ -267,6 +267,12 @@ def test_pretraining_gate_summary_is_safe_and_keeps_training_disabled():
     ] == 0
     assert summary["frozen_next_canary"]["intervention"] == "sql_payload_weight_only"
     assert summary["frozen_next_canary"]["training_steps"] == 1
+    assert summary["prepared_forward_only_gate"]["status"] == "passed"
+    assert summary["prepared_forward_only_gate"]["step120"]["greedy_token_count"] == 166
+    assert summary["prepared_forward_only_gate"]["generic_sft_step5"][
+        "greedy_token_count"
+    ] == 231
+    assert summary["remaining_before_optimizer_update"] == []
     assert summary["training_started"] is False
     assert summary["promotion_allowed"] is False
     assert "/data/" not in payload

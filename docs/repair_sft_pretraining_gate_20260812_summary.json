@@ -32,14 +32,43 @@
     "decision": "sql_grounding_and_semantics"
   },
   "prepared_forward_only_gate": {
-    "status": "implementation_complete_not_run_while_npus_are_in_use",
+    "status": "passed",
     "optimizer_initialized": false,
     "checkpoint_saved": false,
+    "task_ids_identical": true,
+    "data_sha256_identical": true,
     "metrics": [
       "exact teacher SQL token rank across TP vocabulary shards",
       "greedy and top-5 SQL token rates",
       "first non-greedy SQL token offset, rank, token id and target probability"
-    ]
+    ],
+    "step120": {
+      "sql_token_count": 329,
+      "greedy_token_count": 166,
+      "greedy_token_rate": 0.5045592705167173,
+      "top5_token_count": 254,
+      "top5_token_rate": 0.7720364741641338,
+      "mean_rank": 56.58662613981763,
+      "max_rank": 7547,
+      "tasks_all_sql_tokens_greedy": 0
+    },
+    "generic_sft_step5": {
+      "sql_token_count": 329,
+      "greedy_token_count": 231,
+      "greedy_token_rate": 0.7021276595744681,
+      "top5_token_count": 302,
+      "top5_token_rate": 0.9179331306990881,
+      "mean_rank": 17.53191489361702,
+      "max_rank": 2738,
+      "tasks_all_sql_tokens_greedy": 0
+    },
+    "comparison": {
+      "greedy_token_rate_delta": 0.19756838905775076,
+      "tasks_all_sql_tokens_greedy_delta": 0,
+      "core_forward_runtime_seconds": 85.3806388634257,
+      "end_to_end_runtime_seconds": 253.3
+    },
+    "decision": "The generic SFT moved teacher-token rank but left all 16 tasks with at least one non-greedy teacher SQL token and produced no first-query semantic success; keep the one-step intervention focused on SQL payload learning."
   },
   "cpu_sql_weighted_mask_gate": {
     "status": "passed",
@@ -62,9 +91,7 @@
     "checkpoint_policy": "final model and extra only; no optimizer checkpoint",
     "reason_for_one_variable_design": "The CPU gate proves first-query evidence failure on all 16 tasks; adding state correction in the same first canary would confound the causal test."
   },
-  "remaining_before_optimizer_update": [
-    "Run the prepared forward-only token-rank gate when the 16 trainer NPUs are available."
-  ],
+  "remaining_before_optimizer_update": [],
   "promotion_allowed": false,
   "training_started": false
 }

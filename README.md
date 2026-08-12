@@ -23,7 +23,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - 两台服务器下的纠错实验按角色流水线执行：5 号机保留 16 卡 Megatron 训练，6 号机负责数据机械核验、回放和 Agent 评测，不做低样本 32 卡跨机 SFT。首个 16 条 go/no-go 预计 `4–6h`；全部门禁通过时，48–64 条纠错 SFT、两次有效 GRPO 更新和一次密封 test20 预计累计 `12–16h`。
 - veRL 官方 `verl.trainer.sft_trainer` 的 Step 120 模型态初始化与单步全参 SFT 已在 5 号机实跑通过：TP4/PP2/CP2、Qwen3.6 完整工具模板、assistant-only loss mask、全新 CPU-offload Adam 均可工作；成功步 loss `0.9603`、grad norm `141.10`、单卡峰值 `26.27 GiB`、整机 CPU 内存 `821.63 GiB`，退出码 `0`。该运行仅为一条合成数据的不可晋升工程门禁，下一步才进入 16 条真实纠错数据机械核验。
 - 16 条真实 train236 纠错轨迹已通过机械核验并完成 5 步 veRL 官方全参 SFT：loss 从 `1.8738` 降至 `0.5764`，墙钟 `11m04s`，最终 model-only Megatron checkpoint 的 32 个分片完整（`54.72 GB`）。但相同 16 题的老板原始评分器门禁未通过：正确数保持 `2/16`，平均奖励 `0.7000 → 0.6063`，完整收尾 `15/16 → 13/16`，因此不扩到 48–64 条，也不作 held-out 泛化声明。
-- 纠错 SFT 的 teacher-forced 分项诊断已完成：官方 assistant loss 在同一 16 题上精确复现 Step 120 的 `1.8738`，SFT Step 5 降至 `0.4146`；工具结构、SQL、最终答案 NLL 均为 `16/16` 改善，但训练后每题 SQL 目标概率中位数仅 `0.373`、仅 `5/16` 超过 0.5。进一步 CPU 语义门禁确认 Step 120 与 SFT Step 5 的首条 SQL 均为 `0/16` 支持 gold、`0/16` 与教师结果机械等价，排除了“只是 SQL 字符串不同”的解释。下一轮固定为从 Step 120 开始的一步单变量 SQL 加权金丝雀（工具结构 `0.25×`、SQL payload `8×`、最终答案 `1×`），首步不混入模型状态纠正样本；训练尚未启动。
+- 纠错 SFT 的 teacher-forced 分项诊断已完成：官方 assistant loss 在同一 16 题上精确复现 Step 120 的 `1.8738`，SFT Step 5 降至 `0.4146`；工具结构、SQL、最终答案 NLL 均为 `16/16` 改善。exact rank 门禁显示教师 SQL token greedy 率 `50.46% → 70.21%`、top-5 率 `77.20% → 91.79%`，但两者仍均为 `0/16` 题整段全 greedy；CPU 语义门禁同时确认首条 SQL 均为 `0/16` 支持 gold、`0/16` 与教师结果机械等价。下一轮固定为从 Step 120 开始的一步单变量 SQL 加权金丝雀（工具结构 `0.25×`、SQL payload `8×`、最终答案 `1×`），首步不混入模型状态纠正样本；训练尚未启动。
 - 所有新增镜像、容器、工作目录和实验名均以 `llin` 开头，不复用或修改其他人的环境。
 
 当前服务器部署：
@@ -94,7 +94,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [`docs/repair_sft_teacher_forced_diagnosis_20260811_summary.json`](docs/repair_sft_teacher_forced_diagnosis_20260811_summary.json)：不含原始问题、SQL、答案与服务器绝对路径的安全聚合指标、运行资源和证据链。
 - [`docs/repair_sft_teacher_forced_diagnosis_20260811_artifact.json`](docs/repair_sft_teacher_forced_diagnosis_20260811_artifact.json)：上述报告的 canonical Data Analytics artifact、数据集、图表、来源与技术结论定义。
 - [`docs/repair_sft_pretraining_gate_20260812.md`](docs/repair_sft_pretraining_gate_20260812.md)：首条 SQL 的只读执行、gold 支持与机械等价门禁，以及据此冻结的一步 SQL-only 金丝雀配方。
-- [`docs/repair_sft_pretraining_gate_20260812_summary.json`](docs/repair_sft_pretraining_gate_20260812_summary.json)：不含原始问题、SQL、答案和服务器路径的安全聚合门禁结果与待执行 rank 门禁状态。
+- [`docs/repair_sft_pretraining_gate_20260812_summary.json`](docs/repair_sft_pretraining_gate_20260812_summary.json)：不含原始问题、SQL、答案和服务器路径的安全聚合门禁结果，包括已完成的 exact token-rank 对比。
 - [`docs/repeated_sql_causal_diagnosis_20260812.html`](docs/repeated_sql_causal_diagnosis_20260812.html)：把首条 SQL 语义门禁、同题自由回放、48K 强制收尾和正确证据 oracle 串成因果链，区分重复查询对准确率、完成率和墙钟的不同作用。
 - [`docs/repeated_sql_causal_diagnosis_20260812.artifact.json`](docs/repeated_sql_causal_diagnosis_20260812.artifact.json)：上述重复 SQL 因果诊断的 canonical report artifact、聚合数据、图表和来源定义。
 - [`docs/leadership_experiment_update_methodology_20260806.md`](docs/leadership_experiment_update_methodology_20260806.md)：从多轮实际修订中提炼的领导汇报方法论，固化四段结构、数字精度、口径边界、抗奖励投机表述、行动项口吻和自检清单。
@@ -154,6 +154,12 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/qwen36_sql_weighted_sft_dataset.py`、`scripts/check_sql_weighted_sft_dataset.py`、`scripts/run_repair_sft_sql_weighted_canary.sh`：构造和 CPU 核验 SQL 加权 loss mask，并从 Step 120 启动仅一步、单变量、只保存最终模型的金丝雀。
 
 ## 已验证状态
+
+### v0.72.0 — 2026-08-12
+
+- 完成 Step 120 与通用 SFT Step 5 的双 checkpoint NPU exact token-rank 门禁：329 个教师 SQL token 的 greedy 命中 `166 → 231`（`50.46% → 70.21%`），top-5 命中 `254 → 302`（`77.20% → 91.79%`），平均 rank `56.59 → 17.53`，但整段全 greedy 仍均为 `0/16`。
+- 两份运行 task id、数据哈希一致，均为 forward-only、optimizer 未初始化、checkpoint 未保存；核心前向 `85.38s`，端到端约 `253.3s`。结合首条 SQL 语义门禁仍为双方 `0/16`，训练目标继续锁定 SQL grounding/semantics，一步 `0.25/8/1` 金丝雀前置门禁已全部清空。
+- 更新安全聚合、执行说明与回归断言；三次兼容失败均保留为不可晋升运行，成功运行不覆盖失败证据。
 
 ### v0.71.3 — 2026-08-12
 
