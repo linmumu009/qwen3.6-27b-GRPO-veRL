@@ -1,0 +1,67 @@
+{
+  "contract": "chosen-only-first-action-baseline-safe-summary-v1",
+  "scope": {
+    "model": "step120",
+    "train_rows": 48,
+    "calibration_rows": 16,
+    "baseline_exit_code": 0,
+    "baseline_forward_only": true,
+    "optimizer_initialized": false,
+    "checkpoint_saved": false,
+    "oracle_relevant_table_selection": true,
+    "deployment_ready": false
+  },
+  "cpu_gate": {
+    "rows": 64,
+    "sequence_tokens_min": 1637,
+    "sequence_tokens_max": 2035,
+    "tool_turn_tokens_min": 61,
+    "tool_turn_tokens_max": 112,
+    "sql_shell_tokens_min": 6,
+    "sql_shell_tokens_max": 57,
+    "passed": true
+  },
+  "baseline": {
+    "official_assistant_loss": 1.3830701112747192,
+    "tool_structure_mean_nll": 1.4230737751626859,
+    "sql_mean_nll": 1.2913032091195815,
+    "sql_token_count": 381,
+    "sql_greedy_token_count": 277,
+    "sql_top5_token_count": 344,
+    "sql_mean_rank": 18.77952755905512,
+    "sql_max_rank": 2806,
+    "tasks_all_sql_tokens_greedy": 0,
+    "tasks_with_nongreedy_sql_token": 16,
+    "runtime_seconds": 113.16259419126436,
+    "peak_npu_memory_gib": 12.066839218139648
+  },
+  "one_step_canary": {
+    "allowed": true,
+    "training_rows": 48,
+    "training_steps": 1,
+    "optimizer_state": "new_cpu_offload_adam",
+    "loss_weights": {
+      "tool_structure": 0.25,
+      "sql_payload": 8.0
+    },
+    "calibration_rows_excluded_from_training": 16,
+    "save_model_checkpoint_only": true
+  },
+  "post_canary_gates": {
+    "calibration_sql_nll_relative_improvement_min": 0.05,
+    "calibration_tasks_sql_nll_improved_min": 12,
+    "calibration_sql_greedy_token_gain_min": 12,
+    "calibration_sql_top5_token_count_min": 344,
+    "calibration_sql_mean_rank_must_improve": true,
+    "calibration_tool_structure_nll_relative_regression_max": 0.05,
+    "earlier_template_or_sql_boundary_regressions_max": 0
+  },
+  "decision": {
+    "next_action": "run_one_step_train48_then_forward_only_calibration16",
+    "training_allowed": true,
+    "training_scope": "one_step_train48_only",
+    "free_rollout_allowed": false,
+    "promotion_allowed": false
+  },
+  "contains_prompts_sql_answers_task_ids_tool_outputs_or_server_paths": false
+}

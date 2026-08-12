@@ -98,6 +98,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [`docs/structured_sqlite_realization_gate_20260813_summary.json`](docs/structured_sqlite_realization_gate_20260813_summary.json)：不含原始命令、prompt、SQL、答案、task ID、工具结果或服务器路径的结构化门禁安全汇总。
 - [`docs/schema_oracle_action_gate_20260813.md`](docs/schema_oracle_action_gate_20260813.md)：完整不重叠 64 题的相关表 schema 上界诊断、有效 `2/1` 工具反馈协议、`4` 条正确/`35` 条带结果错误/`25` 条无查询结论及 chosen-only 下一步。
 - [`docs/schema_oracle_action_gate_20260813_summary.json`](docs/schema_oracle_action_gate_20260813_summary.json)：不含原始命令、prompt、schema、SQL、答案、task ID、工具结果或服务器路径的 schema-oracle 安全汇总。
+- [`docs/chosen_only_first_action_baseline_20260813_summary.json`](docs/chosen_only_first_action_baseline_20260813_summary.json)：chosen-only 64 条 CPU mask 门、calibration16 Step 120 聚合 NLL/rank 与一步 train48 金丝雀预注册阈值的安全汇总。
 - [`docs/semantic_delta_pairwise_canary_20260812.md`](docs/semantic_delta_pairwise_canary_20260812.md)：一次 reference-free pairwise 更新、工程失败修复、训练资源、同数据概率前后门禁与 fail-closed 决策。
 - [`docs/semantic_delta_pairwise_canary_20260812_summary.json`](docs/semantic_delta_pairwise_canary_20260812_summary.json)：不含原始问题、SQL、答案和服务器路径的一步 pairwise 安全聚合结果。
 - [`docs/native_vs_step120_reward_behavior_attribution_20260812.md`](docs/native_vs_step120_reward_behavior_attribution_20260812.md)：原生模型与 Step 120 的相同错误状态概率对照、同题老板原版自由回放和奖励代理错配归因。
@@ -199,8 +200,15 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/prepare_chosen_only_schema_action_sft.py`：在 schema-oracle 两门失败后，把同一完整不重叠 64 题转换为仅监督一个正确 bash/SQLite 首动作的 chosen-only 数据；gold SQL 只进入 assistant 标签，prompt 不含 SQL、答案、expected value、数据库行或工具结果，并固定拆分为 48 条拟训练和 16 条校准，CPU tokenization/loss-mask 门通过前禁止 teacher-forced NPU 基线和训练。
 - `scripts/qwen36_first_action_diagnostic_dataset.py`、`scripts/check_chosen_only_schema_action_sft.py`：用 Qwen3.6 完整工具 chat template 对 chosen-only 样本做 CPU fail-closed 门禁；要求 loss 恰好覆盖唯一 assistant tool action，system/user 全部为 0，并把 action 无重叠地拆成 tool structure 与解码 SQL 内容两部分。
 - `scripts/run_chosen_only_first_action_teacher_forced.sh`、`scripts/launch_chosen_only_first_action_teacher_forced.sh`：只在 CPU 门通过后，对 calibration16 执行 Step 120 的 TP4/PP2/CP2 teacher-forced 纯前向基线；复用精确词表并行 SQL token rank，不初始化 optimizer、不保存 checkpoint，也不读取 train48。
+- `scripts/analyze_chosen_only_first_action_baseline.py`：联合核对 64 条数据合同、CPU tokenization gate、calibration16 Parquet 哈希和 Step 120 forward-only 结果，只在正确 SQL 仍存在明确 token 排序缺口时开放“一步、train48-only、新 Adam、model-only checkpoint”金丝雀，并冻结 post-canary NLL/rank/退化阈值。
 
 ## 已验证状态
+
+### v1.3.0 — 2026-08-13
+
+- chosen-only 64 条 CPU 门实跑通过：序列 `1,637–2,035` tokens、首动作 `61–112` tokens、SQL `6–57` tokens，全部无截断，loss 仅覆盖唯一 assistant tool action，system/user loss 为 0。
+- calibration16 的 Step 120 teacher-forced 纯前向完成：SQL NLL `1.2913`，381 个 SQL tokens 中 greedy `277`、top-5 `344`、平均 rank `18.78`；16/16 均有非 greedy SQL token，完整 SQL 全 greedy `0/16`。运行 `exit 0`、无 optimizer/checkpoint。
+- 预注册且仅开放一步 train48 chosen-only 金丝雀：tool-structure/SQL 权重 `0.25/8`、新 CPU-offload Adam、model-only checkpoint。只有 calibration16 SQL NLL 至少相对改善 5%、至少 12/16 逐题改善、greedy tokens 至少 `+12`、top-5 不低于 344、mean rank 改善且结构 NLL 退化不超 5%，才允许后续自由回放；promotion 仍关闭。
 
 ### v1.2.0 — 2026-08-13
 
