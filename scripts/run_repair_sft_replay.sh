@@ -52,6 +52,7 @@ bash "${PROJECT_ROOT}/scripts/run_pi_frozen_baseline.sh" \
   actor_rollout_ref.actor.megatron.use_dist_checkpointing=True \
   actor_rollout_ref.actor.megatron.dist_checkpointing_path="${MODEL_DIST_CKPT}" \
   'actor_rollout_ref.actor.checkpoint.load_contents=[]' \
+  ++trainer.val_only_force_dist_sync=True \
   trainer.resume_mode=disable \
   trainer.val_only=True \
   trainer.validation_data_dir="${OUTPUT_DIR}/validation" \

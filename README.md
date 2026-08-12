@@ -189,6 +189,12 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 已验证状态
 
+### v0.90.1 — 2026-08-12
+
+- 64 条短回放日志暴露出权重归因漏洞：actor 虽加载 Step 120 dist checkpoint，但 Ray `OneStepTaskRunner` 未继承提交 shell 的 `LLIN_VAL_ONLY_FORCE_DIST_SYNC` 环境变量，明确打印了跳过 actor→vLLM 初始同步；`-01/-02` 采集因此判为原生权重无效运行，已保留现场并终止，未进入 pair 数据或训练。
+- 强制同步开关改为序列化 trainer config `val_only_force_dist_sync=True`，由 Hydra 命令行显式传入 Ray task；补丁可将服务器上的旧环境变量条件原位迁移为 config 条件，并保持幂等。
+- 此发现不影响原生/Step 120 teacher-forced checkpoint 概率对照，但此前通过 repair replay 入口得到的“Step 120/SFT 自由回放”不再作为 checkpoint 归因证据；修复后必须重跑并看到实际 actor→rollout 同步标记，才能恢复该证据链。
+
 ### v0.90.0 — 2026-08-12
 
 - pairwise trainer 从固定 32 行扩展为“一个正偶数、恰好覆盖全数据集的 global batch”，仍保持 DP=1、顺序 sampler、每个 microbatch 一对相邻 `chosen → rejected` 和一次 optimizer step；原冻结 16 对默认批量继续兼容。
