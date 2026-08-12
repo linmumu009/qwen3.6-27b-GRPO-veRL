@@ -193,8 +193,15 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/analyze_rollout_command_families.py`：以不输出命令、SQL、prompt 或工具结果的方式统计工具类型、Bash 命令族、重复调用与真实工具响应覆盖，用于区分模型工具策略问题和 SQL 解析器漏识别。
 - `scripts/prepare_query_initiation_oracle_candidates.py`、`scripts/analyze_query_initiation_oracle_outcomes.py`、`scripts/analyze_query_initiation_oracle_gate.py`：只抽取 Step 120 完整 25 回合仍未发起只读查询的题目，追加不含答案、表名、字段名、SQL 或字面量的通用查询启动约束；专用适配器核对 Parquet 哈希、3/3 回合和训练关闭合同，再以带真实工具结果的只读查询恢复数区分策略路由与 schema/工具实现问题。
 - `scripts/prepare_structured_sqlite_realization_gate.py`、`scripts/analyze_structured_sqlite_realization_gate.py`：把同一 41 题通用干预替换为冻结的三回合非交互 `path→schema→SELECT/WITH` 工作流，禁止交互 shell 和重复命令；仍不提供 task-specific schema、query 或答案，并以 `31/41` 带结果查询决定运行时约束是否足够。
+- `scripts/prepare_schema_oracle_action_gate.py`、`scripts/analyze_schema_oracle_action_gate.py`：对完整 64 个不重叠严格任务，从 immutable SQLite metadata 提取 gold SQL 涉及表的列类型与选中表间外键，不提供数据行、工具结果、expected value、gold SQL 或答案；单回合要求动态定位数据库并非交互生成 SELECT/WITH，以 `32` 条正确/等价或 `48` 条带结果错误查询分别决定无 gold 表选择的全库 schema 验证与同状态 pair 构建。
 
 ## 已验证状态
+
+### v0.98.0 — 2026-08-13
+
+- 新增完整不重叠 64 题的 task-specific schema-oracle action 门禁：schema 只从只读 SQLite `table_info/foreign_key_list` 提取，表集合由已机械验证 gold SQL 的 FROM/JOIN 决定；prompt 不含数据库行、工具结果、expected value、gold SQL 或答案。
+- 每题只允许一个助手回合和一次工具反馈，并给出任务无关的动态 `.sqlite/.db` 定位与非交互 sqlite3 调用要求。该门禁是由 gold SQL 选相关表的诊断上界，不是可部署输入；若正确/等价首查询 `≥32/64`，下一步必须改用不依赖 gold 表选择的全库 schema 在冻结 val20 上验证，否则只有不同任务的带结果错误查询 `≥48/64`，才允许构造 correct-vs-actual-wrong pairs。
+- 通过 wrong-pair 数量门也只开放 pair 构建与 CPU 审计，不开放 optimizer；两门都失败则转为 chosen-only schema-conditioned action supervision 设计，训练与晋级仍保持关闭。
 
 ### v0.97.0 — 2026-08-13
 
