@@ -23,9 +23,11 @@ import pandas as pd
 from llin_verl.boss_pi_contract import load_boss_pi_contract
 from scripts.analyze_repair_sft_first_query_semantics import classify_first_query
 from scripts.analyze_repair_sft_free_run_divergence import (
+    bash_calls,
     normalize_container,
     read_openai,
     sql_from_command,
+    tool_outputs,
 )
 from scripts.prepare_repair_sft_dataset import (
     build_sft_row,
@@ -105,10 +107,14 @@ def build_pairs(
     for current_task_id in source_by_task:
         messages = rollout_messages[current_task_id]
         truth = truths[current_task_id]
-        semantic = classify_first_query(database=database, messages=messages, truth=truth)
-        if semantic["category"] == "no_readonly_query":
+        first_sql_call = next((call for call in bash_calls(messages) if call["sql"]), None)
+        if first_sql_call is None:
             exclusions["no_readonly_query"] += 1
             continue
+        if first_sql_call["call_id"] not in tool_outputs(messages):
+            exclusions["first_readonly_query_without_observed_tool_result"] += 1
+            continue
+        semantic = classify_first_query(database=database, messages=messages, truth=truth)
         if semantic["gold_supported"] or semantic["teacher_result_equivalent"]:
             exclusions["first_query_correct_or_equivalent"] += 1
             continue

@@ -130,3 +130,23 @@ def test_excludes_correct_or_equivalent_first_query_and_no_query(tmp_path):
         "first_query_correct_or_equivalent": 1,
         "no_readonly_query": 1,
     }
+
+
+def test_excludes_generated_sql_without_observed_tool_result(tmp_path):
+    database = tmp_path / "logistics.sqlite"
+    make_database(database)
+    task = "task_unobserved"
+    messages = rollout(task, "SELECT amount FROM metric LIMIT 1", '[{"amount":5}]')
+    messages.pop(3)
+
+    rows, evidence, exclusions = build_pairs(
+        replay_rows=[replay_row(task)],
+        rollout_messages={task: messages},
+        database=database,
+        boss_contract=boss_contract(),
+        minimum_pairs=1,
+    )
+
+    assert rows == []
+    assert evidence == []
+    assert exclusions == {"first_readonly_query_without_observed_tool_result": 1}
