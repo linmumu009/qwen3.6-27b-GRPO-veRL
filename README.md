@@ -196,8 +196,15 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/prepare_query_initiation_oracle_candidates.py`、`scripts/analyze_query_initiation_oracle_outcomes.py`、`scripts/analyze_query_initiation_oracle_gate.py`：只抽取 Step 120 完整 25 回合仍未发起只读查询的题目，追加不含答案、表名、字段名、SQL 或字面量的通用查询启动约束；专用适配器核对 Parquet 哈希、3/3 回合和训练关闭合同，再以带真实工具结果的只读查询恢复数区分策略路由与 schema/工具实现问题。
 - `scripts/prepare_structured_sqlite_realization_gate.py`、`scripts/analyze_structured_sqlite_realization_gate.py`：把同一 41 题通用干预替换为冻结的三回合非交互 `path→schema→SELECT/WITH` 工作流，禁止交互 shell 和重复命令；仍不提供 task-specific schema、query 或答案，并以 `31/41` 带结果查询决定运行时约束是否足够。
 - `scripts/prepare_schema_oracle_action_gate.py`、`scripts/analyze_schema_oracle_action_gate.py`：对完整 64 个不重叠严格任务，从 immutable SQLite metadata 提取 gold SQL 涉及表的列类型与选中表间外键，不提供数据行、工具结果、expected value、gold SQL 或答案；第一回合动态定位数据库并执行非交互 SELECT/WITH，真实结果返回后第二回合禁止再调用工具，以 `32` 条正确/等价或 `48` 条带结果错误查询分别决定无 gold 表选择的全库 schema 验证与同状态 pair 构建。
+- `scripts/prepare_chosen_only_schema_action_sft.py`：在 schema-oracle 两门失败后，把同一完整不重叠 64 题转换为仅监督一个正确 bash/SQLite 首动作的 chosen-only 数据；gold SQL 只进入 assistant 标签，prompt 不含 SQL、答案、expected value、数据库行或工具结果，并固定拆分为 48 条拟训练和 16 条校准，CPU tokenization/loss-mask 门通过前禁止 teacher-forced NPU 基线和训练。
 
 ## 已验证状态
+
+### v1.0.0 — 2026-08-13
+
+- 新增 chosen-only schema-conditioned first-action 数据构建器：对完整 64 题重新执行只读 gold SQL、核对非空结果与 expected value 支持，只生成 `system,user,assistant(tool_call)`，不加入工具结果或最终答案。
+- gold SQL 只存在于唯一监督 assistant 标签；用户 prompt 仅包含 gold 选中表的 SQLite metadata 与固定 `/workspace/logistics.sqlite` 动作要求，并显式标记 `oracle_relevant_table_selection=true`、`deployment_ready=false`，禁止把诊断输入当成可部署方案。
+- 按固定 seed 和 answer type 分层拆为 train48/calibration16；合同初始保持 CPU tokenization、teacher-forced、training 和 promotion 全部关闭，下一步只允许 Qwen3.6 chat-template 与首动作 assistant-only loss mask 门禁。
 
 ### v0.99.0 — 2026-08-13
 
