@@ -57,7 +57,8 @@ def main() -> None:
         samples.append({"index": index, **component_counts})
 
     result = {
-        "contract": "repair-sft-teacher-forced-component-mask-gate-v1",
+        "contract": "repair-sft-teacher-forced-component-mask-gate-v2",
+        "sql_mask_contract": "decoded_sql_content_excluding_outer_shell_quote_v1",
         "rows": len(dataset),
         "all_component_masks_nonempty": True,
         "all_tool_components_reconstruct_tool_turn": True,

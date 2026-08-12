@@ -12,6 +12,7 @@ from scripts.teacher_forced_component_masks import (
     assistant_turn_ranges,
     build_repair_component_masks,
     build_sql_weighted_loss_mask,
+    semantic_sql_shell_char_spans,
 )
 from scripts.analyze_repair_sft_free_run_divergence import analyze_task
 from scripts.teacher_forced_token_ranks import (
@@ -48,7 +49,7 @@ def test_component_masks_partition_tool_sql_and_final_answer():
         turn_ranges=[(tool_start, tool_end), (final_start, final_end)],
     )
 
-    assert sum(masks["sql_shell_mask"]) == len(command) - len(SQLITE_COMMAND_PREFIX)
+    assert sum(masks["sql_shell_mask"]) == len("SELECT COUNT(*) FROM shipments")
     assert sum(masks["tool_structure_mask"]) + sum(masks["sql_shell_mask"]) == sum(
         masks["tool_turn_mask"]
     )
@@ -58,6 +59,18 @@ def test_component_masks_partition_tool_sql_and_final_answer():
             masks["tool_turn_mask"], masks["final_answer_mask"], strict=True
         )
     )
+
+
+def test_semantic_sql_spans_exclude_outer_quote_and_preserve_literal_escape():
+    sql = "SELECT * FROM shipments WHERE category = 'A'"
+    command = SQLITE_COMMAND_PREFIX + "'SELECT * FROM shipments WHERE category = '\"'\"'A'\"'\"''"
+
+    spans = semantic_sql_shell_char_spans(command)
+    covered = sum(end - start for start, end in spans)
+
+    assert spans[0][0] == len(SQLITE_COMMAND_PREFIX) + 1
+    assert spans[-1][1] == len(command) - 1
+    assert covered == len(sql) + 8
 
 
 def test_sql_weighted_mask_is_disjoint_and_moves_loss_mass_to_sql():

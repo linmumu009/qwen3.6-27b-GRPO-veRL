@@ -189,7 +189,8 @@ def run(config: DictConfig) -> None:
             output_path = Path(str(config.diagnostic.output_path))
             output_path.parent.mkdir(parents=True, exist_ok=True)
             result = {
-                "contract": "repair-sft-teacher-forced-component-diagnostic-v2",
+                "contract": "repair-sft-teacher-forced-component-diagnostic-v3",
+                "sql_mask_contract": "decoded_sql_content_excluding_outer_shell_quote_v1",
                 "model_label": str(config.diagnostic.model_label),
                 "source_model_dist_checkpoint": str(config.engine.dist_checkpointing_path),
                 "forward_only": True,

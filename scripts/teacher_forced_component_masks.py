@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
+import shlex
 from typing import Any
 
 
@@ -141,6 +142,61 @@ def token_mask_for_char_span(
     return mask
 
 
+def semantic_sql_shell_char_spans(command: str) -> list[tuple[int, int]]:
+    """Map decoded SQL characters to shell-command spans, excluding wrapper quotes."""
+
+    if not command.startswith(SQLITE_COMMAND_PREFIX):
+        raise ValueError("repair command does not use the frozen sqlite3 prefix")
+    shell_payload = command[len(SQLITE_COMMAND_PREFIX) :]
+    parts = shlex.split(command)
+    if not parts:
+        raise ValueError("repair command cannot be parsed")
+    sql = parts[-1]
+    if shell_payload != shlex.quote(sql):
+        raise ValueError("repair SQL shell payload is not canonical shlex.quote output")
+
+    payload_start = len(SQLITE_COMMAND_PREFIX)
+    if shell_payload == sql:
+        return [(payload_start, payload_start + len(sql))]
+    if not shell_payload.startswith("'") or not shell_payload.endswith("'"):
+        raise ValueError("unsafe SQL payload is not enclosed by canonical shell quotes")
+
+    spans: list[tuple[int, int]] = []
+    cursor = 1
+    for character in sql:
+        encoded = "'\"'\"'" if character == "'" else character
+        if shell_payload[cursor : cursor + len(encoded)] != encoded:
+            raise ValueError("cannot align decoded SQL to shell-quoted payload")
+        spans.append(
+            (
+                payload_start + cursor,
+                payload_start + cursor + len(encoded),
+            )
+        )
+        cursor += len(encoded)
+    if cursor != len(shell_payload) - 1:
+        raise ValueError("shell-quoted SQL alignment did not consume the payload")
+    return spans
+
+
+def token_mask_for_char_spans(
+    offsets: Sequence[Sequence[int]], char_spans: Sequence[tuple[int, int]]
+) -> list[int]:
+    if not char_spans:
+        raise ValueError("character span list is empty")
+    mask: list[int] = []
+    for offset in offsets:
+        token_start, token_end = int(offset[0]), int(offset[1])
+        overlaps = token_end > token_start and any(
+            token_end > span_start and token_start < span_end
+            for span_start, span_end in char_spans
+        )
+        mask.append(int(overlaps))
+    if not any(mask):
+        raise ValueError("character spans did not align to any token")
+    return mask
+
+
 def build_repair_component_masks(
     *,
     input_ids: Sequence[int],
@@ -175,9 +231,11 @@ def build_repair_component_masks(
     final_answer[final_start:final_end] = [1] * (final_end - final_start)
 
     command_start = rendered_text.index(command)
-    sql_start = command_start + len(SQLITE_COMMAND_PREFIX)
-    sql_end = command_start + len(command)
-    sql_shell = token_mask_for_char_span(offsets, sql_start, sql_end)
+    sql_spans = [
+        (command_start + start, command_start + end)
+        for start, end in semantic_sql_shell_char_spans(command)
+    ]
+    sql_shell = token_mask_for_char_spans(offsets, sql_spans)
     if any(sql and not tool for sql, tool in zip(sql_shell, tool_turn, strict=True)):
         raise ValueError("SQL shell payload is not fully contained in the first assistant turn")
 

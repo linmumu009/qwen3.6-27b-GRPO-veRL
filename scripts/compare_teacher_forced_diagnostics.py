@@ -27,8 +27,14 @@ def main() -> None:
     baseline = load(args.step120)
     post = load(args.post_sft)
     rollout = load(args.rollout_comparison) if args.rollout_comparison else None
-    expected_contract = "repair-sft-teacher-forced-component-diagnostic-v2"
-    if baseline.get("contract") != expected_contract or post.get("contract") != expected_contract:
+    allowed_contracts = {
+        "repair-sft-teacher-forced-component-diagnostic-v2",
+        "repair-sft-teacher-forced-component-diagnostic-v3",
+    }
+    if (
+        baseline.get("contract") != post.get("contract")
+        or baseline.get("contract") not in allowed_contracts
+    ):
         raise ValueError("unexpected teacher-forced diagnostic contract")
     if baseline["task_ids"] != post["task_ids"]:
         raise ValueError("teacher-forced task IDs differ")
