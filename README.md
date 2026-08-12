@@ -162,8 +162,14 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/qwen36_sql_weighted_sft_dataset.py`、`scripts/check_sql_weighted_sft_dataset.py`、`scripts/run_repair_sft_sql_weighted_canary.sh`：构造和 CPU 核验 SQL 加权 loss mask，并从 Step 120 启动仅一步、单变量、只保存最终模型的金丝雀。
 - `scripts/prepare_state_conditioned_repair_sft.py`、`scripts/check_state_conditioned_sft_dataset.py`、`scripts/run_repair_sft_state_conditioned_canary.sh`：从 Step 120 首错 SQL 和真实工具结果构造零-loss 上下文，机械核验纠正查询并执行一步状态条件化金丝雀。
 - `scripts/prepare_critical_token_recovery_sft.py`、`scripts/qwen36_critical_token_sft_dataset.py`、`scripts/check_critical_token_sft_dataset.py`、`scripts/run_repair_sft_critical_token_canary.sh`：冻结 semantic-mask v3 的逐题首个非 greedy SQL token，核对 token ID/offset 并只把该 token 从 `8×` 提到 `32×`。
+- `scripts/analyze_critical_token_canary.py`：在哈希一致的 Step 120/训练后 forward-only 结果中复核冻结 token 是转为 greedy、仍为首个非 greedy，还是被更早的新分叉阻断归因，并将整条 SQL 概率门禁作为唯一 replay 开关。
 
 ## 已验证状态
+
+### v0.78.0 — 2026-08-12
+
+- 新增 critical-token canary 归因审计：逐题校验冻结 offset/target ID 与 Step 120 首分叉一致，再区分原临界 token 已转为 greedy、仍是首个非 greedy、或出现更早新分叉；输出仅含任务 ID、类别、offset、rank、概率和聚合状态，不复制原始问题、SQL 或答案。
+- 审计器硬校验诊断 v3、相同任务/数据哈希、双端 forward-only 且均未初始化 optimizer；即使临界 token rank 改善，也只有完整纠正 SQL 概率 `>0.5` 达到 `12/16` 才允许进入短 replay。
 
 ### v0.77.0 — 2026-08-12
 
