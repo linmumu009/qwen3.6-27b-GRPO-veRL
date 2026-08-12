@@ -30,6 +30,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - 三臂 semantic-plan 门禁与 correct-vs-actual-wrong margin 门禁均已完成：Control/operator/full plan 分别恢复 `1/16`、`1/16`、`2/16`，两个 oracle 均未过线；正确 SQL 的 semantic-delta 在 Step 120 下 `0/16` 占优，平均 margin `-1.1877`，且 aggregation/query-start/identifier/clause 全部偏向实际首错 SQL。下一步锁定为一次 pairwise plan-to-SQL 金丝雀；训练后须达到正确 delta `≥12/16` 占优、`≥12/16` margin 改善且无更早分叉回退，才允许短回放。
 - 一步 pairwise plan-to-SQL 金丝雀已完成：`16/16` 逐题 margin 改善，平均 margin `-1.1877 → -0.7646`，但正确候选仅 `3/16` 占优，未达到 `12/16`；更早分叉回退和冻结 target 非法均为 0。按冻结规则不做短回放、不追加同 16 对训练、不晋级 checkpoint；下一步把这 16 对冻结为评价集，先获取不重叠且机械验证的分层训练 pairs。
 - 原生 Qwen3.6-27B 与 Step 120 的严格归因已完成：相同首错状态下两者均为正确 semantic delta `0/16` 占优，平均 margin 为 `-1.2057/-1.1877`；同 16 题老板原版自由回放中原生/Step 120 分别有 `13/16`、`12/16` 个 `result_wrong_process_ok`，重复命令均值为 `12.19/10.25`。核心代理奖励错配在原生模型中已存在，本次 Step 120 未创造或放大它；但训练会改变次级表现，仍须用机械正确性作为主门禁。
+- 新一轮训练前先执行 current-definition 数据池审计：正式 train236 在旧严格筛选下仅有 25 个候选，扣除冻结 16 题后只剩 9 个，禁止直接启动 pairwise 训练。新增审计从老板当前权威任务定义重建漂移 instruction/gold 身份，逐条执行只读 SQL、核对 gold 支持，并同时隔离冻结 16 题、val20、test20 的 task/instruction/SQL 哈希；只有严格可用新任务达到至少 48 条才允许进入 Step 120 首错采集。
 - 所有新增镜像、容器、工作目录和实验名均以 `llin` 开头，不复用或修改其他人的环境。
 
 当前服务器部署：
@@ -180,8 +181,15 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/prepare_semantic_delta_margin_gate.py`、`scripts/qwen36_semantic_delta_margin_dataset.py`、`scripts/run_semantic_delta_margin_gate.sh`：在相同首错状态下配对机械正确 correction SQL 与模型实际首错 SQL，只对 token edit span 做 Step 120 forward-only 概率 margin；同时精确重建冻结的首个 non-greedy token，作为 chosen-vs-rejected 训练前的无回退门禁。
 - `scripts/run_semantic_delta_pairwise_training.py`、`scripts/run_semantic_delta_pairwise_canary.sh`、`scripts/run_semantic_delta_pairwise_pipeline.sh`：在固定顺序、每个 microbatch 一对候选的条件下，对 semantic-delta token 的长度归一化 log-probability 施加 reference-free logistic ranking loss；只做一步全参更新，随后自动重跑同一 margin 并执行 `12/16 + 12/16 + 零更早回退` 门禁。
 - `scripts/run_native_repair_replay.sh`、`scripts/analyze_native_training_attribution.py`：以原生 HF 权重在同 16 题上执行 48K 老板四工具自由回放，并把相同状态 margin 与老板原版评分拆成“训练前已存在”和“训练后是否放大”两层归因。
+- `scripts/analyze_disjoint_pair_candidate_pool.py`：从老板当前权威任务 manifest 重建 train236 的当前 instruction/gold 身份，在 immutable SQLite 上机械核验，并按 strict/review-required/blocked/forbidden-overlap 分桶；安全汇总不输出原始 prompt、SQL、gold 或工具结果。
 
 ## 已验证状态
+
+### v0.86.0 — 2026-08-12
+
+- 新增不重叠 pair 数据池的训练前审计器：不再把 193 条 source-instruction 漂移任务直接判死或静默放行，而是以当前权威任务定义重建候选身份，再逐条执行只读 verification SQL 并核对 expected value。
+- 门禁同时隔离 val20、test20 和冻结 16 题的 task ID、user instruction hash、verification SQL hash；输出只包含 task ID、哈希、风险标签和聚合计数，不包含原始问题、SQL、答案或工具结果。
+- 当前已确认旧严格候选共 25 条、冻结后仅余 9 条，因此在新审计达到至少 48 个 strict-available 新任务前禁止启动 NPU pairwise 训练；两机 NPU 当前均无运行进程。
 
 ### v0.85.0 — 2026-08-12
 
