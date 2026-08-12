@@ -201,13 +201,23 @@ def test_cpu_gate_checks_48_row_balance_and_plan_boundaries(tmp_path: Path):
     assert result["all_arms_share_identical_first_error_state"] is True
 
 
-def test_one_turn_output_adapter_requires_zero_tool_responses(tmp_path: Path):
+def test_one_turn_output_adapter_audits_parallel_calls_without_executing_them(tmp_path: Path):
     validation = tmp_path / "validation.jsonl"
     output = tmp_path / "generated.jsonl"
     rows = []
     for index in range(16):
         task_id = f"task_{index:06d}"
         for arm in ARMS:
+            output_text = (
+                "<tool_call>\n<function=bash>\n<parameter=command>\n"
+                "sqlite3 /workspace/logistics.sqlite 'SELECT 1'\n"
+                "</parameter>\n</function>\n</tool_call>"
+            )
+            if index == 0 and arm == "operator_oracle":
+                output_text += (
+                    "\n<tool_call>\n<function=read>\n<parameter=path>\n"
+                    "/workspace/schema.txt\n</parameter>\n</function>\n</tool_call>"
+                )
             rows.append(
                 {
                     "gts": {
@@ -215,11 +225,7 @@ def test_one_turn_output_adapter_requires_zero_tool_responses(tmp_path: Path):
                         "semantic_plan_gate_arm": arm,
                         "semantic_plan_gate_source_task_id": task_id,
                     },
-                    "output": (
-                        "<tool_call>\n<function=bash>\n<parameter=command>\n"
-                        "sqlite3 /workspace/logistics.sqlite 'SELECT 1'\n"
-                        "</parameter>\n</function>\n</tool_call>"
-                    ),
+                    "output": output_text,
                 }
             )
     validation.write_text(
@@ -229,8 +235,23 @@ def test_one_turn_output_adapter_requires_zero_tool_responses(tmp_path: Path):
     summary = prepare_outputs(validation, output)
 
     assert summary["rows"] == 48
-    assert summary["generated_tool_calls"] == 48
+    assert summary["contract"] == "semantic-plan-sufficiency-gate-output-adapter-v2"
+    assert summary["generated_tool_calls"] == 49
+    assert summary["generated_bash_tool_calls"] == 48
+    assert summary["tool_call_name_counts"] == {"bash": 48, "read": 1}
+    assert summary["tool_call_count_histogram"] == {"1": 47, "2": 1}
+    assert summary["rows_with_exactly_one_bash_call"] == 47
+    assert summary["rows_with_multiple_tool_calls"] == 1
+    assert summary["max_tool_calls_per_row"] == 2
     assert summary["generated_tool_responses"] == 0
+    adapted = [json.loads(line) for line in output.read_text(encoding="utf-8").splitlines()]
+    parallel = next(row for row in adapted if row["gate_id"].endswith("::operator_oracle"))
+    assert parallel["output_protocol"] == {
+        "tool_call_count": 2,
+        "bash_tool_call_count": 1,
+        "tool_call_names": ["bash", "read"],
+        "exactly_one_bash_call": False,
+    }
 
 
 def test_decision_prefers_operator_then_full_then_realization():

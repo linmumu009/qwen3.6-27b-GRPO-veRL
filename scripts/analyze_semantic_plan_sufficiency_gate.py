@@ -95,6 +95,7 @@ def analyze(
         raise ValueError("semantic-plan generated rows, contract and replay tasks differ")
 
     per_task: list[dict[str, Any]] = []
+    protocol_rows: list[dict[str, Any]] = []
     for arm in ARMS:
         for task_id in order:
             gate_id = f"{task_id}::{arm}"
@@ -108,6 +109,8 @@ def analyze(
                 max_rows=max_rows,
                 timeout_seconds=timeout_seconds,
             )
+            protocol = row.get("output_protocol") or {}
+            protocol_rows.append(protocol)
             per_task.append(
                 {
                     "gate_id": gate_id,
@@ -161,6 +164,21 @@ def analyze(
             "checkpoint_saved": False,
             "max_rows": max_rows,
             "timeout_seconds": timeout_seconds,
+        },
+        "output_protocol": {
+            "rows_with_exactly_one_bash_call": sum(
+                bool(row.get("exactly_one_bash_call")) for row in protocol_rows
+            ),
+            "rows_with_multiple_tool_calls": sum(
+                int(row.get("tool_call_count") or 0) > 1 for row in protocol_rows
+            ),
+            "generated_tool_calls": sum(
+                int(row.get("tool_call_count") or 0) for row in protocol_rows
+            ),
+            "generated_bash_tool_calls": sum(
+                int(row.get("bash_tool_call_count") or 0) for row in protocol_rows
+            ),
+            "multiple_calls_are_reported_but_scoring_uses_first_readonly_sql": True,
         },
         "per_task": per_task,
         "promotion_allowed": False,
