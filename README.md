@@ -182,8 +182,15 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/run_semantic_delta_pairwise_training.py`、`scripts/run_semantic_delta_pairwise_canary.sh`、`scripts/run_semantic_delta_pairwise_pipeline.sh`：在固定顺序、每个 microbatch 一对候选的条件下，对 semantic-delta token 的长度归一化 log-probability 施加 reference-free logistic ranking loss；只做一步全参更新，随后自动重跑同一 margin 并执行 `12/16 + 12/16 + 零更早回退` 门禁。
 - `scripts/run_native_repair_replay.sh`、`scripts/analyze_native_training_attribution.py`：以原生 HF 权重在同 16 题上执行 48K 老板四工具自由回放，并把相同状态 margin 与老板原版评分拆成“训练前已存在”和“训练后是否放大”两层归因。
 - `scripts/analyze_disjoint_pair_candidate_pool.py`：从老板当前权威任务 manifest 重建 train236 的当前 instruction/gold 身份，在 immutable SQLite 上机械核验，并按 strict/review-required/blocked/forbidden-overlap 分桶；安全汇总不输出原始 prompt、SQL、gold 或工具结果。
+- `scripts/prepare_disjoint_pair_rollout_candidates.py`：只接受上述审计中 strict-available 的 48–64 条身份，把当前权威 instruction/gold 重建回老板 system/tool 格式的推理 Parquet；输出仅供 Step 120 首错采集，显式禁止直接训练或模型晋级。
 
 ## 已验证状态
+
+### v0.87.0 — 2026-08-12
+
+- current-definition 正式池审计已在 5 号机 train236 全量实跑：236/236 条 verification SQL 均可只读执行、非空且支持当前 gold；排除冻结 16 题、val20、test20 的 task/instruction/SQL 身份及语义高风险题后，得到 `64` 条 strict-available 新任务，达到 `≥48` 数据门禁。
+- 新增 48–64 条不重叠首错采集输入构建器：历史 source prompt 仅提供老板 system/tool 运行契约，user instruction、verification SQL、expected value、required fields/tables 均从当前权威 manifest 重建，并逐项核对审计哈希。
+- 构建产物只授权 Step 120 greedy 首查询采集，不是训练集；必须先按只读执行结果过滤出机械错误首查询并完成 pair 数据门禁，才允许启动 pairwise optimizer。
 
 ### v0.86.0 — 2026-08-12
 
