@@ -6,6 +6,7 @@ import sqlite3
 import pytest
 
 from scripts.analyze_query_initiation_oracle_gate import decide
+from scripts.analyze_query_initiation_oracle_outcomes import audit_oracle_outcomes
 from scripts.prepare_query_initiation_oracle_candidates import (
     CONTRACT,
     INTERVENTION,
@@ -178,3 +179,43 @@ def test_gate_separates_partial_and_low_prompt_recovery() -> None:
     assert low["decision"]["next_target"] == (
         "schema_discovery_and_tool_realization_repair"
     )
+
+
+def test_oracle_outcome_adapter_enforces_three_by_three_contract(
+    tmp_path: Path,
+) -> None:
+    database = _database(tmp_path / "db.sqlite")
+    contract = {
+        "contract": CONTRACT,
+        "rows": 2,
+        "max_assistant_turns": 3,
+        "max_tool_result_turns": 3,
+        "training_allowed": False,
+    }
+    result = audit_oracle_outcomes(
+        replay_rows=[_row("queried"), _row("missing")],
+        rollout_messages={
+            "queried": _messages("queried", "SELECT SUM(amount) FROM metric"),
+            "missing": _messages("missing", None),
+        },
+        database=database,
+        dataset_contract=contract,
+    )
+
+    assert result["rows"] == 2
+    assert result["outcome_counts"] == {
+        "first_query_correct_or_equivalent": 1,
+        "no_readonly_query": 1,
+    }
+    assert result["training_allowed"] is False
+    contract["max_tool_result_turns"] = 2
+    with pytest.raises(ValueError, match="tool-result contract drifted"):
+        audit_oracle_outcomes(
+            replay_rows=[_row("queried"), _row("missing")],
+            rollout_messages={
+                "queried": _messages("queried", "SELECT SUM(amount) FROM metric"),
+                "missing": _messages("missing", None),
+            },
+            database=database,
+            dataset_contract=contract,
+        )

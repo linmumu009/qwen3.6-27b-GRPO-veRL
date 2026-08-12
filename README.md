@@ -187,9 +187,15 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/check_disjoint_first_error_pairs.py`、`scripts/run_disjoint_pair_margin_gate.sh`、`scripts/analyze_disjoint_pair_margin.py`：对实际 48–64 对数据动态核验 chosen/rejected 邻接、delta mask、候选符号与序号，并以 Step 120 forward-only 统计正确 SQL margin、75% 偏好阈值及首个非 greedy token 家族；全程无 optimizer/checkpoint。
 - `scripts/run_disjoint_pairwise_canary.sh`：只有不重叠 pair 数、CPU token gate 和 Step 120 margin 三门均通过时，才把实际 48–64 对作为一个完整 global batch 做一次 reference-free pairwise 更新；只保存 model+extra，随后必须回到原冻结 16 题做概率门禁。
 - `scripts/analyze_rollout_command_families.py`：以不输出命令、SQL、prompt 或工具结果的方式统计工具类型、Bash 命令族、重复调用与真实工具响应覆盖，用于区分模型工具策略问题和 SQL 解析器漏识别。
-- `scripts/prepare_query_initiation_oracle_candidates.py`、`scripts/analyze_query_initiation_oracle_gate.py`：只抽取 Step 120 完整 25 回合仍未发起只读查询的题目，追加不含答案、表名、字段名、SQL 或字面量的通用查询启动约束，并以 3 回合内带真实工具结果的只读查询恢复数区分策略路由与 schema/工具实现问题；门禁不授权训练或晋级。
+- `scripts/prepare_query_initiation_oracle_candidates.py`、`scripts/analyze_query_initiation_oracle_outcomes.py`、`scripts/analyze_query_initiation_oracle_gate.py`：只抽取 Step 120 完整 25 回合仍未发起只读查询的题目，追加不含答案、表名、字段名、SQL 或字面量的通用查询启动约束；专用适配器核对 Parquet 哈希、3/3 回合和训练关闭合同，再以带真实工具结果的只读查询恢复数区分策略路由与 schema/工具实现问题。
 
 ## 已验证状态
+
+### v0.94.2 — 2026-08-13
+
+- Step 120 查询启动诊断已真实完成：强制 actor→vLLM 权重同步标记存在，`41/41` 输入全部落盘、运行 `exit 0`；全程为 greedy n1、forward-only、val-only，未初始化 optimizer、未保存 checkpoint。
+- 新增查询启动结果专用适配器。它拒绝把原 64 题候选合同冒充干预合同，且必须同时满足 Parquet 哈希、合同/Parquet/轨迹行数一致、`3 assistant / 3 tool-result` 和 `training_allowed=false`，才复用统一的首只读查询机械分类。
+- 此版本只补齐结果审计链，尚不提前写入恢复数或门禁结论；最终数字必须来自适配器与预注册 `31/41` 判定器的实际输出。
 
 ### v0.94.1 — 2026-08-13
 
