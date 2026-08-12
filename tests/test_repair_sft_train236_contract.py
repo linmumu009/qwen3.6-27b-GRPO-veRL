@@ -44,3 +44,22 @@ def test_sql_weighted_canary_is_one_variable_one_step_from_step120():
     assert 'TOOL_STRUCTURE_WEIGHT="${TOOL_STRUCTURE_WEIGHT:-0.25}"' in script
     assert "Qwen36SQLWeightedSFTDataset" in script
     assert "python3 -m scripts.check_sql_weighted_sft_dataset" in script
+
+
+def test_state_conditioned_canary_keeps_wrong_assistant_turn_as_zero_loss_context():
+    script = (ROOT / "scripts" / "run_repair_sft_state_conditioned_canary.sh").read_text(
+        encoding="utf-8"
+    )
+    core = (ROOT / "scripts" / "run_repair_sft_train236_overfit.sh").read_text(
+        encoding="utf-8"
+    )
+
+    assert "only_causal_change=step120_first_wrong_sql_and_observed_tool_result_as_zero_loss_context" in script
+    assert "error_context_assistant_loss_weight=0" in script
+    assert "supervised_assistant_turn_indices=1,2" in script
+    assert "TOTAL_STEPS=1" in script
+    assert "TOTAL_EPOCHS=1" in script
+    assert "Qwen36SQLWeightedSFTDataset" in script
+    assert "python3 -m scripts.check_state_conditioned_sft_dataset" in script
+    assert "train236-state-conditioned-repair-sft-dataset-v1" in core
+    assert "all_error_context_loss_mass_zero" in core

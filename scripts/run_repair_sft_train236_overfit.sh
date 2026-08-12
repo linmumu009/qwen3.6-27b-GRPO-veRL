@@ -58,18 +58,32 @@ token_gate = json.load(open(sys.argv[2], encoding="utf-8"))
 batch_size = int(sys.argv[3])
 max_length = int(sys.argv[4])
 errors = []
-if contract.get("contract") != "train236-repair-sft-dataset-v1":
+contract_name = contract.get("contract")
+if contract_name not in {
+    "train236-repair-sft-dataset-v1",
+    "train236-state-conditioned-repair-sft-dataset-v1",
+}:
     errors.append("unexpected data contract")
 if contract.get("rows") != batch_size:
     errors.append("train batch must contain every repair row exactly once")
 if contract.get("heldout_overlap") != 0:
     errors.append("repair rows overlap val/test")
-for key in (
-    "all_rows_approved",
-    "all_rows_current_task_definition",
-    "all_sql_read_only_executable_nonempty",
-    "all_expected_values_match_sql",
-):
+if contract_name == "train236-repair-sft-dataset-v1":
+    required_contract_gates = (
+        "all_rows_approved",
+        "all_rows_current_task_definition",
+        "all_sql_read_only_executable_nonempty",
+        "all_expected_values_match_sql",
+    )
+else:
+    required_contract_gates = (
+        "all_first_error_queries_not_verified_or_equivalent",
+        "all_first_error_tool_results_observed",
+        "all_correction_queries_verified_or_equivalent",
+    )
+    if contract.get("first_error_assistant_context_loss_weight") != 0:
+        errors.append("state-conditioned error context must have zero loss weight")
+for key in required_contract_gates:
     if contract.get(key) is not True:
         errors.append(f"data contract gate failed: {key}")
 if token_gate.get("rows") != batch_size:
@@ -78,7 +92,20 @@ if token_gate.get("all_rows_have_assistant_loss") is not True:
     errors.append("one or more rows have no assistant loss")
 if token_gate.get("all_rows_mask_non_assistant_context") is not True:
     errors.append("one or more rows leak context into the loss")
-if max(sample["total_tokens"] for sample in token_gate.get("samples", [])) > max_length:
+if contract_name == "train236-state-conditioned-repair-sft-dataset-v1":
+    if token_gate.get("contract") != "repair-sft-state-conditioned-mask-gate-v1":
+        errors.append("unexpected state-conditioned token gate contract")
+    if token_gate.get("all_error_context_assistant_masks_nonempty") is not True:
+        errors.append("one or more rows lack error assistant context")
+    if token_gate.get("all_error_context_loss_mass_zero") is not True:
+        errors.append("one or more error assistant turns leak into loss")
+samples = token_gate.get("samples", [])
+if not samples:
+    errors.append("tokenization gate has no per-row samples")
+elif max(
+    sample.get("total_tokens", sample.get("sequence_tokens", max_length + 1))
+    for sample in samples
+) > max_length:
     errors.append("one or more rows exceed MAX_LENGTH")
 if errors:
     raise SystemExit("; ".join(errors))

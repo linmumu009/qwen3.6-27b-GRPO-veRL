@@ -8,6 +8,8 @@ DATA_DIR="${DATA_DIR:-${PROJECT_ROOT}/data/repair_sft_train236_20260811}"
 EVAL_FILE="${EVAL_FILE:-${DATA_DIR}/repair_sft_replay.parquet}"
 RUN_NAME="${RUN_NAME:-llin-repair-sft-replay-${LABEL}-$(date +%Y%m%d-%H%M%S)}"
 OUTPUT_DIR="${OUTPUT_DIR:-${PROJECT_ROOT}/runs/${RUN_NAME}}"
+MAX_ASSISTANT_TURNS="${MAX_ASSISTANT_TURNS:-26}"
+MAX_USER_TURNS="${MAX_USER_TURNS:-25}"
 
 if [[ ! -f "${MODEL_DIST_CKPT}/.metadata" ]]; then
   printf 'distributed model checkpoint missing: %s\n' "${MODEL_DIST_CKPT}" >&2
@@ -28,8 +30,8 @@ evaluation_split=train236_same_task_not_heldout
 sampling=greedy_n1
 system_tools=boss_exact
 context_tokens=49152
-max_tool_result_turns=25
-max_assistant_turns=26
+max_tool_result_turns=${MAX_USER_TURNS}
+max_assistant_turns=${MAX_ASSISTANT_TURNS}
 weight_sync=forced_actor_dist_checkpoint_to_vllm
 EOF
 
@@ -38,8 +40,8 @@ RUN_NAME="${RUN_NAME}" \
 OUTPUT_DIR="${OUTPUT_DIR}" \
 TRAIN_FILE="${EVAL_FILE}" \
 EVAL_FILE="${EVAL_FILE}" \
-MAX_ASSISTANT_TURNS=26 \
-MAX_USER_TURNS=25 \
+MAX_ASSISTANT_TURNS="${MAX_ASSISTANT_TURNS}" \
+MAX_USER_TURNS="${MAX_USER_TURNS}" \
 ROLLOUT_GPU_MEMORY_UTILIZATION=0.80 \
 ROLLOUT_MAX_BATCHED_TOKENS=16384 \
 ROLLOUT_MAX_SEQS=12 \

@@ -24,6 +24,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - veRL 官方 `verl.trainer.sft_trainer` 的 Step 120 模型态初始化与单步全参 SFT 已在 5 号机实跑通过：TP4/PP2/CP2、Qwen3.6 完整工具模板、assistant-only loss mask、全新 CPU-offload Adam 均可工作；成功步 loss `0.9603`、grad norm `141.10`、单卡峰值 `26.27 GiB`、整机 CPU 内存 `821.63 GiB`，退出码 `0`。该运行仅为一条合成数据的不可晋升工程门禁，下一步才进入 16 条真实纠错数据机械核验。
 - 16 条真实 train236 纠错轨迹已通过机械核验并完成 5 步 veRL 官方全参 SFT：loss 从 `1.8738` 降至 `0.5764`，墙钟 `11m04s`，最终 model-only Megatron checkpoint 的 32 个分片完整（`54.72 GB`）。但相同 16 题的老板原始评分器门禁未通过：正确数保持 `2/16`，平均奖励 `0.7000 → 0.6063`，完整收尾 `15/16 → 13/16`，因此不扩到 48–64 条，也不作 held-out 泛化声明。
 - Step 120 的一步单变量 SQL 加权金丝雀已完成：工具结构/SQL/最终答案为 `0.25/8/1`，SQL NLL `2.4484 → 2.0612` 且 `16/16` 改善，教师 SQL greedy token `166 → 173`、平均 rank `56.59 → 41.35`。但逐题 SQL 概率超过 0.5 仍为 `0/16`，首条 SQL gold 支持和教师结果等价均仍为 `0/16`；48K 自由回放耗时约 `55m23s`，终止回答仅 `13/16`。候选不晋级、不续训；下一训练目标改为模型首错查询/工具结果条件下的 SQL 恢复监督，不再单独提高 SQL 权重。
+- 状态条件化纠错入口已按严格单变量设计补齐：复用 Step 120、相同 16 题和 `0.25/8/1` 目标权重，仅把模型首个错误 SQL 及实际工具结果加入历史；错误 assistant 回合由选择性 mask 保证 loss 为 0，只监督纠正 SQL 与最终答案。新增全查询只读语义审计，在第 1/2/3 条和任意后续查询上定位首次正确或等价证据；两项 CPU 门禁通过前不占用 NPU。
 - 所有新增镜像、容器、工作目录和实验名均以 `llin` 开头，不复用或修改其他人的环境。
 
 当前服务器部署：
@@ -152,10 +153,18 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/run_repair_sft_teacher_forced_eval.sh`、`scripts/run_repair_sft_teacher_forced_prepost_host.sh`：在相同数据、TP4/PP2/CP2 下自动比较 Step 120 与 SFT Step 5，执行 16/16 token mask 重建门禁并仅回收聚合结果。
 - `scripts/analyze_repair_sft_free_run_divergence.py`：在服务器侧离线对齐教师轨迹与老板原始自由回放，统计第一条 SQL 分叉、目标 SQL 后续命中和正确证据后的继续查询，不输出原始敏感内容。
 - `scripts/analyze_repair_sft_first_query_semantics.py`：只读执行两份自由回放的首条 SQL，区分 gold 支持、空结果、执行失败和错误/不足证据，并用教师查询结果排除机械等价 SQL。
+- `scripts/analyze_repair_sft_all_query_semantics.py`：只读执行回放中的全部 SQL，分别统计前 1/2/3 条及任意位置首次获得 gold 支持或教师结果等价证据的任务数。
 - `scripts/teacher_forced_token_ranks.py`：在 TP 词表分片上计算教师 SQL token 的精确 rank，并定位首个非 greedy 关键 token，不收集完整 logits。
 - `scripts/qwen36_sql_weighted_sft_dataset.py`、`scripts/check_sql_weighted_sft_dataset.py`、`scripts/run_repair_sft_sql_weighted_canary.sh`：构造和 CPU 核验 SQL 加权 loss mask，并从 Step 120 启动仅一步、单变量、只保存最终模型的金丝雀。
+- `scripts/prepare_state_conditioned_repair_sft.py`、`scripts/check_state_conditioned_sft_dataset.py`、`scripts/run_repair_sft_state_conditioned_canary.sh`：从 Step 120 首错 SQL 和真实工具结果构造零-loss 上下文，机械核验纠正查询并执行一步状态条件化金丝雀。
 
 ## 已验证状态
+
+### v0.74.0 — 2026-08-12
+
+- 新增全查询语义基线，支持对任意数量的同题回放逐条只读执行 SQL，并聚合前 1/2/3 条与任意后续查询首次获得正确或等价证据的任务数；只输出查询哈希和分类，不复制原始问题、SQL 或答案。
+- Qwen3.6 assistant-only 数据集支持逐 assistant 回合选择性监督；状态条件化样本把 Step 120 首个错误查询和已观察工具结果保留为上下文且 loss 严格为 0，只训练机械验证的纠正 SQL 与最终答案。分项诊断和 `0.25/8/1` 加权 mask 已同步支持三 assistant 回合形态。
+- 新增状态条件化数据构造、CPU fail-closed mask 门禁和一步启动器；训练仍固定从 Step 120 起跑、16 题单 batch、一步更新、只保存 `model,extra`。完整回归 `222 passed`，两台服务器检查时均无 NPU 进程。
 
 ### v0.73.0 — 2026-08-12
 

@@ -4,9 +4,52 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
+from typing import Any
 
 
 SQLITE_COMMAND_PREFIX = "sqlite3 -json /workspace/logistics.sqlite "
+
+
+def normalize_assistant_turn_indices(value: Any, turn_count: int) -> list[int]:
+    """Normalize an optional parquet-backed list of supervised assistant turns."""
+
+    if turn_count <= 0:
+        raise ValueError("assistant turn count must be positive")
+    if value is None:
+        return list(range(turn_count))
+    if hasattr(value, "tolist"):
+        value = value.tolist()
+    if not isinstance(value, (list, tuple)):
+        raise ValueError("supervised_assistant_turn_indices must be a list")
+    indices = [int(item) for item in value]
+    if not indices:
+        raise ValueError("at least one assistant turn must be supervised")
+    if indices != sorted(set(indices)):
+        raise ValueError("supervised assistant turn indices must be unique and sorted")
+    if indices[0] < 0 or indices[-1] >= turn_count:
+        raise ValueError("supervised assistant turn index is out of range")
+    return indices
+
+
+def assistant_mask_from_ranges(
+    token_count: int,
+    turn_ranges: Sequence[tuple[int, int]],
+    supervised_turn_indices: Sequence[int],
+) -> list[int]:
+    """Build a token mask for selected assistant turns only."""
+
+    mask = [0] * token_count
+    selected = set(int(index) for index in supervised_turn_indices)
+    if not selected:
+        raise ValueError("selected assistant turn set is empty")
+    if min(selected) < 0 or max(selected) >= len(turn_ranges):
+        raise ValueError("selected assistant turn index is out of range")
+    for index, (start, end) in enumerate(turn_ranges):
+        if not 0 <= start < end <= token_count:
+            raise ValueError("invalid assistant turn token range")
+        if index in selected:
+            mask[start:end] = [1] * (end - start)
+    return mask
 
 
 def build_sql_weighted_loss_mask(
@@ -105,13 +148,19 @@ def build_repair_component_masks(
     rendered_text: str,
     command: str,
     turn_ranges: Sequence[tuple[int, int]],
+    tool_turn_index: int = 0,
+    final_answer_turn_index: int = 1,
 ) -> dict[str, list[int]]:
-    """Split two assistant turns into structure, shell-SQL and final-answer masks."""
+    """Split selected correction and final turns into disjoint component masks."""
 
     if len(offsets) != len(input_ids):
         raise ValueError("offset and token lengths differ")
-    if len(turn_ranges) != 2:
-        raise ValueError(f"repair diagnostic requires exactly two assistant turns, got {len(turn_ranges)}")
+    if tool_turn_index == final_answer_turn_index:
+        raise ValueError("tool and final assistant turns must differ")
+    if not 0 <= tool_turn_index < len(turn_ranges):
+        raise ValueError("tool assistant turn index is out of range")
+    if not 0 <= final_answer_turn_index < len(turn_ranges):
+        raise ValueError("final assistant turn index is out of range")
     if not command.startswith(SQLITE_COMMAND_PREFIX):
         raise ValueError("repair command does not use the frozen sqlite3 prefix")
     if rendered_text.count(command) != 1:
@@ -120,8 +169,8 @@ def build_repair_component_masks(
     token_count = len(input_ids)
     tool_turn = [0] * token_count
     final_answer = [0] * token_count
-    tool_start, tool_end = turn_ranges[0]
-    final_start, final_end = turn_ranges[1]
+    tool_start, tool_end = turn_ranges[tool_turn_index]
+    final_start, final_end = turn_ranges[final_answer_turn_index]
     tool_turn[tool_start:tool_end] = [1] * (tool_end - tool_start)
     final_answer[final_start:final_end] = [1] * (final_end - final_start)
 

@@ -31,7 +31,9 @@ def test_replay_uses_boss_tools_greedy_n1_and_same_16_train_tasks():
     assert "evaluation_split=train236_same_task_not_heldout" in script
     assert "sampling=greedy_n1" in script
     assert "system_tools=boss_exact" in script
-    assert "MAX_ASSISTANT_TURNS=26" in script
-    assert "MAX_USER_TURNS=25" in script
+    assert 'MAX_ASSISTANT_TURNS="${MAX_ASSISTANT_TURNS:-26}"' in script
+    assert 'MAX_USER_TURNS="${MAX_USER_TURNS:-25}"' in script
+    assert 'MAX_ASSISTANT_TURNS="${MAX_ASSISTANT_TURNS}"' in script
+    assert 'MAX_USER_TURNS="${MAX_USER_TURNS}"' in script
     assert "LLIN_VAL_ONLY_FORCE_DIST_SYNC=1" in script
     assert "actor_rollout_ref.actor.megatron.dist_checkpointing_path" in script

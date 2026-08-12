@@ -9,6 +9,10 @@ from scripts.analyze_repair_sft_first_query_semantics import (
     summarize,
     training_target_decision,
 )
+from scripts.analyze_repair_sft_all_query_semantics import (
+    classify_query_sequence,
+    summarize_query_sequences,
+)
 
 
 def _messages(command: str | None) -> list[dict]:
@@ -118,3 +122,51 @@ def test_training_target_requires_rank_gate_and_uses_half_support_boundary():
     assert decision["selected_training_target"] == "post_evidence_synthesis_recovery_and_stopping"
     assert decision["token_rank_gate_still_required"] is True
     assert decision["training_must_not_start_from_this_cpu_gate_alone"] is True
+
+
+def test_all_query_semantic_gate_locates_bounded_recovery(tmp_path: Path):
+    database = _database(tmp_path / "logistics.sqlite")
+    truth = {
+        "answer_type": "numeric",
+        "expected": 3,
+        "verification_sql": "SELECT SUM(amount) FROM shipments WHERE category = 'A'",
+    }
+    messages = [
+        {
+            "role": "assistant",
+            "tool_calls": [
+                {
+                    "id": "wrong",
+                    "function": {
+                        "name": "bash",
+                        "arguments": {
+                            "command": "sqlite3 -json /workspace/logistics.sqlite \"SELECT SUM(amount) FROM shipments\""
+                        },
+                    },
+                }
+            ],
+        },
+        {
+            "role": "assistant",
+            "tool_calls": [
+                {
+                    "id": "recover",
+                    "function": {
+                        "name": "bash",
+                        "arguments": {
+                            "command": "sqlite3 -json /workspace/logistics.sqlite \"SELECT SUM(amount) FROM shipments WHERE category = 'A'\""
+                        },
+                    },
+                }
+            ],
+        },
+    ]
+
+    result = classify_query_sequence(database=database, messages=messages, truth=truth)
+    summary = summarize_query_sequences([result])
+
+    assert result["first_verified_or_equivalent_query_index"] == 2
+    assert result["verified_or_equivalent_within_1"] is False
+    assert result["verified_or_equivalent_within_2"] is True
+    assert summary["tasks_within_1"] == 0
+    assert summary["tasks_within_3"] == 1

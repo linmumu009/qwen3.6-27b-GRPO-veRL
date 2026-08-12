@@ -12,6 +12,12 @@ from verl.utils.dataset.dataset_utils import DatasetPadMode
 from verl.utils.dataset.multiturn_sft_dataset import MultiTurnSFTDataset
 from verl.utils.tokenizer.tokenizer import normalize_token_ids
 
+from scripts.teacher_forced_component_masks import (
+    assistant_mask_from_ranges,
+    assistant_turn_ranges,
+    normalize_assistant_turn_indices,
+)
+
 
 ASSISTANT_PREFIX = "<|im_start|>assistant\n"
 TURN_SUFFIX = "<|im_end|>\n"
@@ -28,38 +34,26 @@ def _find_all(sequence: list[int], needle: list[int]) -> list[int]:
 
 
 def build_assistant_loss_mask(
-    input_ids: list[int], tokenizer: Any, expected_assistant_turns: int
+    input_ids: list[int],
+    tokenizer: Any,
+    expected_assistant_turns: int,
+    supervised_assistant_turn_indices: Any = None,
 ) -> list[int]:
     """Mask assistant bodies, tool calls and closing tokens in a rendered Qwen chat."""
 
     prefix_ids = normalize_token_ids(tokenizer(ASSISTANT_PREFIX, add_special_tokens=False)["input_ids"])
     suffix_ids = normalize_token_ids(tokenizer(TURN_SUFFIX, add_special_tokens=False)["input_ids"])
-    prefix_positions = _find_all(input_ids, prefix_ids)
-    if len(prefix_positions) != expected_assistant_turns:
-        raise ValueError(
-            "assistant marker count mismatch: "
-            f"expected {expected_assistant_turns}, found {len(prefix_positions)}; "
-            "rejecting a sample that may contain literal chat control tokens"
-        )
-
-    loss_mask = [0] * len(input_ids)
-    cursor = 0
-    for prefix_position in prefix_positions:
-        body_start = prefix_position + len(prefix_ids)
-        suffix_position = next(
-            (
-                body_start + relative_position
-                for relative_position in _find_all(input_ids[body_start:], suffix_ids)
-                if body_start + relative_position >= cursor
-            ),
-            None,
-        )
-        if suffix_position is None:
-            raise ValueError("assistant turn has no closing token")
-        turn_end = suffix_position + len(suffix_ids)
-        loss_mask[body_start:turn_end] = [1] * (turn_end - body_start)
-        cursor = turn_end
-    return loss_mask
+    ranges = assistant_turn_ranges(
+        input_ids,
+        prefix_ids,
+        suffix_ids,
+        expected_turns=expected_assistant_turns,
+    )
+    selected = normalize_assistant_turn_indices(
+        supervised_assistant_turn_indices,
+        expected_assistant_turns,
+    )
+    return assistant_mask_from_ranges(len(input_ids), ranges, selected)
 
 
 class Qwen36AssistantMaskSFTDataset(MultiTurnSFTDataset):
@@ -91,7 +85,12 @@ class Qwen36AssistantMaskSFTDataset(MultiTurnSFTDataset):
         )
         input_id_list = normalize_token_ids(tokenized)
         assistant_turns = sum(message.get("role") == "assistant" for message in messages)
-        loss_mask_list = build_assistant_loss_mask(input_id_list, self.tokenizer, assistant_turns)
+        loss_mask_list = build_assistant_loss_mask(
+            input_id_list,
+            self.tokenizer,
+            assistant_turns,
+            row_dict.get("supervised_assistant_turn_indices"),
+        )
 
         input_ids = torch.tensor(input_id_list, dtype=torch.long)
         loss_mask = torch.tensor(loss_mask_list, dtype=torch.long)

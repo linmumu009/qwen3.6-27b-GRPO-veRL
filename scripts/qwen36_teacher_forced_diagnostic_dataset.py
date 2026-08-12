@@ -16,8 +16,10 @@ from scripts.qwen36_assistant_mask_sft_dataset import (
     Qwen36AssistantMaskSFTDataset,
 )
 from scripts.teacher_forced_component_masks import (
+    assistant_mask_from_ranges,
     assistant_turn_ranges,
     build_repair_component_masks,
+    normalize_assistant_turn_indices,
 )
 
 
@@ -69,9 +71,18 @@ class Qwen36TeacherForcedDiagnosticDataset(Qwen36AssistantMaskSFTDataset):
             suffix_ids,
             expected_turns=len(assistant_messages),
         )
-        tool_calls = assistant_messages[0].get("tool_calls") or []
+        supervised_indices = normalize_assistant_turn_indices(
+            row_dict.get("supervised_assistant_turn_indices"),
+            len(assistant_messages),
+        )
+        if len(supervised_indices) != 2:
+            raise ValueError("repair diagnostic requires exactly two supervised assistant turns")
+        tool_turn_index, final_turn_index = supervised_indices
+        tool_calls = assistant_messages[tool_turn_index].get("tool_calls") or []
         if len(tool_calls) != 1:
             raise ValueError("repair diagnostic requires exactly one teacher tool call")
+        if assistant_messages[final_turn_index].get("tool_calls"):
+            raise ValueError("repair diagnostic final supervised turn cannot call a tool")
         command = tool_calls[0]["function"]["arguments"]["command"]
 
         masks = build_repair_component_masks(
@@ -80,6 +91,8 @@ class Qwen36TeacherForcedDiagnosticDataset(Qwen36AssistantMaskSFTDataset):
             rendered_text=rendered_text,
             command=command,
             turn_ranges=ranges,
+            tool_turn_index=tool_turn_index,
+            final_answer_turn_index=final_turn_index,
         )
         assistant_union = [
             int(tool or final)
@@ -94,4 +107,14 @@ class Qwen36TeacherForcedDiagnosticDataset(Qwen36AssistantMaskSFTDataset):
             if sum(mask) <= 0:
                 raise ValueError(f"sample {item} has an empty {key}")
             result[key] = torch.tensor(mask, dtype=torch.long)
+        all_assistant = assistant_mask_from_ranges(
+            len(input_ids), ranges, list(range(len(ranges)))
+        )
+        context_assistant = [
+            int(all_token and not supervised_token)
+            for all_token, supervised_token in zip(
+                all_assistant, result["loss_mask"].tolist(), strict=True
+            )
+        ]
+        result["context_assistant_mask"] = torch.tensor(context_assistant, dtype=torch.long)
         return result
