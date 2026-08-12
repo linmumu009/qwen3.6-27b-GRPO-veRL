@@ -184,8 +184,15 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/analyze_disjoint_pair_candidate_pool.py`：从老板当前权威任务 manifest 重建 train236 的当前 instruction/gold 身份，在 immutable SQLite 上机械核验，并按 strict/review-required/blocked/forbidden-overlap 分桶；安全汇总不输出原始 prompt、SQL、gold 或工具结果。
 - `scripts/prepare_disjoint_pair_rollout_candidates.py`：只接受上述审计中 strict-available 的 48–64 条身份，把当前权威 instruction/gold 重建回老板 system/tool 格式的推理 Parquet；输出仅供 Step 120 首错采集，显式禁止直接训练或模型晋级。
 - `scripts/prepare_disjoint_first_error_pairs.py`：只把 Step 120 实际生成且机械错误/不足的首条只读 SQL 连同真实工具结果作为零-loss 状态，配对当前定义下已验证的 chosen SQL；正确/等价首查和无 SQL 题被排除，至少 48 对前继续禁止训练。
+- `scripts/check_disjoint_first_error_pairs.py`、`scripts/run_disjoint_pair_margin_gate.sh`、`scripts/analyze_disjoint_pair_margin.py`：对实际 48–64 对数据动态核验 chosen/rejected 邻接、delta mask、候选符号与序号，并以 Step 120 forward-only 统计正确 SQL margin、75% 偏好阈值及首个非 greedy token 家族；全程无 optimizer/checkpoint。
 
 ## 已验证状态
+
+### v0.89.0 — 2026-08-12
+
+- 新增 48–64 对可变批量的 CPU token 门禁与 Step 120 forward-only margin 入口；不再复用冻结 16 题脚本中写死的 32 行、16 对和 critical-token 身份。
+- token 门禁要求实际 pair 数达到 48、每对严格 `chosen → rejected` 相邻、semantic-delta mask 非空且完全位于 SQL、候选 sign/pair index 与行序一致；任何一项失败均在加载 NPU 模型前停止。
+- margin 分析按实际 pair 数使用向上取整的 75% 正确偏好阈值，并复用既有 aggregation/query-start/clause/identifier/operator 家族口径；只有正确 delta 未达到 75% 偏好时才允许一次新数据 pairwise 金丝雀，之后仍必须回到原冻结 16 题做 `12/16` 外部概率门禁。
 
 ### v0.88.1 — 2026-08-12
 
