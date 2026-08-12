@@ -4,10 +4,12 @@
 from __future__ import annotations
 
 import argparse
+from collections import Counter, defaultdict
 import json
 from pathlib import Path
 from typing import Any
 
+from scripts.analyze_state_recovery_semantics import critical_token_family
 from scripts.prepare_repair_sft_dataset import sha256_file
 
 
@@ -16,6 +18,15 @@ CONTRACT = "chosen-only-first-action-post-canary-decision-v1"
 
 def _task_sql_nll(row: dict[str, Any]) -> float:
     return float(((row.get("components") or {}).get("sql_shell") or {})["mean_nll"])
+
+
+def _first_barrier_family(rank: dict[str, Any]) -> str:
+    if rank.get("first_nongreedy_offset") is None:
+        return "all_sql_tokens_greedy"
+    token = rank.get("first_nongreedy_target_token")
+    if not isinstance(token, str):
+        raise ValueError("non-greedy SQL barrier is missing its decoded target token")
+    return critical_token_family(token)
 
 
 def decide(
@@ -58,14 +69,35 @@ def decide(
         _task_sql_nll(by_task_post[current]) < _task_sql_nll(by_task_base[current])
         for current in baseline_tasks
     )
-    earlier_regressions = 0
+    transition_counts: Counter[str] = Counter()
+    baseline_family_counts: Counter[str] = Counter()
+    post_family_counts: Counter[str] = Counter()
+    by_baseline_family: defaultdict[str, Counter[str]] = defaultdict(Counter)
     for current in baseline_tasks:
         before = by_task_base[current]["sql_token_rank"]
         after = by_task_post[current]["sql_token_rank"]
         before_offset = before.get("first_nongreedy_offset")
         after_offset = after.get("first_nongreedy_offset")
-        if before_offset is not None and after_offset is not None and int(after_offset) < int(before_offset):
-            earlier_regressions += 1
+        before_family = _first_barrier_family(before)
+        after_family = _first_barrier_family(after)
+        baseline_family_counts[before_family] += 1
+        post_family_counts[after_family] += 1
+        if before_offset is None:
+            transition = (
+                "stable_all_sql_tokens_greedy"
+                if after_offset is None
+                else "earlier_regression"
+            )
+        elif after_offset is None or int(after_offset) > int(before_offset):
+            transition = "cleared_to_later_or_all_greedy"
+        elif int(after_offset) == int(before_offset):
+            transition = "same_first_offset"
+        else:
+            transition = "earlier_regression"
+        transition_counts[transition] += 1
+        by_baseline_family[before_family][transition] += 1
+
+    earlier_regressions = transition_counts["earlier_regression"]
 
     thresholds = authorization.get("post_canary_gates") or {}
     checks = {
@@ -159,6 +191,18 @@ def decide(
             ),
         },
         "checks": checks,
+        "first_nongreedy_boundary_diagnostic": {
+            "baseline_family_counts": dict(sorted(baseline_family_counts.items())),
+            "post_family_counts": dict(sorted(post_family_counts.items())),
+            "transition_counts": dict(sorted(transition_counts.items())),
+            "by_baseline_family": {
+                family: {
+                    "total": sum(counts.values()),
+                    **dict(sorted(counts.items())),
+                }
+                for family, counts in sorted(by_baseline_family.items())
+            },
+        },
         "gate_passed": passed,
         "decision": {
             "next_action": (

@@ -30,6 +30,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - 三臂 semantic-plan 门禁与 correct-vs-actual-wrong margin 门禁均已完成：Control/operator/full plan 分别恢复 `1/16`、`1/16`、`2/16`，两个 oracle 均未过线；正确 SQL 的 semantic-delta 在 Step 120 下 `0/16` 占优，平均 margin `-1.1877`，且 aggregation/query-start/identifier/clause 全部偏向实际首错 SQL。下一步锁定为一次 pairwise plan-to-SQL 金丝雀；训练后须达到正确 delta `≥12/16` 占优、`≥12/16` margin 改善且无更早分叉回退，才允许短回放。
 - 一步 pairwise plan-to-SQL 金丝雀已完成：`16/16` 逐题 margin 改善，平均 margin `-1.1877 → -0.7646`，但正确候选仅 `3/16` 占优，未达到 `12/16`；更早分叉回退和冻结 target 非法均为 0。按冻结规则不做短回放、不追加同 16 对训练、不晋级 checkpoint；下一步把这 16 对冻结为评价集，先获取不重叠且机械验证的分层训练 pairs。
 - 原生 Qwen3.6-27B 与 Step 120 的相同首错状态概率归因仍有效：两者均为正确 semantic delta `0/16` 占优，平均 margin 为 `-1.2057/-1.1877`，核心 SQL misranking 在原生模型中已经存在。完整 64 题、25 工具反馈公平对照进一步确认，高过程分错答为原生 `13`、Step 120 `8`，训练没有新制造或放大代理错配；但 Step 120 的只读 SQL 覆盖 `30→23`、完整回答 `40→35`、平均总奖励 `0.2858→0.2612`，同时 numeric correct `5→7`，暴露出正确性与覆盖/完成的权衡。
+- chosen-only schema-conditioned 首动作一步金丝雀已完成：train48 的 `0.25/8` 加权更新使 calibration16 SQL NLL `1.2913→1.1267`、`16/16` 逐题改善，top-5 `344→348`、mean rank `18.78→15.87`，且结构 NLL 未退化；但 greedy token 仅 `277→282`（`+5 < +12`），完整 SQL 全 greedy 仍为 `0/16`，未过预注册门。14/16 的首个 non-greedy 边界未移动，其中原有 aggregation `9/9` 全部保留；按合同不跑自由回放、不追加训练、不晋级 checkpoint。
 - 新一轮训练前先执行 current-definition 数据池审计：正式 train236 在旧严格筛选下仅有 25 个候选，扣除冻结 16 题后只剩 9 个，禁止直接启动 pairwise 训练。新增审计从老板当前权威任务定义重建漂移 instruction/gold 身份，逐条执行只读 SQL、核对 gold 支持，并同时隔离冻结 16 题、val20、test20 的 task/instruction/SQL 哈希；只有严格可用新任务达到至少 48 条才允许进入 Step 120 首错采集。
 - 所有新增镜像、容器、工作目录和实验名均以 `llin` 开头，不复用或修改其他人的环境。
 
@@ -99,6 +100,8 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [`docs/schema_oracle_action_gate_20260813.md`](docs/schema_oracle_action_gate_20260813.md)：完整不重叠 64 题的相关表 schema 上界诊断、有效 `2/1` 工具反馈协议、`4` 条正确/`35` 条带结果错误/`25` 条无查询结论及 chosen-only 下一步。
 - [`docs/schema_oracle_action_gate_20260813_summary.json`](docs/schema_oracle_action_gate_20260813_summary.json)：不含原始命令、prompt、schema、SQL、答案、task ID、工具结果或服务器路径的 schema-oracle 安全汇总。
 - [`docs/chosen_only_first_action_baseline_20260813_summary.json`](docs/chosen_only_first_action_baseline_20260813_summary.json)：chosen-only 64 条 CPU mask 门、calibration16 Step 120 聚合 NLL/rank 与一步 train48 金丝雀预注册阈值的安全汇总。
+- [`docs/chosen_only_first_action_canary_20260813.md`](docs/chosen_only_first_action_canary_20260813.md)：train48 一步加权 SFT、model-only checkpoint、同一 calibration16 纯前向、7 项预注册门和 aggregation 边界诊断的完整结论。
+- [`docs/chosen_only_first_action_canary_20260813_summary.json`](docs/chosen_only_first_action_canary_20260813_summary.json)：不含 prompt、SQL、答案、task ID、工具结果或服务器路径的一步 chosen-only 金丝雀安全聚合。
 - [`docs/semantic_delta_pairwise_canary_20260812.md`](docs/semantic_delta_pairwise_canary_20260812.md)：一次 reference-free pairwise 更新、工程失败修复、训练资源、同数据概率前后门禁与 fail-closed 决策。
 - [`docs/semantic_delta_pairwise_canary_20260812_summary.json`](docs/semantic_delta_pairwise_canary_20260812_summary.json)：不含原始问题、SQL、答案和服务器路径的一步 pairwise 安全聚合结果。
 - [`docs/native_vs_step120_reward_behavior_attribution_20260812.md`](docs/native_vs_step120_reward_behavior_attribution_20260812.md)：原生模型与 Step 120 的相同错误状态概率对照、同题老板原版自由回放和奖励代理错配归因。
@@ -204,6 +207,12 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/run_chosen_only_first_action_one_step.sh`、`scripts/launch_chosen_only_first_action_one_step.sh`、`scripts/analyze_chosen_only_first_action_post_canary.py`：严格执行获准的一步 train48 `0.25/8` 全参 SFT，并在相同 calibration16 上按预注册的 aggregate/per-task NLL、greedy/top-5、mean rank、tool structure 和更早分叉门自动决定是否只开放一次自由回放；无论结果如何都禁止追加训练和 promotion。
 
 ## 已验证状态
+
+### v1.5.0 — 2026-08-13
+
+- 完成获准的一步 train48 chosen-only 全参 SFT：退出码 0，loss `1.347718`、grad norm `60.4354`、峰值 HBM `26.53 GiB`、墙钟 `358s`；最终 model/extra checkpoint 含有效 `.metadata`，optimizer 文件为 0。
+- 完成相同 calibration16 的训练后纯前向：SQL NLL 相对改善 `12.75%` 且 `16/16` 逐题改善，但 greedy token 仅增加 5 个，未达到预注册 `+12`；7 项门禁中 6 项通过、1 项失败，因此不做自由回放、不续训、不晋级。
+- 增加首个 non-greedy 边界安全聚合：仅 2/16 从 query-start 移到更后位置，14/16 保持同一首分叉；原有 aggregation 障碍 `9/9` 全部未清除。下一阶段先做不重叠、经语义复核的 aggregation/operator 对比数据 CPU 门禁，训练继续关闭。
 
 ### v1.4.1 — 2026-08-13
 
