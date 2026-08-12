@@ -201,8 +201,15 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/qwen36_first_action_diagnostic_dataset.py`、`scripts/check_chosen_only_schema_action_sft.py`：用 Qwen3.6 完整工具 chat template 对 chosen-only 样本做 CPU fail-closed 门禁；要求 loss 恰好覆盖唯一 assistant tool action，system/user 全部为 0，并把 action 无重叠地拆成 tool structure 与解码 SQL 内容两部分。
 - `scripts/run_chosen_only_first_action_teacher_forced.sh`、`scripts/launch_chosen_only_first_action_teacher_forced.sh`：只在 CPU 门通过后，对 calibration16 执行 Step 120 的 TP4/PP2/CP2 teacher-forced 纯前向基线；复用精确词表并行 SQL token rank，不初始化 optimizer、不保存 checkpoint，也不读取 train48。
 - `scripts/analyze_chosen_only_first_action_baseline.py`：联合核对 64 条数据合同、CPU tokenization gate、calibration16 Parquet 哈希和 Step 120 forward-only 结果，只在正确 SQL 仍存在明确 token 排序缺口时开放“一步、train48-only、新 Adam、model-only checkpoint”金丝雀，并冻结 post-canary NLL/rank/退化阈值。
+- `scripts/run_chosen_only_first_action_one_step.sh`、`scripts/launch_chosen_only_first_action_one_step.sh`、`scripts/analyze_chosen_only_first_action_post_canary.py`：严格执行获准的一步 train48 `0.25/8` 全参 SFT，并在相同 calibration16 上按预注册的 aggregate/per-task NLL、greedy/top-5、mean rank、tool structure 和更早分叉门自动决定是否只开放一次自由回放；无论结果如何都禁止追加训练和 promotion。
 
 ## 已验证状态
+
+### v1.4.0 — 2026-08-13
+
+- 新增 chosen-only 首动作加权 dataset：loss 仅由互斥的 tool structure `0.25×` 与解码 SQL `8×` 组成；不含工具结果或最终答案分量。
+- 新增获准的一步 train48 全参 SFT 入口：Step 120 model-only 初始化、新 CPU-offload Adam、batch48 恰好一次、`1e-6`、TP4/PP2/CP2、只保存 final `model,extra`；启动器再次核对 train48 哈希、calibration16 隔离、CPU gate 和 canary decision。
+- 新增 post-forward calibration16 决策器：严格复用 v1.3.0 阈值，并增加逐题 first-nongreedy SQL offset 不得提前的边界退化检查；全门通过也只开放一次 calibration16 单动作自由回放，不开放追加训练或晋级。
 
 ### v1.3.0 — 2026-08-13
 
