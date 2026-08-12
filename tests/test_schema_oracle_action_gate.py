@@ -89,6 +89,9 @@ def test_builder_injects_schema_without_mutating_hidden_verifier(tmp_path: Path)
     assert source[0]["reward_model"]["ground_truth"]["verification_sql"] not in (
         rows[0]["prompt"][1]["content"]
     )
+    assert "After that tool result, do not call any tool again" in (
+        rows[0]["prompt"][1]["content"]
+    )
     assert "10" not in rows[0]["prompt"][1]["content"]
 
 

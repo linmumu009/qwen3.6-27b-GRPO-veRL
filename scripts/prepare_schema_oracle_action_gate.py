@@ -79,7 +79,8 @@ def prompt_suffix(schema: dict[str, Any]) -> str:
             "file into a shell variable and immediately run sqlite3 -json non-interactively "
             "with one read-only SELECT or WITH query that answers the original question. "
             "Do not start an interactive shell, inspect schema again, repeat a command, call "
-            "another tool, or provide a final answer."
+            "another tool, or provide a final answer before the tool result. After that tool "
+            "result, do not call any tool again; return only a short acknowledgement."
         ),
         "schema_oracle": schema,
     }
@@ -188,7 +189,7 @@ def build_contract(
         "schema_derived_only_from_sqlite_metadata": True,
         "schema_contains_database_rows_tool_results_answers_or_expected_values": False,
         "prompt_contains_gold_sql": False,
-        "max_assistant_turns": 1,
+        "max_assistant_turns": 2,
         "max_tool_result_turns": 1,
         "correct_or_equivalent_runtime_floor": correct_floor,
         "observed_wrong_pair_floor": wrong_pair_floor,

@@ -197,10 +197,15 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 已验证状态
 
+### v0.98.1 — 2026-08-13
+
+- 修正 schema-oracle action 诊断的 agent-loop 轮次合同：首次 64 题运行虽全部生成工具调用，但 `max_assistant_turns=1` 会在第一条工具结果执行前终止，导致 `64/64` 响应缺失，不能用于门禁判定。
+- 有效协议改为最多 2 个助手回合、仅 1 次工具反馈：第一回合必须发出唯一 bash/SQLite 查询，真实工具结果返回后第二回合禁止再调用工具并只作简短确认；仍为 Step 120 强制同步、greedy 纯前向，optimizer/checkpoint 关闭。
+
 ### v0.98.0 — 2026-08-13
 
 - 新增完整不重叠 64 题的 task-specific schema-oracle action 门禁：schema 只从只读 SQLite `table_info/foreign_key_list` 提取，表集合由已机械验证 gold SQL 的 FROM/JOIN 决定；prompt 不含数据库行、工具结果、expected value、gold SQL 或答案。
-- 每题只允许一个助手回合和一次工具反馈，并给出任务无关的动态 `.sqlite/.db` 定位与非交互 sqlite3 调用要求。该门禁是由 gold SQL 选相关表的诊断上界，不是可部署输入；若正确/等价首查询 `≥32/64`，下一步必须改用不依赖 gold 表选择的全库 schema 在冻结 val20 上验证，否则只有不同任务的带结果错误查询 `≥48/64`，才允许构造 correct-vs-actual-wrong pairs。
+- 首版曾将每题限制为一个助手回合和一次工具反馈；实跑后由 v0.98.1 更正 agent-loop 轮次语义。该门禁是由 gold SQL 选相关表的诊断上界，不是可部署输入；若正确/等价首查询 `≥32/64`，下一步必须改用不依赖 gold 表选择的全库 schema 在冻结 val20 上验证，否则只有不同任务的带结果错误查询 `≥48/64`，才允许构造 correct-vs-actual-wrong pairs。
 - 通过 wrong-pair 数量门也只开放 pair 构建与 CPU 审计，不开放 optimizer；两门都失败则转为 chosen-only schema-conditioned action supervision 设计，训练与晋级仍保持关闭。
 
 ### v0.97.0 — 2026-08-13
