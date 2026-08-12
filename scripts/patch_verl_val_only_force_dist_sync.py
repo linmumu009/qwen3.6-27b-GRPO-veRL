@@ -17,24 +17,44 @@ CONFIG_CONDITION = (
     '            and not self.config.trainer.get("val_only_force_dist_sync", False)'
     "  # LLIN_VAL_ONLY_FORCE_DIST_SYNC\n"
 )
+FORCE_LOG = '                print("[LLIN_VAL_ONLY] force actor-to-rollout weight sync")\n'
+
+
+def _add_force_audit(text: str) -> str:
+    if FORCE_LOG in text:
+        return text
+    anchor = "        else:\n            self._fit_update_weights()\n"
+    if anchor not in text:
+        raise RuntimeError("expected val-only force-sync audit anchor not found")
+    replacement = (
+        "        else:\n"
+        '            if self.config.trainer.get("val_only_force_dist_sync", False):\n'
+        + FORCE_LOG
+        + "            self._fit_update_weights()\n"
+    )
+    return text.replace(anchor, replacement, 1)
 
 
 def patch(path: Path) -> str:
     text = path.read_text(encoding="utf-8")
-    if CONFIG_CONDITION in text:
+    if CONFIG_CONDITION in text and FORCE_LOG in text:
         return "already-patched"
+    if CONFIG_CONDITION in text:
+        path.write_text(_add_force_audit(text), encoding="utf-8")
+        return "added-force-sync-audit"
     environment_condition = (
         '            and os.environ.get("LLIN_VAL_ONLY_FORCE_DIST_SYNC") != "1"'
         "  # LLIN_VAL_ONLY_FORCE_DIST_SYNC\n"
     )
     if environment_condition in text:
-        path.write_text(text.replace(environment_condition, CONFIG_CONDITION, 1), encoding="utf-8")
+        migrated = text.replace(environment_condition, CONFIG_CONDITION, 1)
+        path.write_text(_add_force_audit(migrated), encoding="utf-8")
         return "migrated-env-to-config"
     anchor = '            and self.config.trainer.get("resume_mode", "disable") == "disable"\n'
     if anchor not in text:
         raise RuntimeError(f"expected val-only skip-sync condition not found in {path}")
     replacement = anchor + CONFIG_CONDITION
-    path.write_text(text.replace(anchor, replacement, 1), encoding="utf-8")
+    path.write_text(_add_force_audit(text.replace(anchor, replacement, 1)), encoding="utf-8")
     return "patched"
 
 

@@ -13,13 +13,18 @@ def test_force_dist_sync_patch_is_opt_in_and_idempotent(tmp_path: Path):
         '        val_only_base_model = (\n'
         '            self.config.trainer.get("val_only", False)\n'
         '            and self.config.trainer.get("resume_mode", "disable") == "disable"\n'
-        '        )\n',
+        '        )\n'
+        '        if val_only_base_model:\n'
+        '            print("skip")\n'
+        '        else:\n'
+        '            self._fit_update_weights()\n',
         encoding="utf-8",
     )
 
     assert patch(target) == "patched"
     text = target.read_text(encoding="utf-8")
     assert 'not self.config.trainer.get("val_only_force_dist_sync", False)' in text
+    assert "force actor-to-rollout weight sync" in text
     assert patch(target) == "already-patched"
 
 
@@ -27,7 +32,9 @@ def test_force_dist_sync_patch_migrates_environment_condition(tmp_path: Path):
     target = tmp_path / "trainer.py"
     target.write_text(
         '            and self.config.trainer.get("resume_mode", "disable") == "disable"\n'
-        '            and os.environ.get("LLIN_VAL_ONLY_FORCE_DIST_SYNC") != "1"  # LLIN_VAL_ONLY_FORCE_DIST_SYNC\n',
+        '            and os.environ.get("LLIN_VAL_ONLY_FORCE_DIST_SYNC") != "1"  # LLIN_VAL_ONLY_FORCE_DIST_SYNC\n'
+        '        else:\n'
+        '            self._fit_update_weights()\n',
         encoding="utf-8",
     )
 
@@ -35,6 +42,7 @@ def test_force_dist_sync_patch_migrates_environment_condition(tmp_path: Path):
     text = target.read_text(encoding="utf-8")
     assert 'not self.config.trainer.get("val_only_force_dist_sync", False)' in text
     assert "os.environ.get" not in text
+    assert "force actor-to-rollout weight sync" in text
 
 
 def test_replay_uses_boss_tools_greedy_n1_and_parameterized_row_contract():
@@ -50,6 +58,9 @@ def test_replay_uses_boss_tools_greedy_n1_and_parameterized_row_contract():
     assert "purpose=${EXPERIMENT_PURPOSE}" in script
     assert 'EXPECTED_EVAL_ROWS="${EXPECTED_EVAL_ROWS:-16}"' in launcher
     assert '--expected-jsonl-rows "${EXPECTED_EVAL_ROWS}"' in launcher
+    assert "checkpoint_rollout_sync_was_skipped" in launcher
+    assert "checkpoint_rollout_sync_marker_missing" in launcher
+    assert "CHECKPOINT_SYNC_INVALID" in launcher
     assert "sampling=greedy_n1" in script
     assert "system_tools=boss_exact" in script
     assert 'MAX_ASSISTANT_TURNS="${MAX_ASSISTANT_TURNS:-26}"' in script

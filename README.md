@@ -189,6 +189,11 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 已验证状态
 
+### v0.90.2 — 2026-08-12
+
+- val-only 强制 checkpoint 同步补丁新增 Ray task 内的明确审计标记：只有真实进入 `_fit_update_weights()` 前才打印 `force actor-to-rollout weight sync`，不再仅靠“没有看到 skip”作间接判断。
+- repair replay 无人值守启动器在退出码 0 后仍会检查 driver 日志：出现 skip 标记则改判退出码 9，缺少 force 标记则改判退出码 10，并写入 `CHECKPOINT_SYNC_INVALID`；两种情况都不会继续结果回收或下游 pair 门禁。
+
 ### v0.90.1 — 2026-08-12
 
 - 64 条短回放日志暴露出权重归因漏洞：actor 虽加载 Step 120 dist checkpoint，但 Ray `OneStepTaskRunner` 未继承提交 shell 的 `LLIN_VAL_ONLY_FORCE_DIST_SYNC` 环境变量，明确打印了跳过 actor→vLLM 初始同步；`-01/-02` 采集因此判为原生权重无效运行，已保留现场并终止，未进入 pair 数据或训练。

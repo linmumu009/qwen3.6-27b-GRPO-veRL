@@ -16,6 +16,18 @@ RUN_NAME="${RUN_NAME}" OUTPUT_DIR="${OUTPUT_DIR}" \
 status=$?
 set -e
 
+force_sync_marker='[LLIN_VAL_ONLY] force actor-to-rollout weight sync'
+skip_sync_marker='[LLIN_VAL_ONLY] skip initial actor-to-rollout weight sync'
+if [[ "${status}" == "0" ]]; then
+  if grep -Fq "${skip_sync_marker}" "${OUTPUT_DIR}/driver.log"; then
+    printf 'checkpoint_rollout_sync_was_skipped\n' > "${OUTPUT_DIR}/CHECKPOINT_SYNC_INVALID"
+    status=9
+  elif ! grep -Fq "${force_sync_marker}" "${OUTPUT_DIR}/driver.log"; then
+    printf 'checkpoint_rollout_sync_marker_missing\n' > "${OUTPUT_DIR}/CHECKPOINT_SYNC_INVALID"
+    status=10
+  fi
+fi
+
 validation_file="${OUTPUT_DIR}/validation/0.jsonl"
 if [[ "${status}" == "0" && ! -f "${validation_file}" ]]; then
   set +e
