@@ -1,0 +1,93 @@
+{
+  "contract": "semantic-plan-and-delta-pretraining-gate-summary-v1",
+  "date": "2026-08-12",
+  "source_checkpoint": "step120",
+  "scope": {
+    "same_task_development_pairs": 16,
+    "heldout_claim": false,
+    "promotion_allowed": false
+  },
+  "semantic_plan_sufficiency_gate": {
+    "generation_rows": 48,
+    "arms": {
+      "control": {
+        "verified_or_equivalent": 1,
+        "tasks": 16
+      },
+      "operator_oracle": {
+        "verified_or_equivalent": 1,
+        "tasks": 16,
+        "aggregation_critical_recovered": 0,
+        "aggregation_critical_tasks": 9,
+        "threshold": 4,
+        "passed": false
+      },
+      "full_plan_oracle": {
+        "verified_or_equivalent": 2,
+        "tasks": 16,
+        "threshold": 8,
+        "passed": false
+      }
+    },
+    "output_protocol": {
+      "rows_with_exactly_one_bash_call": 29,
+      "rows_with_multiple_tool_calls": 7,
+      "generated_tool_calls": 55,
+      "generated_bash_tool_calls": 36,
+      "generated_read_tool_calls": 19,
+      "generated_tool_calls_executed_by_rollout": 0
+    },
+    "selected_training_target": "plan_to_sql_realization_and_recovery"
+  },
+  "semantic_delta_margin_gate": {
+    "pairs": 16,
+    "rows": 32,
+    "definition": "rejected_mean_nll_minus_chosen_mean_nll_positive_prefers_chosen",
+    "chosen_preferred": 0,
+    "threshold": 12,
+    "mean_margin": -1.187716065761645,
+    "median_margin": -1.126968018213908,
+    "by_critical_token_family": {
+      "aggregation_function": {
+        "tasks": 9,
+        "chosen_preferred": 0,
+        "mean_margin": -1.145944757800456
+      },
+      "query_start": {
+        "tasks": 3,
+        "chosen_preferred": 0,
+        "mean_margin": -1.8725656611578805
+      },
+      "identifier_or_literal": {
+        "tasks": 3,
+        "chosen_preferred": 0,
+        "mean_margin": -0.9743645709485045
+      },
+      "clause_keyword": {
+        "tasks": 1,
+        "chosen_preferred": 0,
+        "mean_margin": -0.1491635356630598
+      }
+    },
+    "frozen_first_nongreedy_token_reconstructed": 16,
+    "frozen_first_nongreedy_token_required": 16,
+    "selected_next_action": "one_step_pairwise_chosen_vs_rejected_plan_to_sql_canary"
+  },
+  "frozen_one_step_gate": {
+    "optimizer_steps": 1,
+    "semantic_delta_chosen_preferred_min": 12,
+    "per_task_margin_improved_min": 12,
+    "new_earlier_first_nongreedy_regressions_max": 0,
+    "full_replay_before_probability_gate": false,
+    "checkpoint_promotion_allowed": false
+  },
+  "execution": {
+    "semantic_plan_gate_optimizer_initialized": false,
+    "semantic_plan_gate_checkpoint_saved": false,
+    "margin_gate_forward_only": true,
+    "margin_gate_optimizer_initialized": false,
+    "margin_gate_checkpoint_saved": false,
+    "trainer_host_npus_free_after_completion": 16,
+    "rollout_host_npus_free_after_completion": 16
+  }
+}

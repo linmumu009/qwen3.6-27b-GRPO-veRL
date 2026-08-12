@@ -27,6 +27,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - 状态条件化纠错入口已按严格单变量设计补齐：复用 Step 120、相同 16 题和 `0.25/8/1` 目标权重，仅把模型首个错误 SQL 及实际工具结果加入历史；错误 assistant 回合由选择性 mask 保证 loss 为 0，只监督纠正 SQL 与最终答案。新增全查询只读语义审计，在第 1/2/3 条和任意后续查询上定位首次正确或等价证据；两项 CPU 门禁通过前不占用 NPU。
 - 状态条件化一步金丝雀已完成：纠正 SQL NLL `1.6815 → 1.4118` 且 `16/16` 改善，greedy token `221 → 225`、top-5 `284 → 298`、平均 rank `20.12 → 16.72`；但逐题概率超过 0.5 仍仅 `1/16`（要求 `12/16`），整段全 greedy 仍为 `0/16`。按门禁停止，不跑短/完整回放、不续训；下一目标改为首错语义分类与 critical-token 对比纠错数据。
 - Semantic critical-token 一步金丝雀已完成：把每题首个 semantic non-greedy SQL token 从 `8×` 提到 `32×` 后，SQL NLL `1.2929 → 1.1435` 且 `16/16` 改善，greedy/top-5 各增加 4 个；query-start `3/3` 转为 greedy，但 aggregation `9/9` 仍是首分叉，完整 SQL 概率 `>0.5` 仍为 `2/16`（门槛 `12/16`）。后续训练暂缓，先以同一 16 条首错状态执行 Control / operator oracle / full semantic plan 三臂一次生成门禁，区分 plan selection、schema grounding 与 plan-to-SQL realization。
+- 三臂 semantic-plan 门禁与 correct-vs-actual-wrong margin 门禁均已完成：Control/operator/full plan 分别恢复 `1/16`、`1/16`、`2/16`，两个 oracle 均未过线；正确 SQL 的 semantic-delta 在 Step 120 下 `0/16` 占优，平均 margin `-1.1877`，且 aggregation/query-start/identifier/clause 全部偏向实际首错 SQL。下一步锁定为一次 pairwise plan-to-SQL 金丝雀；训练后须达到正确 delta `≥12/16` 占优、`≥12/16` margin 改善且无更早分叉回退，才允许短回放。
 - 所有新增镜像、容器、工作目录和实验名均以 `llin` 开头，不复用或修改其他人的环境。
 
 当前服务器部署：
@@ -86,6 +87,8 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [`docs/next_experiment_strategy_20260810_summary.json`](docs/next_experiment_strategy_20260810_summary.json)：不含原始轨迹与机器路径的回合边界、显存规划、墙钟成本与实验优先级聚合。
 - [`notebooks/next_experiment_strategy_20260810.ipynb`](notebooks/next_experiment_strategy_20260810.ipynb)：从头执行通过的96K容量、并发增量和快速实验成本分析 notebook。
 - [`docs/force_final_sentinel_20260810.md`](docs/force_final_sentinel_20260810.md)：Step 120 的 48K 强制收尾 sentinel6 与单题提前收口实跑、老板原版评分、失败归因和进入训练前门槛。
+- [`docs/semantic_plan_and_delta_pretraining_gate_20260812.md`](docs/semantic_plan_and_delta_pretraining_gate_20260812.md)：Step 120 三臂 semantic-plan 一次生成、工具协议合规、correct-vs-actual-wrong semantic-delta margin 与下一步 pairwise 金丝雀停止门槛。
+- [`docs/semantic_plan_and_delta_pretraining_gate_20260812_summary.json`](docs/semantic_plan_and_delta_pretraining_gate_20260812_summary.json)：不含原始问题、SQL、答案和服务器路径的安全聚合结果。
 - [`docs/accuracy_improvement_strategy_20260810.html`](docs/accuracy_improvement_strategy_20260810.html)：结合 Step 100/120/200、前后两个100步组内信号和强制收尾实验的准确率瓶颈诊断；给出 oracle 梯度、纠错 SFT、奖励分层及 `2 groups × 8 responses` 金丝雀路线。
 - [`docs/accuracy_improvement_post_step125_20260811.html`](docs/accuracy_improvement_post_step125_20260811.html)：结合 Step 125 金丝雀、同题老板原版评分、oracle 梯度与组内奖励排序的准确率复盘；给出纠错 SFT、mixed-only GRPO 和密封 test20 的分阶段门禁。
 - [`docs/accuracy_improvement_post_step125_20260811_summary.json`](docs/accuracy_improvement_post_step125_20260811_summary.json)：不含原始轨迹与服务器绝对路径的 Step 125 组内信号、checkpoint 对比、oracle 结果和下一轮实验门槛聚合。
@@ -171,6 +174,12 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/prepare_semantic_delta_margin_gate.py`、`scripts/qwen36_semantic_delta_margin_dataset.py`、`scripts/run_semantic_delta_margin_gate.sh`：在相同首错状态下配对机械正确 correction SQL 与模型实际首错 SQL，只对 token edit span 做 Step 120 forward-only 概率 margin；同时精确重建冻结的首个 non-greedy token，作为 chosen-vs-rejected 训练前的无回退门禁。
 
 ## 已验证状态
+
+### v0.81.0 — 2026-08-12
+
+- 完成 Step 120 的 16 题三臂 semantic-plan sufficiency gate：Control/operator/full plan 的 verified 或机械等价恢复分别为 `1/16`、`1/16`、`2/16`；operator aggregation-critical 为 `0/9 < 4/9`，full plan 为 `2/16 < 8/16`，自动决策锁定 plan-to-SQL realization/recovery。
+- 完成相同首错状态的 16 对 semantic-delta forward-only margin：正确候选占优 `0/16`，平均/中位 margin 为 `-1.1877/-1.1270`；aggregation `0/9`、query-start `0/3`、identifier/literal `0/3`、clause `0/1` 全部偏好实际错误 SQL。冻结首个 non-greedy token `16/16` 精确重建，运行退出码 0，无 optimizer、无 checkpoint。
+- 冻结一次 pairwise chosen-vs-rejected 金丝雀门槛：正确 delta `≥12/16` 占优、`≥12/16` margin 改善、0 个更早分叉回退；概率门禁通过前不跑完整自由回放。新增不含原始问题、SQL、答案和服务器路径的安全汇总与报告。
 
 ### v0.80.2 — 2026-08-12
 

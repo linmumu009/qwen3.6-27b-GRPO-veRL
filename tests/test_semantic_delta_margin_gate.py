@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import json
 
 from scripts.analyze_semantic_delta_margin_gate import analyze
 from scripts.analyze_repair_sft_free_run_divergence import sql_from_command
@@ -153,3 +154,19 @@ def test_margin_launcher_is_forward_only_and_saves_no_checkpoint():
     assert "'checkpoint.save_contents=[]'" in script
     assert "trainer.save_freq=-1" in script
     assert "data.train_batch_size=32" in script
+
+
+def test_safe_pretraining_summary_freezes_pairwise_gate_without_raw_assets():
+    path = ROOT / "docs" / "semantic_plan_and_delta_pretraining_gate_20260812_summary.json"
+    summary = json.loads(path.read_text(encoding="utf-8"))
+    payload = path.read_text(encoding="utf-8")
+
+    assert summary["semantic_plan_sufficiency_gate"]["arms"]["operator_oracle"]["passed"] is False
+    assert summary["semantic_plan_sufficiency_gate"]["arms"]["full_plan_oracle"]["passed"] is False
+    assert summary["semantic_delta_margin_gate"]["chosen_preferred"] == 0
+    assert summary["semantic_delta_margin_gate"]["frozen_first_nongreedy_token_reconstructed"] == 16
+    assert summary["frozen_one_step_gate"]["optimizer_steps"] == 1
+    assert summary["frozen_one_step_gate"]["full_replay_before_probability_gate"] is False
+    assert summary["scope"]["promotion_allowed"] is False
+    assert "/workspace/" not in payload
+    assert "SELECT " not in payload
