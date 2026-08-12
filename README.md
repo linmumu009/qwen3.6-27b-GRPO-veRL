@@ -160,6 +160,11 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 已验证状态
 
+### v0.74.2 — 2026-08-12
+
+- 真实 OpenAI 回放中的 `function.arguments` 既可能是 JSON 字符串也可能是映射；状态条件化构造器现统一通过既有严格解析器转换为工具参数映射，并冻结 `type=function`、`name=bash`，消除与教师工具调用 struct schema 的混用，同时保持命令原文不变。
+- 第二次真实构造仍在 Parquet 写入前 fail closed，确认没有部分训练数据被消费、没有模型或 optimizer 初始化；新增字符串 arguments 回归用例后重跑。
+
 ### v0.74.1 — 2026-08-12
 
 - 状态条件化数据构造器将真实回放中可能为 `null`、结构体或列表的 assistant content 统一规范化为确定性 JSON 文本，避免 PyArrow 在消息列中混合 struct/non-struct 类型；不改变工具调用、实际工具结果或监督回合。

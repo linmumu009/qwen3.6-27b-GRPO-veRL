@@ -79,7 +79,7 @@ def test_state_conditioned_row_uses_observed_wrong_result_as_zero_loss_context(
                     "type": "function",
                     "function": {
                         "name": "bash",
-                        "arguments": {"command": wrong_command},
+                        "arguments": '{"command": "' + wrong_command.replace('"', '\\"') + '"}',
                     },
                 }
             ],
@@ -114,4 +114,7 @@ def test_state_conditioned_row_uses_observed_wrong_result_as_zero_loss_context(
     assert row["messages"][2]["content"] == '{"analysis":"try all rows"}'
     assert row["messages"][4]["tool_calls"][0]["id"] == "call_recover_000001"
     assert row["messages"][5]["tool_call_id"] == "call_recover_000001"
+    assert row["messages"][2]["tool_calls"][0]["function"]["arguments"] == {
+        "command": wrong_command
+    }
     assert evidence["correction_verified_or_equivalent"] is True

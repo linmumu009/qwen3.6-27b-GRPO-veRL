@@ -16,6 +16,7 @@ from llin_verl.boss_pi_contract import canonical_json
 from scripts.analyze_repair_sft_all_query_semantics import classify_query_sequence
 from scripts.analyze_repair_sft_first_query_semantics import ground_truth_by_task
 from scripts.analyze_repair_sft_free_run_divergence import (
+    arguments_mapping,
     bash_calls,
     normalize_container,
     read_openai,
@@ -93,6 +94,11 @@ def build_state_conditioned_row(
 
     error_message = rollout_messages[first_wrong["message_index"]]
     error_call = _matching_tool_call(error_message, first_wrong["call_id"])
+    error_call["type"] = "function"
+    error_function = error_call.get("function") or {}
+    error_function["name"] = "bash"
+    error_function["arguments"] = arguments_mapping(error_function.get("arguments"))
+    error_call["function"] = error_function
     observed_outputs = tool_outputs(rollout_messages)
     if first_wrong["call_id"] not in observed_outputs:
         raise ValueError(f"{task_id}: first wrong SQL has no observed tool result")
