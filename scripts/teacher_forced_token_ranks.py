@@ -67,7 +67,14 @@ def vocab_parallel_target_ranks(
     if data_format == "thd":
         labels, *_ = preprocess_thd_engine(input_ids, pre_process=True, need_roll=True)
     elif data_format == "bshd":
-        labels, *_ = preprocess_bshd_engine(input_ids, pre_process=True, need_roll=True)
+        labels, *_ = preprocess_bshd_engine(
+            input_ids,
+            pre_process=True,
+            need_roll=True,
+            forced_max_seqlen=tu.get_non_tensor_data(
+                data=data, key="forced_max_seqlen", default=None
+            ),
+        )
     else:
         raise ValueError(f"unsupported data format: {data_format}")
     if student_logits.shape[:2] != labels.shape[:2]:

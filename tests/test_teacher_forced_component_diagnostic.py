@@ -97,6 +97,7 @@ def test_sql_weighted_mask_rejects_overlap_and_invalid_weights():
 def test_forward_only_contract_never_initializes_or_saves_optimizer():
     script = (ROOT / "scripts" / "run_repair_sft_teacher_forced_eval.sh").read_text(encoding="utf-8")
     runner = (ROOT / "scripts" / "run_teacher_forced_component_diagnostic.py").read_text(encoding="utf-8")
+    ranks = (ROOT / "scripts" / "teacher_forced_token_ranks.py").read_text(encoding="utf-8")
 
     assert "engine.forward_only=true" in script
     assert "optimizer_initialized=false" in script
@@ -108,6 +109,7 @@ def test_forward_only_contract_never_initializes_or_saves_optimizer():
     assert "trainer.fit()" not in runner
     assert "def component_sft_loss(" in runner
     assert "student_logits=None" in runner
+    assert 'key="forced_max_seqlen", default=None' in ranks
 
 
 def test_exact_teacher_token_rank_uses_strict_greater_logits_and_vocab_boundary():

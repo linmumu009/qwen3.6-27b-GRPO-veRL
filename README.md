@@ -155,6 +155,11 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 已验证状态
 
+### v0.71.2 — 2026-08-12
+
+- 修复 exact token-rank 在 veRL BSHD 微批次统一填充下的标签对齐：rank 标签现在复用模型前向的 `forced_max_seqlen`，保证 CP 分片后的 logits 与 labels 具有完全相同的序列长度，不做截断或静默补齐。
+- `-02` 已加载 Step 120 并进入真实模型前向，但在自定义 rank 处理器中以 `840 != 768` 主动失败；未进入 Step 5、未训练且未写 checkpoint。补充静态前向契约测试后使用新运行名重试。
+
 ### v0.71.1 — 2026-08-12
 
 - 修复 teacher-forced exact token-rank 门禁对 Qwen3.6 嵌套 Hugging Face 配置的兼容读取：优先支持顶层 `vocab_size`，并兼容 `text_config` / `language_config`，缺失或非法值继续 fail closed。
