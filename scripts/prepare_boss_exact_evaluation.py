@@ -138,19 +138,39 @@ def qwen_output_to_openai_messages(output: str) -> tuple[list[dict[str, Any]], d
     missing_tool_responses = 0
     terminal_tool_response_groups = 0
     intervention_user_messages = 0
+    truncated_nonterminal_tool_calls = 0
     while True:
         user_start = output.find(USER_TOOL_RESPONSE_PREFIX + "<tool_response>", cursor)
         if user_start < 0:
             break
         assistant_blob = output[cursor:user_start]
         raw_call_blocks = TOOL_CALL_RE.findall(assistant_blob)
-        if not raw_call_blocks:
-            raise ValueError("tool-response group has no preceding tool calls")
-        assistant_content = TOOL_CALL_RE.sub("", assistant_blob).strip()
         calls: list[dict[str, Any]] = []
-        for block in raw_call_blocks:
+        raw_open_calls = assistant_blob.count(TOOL_CALL_START)
+        if raw_call_blocks:
+            if raw_open_calls != len(raw_call_blocks):
+                raise ValueError(
+                    "tool-response group mixes complete and truncated tool calls"
+                )
+            assistant_content = TOOL_CALL_RE.sub("", assistant_blob).strip()
+            for block in raw_call_blocks:
+                call_number += 1
+                calls.append(_parse_tool_call(block, call_number))
+        elif raw_open_calls == 1:
+            # The live agent loop may accept a token-truncated Qwen tool block,
+            # return a parser error as its tool response, and continue. Preserve
+            # that exact attempted call instead of dropping the observed error.
+            truncated_start = assistant_blob.rfind(TOOL_CALL_START)
+            assistant_content = assistant_blob[:truncated_start].strip()
             call_number += 1
-            calls.append(_parse_tool_call(block, call_number))
+            calls.append(
+                _parse_truncated_terminal_tool_call(
+                    assistant_blob[truncated_start:], call_number
+                )
+            )
+            truncated_nonterminal_tool_calls += 1
+        else:
+            raise ValueError("tool-response group has no preceding tool calls")
 
         response_group_start = user_start + len(USER_TOOL_RESPONSE_PREFIX)
         group_suffix = "</tool_response>" + ASSISTANT_PREFIX
@@ -275,6 +295,8 @@ def qwen_output_to_openai_messages(output: str) -> tuple[list[dict[str, Any]], d
         audit["terminal_tool_response_without_assistant"] = terminal_tool_response_groups
     if intervention_user_messages:
         audit["intervention_user_messages"] = intervention_user_messages
+    if truncated_nonterminal_tool_calls:
+        audit["truncated_nonterminal_tool_calls"] = truncated_nonterminal_tool_calls
     return messages, audit
 
 
@@ -330,6 +352,7 @@ def prepare(
     truncated_terminal_tool_calls = 0
     terminal_tool_responses_without_assistant = 0
     intervention_user_messages = 0
+    truncated_nonterminal_tool_calls = 0
     for row in validation:
         ground_truth = row.get("gts") or {}
         task_id = str(ground_truth.get("task_id") or "").strip()
@@ -355,6 +378,9 @@ def prepare(
             audit.get("terminal_tool_response_without_assistant", 0)
         )
         intervention_user_messages += int(audit.get("intervention_user_messages", 0))
+        truncated_nonterminal_tool_calls += int(
+            audit.get("truncated_nonterminal_tool_calls", 0)
+        )
 
     if set(prompts) != seen:
         raise ValueError(
@@ -371,6 +397,7 @@ def prepare(
         "truncated_terminal_tool_calls": truncated_terminal_tool_calls,
         "terminal_tool_responses_without_assistant": terminal_tool_responses_without_assistant,
         "intervention_user_messages": intervention_user_messages,
+        "truncated_nonterminal_tool_calls": truncated_nonterminal_tool_calls,
         "all_terminal": terminal_answers == len(validation),
         "trajectory_output": str(trajectory_output),
         "trajectory_sha256": sha256(trajectory_output),

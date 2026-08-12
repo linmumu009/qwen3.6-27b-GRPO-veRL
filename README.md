@@ -197,6 +197,11 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 已验证状态
 
+### v0.98.3 — 2026-08-13
+
+- 补齐老板原版轨迹转换器与在线 agent-loop 的边界一致性：在线 runtime 可能接受一个 token 截断的 Qwen tool block、返回真实 parser error 后继续；转换器现仅在“恰有一个开放 tool call 且紧随真实 tool response”时保留该调用和错误响应，并单独审计 `truncated_nonterminal_tool_calls`。
+- 仍对无前序调用响应、完整/截断调用混组、多开放调用、无参数或无真实响应保持 fail-closed；不会补造工具结果，也不会把未执行的查询记为观察样本。
+
 ### v0.98.2 — 2026-08-13
 
 - 同步修正 schema-oracle 数据合同的 `next_action` 机器字段：明确记录“首个 greedy action + 一次真实工具结果”协议，移除遗留的 `one_turn` 描述，并新增合同回归测试，防止启动配置与密封数据元数据再次漂移。

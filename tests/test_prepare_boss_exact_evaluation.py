@@ -144,6 +144,32 @@ def test_qwen_output_to_openai_messages_preserves_token_truncated_terminal_call(
     assert audit["terminal_assistant"] is False
 
 
+def test_qwen_output_preserves_runtime_accepted_truncated_call_and_error_response():
+    output = (
+        "reasoning\n<tool_call>\n<function=bash>\n"
+        "<parameter=command>sqlite3 -json db.sqlite \"SELECT 1\"</parameter>\n"
+        "<parameter=timeout>15\n</\n"
+        "user\n<tool_response>ValueError: invalid timeout</tool_response>\n"
+        "assistant\nack"
+    )
+
+    messages, audit = qwen_output_to_openai_messages(output)
+
+    assert [message["role"] for message in messages] == [
+        "assistant",
+        "tool",
+        "assistant",
+    ]
+    arguments = messages[0]["tool_calls"][0]["function"]["arguments"]
+    assert "SELECT 1" in arguments
+    assert messages[1]["content"] == "ValueError: invalid timeout"
+    assert messages[2]["content"] == "ack"
+    assert audit["tool_calls"] == 1
+    assert audit["missing_tool_responses"] == 0
+    assert audit["truncated_nonterminal_tool_calls"] == 1
+    assert audit["terminal_assistant"] is True
+
+
 def test_qwen_output_to_openai_messages_preserves_parallel_tool_group():
     output = """并行检查两个文件。
 <tool_call>
