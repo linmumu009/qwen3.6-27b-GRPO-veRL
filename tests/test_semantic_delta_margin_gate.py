@@ -155,6 +155,24 @@ def test_margin_gate_routes_misranking_to_pairwise_canary_and_preference_to_plan
     )
 
 
+def test_margin_gate_supports_native_attribution_without_authorizing_training():
+    diagnostic, contract = _diagnostic(4)
+    result = analyze(
+        diagnostic,
+        contract,
+        source_checkpoint="native_qwen36_27b",
+        attribution_only=True,
+    )
+
+    assert result["source_checkpoint"] == "native_qwen36_27b"
+    assert result["semantic_delta_margin"]["chosen_preferred"] == 4
+    assert result["decision"]["analysis_mode"] == "attribution_only"
+    assert result["decision"]["one_step_training_allowed"] is False
+    assert result["decision"]["selected_next_action"] == (
+        "attribution_probe_only_no_training"
+    )
+
+
 def test_reference_free_pairwise_loss_prefers_chosen_delta_and_scales_global_pairs():
     log_probs = torch.tensor([-1.0, -9.0, -9.0, -2.0, -9.0, -9.0], requires_grad=True)
     loss, metrics = pairwise_loss_from_flat_sequences(
@@ -203,6 +221,9 @@ def test_margin_launcher_is_forward_only_and_saves_no_checkpoint():
     assert "'checkpoint.save_contents=[]'" in script
     assert "trainer.save_freq=-1" in script
     assert "data.train_batch_size=32" in script
+    assert 'MODEL_SOURCE="${MODEL_SOURCE:-dist_checkpoint}"' in script
+    assert 'MODEL_INIT_ARG="engine.dist_checkpointing_path=null"' in script
+    assert "--attribution-only" in script
 
     training = (ROOT / "scripts" / "run_semantic_delta_pairwise_canary.sh").read_text(
         encoding="utf-8"
@@ -223,6 +244,19 @@ def test_margin_launcher_is_forward_only_and_saves_no_checkpoint():
     assert "step120_pairwise_pipeline_baseline" in pipeline
     assert "BASELINE_DIAGNOSTIC" not in pipeline
     assert 'TOKEN_GATE="${BASELINE_OUTPUT_DIR}/token_gate.json"' in pipeline
+
+    native_replay = (ROOT / "scripts" / "run_native_repair_replay.sh").read_text(
+        encoding="utf-8"
+    )
+    assert "model_source=original_hf_base_weights" in native_replay
+    assert "evaluation_rows=16" in native_replay
+    assert "sampling=greedy_n1" in native_replay
+    assert "actor_rollout_ref.actor.megatron.forward_only=True" in (
+        ROOT / "scripts" / "run_pi_frozen_baseline.sh"
+    ).read_text(encoding="utf-8")
+    assert "actor_rollout_ref.actor.megatron.dist_checkpointing_path=null" in native_replay
+    assert "optimizer_initialized=false" in native_replay
+    assert "checkpoint_saved=false" in native_replay
 
 
 def test_safe_pretraining_summary_freezes_pairwise_gate_without_raw_assets():

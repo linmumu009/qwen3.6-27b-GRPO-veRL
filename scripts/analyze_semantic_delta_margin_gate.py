@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Compare Step120 chosen-vs-actual-wrong SQL likelihood on semantic edit tokens."""
+"""Compare chosen-vs-actual-wrong SQL likelihood on semantic edit tokens."""
 
 from __future__ import annotations
 
@@ -22,7 +22,12 @@ def _index_diagnostic(result: dict[str, Any]) -> dict[str, dict[str, Any]]:
 
 
 def analyze(
-    diagnostic: dict[str, Any], contract: dict[str, Any], *, preference_threshold: int = 12
+    diagnostic: dict[str, Any],
+    contract: dict[str, Any],
+    *,
+    preference_threshold: int = 12,
+    source_checkpoint: str = "step120",
+    attribution_only: bool = False,
 ) -> dict[str, Any]:
     if diagnostic.get("contract") != "repair-sft-teacher-forced-component-diagnostic-v3":
         raise ValueError("semantic-delta margin requires teacher-forced diagnostic v3")
@@ -95,7 +100,11 @@ def analyze(
     )
     invalid_targets = sum(row["invalid_target_at_frozen_offset"] for row in per_task)
     non_regression_passed = earlier_regressions == 0 and invalid_targets == 0
-    if not non_regression_passed:
+    if attribution_only:
+        target = "attribution_probe_only_no_training"
+        training_allowed = False
+        reason = "cross_model_attribution_does_not_authorize_training"
+    elif not non_regression_passed:
         target = "blocked_inconsistent_teacher_forced_reconstruction"
         training_allowed = False
         reason = "frozen_step120_first_nongreedy_token_did_not_reconstruct_for_all_pairs"
@@ -119,7 +128,7 @@ def analyze(
     }
     return {
         "contract": "semantic-delta-margin-gate-result-v2",
-        "source_checkpoint": "step120",
+        "source_checkpoint": source_checkpoint,
         "model_label": diagnostic.get("model_label"),
         "task_count": 16,
         "semantic_delta_margin": {
@@ -137,6 +146,7 @@ def analyze(
             "passed": non_regression_passed,
         },
         "decision": {
+            "analysis_mode": "attribution_only" if attribution_only else "training_gate",
             "selected_next_action": target,
             "one_step_training_allowed": training_allowed,
             "reason": reason,
@@ -164,11 +174,15 @@ def main() -> None:
     parser.add_argument("--dataset-contract", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--preference-threshold", type=int, default=12)
+    parser.add_argument("--source-checkpoint", default="step120")
+    parser.add_argument("--attribution-only", action="store_true")
     args = parser.parse_args()
     result = analyze(
         json.loads(args.diagnostic.read_text(encoding="utf-8")),
         json.loads(args.dataset_contract.read_text(encoding="utf-8")),
         preference_threshold=args.preference_threshold,
+        source_checkpoint=args.source_checkpoint,
+        attribution_only=args.attribution_only,
     )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

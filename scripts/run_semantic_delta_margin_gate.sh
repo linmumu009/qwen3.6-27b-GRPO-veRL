@@ -5,6 +5,9 @@ PROJECT_ROOT="${PROJECT_ROOT:-/workspace/llin-verl-grpo}"
 MODEL_PATH="${MODEL_PATH:-/models/Qwen3.6-27B}"
 MEGATRON_BRIDGE_ROOT="${MEGATRON_BRIDGE_ROOT:-${PROJECT_ROOT}/reference/Megatron-Bridge-de93536e/src}"
 MODEL_DIST_CKPT="${MODEL_DIST_CKPT:-${PROJECT_ROOT}/runs/llin-pi-dense-correctness-step100-to-step120-20260810-01/checkpoints/global_step_120/actor/model/dist_ckpt}"
+MODEL_SOURCE="${MODEL_SOURCE:-dist_checkpoint}"
+SOURCE_LABEL="${SOURCE_LABEL:-step120}"
+ANALYSIS_MODE="${ANALYSIS_MODE:-training_gate}"
 CRITICAL_DIR="${CRITICAL_DIR:-${PROJECT_ROOT}/data/repair_sft_critical_token_20260812}"
 CRITICAL_DATA="${CRITICAL_DATA:-${CRITICAL_DIR}/critical_token_repair_sft_train.parquet}"
 CRITICAL_CONTRACT="${CRITICAL_CONTRACT:-${CRITICAL_DIR}/contract.json}"
@@ -24,12 +27,32 @@ if (( TP * PP * CP != NPROC )); then
   printf 'invalid topology for semantic-delta margin gate\n' >&2
   exit 2
 fi
-for path in "${MODEL_PATH}/config.json" "${MODEL_DIST_CKPT}/.metadata" "${CRITICAL_DATA}" "${CRITICAL_CONTRACT}"; do
+for path in "${MODEL_PATH}/config.json" "${CRITICAL_DATA}" "${CRITICAL_CONTRACT}"; do
   if [[ ! -e "${path}" ]]; then
     printf 'semantic-delta margin input missing: %s\n' "${path}" >&2
     exit 2
   fi
 done
+case "${MODEL_SOURCE}" in
+  dist_checkpoint)
+    if [[ ! -f "${MODEL_DIST_CKPT}/.metadata" ]]; then
+      printf 'semantic-delta model checkpoint missing: %s\n' "${MODEL_DIST_CKPT}" >&2
+      exit 2
+    fi
+    MODEL_INIT_ARG="engine.dist_checkpointing_path=${MODEL_DIST_CKPT}"
+    ;;
+  base_hf)
+    MODEL_INIT_ARG="engine.dist_checkpointing_path=null"
+    ;;
+  *)
+    printf 'unsupported semantic-delta model source: %s\n' "${MODEL_SOURCE}" >&2
+    exit 2
+    ;;
+esac
+if [[ "${ANALYSIS_MODE}" != "training_gate" && "${ANALYSIS_MODE}" != "attribution_only" ]]; then
+  printf 'unsupported semantic-delta analysis mode: %s\n' "${ANALYSIS_MODE}" >&2
+  exit 2
+fi
 if [[ ! -d "${MEGATRON_BRIDGE_ROOT}/megatron/bridge" ]]; then
   printf 'pinned Megatron-Bridge source missing: %s\n' "${MEGATRON_BRIDGE_ROOT}" >&2
   exit 2
@@ -50,7 +73,11 @@ python3 -m scripts.check_semantic_delta_margin_gate \
   --output "${OUTPUT_DIR}/token_gate.json"
 
 cat > "${OUTPUT_DIR}/experiment_contract.txt" <<EOF
-purpose=step120_correct_vs_actual_wrong_sql_semantic_delta_margin
+purpose=correct_vs_actual_wrong_sql_semantic_delta_margin
+model_source=${MODEL_SOURCE}
+source_label=${SOURCE_LABEL}
+analysis_mode=${ANALYSIS_MODE}
+state_source=step120_first_error
 pairs=16
 rows=32
 forward_only=true
@@ -104,7 +131,7 @@ torchrun --standalone --nnodes=1 --nproc_per_node="${NPROC}" \
   engine.dtype=bfloat16 \
   engine.use_distributed_optimizer=true \
   engine.use_dist_checkpointing=true \
-  "engine.dist_checkpointing_path=${MODEL_DIST_CKPT}" \
+  "${MODEL_INIT_ARG}" \
   ++engine.override_transformer_config.attention_backend=auto \
   ++engine.override_transformer_config.context_parallel_algo=kvallgather_cp_algo \
   ++engine.override_transformer_config.use_flash_attn=true \
@@ -125,7 +152,14 @@ torchrun --standalone --nnodes=1 --nproc_per_node="${NPROC}" \
   "+diagnostic.output_path=${OUTPUT_DIR}/diagnostic.json" \
   "+diagnostic.model_label=${MODEL_LABEL}"
 
-python3 -m scripts.analyze_semantic_delta_margin_gate \
-  --diagnostic "${OUTPUT_DIR}/diagnostic.json" \
-  --dataset-contract "${DATA_CONTRACT}" \
+ANALYSIS_ARGS=(
+  --diagnostic "${OUTPUT_DIR}/diagnostic.json"
+  --dataset-contract "${DATA_CONTRACT}"
   --output "${OUTPUT_DIR}/semantic_delta_margin_result.json"
+  --source-checkpoint "${SOURCE_LABEL}"
+)
+if [[ "${ANALYSIS_MODE}" == "attribution_only" ]]; then
+  ANALYSIS_ARGS+=(--attribution-only)
+fi
+python3 -m scripts.analyze_semantic_delta_margin_gate \
+  "${ANALYSIS_ARGS[@]}"

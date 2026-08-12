@@ -179,6 +179,12 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 已验证状态
 
+### v0.84.0 — 2026-08-12
+
+- 新增原生 Qwen3.6-27B 与 Step 120 的奖励代理行为归因入口：原生模型可在完全相同的 16 个 Step 120 首错状态和 correct-vs-actual-wrong pairs 上执行 forward-only semantic-delta margin，不初始化 optimizer、不保存 checkpoint，也不把归因结果误接到训练授权。
+- 新增原生权重的同 16 题、greedy n=1、老板四工具、48K/25 工具回合自由回放入口；与既有 Step 120 回放保持 prompt、任务、解码和运行时合同一致，供老板原版 `result_wrong_process_ok`、过程分、数值正确、重复命令和完成率配对比较。
+- 归因设计分离“相同错误状态下的模型条件偏好”和“各模型自然生成的端到端行为”：前者判断训练是否改变正确/错误 SQL 的相对概率，后者判断类似代理奖励利用是否在原生模型中已经自然出现；两项都只作诊断，不允许模型晋级。
+
 ### v0.83.0 — 2026-08-12
 
 - 完成 Step 120 的一次 reference-free semantic-delta pairwise 全参金丝雀：16 对固定 `chosen → rejected` 数据、TP4/PP2/CP2、fresh CPU-offload Adam、`1e-6`、beta `1.0`，唯一训练步 loss `1.4948`、grad norm `98.01`，保存约 `51G` 的 model+extra checkpoint 且无 optimizer 文件。
