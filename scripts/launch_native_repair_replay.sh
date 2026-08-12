@@ -4,7 +4,8 @@ set -Eeuo pipefail
 PROJECT_ROOT="${PROJECT_ROOT:-/workspace/llin-verl-grpo}"
 RUN_NAME="${RUN_NAME:-llin-native-repair-replay-20260812-01}"
 OUTPUT_DIR="${OUTPUT_DIR:-${PROJECT_ROOT}/runs/${RUN_NAME}}"
-export PROJECT_ROOT RUN_NAME OUTPUT_DIR
+EXPECTED_EVAL_ROWS="${EXPECTED_EVAL_ROWS:-16}"
+export PROJECT_ROOT RUN_NAME OUTPUT_DIR EXPECTED_EVAL_ROWS
 mkdir -p "${OUTPUT_DIR}"
 if [[ -f "${OUTPUT_DIR}/exit_code" ]]; then
   printf 'run already has exit_code: %s\n' "${OUTPUT_DIR}" >&2
@@ -22,7 +23,7 @@ nohup bash -lc '
       --output "${validation_file}" \
       --resource llin_rollout \
       --ray-address "${RAY_ADDRESS:-192.168.202.5:26379}" \
-      --expected-jsonl-rows 16 \
+      --expected-jsonl-rows "${EXPECTED_EVAL_ROWS}" \
       >> "${OUTPUT_DIR}/driver.log" 2>&1
     code=$?
   fi

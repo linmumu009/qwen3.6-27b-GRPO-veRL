@@ -8,6 +8,7 @@ RUN_NAME="${RUN_NAME:-llin-native-repair-replay-20260812-01}"
 OUTPUT_DIR="${OUTPUT_DIR:-${PROJECT_ROOT}/runs/${RUN_NAME}}"
 MAX_ASSISTANT_TURNS="${MAX_ASSISTANT_TURNS:-26}"
 MAX_USER_TURNS="${MAX_USER_TURNS:-25}"
+EXPECTED_EVAL_ROWS="${EXPECTED_EVAL_ROWS:-16}"
 
 if [[ ! -f "${EVAL_FILE}" ]]; then
   printf 'native attribution replay parquet missing: %s\n' "${EVAL_FILE}" >&2
@@ -18,7 +19,7 @@ mkdir -p "${OUTPUT_DIR}"
 cat > "${OUTPUT_DIR}/experiment_contract.txt" <<EOF
 purpose=native_vs_step120_reward_behavior_attribution
 model_source=original_hf_base_weights
-evaluation_rows=16
+evaluation_rows=${EXPECTED_EVAL_ROWS}
 evaluation_split=train236_same_task_not_heldout
 sampling=greedy_n1
 system_tools=boss_exact
@@ -39,6 +40,7 @@ TRAIN_FILE="${EVAL_FILE}" \
 EVAL_FILE="${EVAL_FILE}" \
 MAX_ASSISTANT_TURNS="${MAX_ASSISTANT_TURNS}" \
 MAX_USER_TURNS="${MAX_USER_TURNS}" \
+EXPECTED_EVAL_ROWS="${EXPECTED_EVAL_ROWS}" \
 ROLLOUT_GPU_MEMORY_UTILIZATION=0.80 \
 ROLLOUT_MAX_BATCHED_TOKENS=16384 \
 ROLLOUT_MAX_SEQS=12 \

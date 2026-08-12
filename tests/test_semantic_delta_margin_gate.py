@@ -249,7 +249,7 @@ def test_margin_launcher_is_forward_only_and_saves_no_checkpoint():
         encoding="utf-8"
     )
     assert "model_source=original_hf_base_weights" in native_replay
-    assert "evaluation_rows=16" in native_replay
+    assert "evaluation_rows=${EXPECTED_EVAL_ROWS}" in native_replay
     assert "sampling=greedy_n1" in native_replay
     assert "actor_rollout_ref.actor.megatron.forward_only=True" in (
         ROOT / "scripts" / "run_pi_frozen_baseline.sh"

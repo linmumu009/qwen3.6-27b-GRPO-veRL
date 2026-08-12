@@ -70,3 +70,19 @@ def test_replay_uses_boss_tools_greedy_n1_and_parameterized_row_contract():
     assert "LLIN_VAL_ONLY_FORCE_DIST_SYNC=1" in script
     assert "++trainer.val_only_force_dist_sync=True" in script
     assert "actor_rollout_ref.actor.megatron.dist_checkpointing_path" in script
+
+
+def test_native_replay_has_parameterized_row_contract():
+    script = (ROOT / "scripts" / "run_native_repair_replay.sh").read_text(
+        encoding="utf-8"
+    )
+    launcher = (ROOT / "scripts" / "launch_native_repair_replay.sh").read_text(
+        encoding="utf-8"
+    )
+
+    assert 'EXPECTED_EVAL_ROWS="${EXPECTED_EVAL_ROWS:-16}"' in script
+    assert "evaluation_rows=${EXPECTED_EVAL_ROWS}" in script
+    assert 'EXPECTED_EVAL_ROWS="${EXPECTED_EVAL_ROWS}"' in script
+    assert 'EXPECTED_EVAL_ROWS="${EXPECTED_EVAL_ROWS:-16}"' in launcher
+    assert "export PROJECT_ROOT RUN_NAME OUTPUT_DIR EXPECTED_EVAL_ROWS" in launcher
+    assert '--expected-jsonl-rows "${EXPECTED_EVAL_ROWS}"' in launcher

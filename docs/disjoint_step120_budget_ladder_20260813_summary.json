@@ -1,0 +1,82 @@
+{
+  "contract": "disjoint-step120-budget-ladder-safe-summary-v1",
+  "date": "2026-08-13",
+  "scope": {
+    "tasks_per_run": 64,
+    "assistant_turn_budgets": [3, 12, 26],
+    "tool_result_turn_budgets": [2, 11, 25],
+    "same_candidate_pool": true,
+    "greedy_n1": true,
+    "forced_step120_actor_to_rollout_sync": true,
+    "disjoint_from_frozen16_val20_test20": true,
+    "contains_original_prompts_sql_answers_task_ids_tool_outputs_or_server_paths": false
+  },
+  "runs": {
+    "short3": {
+      "tool_calls": 377,
+      "bash_calls": 283,
+      "read_calls": 94,
+      "rows_with_recognized_readonly_sqlite": 4,
+      "recognized_readonly_sqlite_calls": 7,
+      "duplicate_bash_calls": 83,
+      "pairs": 1,
+      "no_readonly_query": 60,
+      "first_query_without_observed_result": 3,
+      "pair_gate_passed": false
+    },
+    "long12": {
+      "tool_calls": 947,
+      "tool_call_name_counts": {
+        "bash": 807,
+        "edit": 2,
+        "read": 117,
+        "write": 21
+      },
+      "rows_with_recognized_readonly_sqlite": 26,
+      "recognized_readonly_sqlite_calls": 229,
+      "duplicate_bash_calls": 128,
+      "terminal_assistant_answers": 27,
+      "missing_tool_responses": 93,
+      "pairs": 23,
+      "no_readonly_query": 38,
+      "first_query_without_observed_result": 1,
+      "first_query_correct_or_equivalent": 2,
+      "pair_gate_passed": false
+    },
+    "full25": {
+      "tool_calls": 991,
+      "tool_call_name_counts": {
+        "bash": 802,
+        "edit": 15,
+        "read": 141,
+        "write": 33
+      },
+      "rows_with_recognized_readonly_sqlite": 23,
+      "recognized_readonly_sqlite_calls": 234,
+      "duplicate_bash_calls": 120,
+      "terminal_assistant_answers": 35,
+      "missing_tool_responses": 51,
+      "truncated_terminal_tool_calls": 8,
+      "pairs": 22,
+      "no_readonly_query": 41,
+      "first_query_without_observed_result": 0,
+      "first_query_correct_or_equivalent": 1,
+      "first_error_category_counts": {
+        "executable_empty_evidence": 1,
+        "executable_wrong_or_insufficient_evidence": 19,
+        "schema_syntax_or_execution_error": 2
+      },
+      "pair_gate_passed": false
+    }
+  },
+  "decision": {
+    "minimum_pairs": 48,
+    "maximum_observed_pairs": 23,
+    "training_allowed": false,
+    "optimizer_initialized": false,
+    "checkpoint_saved": false,
+    "do_not_lower_pair_threshold": true,
+    "do_not_use_no_sql_or_unobserved_calls_as_rejected": true,
+    "next_action": "run_same_64_task_native_full25_attribution_then_expand_semantically_reviewed_disjoint_pool"
+  }
+}
