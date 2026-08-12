@@ -157,11 +157,17 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/analyze_repair_sft_free_run_divergence.py`：在服务器侧离线对齐教师轨迹与老板原始自由回放，统计第一条 SQL 分叉、目标 SQL 后续命中和正确证据后的继续查询，不输出原始敏感内容。
 - `scripts/analyze_repair_sft_first_query_semantics.py`：只读执行两份自由回放的首条 SQL，区分 gold 支持、空结果、执行失败和错误/不足证据，并用教师查询结果排除机械等价 SQL。
 - `scripts/analyze_repair_sft_all_query_semantics.py`：只读执行回放中的全部 SQL，分别统计前 1/2/3 条及任意位置首次获得 gold 支持或教师结果等价证据的任务数。
+- `scripts/analyze_state_recovery_semantics.py`：在服务器侧比较首错/纠正 SQL 的表、join、时间、聚合、过滤、select 与排序差异，并与 semantic-mask v3 的首个非 greedy token 家族交叉；仅输出查询哈希和类别。
 - `scripts/teacher_forced_token_ranks.py`：在 TP 词表分片上计算教师 SQL token 的精确 rank，并定位首个非 greedy 关键 token，不收集完整 logits。
 - `scripts/qwen36_sql_weighted_sft_dataset.py`、`scripts/check_sql_weighted_sft_dataset.py`、`scripts/run_repair_sft_sql_weighted_canary.sh`：构造和 CPU 核验 SQL 加权 loss mask，并从 Step 120 启动仅一步、单变量、只保存最终模型的金丝雀。
 - `scripts/prepare_state_conditioned_repair_sft.py`、`scripts/check_state_conditioned_sft_dataset.py`、`scripts/run_repair_sft_state_conditioned_canary.sh`：从 Step 120 首错 SQL 和真实工具结果构造零-loss 上下文，机械核验纠正查询并执行一步状态条件化金丝雀。
 
 ## 已验证状态
+
+### v0.76.0 — 2026-08-12
+
+- 新增首错 SQL 结构差异与 semantic critical-token 联合审计：使用有界词法 clause signature 区分表 grounding、join、时间口径、聚合/grouping、过滤、select 和 ordering/limit，并与 query-start、聚合函数、clause keyword、identifier/literal 等首分叉家族交叉。
+- 审计器只读取服务器侧状态条件 Parquet 和 v3 纯前向结果，仓库/输出均不包含原始问题、SQL、答案或服务器路径；该 CPU 证据完成前不冻结下一训练配方。
 
 ### v0.75.1 — 2026-08-12
 
