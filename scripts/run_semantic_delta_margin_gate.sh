@@ -13,6 +13,7 @@ DATA_FILE="${DATA_FILE:-${DATA_DIR}/semantic_delta_margin_gate.parquet}"
 DATA_CONTRACT="${DATA_CONTRACT:-${DATA_DIR}/contract.json}"
 RUN_NAME="${RUN_NAME:-llin-semantic-delta-margin-step120-20260812-01}"
 OUTPUT_DIR="${OUTPUT_DIR:-${PROJECT_ROOT}/runs/${RUN_NAME}}"
+MODEL_LABEL="${MODEL_LABEL:-step120_semantic_delta_margin}"
 MAX_LENGTH="${MAX_LENGTH:-8192}"
 NPROC="${NPROC:-16}"
 TP="${TP:-4}"
@@ -122,7 +123,7 @@ torchrun --standalone --nnodes=1 --nproc_per_node="${NPROC}" \
   trainer.nnodes=1 \
   "trainer.n_gpus_per_node=${NPROC}" \
   "+diagnostic.output_path=${OUTPUT_DIR}/diagnostic.json" \
-  +diagnostic.model_label=step120_semantic_delta_margin
+  "+diagnostic.model_label=${MODEL_LABEL}"
 
 python3 -m scripts.analyze_semantic_delta_margin_gate \
   --diagnostic "${OUTPUT_DIR}/diagnostic.json" \

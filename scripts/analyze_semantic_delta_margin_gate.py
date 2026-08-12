@@ -58,11 +58,20 @@ def analyze(
         delta_margin = rejected_delta_nll - chosen_delta_nll
         sql_margin = rejected_sql_nll - chosen_sql_nll
         rank = chosen["sql_token_rank"]
-        consistent = (
+        exact_reconstruction = (
             rank.get("first_nongreedy_offset") == int(frozen["critical_sql_token_offset"])
             and rank.get("first_nongreedy_target_id") == int(frozen["critical_sql_target_id"])
         )
-        baseline_consistent += int(consistent)
+        actual_offset = rank.get("first_nongreedy_offset")
+        earlier_regression = actual_offset is not None and int(actual_offset) < int(
+            frozen["critical_sql_token_offset"]
+        )
+        invalid_target_at_frozen_offset = (
+            actual_offset == int(frozen["critical_sql_token_offset"])
+            and rank.get("first_nongreedy_target_id")
+            != int(frozen["critical_sql_target_id"])
+        )
+        baseline_consistent += int(exact_reconstruction)
         family = str(frozen["critical_token_family"])
         family_margins[family].append(delta_margin)
         family_preferred[family] += int(delta_margin > 0)
@@ -73,14 +82,20 @@ def analyze(
                 "semantic_delta_log_probability_margin_per_token": delta_margin,
                 "full_sql_log_probability_margin_per_token": sql_margin,
                 "chosen_preferred_on_semantic_delta": delta_margin > 0,
-                "frozen_first_nongreedy_token_reconstructed": consistent,
+                "frozen_first_nongreedy_token_reconstructed": exact_reconstruction,
+                "new_earlier_first_nongreedy_regression": earlier_regression,
+                "invalid_target_at_frozen_offset": invalid_target_at_frozen_offset,
             }
         )
 
     margins = [row["semantic_delta_log_probability_margin_per_token"] for row in per_task]
     chosen_preferred = sum(row["chosen_preferred_on_semantic_delta"] for row in per_task)
-    reconstruction_passed = baseline_consistent == 16
-    if not reconstruction_passed:
+    earlier_regressions = sum(
+        row["new_earlier_first_nongreedy_regression"] for row in per_task
+    )
+    invalid_targets = sum(row["invalid_target_at_frozen_offset"] for row in per_task)
+    non_regression_passed = earlier_regressions == 0 and invalid_targets == 0
+    if not non_regression_passed:
         target = "blocked_inconsistent_teacher_forced_reconstruction"
         training_allowed = False
         reason = "frozen_step120_first_nongreedy_token_did_not_reconstruct_for_all_pairs"
@@ -103,8 +118,9 @@ def analyze(
         for family, values in sorted(family_margins.items())
     }
     return {
-        "contract": "semantic-delta-margin-gate-result-v1",
+        "contract": "semantic-delta-margin-gate-result-v2",
         "source_checkpoint": "step120",
+        "model_label": diagnostic.get("model_label"),
         "task_count": 16,
         "semantic_delta_margin": {
             "definition": "rejected_mean_nll_minus_chosen_mean_nll_positive_prefers_chosen",
@@ -114,10 +130,11 @@ def analyze(
             "median_margin": median(margins),
             "by_critical_token_family": by_family,
         },
-        "baseline_non_regression_audit": {
+        "frozen_critical_token_audit": {
             "frozen_first_nongreedy_token_reconstructed": baseline_consistent,
-            "required": 16,
-            "passed": reconstruction_passed,
+            "new_earlier_first_nongreedy_regressions": earlier_regressions,
+            "invalid_targets_at_frozen_offset": invalid_targets,
+            "passed": non_regression_passed,
         },
         "decision": {
             "selected_next_action": target,

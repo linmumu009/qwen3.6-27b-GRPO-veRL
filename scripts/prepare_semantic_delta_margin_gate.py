@@ -30,7 +30,7 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
-def _candidate_row(source: dict[str, Any], label: str) -> dict[str, Any]:
+def _candidate_row(source: dict[str, Any], label: str, pair_index: int) -> dict[str, Any]:
     row = copy.deepcopy(source)
     source_task_id = str(row["task_id"])
     messages = row["messages"]
@@ -59,6 +59,7 @@ def _candidate_row(source: dict[str, Any], label: str) -> dict[str, Any]:
     row["sample_id"] = f"semantic-delta-margin-{source_task_id}-{label}"
     row["source_task_id"] = source_task_id
     row["candidate_label"] = label
+    row["pair_index"] = pair_index
     row["purpose"] = "step120_correct_vs_actual_wrong_sql_semantic_delta_margin"
     return row
 
@@ -72,7 +73,7 @@ def build_rows(
     output: list[dict[str, Any]] = []
     evidence: list[dict[str, Any]] = []
     seen: set[str] = set()
-    for raw in critical_rows:
+    for pair_index, raw in enumerate(critical_rows):
         source = normalize_container(raw)
         task_id = str(source.get("task_id") or "")
         if not task_id or task_id in seen or task_id not in contract_evidence:
@@ -96,7 +97,7 @@ def build_rows(
             raise ValueError(f"{task_id}: critical target differs from audited contract")
         base_hash = sha256_value(messages[:4])
         for label in CANDIDATES:
-            output.append(_candidate_row(source, label))
+            output.append(_candidate_row(source, label, pair_index))
         evidence.append(
             {
                 "task_id": task_id,

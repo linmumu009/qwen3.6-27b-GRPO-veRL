@@ -41,10 +41,16 @@ def check(data_file: Path, contract_file: Path, model_path: str, max_length: int
     evidence = {str(row["task_id"]): row for row in contract["evidence"]}
     labels: Counter[str] = Counter()
     samples = []
+    expected_order = []
+    for pair_index in range(16):
+        expected_order.extend([(pair_index, "chosen"), (pair_index, "rejected")])
     for index in range(len(dataset)):
         row = dataset.dataframe.iloc[index]
         task_id = str(row["source_task_id"])
         label = str(row["candidate_label"])
+        pair_index = int(row["pair_index"])
+        if (pair_index, label) != expected_order[index]:
+            raise ValueError("semantic-delta rows are not adjacent chosen/rejected pairs")
         item = dataset[index]
         sql_mask = item["sql_shell_mask"].tolist()
         delta_mask = item["semantic_delta_mask"].tolist()
@@ -60,6 +66,11 @@ def check(data_file: Path, contract_file: Path, model_path: str, max_length: int
             if actual_id != int(evidence[task_id]["critical_sql_target_id"]):
                 raise ValueError(f"{task_id}: frozen critical target changed")
         labels[label] += 1
+        expected_sign = 1 if label == "chosen" else -1
+        if set(item["candidate_sign"].tolist()) != {expected_sign}:
+            raise ValueError(f"{task_id}::{label}: candidate sign differs")
+        if set(item["pair_index"].tolist()) != {pair_index}:
+            raise ValueError(f"{task_id}::{label}: pair index differs")
         samples.append(
             {
                 "task_id": task_id,
@@ -79,6 +90,8 @@ def check(data_file: Path, contract_file: Path, model_path: str, max_length: int
         "all_delta_masks_nonempty": True,
         "all_delta_masks_subset_of_sql": True,
         "all_chosen_critical_targets_match_frozen_step120": True,
+        "all_pairs_adjacent_chosen_then_rejected": True,
+        "all_candidate_signs_and_pair_indices_match": True,
         "truncation": "error",
         "max_length": max_length,
         "samples": samples,

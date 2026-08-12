@@ -4,9 +4,12 @@ from pathlib import Path
 import json
 
 from scripts.analyze_semantic_delta_margin_gate import analyze
+from scripts.compare_semantic_delta_margin_canary import compare
 from scripts.analyze_repair_sft_free_run_divergence import sql_from_command
 from scripts.prepare_semantic_delta_margin_gate import build_rows
 from scripts.teacher_forced_component_masks import semantic_delta_token_masks
+from scripts.semantic_delta_pairwise_loss import pairwise_loss_from_flat_sequences
+import torch
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -142,6 +145,42 @@ def test_margin_gate_routes_misranking_to_pairwise_canary_and_preference_to_plan
     )
 
 
+def test_reference_free_pairwise_loss_prefers_chosen_delta_and_scales_global_pairs():
+    log_probs = torch.tensor([-1.0, -9.0, -9.0, -2.0, -9.0, -9.0], requires_grad=True)
+    loss, metrics = pairwise_loss_from_flat_sequences(
+        log_prob_values=log_probs,
+        delta_mask_values=torch.tensor([0, 1, 0, 0, 1, 0]),
+        candidate_sign_values=torch.tensor([1, 1, 1, -1, -1, -1]),
+        pair_index_values=torch.tensor([0, 0, 0, 0, 0, 0]),
+        offsets=torch.tensor([0, 3, 6]),
+        beta=1.0,
+        global_pair_count=1,
+        dp_size=1,
+    )
+
+    assert metrics["pairwise/margin_sum"].item() == 1.0
+    assert metrics["pairwise/chosen_preferred_count"].item() == 1
+    assert loss.item() > 0
+    loss.backward()
+    assert log_probs.grad[0].item() < 0
+    assert log_probs.grad[3].item() > 0
+
+
+def test_post_canary_gate_requires_preference_improvement_and_no_earlier_regression():
+    baseline, contract = _diagnostic(0)
+    post, _ = _diagnostic(12)
+    baseline_result = analyze(baseline, contract)
+    post_result = analyze(post, contract)
+    comparison = compare(baseline_result, post_result)
+    assert comparison["passed"] is True
+    assert comparison["per_task_margin_improved"] == 12
+
+    post_result["frozen_critical_token_audit"][
+        "new_earlier_first_nongreedy_regressions"
+    ] = 1
+    assert compare(baseline_result, post_result)["passed"] is False
+
+
 def test_margin_launcher_is_forward_only_and_saves_no_checkpoint():
     script = (ROOT / "scripts" / "run_semantic_delta_margin_gate.sh").read_text(
         encoding="utf-8"
@@ -154,6 +193,22 @@ def test_margin_launcher_is_forward_only_and_saves_no_checkpoint():
     assert "'checkpoint.save_contents=[]'" in script
     assert "trainer.save_freq=-1" in script
     assert "data.train_batch_size=32" in script
+
+    training = (ROOT / "scripts" / "run_semantic_delta_pairwise_canary.sh").read_text(
+        encoding="utf-8"
+    )
+    pipeline = (ROOT / "scripts" / "run_semantic_delta_pairwise_pipeline.sh").read_text(
+        encoding="utf-8"
+    )
+    assert "optimizer_steps=1" in training
+    assert "data.train_batch_size=32" in training
+    assert "data.micro_batch_size_per_gpu=2" in training
+    assert "pair_order=chosen_then_rejected_no_shuffle" in training
+    assert "loss_scope=semantic_delta_tokens_only" in training
+    assert "'checkpoint.save_contents=[model,extra]'" in training
+    assert "trainer.total_training_steps=1" in training
+    assert "compare_semantic_delta_margin_canary" in pipeline
+    assert "run_semantic_delta_margin_gate.sh" in pipeline
 
 
 def test_safe_pretraining_summary_freezes_pairwise_gate_without_raw_assets():

@@ -54,4 +54,8 @@ class Qwen36SemanticDeltaMarginDataset(Qwen36TeacherForcedDiagnosticDataset):
         if not any(mask):
             raise ValueError(f"{task_id}::{label}: empty semantic-delta mask")
         result["semantic_delta_mask"] = torch.tensor(mask, dtype=torch.long)
+        sign = 1 if label == "chosen" else -1
+        pair_index = int(row["pair_index"])
+        result["candidate_sign"] = torch.full_like(result["input_ids"], sign)
+        result["pair_index"] = torch.full_like(result["input_ids"], pair_index)
         return result

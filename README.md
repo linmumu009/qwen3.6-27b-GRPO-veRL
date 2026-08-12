@@ -172,8 +172,15 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/prepare_semantic_plan_sufficiency_gate.py`、`scripts/check_semantic_plan_sufficiency_gate.py`：将同一 16 条 Step 120 首错 SQL 与真实工具结果复制为 Control、operator oracle、full semantic plan 三臂；CPU 门禁逐题核对相同基态、bash-only、只读首错 SQL，以及 oracle 不泄漏原 SQL、结果、答案或字面量。
 - `scripts/run_semantic_plan_sufficiency_gate.sh`、`scripts/prepare_semantic_plan_gate_outputs.py`、`scripts/analyze_semantic_plan_sufficiency_gate.py`：一次加载 Step 120 后对 48 行做贪心单助手回合生成，在工具执行前停止；随后只读执行生成 SQL，以 gold 支持或教师结果等价判定恢复，并按冻结阈值自动选择下一训练目标。
 - `scripts/prepare_semantic_delta_margin_gate.py`、`scripts/qwen36_semantic_delta_margin_dataset.py`、`scripts/run_semantic_delta_margin_gate.sh`：在相同首错状态下配对机械正确 correction SQL 与模型实际首错 SQL，只对 token edit span 做 Step 120 forward-only 概率 margin；同时精确重建冻结的首个 non-greedy token，作为 chosen-vs-rejected 训练前的无回退门禁。
+- `scripts/run_semantic_delta_pairwise_training.py`、`scripts/run_semantic_delta_pairwise_canary.sh`、`scripts/run_semantic_delta_pairwise_pipeline.sh`：在固定顺序、每个 microbatch 一对候选的条件下，对 semantic-delta token 的长度归一化 log-probability 施加 reference-free logistic ranking loss；只做一步全参更新，随后自动重跑同一 margin 并执行 `12/16 + 12/16 + 零更早回退` 门禁。
 
 ## 已验证状态
+
+### v0.82.0 — 2026-08-12
+
+- 新增一次 reference-free pairwise plan-to-SQL 金丝雀：数据固定为 16 个相邻 `chosen → rejected` pair，关闭 shuffle，global batch 为 32、microbatch 为 2；loss 只比较两侧 semantic-delta token 的平均 log probability，并以 logistic ranking 直接纠正 Step 120 在 `0/16` 对中偏好实际首错 SQL的问题。
+- 训练复用已实跑的 Step 120 TP4/PP2/CP2 全参 SFT 资源合同、`1e-6` 学习率、fresh CPU-offload Adam、全量重计算和 model+extra-only checkpoint；总 optimizer step 硬锁为 1，不保存 optimizer，不运行中间验证，不把 reference-free 目标称为 DPO。
+- 流水线在训练前重建 baseline result v2，训练后自动用 Step 1 checkpoint 做同数据 forward-only margin，只有正确 delta `≥12/16` 占优、`≥12/16` margin 改善、0 个更早 non-greedy 回退且冻结 offset 处 target 合法时才允许短的一回合 semantic-plan replay；否则停止且不追加 pairwise 步数。
 
 ### v0.81.0 — 2026-08-12
 
