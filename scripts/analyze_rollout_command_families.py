@@ -26,7 +26,20 @@ def command_family(command: str) -> str:
         return "recognized_readonly_sqlite"
     lowered = value.lower()
     if "sqlite" in lowered:
-        return "sqlite_unparsed_or_non_readonly"
+        if re.search(r"(?:^|[\s'\"])(?:\.tables|\.databases|\.dbinfo)\b", lowered):
+            return "sqlite_schema_catalog"
+        if re.search(r"(?:^|[\s'\"])\.schema\b", lowered):
+            return "sqlite_schema_definition"
+        if re.search(r"\bpragma\b", lowered):
+            return "sqlite_schema_pragma"
+        if re.search(r"\b(?:select|with)\b", lowered):
+            return "sqlite_readonly_unparsed"
+        if re.search(
+            r"\b(?:insert|update|delete|drop|alter|create|replace|vacuum|attach|detach)\b",
+            lowered,
+        ):
+            return "sqlite_mutating_or_unsafe"
+        return "sqlite_path_or_cli_only"
     match = re.match(r"(?:cd\s+\S+\s*(?:&&|;)\s*)?([^\s;&|]+)", value)
     executable = (match.group(1) if match else "").lower().rsplit("/", 1)[-1]
     if executable.startswith("python"):
@@ -43,6 +56,8 @@ def summarize(rows: dict[str, list[dict[str, Any]]]) -> dict[str, Any]:
     observed_calls = 0
     unobserved_calls = 0
     rows_with_any_bash = 0
+    rows_with_any_sqlite = 0
+    rows_with_schema_discovery_sqlite = 0
     rows_with_recognized_sqlite = 0
     rows_with_no_tool_calls = 0
     rows_with_unobserved_tool_calls = 0
@@ -55,6 +70,8 @@ def summarize(rows: dict[str, list[dict[str, Any]]]) -> dict[str, Any]:
             if message.get("role") == "tool"
         }
         row_has_bash = False
+        row_has_any_sqlite = False
+        row_has_schema_sqlite = False
         row_has_sqlite = False
         for message in messages:
             if message.get("role") != "assistant":
@@ -72,8 +89,18 @@ def summarize(rows: dict[str, list[dict[str, Any]]]) -> dict[str, Any]:
                 family = command_family(command)
                 command_families[family] += 1
                 command_hashes[hashlib.sha256(command.encode("utf-8")).hexdigest()] += 1
+                row_has_any_sqlite = row_has_any_sqlite or family == (
+                    "recognized_readonly_sqlite"
+                ) or family.startswith("sqlite_")
+                row_has_schema_sqlite = row_has_schema_sqlite or family in {
+                    "sqlite_schema_catalog",
+                    "sqlite_schema_definition",
+                    "sqlite_schema_pragma",
+                }
                 row_has_sqlite = row_has_sqlite or family == "recognized_readonly_sqlite"
         rows_with_any_bash += int(row_has_bash)
+        rows_with_any_sqlite += int(row_has_any_sqlite)
+        rows_with_schema_discovery_sqlite += int(row_has_schema_sqlite)
         rows_with_recognized_sqlite += int(row_has_sqlite)
         rows_with_no_tool_calls += int(not row_calls)
         rows_with_unobserved_tool_calls += int(
@@ -96,6 +123,8 @@ def summarize(rows: dict[str, list[dict[str, Any]]]) -> dict[str, Any]:
         "bash_calls": bash_calls,
         "bash_command_family_counts": dict(sorted(command_families.items())),
         "rows_with_any_bash": rows_with_any_bash,
+        "rows_with_any_sqlite": rows_with_any_sqlite,
+        "rows_with_schema_discovery_sqlite": rows_with_schema_discovery_sqlite,
         "rows_with_recognized_readonly_sqlite": rows_with_recognized_sqlite,
         "rows_with_no_tool_calls": rows_with_no_tool_calls,
         "rows_with_unobserved_tool_calls": rows_with_unobserved_tool_calls,
