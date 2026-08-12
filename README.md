@@ -169,6 +169,10 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 已验证状态
 
+### v0.78.2 — 2026-08-12
+
+- 清理 semantic critical-token 最终报告日期行的 Markdown 尾随空格；实验数据、证据哈希、停止决策和下一目标均不变，并重新执行差异检查。
+
 ### v0.78.1 — 2026-08-12
 
 - 完成 Step 120 的 16 题 semantic critical-token 一步金丝雀：训练退出码 0，loss `1.823778`、grad norm `171.6451`、峰值 HBM `26.59 GiB`；最终 checkpoint 含 32 个 model 与 8 个 extra distcp 分片、无 optimizer 文件。
