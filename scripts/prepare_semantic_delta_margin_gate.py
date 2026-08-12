@@ -48,11 +48,13 @@ def _candidate_row(source: dict[str, Any], label: str) -> dict[str, Any]:
             "content": str(messages[2].get("content") or ""),
             "tool_calls": [rejected_call],
         }
-        messages[5] = {
-            "role": "tool",
-            "tool_call_id": rejected_call["id"],
-            "content": str(messages[3].get("content") or ""),
-        }
+    candidate_call = messages[4]["tool_calls"][0]
+    messages[5] = {
+        "role": "tool",
+        "tool_call_id": candidate_call["id"],
+        "content": "[]",
+    }
+    messages[6] = {"role": "assistant", "content": "Done."}
     row["task_id"] = f"{source_task_id}::{label}"
     row["sample_id"] = f"semantic-delta-margin-{source_task_id}-{label}"
     row["source_task_id"] = source_task_id
@@ -134,6 +136,7 @@ def prepare(critical_data: Path, critical_contract_path: Path, output_dir: Path)
         "rejected_queries_are_actual_step120_first_errors": True,
         "rejected_candidate_shell_wrapper_normalized_to_teacher_contract": True,
         "pair_prefix_is_identical_through_observed_error_result": True,
+        "post_candidate_tail_is_fixed_non_scored_stub": True,
         "output": output.name,
         "output_sha256": sha256_file(output),
         "evidence": evidence,

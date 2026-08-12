@@ -69,6 +69,12 @@ def test_pair_builder_reuses_identical_error_state_and_actual_wrong_query():
     ]["command"]
     assert rejected_candidate.startswith("sqlite3 -json /workspace/logistics.sqlite ")
     assert sql_from_command(rejected_candidate) == sql_from_command(actual_first_error)
+    assert first_chosen["messages"][5]["content"] == "[]"
+    assert first_rejected["messages"][5]["content"] == "[]"
+    assert first_chosen["messages"][6] == first_rejected["messages"][6] == {
+        "role": "assistant",
+        "content": "Done.",
+    }
 
 
 def _diagnostic(chosen_preferred: int):

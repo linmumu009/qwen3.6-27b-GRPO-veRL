@@ -172,6 +172,11 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 已验证状态
 
+### v0.80.2 — 2026-08-12
+
+- 修正 rejected 候选之后重复长工具结果导致个别配对序列达到 `13,589` tokens 的无关开销：chosen/rejected 都只在待评分 SQL 调用之后追加相同的短工具/助手占位，候选前的真实“首错 SQL + 实际工具结果”状态保持逐 token 不变。
+- 合同明确该尾部不参与 semantic-delta 结论；因自回归因果遮罩，未来占位不会影响更早候选 SQL 的 logits。这样继续使用已验证的 8K forward-only 配置，不为无关的候选后内容扩大上下文、显存与运行时间。
+
 ### v0.80.1 — 2026-08-12
 
 - 修正真实 Step 120 首错 SQL 与 teacher-forced mask 的 shell 包装合同差异：共享前缀仍保留模型实际调用及实际工具结果，rejected 候选仅把等价 SQL payload 规范化为冻结的 `sqlite3 -json` 包装，SQL 文本、语义与查询哈希不变。
