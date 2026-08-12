@@ -19,7 +19,7 @@ cd "${PROJECT_ROOT}"
 python3 -m scripts.check_state_conditioned_sft_dataset \
   --data-file "${TRAIN_FILE}" \
   --model-path "${MODEL_PATH}" \
-  --max-length 4096 \
+  --max-length 8192 \
   --tool-structure-weight "${TOOL_STRUCTURE_WEIGHT}" \
   --sql-payload-weight "${SQL_PAYLOAD_WEIGHT}" \
   --final-answer-weight "${FINAL_ANSWER_WEIGHT}" \
@@ -49,7 +49,7 @@ RUN_NAME="${RUN_NAME}" \
 OUTPUT_DIR="${OUTPUT_DIR}" \
 TOTAL_STEPS=1 \
 TOTAL_EPOCHS=1 \
-MAX_LENGTH=4096 \
+MAX_LENGTH=8192 \
 SFT_RECIPE=state_conditioned_sql_recovery \
 DATASET_PATH="${PROJECT_ROOT}/scripts/qwen36_sql_weighted_sft_dataset.py" \
 DATASET_NAME=Qwen36SQLWeightedSFTDataset \
