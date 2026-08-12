@@ -1,0 +1,74 @@
+{
+  "contract": "task-specific-schema-oracle-action-safe-summary-v1",
+  "scope": {
+    "model": "step120",
+    "rows": 64,
+    "source_split": "train236_current_definition_disjoint_from_frozen16_val20_test20",
+    "sampling": "greedy_n1",
+    "max_assistant_turns": 2,
+    "max_tool_result_turns": 1,
+    "exit_code": 0,
+    "forced_checkpoint_to_rollout_sync": true,
+    "optimizer_initialized": false,
+    "checkpoint_saved": false
+  },
+  "dataset": {
+    "numeric_rows": 54,
+    "table_rows": 10,
+    "task_specific_relevant_tables_per_row_min": 1,
+    "task_specific_relevant_tables_per_row_max": 1,
+    "schema_columns_per_row_min": 8,
+    "schema_columns_per_row_max": 25,
+    "schema_contains_database_rows_tool_results_answers_or_expected_values": false,
+    "prompt_contains_gold_sql": false
+  },
+  "conversion": {
+    "tool_calls": 127,
+    "observed_tool_calls": 64,
+    "unobserved_terminal_tool_calls": 63,
+    "truncated_nonterminal_tool_calls_with_real_error_response": 1
+  },
+  "first_query": {
+    "correct_or_equivalent": 4,
+    "observed_wrong": 35,
+    "no_readonly_query": 25,
+    "wrong_categories": {
+      "executable_empty_evidence": 10,
+      "executable_wrong_or_insufficient_evidence": 23,
+      "schema_syntax_or_execution_error": 2
+    }
+  },
+  "tools": {
+    "rows_with_any_bash": 64,
+    "rows_with_any_sqlite": 64,
+    "rows_with_recognized_readonly_sqlite": 39,
+    "rows_with_schema_discovery_sqlite": 9,
+    "duplicate_bash_calls": 40
+  },
+  "gates": {
+    "runtime_correct_or_equivalent": {
+      "observed": 4,
+      "required": 32,
+      "passed": false
+    },
+    "observed_wrong_pair_acquisition": {
+      "observed": 35,
+      "required": 48,
+      "passed": false
+    }
+  },
+  "decision": {
+    "diagnosis": "schema_oracle_still_insufficient_for_pair_acquisition",
+    "next_action": "build_and_cpu_audit_chosen_only_schema_conditioned_first_action_supervision",
+    "pair_construction_allowed": false,
+    "training_allowed": false,
+    "promotion_allowed": false
+  },
+  "invalid_predecessor_run": {
+    "reason": "max_assistant_turns_1_stopped_before_first_tool_result",
+    "rows": 64,
+    "missing_first_tool_results": 64,
+    "used_for_gate": false
+  },
+  "contains_raw_commands_prompts_schema_sql_answers_task_ids_tool_outputs_or_server_paths": false
+}

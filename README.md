@@ -96,6 +96,8 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [`docs/query_initiation_oracle_gate_20260813_summary.json`](docs/query_initiation_oracle_gate_20260813_summary.json)：不含原始命令、prompt、SQL、答案、task ID、工具结果或服务器路径的查询启动安全汇总。
 - [`docs/structured_sqlite_realization_gate_20260813.md`](docs/structured_sqlite_realization_gate_20260813.md)：同 41 题结构化非交互 `path→schema→SELECT/WITH` 运行、`0/41` 结论、与通用干预比较及下一 schema-oracle 数据门。
 - [`docs/structured_sqlite_realization_gate_20260813_summary.json`](docs/structured_sqlite_realization_gate_20260813_summary.json)：不含原始命令、prompt、SQL、答案、task ID、工具结果或服务器路径的结构化门禁安全汇总。
+- [`docs/schema_oracle_action_gate_20260813.md`](docs/schema_oracle_action_gate_20260813.md)：完整不重叠 64 题的相关表 schema 上界诊断、有效 `2/1` 工具反馈协议、`4` 条正确/`35` 条带结果错误/`25` 条无查询结论及 chosen-only 下一步。
+- [`docs/schema_oracle_action_gate_20260813_summary.json`](docs/schema_oracle_action_gate_20260813_summary.json)：不含原始命令、prompt、schema、SQL、答案、task ID、工具结果或服务器路径的 schema-oracle 安全汇总。
 - [`docs/semantic_delta_pairwise_canary_20260812.md`](docs/semantic_delta_pairwise_canary_20260812.md)：一次 reference-free pairwise 更新、工程失败修复、训练资源、同数据概率前后门禁与 fail-closed 决策。
 - [`docs/semantic_delta_pairwise_canary_20260812_summary.json`](docs/semantic_delta_pairwise_canary_20260812_summary.json)：不含原始问题、SQL、答案和服务器路径的一步 pairwise 安全聚合结果。
 - [`docs/native_vs_step120_reward_behavior_attribution_20260812.md`](docs/native_vs_step120_reward_behavior_attribution_20260812.md)：原生模型与 Step 120 的相同错误状态概率对照、同题老板原版自由回放和奖励代理错配归因。
@@ -193,9 +195,15 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/analyze_rollout_command_families.py`：以不输出命令、SQL、prompt 或工具结果的方式统计工具类型、Bash 命令族、重复调用与真实工具响应覆盖，用于区分模型工具策略问题和 SQL 解析器漏识别。
 - `scripts/prepare_query_initiation_oracle_candidates.py`、`scripts/analyze_query_initiation_oracle_outcomes.py`、`scripts/analyze_query_initiation_oracle_gate.py`：只抽取 Step 120 完整 25 回合仍未发起只读查询的题目，追加不含答案、表名、字段名、SQL 或字面量的通用查询启动约束；专用适配器核对 Parquet 哈希、3/3 回合和训练关闭合同，再以带真实工具结果的只读查询恢复数区分策略路由与 schema/工具实现问题。
 - `scripts/prepare_structured_sqlite_realization_gate.py`、`scripts/analyze_structured_sqlite_realization_gate.py`：把同一 41 题通用干预替换为冻结的三回合非交互 `path→schema→SELECT/WITH` 工作流，禁止交互 shell 和重复命令；仍不提供 task-specific schema、query 或答案，并以 `31/41` 带结果查询决定运行时约束是否足够。
-- `scripts/prepare_schema_oracle_action_gate.py`、`scripts/analyze_schema_oracle_action_gate.py`：对完整 64 个不重叠严格任务，从 immutable SQLite metadata 提取 gold SQL 涉及表的列类型与选中表间外键，不提供数据行、工具结果、expected value、gold SQL 或答案；单回合要求动态定位数据库并非交互生成 SELECT/WITH，以 `32` 条正确/等价或 `48` 条带结果错误查询分别决定无 gold 表选择的全库 schema 验证与同状态 pair 构建。
+- `scripts/prepare_schema_oracle_action_gate.py`、`scripts/analyze_schema_oracle_action_gate.py`：对完整 64 个不重叠严格任务，从 immutable SQLite metadata 提取 gold SQL 涉及表的列类型与选中表间外键，不提供数据行、工具结果、expected value、gold SQL 或答案；第一回合动态定位数据库并执行非交互 SELECT/WITH，真实结果返回后第二回合禁止再调用工具，以 `32` 条正确/等价或 `48` 条带结果错误查询分别决定无 gold 表选择的全库 schema 验证与同状态 pair 构建。
 
 ## 已验证状态
+
+### v0.99.0 — 2026-08-13
+
+- Step 120 task-specific schema-oracle 有效 64 题运行完成：强制 checkpoint→rollout 同步、greedy `2/1`、`exit 0`、64/64、纯前向且无 checkpoint；首查询为正确/等价 `4`、带真实结果错误 `35`、无只读查询 `25`。
+- 正确门 `4/64 < 32/64`、错误 pair 门 `35/64 < 48/64` 均失败；schema runtime、pair 构建、训练与晋级全部关闭。错误查询以可执行但证据错误/不足 `23`、空结果 `10`、schema/语法/执行错误 `2` 为主。
+- 固化安全汇总、完整报告和结果锁定测试；下一步只构建 chosen-only schema-conditioned 正确首动作，先过 CPU 防泄漏、SQL 等价、tokenization、loss mask 与 48/16 分割，再决定是否做 teacher-forced NPU 基线。
 
 ### v0.98.4 — 2026-08-13
 
