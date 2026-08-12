@@ -1,0 +1,132 @@
+{
+  "contract": "repair-sft-sql-weighted-canary-summary-v1",
+  "date": "2026-08-12",
+  "scope": {
+    "task_count": 16,
+    "population": "train236 same-task development gate",
+    "heldout": false,
+    "source_checkpoint": "step120"
+  },
+  "intervention": {
+    "training_steps": 1,
+    "only_changed_variable": "component loss weights",
+    "weights": {
+      "tool_structure": 0.25,
+      "sql_payload": 8.0,
+      "final_answer": 1.0
+    },
+    "model_state_correction_examples": 0,
+    "mean_sql_weighted_loss_mass_share": 0.7805009935277185
+  },
+  "training": {
+    "exit_code": 0,
+    "wall_seconds": 214,
+    "loss": 2.2507057189941406,
+    "grad_norm": 104.40803182406515,
+    "learning_rate": 0.000001,
+    "global_tokens": 24868,
+    "max_npu_memory_allocated_gib": 26.34167242050171,
+    "cpu_memory_used_gib": 796.3641738891602,
+    "checkpoint": {
+      "model_distcp_shards": 32,
+      "model_size_gib_reported": 51,
+      "extra_contains_rng_state_only": true,
+      "optimizer_state_files": 0
+    }
+  },
+  "forward_only_rank_gate": {
+    "task_ids_identical": true,
+    "data_sha256_identical": true,
+    "optimizer_initialized": false,
+    "checkpoint_saved": false,
+    "official_assistant_loss": {
+      "step120": 1.8738141059875488,
+      "sql_weighted_step1": 1.745295763015747
+    },
+    "sql": {
+      "token_count": 329,
+      "mean_nll": {
+        "step120": 2.448401506186256,
+        "sql_weighted_step1": 2.0612356539555234,
+        "relative_change": -0.15813004985191345,
+        "per_task_improved": 16,
+        "per_task_worsened": 0
+      },
+      "geometric_mean_target_probability": {
+        "step120": 0.08643163657025242,
+        "sql_weighted_step1": 0.12729657815366283,
+        "per_task_above_0_5_step120": 0,
+        "per_task_above_0_5_sql_weighted_step1": 0,
+        "required_for_promotion": 12
+      },
+      "rank": {
+        "greedy_tokens_step120": 166,
+        "greedy_tokens_sql_weighted_step1": 173,
+        "top5_tokens_step120": 254,
+        "top5_tokens_sql_weighted_step1": 261,
+        "mean_step120": 56.58662613981763,
+        "mean_sql_weighted_step1": 41.346504559270514,
+        "max_step120": 7547,
+        "max_sql_weighted_step1": 5602,
+        "tasks_all_tokens_greedy_step120": 0,
+        "tasks_all_tokens_greedy_sql_weighted_step1": 0
+      }
+    }
+  },
+  "free_replay": {
+    "contract": "greedy n=1, boss tools, 49152 context tokens, 25 tool-result turns",
+    "exit_code": 0,
+    "wall_seconds": 3323,
+    "validation_rows": 16,
+    "step120_reference_wall_seconds": 1782,
+    "generic_sft_reference_wall_seconds": 2227,
+    "tool_calls": {
+      "step120": 297,
+      "generic_sft_step5": 383,
+      "sql_weighted_step1": 328
+    },
+    "terminal_assistant_answers": {
+      "step120": 15,
+      "generic_sft_step5": 13,
+      "sql_weighted_step1": 13
+    },
+    "missing_tool_responses": {
+      "step120": 2,
+      "generic_sft_step5": 5,
+      "sql_weighted_step1": 9
+    }
+  },
+  "first_query_semantic_gate": {
+    "read_only": true,
+    "immutable_database": true,
+    "step120": {
+      "verified_gold_support": 0,
+      "teacher_result_equivalent": 0,
+      "wrong_or_insufficient_evidence": 13,
+      "empty_evidence": 3
+    },
+    "sql_weighted_step1": {
+      "verified_gold_support": 0,
+      "teacher_result_equivalent": 0,
+      "wrong_or_insufficient_evidence": 14,
+      "empty_evidence": 2
+    }
+  },
+  "decision": {
+    "rank_moved": true,
+    "sql_nll_improved_all_tasks": true,
+    "probability_threshold_passed": false,
+    "first_query_semantic_threshold_passed": false,
+    "promotion_allowed": false,
+    "additional_training_allowed": false,
+    "heldout_evaluation_run": false,
+    "full_boss_scoring_run": false,
+    "stop_reason": "Teacher-forced SQL exposure improved, but no task crossed the per-task probability threshold or produced a gold-supporting or teacher-equivalent first query; replay latency and termination also regressed.",
+    "next_training_target": "model_state_conditioned_sql_recovery",
+    "next_intervention": "Add mechanically verified corrections conditioned on the model's first wrong query and observed tool result; do not increase SQL weight alone."
+  },
+  "resources_after_completion": {
+    "trainer_host_npus_free": 8,
+    "rollout_host_npus_free": 8
+  }
+}
