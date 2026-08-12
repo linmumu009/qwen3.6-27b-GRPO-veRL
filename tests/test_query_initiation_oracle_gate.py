@@ -13,6 +13,9 @@ from scripts.prepare_query_initiation_oracle_candidates import (
     build_contract,
     build_oracle_rows,
 )
+from scripts.prepare_schema_oracle_action_gate import (
+    CONTRACT as SCHEMA_ORACLE_CONTRACT,
+)
 
 
 def _database(path: Path) -> Path:
@@ -215,6 +218,43 @@ def test_oracle_outcome_adapter_enforces_three_by_three_contract(
             rollout_messages={
                 "queried": _messages("queried", "SELECT SUM(amount) FROM metric"),
                 "missing": _messages("missing", None),
+            },
+            database=database,
+            dataset_contract=contract,
+        )
+
+
+def test_oracle_outcome_adapter_accepts_schema_oracle_two_by_one_contract(
+    tmp_path: Path,
+) -> None:
+    database = _database(tmp_path / "db.sqlite")
+    contract = {
+        "contract": SCHEMA_ORACLE_CONTRACT,
+        "rows": 1,
+        "max_assistant_turns": 2,
+        "max_tool_result_turns": 1,
+        "training_allowed": False,
+    }
+    result = audit_oracle_outcomes(
+        replay_rows=[_row("queried")],
+        rollout_messages={
+            "queried": _messages("queried", "SELECT SUM(amount) FROM metric")
+        },
+        database=database,
+        dataset_contract=contract,
+    )
+
+    assert result["rows"] == 1
+    assert result["outcome_counts"] == {
+        "first_query_correct_or_equivalent": 1
+    }
+    assert result["source_query_initiation_contract"] == SCHEMA_ORACLE_CONTRACT
+    contract["max_assistant_turns"] = 3
+    with pytest.raises(ValueError, match="assistant-turn contract drifted"):
+        audit_oracle_outcomes(
+            replay_rows=[_row("queried")],
+            rollout_messages={
+                "queried": _messages("queried", "SELECT SUM(amount) FROM metric")
             },
             database=database,
             dataset_contract=contract,

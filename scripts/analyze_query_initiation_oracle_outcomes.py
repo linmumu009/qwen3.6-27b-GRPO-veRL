@@ -35,9 +35,12 @@ def audit_oracle_outcomes(
     rows = int(dataset_contract.get("rows") or 0)
     if rows <= 0 or len(replay_rows) != rows or len(rollout_messages) != rows:
         raise ValueError("dataset contract, parquet, and rollout row counts differ")
-    if dataset_contract.get("max_assistant_turns") != 3:
+    expected_assistant_turns, expected_tool_result_turns = (
+        (2, 1) if source_contract == SCHEMA_ORACLE_CONTRACT else (3, 3)
+    )
+    if dataset_contract.get("max_assistant_turns") != expected_assistant_turns:
         raise ValueError("query-initiation assistant-turn contract drifted")
-    if dataset_contract.get("max_tool_result_turns") != 3:
+    if dataset_contract.get("max_tool_result_turns") != expected_tool_result_turns:
         raise ValueError("query-initiation tool-result contract drifted")
     if dataset_contract.get("training_allowed") is not False:
         raise ValueError("query-initiation dataset unexpectedly authorizes training")

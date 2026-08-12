@@ -197,6 +197,11 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 已验证状态
 
+### v0.98.4 — 2026-08-13
+
+- 修正共享首查询 outcome adapter 的合同分派：query-initiation 与 structured-SQLite 继续严格要求 `3/3`，task-specific schema-oracle 则严格要求 `2` 个助手回合与 `1` 次工具反馈；不再因旧协议硬编码拒绝有效轨迹。
+- 新增两类合同的正反回归覆盖；分析器仍核对数据行数、Parquet 哈希、training=false 与只读数据库执行，错误合同继续 fail-closed。
+
 ### v0.98.3 — 2026-08-13
 
 - 补齐老板原版轨迹转换器与在线 agent-loop 的边界一致性：在线 runtime 可能接受一个 token 截断的 Qwen tool block、返回真实 parser error 后继续；转换器现仅在“恰有一个开放 tool call 且紧随真实 tool response”时保留该调用和错误响应，并单独审计 `truncated_nonterminal_tool_calls`。
