@@ -176,6 +176,11 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 已验证状态
 
+### v0.82.3 — 2026-08-12
+
+- 修复首次 pairwise 训练在首个 batch 前退出的问题：固定顺序 sampler 现在提供 veRL `SFTTrainer.fit()` 每个 epoch 必调的 `set_epoch()` 接口，同时仍严格保持 16 对数据的 `chosen → rejected` 邻接顺序且不 shuffle。
+- `-01` 失败运行未执行 optimizer step、未保存 checkpoint，保留作审计证据；修复经单元测试和服务器语法检查后使用新运行编号重试，避免覆盖失败现场。
+
 ### v0.82.2 — 2026-08-12
 
 - 修正自包含 pairwise 流水线的 token gate 交接：训练阶段显式读取刚由最终 32 行 baseline-forward 生成的 `token_gate.json`，不再回落到数据目录中增加 pair-order/sign 校验之前的旧门禁文件。

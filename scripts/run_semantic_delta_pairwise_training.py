@@ -10,7 +10,6 @@ from typing import Any
 import hydra
 from omegaconf import DictConfig, OmegaConf
 import torch
-from torch.utils.data import SequentialSampler
 from torchdata.stateful_dataloader import StatefulDataLoader
 
 from verl.trainer.sft_trainer import SFTTrainer
@@ -18,6 +17,7 @@ from verl.utils import tensordict_utils as tu
 from verl.utils.dataset.dataset_utils import SFTTensorCollator
 from verl.utils.device import auto_set_device, get_device_name
 from verl.utils.distributed import destroy_global_process_group, initialize_global_process_group
+from scripts.epoch_aware_sequential_sampler import EpochAwareSequentialSampler
 from scripts.semantic_delta_pairwise_loss import pairwise_loss_from_flat_sequences
 
 
@@ -62,7 +62,7 @@ class PairwiseSemanticDeltaTrainer(SFTTrainer):
         if self.global_batch_size != 32:
             raise ValueError("semantic-delta pairwise canary requires one 32-row global batch")
         self.train_batch_size_per_dp = self.global_batch_size
-        self.train_sampler = SequentialSampler(self.train_dataset)
+        self.train_sampler = EpochAwareSequentialSampler(self.train_dataset)
         self.collate_fn = SFTTensorCollator(self.config.data.pad_mode)
         self.train_dataloader = StatefulDataLoader(
             dataset=self.train_dataset,

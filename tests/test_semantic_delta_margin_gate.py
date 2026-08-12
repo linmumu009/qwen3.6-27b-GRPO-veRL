@@ -6,6 +6,7 @@ import json
 from scripts.analyze_semantic_delta_margin_gate import analyze
 from scripts.compare_semantic_delta_margin_canary import compare
 from scripts.analyze_repair_sft_free_run_divergence import sql_from_command
+from scripts.epoch_aware_sequential_sampler import EpochAwareSequentialSampler
 from scripts.prepare_semantic_delta_margin_gate import build_rows
 from scripts.teacher_forced_component_masks import semantic_delta_token_masks
 from scripts.semantic_delta_pairwise_loss import pairwise_loss_from_flat_sequences
@@ -13,6 +14,15 @@ import torch
 
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def test_epoch_aware_sequential_sampler_keeps_fixed_pair_order():
+    sampler = EpochAwareSequentialSampler(list(range(6)))
+
+    assert list(sampler) == list(range(6))
+    sampler.set_epoch(1)
+    assert sampler.epoch == 1
+    assert list(sampler) == list(range(6))
 
 
 def test_semantic_delta_masks_cover_replacement_and_anchor_insertions():
