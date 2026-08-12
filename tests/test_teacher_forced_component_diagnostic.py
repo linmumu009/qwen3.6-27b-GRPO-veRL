@@ -110,6 +110,8 @@ def test_forward_only_contract_never_initializes_or_saves_optimizer():
     assert "def component_sft_loss(" in runner
     assert "student_logits=None" in runner
     assert 'key="forced_max_seqlen", default=None' in ranks
+    assert 'key="model_vocab_size", default=None' in ranks
+    assert "model_vocab_size metadata is missing" in ranks
 
 
 def test_exact_teacher_token_rank_uses_strict_greater_logits_and_vocab_boundary():

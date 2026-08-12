@@ -155,6 +155,11 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 已验证状态
 
+### v0.71.3 — 2026-08-12
+
+- 适配当前 veRL `get_non_tensor_data` 的必需 `default` 参数：exact rank 读取 `model_vocab_size` 时显式传入空默认，并对缺失元数据给出独立硬错误；同时扫描项目内同类调用，确认无其他遗漏。
+- `-03` 已证明 BSHD 强制长度对齐生效，随后在词表元数据 API 参数处失败；仍未进入 Step 5、未训练且未写 checkpoint。完整回归后继续使用新运行名重试。
+
 ### v0.71.2 — 2026-08-12
 
 - 修复 exact token-rank 在 veRL BSHD 微批次统一填充下的标签对齐：rank 标签现在复用模型前向的 `forced_max_seqlen`，保证 CP 分片后的 logits 与 labels 具有完全相同的序列长度，不做截断或静默补齐。

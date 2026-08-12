@@ -88,7 +88,12 @@ def vocab_parallel_target_ranks(
     vocab_start, vocab_end = VocabUtility.vocab_range_from_per_partition_vocab_size(
         shard_size, tp_rank, tp_size
     )
-    vocab_size = int(tu.get_non_tensor_data(data=data, key="model_vocab_size"))
+    vocab_size_value = tu.get_non_tensor_data(
+        data=data, key="model_vocab_size", default=None
+    )
+    if vocab_size_value is None:
+        raise ValueError("model_vocab_size metadata is missing")
+    vocab_size = int(vocab_size_value)
     if torch.any(labels < 0) or torch.any(labels >= vocab_size):
         raise ValueError("aligned label is outside the model vocabulary")
 
