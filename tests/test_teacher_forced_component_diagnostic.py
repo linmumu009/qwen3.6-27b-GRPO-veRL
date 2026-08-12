@@ -309,6 +309,30 @@ def test_sql_weighted_canary_summary_records_fail_closed_decision():
     assert "/workspace/" not in payload
 
 
+def test_state_conditioned_canary_summary_records_probability_gate_stop():
+    path = ROOT / "docs" / "repair_sft_state_conditioned_canary_20260812_summary.json"
+    summary = json.loads(path.read_text(encoding="utf-8"))
+    payload = path.read_text(encoding="utf-8")
+
+    assert summary["contract"] == "repair-sft-state-conditioned-canary-summary-v1"
+    assert summary["state_conditioned_data_gate"]["rows"] == 16
+    assert summary["state_conditioned_data_gate"]["all_error_context_loss_mass_zero"] is True
+    assert summary["training"]["exit_code"] == 0
+    assert summary["training"]["checkpoint"]["optimizer_state_files"] == 0
+    correction = summary["state_conditioned_forward_only_gate"]["correction_sql"]
+    assert correction["mean_nll"]["per_task_improved"] == 16
+    assert correction["geometric_mean_target_probability"][
+        "per_task_above_0_5_state_conditioned_step1"
+    ] == 1
+    assert summary["decision"]["correction_sql_probability_threshold_passed"] is False
+    assert summary["decision"]["short_replay_run"] is False
+    assert summary["decision"]["additional_training_allowed"] is False
+    assert summary["resources_after_completion"]["trainer_host_npus_free"] == 8
+    assert summary["resources_after_completion"]["rollout_host_npus_free"] == 8
+    assert "/data/" not in payload
+    assert "/workspace/" not in payload
+
+
 def test_portable_diagnostic_report_is_self_contained_and_source_backed():
     artifact = json.loads(
         (ROOT / "docs" / "repair_sft_teacher_forced_diagnosis_20260811_artifact.json").read_text(

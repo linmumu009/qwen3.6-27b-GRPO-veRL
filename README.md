@@ -25,6 +25,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - 16 条真实 train236 纠错轨迹已通过机械核验并完成 5 步 veRL 官方全参 SFT：loss 从 `1.8738` 降至 `0.5764`，墙钟 `11m04s`，最终 model-only Megatron checkpoint 的 32 个分片完整（`54.72 GB`）。但相同 16 题的老板原始评分器门禁未通过：正确数保持 `2/16`，平均奖励 `0.7000 → 0.6063`，完整收尾 `15/16 → 13/16`，因此不扩到 48–64 条，也不作 held-out 泛化声明。
 - Step 120 的一步单变量 SQL 加权金丝雀已完成：工具结构/SQL/最终答案为 `0.25/8/1`，SQL NLL `2.4484 → 2.0612` 且 `16/16` 改善，教师 SQL greedy token `166 → 173`、平均 rank `56.59 → 41.35`。但逐题 SQL 概率超过 0.5 仍为 `0/16`，首条 SQL gold 支持和教师结果等价均仍为 `0/16`；48K 自由回放耗时约 `55m23s`，终止回答仅 `13/16`。候选不晋级、不续训；下一训练目标改为模型首错查询/工具结果条件下的 SQL 恢复监督，不再单独提高 SQL 权重。
 - 状态条件化纠错入口已按严格单变量设计补齐：复用 Step 120、相同 16 题和 `0.25/8/1` 目标权重，仅把模型首个错误 SQL 及实际工具结果加入历史；错误 assistant 回合由选择性 mask 保证 loss 为 0，只监督纠正 SQL 与最终答案。新增全查询只读语义审计，在第 1/2/3 条和任意后续查询上定位首次正确或等价证据；两项 CPU 门禁通过前不占用 NPU。
+- 状态条件化一步金丝雀已完成：纠正 SQL NLL `1.6815 → 1.4118` 且 `16/16` 改善，greedy token `221 → 225`、top-5 `284 → 298`、平均 rank `20.12 → 16.72`；但逐题概率超过 0.5 仍仅 `1/16`（要求 `12/16`），整段全 greedy 仍为 `0/16`。按门禁停止，不跑短/完整回放、不续训；下一目标改为首错语义分类与 critical-token 对比纠错数据。
 - 所有新增镜像、容器、工作目录和实验名均以 `llin` 开头，不复用或修改其他人的环境。
 
 当前服务器部署：
@@ -98,6 +99,8 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [`docs/repair_sft_pretraining_gate_20260812_summary.json`](docs/repair_sft_pretraining_gate_20260812_summary.json)：不含原始问题、SQL、答案和服务器路径的安全聚合门禁结果，包括已完成的 exact token-rank 对比。
 - [`docs/repair_sft_sql_weighted_canary_20260812.md`](docs/repair_sft_sql_weighted_canary_20260812.md)：一步 SQL 加权训练、checkpoint、rank、首条 SQL 语义和 48K 自由回放的完整门控结论。
 - [`docs/repair_sft_sql_weighted_canary_20260812_summary.json`](docs/repair_sft_sql_weighted_canary_20260812_summary.json)：不含原始问题、SQL、答案和服务器路径的金丝雀安全聚合与 fail-closed 决策。
+- [`docs/repair_sft_state_conditioned_canary_20260812.md`](docs/repair_sft_state_conditioned_canary_20260812.md)：全查询语义基线、首错零-loss 数据、一步状态条件化训练和训练后概率/rank 门禁结论。
+- [`docs/repair_sft_state_conditioned_canary_20260812_summary.json`](docs/repair_sft_state_conditioned_canary_20260812_summary.json)：不含原始问题、SQL、答案和服务器路径的状态条件化金丝雀安全聚合与停止决策。
 - [`docs/repeated_sql_causal_diagnosis_20260812.html`](docs/repeated_sql_causal_diagnosis_20260812.html)：把首条 SQL 语义门禁、同题自由回放、48K 强制收尾和正确证据 oracle 串成因果链，区分重复查询对准确率、完成率和墙钟的不同作用。
 - [`docs/repeated_sql_causal_diagnosis_20260812.artifact.json`](docs/repeated_sql_causal_diagnosis_20260812.artifact.json)：上述重复 SQL 因果诊断的 canonical report artifact、聚合数据、图表和来源定义。
 - [`docs/leadership_experiment_update_methodology_20260806.md`](docs/leadership_experiment_update_methodology_20260806.md)：从多轮实际修订中提炼的领导汇报方法论，固化四段结构、数字精度、口径边界、抗奖励投机表述、行动项口吻和自检清单。
@@ -159,6 +162,13 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/prepare_state_conditioned_repair_sft.py`、`scripts/check_state_conditioned_sft_dataset.py`、`scripts/run_repair_sft_state_conditioned_canary.sh`：从 Step 120 首错 SQL 和真实工具结果构造零-loss 上下文，机械核验纠正查询并执行一步状态条件化金丝雀。
 
 ## 已验证状态
+
+### v0.75.0 — 2026-08-12
+
+- 完成 Step 120、通用 SFT Step 5、SQL-weighted Step 1 的全查询只读语义基线：首条均为 `0/16`；前三条内分别为 `3/16、2/16、3/16`，任意位置为 `4/16、4/16、5/16`。后续恢复确实存在，但 SQL-weighted 的额外任意位置命中伴随更多查询，不能替代有界恢复门禁。
+- 构造并 CPU 核验 16 条 Step 120 首错状态样本：错误 assistant 回合/实际工具结果 loss 为 0，纠正 SQL 和最终答案受监督；真实序列 `1608–7604` tokens，以 8K、`truncation=error` 完整保留。一步训练退出码 0，loss `1.637145`、grad norm `73.0647`，32 个模型分片完整，无 optimizer state。
+- 状态条件纯前向对比显示纠正 SQL NLL `1.6815 → 1.4118`（`-16.04%`）且 `16/16` 改善，greedy `221 → 225`、top-5 `284 → 298`；但逐题概率超过 0.5 仅 `1/16 → 1/16`，未达到回放门槛 `12/16`。候选 fail closed：不做原始 prompt 诊断、短/完整回放、held-out 或老板完整评分，不追加训练；两机各 8 张物理 NPU 已释放。
+- 下一阶段先做首错 SQL 的表/字段/过滤/时间/聚合/join 语义分类，并结合首个非 greedy critical token 构造机械验证的语义对比恢复样本；不直接增加训练步或 SQL 权重。
 
 ### v0.74.4 — 2026-08-12
 

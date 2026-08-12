@@ -1,0 +1,136 @@
+{
+  "contract": "repair-sft-state-conditioned-canary-summary-v1",
+  "date": "2026-08-12",
+  "scope": {
+    "task_count": 16,
+    "population": "train236 same-task development gate",
+    "heldout": false,
+    "source_checkpoint": "step120"
+  },
+  "all_query_semantic_baseline": {
+    "step120": {
+      "query_count": 167,
+      "tasks_with_verified_or_equivalent_evidence_within_1": 0,
+      "tasks_within_2": 2,
+      "tasks_within_3": 3,
+      "tasks_anywhere": 4
+    },
+    "generic_sft_step5": {
+      "query_count": 235,
+      "tasks_with_verified_or_equivalent_evidence_within_1": 0,
+      "tasks_within_2": 1,
+      "tasks_within_3": 2,
+      "tasks_anywhere": 4
+    },
+    "sql_weighted_step1": {
+      "query_count": 181,
+      "tasks_with_verified_or_equivalent_evidence_within_1": 0,
+      "tasks_within_2": 1,
+      "tasks_within_3": 3,
+      "tasks_anywhere": 5
+    }
+  },
+  "state_conditioned_data_gate": {
+    "rows": 16,
+    "first_error_assistant_context_loss_weight": 0,
+    "supervised_assistant_turn_indices": [
+      1,
+      2
+    ],
+    "all_first_error_queries_not_verified_or_equivalent": true,
+    "all_first_error_tool_results_observed": true,
+    "all_correction_queries_verified_or_equivalent": true,
+    "all_error_context_assistant_masks_nonempty": true,
+    "all_error_context_loss_mass_zero": true,
+    "sequence_tokens": {
+      "minimum": 1608,
+      "maximum": 7604,
+      "other_15_maximum": 2441,
+      "training_limit": 8192,
+      "truncation": "error"
+    }
+  },
+  "training": {
+    "exit_code": 0,
+    "wall_seconds": 334,
+    "training_steps": 1,
+    "weights": {
+      "tool_structure": 0.25,
+      "sql_payload": 8.0,
+      "final_answer": 1.0
+    },
+    "loss": 1.6371448040008545,
+    "grad_norm": 73.06468867016919,
+    "learning_rate": 0.000001,
+    "global_tokens": 35277,
+    "max_npu_memory_allocated_gib": 26.591516971588135,
+    "max_npu_memory_reserved_gib": 27.115234375,
+    "cpu_memory_used_gib": 796.4965782165527,
+    "checkpoint": {
+      "model_distcp_shards": 32,
+      "model_size_gib_reported": 51,
+      "save_contents": [
+        "model",
+        "extra"
+      ],
+      "optimizer_state_files": 0
+    }
+  },
+  "state_conditioned_forward_only_gate": {
+    "task_ids_identical": true,
+    "data_sha256_identical": true,
+    "optimizer_initialized": false,
+    "checkpoint_saved": false,
+    "official_assistant_loss": {
+      "step120": 1.6233556270599365,
+      "state_conditioned_step1": 1.5353929996490479
+    },
+    "correction_sql": {
+      "token_count": 329,
+      "mean_nll": {
+        "step120": 1.6815303263330894,
+        "state_conditioned_step1": 1.411805323916728,
+        "relative_change": -0.1604044828644573,
+        "per_task_improved": 16,
+        "per_task_worsened": 0
+      },
+      "geometric_mean_target_probability": {
+        "step120": 0.1860889811592783,
+        "state_conditioned_step1": 0.24370292306115654,
+        "per_task_above_0_5_step120": 1,
+        "per_task_above_0_5_state_conditioned_step1": 1,
+        "required_for_replay": 12
+      },
+      "rank": {
+        "greedy_tokens_step120": 221,
+        "greedy_tokens_state_conditioned_step1": 225,
+        "top5_tokens_step120": 284,
+        "top5_tokens_state_conditioned_step1": 298,
+        "mean_step120": 20.11854103343465,
+        "mean_state_conditioned_step1": 16.72340425531915,
+        "max_step120": 3404,
+        "max_state_conditioned_step1": 3029,
+        "tasks_all_tokens_greedy_step120": 0,
+        "tasks_all_tokens_greedy_state_conditioned_step1": 0
+      }
+    }
+  },
+  "decision": {
+    "correction_sql_nll_improved_all_tasks": true,
+    "correction_sql_probability_threshold_passed": false,
+    "promotion_allowed": false,
+    "additional_training_allowed": false,
+    "direct_prompt_non_regression_diagnostic_run": false,
+    "short_replay_run": false,
+    "full_replay_run": false,
+    "heldout_evaluation_run": false,
+    "full_boss_scoring_run": false,
+    "stop_reason": "Conditioning on the model's first wrong SQL and observed result improved correction-path NLL on every task, but only 1/16 tasks exceeded the predeclared 0.5 probability threshold versus 12/16 required for replay.",
+    "next_training_target": "semantic_error_type_and_critical_token_recovery_data",
+    "next_intervention": "Classify the first wrong SQL by table, field, filter, temporal, aggregation and join errors; add mechanically verified critical-token and semantic-contrast recovery examples before another one-step canary."
+  },
+  "resources_after_completion": {
+    "trainer_host_npus_free": 8,
+    "rollout_host_npus_free": 8
+  }
+}
