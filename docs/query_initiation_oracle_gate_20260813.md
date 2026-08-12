@@ -47,4 +47,3 @@ SQLite 命令族进一步分为：路径或 CLI-only `91`、`.tables/.databases/
 
 - 若带真实结果的只读查询达到 `31/41`：优先采用运行时工作流约束，再在完整 64 题与冻结 val20 上验证，不更新权重。
 - 若仍低于 `31/41`：进入 task-specific schema grounding / action supervision 数据门禁；只有机械验证、不重叠的训练对达到至少 48 条，才允许初始化 optimizer。
-

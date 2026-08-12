@@ -35,4 +35,3 @@ def test_query_initiation_oracle_safe_summary_locks_actual_gate_result() -> None
     assert summary[
         "contains_raw_commands_prompts_sql_answers_task_ids_tool_outputs_or_server_paths"
     ] is False
-
