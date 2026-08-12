@@ -10,6 +10,9 @@ RUN_NAME="${RUN_NAME:-llin-repair-sft-replay-${LABEL}-$(date +%Y%m%d-%H%M%S)}"
 OUTPUT_DIR="${OUTPUT_DIR:-${PROJECT_ROOT}/runs/${RUN_NAME}}"
 MAX_ASSISTANT_TURNS="${MAX_ASSISTANT_TURNS:-26}"
 MAX_USER_TURNS="${MAX_USER_TURNS:-25}"
+EXPECTED_EVAL_ROWS="${EXPECTED_EVAL_ROWS:-16}"
+EXPERIMENT_PURPOSE="${EXPERIMENT_PURPOSE:-train236_repair_sft_same_task_replay}"
+EVALUATION_SPLIT="${EVALUATION_SPLIT:-train236_same_task_not_heldout}"
 
 if [[ ! -f "${MODEL_DIST_CKPT}/.metadata" ]]; then
   printf 'distributed model checkpoint missing: %s\n' "${MODEL_DIST_CKPT}" >&2
@@ -22,11 +25,11 @@ fi
 
 mkdir -p "${OUTPUT_DIR}"
 cat > "${OUTPUT_DIR}/experiment_contract.txt" <<EOF
-purpose=train236_repair_sft_same_task_replay
+purpose=${EXPERIMENT_PURPOSE}
 label=${LABEL}
 model_dist_checkpoint=${MODEL_DIST_CKPT}
-evaluation_rows=16
-evaluation_split=train236_same_task_not_heldout
+evaluation_rows=${EXPECTED_EVAL_ROWS}
+evaluation_split=${EVALUATION_SPLIT}
 sampling=greedy_n1
 system_tools=boss_exact
 context_tokens=49152

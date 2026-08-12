@@ -186,6 +186,11 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 已验证状态
 
+### v0.87.1 — 2026-08-12
+
+- 将 Step 120 repair replay 的无人值守合同从写死 16 行改为显式 `EXPECTED_EVAL_ROWS`，并把实验用途与 split 设为参数；默认值仍保持原冻结 16 题行为不变。
+- 结果跨节点回收现在使用同一个期望行数，避免 64 条不重叠首错采集成功后被旧 `16` 行检查误判为无效；采集仍固定 greedy n=1、老板四工具和传入的最大助手/工具回合数。
+
 ### v0.87.0 — 2026-08-12
 
 - current-definition 正式池审计已在 5 号机 train236 全量实跑：236/236 条 verification SQL 均可只读执行、非空且支持当前 gold；排除冻结 16 题、val20、test20 的 task/instruction/SQL 身份及语义高风险题后，得到 `64` 条 strict-available 新任务，达到 `≥48` 数据门禁。

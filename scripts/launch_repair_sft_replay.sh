@@ -5,6 +5,7 @@ PROJECT_ROOT="${PROJECT_ROOT:-/workspace/llin-verl-grpo}"
 LABEL="${LABEL:?LABEL is required}"
 RUN_NAME="${RUN_NAME:-llin-repair-sft-replay-${LABEL}-$(date +%Y%m%d-%H%M%S)}"
 OUTPUT_DIR="${OUTPUT_DIR:-${PROJECT_ROOT}/runs/${RUN_NAME}}"
+EXPECTED_EVAL_ROWS="${EXPECTED_EVAL_ROWS:-16}"
 mkdir -p "${OUTPUT_DIR}"
 
 date --iso-8601=seconds > "${OUTPUT_DIR}/started_at"
@@ -23,7 +24,7 @@ if [[ "${status}" == "0" && ! -f "${validation_file}" ]]; then
     --output "${validation_file}" \
     --resource llin_rollout \
     --ray-address "${RAY_ADDRESS:-192.168.202.5:26379}" \
-    --expected-jsonl-rows 16 \
+    --expected-jsonl-rows "${EXPECTED_EVAL_ROWS}" \
     >> "${OUTPUT_DIR}/driver.log" 2>&1
   recovery_status=$?
   set -e
