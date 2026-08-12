@@ -34,9 +34,11 @@ COMPONENT_MASKS = {
     "tool_turn": "tool_turn_mask",
     "tool_structure": "tool_structure_mask",
     "sql_shell": "sql_shell_mask",
-    "final_answer": "final_answer_mask",
 }
-OPTIONAL_COMPONENT_MASKS = {"semantic_delta": "semantic_delta_mask"}
+OPTIONAL_COMPONENT_MASKS = {
+    "final_answer": "final_answer_mask",
+    "semantic_delta": "semantic_delta_mask",
+}
 
 
 def component_sft_loss(

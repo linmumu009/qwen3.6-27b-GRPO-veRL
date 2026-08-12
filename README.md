@@ -198,8 +198,15 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/prepare_schema_oracle_action_gate.py`、`scripts/analyze_schema_oracle_action_gate.py`：对完整 64 个不重叠严格任务，从 immutable SQLite metadata 提取 gold SQL 涉及表的列类型与选中表间外键，不提供数据行、工具结果、expected value、gold SQL 或答案；第一回合动态定位数据库并执行非交互 SELECT/WITH，真实结果返回后第二回合禁止再调用工具，以 `32` 条正确/等价或 `48` 条带结果错误查询分别决定无 gold 表选择的全库 schema 验证与同状态 pair 构建。
 - `scripts/prepare_chosen_only_schema_action_sft.py`：在 schema-oracle 两门失败后，把同一完整不重叠 64 题转换为仅监督一个正确 bash/SQLite 首动作的 chosen-only 数据；gold SQL 只进入 assistant 标签，prompt 不含 SQL、答案、expected value、数据库行或工具结果，并固定拆分为 48 条拟训练和 16 条校准，CPU tokenization/loss-mask 门通过前禁止 teacher-forced NPU 基线和训练。
 - `scripts/qwen36_first_action_diagnostic_dataset.py`、`scripts/check_chosen_only_schema_action_sft.py`：用 Qwen3.6 完整工具 chat template 对 chosen-only 样本做 CPU fail-closed 门禁；要求 loss 恰好覆盖唯一 assistant tool action，system/user 全部为 0，并把 action 无重叠地拆成 tool structure 与解码 SQL 内容两部分。
+- `scripts/run_chosen_only_first_action_teacher_forced.sh`、`scripts/launch_chosen_only_first_action_teacher_forced.sh`：只在 CPU 门通过后，对 calibration16 执行 Step 120 的 TP4/PP2/CP2 teacher-forced 纯前向基线；复用精确词表并行 SQL token rank，不初始化 optimizer、不保存 checkpoint，也不读取 train48。
 
 ## 已验证状态
+
+### v1.2.0 — 2026-08-13
+
+- teacher-forced component runner 将 final-answer mask 改为可选组件，同时保持 assistant、tool-turn、tool-structure 和 SQL mask 为必需组件；既有两回合修复诊断继续输出 final-answer，本轮单首动作数据无需伪造最终回答。
+- 新增 calibration16 专用 Step 120 teacher-forced 启动入口：TP4/PP2/CP2、精确 vocab-parallel SQL rank、forward-only、空 load/save contents、无 optimizer/checkpoint；启动前重跑 chosen-only CPU tokenization/loss-mask 门。
+- train48 不进入基线；本阶段只测 Step 120 对正确首动作与 SQL token 的初始概率，得到结果前 training 与 promotion 继续关闭。
 
 ### v1.1.0 — 2026-08-13
 
