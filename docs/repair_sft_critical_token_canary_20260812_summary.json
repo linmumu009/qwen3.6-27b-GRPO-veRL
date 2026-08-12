@@ -1,0 +1,122 @@
+{
+  "contract": "repair-sft-critical-token-canary-safe-summary-v1",
+  "date": "2026-08-12",
+  "source_checkpoint": "step120",
+  "task_count": 16,
+  "training_contract": {
+    "steps": 1,
+    "topology": "tp4_pp2_cp2",
+    "max_length": 8192,
+    "base_weights": {
+      "tool_structure": 0.25,
+      "semantic_sql": 8.0,
+      "final_answer": 1.0
+    },
+    "critical_token_weight": 32.0,
+    "only_causal_change": "first_semantic_nongreedy_sql_token_weight_8_to_32",
+    "learning_rate": 0.000001
+  },
+  "pretraining_gate": {
+    "passed": true,
+    "rows": 16,
+    "critical_tokens_per_row": 1,
+    "all_critical_weights_match": true,
+    "error_context_loss_mass_zero": true,
+    "truncated_rows": 0,
+    "critical_token_family_counts": {
+      "aggregation_function": 9,
+      "query_start": 3,
+      "identifier_or_literal": 3,
+      "clause_keyword": 1
+    }
+  },
+  "training": {
+    "exit_code": 0,
+    "started_at_utc": "2026-08-12T07:35:07+00:00",
+    "finished_at_utc": "2026-08-12T07:38:51+00:00",
+    "wall_seconds": 224,
+    "loss": 1.8237777948379517,
+    "grad_norm": 171.64514744269644,
+    "global_tokens": 35277,
+    "max_memory_allocated_gib": 26.590789318084717,
+    "checkpoint_total_gib_approx": 51,
+    "model_distcp_shards": 32,
+    "extra_distcp_shards": 8,
+    "optimizer_files": 0
+  },
+  "diagnostic_contract": {
+    "version": "repair-sft-teacher-forced-component-diagnostic-v3",
+    "same_task_ids": true,
+    "same_data_sha256": true,
+    "forward_only_both": true,
+    "optimizer_initialized_either": false,
+    "semantic_sql_token_count": 300
+  },
+  "pre_post": {
+    "official_assistant_loss": {
+      "step120": 1.6233556270599365,
+      "post": 1.5767419338226318
+    },
+    "semantic_sql_mean_nll": {
+      "step120": 1.2929418325424193,
+      "post": 1.143500706354777,
+      "per_task_improved": 16
+    },
+    "semantic_sql_geometric_mean_probability": {
+      "step120": 0.27446217252368876,
+      "post": 0.31870138673175386
+    },
+    "greedy_tokens": {
+      "step120": 221,
+      "post": 225
+    },
+    "top5_tokens": {
+      "step120": 266,
+      "post": 270
+    },
+    "mean_rank": {
+      "step120": 21.54,
+      "post": 16.763333333333332
+    },
+    "tasks_all_sql_tokens_greedy": {
+      "step120": 0,
+      "post": 0
+    },
+    "tasks_full_sql_probability_above_0_5": {
+      "step120": 2,
+      "post": 2,
+      "required": 12
+    }
+  },
+  "critical_token_recovery": {
+    "became_greedy": 3,
+    "still_first_nongreedy": 13,
+    "new_earlier_nongreedy": 0,
+    "still_nongreedy_rank_improved": 11,
+    "still_nongreedy_rank_tied": 2,
+    "still_nongreedy_rank_worsened": 0,
+    "became_greedy_by_family": {
+      "query_start": 3,
+      "aggregation_function": 0,
+      "identifier_or_literal": 0,
+      "clause_keyword": 0
+    }
+  },
+  "decision": "stop_no_replay_probability_gate_failed",
+  "short_replay_run": false,
+  "full_replay_run": false,
+  "heldout_run": false,
+  "promotion_allowed": false,
+  "next_target": "mechanically_verified_semantic_delta_span_weighting_before_any_more_npu_training",
+  "evidence_sha256": {
+    "critical_mask_gate": "1f2d130206547bbff822d3b1d4fe540caebac41c17d2f2c941806fe4f08b8e92",
+    "step120_forward": "b883a858923fc4bf3780ad4f0cfe5e6dbb389c71856155c81b6f0b446b1961af",
+    "post_forward": "266d716e14a7239586799c5e695965756a795b58cf8c4a0386472a32ae3d7c8f",
+    "pre_post_comparison": "d0cbba5cdd65e421c5ef022b7e64cc5b2b13b580a45fca8551c8d1efa9c34710",
+    "critical_token_attribution": "9454af6b578597340a5356f59ed54706501b5ab6be62771bcdc3d7626d291879"
+  },
+  "final_npu_free": {
+    "huawei_05": 8,
+    "huawei_06": 8
+  }
+}

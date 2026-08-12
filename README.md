@@ -26,6 +26,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - Step 120 的一步单变量 SQL 加权金丝雀已完成：工具结构/SQL/最终答案为 `0.25/8/1`，SQL NLL `2.4484 → 2.0612` 且 `16/16` 改善，教师 SQL greedy token `166 → 173`、平均 rank `56.59 → 41.35`。但逐题 SQL 概率超过 0.5 仍为 `0/16`，首条 SQL gold 支持和教师结果等价均仍为 `0/16`；48K 自由回放耗时约 `55m23s`，终止回答仅 `13/16`。候选不晋级、不续训；下一训练目标改为模型首错查询/工具结果条件下的 SQL 恢复监督，不再单独提高 SQL 权重。
 - 状态条件化纠错入口已按严格单变量设计补齐：复用 Step 120、相同 16 题和 `0.25/8/1` 目标权重，仅把模型首个错误 SQL 及实际工具结果加入历史；错误 assistant 回合由选择性 mask 保证 loss 为 0，只监督纠正 SQL 与最终答案。新增全查询只读语义审计，在第 1/2/3 条和任意后续查询上定位首次正确或等价证据；两项 CPU 门禁通过前不占用 NPU。
 - 状态条件化一步金丝雀已完成：纠正 SQL NLL `1.6815 → 1.4118` 且 `16/16` 改善，greedy token `221 → 225`、top-5 `284 → 298`、平均 rank `20.12 → 16.72`；但逐题概率超过 0.5 仍仅 `1/16`（要求 `12/16`），整段全 greedy 仍为 `0/16`。按门禁停止，不跑短/完整回放、不续训；下一目标改为首错语义分类与 critical-token 对比纠错数据。
+- Semantic critical-token 一步金丝雀已完成：把每题首个 semantic non-greedy SQL token 从 `8×` 提到 `32×` 后，SQL NLL `1.2929 → 1.1435` 且 `16/16` 改善，greedy/top-5 各增加 4 个；query-start `3/3` 转为 greedy，但 aggregation `9/9` 仍是首分叉，完整 SQL 概率 `>0.5` 仍为 `2/16`（门槛 `12/16`）。按冻结门禁不做 replay、不续训；下一目标改为机械抽取并核验错误/纠正 SQL 的语义差异 span，而非继续增加单 token 权重或步数。
 - 所有新增镜像、容器、工作目录和实验名均以 `llin` 开头，不复用或修改其他人的环境。
 
 当前服务器部署：
@@ -101,6 +102,8 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [`docs/repair_sft_sql_weighted_canary_20260812_summary.json`](docs/repair_sft_sql_weighted_canary_20260812_summary.json)：不含原始问题、SQL、答案和服务器路径的金丝雀安全聚合与 fail-closed 决策。
 - [`docs/repair_sft_state_conditioned_canary_20260812.md`](docs/repair_sft_state_conditioned_canary_20260812.md)：全查询语义基线、首错零-loss 数据、一步状态条件化训练和训练后概率/rank 门禁结论。
 - [`docs/repair_sft_state_conditioned_canary_20260812_summary.json`](docs/repair_sft_state_conditioned_canary_20260812_summary.json)：不含原始问题、SQL、答案和服务器路径的状态条件化金丝雀安全聚合与停止决策。
+- [`docs/repair_sft_critical_token_canary_20260812.md`](docs/repair_sft_critical_token_canary_20260812.md)：semantic critical-token 单变量数据门禁、一步训练、同数据前后概率/rank、原 token 恢复归因和停止决策。
+- [`docs/repair_sft_critical_token_canary_20260812_summary.json`](docs/repair_sft_critical_token_canary_20260812_summary.json)：不含原始问题、SQL、答案和服务器路径的 critical-token 金丝雀安全聚合与证据哈希。
 - [`docs/repeated_sql_causal_diagnosis_20260812.html`](docs/repeated_sql_causal_diagnosis_20260812.html)：把首条 SQL 语义门禁、同题自由回放、48K 强制收尾和正确证据 oracle 串成因果链，区分重复查询对准确率、完成率和墙钟的不同作用。
 - [`docs/repeated_sql_causal_diagnosis_20260812.artifact.json`](docs/repeated_sql_causal_diagnosis_20260812.artifact.json)：上述重复 SQL 因果诊断的 canonical report artifact、聚合数据、图表和来源定义。
 - [`docs/leadership_experiment_update_methodology_20260806.md`](docs/leadership_experiment_update_methodology_20260806.md)：从多轮实际修订中提炼的领导汇报方法论，固化四段结构、数字精度、口径边界、抗奖励投机表述、行动项口吻和自检清单。
@@ -165,6 +168,12 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/analyze_critical_token_canary.py`：在哈希一致的 Step 120/训练后 forward-only 结果中复核冻结 token 是转为 greedy、仍为首个非 greedy，还是被更早的新分叉阻断归因，并将整条 SQL 概率门禁作为唯一 replay 开关。
 
 ## 已验证状态
+
+### v0.78.1 — 2026-08-12
+
+- 完成 Step 120 的 16 题 semantic critical-token 一步金丝雀：训练退出码 0，loss `1.823778`、grad norm `171.6451`、峰值 HBM `26.59 GiB`；最终 checkpoint 含 32 个 model 与 8 个 extra distcp 分片、无 optimizer 文件。
+- 严格同数据 forward-only 对比显示 SQL NLL `1.292942 → 1.143501`（`16/16` 改善），greedy `221 → 225`、top-5 `266 → 270`、mean rank `21.54 → 16.76`；原 critical token 中 query-start `3/3` 转为 greedy，但 aggregation `9/9`、identifier/literal `3/3`、clause keyword `1/1` 均仍为首个 non-greedy。
+- 完整 SQL 概率 `>0.5` 保持 `2/16 → 2/16`，未达到 `12/16` 主门禁；按合同停止，不跑短/完整 replay、不做 held-out 或老板完整评分、不继续增加步数/单 token 权重。下一步先做无 NPU 的错误/纠正 SQL 语义差异 span 提取与 mask 门禁；实验结束后两机各 8 张 NPU 空闲。
 
 ### v0.78.0 — 2026-08-12
 
