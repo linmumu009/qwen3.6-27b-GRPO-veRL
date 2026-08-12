@@ -239,3 +239,22 @@ def test_safe_pretraining_summary_freezes_pairwise_gate_without_raw_assets():
     assert summary["scope"]["promotion_allowed"] is False
     assert "/workspace/" not in payload
     assert "SELECT " not in payload
+
+
+def test_safe_pairwise_canary_summary_records_fail_closed_decision_without_raw_assets():
+    path = ROOT / "docs" / "semantic_delta_pairwise_canary_20260812_summary.json"
+    summary = json.loads(path.read_text(encoding="utf-8"))
+    payload = path.read_text(encoding="utf-8")
+
+    assert summary["training_contract"]["optimizer_steps"] == 1
+    assert summary["training_contract"]["optimizer_checkpoint_saved"] is False
+    assert summary["probability_gate"]["per_task_margin_improved"] == 16
+    assert summary["probability_gate"]["post_chosen_preferred"] == 3
+    assert summary["probability_gate"]["passed"] is False
+    assert summary["decision"]["promotion_allowed"] is False
+    assert summary["decision"]["action"] == (
+        "stop_no_replay_and_no_additional_pairwise_steps"
+    )
+    assert "/workspace/" not in payload
+    assert "SELECT " not in payload
+    assert "task_000" not in payload

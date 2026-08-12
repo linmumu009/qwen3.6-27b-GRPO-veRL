@@ -28,6 +28,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - 状态条件化一步金丝雀已完成：纠正 SQL NLL `1.6815 → 1.4118` 且 `16/16` 改善，greedy token `221 → 225`、top-5 `284 → 298`、平均 rank `20.12 → 16.72`；但逐题概率超过 0.5 仍仅 `1/16`（要求 `12/16`），整段全 greedy 仍为 `0/16`。按门禁停止，不跑短/完整回放、不续训；下一目标改为首错语义分类与 critical-token 对比纠错数据。
 - Semantic critical-token 一步金丝雀已完成：把每题首个 semantic non-greedy SQL token 从 `8×` 提到 `32×` 后，SQL NLL `1.2929 → 1.1435` 且 `16/16` 改善，greedy/top-5 各增加 4 个；query-start `3/3` 转为 greedy，但 aggregation `9/9` 仍是首分叉，完整 SQL 概率 `>0.5` 仍为 `2/16`（门槛 `12/16`）。后续训练暂缓，先以同一 16 条首错状态执行 Control / operator oracle / full semantic plan 三臂一次生成门禁，区分 plan selection、schema grounding 与 plan-to-SQL realization。
 - 三臂 semantic-plan 门禁与 correct-vs-actual-wrong margin 门禁均已完成：Control/operator/full plan 分别恢复 `1/16`、`1/16`、`2/16`，两个 oracle 均未过线；正确 SQL 的 semantic-delta 在 Step 120 下 `0/16` 占优，平均 margin `-1.1877`，且 aggregation/query-start/identifier/clause 全部偏向实际首错 SQL。下一步锁定为一次 pairwise plan-to-SQL 金丝雀；训练后须达到正确 delta `≥12/16` 占优、`≥12/16` margin 改善且无更早分叉回退，才允许短回放。
+- 一步 pairwise plan-to-SQL 金丝雀已完成：`16/16` 逐题 margin 改善，平均 margin `-1.1877 → -0.7646`，但正确候选仅 `3/16` 占优，未达到 `12/16`；更早分叉回退和冻结 target 非法均为 0。按冻结规则不做短回放、不追加同 16 对训练、不晋级 checkpoint；下一步把这 16 对冻结为评价集，先获取不重叠且机械验证的分层训练 pairs。
 - 所有新增镜像、容器、工作目录和实验名均以 `llin` 开头，不复用或修改其他人的环境。
 
 当前服务器部署：
@@ -89,6 +90,8 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [`docs/force_final_sentinel_20260810.md`](docs/force_final_sentinel_20260810.md)：Step 120 的 48K 强制收尾 sentinel6 与单题提前收口实跑、老板原版评分、失败归因和进入训练前门槛。
 - [`docs/semantic_plan_and_delta_pretraining_gate_20260812.md`](docs/semantic_plan_and_delta_pretraining_gate_20260812.md)：Step 120 三臂 semantic-plan 一次生成、工具协议合规、correct-vs-actual-wrong semantic-delta margin 与下一步 pairwise 金丝雀停止门槛。
 - [`docs/semantic_plan_and_delta_pretraining_gate_20260812_summary.json`](docs/semantic_plan_and_delta_pretraining_gate_20260812_summary.json)：不含原始问题、SQL、答案和服务器路径的安全聚合结果。
+- [`docs/semantic_delta_pairwise_canary_20260812.md`](docs/semantic_delta_pairwise_canary_20260812.md)：一次 reference-free pairwise 更新、工程失败修复、训练资源、同数据概率前后门禁与 fail-closed 决策。
+- [`docs/semantic_delta_pairwise_canary_20260812_summary.json`](docs/semantic_delta_pairwise_canary_20260812_summary.json)：不含原始问题、SQL、答案和服务器路径的一步 pairwise 安全聚合结果。
 - [`docs/accuracy_improvement_strategy_20260810.html`](docs/accuracy_improvement_strategy_20260810.html)：结合 Step 100/120/200、前后两个100步组内信号和强制收尾实验的准确率瓶颈诊断；给出 oracle 梯度、纠错 SFT、奖励分层及 `2 groups × 8 responses` 金丝雀路线。
 - [`docs/accuracy_improvement_post_step125_20260811.html`](docs/accuracy_improvement_post_step125_20260811.html)：结合 Step 125 金丝雀、同题老板原版评分、oracle 梯度与组内奖励排序的准确率复盘；给出纠错 SFT、mixed-only GRPO 和密封 test20 的分阶段门禁。
 - [`docs/accuracy_improvement_post_step125_20260811_summary.json`](docs/accuracy_improvement_post_step125_20260811_summary.json)：不含原始轨迹与服务器绝对路径的 Step 125 组内信号、checkpoint 对比、oracle 结果和下一轮实验门槛聚合。
@@ -175,6 +178,12 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/run_semantic_delta_pairwise_training.py`、`scripts/run_semantic_delta_pairwise_canary.sh`、`scripts/run_semantic_delta_pairwise_pipeline.sh`：在固定顺序、每个 microbatch 一对候选的条件下，对 semantic-delta token 的长度归一化 log-probability 施加 reference-free logistic ranking loss；只做一步全参更新，随后自动重跑同一 margin 并执行 `12/16 + 12/16 + 零更早回退` 门禁。
 
 ## 已验证状态
+
+### v0.83.0 — 2026-08-12
+
+- 完成 Step 120 的一次 reference-free semantic-delta pairwise 全参金丝雀：16 对固定 `chosen → rejected` 数据、TP4/PP2/CP2、fresh CPU-offload Adam、`1e-6`、beta `1.0`，唯一训练步 loss `1.4948`、grad norm `98.01`，保存约 `51G` 的 model+extra checkpoint 且无 optimizer 文件。
+- 同数据前后门禁显示 `16/16` margin 改善、均值 `-1.1877 → -0.7646`，但正确候选只从 `0/16` 升到 `3/16 < 12/16`；0 个更早分叉回退、0 个冻结 target 非法。流水线 exit code 0、总墙钟 `10分02秒`，质量门禁 fail closed，停止回放和追加训练，checkpoint 不晋级。
+- 新增不含原始问题、SQL、答案和服务器路径的完整报告与 JSON 汇总；后续优先冻结当前 16 对为评价集并获取不重叠、机械验证、按首分叉家族分层的训练 pairs，在数据就绪前不占用 NPU。
 
 ### v0.82.3 — 2026-08-12
 

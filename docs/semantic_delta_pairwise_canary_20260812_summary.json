@@ -1,0 +1,93 @@
+{
+  "contract": "semantic-delta-pairwise-canary-safe-summary-v1",
+  "date": "2026-08-12",
+  "scope": {
+    "task_count": 16,
+    "pair_count": 16,
+    "row_count": 32,
+    "source_checkpoint": "step120",
+    "contains_original_prompts_sql_answers_or_server_paths": false
+  },
+  "training_contract": {
+    "objective": "reference_free_logistic_ranking_on_length_normalized_semantic_delta_log_probability",
+    "optimizer_steps": 1,
+    "learning_rate": 1e-06,
+    "pairwise_beta": 1.0,
+    "global_batch_rows": 32,
+    "micro_batch_rows": 2,
+    "pair_order": "chosen_then_rejected_no_shuffle",
+    "topology": "tp4_pp2_cp2",
+    "optimizer": "fresh_cpu_offloaded_adam",
+    "checkpoint_contents": [
+      "model",
+      "extra"
+    ],
+    "optimizer_checkpoint_saved": false
+  },
+  "engineering_audit": {
+    "first_attempt_failed_before_first_batch": true,
+    "first_attempt_optimizer_step_executed": false,
+    "first_attempt_checkpoint_saved": false,
+    "root_cause": "fixed_order_sampler_missing_epoch_interface",
+    "retry_exit_code": 0,
+    "retry_pipeline_wall_seconds": 602,
+    "checkpoint_disk_usage_gib_rounded": 51,
+    "npu_processes_after_completion": 0
+  },
+  "training_metrics": {
+    "loss": 1.4947749376296997,
+    "grad_norm": 98.01230590785526,
+    "learning_rate": 1e-06,
+    "global_tokens": 70019,
+    "max_memory_allocated_gib_per_rank": 26.91777753829956,
+    "max_memory_reserved_gib_per_rank": 27.587890625,
+    "cpu_memory_used_gib": 786.804386138916
+  },
+  "probability_gate": {
+    "baseline_chosen_preferred": 0,
+    "post_chosen_preferred": 3,
+    "chosen_preferred_threshold": 12,
+    "baseline_mean_margin": -1.187716065761645,
+    "post_mean_margin": -0.7645614040206462,
+    "mean_margin_change": 0.4231546617409988,
+    "baseline_median_margin": -1.126968018213908,
+    "post_median_margin": -0.7002738500252749,
+    "per_task_margin_improved": 16,
+    "per_task_margin_improved_threshold": 12,
+    "new_earlier_first_nongreedy_regressions": 0,
+    "invalid_targets_at_frozen_offset": 0,
+    "passed": false
+  },
+  "by_critical_token_family": {
+    "aggregation_function": {
+      "tasks": 9,
+      "baseline_mean_margin": -1.145944757800456,
+      "post_mean_margin": -0.6908308472899107,
+      "post_chosen_preferred": 2
+    },
+    "query_start": {
+      "tasks": 3,
+      "baseline_mean_margin": -1.8725656611578805,
+      "post_mean_margin": -1.1010995168534536,
+      "post_chosen_preferred": 1
+    },
+    "identifier_or_literal": {
+      "tasks": 3,
+      "baseline_mean_margin": -0.9743645709485045,
+      "post_mean_margin": -0.8826688673701222,
+      "post_chosen_preferred": 0
+    },
+    "clause_keyword": {
+      "tasks": 1,
+      "baseline_mean_margin": -0.1491635356630598,
+      "post_mean_margin": -0.06419968605041504,
+      "post_chosen_preferred": 0
+    }
+  },
+  "decision": {
+    "action": "stop_no_replay_and_no_additional_pairwise_steps",
+    "promotion_allowed": false,
+    "checkpoint_is_diagnostic_only": true,
+    "next_data_action": "freeze_current_pairs_as_evaluation_and_acquire_disjoint_mechanically_verified_plan_to_sql_pairs"
+  }
+}
