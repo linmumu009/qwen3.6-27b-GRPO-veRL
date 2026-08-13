@@ -240,6 +240,12 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 已验证状态
 
+### v1.11.12 — 2026-08-13
+
+- 新增281题server-only最终结果分析器：按分片中的`source_task_index×sample_index`强制验证每题恰好8条，复用现有`score_final_outcome`只看最终可见答案，不读取SQL执行过程或以工具命中代替正确。
+- 每题分为`all_wrong/mixed/all_correct`并输出0–8正确数直方图、完成率、错误率及按版本/answer type聚合；per-task identity与mixed候选Parquet保持0600且不进入Git，安全summary不含题面、gold、SQL、task ID、工具调用或服务器路径。
+- mixed仅作为后续语义审核和训练候选层，`training_allowed/promotion_allowed`继续为false；全对/全错不参加当次GRPO候选，但不会被永久删除。
+
 ### v1.11.11 — 2026-08-13
 
 - 收紧standalone安全摘要的上下文错误判据：只有同一日志行同时包含`ERROR/Exception/ValueError/RuntimeError`和context/truncation信号才计入，避免把正常`data.truncation=error`启动合同误报为9个运行错误；probe原日志的Traceback和OOM计数始终为0。
