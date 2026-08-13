@@ -1,0 +1,228 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "22条真实首错测试结果",
+    "generatedAt": "2026-08-13T11:20:00+08:00",
+    "blocks": [
+      {
+        "id": "title",
+        "type": "markdown",
+        "body": "# 22条真实首错测试结果"
+      },
+      {
+        "id": "executive_summary",
+        "type": "markdown",
+        "sourceId": "eval22_summary",
+        "body": "## Executive Summary｜结论摘要\n\n- **22条足以淘汰现有 chosen-only 候选。** Step 120 与一步候选都只有 `3/22` 条真实首错状态偏好机械正确的 semantic delta；整条 SQL 也都只有 `1/22` 正确候选占优。\n- **候选只改善了置信程度，没有跨过决策边界。** `18/22` 条逐题 margin 改善，平均 semantic-delta margin 从 `-1.1454` 升至 `-1.0843`，但正确占优数没有增加，因此预注册门禁失败。\n- **Aggregation 仍是主障碍。** `17/22` 条属于 aggregation；正确候选从基线到候选始终只有 `2/17` 占优。\n- **不跑 full64、不追加训练、不晋级。** eval22 永久保持评测专用；下一步从完全不重叠任务另建至少48条真实首错训练 pair。"
+      },
+      {
+        "id": "metric_definition",
+        "type": "markdown",
+        "sourceId": "eval22_summary",
+        "body": "## 这项测试测量什么\n\n每条样本都固定在 Step 120 实际发出首个错误只读 SQL、且工具已经返回真实结果的同一状态。chosen 是机械验证正确的修正 SQL，rejected 是模型实际首错 SQL。margin 定义为 `rejected NLL − chosen NLL`：正值表示模型更偏好正确候选，负值表示仍偏好实际错误。\n\n这不是总体准确率测试。22条是按 Step 120 已失败后筛选的困难状态，用来测语义排序边界，而不是估计所有任务的成功率。"
+      },
+      {
+        "id": "preference_finding",
+        "type": "markdown",
+        "sourceId": "eval22_summary",
+        "body": "## 18/22 margin 改善，但决策边界没有移动\n\n一步 chosen-only 候选把平均 semantic-delta margin 从 `-1.1454` 提高到 `-1.0843`（`+0.0611`），中位数提高 `+0.0464`；逐题有 `18/22` 改善。然而正确候选占优仍为 `3/22`，远低于冻结门槛 `17/22`。整条 SQL 也仍为 `1/22`，平均 margin 只从 `-1.0075` 提高到 `-0.9368`。这说明更新方向有弱信号，但幅度不足以改变排序决策。"
+      },
+      {
+        "id": "preference_chart_block",
+        "type": "chart",
+        "chartId": "candidate_gate_chart"
+      },
+      {
+        "id": "family_finding",
+        "type": "markdown",
+        "sourceId": "eval22_summary",
+        "body": "## Aggregation 改善了 margin，但排序结果原地不动\n\nAggregation 覆盖 `17/22` 条：平均 margin 从 `-1.1857` 提高到 `-1.1164`，但正确候选占优仍为 `2/17`。query start 仍是 `0/3`，identifier/literal 仍是 `0/1`；唯一 clause-keyword 状态仍正确占优，但 margin 略降。\n\n因此候选没有消除已跨数据集复现的主要误排机制。小家族只有1–3条，不能用来排除其他问题。"
+      },
+      {
+        "id": "family_table_block",
+        "type": "table",
+        "tableId": "family_table"
+      },
+      {
+        "id": "replication_finding",
+        "type": "markdown",
+        "sourceId": "eval22_summary",
+        "body": "## 与旧 frozen16 合并后，机制结论更稳定\n\n旧 frozen16 中正确 delta 为 `0/16` 占优、平均 margin `-1.1877`；新 eval22 为 `3/22`、平均 `-1.1454`。两套任务互不重叠，合计38条只有 `3/38` 正确候选占优，任务加权平均 margin 为 `-1.1632`。其中 aggregation 共26条，正确候选仅2条占优。\n\n因此最可信的结论不是“22条能估计总体表现”，而是“22条足以独立复现正确-vs-实际错误的系统性 misranking”。"
+      },
+      {
+        "id": "replication_table_block",
+        "type": "table",
+        "tableId": "replication_table"
+      },
+      {
+        "id": "recommended_next_steps",
+        "type": "markdown",
+        "sourceId": "eval22_summary",
+        "body": "## 下一步：冻结22条测试，另建至少48条训练 pair\n\n1. **拒绝当前候选。** 不跑同64题 full25，不追加 chosen-only 步数，不晋级 checkpoint。\n2. **永久冻结 eval22。** 不参与监督、样本选择、超参数搜索或训练目标构造。\n3. **另行扩充训练数据。** 从与 eval22、frozen16、val20、test20 均不重叠的任务中获取至少48个真实首错状态，优先补足 aggregation/operator 的多样性。\n4. **新候选先回到 eval22。** 必须同时满足 `17/22` 正确占优、`18/22` margin 改善、零更早分叉回退。\n5. **最后才开放端到端复评。** 三项门禁全部通过也只允许同64题 full25 Pareto 复评，不能直接晋级。"
+      },
+      {
+        "id": "future_gate_table_block",
+        "type": "table",
+        "tableId": "future_gate_table"
+      },
+      {
+        "id": "further_questions",
+        "type": "markdown",
+        "body": "## Further Questions｜后续问题\n\n- 138条 review-required 队列能否在不降低语义标准的前提下，提供至少48个新的真实训练状态？\n- 新训练池能否覆盖 aggregation、query start 和 identifier，而不是再次集中于少量模式？\n- 即使 eval22 概率门通过，模型是否会恢复查询覆盖与完成率，仍需最终 full25 Pareto 复评回答。"
+      },
+      {
+        "id": "caveats",
+        "type": "markdown",
+        "sourceId": "eval22_summary",
+        "body": "## Caveats and Assumptions｜限制\n\n- eval22 是按 Step 120 已出错后筛选的失败案例集，不能用于总体准确率、覆盖率或奖励均值估计。\n- 当前候选确实改善了多数逐题 margin；结论是“仍未跨过排序边界”，不是“完全没有学习信号”。\n- 小家族只有1–3条，family 结论只对 aggregation 有较强重复证据。\n- 22条足以拒绝这个候选，但不足以证明总体泛化或直接授权训练；训练数据必须另建。\n- 两次测试均为纯前向运行，不创建 optimizer、不保存 checkpoint；门禁失败后没有运行自由回放。"
+      }
+    ],
+    "charts": [
+      {
+        "id": "candidate_gate_chart",
+        "title": "正确 semantic delta 占优数未增加",
+        "subtitle": "同一组22个真实首错状态；冻结门槛为17",
+        "type": "bar",
+        "dataset": "candidate_gate",
+        "sourceId": "eval22_summary",
+        "encodings": {
+          "x": {"field": "stage", "type": "nominal"},
+          "y": {"field": "count", "type": "quantitative"}
+        },
+        "valueFormat": "number",
+        "layout": "full"
+      }
+    ],
+    "tables": [
+      {
+        "id": "family_table",
+        "title": "首个关键 token 家族：基线与候选",
+        "subtitle": "同22条真实首错状态；正 margin 表示偏好正确候选",
+        "dataset": "critical_token_family_comparison",
+        "sourceId": "eval22_summary",
+        "columns": [
+          {"field": "order", "label": "#"},
+          {"field": "family", "label": "家族"},
+          {"field": "tasks", "label": "任务数"},
+          {"field": "baseline_preferred", "label": "基线正确占优"},
+          {"field": "candidate_preferred", "label": "候选正确占优"},
+          {"field": "baseline_margin", "label": "基线 margin", "format": "number"},
+          {"field": "candidate_margin", "label": "候选 margin", "format": "number"},
+          {"field": "margin_change", "label": "变化", "format": "number"}
+        ],
+        "defaultSort": {"field": "order", "direction": "asc"}
+      },
+      {
+        "id": "replication_table",
+        "title": "两套互不重叠失败状态的复现",
+        "subtitle": "Step 120；semantic-delta margin 使用相同定义",
+        "dataset": "replication",
+        "sourceId": "eval22_summary",
+        "columns": [
+          {"field": "order", "label": "#"},
+          {"field": "cohort", "label": "数据集"},
+          {"field": "tasks", "label": "任务数"},
+          {"field": "chosen_preferred", "label": "正确占优"},
+          {"field": "chosen_preferred_rate", "label": "正确占优率", "format": "percent"},
+          {"field": "mean_margin", "label": "平均 margin", "format": "number"},
+          {"field": "aggregation_tasks", "label": "Aggregation 数"},
+          {"field": "aggregation_chosen_preferred", "label": "Aggregation 正确占优"}
+        ],
+        "defaultSort": {"field": "order", "direction": "asc"}
+      },
+      {
+        "id": "future_gate_table",
+        "title": "当前候选的冻结门禁结果",
+        "subtitle": "第一项失败，因此不开放同64题full25 Pareto复评",
+        "dataset": "future_candidate_gate",
+        "sourceId": "eval22_summary",
+        "columns": [
+          {"field": "order", "label": "#"},
+          {"field": "check", "label": "检查"},
+          {"field": "threshold", "label": "门槛"},
+          {"field": "observed", "label": "观测"},
+          {"field": "result", "label": "结果"},
+          {"field": "failure_action", "label": "失败动作"}
+        ],
+        "defaultSort": {"field": "order", "direction": "asc"}
+      }
+    ],
+    "sources": [
+      {
+        "id": "eval22_summary",
+        "label": "22条真实首错纯前向安全汇总",
+        "path": "docs/disjoint_real_state_eval22_20260813_summary.json"
+      },
+      {
+        "id": "frozen16_summary",
+        "label": "旧frozen16 pairwise安全汇总",
+        "path": "docs/semantic_delta_pairwise_canary_20260812_summary.json"
+      }
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "generatedAt": "2026-08-13T11:20:00+08:00",
+    "status": "ready",
+    "datasets": {
+      "candidate_gate": [
+        {"stage": "Step 120 基线", "count": 3},
+        {"stage": "chosen-only 一步候选", "count": 3},
+        {"stage": "冻结门槛", "count": 17}
+      ],
+      "critical_token_family_comparison": [
+        {"order": 1, "family": "Aggregation function", "tasks": 17, "baseline_preferred": 2, "candidate_preferred": 2, "baseline_margin": -1.1857454640659664, "candidate_margin": -1.1163950025472662, "margin_change": 0.0693504615187002},
+        {"order": 2, "family": "Query start", "tasks": 3, "baseline_preferred": 0, "candidate_preferred": 0, "baseline_margin": -1.4450979563725106, "candidate_margin": -1.3987003366992525, "margin_change": 0.0463976196732581},
+        {"order": 3, "family": "Identifier / literal", "tasks": 1, "baseline_preferred": 0, "candidate_preferred": 0, "baseline_margin": -1.0739669700463612, "candidate_margin": -1.0176834762096405, "margin_change": 0.0562834938367207},
+        {"order": 4, "family": "Clause keyword", "tasks": 1, "baseline_preferred": 1, "candidate_preferred": 1, "baseline_margin": 0.36757963690906764, "candidate_margin": 0.3372198257595301, "margin_change": -0.03035981114953754}
+      ],
+      "replication": [
+        {"order": 1, "cohort": "旧 frozen16", "tasks": 16, "chosen_preferred": 0, "chosen_preferred_rate": 0.0, "mean_margin": -1.187716065761645, "aggregation_tasks": 9, "aggregation_chosen_preferred": 0},
+        {"order": 2, "cohort": "新 eval22", "tasks": 22, "chosen_preferred": 3, "chosen_preferred_rate": 0.13636363636363635, "mean_margin": -1.145425185971648, "aggregation_tasks": 17, "aggregation_chosen_preferred": 2},
+        {"order": 3, "cohort": "合并复现", "tasks": 38, "chosen_preferred": 3, "chosen_preferred_rate": 0.07894736842105263, "mean_margin": -1.1632318721990151, "aggregation_tasks": 26, "aggregation_chosen_preferred": 2}
+      ],
+      "future_candidate_gate": [
+        {"order": 1, "check": "正确 semantic delta 占优", "threshold": "≥17/22", "observed": "3/22", "result": "失败", "failure_action": "停止候选，不跑full64"},
+        {"order": 2, "check": "逐题 margin 改善", "threshold": "≥18/22", "observed": "18/22", "result": "通过", "failure_action": "停止候选，不追加训练"},
+        {"order": 3, "check": "更早首分叉回退", "threshold": "0", "observed": "0", "result": "通过", "failure_action": "立即拒绝候选"},
+        {"order": 4, "check": "后续端到端复评", "threshold": "前三项全部通过", "observed": "未开放", "result": "未运行", "failure_action": "不晋级checkpoint"}
+      ]
+    }
+  },
+  "sources": [
+    {
+      "id": "eval22_summary",
+        "label": "22条真实首错基线—候选纯前向安全汇总",
+      "path": "docs/disjoint_real_state_eval22_20260813_summary.json",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM read_json_auto('docs/disjoint_real_state_eval22_20260813_summary.json')",
+        "description": "加载eval22数据、token门、Step 120与chosen-only候选margin、逐题变化、独立复现、执行合同与冻结门禁。",
+        "tables_used": ["docs/disjoint_real_state_eval22_20260813_summary.json"],
+        "filters": ["evaluation-only", "22 distinct Step 120 failure states", "no frozen16/val20/test20 overlap"],
+        "metric_definitions": {
+          "semantic_delta_margin": "rejected candidate mean NLL minus chosen candidate mean NLL; positive prefers the mechanically correct candidate",
+          "chosen_preferred_rate": "tasks with positive semantic-delta margin divided by 22",
+          "combined_task_weighted_mean_margin": "task-count-weighted mean across frozen16 and eval22",
+          "per_task_margin_improved": "tasks whose candidate semantic-delta margin exceeds the Step 120 baseline margin"
+        }
+      }
+    },
+    {
+      "id": "frozen16_summary",
+      "label": "旧frozen16 pairwise安全汇总",
+      "path": "docs/semantic_delta_pairwise_canary_20260812_summary.json",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM read_json_auto('docs/semantic_delta_pairwise_canary_20260812_summary.json')",
+        "description": "加载旧16条首错状态的Step 120基线margin和aggregation家族聚合。",
+        "tables_used": ["docs/semantic_delta_pairwise_canary_20260812_summary.json"],
+        "filters": ["baseline before pairwise update", "16 frozen pairs"]
+      }
+    }
+  ]
+}

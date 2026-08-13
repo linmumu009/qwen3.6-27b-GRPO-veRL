@@ -15,18 +15,37 @@ from scripts.prepare_repair_sft_dataset import sha256_file
 from scripts.qwen36_semantic_delta_margin_dataset import Qwen36SemanticDeltaMarginDataset
 
 
-DATA_CONTRACT = "current-definition-disjoint-first-error-pairs-v1"
+TRAINING_DATA_CONTRACT = "current-definition-disjoint-first-error-pairs-v1"
+EVALUATION_DATA_CONTRACT = "current-definition-disjoint-first-error-evaluation-v1"
 
 
 def check(data_file: Path, contract_file: Path, model_path: str, max_length: int) -> dict:
     contract = json.loads(contract_file.read_text(encoding="utf-8"))
-    if contract.get("contract") != DATA_CONTRACT:
+    contract_name = contract.get("contract")
+    if contract_name not in {TRAINING_DATA_CONTRACT, EVALUATION_DATA_CONTRACT}:
         raise ValueError("unexpected disjoint first-error pair contract")
     pairs = int(contract.get("pairs") or 0)
     rows = int(contract.get("rows") or 0)
-    minimum_pairs = int(contract.get("minimum_pairs") or 0)
-    if contract.get("pair_count_gate_passed") is not True or pairs < minimum_pairs:
-        raise ValueError("disjoint first-error pair count gate did not pass")
+    evaluation_only = contract_name == EVALUATION_DATA_CONTRACT
+    if evaluation_only:
+        expected_pairs = int(contract.get("expected_pairs") or 0)
+        if (
+            contract.get("pair_evaluation_gate_passed") is not True
+            or pairs != expected_pairs
+            or expected_pairs <= 0
+        ):
+            raise ValueError("disjoint first-error evaluation pair gate did not pass")
+        for key in ("evaluation_only",):
+            if contract.get(key) is not True:
+                raise ValueError(f"disjoint evaluation contract failed: {key}")
+        for key in ("may_be_used_as_training_data", "training_allowed", "promotion_allowed"):
+            if contract.get(key) is not False:
+                raise ValueError(f"disjoint evaluation contract is not fail closed: {key}")
+        minimum_pairs = None
+    else:
+        minimum_pairs = int(contract.get("minimum_pairs") or 0)
+        if contract.get("pair_count_gate_passed") is not True or pairs < minimum_pairs:
+            raise ValueError("disjoint first-error pair count gate did not pass")
     if rows != 2 * pairs:
         raise ValueError("pair contract does not contain exactly two rows per pair")
     if contract.get("output_sha256") != sha256_file(data_file):
@@ -101,10 +120,15 @@ def check(data_file: Path, contract_file: Path, model_path: str, max_length: int
     if labels != Counter({"chosen": pairs, "rejected": pairs}):
         raise ValueError(f"disjoint pair candidate imbalance: {dict(labels)}")
     return {
-        "contract": "current-definition-disjoint-pair-token-gate-v1",
+        "contract": (
+            "current-definition-disjoint-pair-evaluation-token-gate-v1"
+            if evaluation_only
+            else "current-definition-disjoint-pair-token-gate-v1"
+        ),
         "rows": rows,
         "pairs": pairs,
         "minimum_pairs": minimum_pairs,
+        "expected_pairs": pairs if evaluation_only else None,
         "candidate_rows": dict(sorted(labels.items())),
         "all_delta_masks_nonempty": True,
         "all_delta_masks_subset_of_sql": True,
@@ -114,6 +138,8 @@ def check(data_file: Path, contract_file: Path, model_path: str, max_length: int
         "max_length": max_length,
         "samples": samples,
         "npu_required": False,
+        "evaluation_only": evaluation_only,
+        "may_be_used_as_training_data": False if evaluation_only else None,
         "training_allowed": False,
         "promotion_allowed": False,
     }
