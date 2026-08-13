@@ -121,8 +121,10 @@ def summarize(run_dir: Path) -> dict:
             "samples": len(scheduler),
             "running_mean": statistics.fmean(running) if running else None,
             "running_max": max(running) if running else None,
+            "running_latest": running[-1] if running else None,
             "waiting_mean": statistics.fmean(waiting) if waiting else None,
             "waiting_max": max(waiting) if waiting else None,
+            "waiting_latest": waiting[-1] if waiting else None,
             "at_sequence_cap_samples": sum(value >= max_seqs for value in running) if max_seqs else 0,
         },
         "response_tokens": {

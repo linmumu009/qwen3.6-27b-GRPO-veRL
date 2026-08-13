@@ -41,6 +41,8 @@ def test_summary_reports_shape_scheduler_lengths_and_npu_without_content(tmp_pat
 
     assert result["completed_rows"] == 4
     assert result["scheduler"]["waiting_max"] == 2
+    assert result["scheduler"]["running_latest"] == 2
+    assert result["scheduler"]["waiting_latest"] == 0
     assert result["scheduler"]["at_sequence_cap_samples"] == 1
     assert result["response_tokens"]["at_budget_rows"] == 1
     assert result["npu"]["aicore_mean"] == 80

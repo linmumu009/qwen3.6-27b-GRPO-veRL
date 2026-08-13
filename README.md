@@ -240,6 +240,10 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 已验证状态
 
+### v1.11.15 — 2026-08-13
+
+- standalone安全摘要补充每个vLLM引擎最近一次`Running/Waiting`值，用于区分历史触顶与当前长尾剩余请求；与最近16-chip NPU窗口组合判断运行是否仍在推进，不输出请求内容或task identity。
+
 ### v1.11.14 — 2026-08-13
 
 - standalone安全摘要新增最近一个完整16-chip采样窗口的AICore/NPU/HBM聚合，区别“整个运行平均利用率”和“当前是否仍在实际解码”；仍不读取或输出prompt、答案、SQL、工具内容与task identity。
