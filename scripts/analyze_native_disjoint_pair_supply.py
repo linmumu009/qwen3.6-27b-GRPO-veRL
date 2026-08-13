@@ -22,6 +22,18 @@ CONTRACT = "native-disjoint-real-state-supply-audit-v1"
 EVAL_CONTRACT = "current-definition-disjoint-first-error-evaluation-v1"
 
 
+def forbidden_task_id(row: dict[str, Any]) -> str:
+    """Prefer explicit source identity for derived pair/calibration assets."""
+    source = str(row.get("source_task_id") or "")
+    if source:
+        return source
+    truth_identity = task_id(row)
+    if truth_identity:
+        return truth_identity
+    display = str(row.get("task_id") or "")
+    return display.split("::", 1)[0] if display else ""
+
+
 def eval_task_ids(contract: dict[str, Any]) -> set[str]:
     if contract.get("contract") != EVAL_CONTRACT:
         raise ValueError("eval22 contract mismatch")
@@ -106,7 +118,7 @@ def main() -> None:
         additional_forbidden.update(
             current_task_id
             for row in load_parquet_rows(path)
-            if (current_task_id := task_id(row))
+            if (current_task_id := forbidden_task_id(row))
         )
     result = summarize_supply(
         classified, eval_task_ids(contract), additional_forbidden

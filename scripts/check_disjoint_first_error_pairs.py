@@ -17,16 +17,22 @@ from scripts.qwen36_semantic_delta_margin_dataset import Qwen36SemanticDeltaMarg
 
 TRAINING_DATA_CONTRACT = "current-definition-disjoint-first-error-pairs-v1"
 EVALUATION_DATA_CONTRACT = "current-definition-disjoint-first-error-evaluation-v1"
+NATIVE_CANDIDATE_DATA_CONTRACT = "current-definition-native-first-error-training-candidates-v1"
 
 
 def check(data_file: Path, contract_file: Path, model_path: str, max_length: int) -> dict:
     contract = json.loads(contract_file.read_text(encoding="utf-8"))
     contract_name = contract.get("contract")
-    if contract_name not in {TRAINING_DATA_CONTRACT, EVALUATION_DATA_CONTRACT}:
+    if contract_name not in {
+        TRAINING_DATA_CONTRACT,
+        EVALUATION_DATA_CONTRACT,
+        NATIVE_CANDIDATE_DATA_CONTRACT,
+    }:
         raise ValueError("unexpected disjoint first-error pair contract")
     pairs = int(contract.get("pairs") or 0)
     rows = int(contract.get("rows") or 0)
     evaluation_only = contract_name == EVALUATION_DATA_CONTRACT
+    candidate_only = contract_name == NATIVE_CANDIDATE_DATA_CONTRACT
     if evaluation_only:
         expected_pairs = int(contract.get("expected_pairs") or 0)
         if (
@@ -42,6 +48,20 @@ def check(data_file: Path, contract_file: Path, model_path: str, max_length: int
             if contract.get(key) is not False:
                 raise ValueError(f"disjoint evaluation contract is not fail closed: {key}")
         minimum_pairs = None
+    elif candidate_only:
+        expected_pairs = int(contract.get("expected_pairs") or 0)
+        if (
+            contract.get("candidate_pair_gate_passed") is not True
+            or contract.get("candidate_only") is not True
+            or contract.get("evaluation_only") is not False
+            or pairs != expected_pairs
+            or expected_pairs <= 0
+        ):
+            raise ValueError("native first-error candidate pair gate did not pass")
+        for key in ("may_be_used_as_training_data", "training_allowed", "promotion_allowed"):
+            if contract.get(key) is not False:
+                raise ValueError(f"native candidate contract is not fail closed: {key}")
+        minimum_pairs = None
     else:
         minimum_pairs = int(contract.get("minimum_pairs") or 0)
         if contract.get("pair_count_gate_passed") is not True or pairs < minimum_pairs:
@@ -52,12 +72,18 @@ def check(data_file: Path, contract_file: Path, model_path: str, max_length: int
         raise ValueError("disjoint first-error pair Parquet hash differs from its contract")
     for key in (
         "chosen_queries_mechanically_verified",
-        "rejected_queries_are_actual_step120_first_errors",
         "all_first_error_tool_results_observed",
         "pair_prefix_identical_through_observed_error_result",
     ):
         if contract.get(key) is not True:
             raise ValueError(f"disjoint pair contract failed: {key}")
+    rejected_key = (
+        "rejected_queries_are_actual_model_first_errors"
+        if candidate_only
+        else "rejected_queries_are_actual_step120_first_errors"
+    )
+    if contract.get(rejected_key) is not True:
+        raise ValueError(f"disjoint pair contract failed: {rejected_key}")
 
     tokenizer = hf_tokenizer(model_path, trust_remote_code=True)
     config = OmegaConf.create(
@@ -123,12 +149,16 @@ def check(data_file: Path, contract_file: Path, model_path: str, max_length: int
         "contract": (
             "current-definition-disjoint-pair-evaluation-token-gate-v1"
             if evaluation_only
-            else "current-definition-disjoint-pair-token-gate-v1"
+            else (
+                "current-definition-disjoint-pair-candidate-token-gate-v1"
+                if candidate_only
+                else "current-definition-disjoint-pair-token-gate-v1"
+            )
         ),
         "rows": rows,
         "pairs": pairs,
         "minimum_pairs": minimum_pairs,
-        "expected_pairs": pairs if evaluation_only else None,
+        "expected_pairs": pairs if (evaluation_only or candidate_only) else None,
         "candidate_rows": dict(sorted(labels.items())),
         "all_delta_masks_nonempty": True,
         "all_delta_masks_subset_of_sql": True,
@@ -139,7 +169,8 @@ def check(data_file: Path, contract_file: Path, model_path: str, max_length: int
         "samples": samples,
         "npu_required": False,
         "evaluation_only": evaluation_only,
-        "may_be_used_as_training_data": False if evaluation_only else None,
+        "candidate_only": candidate_only,
+        "may_be_used_as_training_data": False if (evaluation_only or candidate_only) else None,
         "training_allowed": False,
         "promotion_allowed": False,
     }

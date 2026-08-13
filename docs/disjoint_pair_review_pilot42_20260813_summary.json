@@ -1,0 +1,59 @@
+{
+  "contract": "disjoint-pair-review-pilot42-safe-summary-v1",
+  "date": "2026-08-13",
+  "source_pool": {
+    "review_required_tasks": 138,
+    "selected_tasks": 42,
+    "selection_role": "lowest_mechanical_risk_semantic_approval_rate_pilot",
+    "selection_order": "ascending_warning_weight_then_warning_count_then_seeded_sha256"
+  },
+  "selection": {
+    "warning_counts": {
+      "latest_instruction_without_temporal_sql": 30,
+      "limit_without_order_by": 42
+    },
+    "warning_combinations": [
+      {
+        "warnings": ["latest_instruction_without_temporal_sql", "limit_without_order_by"],
+        "count": 30
+      },
+      {
+        "warnings": ["limit_without_order_by"],
+        "count": 12
+      }
+    ],
+    "answer_types": {"table": 42},
+    "task_families": {"dwh": 42},
+    "all_current_instruction_and_sql_hashes_match_pool_audit": true,
+    "all_mechanical_and_forbidden_identity_gates_passed": true
+  },
+  "query_stability_gate": {
+    "probe": "sqlite_reverse_unordered_selects_off_vs_on_exact_columns_and_rows",
+    "stable": 42,
+    "changed": 0,
+    "mechanically_blocked": 0,
+    "eligible_for_explicit_semantic_review": 42
+  },
+  "review_status": {
+    "automatic_semantic_approvals": 0,
+    "completed_semantic_reviews": 0,
+    "pending_semantic_reviews": 42,
+    "next_action": "explicitly_adjudicate_instruction_gold_and_sql_semantics_then_measure_approval_rate"
+  },
+  "capacity_context": {
+    "retained_native_pair_candidates": 7,
+    "remaining_pair_gap": 41,
+    "expected_pairs_from_42_at_observed_yield": 14.4375,
+    "probability_42_supply_all_remaining_pairs": 2.14073299997214e-12,
+    "pilot_purpose_is_rate_estimation_not_gap_completion": true
+  },
+  "server_side_sensitive_artifacts": {
+    "packet_permissions": "0600",
+    "query_stability_evidence_permissions": "0600",
+    "must_remain_server_side": true
+  },
+  "contains_prompts_sql_answers_task_ids_tool_outputs_or_server_paths": false,
+  "may_be_used_as_training_or_rollout_data": false,
+  "training_allowed": false,
+  "promotion_allowed": false
+}

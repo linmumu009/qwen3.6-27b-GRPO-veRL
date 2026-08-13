@@ -5,10 +5,10 @@
   "native_observed_first_query_errors": 27,
   "native_error_overlap_with_eval22": 16,
   "native_error_states_outside_eval22": 11,
-  "additional_frozen_overlap_outside_eval22": 0,
-  "native_error_states_outside_all_frozen_sets": 11,
+  "additional_frozen_overlap_outside_eval22": 4,
+  "native_error_states_outside_all_frozen_sets": 7,
   "outside_all_frozen_first_error_category_counts": {
-    "executable_wrong_or_insufficient_evidence": 10,
+    "executable_wrong_or_insufficient_evidence": 6,
     "schema_syntax_or_execution_error": 1
   },
   "all_reported_counts_are_unique_task_counts": true,
@@ -24,7 +24,10 @@
     "database": "6d9c90cb5869dca751ba4865d4e682578105f984b52837a7f75adfdc8d9ef5f8",
     "eval22_contract": "deee283971b4c8e3a149182e93c7b68e2a44f71f10e62489a118627bf5e0eca3",
     "additional_forbidden_parquet": {
-      "chosen_only_schema_action_calibration16.parquet": "f94a40c047c709aa0b979429902bc444405a3b6b993f953882769e78e42fc63c"
+      "chosen_only_schema_action_calibration16.parquet": "f94a40c047c709aa0b979429902bc444405a3b6b993f953882769e78e42fc63c",
+      "semantic_delta_margin_gate.parquet": "0b430c991d8b3b954c7fa9bcaabca12b50c62d74984cc42c4d29759951c9003d",
+      "boss_pi_val.parquet": "0fa49b2ba2a1ea662887017b96c65de9142bc39af8aad74774817cfc0373c08c",
+      "boss_pi_test.parquet": "dd72b5f7ef1f55ea43f51c3b0b47abb6a15f46afc0c39509c994d92c74dcd1c1"
     }
   }
 }

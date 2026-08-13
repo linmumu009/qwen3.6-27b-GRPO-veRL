@@ -12,8 +12,9 @@ from typing import Any
 from scripts.prepare_repair_sft_dataset import sha256_file
 
 
-CONTRACT = "disjoint-training-supply-strategy-v2"
+CONTRACT = "disjoint-training-supply-strategy-v3"
 NATIVE_SUPPLY_CONTRACT = "native-disjoint-real-state-supply-audit-v1"
+NATIVE_MARGIN_CONTRACT = "native-disjoint-real-state-step120-margin-safe-summary-v1"
 EVAL_SUMMARY_CONTRACT = "disjoint-real-state-eval22-chosen-candidate-safe-summary-v2"
 
 
@@ -64,6 +65,7 @@ def minimum_trials_for_probability(
 def build_strategy(
     *,
     native_supply: dict[str, Any],
+    native_margin: dict[str, Any],
     eval_summary: dict[str, Any],
     review_queue_tasks: int = 138,
     low_risk_review_tasks: int = 42,
@@ -75,6 +77,10 @@ def build_strategy(
         raise ValueError("native supply contract mismatch")
     if native_supply.get("training_allowed") is not False:
         raise ValueError("native supply audit is not fail-closed")
+    if native_margin.get("contract") != NATIVE_MARGIN_CONTRACT:
+        raise ValueError("native margin contract mismatch")
+    if native_margin.get("training_allowed") is not False:
+        raise ValueError("native margin screen is not fail-closed")
     if eval_summary.get("contract") != EVAL_SUMMARY_CONTRACT:
         raise ValueError("eval22 summary contract mismatch")
     if eval_summary.get("training_allowed") is not False:
@@ -82,6 +88,10 @@ def build_strategy(
 
     eval_pairs = int(eval_summary["data_gate"]["unique_source_tasks"])
     native_states = int(native_supply["native_error_states_outside_all_frozen_sets"])
+    if int(native_margin["scope"]["pairs"]) != native_states:
+        raise ValueError("native supply and margin pair counts differ")
+    if native_margin["decision"]["retain_as_candidate_training_source_stratum"] is not True:
+        raise ValueError("native margin screen did not retain the source stratum")
     remaining_if_all_native_pass = max(0, required_training_pairs - native_states)
     alpha = observed_pair_successes + 0.5
     beta = observed_candidate_tasks - observed_pair_successes + 0.5
@@ -135,7 +145,10 @@ def build_strategy(
             "overlap_with_eval22_excluded": int(
                 native_supply["native_error_overlap_with_eval22"]
             ),
-            "native_error_states_outside_eval22": native_states,
+            "native_error_states_outside_eval22": int(
+                native_supply["native_error_states_outside_eval22"]
+            ),
+            "native_error_states_outside_all_frozen_sets": native_states,
             "additional_frozen_overlap_outside_eval22": int(
                 native_supply["additional_frozen_overlap_outside_eval22"]
             ),
@@ -143,10 +156,11 @@ def build_strategy(
                 "outside_all_frozen_first_error_category_counts"
             ],
             "currently_training_ready_pairs": 0,
+            "retained_pair_candidates_after_step120_margin": native_states,
             "remaining_pairs_if_all_native_states_pass_pair_audit": remaining_if_all_native_pass,
         },
         "rebased_capacity": {
-            "probability_review138_supplies_remaining_pairs_if_all_11_native_states_pass_and_all_138_are_approved": queue_probability_with_native,
+            "probability_review_queue_supplies_remaining_pairs_if_all_review_tasks_are_approved": queue_probability_with_native,
             "approved_candidate_tasks_for_90pct_predictive_probability": approved_for_90,
             "approved_candidate_tasks_for_95pct_predictive_probability": approved_for_95,
             "shortfall_vs_review138_at_90pct_even_if_all_are_approved": max(
@@ -163,17 +177,21 @@ def build_strategy(
             "low_risk_subset_can_reliably_fill_remaining_pairs_by_itself": False,
         },
         "decision": {
-            "highest_value_next_action": "build_and_cpu_audit_native11_real_state_pairs_then_run_step120_forward_only_margin",
+            "highest_value_next_action": "adjudicate_42_lowest_risk_review_required_tasks_as_supply_pilot",
+            "native_pair_build_and_step120_margin_completed": True,
+            "retained_native_pairs": native_states,
+            "remaining_pair_gap": remaining_if_all_native_pass,
             "training_now": False,
             "full25_now": False,
             "promotion_allowed": False,
-            "why": "reuses_existing_expensive_rollouts_excludes_eval22_and_directly_reduces_the_training_supply_gap_before_new_full25_collection",
+            "why": "native_pairs_passed_all_mechanical_token_and_margin_screens_but_the_remaining_gap_requires_measuring_semantic_approval_before_more_rollout_spend",
         },
         "next_action_contract": [
             {
                 "order": 1,
-                "action": "mechanically build native-sourced pairs outside eval22",
+                "action": "mechanically build native-sourced pairs outside all frozen sets",
                 "resource": "CPU only",
+                "status": "completed",
                 "gate": "actual observed first error, verified chosen, identical prefix through real tool result, zero eval22/chosen-calibration16/frozen16/val20/test20 overlap",
                 "stop": "any identity, semantic, tool-result, or pair-integrity failure",
             },
@@ -181,6 +199,7 @@ def build_strategy(
                 "order": 2,
                 "action": "run Step 120 forward-only margin on retained native pairs",
                 "resource": "NPU forward only",
+                "status": "completed",
                 "gate": "nonempty delta masks and systematic correct-vs-actual-error misranking",
                 "stop": "no optimizer, no checkpoint, no training authorization",
             },
@@ -188,6 +207,7 @@ def build_strategy(
                 "order": 3,
                 "action": "adjudicate the 42 lowest-risk review-required tasks as a supply pilot",
                 "resource": "CPU only",
+                "status": "next",
                 "gate": "measure semantic approval rate before committing to all 138",
                 "stop": "do not mistake 42 tasks for capacity to supply the remaining pair target",
             },
@@ -195,6 +215,7 @@ def build_strategy(
                 "order": 4,
                 "action": "expand approved candidate capacity and collect Step 120 states in 32-task batches",
                 "resource": "CPU then NPU rollout",
+                "status": "blocked_on_review_pilot",
                 "gate": "capacity target rebased from retained native pairs and measured approval/yield",
                 "stop": "stop acquisition at 48 distinct training pairs; keep eval22 and chosen-calibration16 frozen",
             },
@@ -202,12 +223,12 @@ def build_strategy(
         "rejected_immediate_actions": [
             "train_on_eval22",
             "continue_the_rejected_chosen_only_checkpoint",
-            "review_all_138_before_reusing_existing_native_rollouts",
+            "review_all_138_before_measuring_the_42_task_approval_rate",
             "run_full64_or_additional_optimizer_steps_now",
             "lower_the_48_pair_gate",
         ],
         "caveats": [
-            "the 11 native states are candidate states, not training-ready pairs, until mechanical construction and token auditing pass",
+            "the retained native states passed pair, token, and Step120 margin screens but remain a separately labeled off-policy source stratum",
             "the beta-binomial calculation assumes future approved tasks have exchangeable pair yield with the observed strict64; review-required tasks may yield less",
             "semantic approval is below 100 percent by construction, so queue-only probabilities are optimistic upper bounds",
             "native-sourced states are off-policy relative to Step 120 and must be labeled and evaluated as a separate source stratum",
@@ -221,14 +242,21 @@ def build_strategy(
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--native-supply", type=Path, required=True)
+    parser.add_argument("--native-margin", type=Path, required=True)
     parser.add_argument("--eval22-summary", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     native_supply = json.loads(args.native_supply.read_text(encoding="utf-8"))
+    native_margin = json.loads(args.native_margin.read_text(encoding="utf-8"))
     eval_summary = json.loads(args.eval22_summary.read_text(encoding="utf-8"))
-    result = build_strategy(native_supply=native_supply, eval_summary=eval_summary)
+    result = build_strategy(
+        native_supply=native_supply,
+        native_margin=native_margin,
+        eval_summary=eval_summary,
+    )
     result["source_sha256"] = {
         "native_supply": sha256_file(args.native_supply),
+        "native_margin": sha256_file(args.native_margin),
         "eval22_summary": sha256_file(args.eval22_summary),
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)

@@ -3,8 +3,18 @@ import pytest
 from scripts.analyze_native_disjoint_pair_supply import (
     EVAL_CONTRACT,
     eval_task_ids,
+    forbidden_task_id,
     summarize_supply,
 )
+
+
+def test_forbidden_task_id_prefers_derived_source_identity():
+    row = {
+        "source_task_id": "source-task",
+        "task_id": "display-task::chosen",
+        "reward_model": {"ground_truth": {"task_id": "truth-task"}},
+    }
+    assert forbidden_task_id(row) == "source-task"
 
 
 def test_supply_excludes_frozen_eval_tasks_and_stays_fail_closed():
