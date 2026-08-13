@@ -1,0 +1,227 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "下一步最有价值的动作：先回收11个原生真实状态",
+    "generatedAt": "2026-08-13T12:30:00+08:00",
+    "blocks": [
+      {
+        "id": "title",
+        "type": "markdown",
+        "body": "# 下一步最有价值的动作：先回收11个原生真实状态"
+      },
+      {
+        "id": "executive_summary",
+        "type": "markdown",
+        "sourceId": "strategy_summary",
+        "body": "## Executive Summary\n\n- **第一优先不是训练，也不是立刻审核全部138条。** 先把已有原生 full25 中、排除 eval22 后剩余的 `11` 个真实首错状态构造成 pair，完成 CPU 机械门，再用 Step 120 做一次纯前向 margin。\n- **上一版容量计算需要修正。** eval22 的22条已经永久冻结，不能继续计入训练所需的48对；若从零依赖当前138条队列，即使假设全部语义审核通过，达到48对的预测概率也只有约 `50.0%`。\n- **原生11条是当前信息收益最高的现成资产。** 原生模型共有27个已观测首错，其中16个与eval22重叠、已排除；剩余11个不占新rollout成本，可先验证是否形成真实、可训练的独立pair。\n- **即使11条全部通过，仍要先测供给率。** 剩余缺口为37对；138个已批准候选达到该缺口的预测概率约 `87.6%`，90%/95%把握分别需要143/156个已批准候选，而review-required的实际批准率必然低于100%。"
+      },
+      {
+        "id": "capacity_correction",
+        "type": "markdown",
+        "sourceId": "strategy_summary",
+        "body": "## 冻结 eval22 后，训练数据缺口必须从零重算\n\n此前“已有22对、再补26对”的规划隐含复用了这22条。它们现在承担候选淘汰门，继续用于训练会污染唯一的真实状态评测，因此训练可复用数是 `0`，不是22。\n\n按已观测的 `22/64 = 34.4%` 真实pair产率，并用Jeffreys后验预测保留产率不确定性，当前138条队列即使全部审核通过，也只有约一半概率独立产出48对。更重要的是，这138条本来就是review-required，全部通过是假设上界，不是现实预期。**所以直接把整队审核完再看结果，仍可能高成本走到数据门前再次失败。**"
+      },
+      {
+        "id": "capacity_chart_explanation",
+        "type": "markdown",
+        "sourceId": "strategy_summary",
+        "body": "## 当前队列接近目标，但没有可靠安全余量\n\n如果11个原生状态全部通过pair构建，后续还需37对。图中比较当前review队列与达到90%/95%预测把握所需的已批准候选数：138比90%目标少5，比95%目标少18。由于语义审核会淘汰任务，真实的原始候选缺口只会更大。"
+      },
+      {
+        "id": "capacity_chart_block",
+        "type": "chart",
+        "chartId": "capacity_chart"
+      },
+      {
+        "id": "native_reuse",
+        "type": "markdown",
+        "sourceId": "native_supply",
+        "body": "## 已有原生回放可以零 NPU 成本先补11个候选状态\n\n原生 full25 的27个已观测首错中，16个落在eval22，已按任务身份排除；另外11个来自未冻结任务，其中10个是可执行但证据错误/不足，1个是schema/语法/执行错误。服务器侧进一步核对chosen-only calibration16，额外重叠为0。它们是真实模型动作且有真实工具结果，比人工合成negative更接近部署状态。\n\n但这11个目前只是候选状态：还必须重建机械正确chosen、验证chosen/rejected共享同一前缀与工具结果、通过token/delta mask，并再次确认与eval22、chosen-only calibration16、frozen16、val20、test20零重叠。**在这些门通过前，训练对数仍是0。**"
+      },
+      {
+        "id": "supply_table_block",
+        "type": "table",
+        "tableId": "supply_table"
+      },
+      {
+        "id": "probability_explanation",
+        "type": "markdown",
+        "sourceId": "strategy_summary",
+        "body": "## 42条低风险子集适合测批准率，不足以承担容量目标\n\n42条最低风险review任务按当前产率只期望约14.4对，独立补出剩余37对的预测概率几乎为零。因此它最有价值的用途是做CPU语义审核pilot：测出真实批准率、风险类型与operator覆盖，再决定要从当前队列和新来源分别补多少任务，而不是把42条误当作完整训练池。"
+      },
+      {
+        "id": "probability_table_block",
+        "type": "table",
+        "tableId": "probability_table"
+      },
+      {
+        "id": "recommended_next_steps",
+        "type": "markdown",
+        "sourceId": "strategy_summary",
+        "body": "## 推荐顺序\n\n1. **CPU 构建并审计原生11条。** 只保留真实已观测首错、机械正确chosen、相同状态前缀和严格集合隔离；任何一项不满足就剔除。\n2. **对保留下来的pair做Step 120纯前向。** 只测semantic-delta/full-SQL margin与token家族，不创建optimizer、不保存checkpoint。若Step 120并未系统性误排这些native状态，就不把它们并入训练池。\n3. **CPU审核42条最低风险review任务。** 用实际批准率替代“138条全部通过”的乐观假设，并记录aggregation、query start、identifier等覆盖。\n4. **重算供给后再分批采集。** 按32题一批运行Step 120 full25，累计训练pair达到48立即停止；eval22和chosen-only calibration16始终不进入训练。\n5. **最后才允许一次新pairwise候选。** 新候选必须先过eval22的 `17/22 + 18/22 + 零回退`，再开放full64 Pareto复评。"
+      },
+      {
+        "id": "action_table_block",
+        "type": "table",
+        "tableId": "action_table"
+      },
+      {
+        "id": "further_questions",
+        "type": "markdown",
+        "body": "## Further Questions｜后续问题\n\n- 11个原生状态中，最终有多少能通过chosen机械验证、token mask与集合隔离并形成训练pair？\n- 42条最低风险review任务的实际语义批准率是多少，是否显著低于strict64？\n- 新任务来源能否至少补足90%/95%容量安全余量，而不是再次卡在48对门前？\n- native-source与Step120-source的margin、operator分布是否足够一致，允许合并训练，还是必须分层采样？"
+      },
+      {
+        "id": "caveats",
+        "type": "markdown",
+        "sourceId": "strategy_summary",
+        "body": "## Caveats and Assumptions｜限制\n\n- 概率采用 `22/64` 观测产率的Jeffreys后验预测；它假设未来已批准任务与strict64在pair产率上可交换。review-required任务可能更差，所以报告概率是乐观上界。\n- 原生11条是off-policy状态，必须保留source-model标签并单独报告；不能未经Step120 margin核验就与Step120状态等量混训。\n- 这次审视没有授权训练、full64或模型晋级；所有开关继续关闭。\n- eval22是按Step120失败筛选的诊断集，只能用于候选淘汰，不能估计总体准确率。"
+      }
+    ],
+    "charts": [
+      {
+        "id": "capacity_chart",
+        "title": "已批准候选容量",
+        "subtitle": "假设原生11个状态全部通过pair审计；剩余目标37对",
+        "type": "bar",
+        "dataset": "capacity_targets",
+        "sourceId": "strategy_summary",
+        "encodings": {
+          "x": {"field": "scenario", "type": "nominal"},
+          "y": {"field": "approved_tasks", "type": "quantitative"}
+        },
+        "valueFormat": "number",
+        "layout": "full"
+      }
+    ],
+    "tables": [
+      {
+        "id": "supply_table",
+        "title": "真实状态供给账本",
+        "subtitle": "候选状态只有通过机械与token门后才转为训练pair",
+        "dataset": "supply_ledger",
+        "sourceId": "strategy_summary",
+        "columns": [
+          {"field": "order", "label": "#"},
+          {"field": "item", "label": "项目"},
+          {"field": "count", "label": "数量"},
+          {"field": "status", "label": "当前身份"},
+          {"field": "implication", "label": "含义"}
+        ],
+        "defaultSort": {"field": "order", "direction": "asc"}
+      },
+      {
+        "id": "probability_table",
+        "title": "容量情景的预测概率",
+        "subtitle": "基于22/64产率的Jeffreys后验预测；未扣除语义审核淘汰",
+        "dataset": "capacity_probabilities",
+        "sourceId": "strategy_summary",
+        "columns": [
+          {"field": "order", "label": "#"},
+          {"field": "scenario", "label": "情景"},
+          {"field": "approved_tasks", "label": "候选任务"},
+          {"field": "pairs_needed", "label": "所需pair"},
+          {"field": "probability", "label": "达到概率", "format": "percent"},
+          {"field": "interpretation", "label": "解释"}
+        ],
+        "defaultSort": {"field": "order", "direction": "asc"}
+      },
+      {
+        "id": "action_table",
+        "title": "下一步动作与停止门",
+        "subtitle": "按信息价值与资源成本排序；训练保持关闭",
+        "dataset": "next_actions",
+        "sourceId": "strategy_summary",
+        "columns": [
+          {"field": "order", "label": "顺序"},
+          {"field": "action", "label": "动作"},
+          {"field": "resource", "label": "资源"},
+          {"field": "value", "label": "主要价值"},
+          {"field": "stop", "label": "停止条件"}
+        ],
+        "defaultSort": {"field": "order", "direction": "asc"}
+      }
+    ],
+    "sources": [
+      {"id": "strategy_summary", "label": "修正后的训练供给策略安全汇总", "path": "docs/next_training_supply_strategy_20260813_summary.json"},
+      {"id": "native_supply", "label": "原生full25非eval22真实状态聚合审计", "path": "docs/native_outside_eval22_supply_20260813_summary.json"},
+      {"id": "eval22_summary", "label": "eval22基线—候选安全汇总", "path": "docs/disjoint_real_state_eval22_20260813_summary.json"}
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "generatedAt": "2026-08-13T12:30:00+08:00",
+    "status": "ready",
+    "datasets": {
+      "capacity_targets": [
+        {"scenario": "当前review队列", "approved_tasks": 138},
+        {"scenario": "90%预测把握", "approved_tasks": 143},
+        {"scenario": "95%预测把握", "approved_tasks": 156}
+      ],
+      "supply_ledger": [
+        {"order": 1, "item": "训练pair硬门", "count": 48, "status": "目标", "implication": "不降低"},
+        {"order": 2, "item": "eval22可用于训练", "count": 0, "status": "永久冻结", "implication": "只做候选淘汰"},
+        {"order": 3, "item": "原生非eval22真实错误状态", "count": 11, "status": "候选状态", "implication": "先做机械与token门"},
+        {"order": 4, "item": "原生11条全通过后的剩余缺口", "count": 37, "status": "条件性缺口", "implication": "由新任务补足"}
+      ],
+      "capacity_probabilities": [
+        {"order": 1, "scenario": "review138单独补48对", "approved_tasks": 138, "pairs_needed": 48, "probability": 0.49993108951569576, "interpretation": "即使全部批准也只有约一半"},
+        {"order": 2, "scenario": "原生11条通过后，review138补37对", "approved_tasks": 138, "pairs_needed": 37, "probability": 0.875570104390281, "interpretation": "仍低于90%，且未扣审核淘汰"},
+        {"order": 3, "scenario": "最低风险42条补37对", "approved_tasks": 42, "pairs_needed": 37, "probability": 0.000000014795791363957428, "interpretation": "只适合估计批准率"}
+      ],
+      "next_actions": [
+        {"order": 1, "action": "构建并CPU审计原生11条", "resource": "CPU", "value": "复用已有真实rollout，直接缩小缺口", "stop": "任一身份、语义、工具结果或pair完整性失败"},
+        {"order": 2, "action": "Step120纯前向margin", "resource": "NPU前向", "value": "验证off-policy状态是否仍被系统误排", "stop": "不建optimizer、不存checkpoint"},
+        {"order": 3, "action": "审核最低风险42条", "resource": "CPU", "value": "测真实语义批准率与operator覆盖", "stop": "不把42任务误作37个pair"},
+        {"order": 4, "action": "补容量并32题分批采集", "resource": "CPU+NPU rollout", "value": "只为达到48个独立训练pair", "stop": "达到48立即停止"}
+      ]
+    }
+  },
+  "sources": [
+    {
+      "id": "strategy_summary",
+      "label": "修正后的训练供给策略安全汇总",
+      "path": "docs/next_training_supply_strategy_20260813_summary.json",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM read_json_auto('docs/next_training_supply_strategy_20260813_summary.json')",
+        "description": "读取eval22训练禁用、原生非重叠状态和beta-binomial容量推导。",
+        "tables_used": ["docs/next_training_supply_strategy_20260813_summary.json"],
+        "filters": ["eval22 training use = 0", "native overlap excluded", "review queue = 138"],
+        "metric_definitions": {
+          "pair_yield": "22 observed Step120 real first-error pairs divided by 64 strict candidate tasks",
+          "predictive_probability": "Jeffreys posterior Beta(22.5,42.5) integrated through a beta-binomial predictive distribution",
+          "approved_capacity_target": "number of semantically approved candidate tasks required to reach at least 37 new pairs with the stated predictive probability"
+        }
+      }
+    },
+    {
+      "id": "native_supply",
+      "label": "原生full25非eval22真实状态聚合审计",
+      "path": "docs/native_outside_eval22_supply_20260813_summary.json",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM read_json_auto('docs/native_outside_eval22_supply_20260813_summary.json')",
+        "description": "读取原生full25首错与冻结eval22身份集合的服务器侧聚合差集。",
+        "tables_used": ["docs/native_outside_eval22_supply_20260813_summary.json"],
+        "filters": ["observed first-query error", "exclude all eval22 task identities", "aggregate only"]
+      }
+    },
+    {
+      "id": "eval22_summary",
+      "label": "eval22基线—候选安全汇总",
+      "path": "docs/disjoint_real_state_eval22_20260813_summary.json",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM read_json_auto('docs/disjoint_real_state_eval22_20260813_summary.json')",
+        "description": "读取22条评测集的训练禁用合同、候选门禁和安全汇总。",
+        "tables_used": ["docs/disjoint_real_state_eval22_20260813_summary.json"],
+        "filters": ["evaluation-only", "training disallowed", "promotion disallowed"]
+      }
+    }
+  ]
+}

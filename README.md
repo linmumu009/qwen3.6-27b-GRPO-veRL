@@ -33,6 +33,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - chosen-only schema-conditioned 首动作一步金丝雀已完成：train48 的 `0.25/8` 加权更新使 calibration16 SQL NLL `1.2913→1.1267`、`16/16` 逐题改善，top-5 `344→348`、mean rank `18.78→15.87`，且结构 NLL 未退化；但 greedy token 仅 `277→282`（`+5 < +12`），完整 SQL 全 greedy 仍为 `0/16`，未过预注册门。14/16 的首个 non-greedy 边界未移动，其中原有 aggregation `9/9` 全部保留；按合同不跑自由回放、不追加训练、不晋级 checkpoint。
 - 新一轮训练前先执行 current-definition 数据池审计：正式 train236 在旧严格筛选下仅有 25 个候选，扣除冻结 16 题后只剩 9 个，禁止直接启动 pairwise 训练。新增审计从老板当前权威任务定义重建漂移 instruction/gold 身份，逐条执行只读 SQL、核对 gold 支持，并同时隔离冻结 16 题、val20、test20 的 task/instruction/SQL 哈希；只有严格可用新任务达到至少 48 条才允许进入 Step 120 首错采集。
 - 新增的 22 条真实首错状态已冻结为 evaluation-only，并完成 Step 120 与现有 chosen-only 一步 checkpoint 的同状态纯前向对照：候选有 `18/22` 逐题 semantic-delta margin 改善，平均值 `-1.1454→-1.0843`，但正确候选占优仍为 `3/22`，full-SQL 正确占优仍为 `1/22`；预注册的 `17/22` 决策边界门失败，因此不跑 full64、不追加训练、不晋级。该 22 条足以拒绝当前候选，但不用于训练或总体泛化估计；下一步仍是另建至少 48 条不重叠真实首错训练 pair。
+- 冻结 eval22 后已重新核算训练供给：旧“复用22对、再补26对”的容量假设失效，训练pair必须从0计。CPU复用既有原生full25发现27个已观测首错中16个与eval22重叠，另有11个独立真实状态可先做pair机械门；它们与chosen-only calibration16的额外重叠也为0。11条全部通过时剩余缺口为37对。按 `22/64` 产率的Jeffreys后验预测，review138全部批准后补37对的概率约 `87.6%`，90%/95%把握需143/156个已批准候选，因此当前第一优先是先回收这11个现成状态并做Step120纯前向margin，再用42条最低风险review任务测实际批准率，而不是直接审核全队或启动训练。
 - 所有新增镜像、容器、工作目录和实验名均以 `llin` 开头，不复用或修改其他人的环境。
 
 当前服务器部署：
@@ -109,6 +110,9 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [`docs/disjoint_real_state_eval22_20260813.html`](docs/disjoint_real_state_eval22_20260813.html)：22 条冻结真实首错状态上的 Step 120—chosen-only 候选同状态对照、家族归因、预注册门禁与下一动作的自包含报告。
 - [`docs/disjoint_real_state_eval22_20260813_summary.json`](docs/disjoint_real_state_eval22_20260813_summary.json)：不含 prompt、SQL、答案、task ID、工具结果或服务器路径的基线—候选安全汇总、逐题改善计数与来源哈希。
 - [`docs/disjoint_real_state_eval22_20260813.artifact.json`](docs/disjoint_real_state_eval22_20260813.artifact.json)：上述报告的 canonical Data Analytics artifact、快照数据、图表、表格、来源和指标定义。
+- [`docs/next_training_supply_strategy_20260813.html`](docs/next_training_supply_strategy_20260813.html)：冻结eval22后的训练供给重算、原生11个非重叠真实状态、review138成功概率与下一动作顺序的自包含决策报告。
+- [`docs/next_training_supply_strategy_20260813_summary.json`](docs/next_training_supply_strategy_20260813_summary.json)：不含prompt、SQL、答案、task ID、工具结果或服务器路径的供给概率、安全合同和动作优先级汇总。
+- [`docs/native_outside_eval22_supply_20260813_summary.json`](docs/native_outside_eval22_supply_20260813_summary.json)：原生full25已观测首错与eval22身份集合的服务器侧聚合差集；11个非重叠状态尚未被视为训练ready pair。
 - [`docs/semantic_delta_pairwise_canary_20260812.md`](docs/semantic_delta_pairwise_canary_20260812.md)：一次 reference-free pairwise 更新、工程失败修复、训练资源、同数据概率前后门禁与 fail-closed 决策。
 - [`docs/semantic_delta_pairwise_canary_20260812_summary.json`](docs/semantic_delta_pairwise_canary_20260812_summary.json)：不含原始问题、SQL、答案和服务器路径的一步 pairwise 安全聚合结果。
 - [`docs/native_vs_step120_reward_behavior_attribution_20260812.md`](docs/native_vs_step120_reward_behavior_attribution_20260812.md)：原生模型与 Step 120 的相同错误状态概率对照、同题老板原版自由回放和奖励代理错配归因。
@@ -205,6 +209,8 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/prepare_disjoint_first_error_evaluation.py`、`scripts/run_disjoint_real_state_eval22_margin.sh`、`scripts/launch_disjoint_real_state_eval22_margin.sh`：把不足训练门槛但已机械验证的 22 对状态单独冻结为 evaluation-only，强制禁止训练与 promotion，并可对任意指定 Megatron checkpoint 做相同数据、相同 mask 的 TP4/PP2/CP2 纯前向评分。
 - `scripts/analyze_disjoint_real_state_evaluation.py`、`scripts/compare_disjoint_real_state_evaluation.py`：复算 semantic-delta/full-SQL margin、Wilson 区间与 token 家族聚合，并按预注册的 `17/22 + 18/22 + 零回退` 比较 Step 120 和未来候选；失败只允许停止，不能开放训练或 full64。
 - `scripts/validate_disjoint_real_state_eval22_artifacts.py`、`scripts/validate_disjoint_real_state_eval22_candidate.py`：从原始 Parquet、CPU token gate、两次 NPU 诊断、实验合同和比较器独立复核行粒度、哈希、指标与执行安全，再输出不含敏感样本内容的 Git 安全汇总。
+- `scripts/analyze_native_disjoint_pair_supply.py`：在服务器侧重建原生full25逐题首查结果，只输出排除eval22后的真实错误状态数量和类别；不输出身份或样本内容，也不把候选状态自动视为训练pair。
+- `scripts/analyze_disjoint_training_supply_strategy.py`：在eval22训练禁用前提下重算48对供给缺口，以 `22/64` 观测产率的Jeffreys后验beta-binomial预测量化review队列成功概率，并将下一动作锁定为原生状态回收、纯前向margin和42条低风险语义审核pilot。
 - `scripts/run_disjoint_pairwise_canary.sh`：只有不重叠 pair 数、CPU token gate 和 Step 120 margin 三门均通过时，才把实际 48–64 对作为一个完整 global batch 做一次 reference-free pairwise 更新；只保存 model+extra，随后必须回到原冻结 16 题做概率门禁。
 - `scripts/analyze_rollout_command_families.py`：以不输出命令、SQL、prompt 或工具结果的方式统计工具类型、Bash 命令族、重复调用与真实工具响应覆盖，用于区分模型工具策略问题和 SQL 解析器漏识别。
 - `scripts/prepare_query_initiation_oracle_candidates.py`、`scripts/analyze_query_initiation_oracle_outcomes.py`、`scripts/analyze_query_initiation_oracle_gate.py`：只抽取 Step 120 完整 25 回合仍未发起只读查询的题目，追加不含答案、表名、字段名、SQL 或字面量的通用查询启动约束；专用适配器核对 Parquet 哈希、3/3 回合和训练关闭合同，再以带真实工具结果的只读查询恢复数区分策略路由与 schema/工具实现问题。
@@ -217,6 +223,12 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/run_chosen_only_first_action_one_step.sh`、`scripts/launch_chosen_only_first_action_one_step.sh`、`scripts/analyze_chosen_only_first_action_post_canary.py`：严格执行获准的一步 train48 `0.25/8` 全参 SFT，并在相同 calibration16 上按预注册的 aggregate/per-task NLL、greedy/top-5、mean rank、tool structure 和更早分叉门自动决定是否只开放一次自由回放；无论结果如何都禁止追加训练和 promotion。
 
 ## 已验证状态
+
+### v1.8.0 — 2026-08-13
+
+- 修正v1.6.0容量规划中“复用现有22对”的隐含假设：这22条现已冻结为eval22，训练可用数必须记为0；当前review138即使全部批准，独立达到48对的后验预测概率也只有约50%，且该值尚未扣除语义审核淘汰。
+- 服务器侧CPU复用既有原生full25逐题结果：27个已观测首错中16个与eval22重叠并排除，余下11个与chosen-only calibration16的额外重叠为0；其中10个为可执行但证据错误/不足、1个为schema/语法/执行错误。这些状态尚未通过chosen构建和token门，因此训练继续关闭。
+- 将下一优先动作改为：先把原生11条构造成严格pair并完成CPU门，再用Step120做纯前向margin；随后以42条最低风险review任务估计真实语义批准率。若11条全部通过，剩余37对在review138全部批准的理想条件下达到概率约87.6%；90%/95%把握分别需要143/156个已批准候选，仍需额外容量安全余量。
 
 ### v1.7.0 — 2026-08-13
 

@@ -1,0 +1,30 @@
+{
+  "contract": "native-disjoint-real-state-supply-audit-v1",
+  "source_tasks": 64,
+  "frozen_eval22_tasks": 22,
+  "native_observed_first_query_errors": 27,
+  "native_error_overlap_with_eval22": 16,
+  "native_error_states_outside_eval22": 11,
+  "additional_frozen_overlap_outside_eval22": 0,
+  "native_error_states_outside_all_frozen_sets": 11,
+  "outside_all_frozen_first_error_category_counts": {
+    "executable_wrong_or_insufficient_evidence": 10,
+    "schema_syntax_or_execution_error": 1
+  },
+  "all_reported_counts_are_unique_task_counts": true,
+  "contains_prompts_sql_answers_task_ids_tool_outputs_or_server_paths": false,
+  "evaluation_only_tasks_excluded_from_training_supply": true,
+  "states_are_training_ready_pairs": false,
+  "training_allowed": false,
+  "promotion_allowed": false,
+  "next_action": "mechanically_build_and_audit_native_sourced_pairs_outside_eval22",
+  "source_sha256": {
+    "replay_parquet": "12fcfafbf449737ee467c914f47e7063c0ef6de33731a49ca5827b52e1d7db43",
+    "native_rollout_openai": "9119f3bd3ddd8061eef47f24c8aa26cd769a10ed0f4780214adaec3e6e51c74b",
+    "database": "6d9c90cb5869dca751ba4865d4e682578105f984b52837a7f75adfdc8d9ef5f8",
+    "eval22_contract": "deee283971b4c8e3a149182e93c7b68e2a44f71f10e62489a118627bf5e0eca3",
+    "additional_forbidden_parquet": {
+      "chosen_only_schema_action_calibration16.parquet": "f94a40c047c709aa0b979429902bc444405a3b6b993f953882769e78e42fc63c"
+    }
+  }
+}

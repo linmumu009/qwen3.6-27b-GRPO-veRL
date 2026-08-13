@@ -1,0 +1,99 @@
+{
+  "contract": "disjoint-training-supply-strategy-v2",
+  "date": "2026-08-13",
+  "objective": "maximize_expected_accuracy_learning_per_unit_of_cpu_and_npu_time",
+  "corrected_capacity_logic": {
+    "required_training_pairs": 48,
+    "eval22_pairs": 22,
+    "eval22_pairs_reusable_for_training": 0,
+    "previous_reuse_assumption_invalid": true,
+    "observed_pair_yield": 0.34375,
+    "yield_observations": {
+      "pairs": 22,
+      "candidate_tasks": 64
+    },
+    "uncertainty_model": "Jeffreys-posterior beta-binomial predictive",
+    "review_queue_tasks": 138,
+    "probability_queue_alone_reaches_48_if_every_task_is_approved": 0.49993108951569576
+  },
+  "existing_zero_npu_opportunity": {
+    "native_observed_error_states": 27,
+    "overlap_with_eval22_excluded": 16,
+    "native_error_states_outside_eval22": 11,
+    "additional_frozen_overlap_outside_eval22": 0,
+    "error_categories": {
+      "executable_wrong_or_insufficient_evidence": 10,
+      "schema_syntax_or_execution_error": 1
+    },
+    "currently_training_ready_pairs": 0,
+    "remaining_pairs_if_all_native_states_pass_pair_audit": 37
+  },
+  "rebased_capacity": {
+    "probability_review138_supplies_remaining_pairs_if_all_11_native_states_pass_and_all_138_are_approved": 0.875570104390281,
+    "approved_candidate_tasks_for_90pct_predictive_probability": 143,
+    "approved_candidate_tasks_for_95pct_predictive_probability": 156,
+    "shortfall_vs_review138_at_90pct_even_if_all_are_approved": 5,
+    "shortfall_vs_review138_at_95pct_even_if_all_are_approved": 18,
+    "low_risk_review_subset_tasks": 42,
+    "low_risk_expected_pairs_at_observed_yield": 14.4375,
+    "probability_low_risk_subset_supplies_remaining_pairs": 1.4795791363957428e-08,
+    "low_risk_subset_can_reliably_fill_remaining_pairs_by_itself": false
+  },
+  "decision": {
+    "highest_value_next_action": "build_and_cpu_audit_native11_real_state_pairs_then_run_step120_forward_only_margin",
+    "training_now": false,
+    "full25_now": false,
+    "promotion_allowed": false,
+    "why": "reuses_existing_expensive_rollouts_excludes_eval22_and_directly_reduces_the_training_supply_gap_before_new_full25_collection"
+  },
+  "next_action_contract": [
+    {
+      "order": 1,
+      "action": "mechanically build native-sourced pairs outside eval22",
+      "resource": "CPU only",
+      "gate": "actual observed first error, verified chosen, identical prefix through real tool result, zero eval22/chosen-calibration16/frozen16/val20/test20 overlap",
+      "stop": "any identity, semantic, tool-result, or pair-integrity failure"
+    },
+    {
+      "order": 2,
+      "action": "run Step 120 forward-only margin on retained native pairs",
+      "resource": "NPU forward only",
+      "gate": "nonempty delta masks and systematic correct-vs-actual-error misranking",
+      "stop": "no optimizer, no checkpoint, no training authorization"
+    },
+    {
+      "order": 3,
+      "action": "adjudicate the 42 lowest-risk review-required tasks as a supply pilot",
+      "resource": "CPU only",
+      "gate": "measure semantic approval rate before committing to all 138",
+      "stop": "do not mistake 42 tasks for capacity to supply the remaining pair target"
+    },
+    {
+      "order": 4,
+      "action": "expand approved candidate capacity and collect Step 120 states in 32-task batches",
+      "resource": "CPU then NPU rollout",
+      "gate": "capacity target rebased from retained native pairs and measured approval/yield",
+      "stop": "stop acquisition at 48 distinct training pairs; keep eval22 and chosen-calibration16 frozen"
+    }
+  ],
+  "rejected_immediate_actions": [
+    "train_on_eval22",
+    "continue_the_rejected_chosen_only_checkpoint",
+    "review_all_138_before_reusing_existing_native_rollouts",
+    "run_full64_or_additional_optimizer_steps_now",
+    "lower_the_48_pair_gate"
+  ],
+  "caveats": [
+    "the 11 native states are candidate states, not training-ready pairs, until mechanical construction and token auditing pass",
+    "the beta-binomial calculation assumes future approved tasks have exchangeable pair yield with the observed strict64; review-required tasks may yield less",
+    "semantic approval is below 100 percent by construction, so queue-only probabilities are optimistic upper bounds",
+    "native-sourced states are off-policy relative to Step 120 and must be labeled and evaluated as a separate source stratum"
+  ],
+  "contains_prompts_sql_answers_task_ids_tool_outputs_or_server_paths": false,
+  "training_allowed": false,
+  "promotion_allowed": false,
+  "source_sha256": {
+    "native_supply": "cd12777157381c8dbf6d3d9ae057f0089912c0ca2de22cf4ee7c2e4b2f12d3ba",
+    "eval22_summary": "a25540e8a916720901a4e2b2f2d2504715b2f6f6a80c7a2227e26ced8d5a0f13"
+  }
+}
