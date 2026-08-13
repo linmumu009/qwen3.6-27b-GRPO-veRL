@@ -1,0 +1,113 @@
+{
+  "contract": "disjoint-pair-semantic-review-supply-rebase-v1",
+  "date": "2026-08-13",
+  "question": "should_the_remaining_review96_be_adjudicated_or_should_supply_be_rebuilt",
+  "semantic_review": {
+    "reviewed_tasks": 42,
+    "approved": 0,
+    "rejected": 42,
+    "approval_rate": 0.0,
+    "approval_rate_wilson95": [
+      0.0,
+      0.08379879086570391
+    ],
+    "decision_counts": {
+      "rejected": 42
+    },
+    "reason_counts": {
+      "anomaly_or_latest_scope_not_supported": 1,
+      "business_association_not_supported": 1,
+      "change_attribution_not_supported": 2,
+      "cross_domain_or_latest_scope_not_supported": 3,
+      "cross_module_or_latest_scope_not_supported": 1,
+      "driver_analysis_not_supported": 2,
+      "latest_or_grouping_scope_not_supported": 1,
+      "latest_or_metric_scope_not_supported": 8,
+      "latest_or_multi_metric_scope_not_supported": 2,
+      "latest_or_multi_table_scope_not_supported": 1,
+      "latest_or_total_scope_not_supported": 1,
+      "latest_scope_not_supported": 2,
+      "multi_dimension_or_latest_scope_not_supported": 1,
+      "operational_implication_not_supported": 1,
+      "requested_date_not_filtered": 1,
+      "requested_multi_entity_analysis_not_covered": 1,
+      "requested_time_range_reduced_to_single_date": 4,
+      "root_cause_or_latest_scope_not_supported": 1,
+      "time_period_comparison_not_supported": 2,
+      "underspecified_metric_or_grouping": 5,
+      "unjustified_grouping_dimension": 1
+    },
+    "confidence_counts": {
+      "high": 35,
+      "medium": 7
+    },
+    "severity_counts": {
+      "high": 42
+    },
+    "instruction_unambiguously_entails_gold": 0,
+    "verification_sql_fully_answers_instruction": 0,
+    "expected_value_supported_by_query_result": 42,
+    "all_reviewed_tasks_mechanically_valid_and_query_stable": true,
+    "finding": "mechanically_supported_but_semantically_misaligned_labels"
+  },
+  "remaining_queue_exchangeability_stress_test": {
+    "remaining_tasks": 96,
+    "approval_model": {
+      "name": "Jeffreys-posterior beta-binomial predictive",
+      "posterior_alpha": 0.5,
+      "posterior_beta": 42.5,
+      "expected_approved_tasks": 1.1162790697674418,
+      "median_approved_tasks": 0,
+      "p90_upper_approved_tasks": 3,
+      "p95_upper_approved_tasks": 5,
+      "probability_at_least_one_approved_task": 0.4471793811921033
+    },
+    "conditional_pair_yield_model": {
+      "observed_pairs": 22,
+      "observed_candidate_tasks": 64,
+      "posterior_alpha": 22.5,
+      "posterior_beta": 42.5
+    },
+    "expected_additional_pairs": 0.38640429338103754,
+    "median_additional_pairs": 0,
+    "p90_upper_additional_pairs": 1,
+    "p95_upper_additional_pairs": 2,
+    "probability_at_least_one_additional_pair": 0.24920670252063382,
+    "probability_remaining_queue_fills_pair_gap": 7.140382400557097e-18,
+    "interpretation": "optimistic_exchangeability_stress_test_not_a_strict_upper_bound"
+  },
+  "training_capacity": {
+    "required_pairs": 48,
+    "retained_native_pair_candidates": 7,
+    "remaining_pair_gap": 41,
+    "approved_candidate_tasks_for_90pct_pair_supply_probability": 158,
+    "approved_candidate_tasks_for_95pct_pair_supply_probability": 172
+  },
+  "decision": {
+    "stop_reviewing_remaining96_from_same_queue_now": true,
+    "do_not_spend_npu_on_remaining_queue": true,
+    "training_now": false,
+    "promotion_allowed": false,
+    "highest_value_next_action": "author_fresh_unambiguous_current_definition_tasks_with_explicit_metric_grouping_and_time_scope",
+    "fresh_authoring_pilot_tasks": 32,
+    "fresh_authoring_pilot_gate": "every_task_must_pass_instruction_gold_sql_semantic_review_before_rollout",
+    "scale_target_after_pilot": "172_semantically_approved_candidate_tasks_for_95pct_pair_supply_probability",
+    "acquisition_batch_size": 32,
+    "acquisition_stop": "stop_when_41_additional_distinct_pairs_pass_all_gates"
+  },
+  "limitations": [
+    "the 42 tasks were deliberately selected as the lowest mechanical-risk stratum, so treating the remaining 96 as exchangeable is optimistic and not a population estimate",
+    "the pair-yield posterior comes from strict64 rather than the rejected review-required queue",
+    "the seven retained native pairs are a separately labeled off-policy candidate stratum",
+    "no rejected task may be used for rollout, training, evaluation, or model promotion"
+  ],
+  "contains_task_ids_prompts_sql_gold_values_tool_outputs_or_server_paths": false,
+  "may_be_used_as_training_or_rollout_data": false,
+  "training_allowed": false,
+  "promotion_allowed": false,
+  "source_sha256": {
+    "decisions": "b1055fd9d4f0cefd5ccbd90b8f96ff77d9069c2364eaf359f2dd11243f7f96e9",
+    "pilot_summary": "7fb3f8c38456d9dcd5fa3559d03dc5605142997bad6d791de09bd8a5233fcdd3",
+    "strategy_summary": "445320935e67a87544df4739632ea3a0b8587f42a9509433fd234b104e56e2f0"
+  }
+}

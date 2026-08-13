@@ -1,0 +1,217 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "42 条语义审核否决当前 review 队列",
+    "generatedAt": "2026-08-13T13:06:20+08:00",
+    "blocks": [
+      {
+        "id": "title",
+        "type": "markdown",
+        "body": "# 42 条语义审核否决当前 review 队列"
+      },
+      {
+        "id": "technical_summary",
+        "type": "markdown",
+        "sourceId": "review_rebase",
+        "body": "## Technical Summary｜技术结论\n\n- **停止审核同队列剩余96条，也不要为它们消耗NPU。** 最低机械风险的42条已经全部通过执行与稳定性门，但语义批准为 `0/42`；题意明确蕴含gold为 `0/42`，SQL完整回答题意也为 `0/42`。\n- **失败不是SQL跑不通。** `42/42` 的gold期望值都由查询结果支持；问题是题意、gold和SQL之间的语义标签失配，严重度为高。\n- **继续旧队列没有容量价值。** 在乐观可交换假设下，剩余96条预计只批准 `1.12` 条并形成 `0.39` 对新pair，补齐41对缺口的预测概率约 `7.1×10⁻18`。\n- **下一步应重建任务定义。** 先制作32条明确给出当前口径、指标、分组和时间范围的新任务pilot；每条先过语义门，再进入rollout。通过pilot后，把已批准候选扩到172条，作为补齐41对pair的95%预测容量目标。"
+      },
+      {
+        "id": "semantic_failure",
+        "type": "markdown",
+        "sourceId": "review_rebase",
+        "body": "## 机械正确掩盖了100%的语义标签失配\n\n42条均通过机械规则和SQLite顺序扰动稳定性探针，查询也都能支持记录的期望值；然而没有一条题意无歧义地推出精确gold，也没有一条SQL完整覆盖题意。最常见的模式是：题意要求最新状态、时间趋势、归因、跨域或多指标分析，SQL却只做静态、单日或单表聚合。\n\n**含义：** 把这些样本用于rollout或训练，会奖励“可执行且能命中某个数字，但没有真正回答问题”的行为。这与我们正在排查的奖励黑客现象方向一致，因此属于训练数据硬阻断，而不是可接受噪声。"
+      },
+      {
+        "id": "review_table_block",
+        "type": "table",
+        "tableId": "review_outcomes"
+      },
+      {
+        "id": "capacity_explanation",
+        "type": "markdown",
+        "sourceId": "review_rebase",
+        "body": "## 剩余96条无法承担41对训练缺口\n\n表中所有数值单位都是pair。当前仅保留7对原生候选，距离48对硬门还差41对；若对剩余96条使用对旧队列最有利的可交换假设，预计新增只有0.39对，95%预测上界也只有2对。绝对量级差异已经足以停止旧队列，无需再做NPU rollout。"
+      },
+      {
+        "id": "capacity_chart_block",
+        "type": "chart",
+        "chartId": "capacity_chart"
+      },
+      {
+        "id": "scope_definitions",
+        "type": "markdown",
+        "sourceId": "review_rebase",
+        "body": "## 审核范围与指标口径\n\n- **审核总体：** 138条 `review_required` 候选中的最低机械风险42条；它们全部是表格答案，42条都有无ORDER BY的LIMIT警告，其中30条另有“latest题意但SQL无时间约束”警告。\n- **语义批准：** 题意无歧义蕴含精确gold、SQL完整回答题意、期望值被查询结果支持，三项必须同时为真。\n- **训练容量：** 训练硬门为48对；7对原生候选保留为独立off-policy来源层，因此新来源仍需形成41对。\n- **pair产率：** 条件产率后验沿用历史strict64的 `22/64`，采用Jeffreys先验；它只作用于已经语义批准的任务。"
+      },
+      {
+        "id": "methodology",
+        "type": "markdown",
+        "sourceId": "review_rebase",
+        "body": "## 审核与供给重算方法\n\n逐条审核使用同一硬标准，并记录去标识的review index、三项证据门、原因码、置信度和严重度。服务器侧把决策与原始packet、稳定性证据按index和隐藏task identity做完整性核对，敏感联结结果保持0600且不进入Git。\n\n供给压力测试分两层：语义批准率使用 `0/42` 的Jeffreys后验 `Beta(0.5, 42.5)`；已批准任务形成pair的概率使用历史 `22/64` 的Jeffreys后验 `Beta(22.5, 42.5)`。先对剩余96条预测批准数，再对每个可能批准数积分条件pair产率，得到新pair分布。"
+      },
+      {
+        "id": "limitations",
+        "type": "markdown",
+        "sourceId": "review_rebase",
+        "body": "## 不确定性不会改变停止结论\n\n- 42条是最低机械风险层，不是随机样本；把剩余96条视为可交换已经是偏乐观的压力测试，而不是总体批准率估计或严格概率上界。\n- 条件pair产率来自strict64，不来自被否决的review队列；若新任务分布不同，172条容量目标要随首批真实产率更新。\n- 7对原生候选来自原生模型状态，必须保留source-model标签，不能与Step120来源混为同一随机样本。\n- 这些结果证明当前标签不可用，但不单独证明历史生成流程中的唯一根因，也不估计模型总体准确率。\n\n即使采用上述乐观假设，剩余96条补齐缺口的概率仍约为 `7.1×10⁻18`，所以不确定性不足以支持继续旧队列。"
+      },
+      {
+        "id": "recommendation",
+        "type": "markdown",
+        "sourceId": "review_rebase",
+        "body": "## 下一步先重建32条明确任务，而不是训练\n\n1. **制作32条新任务pilot。** 题意必须显式写出当前口径、指标、分组、时间范围和输出形态；先写可执行SQL，再从SQL反向生成无歧义题意和gold。\n2. **逐条执行同一语义硬门。** 任何一项不满足就退回重写，未批准任务不得rollout。\n3. **pilot通过后扩至172条已批准候选。** 这是按历史pair产率补齐41对的95%预测容量目标，不是必须一次性rollout的数量。\n4. **按32条一批采集Step120状态。** 每批重算实际pair产率；累计41对新增独立pair后立即停止。\n5. **保持训练与晋级关闭。** 只有48对完整供给和全部隔离门通过后，才讨论下一次训练金丝雀。"
+      },
+      {
+        "id": "action_table_block",
+        "type": "table",
+        "tableId": "next_actions"
+      },
+      {
+        "id": "further_questions",
+        "type": "markdown",
+        "body": "## Further Questions｜后续问题\n\n- 新32条任务能否达到100%语义批准，并覆盖query initiation、aggregation、identifier与多步证据等目标错误族？\n- 新任务的实际首错pair产率是否仍与strict64的22/64相容，还是需要再次上调172条容量目标？\n- 原生7对与Step120新pair在margin和错误族分布上是否需要分层采样？\n- 在训练前，是否需要把语义审核硬门直接集成到后续数据生成器，防止同类标签失配再次进入候选池？"
+      }
+    ],
+    "charts": [
+      {
+        "id": "capacity_chart",
+        "title": "训练 pair 容量对比",
+        "subtitle": "当前48对硬门；剩余96条采用乐观可交换压力测试",
+        "type": "bar",
+        "dataset": "capacity_comparison",
+        "sourceId": "review_rebase",
+        "encodings": {
+          "x": {"field": "capacity_item", "type": "nominal"},
+          "y": {"field": "pairs", "type": "quantitative"}
+        },
+        "valueFormat": "number",
+        "layout": "full"
+      }
+    ],
+    "tables": [
+      {
+        "id": "review_outcomes",
+        "title": "42条pilot的证据门结果",
+        "subtitle": "同一批任务先通过机械与稳定性门，再做显式语义审核",
+        "dataset": "review_outcomes",
+        "sourceId": "review_rebase",
+        "columns": [
+          {"field": "order", "label": "#"},
+          {"field": "gate", "label": "证据门"},
+          {"field": "passed", "label": "通过数"},
+          {"field": "denominator", "label": "审核数"},
+          {"field": "interpretation", "label": "解释"}
+        ],
+        "defaultSort": {"field": "order", "direction": "asc"}
+      },
+      {
+        "id": "next_actions",
+        "title": "后续动作与停止门",
+        "subtitle": "旧队列与训练均保持关闭，先验证新任务定义",
+        "dataset": "next_actions",
+        "sourceId": "review_rebase",
+        "columns": [
+          {"field": "order", "label": "顺序"},
+          {"field": "action", "label": "动作"},
+          {"field": "resource", "label": "资源"},
+          {"field": "gate", "label": "通过门"},
+          {"field": "stop", "label": "停止条件"}
+        ],
+        "defaultSort": {"field": "order", "direction": "asc"}
+      }
+    ],
+    "sources": [
+      {"id": "review_rebase", "label": "42条语义审核与供给重算安全汇总", "path": "docs/disjoint_pair_semantic_review_supply_rebase_20260813_summary.json"},
+      {"id": "review_decisions", "label": "去标识逐条语义审核决策", "path": "configs/disjoint_pair_review_pilot42_decisions_20260813.json"},
+      {"id": "pilot_summary", "label": "42条最低机械风险pilot安全汇总", "path": "docs/disjoint_pair_review_pilot42_20260813_summary.json"},
+      {"id": "previous_strategy", "label": "审核前训练供给策略", "path": "docs/next_training_supply_strategy_20260813_summary.json"}
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "generatedAt": "2026-08-13T13:06:20+08:00",
+    "status": "ready",
+    "datasets": {
+      "review_outcomes": [
+        {"order": 1, "gate": "机械与查询稳定性", "passed": 42, "denominator": 42, "interpretation": "全部通过，允许进入人工语义审核"},
+        {"order": 2, "gate": "题意无歧义蕴含gold", "passed": 0, "denominator": 42, "interpretation": "全部失败"},
+        {"order": 3, "gate": "SQL完整回答题意", "passed": 0, "denominator": 42, "interpretation": "全部失败"},
+        {"order": 4, "gate": "期望值被查询结果支持", "passed": 42, "denominator": 42, "interpretation": "SQL内部自洽，但不能挽救语义标签"},
+        {"order": 5, "gate": "最终语义批准", "passed": 0, "denominator": 42, "interpretation": "不得用于rollout或训练"}
+      ],
+      "capacity_comparison": [
+        {"order": 1, "capacity_item": "当前保留原生候选", "pairs": 7, "role": "available_candidate_stratum", "interpretation": "独立off-policy来源层"},
+        {"order": 2, "capacity_item": "距48对硬门的缺口", "pairs": 41, "role": "required", "interpretation": "训练前必须补足"},
+        {"order": 3, "capacity_item": "剩余96条预计新增", "pairs": 0.38640429338103754, "role": "predictive_mean", "interpretation": "相对缺口可忽略"},
+        {"order": 4, "capacity_item": "剩余96条95%预测上界", "pairs": 2, "role": "predictive_upper", "interpretation": "仍远低于41对缺口"}
+      ],
+      "next_actions": [
+        {"order": 1, "action": "新建32条明确任务pilot", "resource": "CPU", "gate": "题意、gold、SQL三项逐条批准", "stop": "任一含糊或范围不匹配即退回重写"},
+        {"order": 2, "action": "扩到172条已批准候选", "resource": "CPU", "gate": "保持同一语义与隔离合同", "stop": "先以pilot结果重算容量"},
+        {"order": 3, "action": "32条一批采集Step120状态", "resource": "NPU rollout", "gate": "真实首错、机械chosen、相同前缀和token mask", "stop": "新增41对后立即停止"},
+        {"order": 4, "action": "评估训练金丝雀", "resource": "NPU训练", "gate": "总计48对且冻结集零重叠", "stop": "任何门未通过都不训练"}
+      ]
+    }
+  },
+  "sources": [
+    {
+      "id": "review_rebase",
+      "label": "42条语义审核与供给重算安全汇总",
+      "path": "docs/disjoint_pair_semantic_review_supply_rebase_20260813_summary.json",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM read_json_auto('docs/disjoint_pair_semantic_review_supply_rebase_20260813_summary.json')",
+        "description": "从去标识决策、pilot机械稳定性汇总与审核前供给策略重算语义批准率和两阶段pair容量。",
+        "tables_used": ["docs/disjoint_pair_semantic_review_supply_rebase_20260813_summary.json"],
+        "filters": ["reviewed tasks = 42", "task identities hidden", "training disallowed"],
+        "metric_definitions": {
+          "semantic_approval": "instruction unambiguously entails exact gold AND verification SQL fully answers instruction AND expected value is supported by query result",
+          "remaining_queue_expected_pairs": "posterior expected approvals among 96 tasks multiplied by posterior mean pair yield conditional on approval",
+          "probability_fill_gap": "compound beta-binomial probability that the remaining 96 tasks produce at least 41 pairs"
+        }
+      }
+    },
+    {
+      "id": "review_decisions",
+      "label": "去标识逐条语义审核决策",
+      "path": "configs/disjoint_pair_review_pilot42_decisions_20260813.json",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM read_json_auto('configs/disjoint_pair_review_pilot42_decisions_20260813.json')",
+        "description": "读取42条去标识审核判定及证据门，不含task ID、题意、gold值或SQL。",
+        "tables_used": ["configs/disjoint_pair_review_pilot42_decisions_20260813.json"],
+        "filters": ["review_index 0 through 41", "high-severity semantic gate"]
+      }
+    },
+    {
+      "id": "pilot_summary",
+      "label": "42条最低机械风险pilot安全汇总",
+      "path": "docs/disjoint_pair_review_pilot42_20260813_summary.json",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM read_json_auto('docs/disjoint_pair_review_pilot42_20260813_summary.json')",
+        "description": "读取pilot选择范围、警告分布与SQLite顺序扰动稳定性结果。",
+        "tables_used": ["docs/disjoint_pair_review_pilot42_20260813_summary.json"],
+        "filters": ["lowest mechanical risk", "query stable = 42 of 42"]
+      }
+    },
+    {
+      "id": "previous_strategy",
+      "label": "审核前训练供给策略",
+      "path": "docs/next_training_supply_strategy_20260813_summary.json",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM read_json_auto('docs/next_training_supply_strategy_20260813_summary.json')",
+        "description": "读取48对硬门、7对原生候选、41对缺口与历史22/64 pair产率。",
+        "tables_used": ["docs/next_training_supply_strategy_20260813_summary.json"],
+        "filters": ["eval22 training use = 0", "retained native pairs = 7", "remaining pair gap = 41"]
+      }
+    }
+  ]
+}

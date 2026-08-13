@@ -1,0 +1,66 @@
+{
+  "report_job": {
+    "question": "Should the remaining 96 review-required tasks be adjudicated, or should training supply be rebuilt?",
+    "audience": "technical",
+    "scope": "The 42-task lowest-mechanical-risk semantic pilot, the remaining 96-task queue, seven retained native pair candidates, and the 48-pair training gate",
+    "time_frame": "Evidence available on 2026-08-13",
+    "comparison_baseline": "The pre-review strategy that treated all 138 review-required tasks as potentially approvable",
+    "success_criterion": "Choose the next action without spending NPU time on semantically invalid labels"
+  },
+  "delivery": {
+    "selected_mode": "html",
+    "status": "blocked",
+    "why": "The ChatGPT Desktop MCP report validator and renderer were not callable. The prescribed portable HTML builder validated the artifact but its browser reader remained in fallback and returned reader_timeout during static-chart extraction, including for a previously delivered control artifact.",
+    "canonical_input": "docs/disjoint_pair_semantic_review42_20260813.artifact.json",
+    "primary_artifact": null,
+    "attempted_surfaces": [
+      "mcp-app unavailable in the current tool surface",
+      "portable HTML with the default 5-second reader startup budget",
+      "portable HTML with a supported 20-second reader startup budget",
+      "portable HTML control using docs/next_training_supply_strategy_20260813.artifact.json"
+    ]
+  },
+  "required_structure_mapping": [
+    {"required_role": "Title", "block": "title"},
+    {"required_role": "Technical summary", "block": "technical_summary"},
+    {"required_role": "Key findings with visual evidence", "blocks": ["semantic_failure", "review_table_block", "capacity_explanation", "capacity_chart_block"]},
+    {"required_role": "Scope, data, and metric definitions", "block": "scope_definitions"},
+    {"required_role": "Methodology", "block": "methodology"},
+    {"required_role": "Limitations, uncertainty, and robustness checks", "block": "limitations"},
+    {"required_role": "Recommended next steps", "blocks": ["recommendation", "action_table_block"]},
+    {"required_role": "Further questions", "block": "further_questions"}
+  ],
+  "chart_map": [
+    {
+      "report_segment": "The remaining queue cannot fill the training gap",
+      "analytical_question": "How does plausible pair supply from the remaining queue compare with the 41-pair gap?",
+      "family": "Comparison & Ranking",
+      "chart_type": "bar",
+      "fields": ["capacity_item", "pairs"],
+      "supported_claim": "The optimistic expected and 95th-percentile pair supply from the remaining queue are negligible relative to the gap.",
+      "palette_policy": "single-root preferred",
+      "delivery_artifact": "blocked_before_html_publish_by_portable_reader_timeout"
+    }
+  ],
+  "visual_qa_contract": {
+    "category_count": 4,
+    "value_unit": "training pairs",
+    "absolute_bar_axis_starts_at_zero": true,
+    "single_series_no_legend": true,
+    "adjacent_explanation_block": "capacity_explanation",
+    "renderer_note": "Final-context visual QA is blocked because both 5-second and 20-second startup budgets left the canonical reader in fallback; a known prior artifact failed identically."
+  },
+  "source_inventory": [
+    "configs/disjoint_pair_review_pilot42_decisions_20260813.json",
+    "docs/disjoint_pair_review_pilot42_20260813_summary.json",
+    "docs/disjoint_pair_semantic_review_supply_rebase_20260813_summary.json",
+    "docs/next_training_supply_strategy_20260813_summary.json"
+  ],
+  "sensitive_data_handling": "Task IDs, instructions, gold values, SQL, tool outputs, and server paths are absent from the report and Git-bound aggregates. The joined sensitive adjudication remains server-side with mode 0600.",
+  "omissions": [
+    "The final HTML is not published because the canonical browser reader could not reach a terminal state; the validated canonical artifact input is retained for replay after the runtime is repaired.",
+    "No trend chart was used because the evidence is a single review cohort rather than a time series.",
+    "No per-task table was included because exact task-level content is unnecessary for the decision and would weaken data minimization.",
+    "No causal claim is made; the review identifies label mismatch, not the historical process that created it."
+  ]
+}
