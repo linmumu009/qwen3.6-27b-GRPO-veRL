@@ -240,6 +240,11 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 已验证状态
 
+### v1.11.13 — 2026-08-13
+
+- 新增双臂结果合并器：只接受两份既定outcome summary和两份mixed敏感Parquet，验证`tasks×n=trajectories`、采样数一致、mixed行数一致及verifier identity无交集后，合并正确率、完成率、0–8直方图、bucket和版本/answer type分布。
+- 合并后的mixed Parquet仍为0600且训练/晋级关闭；Git只允许进入不含题面、gold、SQL、task ID、工具调用或服务器路径的安全聚合。
+
 ### v1.11.12 — 2026-08-13
 
 - 新增281题server-only最终结果分析器：按分片中的`source_task_index×sample_index`强制验证每题恰好8条，复用现有`score_final_outcome`只看最终可见答案，不读取SQL执行过程或以工具命中代替正确。
