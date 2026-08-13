@@ -64,6 +64,7 @@ def arm_summary(rows: list[dict[str, Any]], expected_n: int) -> dict[str, Any]:
         "has_final_answer_rate": mean([float(row.get("has_final_answer") or 0) for row in rows]),
         "completion_rate": mean([float(bool(row.get("completed", True))) for row in rows]),
         "timeout_rate": mean([float(bool(row.get("timeout", False))) for row in rows]),
+        "runtime_error_rate": mean([float(bool(row.get("runtime_error", False))) for row in rows]),
         "bucket_counts": dict(sorted(group_buckets.items())),
         "per_task": per_task,
     }
@@ -136,6 +137,7 @@ def analyze(
     parity_checks = {
         **structural,
         "no_timeouts": pi["timeout_rate"] == 0 and verl["timeout_rate"] == 0,
+        "no_runtime_errors": pi["runtime_error_rate"] == 0 and verl["runtime_error_rate"] == 0,
         "global_accuracy_delta_at_most_10pp": metrics["global_accuracy_absolute_delta"] <= 0.10,
         "mean_per_task_delta_at_most_20pp": metrics["mean_per_task_absolute_accuracy_delta"] <= 0.20,
         "completion_delta_at_most_10pp": metrics["completion_rate_absolute_delta"] <= 0.10,
@@ -189,4 +191,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+PROJECT_ROOT="${PROJECT_ROOT:-/workspace/llin-verl-grpo}"
+RUN_NAME="${RUN_NAME:-llin-runtime-parity-verl-step120-20260813-01}"
+OUTPUT_DIR="${OUTPUT_DIR:-${PROJECT_ROOT}/runs/${RUN_NAME}}"
+EXPECTED_EVAL_ROWS="${EXPECTED_EVAL_ROWS:-80}"
+export PROJECT_ROOT RUN_NAME OUTPUT_DIR EXPECTED_EVAL_ROWS MODEL_DIST_CKPT EVAL_FILE
+
+mkdir -p "${OUTPUT_DIR}"
+if [[ -e "${OUTPUT_DIR}/exit_code" ]]; then
+  printf 'run already completed or failed: %s\n' "${OUTPUT_DIR}" >&2
+  exit 2
+fi
+date -Iseconds > "${OUTPUT_DIR}/started_at"
+nohup bash -lc '
+  set +e
+  bash "${PROJECT_ROOT}/scripts/run_runtime_parity_verl.sh" > "${OUTPUT_DIR}/driver.log" 2>&1
+  code=$?
+  validation_file="${OUTPUT_DIR}/validation/0.jsonl"
+  if [[ "${code}" == "0" && ! -f "${validation_file}" ]]; then
+    python3 "${PROJECT_ROOT}/scripts/copy_file_from_ray_resource.py" \
+      --source "${validation_file}" \
+      --output "${validation_file}" \
+      --resource llin_rollout \
+      --ray-address "${RAY_ADDRESS:-192.168.202.5:26379}" \
+      --expected-jsonl-rows "${EXPECTED_EVAL_ROWS}" \
+      >> "${OUTPUT_DIR}/driver.log" 2>&1
+    code=$?
+  fi
+  printf "%s\n" "${code}" > "${OUTPUT_DIR}/exit_code"
+  date -Iseconds > "${OUTPUT_DIR}/finished_at"
+  exit "${code}"
+' >/dev/null 2>&1 &
+printf '%s\n' "$!" > "${OUTPUT_DIR}/pid"
+printf 'launched %s pid=%s\n' "${RUN_NAME}" "$!"
+

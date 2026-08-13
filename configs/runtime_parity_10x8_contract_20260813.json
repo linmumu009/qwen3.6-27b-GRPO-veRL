@@ -8,8 +8,10 @@
   "selection": "frozen_val20_stratified_5_numeric_5_table_deterministic_hash",
   "data_role": "evaluation_only_never_training",
   "sampling": {
-    "temperature": 0.7,
-    "top_p": "runtime_default_must_match_before_launch",
+    "temperature": 1.0,
+    "top_p": 0.95,
+    "top_k": 20,
+    "source": "PI CLI omits sampling overrides; values come from the frozen Step120 generation_config.json and are explicitly mirrored in veRL",
     "max_context_tokens": 49152,
     "max_assistant_turns": 26,
     "max_user_turns": 25,
@@ -38,4 +40,3 @@
     "diagnostic trajectories are never reused directly in a training update"
   ]
 }
-

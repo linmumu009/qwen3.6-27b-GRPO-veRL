@@ -15,6 +15,7 @@ def rows(runtime: str, counts: list[int]):
                     "has_final_answer": 1.0,
                     "completed": True,
                     "timeout": False,
+                    "runtime_error": False,
                 }
             )
     return output
@@ -34,4 +35,3 @@ def test_material_accuracy_shift_fails():
     result = analyze(rows("pi", [0] * 10), rows("verl", [4] * 10))
     assert result["parity_smoke_passed"] is False
     assert result["group_routing"]["decision_enabled"] is False
-

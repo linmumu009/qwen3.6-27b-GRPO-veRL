@@ -234,6 +234,12 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 已验证状态
 
+### v1.11.1 — 2026-08-13
+
+- 用 PI CLI 实际请求路径校正双臂采样合同：PI 不显式发送 sampling overrides，实际继承 Step120 `generation_config.json` 的 `temperature=1.0 / top_p=0.95 / top_k=20`；veRL 臂显式镜像三项，避免沿用未生效的配置文件 `temperature=0.7`。
+- 增加专用 veRL `10×8` val-only 启动器和双臂敏感轨迹规范化器；纯最终结果统一重算，PI API 错误、超时和 veRL runtime error 成为零容忍结构门，失败请求不能被“进程退出码0”误计为有效轨迹。
+- 首个 PI 启动因 vLLM 缺少 Qwen3 Coder 自动工具解析而产生80条API错误，已完整隔离为不可用审计目录；修正服务启用 `qwen3_coder` tool parser 后从全新目录重跑，不复用失败轨迹。
+
 ### v1.11.0 — 2026-08-13
 
 - 增加不读取 SQL、工具证据或过程分的纯最终结果 shadow scorer，并保留二值正确性与仅诊断用 dense 分数两条独立信号。
