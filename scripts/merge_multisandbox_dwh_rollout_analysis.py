@@ -65,6 +65,7 @@ def merge(summary_paths: list[Path], mixed_paths: list[Path], output_dir: Path) 
     correct = sum(int(item["correct_trajectories"]) for item in summaries)
     completed = sum(int(item["completed_trajectories"]) for item in summaries)
     runtime_errors = sum(int(item["runtime_error_trajectories"]) for item in summaries)
+    timeouts = sum(int(item.get("timeout_trajectories", 0)) for item in summaries)
     summary = {
         "contract": "boss-multisandbox-dwh-dual-server-outcomes-v1",
         "arms": 2,
@@ -74,6 +75,8 @@ def merge(summary_paths: list[Path], mixed_paths: list[Path], output_dir: Path) 
         "correct_trajectories": correct,
         "completed_trajectories": completed,
         "runtime_error_trajectories": runtime_errors,
+        "timeout_trajectories": timeouts,
+        "evaluable_trajectories": trajectories - runtime_errors - timeouts,
         "correct_rate": correct / trajectories,
         "completion_rate": completed / trajectories,
         "bucket_counts": merge_counts([item["bucket_counts"] for item in summaries]),

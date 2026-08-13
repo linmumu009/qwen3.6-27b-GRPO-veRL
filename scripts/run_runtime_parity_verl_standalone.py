@@ -80,6 +80,7 @@ def build_config(args: argparse.Namespace):
         "actor_rollout_ref.rollout.multi_turn.max_tool_response_length=32768",
         "actor_rollout_ref.rollout.multi_turn.format=qwen3_coder",
         "actor_rollout_ref.rollout.multi_turn.tokenization_sanity_check_mode=disable",
+        f"+actor_rollout_ref.rollout.multi_turn.agent_timeout_seconds={args.trajectory_timeout_seconds}",
         f"actor_rollout_ref.rollout.agent.num_workers={args.agent_workers}",
         "actor_rollout_ref.rollout.agent.default_agent_loop=pi_agent",
         f"actor_rollout_ref.rollout.val_kwargs.n={args.samples_per_task}",
@@ -128,6 +129,7 @@ def safe_contract(config, args: argparse.Namespace) -> dict:
         "max_prompt_tokens": int(config.data.max_prompt_length),
         "max_response_tokens": int(config.data.max_response_length),
         "context_tokens": int(rollout.max_model_len),
+        "trajectory_timeout_seconds": args.trajectory_timeout_seconds,
         "task_batch_size": args.task_batch_size,
         "batch_validate_mode": True,
         "batch_do_sample": True,
@@ -274,6 +276,15 @@ def run(args: argparse.Namespace) -> dict:
                 output.batch["responses"].ne(tokenizer.pad_token_id).sum(dim=-1).cpu().tolist()
             )
             turns = output.non_tensor_batch.get("num_turns", np.zeros(len(output), dtype=int))
+            timeouts = output.non_tensor_batch.get(
+                "trajectory_timeout", np.zeros(len(output), dtype=bool)
+            )
+            timeout_seconds = output.non_tensor_batch.get(
+                "trajectory_timeout_seconds", np.zeros(len(output), dtype=float)
+            )
+            abort_acknowledged = output.non_tensor_batch.get(
+                "trajectory_abort_acknowledged_count", np.zeros(len(output), dtype=int)
+            )
             task_indices = np.repeat(np.arange(start, stop), args.samples_per_task)
             sample_indices = np.tile(np.arange(args.samples_per_task), stop - start)
             rows = (
@@ -284,15 +295,22 @@ def run(args: argparse.Namespace) -> dict:
                     "output": solution,
                     "num_turns": int(num_turns),
                     "response_tokens": int(response_tokens),
+                    "trajectory_timeout": bool(timed_out),
+                    "trajectory_timeout_seconds": float(timed_out_after),
+                    "trajectory_abort_acknowledged_count": int(abort_ack),
                     "runtime_error": False,
                 }
-                for task_index, sample_index, prompt, solution, num_turns, response_tokens in zip(
+                for task_index, sample_index, prompt, solution, num_turns, response_tokens,
+                    timed_out, timed_out_after, abort_ack in zip(
                     task_indices,
                     sample_indices,
                     prompt_texts,
                     output_texts,
                     turns,
                     response_lengths,
+                    timeouts,
+                    timeout_seconds,
+                    abort_acknowledged,
                     strict=True,
                 )
             )
@@ -347,6 +365,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--max-prompt-tokens", type=int, default=4096)
     parser.add_argument("--max-response-tokens", type=int, default=45056)
     parser.add_argument("--max-context-tokens", type=int, default=49152)
+    parser.add_argument("--trajectory-timeout-seconds", type=float, default=900.0)
     parser.add_argument("--preflight-only", action="store_true")
     return parser.parse_args()
 

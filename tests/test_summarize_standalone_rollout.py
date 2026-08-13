@@ -18,6 +18,7 @@ def test_summary_reports_shape_scheduler_lengths_and_npu_without_content(tmp_pat
             "top_p": 0.95,
             "top_k": 20,
             "context_tokens": 49152,
+            "trajectory_timeout_seconds": 900,
         }),
         encoding="utf-8",
     )
@@ -26,6 +27,7 @@ def test_summary_reports_shape_scheduler_lengths_and_npu_without_content(tmp_pat
         for task in range(2)
         for sample in range(2)
     ]
+    rows[0]["trajectory_timeout"] = True
     write_jsonl_atomic(shard_path(tmp_path, 0, 2), rows)
     (tmp_path / "driver.log").write_text(
         "data.truncation=error\n"
@@ -40,6 +42,8 @@ def test_summary_reports_shape_scheduler_lengths_and_npu_without_content(tmp_pat
     result = summarize(tmp_path)
 
     assert result["completed_rows"] == 4
+    assert result["trajectory_timeout_rows"] == 1
+    assert result["trajectory_timeout_seconds"] == 900
     assert result["scheduler"]["waiting_max"] == 2
     assert result["scheduler"]["running_latest"] == 2
     assert result["scheduler"]["waiting_latest"] == 0

@@ -9,24 +9,28 @@ DATASET="${DATASET:?DATASET is required}"
 EXPECTED_TASKS="${EXPECTED_TASKS:-281}"
 SAMPLES_PER_TASK="${SAMPLES_PER_TASK:-8}"
 TASK_BATCH_SIZE="${TASK_BATCH_SIZE:-32}"
-MAX_NUM_SEQS="${MAX_NUM_SEQS:-24}"
+MAX_NUM_SEQS="${MAX_NUM_SEQS:-32}"
 AGENT_WORKERS="${AGENT_WORKERS:-16}"
 MAX_NUM_BATCHED_TOKENS="${MAX_NUM_BATCHED_TOKENS:-16384}"
 GPU_MEMORY_UTILIZATION="${GPU_MEMORY_UTILIZATION:-0.80}"
 MAX_PROMPT_TOKENS="${MAX_PROMPT_TOKENS:-4096}"
 MAX_RESPONSE_TOKENS="${MAX_RESPONSE_TOKENS:-45056}"
 MAX_CONTEXT_TOKENS="${MAX_CONTEXT_TOKENS:-49152}"
+TRAJECTORY_TIMEOUT_SECONDS="${TRAJECTORY_TIMEOUT_SECONDS:-900}"
 RAY_ADDRESS="${RAY_ADDRESS:-192.168.202.5:26379}"
 ROLLOUT_RESOURCE="${ROLLOUT_RESOURCE:?ROLLOUT_RESOURCE is required}"
 ANALYZE_ON_SUCCESS="${ANALYZE_ON_SUCCESS:-1}"
 MONITOR_NPU="${MONITOR_NPU:-1}"
 MONITOR_ROLE="${MONITOR_ROLE:-standalone_rollout}"
 MONITOR_INTERVAL="${MONITOR_INTERVAL:-5}"
+MAX_ATTEMPTS="${MAX_ATTEMPTS:-3}"
+RETRY_DELAY_SECONDS="${RETRY_DELAY_SECONDS:-60}"
 
 export PROJECT_ROOT RUN_NAME OUTPUT_DIR MODEL DATASET EXPECTED_TASKS
 export SAMPLES_PER_TASK TASK_BATCH_SIZE MAX_NUM_SEQS AGENT_WORKERS
 export MAX_NUM_BATCHED_TOKENS GPU_MEMORY_UTILIZATION
 export MAX_PROMPT_TOKENS MAX_RESPONSE_TOKENS MAX_CONTEXT_TOKENS
+export TRAJECTORY_TIMEOUT_SECONDS MAX_ATTEMPTS RETRY_DELAY_SECONDS
 export RAY_ADDRESS ROLLOUT_RESOURCE
 export ANALYZE_ON_SUCCESS MONITOR_NPU MONITOR_ROLE MONITOR_INTERVAL
 export LLIN_PIN_RAY_ROLES=1
@@ -46,24 +50,37 @@ fi
 date -Iseconds > "${OUTPUT_DIR}/started_at"
 nohup bash -lc '
   set +e
-  python3 "${PROJECT_ROOT}/scripts/run_runtime_parity_verl_standalone.py" \
-    --project-root "${PROJECT_ROOT}" \
-    --model "${MODEL}" \
-    --dataset "${DATASET}" \
-    --output-dir "${OUTPUT_DIR}" \
-    --ray-address "${RAY_ADDRESS}" \
-    --expected-tasks "${EXPECTED_TASKS}" \
-    --samples-per-task "${SAMPLES_PER_TASK}" \
-    --task-batch-size "${TASK_BATCH_SIZE}" \
-    --max-num-seqs "${MAX_NUM_SEQS}" \
-    --agent-workers "${AGENT_WORKERS}" \
-    --max-num-batched-tokens "${MAX_NUM_BATCHED_TOKENS}" \
-    --gpu-memory-utilization "${GPU_MEMORY_UTILIZATION}" \
-    --max-prompt-tokens "${MAX_PROMPT_TOKENS}" \
-    --max-response-tokens "${MAX_RESPONSE_TOKENS}" \
-    --max-context-tokens "${MAX_CONTEXT_TOKENS}" \
-    > "${OUTPUT_DIR}/driver.log" 2>&1
-  code=$?
+  attempt=1
+  code=1
+  : > "${OUTPUT_DIR}/driver.log"
+  while (( attempt <= MAX_ATTEMPTS )); do
+    printf "attempt=%s/%s started_at=%s\n" "${attempt}" "${MAX_ATTEMPTS}" "$(date -Iseconds)" \
+      >> "${OUTPUT_DIR}/driver.log"
+    python3 "${PROJECT_ROOT}/scripts/run_runtime_parity_verl_standalone.py" \
+      --project-root "${PROJECT_ROOT}" \
+      --model "${MODEL}" \
+      --dataset "${DATASET}" \
+      --output-dir "${OUTPUT_DIR}" \
+      --ray-address "${RAY_ADDRESS}" \
+      --expected-tasks "${EXPECTED_TASKS}" \
+      --samples-per-task "${SAMPLES_PER_TASK}" \
+      --task-batch-size "${TASK_BATCH_SIZE}" \
+      --max-num-seqs "${MAX_NUM_SEQS}" \
+      --agent-workers "${AGENT_WORKERS}" \
+      --max-num-batched-tokens "${MAX_NUM_BATCHED_TOKENS}" \
+      --gpu-memory-utilization "${GPU_MEMORY_UTILIZATION}" \
+      --max-prompt-tokens "${MAX_PROMPT_TOKENS}" \
+      --max-response-tokens "${MAX_RESPONSE_TOKENS}" \
+      --max-context-tokens "${MAX_CONTEXT_TOKENS}" \
+      --trajectory-timeout-seconds "${TRAJECTORY_TIMEOUT_SECONDS}" \
+      >> "${OUTPUT_DIR}/driver.log" 2>&1
+    code=$?
+    printf "attempt=%s exit_code=%s finished_at=%s\n" "${attempt}" "${code}" "$(date -Iseconds)" \
+      >> "${OUTPUT_DIR}/driver.log"
+    [[ "${code}" == "0" ]] && break
+    attempt=$((attempt + 1))
+    (( attempt <= MAX_ATTEMPTS )) && sleep "${RETRY_DELAY_SECONDS}"
+  done
   if [[ "${code}" == "0" && "${ANALYZE_ON_SUCCESS}" == "1" ]]; then
     python3 "${PROJECT_ROOT}/scripts/analyze_multisandbox_dwh_rollout.py" \
       --dataset "${DATASET}" \

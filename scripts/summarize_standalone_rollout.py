@@ -49,7 +49,7 @@ def summarize(run_dir: Path) -> dict:
     tasks = int(contract.get("tasks", 0))
     samples = int(contract.get("samples_per_task", 0))
     batch_size = int(contract.get("task_batch_size", tasks or 1))
-    completed_tasks = completed_rows = runtime_errors = at_response_budget = 0
+    completed_tasks = completed_rows = runtime_errors = timeout_rows = at_response_budget = 0
     response_lengths: list[int] = []
     complete_shards = 0
     if tasks and samples:
@@ -67,6 +67,7 @@ def summarize(run_dir: Path) -> dict:
                 for line in handle:
                     row = json.loads(line)
                     runtime_errors += bool(row.get("runtime_error"))
+                    timeout_rows += bool(row.get("trajectory_timeout"))
                     length = int(row.get("response_tokens", 0))
                     response_lengths.append(length)
                     at_response_budget += length >= int(contract.get("max_response_tokens", 0))
@@ -110,6 +111,8 @@ def summarize(run_dir: Path) -> dict:
         "completed_rows": completed_rows,
         "complete_shards": complete_shards,
         "runtime_error_rows": runtime_errors,
+        "trajectory_timeout_rows": timeout_rows,
+        "trajectory_timeout_seconds": contract.get("trajectory_timeout_seconds"),
         "sampling": {
             "temperature": contract.get("temperature"),
             "top_p": contract.get("top_p"),

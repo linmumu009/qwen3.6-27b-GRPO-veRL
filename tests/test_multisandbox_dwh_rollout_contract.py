@@ -19,6 +19,8 @@ def test_standalone_runner_keeps_sampling_and_context_contract_variable_but_expl
         'actor_rollout_ref.rollout.val_kwargs.top_k=20',
         'actor_rollout_ref.rollout.val_kwargs.do_sample=True',
         'prompt + response token budgets must equal max context',
+        '"--trajectory-timeout-seconds", type=float, default=900.0',
+        'trajectory_abort_acknowledged_count',
     ):
         assert fragment in text
 
@@ -45,6 +47,7 @@ def test_launcher_passes_concurrency_context_and_sampling_shape_to_runner():
         "--max-prompt-tokens",
         "--max-response-tokens",
         "--max-context-tokens",
+        "--trajectory-timeout-seconds",
     ):
         assert argument in text
     assert 'export LLIN_ROLLOUT_RESOURCE="${ROLLOUT_RESOURCE}"' in text
@@ -52,3 +55,29 @@ def test_launcher_passes_concurrency_context_and_sampling_shape_to_runner():
     assert '[[ "${code}" == "0" && "${ANALYZE_ON_SUCCESS}" == "1" ]]' in text
     assert "monitor_npu_utilization.py" in text
     assert '--until-file "${OUTPUT_DIR}/exit_code"' in text
+    assert 'MAX_NUM_SEQS="${MAX_NUM_SEQS:-32}"' in text
+    assert 'TRAJECTORY_TIMEOUT_SECONDS="${TRAJECTORY_TIMEOUT_SECONDS:-900}"' in text
+    assert 'MAX_ATTEMPTS="${MAX_ATTEMPTS:-3}"' in text
+
+
+def test_pi_loop_physically_aborts_before_cancelling_timed_out_task():
+    text = (ROOT / "llin_verl" / "pi_agent_loop.py").read_text(encoding="utf-8")
+    abort = text.index("await self.server_manager.abort_request")
+    cancel = text.index("task.cancel()")
+    assert abort < cancel
+    assert "trajectory_timeout\": True" in text
+    assert "await WORKSPACES.release(request_id)" in text
+
+
+def test_dual_finalizer_waits_on_remote_node_without_consuming_npu_resource():
+    text = (ROOT / "scripts" / "finalize_multisandbox_dwh_dual_server.py").read_text(
+        encoding="utf-8"
+    )
+    launcher = (ROOT / "scripts" / "launch_multisandbox_dwh_dual_finalizer.sh").read_text(
+        encoding="utf-8"
+    )
+    assert "NodeAffinitySchedulingStrategy" in text
+    assert "ray.remote(num_cpus=0.1)(wait_for_arm)" in text
+    assert "timeout_trajectories" in text
+    assert "finalizer_exit_code" in launcher
+    assert "FINALIZER_TIMEOUT_SECONDS" in launcher

@@ -36,7 +36,9 @@ def write_private_parquet(path: Path, rows: list[dict]) -> None:
     temporary.replace(path)
 
 
-def bucket(correct: int, samples: int) -> str:
+def bucket(correct: int, samples: int, timeout_count: int = 0) -> str:
+    if timeout_count:
+        return "timed_out"
     if correct == 0:
         return "all_wrong"
     if correct == samples:
@@ -82,7 +84,7 @@ def analyze(
     bucket_counts: Counter[str] = Counter()
     answer_buckets: dict[str, Counter[str]] = defaultdict(Counter)
     version_buckets: dict[str, Counter[str]] = defaultdict(Counter)
-    total_completed = total_runtime_errors = total_correct = 0
+    total_completed = total_runtime_errors = total_timeouts = total_correct = 0
     for task_index, dataset_row in enumerate(dataset):
         truth = dataset_row["reward_model"]["ground_truth"]
         task_observations = [observations[(task_index, sample)] for sample in range(samples_per_task)]
@@ -93,7 +95,8 @@ def analyze(
         correct = sum(int(score["final_answer_correct"]) for score in scores)
         completed = sum(int(score["has_final_answer"]) for score in scores)
         runtime_errors = sum(bool(row.get("runtime_error")) for row in task_observations)
-        classification = bucket(correct, samples_per_task)
+        timeouts = sum(bool(row.get("trajectory_timeout")) for row in task_observations)
+        classification = bucket(correct, samples_per_task, timeouts)
         extra = dataset_row["extra_info"]
         answer_type = str(truth["answer_type"])
         version = str(extra["source_version"])
@@ -108,6 +111,7 @@ def analyze(
                 "correct_count": correct,
                 "completed_count": completed,
                 "runtime_error_count": runtime_errors,
+                "trajectory_timeout_count": timeouts,
                 "dense_mean": statistics.fmean(
                     float(score["dense_final_answer_correctness"]) for score in scores
                 ),
@@ -126,6 +130,7 @@ def analyze(
         total_correct += correct
         total_completed += completed
         total_runtime_errors += runtime_errors
+        total_timeouts += timeouts
 
     output_dir.mkdir(parents=True, exist_ok=True)
     write_private_jsonl(output_dir / "per_task.sensitive.jsonl", per_task)
@@ -138,6 +143,10 @@ def analyze(
         "correct_trajectories": total_correct,
         "completed_trajectories": total_completed,
         "runtime_error_trajectories": total_runtime_errors,
+        "timeout_trajectories": total_timeouts,
+        "evaluable_trajectories": (
+            expected_tasks * samples_per_task - total_runtime_errors - total_timeouts
+        ),
         "correct_rate": total_correct / (expected_tasks * samples_per_task),
         "completion_rate": total_completed / (expected_tasks * samples_per_task),
         "bucket_counts": dict(sorted(bucket_counts.items())),

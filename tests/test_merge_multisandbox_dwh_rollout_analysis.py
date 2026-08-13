@@ -18,6 +18,7 @@ def arm(tmp_path: Path, name: str, verifier: str, bucket: str, correct: int):
         "correct_trajectories": correct,
         "completed_trajectories": 2,
         "runtime_error_trajectories": 0,
+        "timeout_trajectories": 0,
         "bucket_counts": {bucket: 1},
         "correct_count_histogram": {"0": int(correct == 0), "1": int(correct == 1), "2": int(correct == 2)},
         "answer_type_bucket_counts": {"numeric": {bucket: 1}},

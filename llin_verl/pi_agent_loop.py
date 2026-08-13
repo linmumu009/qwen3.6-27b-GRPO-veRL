@@ -2,8 +2,12 @@
 
 from __future__ import annotations
 
+import asyncio
+from contextlib import suppress
 from typing import Any
+from uuid import uuid4
 
+from verl.experimental.agent_loop.agent_loop import AgentLoopOutput
 from verl.experimental.agent_loop.tool_agent_loop import AgentData, AgentState, ToolAgentLoop
 
 from llin_verl.force_final_policy import build_force_final_instruction, decide_force_final
@@ -27,9 +31,23 @@ class PiAgentLoop(ToolAgentLoop):
         )
         self.force_final_max_retries = int(getattr(multi_turn, "force_final_max_retries", 0) or 0)
         self.force_final_instruction = str(getattr(multi_turn, "force_final_instruction", "") or "")
+        self.agent_timeout_seconds = float(getattr(multi_turn, "agent_timeout_seconds", 0) or 0)
 
     async def run(self, sampling_params: dict[str, Any], **kwargs: Any):
-        output = await super().run(sampling_params, **kwargs)
+        request_id = str(kwargs.get("__llin_request_id") or uuid4().hex)
+        if self.agent_timeout_seconds > 0:
+            task = asyncio.create_task(
+                super().run(sampling_params, __llin_request_id=request_id, **kwargs)
+            )
+            done, _ = await asyncio.wait({task}, timeout=self.agent_timeout_seconds)
+            if task in done:
+                output = task.result()
+            else:
+                output = await self._abort_timed_out_trajectory(task, request_id, kwargs)
+        else:
+            output = await super().run(
+                sampling_params, __llin_request_id=request_id, **kwargs
+            )
         defaults = {
             "force_final_triggered": False,
             "force_final_reason": "",
@@ -37,6 +55,11 @@ class PiAgentLoop(ToolAgentLoop):
             "force_final_remaining_response_tokens": -1,
             "force_final_tool_call_rejected": False,
             "force_final_retry_count": 0,
+            "trajectory_timeout": False,
+            "trajectory_timeout_seconds": 0.0,
+            "trajectory_abort_acknowledged_count": 0,
+            "trajectory_abort_physical_request_count": 0,
+            "trajectory_abort_error_count": 0,
         }
         for key, value in defaults.items():
             output.extra_fields.setdefault(key, value)
@@ -46,6 +69,89 @@ class PiAgentLoop(ToolAgentLoop):
             await WORKSPACES.release(str(request_id))
             output.extra_fields["pi_workspace_released"] = True
         return output
+
+    async def _abort_timed_out_trajectory(
+        self,
+        task: asyncio.Task,
+        request_id: str,
+        kwargs: dict[str, Any],
+    ) -> AgentLoopOutput:
+        """Physically abort one vLLM request and emit a shape-preserving marker."""
+        abort_report: dict[str, Any]
+        try:
+            abort_report = await self.server_manager.abort_request(
+                request_id, reset_prefix_cache=False
+            )
+        except Exception as exc:  # preserve the batch even if abort telemetry fails
+            abort_report = {"error": f"{type(exc).__name__}: {exc}"}
+        task.cancel()
+        with suppress(asyncio.CancelledError, Exception):
+            await task
+
+        workspace_snapshot = WORKSPACES.snapshot(request_id)
+        await WORKSPACES.release(request_id)
+        output = await self._build_timeout_output(kwargs)
+        output.extra_fields.update(workspace_snapshot)
+        output.extra_fields.update(
+            {
+                "trajectory_timeout": True,
+                "trajectory_timeout_seconds": self.agent_timeout_seconds,
+                "trajectory_abort_acknowledged_count": int(
+                    abort_report.get("acknowledged_count", 0) or 0
+                ),
+                "trajectory_abort_physical_request_count": int(
+                    abort_report.get("physical_request_count", 0) or 0
+                ),
+                "trajectory_abort_error_count": int(
+                    abort_report.get("error_count", 1 if abort_report.get("error") else 0)
+                    or 0
+                ),
+                "pi_workspace_released": True,
+            }
+        )
+        return output
+
+    async def _build_timeout_output(self, kwargs: dict[str, Any]) -> AgentLoopOutput:
+        messages = list(kwargs["raw_prompt"])
+        multi_modal_data = await self.process_multi_modal_info(messages)
+        images = multi_modal_data.get("images")
+        videos = multi_modal_data.get("videos")
+        audios = multi_modal_data.get("audios")
+        mm_processor_kwargs = self._get_mm_processor_kwargs(audios)
+
+        extra_info = kwargs.get("extra_info", {}) or {}
+        tool_selection = extra_info.get("tool_selection")
+        if tool_selection and self.tools:
+            schemas = [
+                self.tools[name].tool_schema.model_dump(exclude_unset=True, exclude_none=True)
+                for name in tool_selection
+                if name in self.tools
+            ]
+        else:
+            schemas = self.tool_schemas
+        if self.enable_continuous_token:
+            prompt_ids = await self.ct_build_initial_tokens(messages, tools=schemas)
+        else:
+            prompt_ids = await self.apply_chat_template(
+                messages,
+                tools=schemas,
+                images=images,
+                videos=videos,
+                audios=audios,
+                mm_processor_kwargs=mm_processor_kwargs,
+            )
+        return AgentLoopOutput(
+            prompt_ids=prompt_ids,
+            response_ids=[],
+            response_mask=[],
+            multi_modal_data=multi_modal_data,
+            mm_processor_kwargs=mm_processor_kwargs,
+            response_logprobs=None,
+            num_turns=0,
+            metrics={"trajectory_timeout": 1},
+            routed_experts=None,
+            extra_fields={},
+        )
 
     async def _handle_processing_tools_state(self, agent_data: AgentData) -> AgentState:
         state = await super()._handle_processing_tools_state(agent_data)
