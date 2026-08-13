@@ -1,0 +1,240 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "下一步最高价值动作复核",
+    "generatedAt": "2026-08-13T10:20:22.9230883+08:00",
+    "blocks": [
+      {
+        "id": "title",
+        "type": "markdown",
+        "body": "# 下一步最高价值动作复核\n\n**结论：现在不训练。先扩大经语义裁决、与冻结集不重叠的任务池，再获取至少 48 个真实 Step 120 首错状态。**"
+      },
+      {
+        "id": "executive_summary",
+        "type": "markdown",
+        "sourceId": "decision_summary",
+        "body": "## 决策摘要\n\n- 当前最值得做的不是续 chosen-only、改奖励或直接造 oracle-schema 合成 pair，而是先解决**真实可部署状态监督不足**。\n- 现有 64 条不重叠任务在完整 25 次工具反馈预算下只产生 `22` 个独立真实首错 pair，低于冻结门槛 `48`；同一池的 3/12/26 回合阶梯最高也只有 `23`，继续重跑没有信息增益。\n- 按实测 `22/64 = 34.4%` 的 pair 产率，要补足 26 个 pair，期望需要约 76 个新任务；规划值向上取整为**至少 80 个新通过语义裁决的独立任务**。这是容量估计，真正开门条件仍是累计观察到 `≥48` 个真实 pair。\n- 新任务优先按 aggregation、DISTINCT、GROUP BY、select target 分层；查询启动与完成率不作为这一步的训练标签，但继续作为模型晋级的 Pareto 护栏。"
+      },
+      {
+        "id": "causal_conclusion",
+        "type": "markdown",
+        "sourceId": "native_attribution",
+        "body": "## 为什么不再优先改奖励\n\n原生模型在同 64 题上出现 `13` 个高过程分错答，Step 120 为 `8`；因此类似奖励黑客的行为在训练前已经存在，Step 120 没有制造或放大它。Step 120 真正暴露的是另一种权衡：数值正确 `5→7`，但只读 SQL 覆盖 `30→23`、完整回答 `40→35`、平均奖励 `0.2858→0.2612`。这些配对差异在 n=64 上尚未达到 0.05 显著性，所以应作为操作性护栏，而不是总体因果结论。"
+      },
+      {
+        "id": "boundary_evidence",
+        "type": "markdown",
+        "sourceId": "chosen_canary",
+        "body": "## 为什么也不直接续 chosen-only 或 oracle-schema pairwise\n\n一步 chosen-only 训练让 calibration16 的 SQL NLL 相对改善 `12.75%`，且 `16/16` 逐题改善，证明梯度方向有效；但 greedy SQL token 只增加 `5`，低于预注册 `+12`，整条 SQL 全 greedy 仍为 `0/16`。原有 aggregation 首分叉 `9/9` 一个也未清除。此前同 16 对 pairwise 更新同样让 `16/16` margin 改善，却仅有 `3/16` 正确候选占优。\n\n这说明继续在同一小样本或 oracle schema 上加步数，最可能再次得到“平均概率变好、真实策略边界不动”。下一轮数据必须来自原始老板 prompt 和真实工具结果形成的可部署状态。"
+      },
+      {
+        "id": "capacity_chart_block",
+        "type": "chart",
+        "chartId": "capacity_chart"
+      },
+      {
+        "id": "capacity_table_block",
+        "type": "table",
+        "tableId": "capacity_table"
+      },
+      {
+        "id": "recommended_sequence",
+        "type": "markdown",
+        "sourceId": "decision_summary",
+        "body": "## 推荐顺序\n\n1. **CPU 语义裁决与 operator 分层。** 审核 138 条 review-required 队列，优先处理最可能补足 aggregation/operator 覆盖的任务；目标新增至少 80 个独立可用任务。此阶段不占 NPU。\n2. **分批获取真实状态。** CPU 门通过后，按 32 题一批运行 Step 120 full25，仅保留实际首个错误只读 SQL 且已有真实工具响应的状态；与现有 22 对合并，累计到 48 对立即停止。\n3. **只做纯前向 margin 门。** 至少 48 对、CPU token/delta-mask 和 family coverage 全通过后，才加载 Step 120 做 forward-only；不建 optimizer、不存 checkpoint。\n4. **条件式一步训练。** 只有 margin 证明存在系统性、可训练的正确-vs-实际错误排序缺口时，才允许一次 pairwise update；训练后先回到冻结 16 题概率门，不直接自由回放。\n5. **最终晋级看 Pareto。** 同 64 题至少保持 SQL 覆盖 30、完整回答 40、正确数 7、平均奖励 0.285840625，同时高过程分错答不超过 8。"
+      },
+      {
+        "id": "action_table_block",
+        "type": "table",
+        "tableId": "action_table"
+      },
+      {
+        "id": "not_now",
+        "type": "markdown",
+        "sourceId": "decision_summary",
+        "body": "## 现在明确不做\n\n- 不降低 48 个独立 pair 的门槛，也不拿现有 22 对开训。\n- 不继续 chosen-only 训练；其预注册 greedy 边界门已经失败。\n- 不先用 oracle-selected schema 训练合成 operator pair；这仍是诊断输入，不能证明部署态改善。\n- 不重新跑同一 64 题 full25；预算阶梯已经显示 pair 数饱和。\n- 不改奖励或恢复 GRPO；当前缺口是正确行为与真实状态覆盖，不是奖励排序方向。"
+      },
+      {
+        "id": "risk_table_block",
+        "type": "table",
+        "tableId": "risk_table"
+      },
+      {
+        "id": "caveats",
+        "type": "markdown",
+        "sourceId": "decision_summary",
+        "body": "## 不确定性与停止条件\n\n- 80 条只是按 `22/64` 实测产率倒推的规划值，不保证得到 26 个新 pair；硬门始终是实际累计 `≥48`。\n- 138 条待复核任务大多带 broad-instruction、无序 LIMIT、row-count 缩减或 numeric-without-aggregation 风险，可能最终不足 80 条。若不足，立即停止这条训练路线，不用降低标准补数。\n- aggregation 是当前最稳定的首分叉家族，但不是唯一瓶颈；query initiation 和 completion 必须保留在端到端晋级门里。"
+      }
+    ],
+    "charts": [
+      {
+        "id": "capacity_chart",
+        "title": "真实首错监督的容量缺口",
+        "subtitle": "任务/Pair 数；48 是训练前冻结硬门",
+        "type": "bar",
+        "dataset": "capacity",
+        "sourceId": "decision_summary",
+        "encodings": {
+          "x": {"field": "stage", "type": "nominal"},
+          "y": {"field": "count", "type": "quantitative"}
+        },
+        "valueFormat": "number",
+        "layout": "full"
+      }
+    ],
+    "tables": [
+      {
+        "id": "capacity_table",
+        "title": "数据容量与数量推导",
+        "subtitle": "规划值不替代实际 pair 硬门",
+        "dataset": "capacity",
+        "sourceId": "decision_summary",
+        "columns": [
+          {"field": "order", "label": "#"},
+          {"field": "stage", "label": "阶段"},
+          {"field": "count", "label": "数量"},
+          {"field": "meaning", "label": "含义"}
+        ],
+        "defaultSort": {"field": "order", "direction": "asc"}
+      },
+      {
+        "id": "action_table",
+        "title": "下一轮逐层门禁",
+        "subtitle": "任何一层失败都不进入下一层",
+        "dataset": "action_plan",
+        "sourceId": "decision_summary",
+        "columns": [
+          {"field": "order", "label": "#"},
+          {"field": "phase", "label": "阶段"},
+          {"field": "resource", "label": "资源"},
+          {"field": "gate", "label": "通过条件"},
+          {"field": "on_fail", "label": "失败动作"}
+        ],
+        "defaultSort": {"field": "order", "direction": "asc"}
+      },
+      {
+        "id": "risk_table",
+        "title": "立即动作取舍",
+        "subtitle": "按因果贴近度、部署态一致性和信息价值排序",
+        "dataset": "alternatives",
+        "sourceId": "decision_summary",
+        "columns": [
+          {"field": "rank", "label": "#"},
+          {"field": "action", "label": "候选动作"},
+          {"field": "decision", "label": "决策"},
+          {"field": "reason", "label": "原因"}
+        ],
+        "defaultSort": {"field": "rank", "direction": "asc"}
+      }
+    ],
+    "sources": [
+      {"id": "decision_summary", "label": "下一步最高价值动作复核汇总", "path": "docs/next_highest_value_action_review_20260813_summary.json"},
+      {"id": "native_attribution", "label": "原生模型与 Step 120 full25 归因", "path": "docs/native_vs_step120_full25_attribution_20260813_summary.json"},
+      {"id": "chosen_canary", "label": "Chosen-only 一步金丝雀", "path": "docs/chosen_only_first_action_canary_20260813_summary.json"},
+      {"id": "pairwise_canary", "label": "Semantic-delta pairwise 一步金丝雀", "path": "docs/semantic_delta_pairwise_canary_20260812_summary.json"},
+      {"id": "budget_ladder", "label": "不重叠 Step 120 预算阶梯", "path": "docs/disjoint_step120_budget_ladder_20260813_summary.json"}
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "generatedAt": "2026-08-13T10:20:22.9230883+08:00",
+    "status": "ready",
+    "datasets": {
+      "capacity": [
+        {"order": 1, "stage": "已审计任务", "count": 64, "meaning": "当前严格可用、与冻结集合不重叠的任务"},
+        {"order": 2, "stage": "真实首错 Pair", "count": 22, "meaning": "Step 120 full25 实际观察到的独立可用 pair"},
+        {"order": 3, "stage": "训练硬门", "count": 48, "meaning": "不可降低的独立 pair 最低数量"},
+        {"order": 4, "stage": "待复核任务", "count": 138, "meaning": "可用于语义裁决扩池的 current-definition 队列"},
+        {"order": 5, "stage": "新增审核目标", "count": 80, "meaning": "按 22/64 产率向上取整的容量规划值"}
+      ],
+      "action_plan": [
+        {"order": 1, "phase": "语义裁决与 operator 分层", "resource": "CPU", "gate": "新增 ≥80 个独立安全任务", "on_fail": "停止；不占 NPU、不降标准"},
+        {"order": 2, "phase": "真实状态采集", "resource": "NPU 推理", "gate": "累计 ≥48 个独立真实首错 pair", "on_fail": "停止；不训练"},
+        {"order": 3, "phase": "Semantic-delta margin", "resource": "NPU 纯前向", "gate": "数量、token mask、family coverage 和系统性 misranking 全通过", "on_fail": "停止；不建 optimizer"},
+        {"order": 4, "phase": "一步 pairwise 金丝雀", "resource": "NPU 训练", "gate": "冻结 16 题概率门通过且无更早分叉回退", "on_fail": "不自由回放、不追加训练"},
+        {"order": 5, "phase": "端到端 Pareto 复评", "resource": "NPU 推理", "gate": "准确率提升且覆盖、完成、奖励不低于预注册底线", "on_fail": "不晋级 checkpoint"}
+      ],
+      "alternatives": [
+        {"rank": 1, "action": "扩语义复核池并采真实首错状态", "decision": "现在做", "reason": "同时满足部署态一致性、独立样本规模和 aggregation/operator 定向需求"},
+        {"rank": 2, "action": "Oracle-schema 合成 operator pair", "decision": "暂缓", "reason": "适合机制诊断，但会重复非部署输入条件"},
+        {"rank": 3, "action": "继续 chosen-only", "decision": "拒绝", "reason": "greedy 边界预注册门失败，aggregation 9/9 未清除"},
+        {"rank": 4, "action": "用现有 22 对训练", "decision": "拒绝", "reason": "低于冻结的 48 个独立 pair 门槛"},
+        {"rank": 5, "action": "改奖励或恢复 GRPO", "decision": "拒绝", "reason": "奖励黑客样行为训练前已存在，且当前正确行为覆盖不足"}
+      ]
+    }
+  },
+  "sources": [
+    {
+      "id": "decision_summary",
+      "label": "下一步最高价值动作复核汇总",
+      "path": "docs/next_highest_value_action_review_20260813_summary.json",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM read_json_auto('docs/next_highest_value_action_review_20260813_summary.json')",
+        "description": "加载经过核对的决策、数量推导、阶段门禁和来源哈希。",
+        "tables_used": ["docs/next_highest_value_action_review_20260813_summary.json"],
+        "filters": ["不输出 prompt、SQL、答案、task ID、工具结果或服务器路径"],
+        "metric_definitions": {
+          "full25_pair_yield": "full25_real_first_error_pairs divided by candidate_tasks",
+          "planning_target_new_approved_tasks": "ceil(additional_pairs_needed divided by observed_full25_pair_yield), rounded upward to 80",
+          "hard_pair_gate": "minimum number of unique real first-error states required before any optimizer is allowed"
+        }
+      }
+    },
+    {
+      "id": "native_attribution",
+      "label": "原生模型与 Step 120 full25 归因",
+      "path": "docs/native_vs_step120_full25_attribution_20260813_summary.json",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM read_json_auto('docs/native_vs_step120_full25_attribution_20260813_summary.json')",
+        "description": "加载同 64 题原生与 Step 120 的老板评分、查询覆盖和配对检验聚合。",
+        "tables_used": ["docs/native_vs_step120_full25_attribution_20260813_summary.json"],
+        "filters": ["same tasks and prompts", "greedy n=1", "full25 budget"]
+      }
+    },
+    {
+      "id": "chosen_canary",
+      "label": "Chosen-only 一步金丝雀",
+      "path": "docs/chosen_only_first_action_canary_20260813_summary.json",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM read_json_auto('docs/chosen_only_first_action_canary_20260813_summary.json')",
+        "description": "加载 train48 一步训练和 calibration16 纯前向门禁。",
+        "tables_used": ["docs/chosen_only_first_action_canary_20260813_summary.json"],
+        "filters": ["one optimizer step", "calibration16 only for post-forward"]
+      }
+    },
+    {
+      "id": "pairwise_canary",
+      "label": "Semantic-delta pairwise 一步金丝雀",
+      "path": "docs/semantic_delta_pairwise_canary_20260812_summary.json",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM read_json_auto('docs/semantic_delta_pairwise_canary_20260812_summary.json')",
+        "description": "加载 16 对 pairwise 一步训练的 margin 和 family 结果。",
+        "tables_used": ["docs/semantic_delta_pairwise_canary_20260812_summary.json"],
+        "filters": ["16 frozen pairs", "one optimizer step"]
+      }
+    },
+    {
+      "id": "budget_ladder",
+      "label": "不重叠 Step 120 预算阶梯",
+      "path": "docs/disjoint_step120_budget_ladder_20260813_summary.json",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM read_json_auto('docs/disjoint_step120_budget_ladder_20260813_summary.json')",
+        "description": "加载同 64 题 3/12/26 助手回合的真实首错 pair 饱和结果。",
+        "tables_used": ["docs/disjoint_step120_budget_ladder_20260813_summary.json"],
+        "filters": ["same candidate pool", "forced Step 120 sync", "greedy n=1"]
+      }
+    }
+  ]
+}

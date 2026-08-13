@@ -102,6 +102,9 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [`docs/chosen_only_first_action_baseline_20260813_summary.json`](docs/chosen_only_first_action_baseline_20260813_summary.json)：chosen-only 64 条 CPU mask 门、calibration16 Step 120 聚合 NLL/rank 与一步 train48 金丝雀预注册阈值的安全汇总。
 - [`docs/chosen_only_first_action_canary_20260813.md`](docs/chosen_only_first_action_canary_20260813.md)：train48 一步加权 SFT、model-only checkpoint、同一 calibration16 纯前向、7 项预注册门和 aggregation 边界诊断的完整结论。
 - [`docs/chosen_only_first_action_canary_20260813_summary.json`](docs/chosen_only_first_action_canary_20260813_summary.json)：不含 prompt、SQL、答案、task ID、工具结果或服务器路径的一步 chosen-only 金丝雀安全聚合。
+- [`docs/next_highest_value_action_review_20260813.html`](docs/next_highest_value_action_review_20260813.html)：综合原生/Step 120 归因、chosen-only/pairwise 金丝雀、真实首错数量门和 current-definition 池容量的下一步优先级复核；把第一动作收敛为 CPU 语义裁决扩池，再分批获取至少 48 个真实部署态首错 pair。
+- [`docs/next_highest_value_action_review_20260813_summary.json`](docs/next_highest_value_action_review_20260813_summary.json)：上述决策的安全聚合、`22/64` pair 产率推导、80 条新增审核规划值、逐层停止门和来源哈希。
+- [`docs/next_highest_value_action_review_20260813.artifact.json`](docs/next_highest_value_action_review_20260813.artifact.json)：上述复核报告的 canonical Data Analytics artifact、数据集、图表、来源与门禁定义。
 - [`docs/semantic_delta_pairwise_canary_20260812.md`](docs/semantic_delta_pairwise_canary_20260812.md)：一次 reference-free pairwise 更新、工程失败修复、训练资源、同数据概率前后门禁与 fail-closed 决策。
 - [`docs/semantic_delta_pairwise_canary_20260812_summary.json`](docs/semantic_delta_pairwise_canary_20260812_summary.json)：不含原始问题、SQL、答案和服务器路径的一步 pairwise 安全聚合结果。
 - [`docs/native_vs_step120_reward_behavior_attribution_20260812.md`](docs/native_vs_step120_reward_behavior_attribution_20260812.md)：原生模型与 Step 120 的相同错误状态概率对照、同题老板原版自由回放和奖励代理错配归因。
@@ -207,6 +210,12 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/run_chosen_only_first_action_one_step.sh`、`scripts/launch_chosen_only_first_action_one_step.sh`、`scripts/analyze_chosen_only_first_action_post_canary.py`：严格执行获准的一步 train48 `0.25/8` 全参 SFT，并在相同 calibration16 上按预注册的 aggregate/per-task NLL、greedy/top-5、mean rank、tool structure 和更早分叉门自动决定是否只开放一次自由回放；无论结果如何都禁止追加训练和 promotion。
 
 ## 已验证状态
+
+### v1.6.0 — 2026-08-13
+
+- 综合原生/Step 120 full25、chosen-only、pairwise、schema-oracle 和真实首错预算阶梯重新排序下一步：当前不训练，不降低 48 个独立 pair 门槛，也不优先在 oracle schema 上造合成 operator pair。
+- 以 full25 的 `22/64 = 34.4%` 实测真实 pair 产率倒推，补足 26 对预计需要约 76 个新任务；规划先从 138 条 review-required current-definition 队列中按 aggregation/operator 分层，新增至少 80 个经语义裁决且无冻结集重叠的独立任务。该 80 是 CPU 容量规划值，真实开门仍要求累计 `≥48` 个实际 Step 120 首错 pair。
+- 固化后续顺序为：CPU 语义裁决扩池 → 32 题一批 full25 真实状态采集 → Step 120 forward-only margin → 条件式一步 pairwise → 同 64 题 Pareto 复评；任何一层失败均不初始化下一层训练或晋级 checkpoint。
 
 ### v1.5.0 — 2026-08-13
 

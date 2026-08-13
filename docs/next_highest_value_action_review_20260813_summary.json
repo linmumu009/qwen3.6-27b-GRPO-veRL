@@ -1,0 +1,215 @@
+{
+  "contract": "next-highest-value-action-review-safe-summary-v1",
+  "generated_at": "2026-08-13T10:20:22.9230883+08:00",
+  "objective": "maximize_boss_exact_accuracy_without_sacrificing_query_coverage_completion_or_reward",
+  "decision": {
+    "highest_value_next_action": "expand_the_semantically_adjudicated_disjoint_task_pool_then_collect_real_step120_first_error_states",
+    "training_now": false,
+    "synthetic_operator_pair_training_now": false,
+    "npu_required_for_first_phase": false,
+    "promotion_allowed": false
+  },
+  "why_this_action": [
+    "Reward-hacking-like high-process wrong answers already exist in the native model and are not amplified by Step 120, so another reward-only intervention does not target the causal bottleneck.",
+    "Chosen-only supervision moves the teacher-forced probability in the right direction on every calibration task but does not reliably move the greedy decision boundary.",
+    "Aggregation remains the dominant stable semantic boundary, while an oracle-schema prompt is diagnostic-only and cannot establish deployable behavior.",
+    "The existing deployable-state acquisition produced only 22 distinct real first-error pairs versus the frozen minimum of 48; lowering the threshold would trade evidence quality for speed.",
+    "The only evidence-preserving route to 48 distinct deployable-state pairs is to semantically adjudicate more disjoint current-definition tasks, stratified by aggregation and operator family, and then collect actual Step 120 states."
+  ],
+  "evidence": {
+    "native_vs_step120_full25": {
+      "tasks": 64,
+      "native": {
+        "recognized_sqlite_tasks": 30,
+        "complete_count": 40,
+        "correct_numeric_count": 5,
+        "reward_total_mean": 0.285840625,
+        "wrong_process_ok_count": 13
+      },
+      "step120": {
+        "recognized_sqlite_tasks": 23,
+        "complete_count": 35,
+        "correct_numeric_count": 7,
+        "reward_total_mean": 0.26123125,
+        "wrong_process_ok_count": 8
+      },
+      "attribution": "proxy_aligned_wrong_process_ok_preexists_in_native_and_is_not_amplified_by_step120",
+      "paired_differences_statistically_conclusive_at_0_05": false
+    },
+    "chosen_only_one_step": {
+      "train_rows": 48,
+      "calibration_rows": 16,
+      "sql_nll_relative_improvement": 0.1274656732778138,
+      "tasks_sql_nll_improved": 16,
+      "sql_greedy_token_gain": 5,
+      "sql_greedy_token_gain_required": 12,
+      "tasks_all_sql_tokens_greedy_after": 0,
+      "aggregation_original_barrier_cleared": 0,
+      "aggregation_original_barrier_total": 9,
+      "gate_passed": false
+    },
+    "pairwise_one_step": {
+      "pairs": 16,
+      "per_task_margin_improved": 16,
+      "post_chosen_preferred": 3,
+      "chosen_preferred_required": 12,
+      "post_mean_margin": -0.7645614040206462,
+      "gate_passed": false
+    },
+    "deployable_state_acquisition": {
+      "candidate_tasks": 64,
+      "maximum_observed_real_first_error_pairs": 23,
+      "full25_real_first_error_pairs": 22,
+      "minimum_pairs": 48,
+      "full25_pair_yield": 0.34375,
+      "training_allowed": false
+    },
+    "current_definition_pool_audit": {
+      "train_rows": 236,
+      "strict_available": 64,
+      "review_required": 138,
+      "forbidden_overlap": 34,
+      "strict_rows_with_only_allowed_latest_warning": 51,
+      "strict_rows_without_warning": 13,
+      "review_required_lowest_risk_limit_only_or_latest_plus_limit": 42,
+      "strict_pool_contract_rows": 64,
+      "source_instruction_rebuilt_rows": 52,
+      "training_allowed": false
+    }
+  },
+  "capacity_derivation": {
+    "existing_real_pairs": 22,
+    "hard_pair_gate": 48,
+    "additional_pairs_needed": 26,
+    "observed_full25_pair_yield": 0.34375,
+    "new_approved_tasks_expected_for_26_pairs": 75.63636363636364,
+    "planning_target_new_approved_tasks": 80,
+    "planning_target_total_approved_tasks": 144,
+    "interpretation": "The 80-task target is a planning estimate rounded above 26 divided by the observed 22/64 yield; the hard gate remains 48 observed distinct pairs, not the estimate."
+  },
+  "next_action_contract": {
+    "phase_1_cpu_only": {
+      "name": "semantic_adjudication_and_operator_stratification",
+      "input_rows": 138,
+      "priority": [
+        "aggregation_function",
+        "distinct",
+        "grouping",
+        "select_target",
+        "query_start_and_completion_guardrail"
+      ],
+      "target_new_approved_unique_tasks": 80,
+      "requirements": [
+        "current instruction and gold semantics explicitly adjudicated",
+        "verification SQL remains read-only, executable, nonempty, and gold-supporting",
+        "no task, instruction, or SQL identity overlap with frozen16, val20, or test20",
+        "operator family recorded without emitting prompt, SQL, answer, task ID, or tool output",
+        "no oracle-selected schema is introduced into the deployable rollout prompt"
+      ],
+      "stop_if": "fewer_than_80_new_unique_tasks_pass_semantic_adjudication",
+      "npu_allowed": false
+    },
+    "phase_2_acquisition_only": {
+      "name": "batched_step120_full25_real_state_collection",
+      "batch_size_tasks": 32,
+      "reuse_existing_real_pairs": 22,
+      "hard_gate_distinct_real_pairs": 48,
+      "requirements": [
+        "same boss system and four-tool runtime",
+        "greedy n=1 and full 25 tool-result budget",
+        "rejected action must be the actually observed Step 120 first wrong query",
+        "first wrong query must have a real tool result",
+        "chosen correction must be mechanically verified",
+        "stop collection once the cumulative distinct-pair gate passes"
+      ],
+      "training_allowed": false
+    },
+    "phase_3_forward_only": {
+      "name": "step120_semantic_delta_margin_gate",
+      "optimizer_initialized": false,
+      "checkpoint_saved": false,
+      "requirements": [
+        "at least 48 unique pairs",
+        "CPU token and delta-mask gate passes",
+        "operator-family coverage is reported",
+        "correct-vs-actual-wrong margin shows a systematic trainable misranking"
+      ]
+    },
+    "phase_4_conditional_training": {
+      "name": "one_step_pairwise_canary",
+      "allowed_only_after_all_prior_gates": true,
+      "maximum_optimizer_steps": 1,
+      "evaluation_set": "existing_frozen16",
+      "free_rollout_before_probability_gate": false,
+      "promotion_allowed": false
+    }
+  },
+  "future_pareto_gate": {
+    "recognized_sqlite_task_floor": 30,
+    "complete_count_floor": 40,
+    "correct_numeric_count_floor": 7,
+    "reward_total_mean_floor": 0.285840625,
+    "wrong_process_ok_ceiling": 8,
+    "scope": "same_64_task_full25_comparison",
+    "note": "These are operational preservation floors from the native/Step120 tradeoff, not statistically conclusive population claims."
+  },
+  "rejected_immediate_actions": [
+    {
+      "action": "continue_chosen_only_training",
+      "reason": "the preregistered greedy-boundary gate failed"
+    },
+    {
+      "action": "train_on_22_real_pairs",
+      "reason": "the frozen minimum is 48 distinct pairs and must not be lowered"
+    },
+    {
+      "action": "train_synthetic_operator_pairs_on_oracle_schema",
+      "reason": "it would repeat a diagnostic-only input condition and would not establish deployable-state behavior"
+    },
+    {
+      "action": "change_reward_or_resume_grpo",
+      "reason": "the reward-hacking-like behavior predates training and current data do not supply enough correct behavior coverage"
+    },
+    {
+      "action": "run_another_full64_rollout_before_data_expansion",
+      "reason": "the same 64-task budget ladder already saturated at 22 to 23 real pairs"
+    }
+  ],
+  "uncertainties": [
+    "The 80-task expansion target is based on the observed 22/64 yield and is not a guarantee; only the observed cumulative pair count authorizes the next gate.",
+    "Most of the 138 review-required rows carry broad-instruction, unordered-limit, reduced-row-count, or non-aggregation warnings, so semantic adjudication may fail to approve 80 tasks.",
+    "Native-versus-Step120 paired differences on 64 tasks are directional but not statistically significant at 0.05.",
+    "Operator-family targeting is a data-acquisition priority, not evidence that aggregation is the only remaining bottleneck; query initiation and completion remain downstream guardrails."
+  ],
+  "source_files": [
+    {
+      "path": "docs/chosen_only_first_action_canary_20260813_summary.json",
+      "sha256": "6ee49b23ab5df03d3d8357ae80b5bef4e81a834e7830d9d4517e2dbd2cd65903"
+    },
+    {
+      "path": "docs/semantic_delta_pairwise_canary_20260812_summary.json",
+      "sha256": "29b3aec69d9075bfbe05ada5c9e099fe7a19486102d3a0c7af11178ffe5b224a"
+    },
+    {
+      "path": "docs/native_vs_step120_full25_attribution_20260813_summary.json",
+      "sha256": "6f3abcc09650c594fbe7ee44da9d64c4344d03f73b7ca48c54359f07f312c14a"
+    },
+    {
+      "path": "docs/schema_oracle_action_gate_20260813_summary.json",
+      "sha256": "7bd5abaf3042e05e3d77eae089abf7922082dd23b86ed91f60dadfae4d57437b"
+    },
+    {
+      "path": "docs/disjoint_step120_budget_ladder_20260813_summary.json",
+      "sha256": "815b62199f501854a5879f4d120ec3e83ab23e52e0c347b32b1dc023aa6bcb61"
+    },
+    {
+      "remote_contract": "pool_audit.json",
+      "sha256": "79674e00127ae973da1db4ea86eabe14679f1b800fa6f7bd95063bdeeb88d4f9"
+    },
+    {
+      "remote_contract": "rollout_candidate_contract.json",
+      "sha256": "156100266c4621e4737c45e80475d2de1ad7e4b7361a5bc97af3e6d3b5761400"
+    }
+  ],
+  "contains_prompts_sql_answers_task_ids_tool_outputs_or_server_paths": false
+}
