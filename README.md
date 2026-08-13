@@ -240,6 +240,11 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 已验证状态
 
+### v1.11.11 — 2026-08-13
+
+- 收紧standalone安全摘要的上下文错误判据：只有同一日志行同时包含`ERROR/Exception/ValueError/RuntimeError`和context/truncation信号才计入，避免把正常`data.truncation=error`启动合同误报为9个运行错误；probe原日志的Traceback和OOM计数始终为0。
+- 281题双机正式Parquet CPU门禁通过：5号机141/141、6号机140/140均保留，`n=8`分别对应1,128/1,120条预期轨迹，全部prompt通过4,096-token过滤；每机规划5个32题分片，可断点续跑。
+
 ### v1.11.10 — 2026-08-13
 
 - 为281题双机满载补齐确定性敏感数据拆分：按冻结行序交错分成5号机141题、6号机140题，逐题verifier identity保证两臂无交集且并集精确等于281；Parquet继续0600，安全manifest只记录行数、版本分布和文件hash。

@@ -28,6 +28,7 @@ def test_summary_reports_shape_scheduler_lengths_and_npu_without_content(tmp_pat
     ]
     write_jsonl_atomic(shard_path(tmp_path, 0, 2), rows)
     (tmp_path / "driver.log").write_text(
+        "data.truncation=error\n"
         "Running: 3 reqs, Waiting: 2 reqs\nRunning: 2 reqs, Waiting: 0 reqs\n",
         encoding="utf-8",
     )
@@ -43,4 +44,5 @@ def test_summary_reports_shape_scheduler_lengths_and_npu_without_content(tmp_pat
     assert result["scheduler"]["at_sequence_cap_samples"] == 1
     assert result["response_tokens"]["at_budget_rows"] == 1
     assert result["npu"]["aicore_mean"] == 80
+    assert result["driver_error_markers"]["context_or_truncation"] == 0
     assert result["contains_prompts_gold_sql_task_ids_tool_outputs_or_server_paths"] is False

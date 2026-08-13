@@ -19,7 +19,10 @@ SCHEDULER_RE = re.compile(r"Running:\s*(\d+)\s*reqs,\s*Waiting:\s*(\d+)\s*reqs")
 ERROR_PATTERNS = {
     "traceback": re.compile(r"Traceback", re.IGNORECASE),
     "out_of_memory": re.compile(r"out of memory|OutOfMemory", re.IGNORECASE),
-    "context_or_truncation": re.compile(r"context length|too long|truncat", re.IGNORECASE),
+    "context_or_truncation": re.compile(
+        r"(?:ERROR|Exception|ValueError|RuntimeError).*?(?:context length|too long|truncat)",
+        re.IGNORECASE,
+    ),
 }
 
 
