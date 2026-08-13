@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Add opt-in force-final fields to veRL's strict MultiTurnConfig dataclass."""
+"""Add LLIN opt-in fields to veRL's strict MultiTurnConfig dataclass."""
 
 from __future__ import annotations
 
@@ -12,6 +12,7 @@ FIELDS = (
     "force_final_reserve_response_tokens: int = 0",
     "force_final_max_response_tokens: int = 0",
     "force_final_max_retries: int = 0",
+    "agent_timeout_seconds: float = 0.0",
 )
 
 

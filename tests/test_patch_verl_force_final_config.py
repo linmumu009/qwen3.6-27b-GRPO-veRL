@@ -16,6 +16,7 @@ def test_patch_adds_optional_fields_idempotently(tmp_path):
     assert "force_final_reserve_response_tokens: int = 0" in text
     assert "force_final_max_response_tokens: int = 0" in text
     assert "force_final_max_retries: int = 0" in text
+    assert "agent_timeout_seconds: float = 0.0" in text
     compile(text, str(target), "exec")
 
 
@@ -32,3 +33,4 @@ def test_patch_upgrades_existing_two_field_installation(tmp_path):
     text = target.read_text(encoding="utf-8")
     assert "force_final_max_response_tokens: int = 0" in text
     assert "force_final_max_retries: int = 0" in text
+    assert "agent_timeout_seconds: float = 0.0" in text

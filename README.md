@@ -240,6 +240,11 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 已验证状态
 
+### v1.11.18 — 2026-08-13
+
+- 修复真实超时门禁发现的 veRL 严格配置缺口：现有幂等 `MultiTurnConfig` 补丁同步声明 `agent_timeout_seconds`，避免 LLM server 初始化在模型加载前拒绝新字段。
+- 失败的 `timeout-gate8x1-01` 在加载模型和生成请求前退出；保留证据并使用隔离的 `-02` 复验，不将失败尝试冒充超时取消成功。
+
 ### v1.11.17 — 2026-08-13
 
 - 为多沙箱 DWH 筛选加入单轨迹 900 秒硬超时：先通过现有逻辑/物理请求映射取消 vLLM 请求，再终止 agent 协程、清理独立沙箱，并以 `trajectory_timeout=true` 保留完整 task/sample 位置。
