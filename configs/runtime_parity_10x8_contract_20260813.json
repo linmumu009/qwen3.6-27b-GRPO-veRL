@@ -1,7 +1,7 @@
 {
   "contract": "pi-vs-verl-runtime-parity-10x8-v1",
   "date": "2026-08-13",
-  "purpose": "diagnose whether boss-native PI Agent and the veRL PI rollout runtime produce practically compatible outcome distributions",
+  "purpose": "diagnose whether the deployed boss-native PI Agent and veRL PI rollout paths produce practically compatible outcome distributions; this is not a strict identical-runtime A/B",
   "model": "identical_step120_weights",
   "tasks": 10,
   "samples_per_task_per_runtime": 8,
@@ -21,6 +21,32 @@
     "fastest_k": "disabled",
     "keep_all_samples": true
   },
+  "effective_sampling_audit": {
+    "pi_agent": "the PI runner and client omit temperature/top-p/top-k; the Step120 vLLM server generation_config supplies temperature=1.0, top_p=0.95, top_k=20, do_sample=true",
+    "verl_rollout": "the parity batch sets validate=true and do_sample=true; installed AgentLoopManager selects val_kwargs temperature=1.0, top_p=0.95, top_k=20 instead of the ordinary validation default temperature=0",
+    "ordinary_verl_validation_default_temperature": 0,
+    "grpo_training_rollout_default_temperature": 1.0,
+    "ordinary_validation_default_used_by_this_experiment": false
+  },
+  "matched_core_variables": [
+    "Step120 model tensor files",
+    "the same 10 evaluation-only prompts and hidden final-result labels",
+    "effective temperature/top-p/top-k",
+    "49152-token model context window",
+    "four tool schemas and qwen3_coder parsing",
+    "TP8 x DP2 serving topology",
+    "all eight trajectories retained without Fastest-K"
+  ],
+  "known_native_runtime_differences": {
+    "per_assistant_request_limit": "PI maxTokens=8192; veRL dynamically permits the remaining context up to the 45056-token response budget",
+    "context_management": "PI performs native compaction/retry; veRL uses continuous-token accumulation without the same PI compactor",
+    "termination": "PI is bounded by an external per-trajectory wall timeout; veRL has explicit 26 assistant / 25 user turns and no matched per-trajectory wall timeout in this standalone run",
+    "concurrency": "PI first pass used 32 client workers; veRL used 16 agent workers",
+    "tool_runtime": "the schemas and sandbox assets are aligned, but native PI tools and project veRL tool wrappers are different implementations",
+    "server_memory_fraction": "PI used 0.85; veRL used 0.80",
+    "request_rng_pairing": "both arms sampled stochastically, but requests were not paired to identical random seeds"
+  },
+  "strict_runtime_configuration_matched": false,
   "tools": ["bash", "read", "edit", "write"],
   "scoring": "binary_final_outcome_only_shadow",
   "parity_smoke_gates": {
@@ -40,6 +66,7 @@
   },
   "limitations": [
     "10x8 is an engineering smoke test, not proof of statistical equivalence",
+    "the experiment compares the two deployed execution paths; runtime-native token, compaction, timeout, concurrency and tool implementations are not identical",
     "the selected val20 is alignment-reviewed under the older contract, not yet approved by the later strict instruction-gold-SQL semantic audit",
     "diagnostic trajectories are never reused directly in a training update"
   ]

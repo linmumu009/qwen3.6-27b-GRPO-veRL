@@ -2,7 +2,10 @@ import json
 
 import pytest
 
-from scripts.run_boss_pi_runtime_parity import validate_pi_model_metadata
+from scripts.run_boss_pi_runtime_parity import (
+    validate_generation_config,
+    validate_pi_model_metadata,
+)
 
 
 def write_models(tmp_path, *, context_window=49_152, max_tokens=8_192):
@@ -51,3 +54,42 @@ def test_pi_model_metadata_rejects_client_server_context_mismatch(tmp_path):
             49_152,
             8_192,
         )
+
+
+def test_pi_generation_config_requires_stochastic_matched_defaults(tmp_path):
+    path = tmp_path / "generation_config.json"
+    path.write_text(
+        json.dumps(
+            {
+                "do_sample": True,
+                "temperature": 1.0,
+                "top_p": 0.95,
+                "top_k": 20,
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    result = validate_generation_config(path, 1.0, 0.95, 20)
+
+    assert result["temperature"] == 1.0
+    assert result["do_sample"] is True
+    assert result["source"].startswith("server_generation_config")
+
+
+def test_pi_generation_config_rejects_greedy_default(tmp_path):
+    path = tmp_path / "generation_config.json"
+    path.write_text(
+        json.dumps(
+            {
+                "do_sample": False,
+                "temperature": 0,
+                "top_p": 1,
+                "top_k": -1,
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="generation_config mismatch"):
+        validate_generation_config(path, 1.0, 0.95, 20)

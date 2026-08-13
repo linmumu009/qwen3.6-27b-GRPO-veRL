@@ -1,0 +1,77 @@
+{
+  "contract": "runtime-parity-sampling-config-audit-v1",
+  "date": "2026-08-13",
+  "temperature_audit": {
+    "grpo_training_rollout_default": 1.0,
+    "ordinary_validation_default": 0.0,
+    "parity_verl_batch_validate_mode": true,
+    "parity_verl_val_kwargs_temperature": 1.0,
+    "parity_verl_val_kwargs_top_p": 0.95,
+    "parity_verl_val_kwargs_top_k": 20,
+    "parity_verl_effective_temperature": 1.0,
+    "parity_pi_client_sampling_overrides": "omitted",
+    "parity_pi_server_generation_config_temperature": 1.0,
+    "parity_pi_server_generation_config_top_p": 0.95,
+    "parity_pi_server_generation_config_top_k": 20,
+    "parity_pi_server_generation_config_do_sample": true,
+    "temperature_zero_used_by_parity_experiment": false
+  },
+  "generation_method": {
+    "pi_agent": "10 tasks expanded to eight separately launched native PI sessions per task; one retained result per task/sample key",
+    "verl_rollout": "the 10-row batch was interleaved eight times to 80 rows; AgentLoopManager created one independently identified agent trajectory per row",
+    "fastest_k": false,
+    "all_samples_retained": true
+  },
+  "trajectory_uniqueness": {
+    "pi_agent": {
+      "rows": 80,
+      "tasks": 10,
+      "group_size_histogram": {
+        "8": 10
+      },
+      "unique_trajectories_per_task_histogram": {
+        "8": 10
+      },
+      "all_samples_identical_groups": 0,
+      "all_samples_unique_groups": 10,
+      "duplicate_pair_fraction": 0.0
+    },
+    "verl_rollout": {
+      "rows": 80,
+      "tasks": 10,
+      "group_size_histogram": {
+        "8": 10
+      },
+      "unique_trajectories_per_task_histogram": {
+        "8": 10
+      },
+      "all_samples_identical_groups": 0,
+      "all_samples_unique_groups": 10,
+      "duplicate_pair_fraction": 0.0
+    }
+  },
+  "configuration_scope": {
+    "strict_runtime_configuration_matched": false,
+    "matched": [
+      "Step120 model tensor files",
+      "10 evaluation-only tasks",
+      "effective temperature/top-p/top-k",
+      "49152-token model context",
+      "four tool schemas and qwen3_coder parser",
+      "TP8 x DP2 serving topology",
+      "eight retained trajectories per task"
+    ],
+    "not_matched": [
+      "per-assistant-request token cap",
+      "context compaction behavior",
+      "wall-time and turn termination policy",
+      "client/agent concurrency",
+      "native PI versus veRL tool implementation",
+      "server memory fraction",
+      "per-request random-seed pairing"
+    ],
+    "valid_interpretation": "deployed-path compatibility failed",
+    "invalid_interpretation": "two strictly identical configurations were proven different"
+  },
+  "contains_prompts_answers_sql_task_ids_hashes_trajectories_or_server_paths": false
+}

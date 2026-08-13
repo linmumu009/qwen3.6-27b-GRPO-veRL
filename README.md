@@ -36,7 +36,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - 冻结 eval22 后的训练供给已按源任务身份重新核验：原生 full25 的27个已观测首错中16个命中eval22，剩余11个里又有4个命中chosen-only calibration16，旧 frozen16、val20、test20无额外重叠，最终只保留7对。7对均通过机械、token/mask和Step120纯前向门；正确 semantic-delta/full-SQL均为 `0/7` 占优，平均margin为 `-1.7816/-0.9334`，说明这些原生真实首错仍被Step120系统性误排。训练硬门继续保持48对，当前缺口41；review138即使全部批准，按历史 `22/64` 产率补足缺口的预测概率约 `76.5%`，90%/95%把握需158/172个已批准候选。
 - 42条最低机械风险的review-required任务已完成逐条题意—gold—SQL语义审核：42/42机械可执行、顺序扰动稳定且期望值被查询结果支持，但题意无歧义蕴含gold和SQL完整回答题意均为`0/42`，最终语义批准`0/42`。这证明当前问题是高严重度标签语义失配，不是SQL不可执行；停止审核同队列剩余96条，也不为其消耗NPU。
 - 用`0/42`批准率与历史`22/64` pair产率做两阶段Jeffreys后验压力测试，剩余96条预计仅批准约`1.12`条、形成约`0.39`对pair，补齐41对缺口的预测概率约`7.1×10^-18`。下一动作改为先新建32条显式定义指标、分组、时间范围和输出形态的任务pilot，逐条语义批准后再扩至172个已批准候选，并按32条一批采集真实首错状态。
-- PI-Agent 与 veRL rollout 的 `10题×每题8条` 同模型、同采样运行时门禁已完成但未通过：两臂均为 `0/80` 正确、`10/10` 全错，属于共同触底而非等价证据；PI/veRL 最终回答率为 `86.25%/70.00%`，差 `16.25pp`，且 PI 首轮有 `12/80` 超过30分钟。当前不开放 bucket 筛选或训练；10条 val-only 题始终禁止进入训练，全对/全错也不得永久删除。
+- PI-Agent 与 veRL rollout 的 `10题×每题8条` 部署路径门禁已完成但未通过：追加调用链审计确认两臂有效采样均为 `temperature=1.0 / top_p=0.95 / top_k=20`，且每个题组的8条轨迹全部互异，不是temperature 0或复制候选；但单次token cap、compaction、墙钟、并发和工具实现并不相同，因此只能结论为“现网路径不兼容”，不能称为严格同配置A/B。当前不开放 bucket 筛选或训练；10条 val-only 题始终禁止进入训练，全对/全错也不得永久删除。
 - 所有新增镜像、容器、工作目录和实验名均以 `llin` 开头，不复用或修改其他人的环境。
 
 当前服务器部署：
@@ -119,8 +119,9 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [`docs/disjoint_pair_review_pilot42_20260813_summary.json`](docs/disjoint_pair_review_pilot42_20260813_summary.json)：42条最低机械风险审核试点的分层、SQLite反向扫描稳定性、容量用途与fail-closed状态；敏感审核包只留服务器。
 - [`docs/disjoint_pair_semantic_review_supply_rebase_20260813_summary.json`](docs/disjoint_pair_semantic_review_supply_rebase_20260813_summary.json)：42条逐项语义审核的去标识聚合、剩余96条的两阶段Jeffreys后验压力测试、41对缺口和新任务供给目标。
 - [`docs/disjoint_pair_semantic_review42_20260813.artifact.json`](docs/disjoint_pair_semantic_review42_20260813.artifact.json)、[`docs/disjoint_pair_semantic_review42_20260813_report_notes.json`](docs/disjoint_pair_semantic_review42_20260813_report_notes.json)：技术报告的canonical artifact与受众/结构/图表/来源说明；当前portable reader在本次和既有对照artifact上均停留fallback并超时，因此未发布未完成QA的HTML。
-- [`docs/runtime_parity_10x8_step120_20260813.md`](docs/runtime_parity_10x8_step120_20260813.md)：Step 120 在 PI-Agent 与 veRL rollout 上各80条的同模型、同采样工程对照，记录共同准确率触底、完成率/超时差异、group筛选禁用和下一步终止行为归因。
+- [`docs/runtime_parity_10x8_step120_20260813.md`](docs/runtime_parity_10x8_step120_20260813.md)：Step 120 在 PI-Agent 与 veRL rollout 上各80条的部署路径对照；追加审计区分已对齐的模型/任务/有效采样与未对齐的token、compaction、终止和并发策略。
 - [`docs/runtime_parity_10x8_step120_20260813_summary.json`](docs/runtime_parity_10x8_step120_20260813_summary.json)：不含 prompt、gold、SQL、轨迹、任务标识、逐题哈希或服务器路径的双臂安全聚合。
+- [`docs/runtime_parity_sampling_config_audit_20260813_summary.json`](docs/runtime_parity_sampling_config_audit_20260813_summary.json)：区分GRPO训练temperature 1.0、普通验证默认temperature 0和本次parity显式temperature 1.0；记录两臂80条的生成方式、逐组精确去重与未对齐运行时配置。
 - [`docs/semantic_delta_pairwise_canary_20260812.md`](docs/semantic_delta_pairwise_canary_20260812.md)：一次 reference-free pairwise 更新、工程失败修复、训练资源、同数据概率前后门禁与 fail-closed 决策。
 - [`docs/semantic_delta_pairwise_canary_20260812_summary.json`](docs/semantic_delta_pairwise_canary_20260812_summary.json)：不含原始问题、SQL、答案和服务器路径的一步 pairwise 安全聚合结果。
 - [`docs/native_vs_step120_reward_behavior_attribution_20260812.md`](docs/native_vs_step120_reward_behavior_attribution_20260812.md)：原生模型与 Step 120 的相同错误状态概率对照、同题老板原版自由回放和奖励代理错配归因。
@@ -235,6 +236,13 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/run_chosen_only_first_action_one_step.sh`、`scripts/launch_chosen_only_first_action_one_step.sh`、`scripts/analyze_chosen_only_first_action_post_canary.py`：严格执行获准的一步 train48 `0.25/8` 全参 SFT，并在相同 calibration16 上按预注册的 aggregate/per-task NLL、greedy/top-5、mean rank、tool structure 和更早分叉门自动决定是否只开放一次自由回放；无论结果如何都禁止追加训练和 promotion。
 
 ## 已验证状态
+
+### v1.11.3 — 2026-08-13
+
+- 追踪真实采样调用链后确认：veRL普通验证默认`val_kwargs.temperature=0`，GRPO训练rollout默认`temperature=1.0`；本次standalone parity以`validate=true`读取显式覆盖的`val_kwargs.temperature=1.0/top_p=0.95/top_k=20`，没有使用temperature 0。PI runner/client不传三项覆盖，由Step120服务`generation_config.json`提供相同`1.0/0.95/20`和`do_sample=true`。
+- 复核80条构造：PI是`10×8`个独立native session位置，veRL是10行batch按8次interleave扩成80个独立逻辑request；两臂各10组均为`8/8`完整assistant轨迹互异，组内两两重复比例为0，排除复制候选。新增只输出计数的服务器侧去重审计器。
+- 撤回“其他配置全部相同”的过强表述：PI/veRL在每次assistant token上限、上下文压缩、墙钟/回合终止、32/16客户端并发、工具实现、vLLM显存比例和逐请求seed配对上不一致。既有结论降级为部署路径兼容性失败，不能做严格单变量框架归因；准确率共同触底和训练/bucket禁用结论不变。
+- PI后续运行新增generation config硬门，temperature 0、`do_sample=false`或top-p/top-k漂移会在生成前失败；standalone veRL安全合同显式记录训练/验证temperature来源和`strict_runtime_configuration_matched=false`。本地完整回归为`365 passed`。
 
 ### v1.11.2 — 2026-08-13
 

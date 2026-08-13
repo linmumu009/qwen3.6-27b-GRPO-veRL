@@ -72,6 +72,35 @@ def validate_pi_model_metadata(
     }
 
 
+def validate_generation_config(
+    path: Path,
+    expected_temperature: float,
+    expected_top_p: float,
+    expected_top_k: int,
+) -> dict[str, Any]:
+    """Validate the server defaults used when native PI omits sampling overrides."""
+
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    actual = {
+        "temperature": float(payload.get("temperature")),
+        "top_p": float(payload.get("top_p")),
+        "top_k": int(payload.get("top_k")),
+        "do_sample": bool(payload.get("do_sample")),
+    }
+    expected = {
+        "temperature": expected_temperature,
+        "top_p": expected_top_p,
+        "top_k": expected_top_k,
+        "do_sample": True,
+    }
+    if actual != expected:
+        raise ValueError(f"PI server generation_config mismatch: expected {expected}, got {actual}")
+    return {
+        **actual,
+        "source": "server_generation_config_native_pi_runner_omits_sampling_overrides",
+    }
+
+
 def run(args: argparse.Namespace) -> dict[str, Any]:
     started_at = datetime.now(timezone.utc)
     started_monotonic = time.monotonic()
@@ -80,6 +109,12 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         args.served_model,
         args.expected_context_window,
         args.expected_max_tokens,
+    )
+    pi_sampling_contract = validate_generation_config(
+        args.generation_config,
+        args.expected_temperature,
+        args.expected_top_p,
+        args.expected_top_k,
     )
     runner = load_module(args.runner, "boss_batch_run_pi_runtime_parity")
     tasks = read_jsonl(args.tasks)
@@ -150,6 +185,7 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
         "max_workers": args.max_workers,
         "served_model": args.served_model,
         "pi_model_contract": pi_model_contract,
+        "pi_sampling_contract": pi_sampling_contract,
         "status_counts": {
             status: sum(row["status"] == status for row in results)
             for status in sorted({row["status"] for row in results})
@@ -174,6 +210,10 @@ def main() -> None:
     parser.add_argument("--pi-model-config", type=Path, required=True)
     parser.add_argument("--expected-context-window", type=int, default=49_152)
     parser.add_argument("--expected-max-tokens", type=int, default=8_192)
+    parser.add_argument("--generation-config", type=Path, required=True)
+    parser.add_argument("--expected-temperature", type=float, default=1.0)
+    parser.add_argument("--expected-top-p", type=float, default=0.95)
+    parser.add_argument("--expected-top-k", type=int, default=20)
     args = parser.parse_args()
     print(json.dumps(run(args), ensure_ascii=False, indent=2))
 

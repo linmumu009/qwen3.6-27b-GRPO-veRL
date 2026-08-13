@@ -48,3 +48,16 @@ def test_prepare_freezes_five_per_type_and_sensitive_permissions(tmp_path: Path)
     assert len(tasks) == 10
     assert all(not item["instruction_without_guidance"].startswith("沙箱布局") for item in tasks)
 
+
+def test_runtime_parity_contract_does_not_claim_strict_identical_runtime_configuration():
+    root = Path(__file__).resolve().parents[1]
+    contract = json.loads(
+        (root / "configs" / "runtime_parity_10x8_contract_20260813.json").read_text(
+            encoding="utf-8"
+        )
+    )
+
+    assert contract["strict_runtime_configuration_matched"] is False
+    assert contract["effective_sampling_audit"]["ordinary_verl_validation_default_temperature"] == 0
+    assert contract["effective_sampling_audit"]["ordinary_validation_default_used_by_this_experiment"] is False
+    assert "per_assistant_request_limit" in contract["known_native_runtime_differences"]
