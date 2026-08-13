@@ -67,6 +67,8 @@ def test_pi_loop_physically_aborts_before_cancelling_timed_out_task():
     assert abort < cancel
     assert "trajectory_timeout\": True" in text
     assert "await WORKSPACES.release(request_id)" in text
+    assert 'kwargs["__llin_request_id"] = request_id' in text
+    assert "__llin_request_id=request_id, **kwargs" not in text
 
 
 def test_dual_finalizer_waits_on_remote_node_without_consuming_npu_resource():

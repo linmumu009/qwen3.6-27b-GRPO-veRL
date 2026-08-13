@@ -240,6 +240,11 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 已验证状态
 
+### v1.11.19 — 2026-08-13
+
+- 修复真实 `timeout-gate8x1-03` 暴露的逻辑请求 ID 重复传参：上游 manager 已注入 `__llin_request_id` 时，PI wrapper 现原地复用/覆盖同一字段，不再同时显式传入第二份。
+- `-03` 已完成 16 卡模型加载，但在首个 vLLM 请求创建前退出；保留失败证据并以隔离的 `-04` 继续硬取消门禁。
+
 ### v1.11.18 — 2026-08-13
 
 - 修复真实超时门禁发现的 veRL 严格配置缺口：现有幂等 `MultiTurnConfig` 补丁同步声明 `agent_timeout_seconds`，避免 LLM server 初始化在模型加载前拒绝新字段。

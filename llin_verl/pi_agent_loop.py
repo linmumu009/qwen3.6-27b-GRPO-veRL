@@ -35,19 +35,16 @@ class PiAgentLoop(ToolAgentLoop):
 
     async def run(self, sampling_params: dict[str, Any], **kwargs: Any):
         request_id = str(kwargs.get("__llin_request_id") or uuid4().hex)
+        kwargs["__llin_request_id"] = request_id
         if self.agent_timeout_seconds > 0:
-            task = asyncio.create_task(
-                super().run(sampling_params, __llin_request_id=request_id, **kwargs)
-            )
+            task = asyncio.create_task(super().run(sampling_params, **kwargs))
             done, _ = await asyncio.wait({task}, timeout=self.agent_timeout_seconds)
             if task in done:
                 output = task.result()
             else:
                 output = await self._abort_timed_out_trajectory(task, request_id, kwargs)
         else:
-            output = await super().run(
-                sampling_params, __llin_request_id=request_id, **kwargs
-            )
+            output = await super().run(sampling_params, **kwargs)
         defaults = {
             "force_final_triggered": False,
             "force_final_reason": "",
