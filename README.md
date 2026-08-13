@@ -36,6 +36,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - 冻结 eval22 后的训练供给已按源任务身份重新核验：原生 full25 的27个已观测首错中16个命中eval22，剩余11个里又有4个命中chosen-only calibration16，旧 frozen16、val20、test20无额外重叠，最终只保留7对。7对均通过机械、token/mask和Step120纯前向门；正确 semantic-delta/full-SQL均为 `0/7` 占优，平均margin为 `-1.7816/-0.9334`，说明这些原生真实首错仍被Step120系统性误排。训练硬门继续保持48对，当前缺口41；review138即使全部批准，按历史 `22/64` 产率补足缺口的预测概率约 `76.5%`，90%/95%把握需158/172个已批准候选。
 - 42条最低机械风险的review-required任务已完成逐条题意—gold—SQL语义审核：42/42机械可执行、顺序扰动稳定且期望值被查询结果支持，但题意无歧义蕴含gold和SQL完整回答题意均为`0/42`，最终语义批准`0/42`。这证明当前问题是高严重度标签语义失配，不是SQL不可执行；停止审核同队列剩余96条，也不为其消耗NPU。
 - 用`0/42`批准率与历史`22/64` pair产率做两阶段Jeffreys后验压力测试，剩余96条预计仅批准约`1.12`条、形成约`0.39`对pair，补齐41对缺口的预测概率约`7.1×10^-18`。下一动作改为先新建32条显式定义指标、分组、时间范围和输出形态的任务pilot，逐条语义批准后再扩至172个已批准候选，并按32条一批采集真实首错状态。
+- 新增 PI-Agent 与 veRL rollout 的 `10题×每题8条` 同模型、同采样运行时对照门禁：从冻结 val20 按 `5 numeric + 5 table` 固定 evaluation-only 诊断集，使用纯最终结果旁路评分，保留全部80条而不启用 Fastest-K。对照通过后只把 fresh rollout 中的 mixed group 送入 GRPO；全对/全错组从该次优化更新排除但不得永久删除，分别保留到防回归评测与纠错/课程队列。
 - 所有新增镜像、容器、工作目录和实验名均以 `llin` 开头，不复用或修改其他人的环境。
 
 当前服务器部署：
@@ -232,6 +233,12 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/run_chosen_only_first_action_one_step.sh`、`scripts/launch_chosen_only_first_action_one_step.sh`、`scripts/analyze_chosen_only_first_action_post_canary.py`：严格执行获准的一步 train48 `0.25/8` 全参 SFT，并在相同 calibration16 上按预注册的 aggregate/per-task NLL、greedy/top-5、mean rank、tool structure 和更早分叉门自动决定是否只开放一次自由回放；无论结果如何都禁止追加训练和 promotion。
 
 ## 已验证状态
+
+### v1.11.0 — 2026-08-13
+
+- 增加不读取 SQL、工具证据或过程分的纯最终结果 shadow scorer，并保留二值正确性与仅诊断用 dense 分数两条独立信号。
+- 增加冻结 val20 的确定性 `5 numeric + 5 table` 诊断集构造器、老板原生 PI-Agent 32-worker 运行器、`10×8` 双臂分布比较器和预注册运行合同；敏感 prompt/轨迹/答案仍只保留服务器端，Git 仅记录安全合同与聚合门禁。
+- 明确 uniform group 的使用边界：全对与全错只从当次 GRPO 更新排除，不永久删除、不挑单条轨迹，筛选后训练必须重新采样完整 group。
 
 ### v1.10.0 — 2026-08-13
 
