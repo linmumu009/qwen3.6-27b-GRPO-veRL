@@ -83,3 +83,5 @@ def test_dual_finalizer_waits_on_remote_node_without_consuming_npu_resource():
     assert "timeout_trajectories" in text
     assert "finalizer_exit_code" in launcher
     assert "FINALIZER_TIMEOUT_SECONDS" in launcher
+    assert "export PROJECT_ROOT LOCAL_ARM_DIR REMOTE_ARM_DIR OUTPUT_DIR" in launcher
+    assert "export RAY_ADDRESS REMOTE_RESOURCE" in launcher

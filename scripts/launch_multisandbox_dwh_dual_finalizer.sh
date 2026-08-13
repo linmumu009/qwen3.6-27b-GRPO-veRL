@@ -10,6 +10,9 @@ REMOTE_RESOURCE="${REMOTE_RESOURCE:-llin_rollout_m06}"
 FINALIZER_TIMEOUT_SECONDS="${FINALIZER_TIMEOUT_SECONDS:-172800}"
 FINALIZER_POLL_SECONDS="${FINALIZER_POLL_SECONDS:-30}"
 
+export PROJECT_ROOT LOCAL_ARM_DIR REMOTE_ARM_DIR OUTPUT_DIR
+export RAY_ADDRESS REMOTE_RESOURCE FINALIZER_TIMEOUT_SECONDS FINALIZER_POLL_SECONDS
+
 mkdir -p "${OUTPUT_DIR}"
 if [[ -s "${OUTPUT_DIR}/finalizer.pid" ]] && kill -0 "$(<"${OUTPUT_DIR}/finalizer.pid")" 2>/dev/null; then
   printf 'finalizer already active: %s\n' "${OUTPUT_DIR}" >&2
@@ -17,6 +20,7 @@ if [[ -s "${OUTPUT_DIR}/finalizer.pid" ]] && kill -0 "$(<"${OUTPUT_DIR}/finalize
 fi
 
 export PYTHONPATH="${PROJECT_ROOT}:${PYTHONPATH:-}"
+export PYTHONPATH
 nohup bash -lc '
   set +e
   python3 "${PROJECT_ROOT}/scripts/finalize_multisandbox_dwh_dual_server.py" \
