@@ -1,0 +1,61 @@
+{
+  "contract": "next-action-priority-report-notes-v1",
+  "date": "2026-08-13",
+  "audience": "product stakeholders",
+  "selected_delivery_mode": "html",
+  "analysis_validation": {
+    "assessment": "ready_to_share",
+    "question_matches_decision": true,
+    "key_calculations_independently_recomputed": true,
+    "checks": [
+      "48 required minus seven retained equals a 41-pair gap",
+      "the old review queue produced zero semantic approvals among 42 reviewed tasks",
+      "the runtime comparison contains 160 total trajectories, zero correct outcomes and zero mixed groups",
+      "both arms used effective temperature 1.0 and strict runtime configuration was not matched",
+      "the seven retained native pairs remain candidate-only and do not authorize training"
+    ],
+    "causal_claims_made": false,
+    "confidence": "high for immediate action ordering; provisional for future pair-capacity target"
+  },
+  "report_structure": {
+    "required_roles": [
+      "title",
+      "Executive Summary",
+      "key findings with visual evidence",
+      "recommended next steps",
+      "further questions",
+      "caveats and assumptions"
+    ],
+    "all_required_roles_present_in_artifact": true,
+    "chart_map": [
+      {
+        "section": "trusted data supply is the binding constraint",
+        "question": "how large is the current pair gap relative to retained and old-queue supply",
+        "family": "comparison",
+        "type": "bar",
+        "fields": ["item", "pairs"],
+        "takeaway": "the old queue's expected contribution is negligible relative to the 41-pair gap",
+        "palette_policy": "single-root preferred",
+        "source": "docs/next_action_priority_after_runtime_parity_20260813_summary.json"
+      }
+    ],
+    "option_ranking_uses_table_not_chart": "resource units and decision impacts are heterogeneous; a single numerical score would imply false precision"
+  },
+  "delivery_attempts": [
+    {
+      "surface": "mcp-app",
+      "status": "unavailable",
+      "reason": "no validate_artifact or render_artifact tool was callable in the current desktop session"
+    },
+    {
+      "surface": "portable_html",
+      "status": "failed",
+      "reason": "the official portable reader remained in fallback state during static-chart extraction and returned reader_timeout with both 5000ms and 30000ms ready budgets",
+      "canonical_artifact_validation_reached": true,
+      "html_published": false
+    }
+  ],
+  "primary_handoff": "docs/next_action_priority_after_runtime_parity_20260813.artifact.json",
+  "supporting_summary": "docs/next_action_priority_after_runtime_parity_20260813_summary.json",
+  "contains_prompts_sql_answers_task_ids_tool_outputs_server_paths_or_credentials": false
+}

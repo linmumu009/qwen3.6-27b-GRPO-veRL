@@ -1,0 +1,120 @@
+{
+  "contract": "next-action-priority-after-runtime-parity-v1",
+  "date": "2026-08-13",
+  "decision": {
+    "highest_value_next_action": "build_sql_first_semantically_approved_supply_pilot",
+    "training_now": false,
+    "repeat_old_10x8_now": false,
+    "repeat_final_outcome_replay_on_current_160": false,
+    "pilot_training_candidates": 32,
+    "runtime_parity_only_sentinels": 3,
+    "sentinels_count_toward_training_supply": false,
+    "reason": "the binding constraint is trusted training-task supply; runtime parity and final-outcome scoring cannot create mixed groups from the current all-wrong evaluation-only tasks"
+  },
+  "evidence": {
+    "required_training_pairs": 48,
+    "retained_native_pair_candidates": 7,
+    "remaining_pair_gap": 41,
+    "reviewed_old_queue_tasks": 42,
+    "semantically_approved_old_queue_tasks": 0,
+    "probability_remaining_old_queue_fills_pair_gap": 7.140382400557097e-18,
+    "runtime_parity_tasks": 10,
+    "samples_per_task_per_arm": 8,
+    "pi_correct": 0,
+    "pi_rows": 80,
+    "verl_correct": 0,
+    "verl_rows": 80,
+    "mixed_groups_observed": 0,
+    "completion_rate_delta_absolute": 0.1625000000000001,
+    "effective_temperature_both_arms": 1.0,
+    "strict_runtime_configuration_matched": false,
+    "final_outcome_scorer_already_applied": true,
+    "current_160_supply_no_mixed_group_signal": true
+  },
+  "pilot_contract": {
+    "authoring_direction": "write executable read-only SQL first, execute it to derive the hidden final result, then write an unambiguous prompt that exactly specifies metric, filters, grouping, time scope and output shape",
+    "rollout_visible_fields": [
+      "prompt"
+    ],
+    "reward_visible_fields": [
+      "model_final_result",
+      "hidden_gold_final_result"
+    ],
+    "sql_role": "authoring_and_semantic_verification_only_not_model_input_or_reward_feature",
+    "training_candidate_strata": {
+      "query_initiation_and_schema_grounding": 8,
+      "aggregation_and_operator_choice": 8,
+      "identifier_filter_grouping_and_time_scope": 8,
+      "multi_step_evidence_and_completion": 8
+    },
+    "semantic_gate": [
+      "prompt unambiguously entails the exact hidden final result",
+      "verification SQL fully answers every requested component",
+      "query execution supports the hidden final result and is stable",
+      "zero overlap with every frozen evaluation or calibration set",
+      "failed rows are rewritten and re-reviewed before rollout"
+    ]
+  },
+  "ordered_actions": [
+    {
+      "order": 1,
+      "action": "author 32 training candidates plus 3 parity-only sentinels",
+      "resource": "CPU",
+      "decision_value": "directly tests whether trustworthy training supply can be rebuilt",
+      "gate": "all 35 rows pass the same instruction-gold-SQL semantic and isolation gates"
+    },
+    {
+      "order": 2,
+      "action": "run matched 3-task x 2-sample PI-versus-veRL instrumentation smoke on the 3 sentinels",
+      "resource": "NPU inference only",
+      "decision_value": "checks actual request-level token, timeout and termination contracts on the future target distribution",
+      "gate": "temperature/top-p/top-k, 8192 per-assistant cap, wall timeout and termination accounting are observed as configured"
+    },
+    {
+      "order": 3,
+      "action": "generate fresh 8-sample veRL groups for the 32 approved training candidates",
+      "resource": "NPU rollout",
+      "decision_value": "measures the real mixed-group and pair yield on usable training data",
+      "gate": "only mixed groups can enter an optimizer update; all-correct and all-wrong groups remain stored but are excluded from that update"
+    },
+    {
+      "order": 4,
+      "action": "expand in 32-task batches until 41 additional distinct pairs pass all gates",
+      "resource": "CPU then NPU rollout",
+      "decision_value": "reaches the frozen 48-pair training gate without overcollecting",
+      "gate": "recompute pair yield after every batch and stop immediately at the target"
+    },
+    {
+      "order": 5,
+      "action": "run the next short training canary",
+      "resource": "NPU training",
+      "decision_value": "tests learning only after data and runtime prerequisites are met",
+      "gate": "48 distinct approved pairs, frozen-set isolation, final-outcome reward and Pareto evaluation guardrails"
+    }
+  ],
+  "deprioritized_actions": [
+    {
+      "action": "repeat pure final-outcome replay on the current 160 trajectories",
+      "reason": "the scorer is already active and all 160 outcomes are wrong, so group advantages remain zero"
+    },
+    {
+      "action": "repeat the full old 10x8 runtime experiment",
+      "reason": "the tasks are evaluation-only, produce no mixed groups and have not passed the later strict semantic task audit"
+    },
+    {
+      "action": "train on the seven retained native pairs",
+      "reason": "they are an off-policy candidate stratum and remain far below the 48-pair gate"
+    },
+    {
+      "action": "permanently delete all-correct or all-wrong tasks",
+      "reason": "bucket membership is checkpoint- and sampling-dependent; exclude only from the current optimizer update"
+    }
+  ],
+  "limitations": [
+    "the 32-task pilot tests authoring quality but is not enough by itself to satisfy the 48-pair training gate",
+    "three-by-two is an instrumentation smoke, not a statistical equivalence test",
+    "the provisional 172-approved-candidate capacity target must be updated using the new pilot's observed pair yield",
+    "native PI and veRL retain inherent compaction and tool-implementation differences even after request-level limits are aligned"
+  ],
+  "contains_prompts_sql_answers_task_ids_tool_outputs_or_server_paths": false
+}

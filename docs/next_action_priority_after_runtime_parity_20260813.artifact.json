@@ -1,0 +1,226 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "下一步先重建可信训练题",
+    "generatedAt": "2026-08-13T20:47:34+08:00",
+    "blocks": [
+      {
+        "id": "title",
+        "type": "markdown",
+        "body": "# 下一步先重建可信训练题"
+      },
+      {
+        "id": "executive_summary",
+        "type": "markdown",
+        "body": "## Executive Summary\n\n- **最高价值动作是先用 CPU 构建 32 条 SQL-first、逐条语义批准的训练候选，另做 3 条只用于运行时校准的哨兵题。** 当前真正阻塞训练的是可信任务供给，不是 temperature 或最终结果 scorer。\n- **不要再跑旧 10×8，也不要在当前 160 条上重复离线奖励重放。** 两臂已确认使用 temperature 1.0，但 160 条全部错误、mixed group 为 0；重算同一个二值奖励不会产生优势信号。\n- **把 3×2 运行时复验移到新哨兵题上。** 先对齐每次 assistant 8,192-token 上限、墙钟和终止统计，再在真正代表未来训练分布的题上检查 PI 与 veRL，而不是继续消耗旧 evaluation-only 题。\n- **只有新任务产生足够 mixed groups 并累计到 48 对完整供给，才进入下一次短训练金丝雀。** 全对和全错只从当次 optimizer update 排除，不永久删除。"
+      },
+      {
+        "id": "binding_constraint",
+        "type": "markdown",
+        "sourceId": "priority_summary",
+        "body": "## 可信数据供给是唯一能改变训练决策的当前瓶颈\n\n训练硬门为48对，目前只保留7对原生候选，缺口仍有41对。旧队列最容易审核的42条虽然全部机械可执行，却是 `0/42` 语义批准；即使对剩余96条采用乐观压力测试，补齐41对的概率也只有约 `7.1×10⁻18`。\n\n**含义：** 继续调奖励、重跑旧题或直接训练都绕不过“没有可信任务”这一事实。新的32条pilot能在不占NPU的情况下直接回答最关键问题：我们能否稳定生产题意、hidden gold和验证查询完全一致的任务。"
+      },
+      {
+        "id": "supply_chart_block",
+        "type": "chart",
+        "chartId": "supply_gap"
+      },
+      {
+        "id": "option_table_block",
+        "type": "table",
+        "tableId": "option_priority"
+      },
+      {
+        "id": "task_contract",
+        "type": "markdown",
+        "sourceId": "priority_summary",
+        "body": "## SQL 只用于造题与验收，不进入 GRPO 输入\n\n新任务按 SQL-first 方向构造：先写只读、可重复执行的验证查询，执行得到 hidden final result，再反向写出明确限定指标、过滤、分组、时间范围和输出形态的题面。\n\n真正 rollout 时模型仍只看到题面；纯最终结果奖励也仍只比较模型最终结果与 hidden gold。SQL、解析字段和语义审核记录只承担数据生产与防错职责，不成为模型输入，也不成为奖励特征。这样既符合 GRPO 的最小接口，也避免再次出现“查询能命中某个数字但没有回答题意”的标签问题。"
+      },
+      {
+        "id": "workflow",
+        "type": "markdown",
+        "sourceId": "priority_summary",
+        "body": "## 用一个顺序同时解决数据供给与运行时不一致\n\n第一阶段先完成32条训练候选和3条parity-only哨兵的CPU语义门。第二阶段只在3条哨兵上运行 `3题×2条×双臂` 的请求级复验，确认temperature、top-p/top-k、单次8,192-token上限、相同墙钟和终止统计真实生效。第三阶段才对32条训练候选生成fresh `n=8` veRL groups，并测量mixed-group与pair产率。\n\n**含义：** parity复验不再是孤立的系统实验，而是训练采集的前置门；同时哨兵永久保持evaluation-only，不污染后续训练候选。"
+      },
+      {
+        "id": "workflow_table_block",
+        "type": "table",
+        "tableId": "ordered_actions"
+      },
+      {
+        "id": "rejected_actions",
+        "type": "markdown",
+        "sourceId": "priority_summary",
+        "body": "## 现在不应投入的动作\n\n- **不重复当前160条的最终结果重放：** scorer已经运行，全部错误意味着组内优势仍为零。\n- **不重跑旧题完整10×8：** 它们是evaluation-only、没有mixed group，并且没有通过后来更严格的任务语义门。\n- **不拿7对直接训练：** 数量远低于48对硬门，且属于原生模型产生的off-policy候选层。\n- **不永久删除全对或全错题：** bucket会随checkpoint和采样变化，只能从当前optimizer update临时排除。"
+      },
+      {
+        "id": "further_questions",
+        "type": "markdown",
+        "body": "## Further Questions｜后续问题\n\n- 32条新任务经过重写后能否达到 `32/32` 语义批准，并覆盖四个目标错误族？\n- 新任务的真实mixed-group与pair产率是否仍接近历史 `22/64`，还是需要调整172条容量预估？\n- 对齐请求级限制后，PI与veRL的完成差是否主要来自不可消除的compaction与工具实现差异？\n- 7对原生候选应与Step120新pair按什么比例分层，才能避免off-policy来源主导小金丝雀？"
+      },
+      {
+        "id": "caveats",
+        "type": "markdown",
+        "sourceId": "priority_summary",
+        "body": "## Caveats and Assumptions｜边界\n\n32条只是造题质量pilot，不等于已经满足48对训练门；`3×2` 也只验证请求合同与可观测终止行为，不证明统计分布等价。172条已批准候选是基于历史pair产率的暂定容量目标，必须在每个32条batch后更新。即使对齐token和墙钟，native PI与veRL仍保留上下文压缩和工具实现差异，因此最终结论仍应是部署路径兼容性，而不是严格单变量框架归因。"
+      }
+    ],
+    "charts": [
+      {
+        "id": "supply_gap",
+        "title": "训练 pair 供给与缺口",
+        "subtitle": "单位：pair；旧队列预计新增采用乐观可交换压力测试",
+        "type": "bar",
+        "dataset": "supply_gap",
+        "sourceId": "priority_summary",
+        "encodings": {
+          "x": {"field": "item", "type": "nominal"},
+          "y": {"field": "pairs", "type": "quantitative"}
+        },
+        "valueFormat": "number",
+        "layout": "full"
+      }
+    ],
+    "tables": [
+      {
+        "id": "option_priority",
+        "title": "候选动作的决策价值",
+        "subtitle": "优先考虑能改变训练许可、且不浪费NPU的动作",
+        "dataset": "option_priority",
+        "sourceId": "priority_summary",
+        "columns": [
+          {"field": "order", "label": "优先级"},
+          {"field": "action", "label": "动作"},
+          {"field": "resource", "label": "主要资源"},
+          {"field": "decision_impact", "label": "能否改变当前决策"},
+          {"field": "status", "label": "建议"}
+        ],
+        "defaultSort": {"field": "order", "direction": "asc"}
+      },
+      {
+        "id": "ordered_actions",
+        "title": "执行顺序与硬门",
+        "subtitle": "先CPU造题，再小规模运行时门，最后才做批量rollout与训练",
+        "dataset": "ordered_actions",
+        "sourceId": "priority_summary",
+        "columns": [
+          {"field": "order", "label": "顺序"},
+          {"field": "action", "label": "动作"},
+          {"field": "resource", "label": "资源"},
+          {"field": "gate", "label": "通过门"}
+        ],
+        "defaultSort": {"field": "order", "direction": "asc"}
+      }
+    ],
+    "sources": [
+      {"id": "priority_summary", "label": "运行时对照后下一动作优先级安全汇总", "path": "docs/next_action_priority_after_runtime_parity_20260813_summary.json"},
+      {"id": "review_rebase", "label": "42条语义审核与训练供给重算", "path": "docs/disjoint_pair_semantic_review_supply_rebase_20260813_summary.json"},
+      {"id": "runtime_parity", "label": "PI与veRL 10×8运行时对照安全汇总", "path": "docs/runtime_parity_10x8_step120_20260813_summary.json"},
+      {"id": "sampling_audit", "label": "运行时采样配置追加审计", "path": "docs/runtime_parity_sampling_config_audit_20260813_summary.json"},
+      {"id": "native_margin", "label": "7对原生候选的Step120 margin门", "path": "docs/native_disjoint7_step120_margin_20260813_summary.json"}
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "generatedAt": "2026-08-13T20:47:34+08:00",
+    "status": "ready",
+    "datasets": {
+      "supply_gap": [
+        {"order": 1, "item": "训练硬门", "pairs": 48, "role": "required_total", "total_gate": 48, "interpretation": "训练前必须满足的总pair数"},
+        {"order": 2, "item": "当前保留候选", "pairs": 7, "role": "retained_candidate", "total_gate": 48, "interpretation": "原生模型off-policy候选层"},
+        {"order": 3, "item": "仍需补齐", "pairs": 41, "role": "remaining_gap", "total_gate": 48, "interpretation": "新任务必须贡献的额外distinct pairs"},
+        {"order": 4, "item": "旧队列预计新增", "pairs": 0.38640429338103754, "role": "predictive_mean", "total_gate": 48, "interpretation": "剩余96条在乐观压力测试下的预测均值"}
+      ],
+      "option_priority": [
+        {"order": 1, "action": "32条SQL-first训练候选 + 3条parity哨兵", "resource": "CPU", "decision_impact": "直接解除可信训练供给阻塞", "status": "立即执行"},
+        {"order": 2, "action": "新哨兵上的3×2请求级复验", "resource": "NPU推理", "decision_impact": "决定能否用veRL bucket代表部署路径", "status": "pilot语义门后执行"},
+        {"order": 3, "action": "32条候选各8个fresh veRL rollout", "resource": "NPU rollout", "decision_impact": "测量真实mixed-group与pair产率", "status": "parity门后执行"},
+        {"order": 4, "action": "当前160条再次离线奖励重放", "resource": "CPU", "decision_impact": "全部错误，优势仍为零", "status": "不重复"},
+        {"order": 5, "action": "在7对候选上直接训练", "resource": "NPU训练", "decision_impact": "低于48对门且过拟合风险高", "status": "禁止"}
+      ],
+      "ordered_actions": [
+        {"order": 1, "action": "编写并逐条审核32+3条新任务", "resource": "CPU", "gate": "35/35语义批准、可执行稳定、冻结集零重叠"},
+        {"order": 2, "action": "3条哨兵各2条PI和veRL轨迹", "resource": "NPU推理", "gate": "采样、8,192-token、墙钟和终止统计实际生效"},
+        {"order": 3, "action": "32条训练候选各生成8条veRL轨迹", "resource": "NPU rollout", "gate": "只允许mixed groups进入当次更新"},
+        {"order": 4, "action": "按32条batch扩充供给", "resource": "CPU + NPU rollout", "gate": "累计新增41对后立即停止"},
+        {"order": 5, "action": "短训练金丝雀", "resource": "NPU训练", "gate": "总计48对、隔离门与Pareto护栏全部通过"}
+      ]
+    }
+  },
+  "sources": [
+    {
+      "id": "priority_summary",
+      "label": "运行时对照后下一动作优先级安全汇总",
+      "path": "docs/next_action_priority_after_runtime_parity_20260813_summary.json",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM read_json_auto('docs/next_action_priority_after_runtime_parity_20260813_summary.json')",
+        "description": "合并训练供给、42条语义审核、运行时10×8、采样调用链和7对margin门的去标识结果，按决策影响与资源成本排序动作。",
+        "tables_used": [
+          "docs/next_action_priority_after_runtime_parity_20260813_summary.json"
+        ],
+        "filters": [
+          "as of 2026-08-13",
+          "training and promotion remain disabled",
+          "no prompts, SQL, answers, task IDs, tool outputs or server paths"
+        ],
+        "metric_definitions": {
+          "training_pair_gap": "48 required pairs minus seven retained native candidate pairs",
+          "mixed_group": "an eight-sample task group containing at least one correct and at least one incorrect final outcome",
+          "decision_impact": "whether the action can change training authorization or unlock the next evidence-producing stage"
+        }
+      }
+    },
+    {
+      "id": "review_rebase",
+      "label": "42条语义审核与训练供给重算",
+      "path": "docs/disjoint_pair_semantic_review_supply_rebase_20260813_summary.json",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM read_json_auto('docs/disjoint_pair_semantic_review_supply_rebase_20260813_summary.json')",
+        "description": "读取0/42语义批准、41对缺口和旧队列容量压力测试。",
+        "tables_used": ["docs/disjoint_pair_semantic_review_supply_rebase_20260813_summary.json"]
+      }
+    },
+    {
+      "id": "runtime_parity",
+      "label": "PI与veRL 10×8运行时对照安全汇总",
+      "path": "docs/runtime_parity_10x8_step120_20260813_summary.json",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM read_json_auto('docs/runtime_parity_10x8_step120_20260813_summary.json')",
+        "description": "读取双臂各80条的正确率、完成率、bucket和运行时门结果。",
+        "tables_used": ["docs/runtime_parity_10x8_step120_20260813_summary.json"]
+      }
+    },
+    {
+      "id": "sampling_audit",
+      "label": "运行时采样配置追加审计",
+      "path": "docs/runtime_parity_sampling_config_audit_20260813_summary.json",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM read_json_auto('docs/runtime_parity_sampling_config_audit_20260813_summary.json')",
+        "description": "读取两臂有效temperature/top-p/top-k、80条生成方式和未对齐运行时配置。",
+        "tables_used": ["docs/runtime_parity_sampling_config_audit_20260813_summary.json"]
+      }
+    },
+    {
+      "id": "native_margin",
+      "label": "7对原生候选的Step120 margin门",
+      "path": "docs/native_disjoint7_step120_margin_20260813_summary.json",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM read_json_auto('docs/native_disjoint7_step120_margin_20260813_summary.json')",
+        "description": "读取7对候选的来源隔离、token门、Step120误排和训练禁用状态。",
+        "tables_used": ["docs/native_disjoint7_step120_margin_20260813_summary.json"]
+      }
+    }
+  ]
+}

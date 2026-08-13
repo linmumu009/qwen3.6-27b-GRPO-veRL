@@ -35,7 +35,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - 新增的 22 条真实首错状态已冻结为 evaluation-only，并完成 Step 120 与现有 chosen-only 一步 checkpoint 的同状态纯前向对照：候选有 `18/22` 逐题 semantic-delta margin 改善，平均值 `-1.1454→-1.0843`，但正确候选占优仍为 `3/22`，full-SQL 正确占优仍为 `1/22`；预注册的 `17/22` 决策边界门失败，因此不跑 full64、不追加训练、不晋级。该 22 条足以拒绝当前候选，但不用于训练或总体泛化估计；下一步仍是另建至少 48 条不重叠真实首错训练 pair。
 - 冻结 eval22 后的训练供给已按源任务身份重新核验：原生 full25 的27个已观测首错中16个命中eval22，剩余11个里又有4个命中chosen-only calibration16，旧 frozen16、val20、test20无额外重叠，最终只保留7对。7对均通过机械、token/mask和Step120纯前向门；正确 semantic-delta/full-SQL均为 `0/7` 占优，平均margin为 `-1.7816/-0.9334`，说明这些原生真实首错仍被Step120系统性误排。训练硬门继续保持48对，当前缺口41；review138即使全部批准，按历史 `22/64` 产率补足缺口的预测概率约 `76.5%`，90%/95%把握需158/172个已批准候选。
 - 42条最低机械风险的review-required任务已完成逐条题意—gold—SQL语义审核：42/42机械可执行、顺序扰动稳定且期望值被查询结果支持，但题意无歧义蕴含gold和SQL完整回答题意均为`0/42`，最终语义批准`0/42`。这证明当前问题是高严重度标签语义失配，不是SQL不可执行；停止审核同队列剩余96条，也不为其消耗NPU。
-- 用`0/42`批准率与历史`22/64` pair产率做两阶段Jeffreys后验压力测试，剩余96条预计仅批准约`1.12`条、形成约`0.39`对pair，补齐41对缺口的预测概率约`7.1×10^-18`。下一动作改为先新建32条显式定义指标、分组、时间范围和输出形态的任务pilot，逐条语义批准后再扩至172个已批准候选，并按32条一批采集真实首错状态。
+- 用`0/42`批准率与历史`22/64` pair产率做两阶段Jeffreys后验压力测试，剩余96条预计仅批准约`1.12`条、形成约`0.39`对pair，补齐41对缺口的预测概率约`7.1×10^-18`。下一动作改为先新建32条SQL-first训练候选和3条parity-only哨兵：SQL只负责生成/验收hidden gold，rollout仍只用题面与最终结果；CPU语义门通过后，先在哨兵上做`3×2×双臂`请求级复验，再按32条一批采集真实首错状态。
 - PI-Agent 与 veRL rollout 的 `10题×每题8条` 部署路径门禁已完成但未通过：追加调用链审计确认两臂有效采样均为 `temperature=1.0 / top_p=0.95 / top_k=20`，且每个题组的8条轨迹全部互异，不是temperature 0或复制候选；但单次token cap、compaction、墙钟、并发和工具实现并不相同，因此只能结论为“现网路径不兼容”，不能称为严格同配置A/B。当前不开放 bucket 筛选或训练；10条 val-only 题始终禁止进入训练，全对/全错也不得永久删除。
 - 所有新增镜像、容器、工作目录和实验名均以 `llin` 开头，不复用或修改其他人的环境。
 
@@ -122,6 +122,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [`docs/runtime_parity_10x8_step120_20260813.md`](docs/runtime_parity_10x8_step120_20260813.md)：Step 120 在 PI-Agent 与 veRL rollout 上各80条的部署路径对照；追加审计区分已对齐的模型/任务/有效采样与未对齐的token、compaction、终止和并发策略。
 - [`docs/runtime_parity_10x8_step120_20260813_summary.json`](docs/runtime_parity_10x8_step120_20260813_summary.json)：不含 prompt、gold、SQL、轨迹、任务标识、逐题哈希或服务器路径的双臂安全聚合。
 - [`docs/runtime_parity_sampling_config_audit_20260813_summary.json`](docs/runtime_parity_sampling_config_audit_20260813_summary.json)：区分GRPO训练temperature 1.0、普通验证默认temperature 0和本次parity显式temperature 1.0；记录两臂80条的生成方式、逐组精确去重与未对齐运行时配置。
+- [`docs/next_action_priority_after_runtime_parity_20260813.artifact.json`](docs/next_action_priority_after_runtime_parity_20260813.artifact.json)、[`docs/next_action_priority_after_runtime_parity_20260813_summary.json`](docs/next_action_priority_after_runtime_parity_20260813_summary.json)、[`docs/next_action_priority_after_runtime_parity_20260813_report_notes.json`](docs/next_action_priority_after_runtime_parity_20260813_report_notes.json)：运行时审计后的整体优先级复核；把32条可信训练候选定为第一动作，并把小规模parity复验迁移到3条独立哨兵题上。canonical artifact已通过到官方构建器静态图阶段，但portable reader在5秒/30秒预算下均停留fallback，因此未发布未完成QA的HTML。
 - [`docs/semantic_delta_pairwise_canary_20260812.md`](docs/semantic_delta_pairwise_canary_20260812.md)：一次 reference-free pairwise 更新、工程失败修复、训练资源、同数据概率前后门禁与 fail-closed 决策。
 - [`docs/semantic_delta_pairwise_canary_20260812_summary.json`](docs/semantic_delta_pairwise_canary_20260812_summary.json)：不含原始问题、SQL、答案和服务器路径的一步 pairwise 安全聚合结果。
 - [`docs/native_vs_step120_reward_behavior_attribution_20260812.md`](docs/native_vs_step120_reward_behavior_attribution_20260812.md)：原生模型与 Step 120 的相同错误状态概率对照、同题老板原版自由回放和奖励代理错配归因。
@@ -236,6 +237,14 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/run_chosen_only_first_action_one_step.sh`、`scripts/launch_chosen_only_first_action_one_step.sh`、`scripts/analyze_chosen_only_first_action_post_canary.py`：严格执行获准的一步 train48 `0.25/8` 全参 SFT，并在相同 calibration16 上按预注册的 aggregate/per-task NLL、greedy/top-5、mean rank、tool structure 和更早分叉门自动决定是否只开放一次自由回放；无论结果如何都禁止追加训练和 promotion。
 
 ## 已验证状态
+
+### v1.11.4 — 2026-08-13
+
+- 综合训练供给、42条语义审核、7对原生候选margin门、纯最终结果重算和PI/veRL `10×8`运行时对照后，第一优先仍是重建可信任务供给，而不是训练、重复奖励重放或再次运行旧题完整`10×8`。
+- 下一批改为32条SQL-first训练候选加3条parity-only哨兵：先执行只读SQL得到hidden final result，再反向写明指标、过滤、分组、时间范围和输出形态；SQL只用于造题与语义验收，模型仍只接收题面，奖励仍只比较最终结果。
+- 3条哨兵在训练集之外永久冻结；CPU语义门通过后才做`3题×2条×双臂`请求级复验，对齐temperature/top-p/top-k、每次assistant 8,192-token上限、墙钟和终止统计。通过后才对32条训练候选生成fresh `n=8` veRL groups。
+- 保持48对训练硬门：当前7对只作为off-policy候选层，新增41对前不训练；mixed groups可进入当次更新，全对/全错只临时排除且不得永久删除。
+- 决策证据独立复算通过；报告canonical artifact包含完整Executive Summary、pair供给图、动作表、后续问题与边界。当前桌面无MCP report renderer，portable reader在官方builder中持续fallback并超时，因此保留artifact与report notes，不发布未完成渲染QA的HTML。
 
 ### v1.11.3 — 2026-08-13
 
