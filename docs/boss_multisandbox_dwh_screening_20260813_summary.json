@@ -1,0 +1,105 @@
+{
+  "contract": "boss-multisandbox-dwh-screening-safe-summary-v1",
+  "date": "2026-08-13",
+  "scope": {
+    "sandbox_versions": 19,
+    "tasks_per_version": 500,
+    "rows": 9500,
+    "source_manifest_name": "dwh_tasks.jsonl",
+    "dwh_only": true,
+    "independent_database_per_version": true,
+    "v15_used_for_final_pool": false
+  },
+  "cpu_screen": {
+    "elapsed_seconds": 1.919,
+    "answerable_category_rows": 5762,
+    "numeric_rows": 3041,
+    "table_rows": 2194,
+    "verification_sql_present": 5253,
+    "verification_sql_executable": 5253,
+    "verification_sql_nonempty": 5253,
+    "gold_result_match": 5099,
+    "deterministic_semantic_flag_rows": 5575,
+    "high_precision_candidates": 459,
+    "high_precision_unique_instruction_candidates": 437,
+    "candidate_definition": "answerable numeric/table task with QA passed, source database validation complete, read-only SQL executable and nonempty, hidden gold supported by SQL result, and no deterministic semantic warning"
+  },
+  "recommended_non_v15_direct_pool": {
+    "rows": 281,
+    "sandbox_versions": 18,
+    "globally_unique_instructions": true,
+    "task_types": {
+      "aggregate_query": 123,
+      "single_metric_query": 113,
+      "comparison_analysis": 45
+    },
+    "answer_types": {
+      "numeric": 234,
+      "table": 47
+    },
+    "still_requires_explicit_semantic_review": true,
+    "training_allowed": false,
+    "rollout_allowed": false
+  },
+  "rollout_time_model": {
+    "baseline_source": "step120_verl_10_tasks_x_8_samples_on_16_npus",
+    "baseline_tasks": 10,
+    "baseline_samples_per_task": 8,
+    "baseline_npus": 16,
+    "baseline_wall_minutes_approx": 60,
+    "observed_groups_per_hour_per_16_npus_approx": 10,
+    "two_server_npus": 32,
+    "two_server_groups_per_hour_approx": 20,
+    "assumption": "both servers run independent TP8xDP2 Step120 rollout services concurrently; task-length mix may differ from the hard eval10 baseline"
+  },
+  "time_estimates": {
+    "cpu_mechanical_screen_all_9500": {
+      "measured_seconds": 1.919,
+      "status": "completed"
+    },
+    "semantic_review_stratified_pilot64": {
+      "planning_minutes": [48, 96],
+      "assumption": "0.75 to 1.5 minutes per prompt-gold-SQL decision after deterministic packet preparation",
+      "status": "not_started"
+    },
+    "pilot64_x_8_on_32_npus": {
+      "baseline_hours": 3.2,
+      "planning_hours": [4, 6],
+      "status": "not_started"
+    },
+    "all281_x_8_on_32_npus": {
+      "baseline_hours": 14.05,
+      "planning_hours": [16, 24],
+      "status": "not_recommended_before_pilot"
+    },
+    "first_decision_ready_pilot_total": {
+      "planning_hours": [5, 8],
+      "includes": [
+        "stratified pilot construction",
+        "explicit semantic review",
+        "two-server 64x8 rollout",
+        "final-outcome scoring and mixed-group bucketing"
+      ]
+    }
+  },
+  "decision": {
+    "selected_next_action": "semantic_review_then_rollout_stratified_non_v15_direct_dwh_pilot64",
+    "run_all_281_immediately": false,
+    "why": "a 64-task pilot measures semantic approval and mixed-group yield in roughly one quarter of the full rollout time before committing 16 to 24 hours",
+    "bucket_policy": {
+      "mixed": "eligible for a fresh GRPO update after all remaining gates",
+      "all_wrong": "retain for correction or later rescreening",
+      "all_correct": "retain for regression or later rescreening",
+      "permanent_deletion": false
+    }
+  },
+  "limitations": [
+    "mechanical SQL and hidden-gold agreement do not prove that the prompt unambiguously entails the gold",
+    "the 60-minute rollout baseline comes from ten hard evaluation tasks and may overestimate or underestimate the new direct-query pool",
+    "the 48 to 96 minute semantic-review estimate is a planning assumption rather than a completed timing measurement",
+    "the 281-task pool must remain evaluation-disjoint and cannot be selected by hidden test performance"
+  ],
+  "contains_prompts_sql_answers_task_ids_tool_outputs_or_server_paths": false,
+  "training_allowed": false,
+  "promotion_allowed": false
+}

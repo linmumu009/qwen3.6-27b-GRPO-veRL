@@ -26,7 +26,7 @@ def task(task_id, instruction, *, sql="SELECT SUM(amount) FROM shipments", value
     return {
         "task_id": task_id,
         "task_type": "dwh",
-        "task_category": "analysis",
+        "task_category": "answerable",
         "scenario_type": "single_turn",
         "business_domain": "logistics",
         "difficulty": "medium",
@@ -62,6 +62,7 @@ def test_profile_catalog_executes_sql_and_exports_only_high_precision_candidates
 
     assert summary["sandbox_versions"] == 1
     assert summary["rows"] == 3
+    assert summary["elapsed_seconds"] >= 0
     assert summary["high_precision_candidate_rows"] == 1
     assert summary["versions"][0]["verification_sql_executable_rows"] == 2
     assert summary["versions"][0]["gold_result_match_rows"] == 2
@@ -100,3 +101,18 @@ def test_profile_catalog_denies_mutating_verification_sql(tmp_path):
         assert connection.execute("SELECT COUNT(*) FROM shipments").fetchone()[0] == 3
     finally:
         connection.close()
+
+
+def test_profile_catalog_requires_answerable_category_and_passed_qa(tmp_path):
+    out_of_scope = task("a", "请给出运单金额总和。")
+    out_of_scope["task_category"] = "out_of_scope"
+    failed_qa = task("b", "请给出全部运单金额合计。")
+    failed_qa["_qa_status"] = "failed"
+    write_version(tmp_path, "v1", [out_of_scope, failed_qa])
+
+    summary, candidates = profile_catalog(tmp_path, execute_sql=True)
+
+    assert candidates == []
+    exclusions = summary["versions"][0]["exclusion_counts"]
+    assert exclusions["not_answerable_task_category"] == 1
+    assert exclusions["qa_not_passed"] == 1

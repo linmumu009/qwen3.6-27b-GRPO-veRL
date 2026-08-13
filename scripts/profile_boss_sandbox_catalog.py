@@ -16,7 +16,13 @@ import math
 import os
 from pathlib import Path
 import sqlite3
+import sys
+import time
 from typing import Any, Iterable
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
 from scripts.audit_formal_instruction_gold_alignment import classify
 
@@ -139,6 +145,7 @@ def profile_catalog(
     execute_sql: bool,
     max_result_rows: int = 10_000,
 ) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+    started = time.monotonic()
     versions = sorted(path for path in sandbox_root.iterdir() if path.is_dir())
     if not versions:
         raise ValueError(f"no sandbox versions found under {sandbox_root}")
@@ -186,6 +193,8 @@ def profile_catalog(
                 sql = str(gold.get("verification_sql") or "").strip()
                 answerability = row.get("answerability_label") or {}
                 validation = row.get("validation") or {}
+                task_category = _safe_name(row.get("task_category"))
+                qa_status = _safe_name(row.get("_qa_status"))
 
                 local_ids[task_id] += 1
                 global_task_ids[task_id].add(version)
@@ -193,9 +202,9 @@ def profile_catalog(
                     global_instruction_versions[instruction_hash].add(version)
                     instruction_occurrences[instruction_hash] += 1
                 task_types[_safe_name(row.get("task_type"))] += 1
-                task_categories[_safe_name(row.get("task_category"))] += 1
+                task_categories[task_category] += 1
                 answer_types[answer_type] += 1
-                qa_statuses[_safe_name(row.get("_qa_status"))] += 1
+                qa_statuses[qa_status] += 1
                 difficulty_levels[_safe_name(row.get("difficulty_level", row.get("difficulty")))] += 1
 
                 is_answerable = answerability.get("is_answerable") is True
@@ -228,8 +237,12 @@ def profile_catalog(
                     reasons.append("missing_identity_or_instruction")
                 if answer_type not in {"numeric", "table"}:
                     reasons.append("unsupported_answer_type")
+                if task_category != "answerable":
+                    reasons.append("not_answerable_task_category")
                 if not is_answerable:
                     reasons.append("not_marked_answerable")
+                if qa_status != "passed":
+                    reasons.append("qa_not_passed")
                 if not checked or not result_exists:
                     reasons.append("source_validation_not_complete")
                 if not sql:
@@ -259,7 +272,7 @@ def profile_catalog(
                                 "verification_sql": sql,
                             },
                             "gold_sha256": canonical_hash(gold),
-                            "task_category": _safe_name(row.get("task_category")),
+                            "task_category": task_category,
                             "task_type": _safe_name(row.get("task_type")),
                             "scenario_type": _safe_name(row.get("scenario_type")),
                             "business_domain": _safe_name(row.get("business_domain")),
@@ -314,6 +327,7 @@ def profile_catalog(
         "sandbox_versions": len(versions),
         "rows": total_rows,
         "sql_execution_enabled": execute_sql,
+        "elapsed_seconds": round(time.monotonic() - started, 3),
         "high_precision_candidate_rows": len(candidates),
         "high_precision_unique_instruction_rows": sum(
             candidate["globally_unique_instruction"] for candidate in candidates
@@ -326,9 +340,10 @@ def profile_catalog(
         ),
         "versions": version_summaries,
         "candidate_definition": (
-            "numeric/table, source-marked answerable and database-checked, verification SQL present, "
-            "read-only executable and nonempty, hidden gold supported by result, and no deterministic "
-            "semantic review flags; candidates still require explicit semantic adjudication before rollout"
+            "DWH answerable-category numeric/table task with QA passed, source-marked answerable and "
+            "database-checked, verification SQL present, read-only executable and nonempty, hidden gold "
+            "supported by result, and no deterministic semantic review flags; candidates still require "
+            "explicit semantic adjudication before rollout"
         ),
         "contains_prompts_sql_answers_task_ids_tool_outputs_or_server_paths": False,
         "training_allowed": False,

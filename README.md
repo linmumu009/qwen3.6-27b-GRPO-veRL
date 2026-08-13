@@ -36,7 +36,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - 冻结 eval22 后的训练供给已按源任务身份重新核验：原生 full25 的27个已观测首错中16个命中eval22，剩余11个里又有4个命中chosen-only calibration16，旧 frozen16、val20、test20无额外重叠，最终只保留7对。7对均通过机械、token/mask和Step120纯前向门；正确 semantic-delta/full-SQL均为 `0/7` 占优，平均margin为 `-1.7816/-0.9334`，说明这些原生真实首错仍被Step120系统性误排。训练硬门继续保持48对，当前缺口41；review138即使全部批准，按历史 `22/64` 产率补足缺口的预测概率约 `76.5%`，90%/95%把握需158/172个已批准候选。
 - 42条最低机械风险的review-required任务已完成逐条题意—gold—SQL语义审核：42/42机械可执行、顺序扰动稳定且期望值被查询结果支持，但题意无歧义蕴含gold和SQL完整回答题意均为`0/42`，最终语义批准`0/42`。这证明当前问题是高严重度标签语义失配，不是SQL不可执行；停止审核同队列剩余96条，也不为其消耗NPU。
 - 用`0/42`批准率与历史`22/64` pair产率做两阶段Jeffreys后验压力测试，剩余96条预计仅批准约`1.12`条、形成约`0.39`对pair，补齐41对缺口的预测概率约`7.1×10^-18`。下一动作改为先新建32条SQL-first训练候选和3条parity-only哨兵：SQL只负责生成/验收hidden gold，rollout仍只用题面与最终结果；CPU语义门通过后，先在哨兵上做`3×2×双臂`请求级复验，再按32条一批采集真实首错状态。
-- 多沙箱只读盘点进一步发现老板服务器共有19个版本、每版500题和独立数据库，总计9,500题；因此优先级再次调整为先跨沙箱机械执行、语义预警、重复与冻结集筛选，再从合格池做分层rollout。重新造32条题降为现有9,500题无法提供足够可信供给时的后备方案；不能仅按一次模型输出好坏挑题。
+- 多沙箱DWH只读筛选已实跑：19个版本、每版500题和独立数据库，共9,500题，CPU机械门仅耗时1.919秒；5,099条gold与SQL结果一致，459条通过高精度门。排除v15、跨版本重复题面和高语义风险任务类型后，得到18个非v15沙箱上的281条直接查询池（234 numeric / 47 table），仍需显式语义审核。推荐先做64题分层pilot，预计从审核到`64×8`双机rollout出结果约5–8小时；不直接投入16–24小时跑完281题。
 - PI-Agent 与 veRL rollout 的 `10题×每题8条` 部署路径门禁已完成但未通过：追加调用链审计确认两臂有效采样均为 `temperature=1.0 / top_p=0.95 / top_k=20`，且每个题组的8条轨迹全部互异，不是temperature 0或复制候选；但单次token cap、compaction、墙钟、并发和工具实现并不相同，因此只能结论为“现网路径不兼容”，不能称为严格同配置A/B。当前不开放 bucket 筛选或训练；10条 val-only 题始终禁止进入训练，全对/全错也不得永久删除。
 - 所有新增镜像、容器、工作目录和实验名均以 `llin` 开头，不复用或修改其他人的环境。
 
@@ -124,6 +124,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [`docs/runtime_parity_10x8_step120_20260813_summary.json`](docs/runtime_parity_10x8_step120_20260813_summary.json)：不含 prompt、gold、SQL、轨迹、任务标识、逐题哈希或服务器路径的双臂安全聚合。
 - [`docs/runtime_parity_sampling_config_audit_20260813_summary.json`](docs/runtime_parity_sampling_config_audit_20260813_summary.json)：区分GRPO训练temperature 1.0、普通验证默认temperature 0和本次parity显式temperature 1.0；记录两臂80条的生成方式、逐组精确去重与未对齐运行时配置。
 - [`docs/next_action_priority_after_runtime_parity_20260813.artifact.json`](docs/next_action_priority_after_runtime_parity_20260813.artifact.json)、[`docs/next_action_priority_after_runtime_parity_20260813_summary.json`](docs/next_action_priority_after_runtime_parity_20260813_summary.json)、[`docs/next_action_priority_after_runtime_parity_20260813_report_notes.json`](docs/next_action_priority_after_runtime_parity_20260813_report_notes.json)：运行时审计后的整体优先级复核；把32条可信训练候选定为第一动作，并把小规模parity复验迁移到3条独立哨兵题上。canonical artifact已通过到官方构建器静态图阶段，但portable reader在5秒/30秒预算下均停留fallback，因此未发布未完成QA的HTML。
+- [`docs/boss_multisandbox_dwh_screening_20260813_summary.json`](docs/boss_multisandbox_dwh_screening_20260813_summary.json)：19版9,500条DWH的CPU只读SQL/gold/语义预警/重复筛选、281条非v15直接查询池，以及64题pilot与全281题双机`n=8`耗时模型。
 - [`docs/semantic_delta_pairwise_canary_20260812.md`](docs/semantic_delta_pairwise_canary_20260812.md)：一次 reference-free pairwise 更新、工程失败修复、训练资源、同数据概率前后门禁与 fail-closed 决策。
 - [`docs/semantic_delta_pairwise_canary_20260812_summary.json`](docs/semantic_delta_pairwise_canary_20260812_summary.json)：不含原始问题、SQL、答案和服务器路径的一步 pairwise 安全聚合结果。
 - [`docs/native_vs_step120_reward_behavior_attribution_20260812.md`](docs/native_vs_step120_reward_behavior_attribution_20260812.md)：原生模型与 Step 120 的相同错误状态概率对照、同题老板原版自由回放和奖励代理错配归因。
@@ -238,6 +239,14 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/run_chosen_only_first_action_one_step.sh`、`scripts/launch_chosen_only_first_action_one_step.sh`、`scripts/analyze_chosen_only_first_action_post_canary.py`：严格执行获准的一步 train48 `0.25/8` 全参 SFT，并在相同 calibration16 上按预注册的 aggregate/per-task NLL、greedy/top-5、mean rank、tool structure 和更早分叉门自动决定是否只开放一次自由回放；无论结果如何都禁止追加训练和 promotion。
 
 ## 已验证状态
+
+### v1.11.6 — 2026-08-13
+
+- 5号机已同步跨沙箱筛选器并完成9,500条DWH只读全量运行：`5,253/5,253`条verification SQL可执行且非空，`5,099/5,253`条hidden gold被查询结果支持；全流程CPU实测`1.919s`，未占NPU。
+- source answerable、numeric/table、QA passed、数据库验证、SQL/gold机械一致和零确定性语义预警共同收缩到459条；再排除v15、跨版本重复题面及trend/report/anomaly/attribution等高风险类型，保留18个非v15沙箱上的281条直接查询题，其中aggregate/single-metric/comparison为`123/113/45`，numeric/table为`234/47`。
+- 采用最近Step120 veRL `10题×8条`在16 NPU约60分钟的实测吞吐，双机32 NPU按约20题组/小时估算：64题pilot基线3.2小时，计入长尾按4–6小时；全部281题基线14.05小时，计划区间16–24小时。
+- 下一步不直接满跑281题：先对64条分层候选做显式题意—gold—SQL审核，预计48–96分钟；通过后双机满载`64×8`，加评分/bucket后约5–8小时得到首个决策结果。CPU机械通过不等于训练批准，训练与晋级继续关闭。
+- 本轮定向筛选器测试与全仓回归均通过：`4 passed`、`369 passed`。
 
 ### v1.11.5 — 2026-08-13
 
