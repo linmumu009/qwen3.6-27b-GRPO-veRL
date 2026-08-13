@@ -44,5 +44,6 @@ def test_summary_reports_shape_scheduler_lengths_and_npu_without_content(tmp_pat
     assert result["scheduler"]["at_sequence_cap_samples"] == 1
     assert result["response_tokens"]["at_budget_rows"] == 1
     assert result["npu"]["aicore_mean"] == 80
+    assert result["npu"]["recent_aicore_mean"] == 80
     assert result["driver_error_markers"]["context_or_truncation"] == 0
     assert result["contains_prompts_gold_sql_task_ids_tool_outputs_or_server_paths"] is False

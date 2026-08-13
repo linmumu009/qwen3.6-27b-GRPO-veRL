@@ -89,6 +89,7 @@ def summarize(run_dir: Path) -> dict:
                     })
                 except (KeyError, ValueError):
                     continue
+    recent_npu_rows = npu_rows[-16:]
 
     started = parse_time(run_dir / "started_at")
     finished = parse_time(run_dir / "finished_at")
@@ -137,6 +138,15 @@ def summarize(run_dir: Path) -> dict:
             "npu_util_mean": statistics.fmean(row["npu_util_pct"] for row in npu_rows) if npu_rows else None,
             "hbm_usage_max": max((row["hbm_usage_pct"] for row in npu_rows), default=None),
             "hbm_bandwidth_mean": statistics.fmean(row["hbm_bandwidth_pct"] for row in npu_rows) if npu_rows else None,
+            "recent_aicore_mean": statistics.fmean(
+                row["aicore_pct"] for row in recent_npu_rows
+            ) if recent_npu_rows else None,
+            "recent_npu_util_mean": statistics.fmean(
+                row["npu_util_pct"] for row in recent_npu_rows
+            ) if recent_npu_rows else None,
+            "recent_hbm_usage_max": max(
+                (row["hbm_usage_pct"] for row in recent_npu_rows), default=None
+            ),
         },
         "driver_error_markers": error_counts,
         "contains_prompts_gold_sql_task_ids_tool_outputs_or_server_paths": False,

@@ -240,6 +240,10 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 已验证状态
 
+### v1.11.14 — 2026-08-13
+
+- standalone安全摘要新增最近一个完整16-chip采样窗口的AICore/NPU/HBM聚合，区别“整个运行平均利用率”和“当前是否仍在实际解码”；仍不读取或输出prompt、答案、SQL、工具内容与task identity。
+
 ### v1.11.13 — 2026-08-13
 
 - 新增双臂结果合并器：只接受两份既定outcome summary和两份mixed敏感Parquet，验证`tasks×n=trajectories`、采样数一致、mixed行数一致及verifier identity无交集后，合并正确率、完成率、0–8直方图、bucket和版本/answer type分布。
