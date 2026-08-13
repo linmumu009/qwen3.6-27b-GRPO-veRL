@@ -1,7 +1,7 @@
 import json
 import sqlite3
 
-from scripts.profile_boss_sandbox_catalog import profile_catalog
+from scripts.profile_boss_sandbox_catalog import canonical_hash, profile_catalog
 
 
 def write_version(root, version, rows):
@@ -68,6 +68,7 @@ def test_profile_catalog_executes_sql_and_exports_only_high_precision_candidates
     assert summary["versions"][0]["gold_result_match_rows"] == 2
     assert [row["task_id"] for row in candidates] == ["a"]
     assert candidates[0]["globally_unique_instruction"] is True
+    assert candidates[0]["gold_sha256"] == canonical_hash(candidates[0]["gold"])
     assert summary["contains_prompts_sql_answers_task_ids_tool_outputs_or_server_paths"] is False
 
 

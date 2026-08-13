@@ -240,6 +240,11 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 已验证状态
 
+### v1.11.8 — 2026-08-13
+
+- 281题敏感Parquet首次构建在写文件前被gold hash完整性门主动拦截：画像器原先对未导出的source gold扩展字段做哈希，而候选包只保留`answer_type/value/verification_sql`，导致导出对象无法自证完整性；本次没有占用NPU，也没有产生可用Parquet。
+- 画像器改为对实际导出的精简gold对象计算`gold_sha256`，并补充画像器→候选包→rollout构建器的精确哈希回归；服务器将以新运行目录重建459条候选和281条严格池，不修改旧证据。
+
 ### v1.11.7 — 2026-08-13
 
 - 按全量281题筛选要求新增严格server-only数据构建器：仅接收18个非v15沙箱、跨版本唯一题面、机械SQL/gold通过且无确定性语义预警的aggregate/single-metric/comparison任务；模型输入保持老板system、guidance和`bash/read/write/edit`四工具合同，hidden gold/SQL/identity只进入0600 Parquet，训练与晋级均关闭。

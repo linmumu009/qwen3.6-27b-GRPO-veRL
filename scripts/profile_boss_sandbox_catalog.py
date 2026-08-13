@@ -259,6 +259,11 @@ def profile_catalog(
 
                 if not reasons:
                     high_precision += 1
+                    exported_gold = {
+                        "answer_type": answer_type,
+                        "value": gold.get("value"),
+                        "verification_sql": sql,
+                    }
                     candidates.append(
                         {
                             "version": version,
@@ -266,12 +271,11 @@ def profile_catalog(
                             "task_id": task_id,
                             "instruction": instruction,
                             "instruction_sha256": instruction_hash,
-                            "gold": {
-                                "answer_type": answer_type,
-                                "value": gold.get("value"),
-                                "verification_sql": sql,
-                            },
-                            "gold_sha256": canonical_hash(gold),
+                            "gold": exported_gold,
+                            # Hash exactly what leaves the profiler.  Source
+                            # manifests may carry additional gold metadata
+                            # that is intentionally not exported.
+                            "gold_sha256": canonical_hash(exported_gold),
                             "task_category": task_category,
                             "task_type": _safe_name(row.get("task_type")),
                             "scenario_type": _safe_name(row.get("scenario_type")),
