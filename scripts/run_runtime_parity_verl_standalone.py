@@ -285,6 +285,12 @@ def run(args: argparse.Namespace) -> dict:
             abort_acknowledged = output.non_tensor_batch.get(
                 "trajectory_abort_acknowledged_count", np.zeros(len(output), dtype=int)
             )
+            abort_physical = output.non_tensor_batch.get(
+                "trajectory_abort_physical_request_count", np.zeros(len(output), dtype=int)
+            )
+            abort_errors = output.non_tensor_batch.get(
+                "trajectory_abort_error_count", np.zeros(len(output), dtype=int)
+            )
             task_indices = np.repeat(np.arange(start, stop), args.samples_per_task)
             sample_indices = np.tile(np.arange(args.samples_per_task), stop - start)
             rows = (
@@ -298,10 +304,13 @@ def run(args: argparse.Namespace) -> dict:
                     "trajectory_timeout": bool(timed_out),
                     "trajectory_timeout_seconds": float(timed_out_after),
                     "trajectory_abort_acknowledged_count": int(abort_ack),
+                    "trajectory_abort_physical_request_count": int(physical_requests),
+                    "trajectory_abort_error_count": int(abort_error_count),
                     "runtime_error": False,
                 }
                 for task_index, sample_index, prompt, solution, num_turns, response_tokens,
-                    timed_out, timed_out_after, abort_ack in zip(
+                    timed_out, timed_out_after, abort_ack, physical_requests,
+                    abort_error_count in zip(
                     task_indices,
                     sample_indices,
                     prompt_texts,
@@ -311,6 +320,8 @@ def run(args: argparse.Namespace) -> dict:
                     timeouts,
                     timeout_seconds,
                     abort_acknowledged,
+                    abort_physical,
+                    abort_errors,
                     strict=True,
                 )
             )

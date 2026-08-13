@@ -50,6 +50,7 @@ def summarize(run_dir: Path) -> dict:
     samples = int(contract.get("samples_per_task", 0))
     batch_size = int(contract.get("task_batch_size", tasks or 1))
     completed_tasks = completed_rows = runtime_errors = timeout_rows = at_response_budget = 0
+    timeout_abort_acks = timeout_abort_physical = timeout_abort_errors = 0
     response_lengths: list[int] = []
     complete_shards = 0
     if tasks and samples:
@@ -68,6 +69,15 @@ def summarize(run_dir: Path) -> dict:
                     row = json.loads(line)
                     runtime_errors += bool(row.get("runtime_error"))
                     timeout_rows += bool(row.get("trajectory_timeout"))
+                    timeout_abort_acks += int(
+                        row.get("trajectory_abort_acknowledged_count", 0) or 0
+                    )
+                    timeout_abort_physical += int(
+                        row.get("trajectory_abort_physical_request_count", 0) or 0
+                    )
+                    timeout_abort_errors += int(
+                        row.get("trajectory_abort_error_count", 0) or 0
+                    )
                     length = int(row.get("response_tokens", 0))
                     response_lengths.append(length)
                     at_response_budget += length >= int(contract.get("max_response_tokens", 0))
@@ -113,6 +123,9 @@ def summarize(run_dir: Path) -> dict:
         "runtime_error_rows": runtime_errors,
         "trajectory_timeout_rows": timeout_rows,
         "trajectory_timeout_seconds": contract.get("trajectory_timeout_seconds"),
+        "timeout_abort_acknowledged_count": timeout_abort_acks,
+        "timeout_abort_physical_request_count": timeout_abort_physical,
+        "timeout_abort_error_count": timeout_abort_errors,
         "sampling": {
             "temperature": contract.get("temperature"),
             "top_p": contract.get("top_p"),

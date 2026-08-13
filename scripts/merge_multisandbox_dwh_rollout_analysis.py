@@ -66,6 +66,11 @@ def merge(summary_paths: list[Path], mixed_paths: list[Path], output_dir: Path) 
     completed = sum(int(item["completed_trajectories"]) for item in summaries)
     runtime_errors = sum(int(item["runtime_error_trajectories"]) for item in summaries)
     timeouts = sum(int(item.get("timeout_trajectories", 0)) for item in summaries)
+    abort_acks = sum(int(item.get("timeout_abort_acknowledged_count", 0)) for item in summaries)
+    abort_physical = sum(
+        int(item.get("timeout_abort_physical_request_count", 0)) for item in summaries
+    )
+    abort_errors = sum(int(item.get("timeout_abort_error_count", 0)) for item in summaries)
     summary = {
         "contract": "boss-multisandbox-dwh-dual-server-outcomes-v1",
         "arms": 2,
@@ -76,6 +81,9 @@ def merge(summary_paths: list[Path], mixed_paths: list[Path], output_dir: Path) 
         "completed_trajectories": completed,
         "runtime_error_trajectories": runtime_errors,
         "timeout_trajectories": timeouts,
+        "timeout_abort_acknowledged_count": abort_acks,
+        "timeout_abort_physical_request_count": abort_physical,
+        "timeout_abort_error_count": abort_errors,
         "evaluable_trajectories": trajectories - runtime_errors - timeouts,
         "correct_rate": correct / trajectories,
         "completion_rate": completed / trajectories,

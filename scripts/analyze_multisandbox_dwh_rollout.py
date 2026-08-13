@@ -85,6 +85,7 @@ def analyze(
     answer_buckets: dict[str, Counter[str]] = defaultdict(Counter)
     version_buckets: dict[str, Counter[str]] = defaultdict(Counter)
     total_completed = total_runtime_errors = total_timeouts = total_correct = 0
+    total_abort_acks = total_abort_physical = total_abort_errors = 0
     for task_index, dataset_row in enumerate(dataset):
         truth = dataset_row["reward_model"]["ground_truth"]
         task_observations = [observations[(task_index, sample)] for sample in range(samples_per_task)]
@@ -96,6 +97,18 @@ def analyze(
         completed = sum(int(score["has_final_answer"]) for score in scores)
         runtime_errors = sum(bool(row.get("runtime_error")) for row in task_observations)
         timeouts = sum(bool(row.get("trajectory_timeout")) for row in task_observations)
+        abort_acks = sum(
+            int(row.get("trajectory_abort_acknowledged_count", 0) or 0)
+            for row in task_observations
+        )
+        abort_physical = sum(
+            int(row.get("trajectory_abort_physical_request_count", 0) or 0)
+            for row in task_observations
+        )
+        abort_errors = sum(
+            int(row.get("trajectory_abort_error_count", 0) or 0)
+            for row in task_observations
+        )
         classification = bucket(correct, samples_per_task, timeouts)
         extra = dataset_row["extra_info"]
         answer_type = str(truth["answer_type"])
@@ -112,6 +125,9 @@ def analyze(
                 "completed_count": completed,
                 "runtime_error_count": runtime_errors,
                 "trajectory_timeout_count": timeouts,
+                "trajectory_abort_acknowledged_count": abort_acks,
+                "trajectory_abort_physical_request_count": abort_physical,
+                "trajectory_abort_error_count": abort_errors,
                 "dense_mean": statistics.fmean(
                     float(score["dense_final_answer_correctness"]) for score in scores
                 ),
@@ -131,6 +147,9 @@ def analyze(
         total_completed += completed
         total_runtime_errors += runtime_errors
         total_timeouts += timeouts
+        total_abort_acks += abort_acks
+        total_abort_physical += abort_physical
+        total_abort_errors += abort_errors
 
     output_dir.mkdir(parents=True, exist_ok=True)
     write_private_jsonl(output_dir / "per_task.sensitive.jsonl", per_task)
@@ -144,6 +163,9 @@ def analyze(
         "completed_trajectories": total_completed,
         "runtime_error_trajectories": total_runtime_errors,
         "timeout_trajectories": total_timeouts,
+        "timeout_abort_acknowledged_count": total_abort_acks,
+        "timeout_abort_physical_request_count": total_abort_physical,
+        "timeout_abort_error_count": total_abort_errors,
         "evaluable_trajectories": (
             expected_tasks * samples_per_task - total_runtime_errors - total_timeouts
         ),

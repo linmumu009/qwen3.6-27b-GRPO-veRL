@@ -240,6 +240,11 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 已验证状态
 
+### v1.11.20 — 2026-08-14
+
+- `timeout-gate8x1-04` 真实 16 卡门禁通过：8/8 轨迹在 3 秒处标记超时，运行和分析退出码均为 0，8 个题组全部进入 `timed_out`，无 runtime error、无 mixed 误选。
+- 8 条中 4 条已注册物理 vLLM 请求并收到 abort 确认，其余在阈值时尚无物理请求；正式 shard 现同时保存/汇总 physical request、ack 与 error 计数，便于 900 秒无人值守运行后审计取消完整性。
+
 ### v1.11.19 — 2026-08-13
 
 - 修复真实 `timeout-gate8x1-03` 暴露的逻辑请求 ID 重复传参：上游 manager 已注入 `__llin_request_id` 时，PI wrapper 现原地复用/覆盖同一字段，不再同时显式传入第二份。
