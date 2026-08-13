@@ -7,6 +7,7 @@ import argparse
 from collections import Counter, defaultdict
 import json
 import math
+import os
 from pathlib import Path
 import random
 from statistics import mean
@@ -84,6 +85,10 @@ def analyze(
     verl_rows: list[dict[str, Any]],
     expected_tasks: int = 10,
     expected_n: int = 8,
+    semantic_review_passed: bool = False,
+    diagnostic_prompts_training_eligible: bool = False,
+    pi_first_pass_timeout_count: int = 0,
+    pi_first_pass_timeout_seconds: int | None = None,
 ) -> dict[str, Any]:
     pi = arm_summary(pi_rows, expected_n)
     verl = arm_summary(verl_rows, expected_n)
@@ -136,7 +141,11 @@ def analyze(
     }
     parity_checks = {
         **structural,
-        "no_timeouts": pi["timeout_rate"] == 0 and verl["timeout_rate"] == 0,
+        "no_timeouts": (
+            pi["timeout_rate"] == 0
+            and verl["timeout_rate"] == 0
+            and pi_first_pass_timeout_count == 0
+        ),
         "no_runtime_errors": pi["runtime_error_rate"] == 0 and verl["runtime_error_rate"] == 0,
         "global_accuracy_delta_at_most_10pp": metrics["global_accuracy_absolute_delta"] <= 0.10,
         "mean_per_task_delta_at_most_20pp": metrics["mean_per_task_absolute_accuracy_delta"] <= 0.20,
@@ -145,15 +154,38 @@ def analyze(
     }
     parity_passed = all(parity_checks.values())
     verl_buckets = verl["bucket_counts"]
+    training_selection_enabled = (
+        parity_passed
+        and semantic_review_passed
+        and diagnostic_prompts_training_eligible
+    )
     routing = {
-        "decision_enabled": parity_passed,
-        "fresh_grpo_eligible_mixed_tasks": verl_buckets.get("mixed", 0),
-        "exclude_from_that_optimizer_update_all_correct": verl_buckets.get("all_correct", 0),
-        "exclude_from_that_optimizer_update_all_wrong": verl_buckets.get("all_wrong", 0),
+        "runtime_bucket_decision_enabled": parity_passed,
+        "semantic_review_passed": semantic_review_passed,
+        "diagnostic_prompts_training_eligible": diagnostic_prompts_training_eligible,
+        "training_selection_enabled": training_selection_enabled,
+        "observed_mixed_tasks": verl_buckets.get("mixed", 0),
+        "observed_all_correct_tasks": verl_buckets.get("all_correct", 0),
+        "observed_all_wrong_tasks": verl_buckets.get("all_wrong", 0),
+        "candidate_mixed_tasks_after_runtime_parity": (
+            verl_buckets.get("mixed", 0) if parity_passed else 0
+        ),
+        "fresh_grpo_eligible_mixed_tasks": (
+            verl_buckets.get("mixed", 0) if training_selection_enabled else 0
+        ),
+        "exclude_from_that_optimizer_update_all_correct": (
+            verl_buckets.get("all_correct", 0) if training_selection_enabled else 0
+        ),
+        "exclude_from_that_optimizer_update_all_wrong": (
+            verl_buckets.get("all_wrong", 0) if training_selection_enabled else 0
+        ),
         "all_correct_destination": "retain_for_evaluation_and_anti_regression",
         "all_wrong_destination": "retain_for_correction_sft_curriculum_or_future_rescreen",
         "permanent_deletion_allowed": False,
         "individual_trajectory_cherry_picking_allowed": False,
+        "training_requires_strict_semantic_review": True,
+        "evaluation_only_diagnostic_prompts_must_not_enter_training": True,
+        "parity_pass_only_licenses_screening_on_a_separate_training_pool": True,
         "training_requires_fresh_rollout_after_screening": True,
     }
     return {
@@ -166,6 +198,30 @@ def analyze(
         "parity_checks": parity_checks,
         "parity_smoke_passed": parity_passed,
         "group_routing": routing,
+        "runtime_audit": {
+            "pi_first_pass_timeout_seconds": pi_first_pass_timeout_seconds,
+            "pi_first_pass_timeout_count": pi_first_pass_timeout_count,
+            "pi_first_pass_timeouts_are_not_erased_by_resume": True,
+        },
+    }
+
+
+def safe_summary(result: dict[str, Any]) -> dict[str, Any]:
+    """Drop stable task identifiers and per-task records for Git artifacts."""
+
+    def safe_arm(arm: dict[str, Any]) -> dict[str, Any]:
+        return {key: value for key, value in arm.items() if key != "per_task"}
+
+    return {
+        "contract": result["contract"],
+        "interpretation": result["interpretation"],
+        "pi_agent": safe_arm(result["pi_agent"]),
+        "verl_rollout": safe_arm(result["verl_rollout"]),
+        "parity_metrics": result["parity_metrics"],
+        "parity_checks": result["parity_checks"],
+        "parity_smoke_passed": result["parity_smoke_passed"],
+        "group_routing": result["group_routing"],
+        "runtime_audit": result["runtime_audit"],
     }
 
 
@@ -174,17 +230,54 @@ def main() -> None:
     parser.add_argument("--pi", type=Path, required=True)
     parser.add_argument("--verl", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument(
+        "--safe-output",
+        type=Path,
+        help="optional Git-safe aggregate with task identifiers and per-task rows removed",
+    )
     parser.add_argument("--expected-tasks", type=int, default=10)
     parser.add_argument("--expected-n", type=int, default=8)
+    parser.add_argument(
+        "--semantic-review-passed",
+        action="store_true",
+        help="enable training routing only after a separate strict task/gold semantic review",
+    )
+    parser.add_argument(
+        "--diagnostic-prompts-training-eligible",
+        action="store_true",
+        help="explicitly assert prompts are not evaluation-only before enabling direct routing",
+    )
+    parser.add_argument(
+        "--pi-first-pass-summary",
+        type=Path,
+        help="optional PI summary whose timeout/exit124 count remains a permanent parity failure",
+    )
+    parser.add_argument("--pi-first-pass-timeout-seconds", type=int)
     args = parser.parse_args()
+    pi_first_pass_timeout_count = 0
+    if args.pi_first_pass_summary:
+        first_pass = json.loads(args.pi_first_pass_summary.read_text(encoding="utf-8"))
+        counts = first_pass.get("status_counts") or {}
+        pi_first_pass_timeout_count = int(counts.get("timeout", 0)) + int(counts.get("exit124", 0))
     result = analyze(
         read_jsonl(args.pi),
         read_jsonl(args.verl),
         args.expected_tasks,
         args.expected_n,
+        args.semantic_review_passed,
+        args.diagnostic_prompts_training_eligible,
+        pi_first_pass_timeout_count,
+        args.pi_first_pass_timeout_seconds,
     )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    os.chmod(args.output, 0o600)
+    if args.safe_output:
+        args.safe_output.parent.mkdir(parents=True, exist_ok=True)
+        args.safe_output.write_text(
+            json.dumps(safe_summary(result), ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
     print(json.dumps(result, ensure_ascii=False, indent=2))
     raise SystemExit(0 if result["parity_smoke_passed"] else 3)
 

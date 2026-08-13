@@ -19,6 +19,11 @@ from llin_verl.outcome_shadow import score_final_outcome
 
 
 _USER_TURN_RE = re.compile(r"(?:^|\n)user\n(.*?)(?=\nassistant\n)", re.DOTALL)
+_CONTEXT_OVERFLOW_RE = re.compile(
+    r"context[_ ]length[_ ]exceeded|maximum context length is \d+ tokens|"
+    r"exceeds (?:the )?(?:model'?s )?maximum context length|exceeds the context window",
+    re.IGNORECASE,
+)
 
 
 def read_jsonl(path: Path) -> list[dict[str, Any]]:
@@ -78,10 +83,19 @@ def messages_to_solution(messages: list[dict[str, Any]]) -> str:
     return "\n".join(blocks)
 
 
-def pi_api_error_count(path: Path) -> int:
-    count = 0
+def pi_error_summary(path: Path) -> dict[str, int]:
+    assistant_errors = 0
+    context_overflows = 0
+    recovered_overflows = 0
+    terminal_assistant_error = False
+    terminal_assistant_error_is_overflow = False
     if not path.is_file():
-        return count
+        return {
+            "assistant_error_events": 0,
+            "context_overflow_events": 0,
+            "recovered_context_overflows": 0,
+            "fatal_api_errors": 0,
+        }
     with path.open(encoding="utf-8", errors="replace") as handle:
         for line in handle:
             try:
@@ -92,10 +106,47 @@ def pi_api_error_count(path: Path) -> int:
             if (
                 event.get("type") == "message_end"
                 and message.get("role") == "assistant"
-                and message.get("stopReason") == "error"
             ):
-                count += 1
-    return count
+                terminal_assistant_error = message.get("stopReason") == "error"
+                terminal_assistant_error_is_overflow = False
+                if terminal_assistant_error:
+                    assistant_errors += 1
+                    error_message = str(message.get("errorMessage") or message.get("error") or "")
+                    terminal_assistant_error_is_overflow = bool(
+                        _CONTEXT_OVERFLOW_RE.search(error_message)
+                    )
+                    if terminal_assistant_error_is_overflow:
+                        context_overflows += 1
+            if (
+                event.get("type") == "compaction_end"
+                and event.get("reason") == "overflow"
+                and not bool(event.get("aborted", False))
+                and bool(event.get("willRetry", False))
+                and event.get("result") is not None
+                and not event.get("errorMessage")
+            ):
+                recovered_overflows += 1
+    # PI records transient failed assistant attempts before a later successful
+    # retry.  Only a terminal assistant error is fatal; otherwise a recovered
+    # retry would incorrectly poison an otherwise valid trajectory.
+    terminal_overflow_recovered = (
+        terminal_assistant_error
+        and terminal_assistant_error_is_overflow
+        and recovered_overflows >= context_overflows
+    )
+    fatal_api_errors = int(terminal_assistant_error and not terminal_overflow_recovered)
+    return {
+        "assistant_error_events": assistant_errors,
+        "context_overflow_events": context_overflows,
+        "recovered_context_overflows": min(recovered_overflows, context_overflows),
+        "fatal_api_errors": fatal_api_errors,
+    }
+
+
+def pi_api_error_count(path: Path) -> int:
+    """Return fatal API errors; recovered PI overflow retries are audit-only."""
+
+    return pi_error_summary(path)["fatal_api_errors"]
 
 
 def normalize_pi(
@@ -117,7 +168,8 @@ def normalize_pi(
         messages = (parsed or {}).get("messages") or []
         solution = messages_to_solution(messages)
         score = score_final_outcome(solution, truth_by_key[key])
-        api_errors = pi_api_error_count(path)
+        errors = pi_error_summary(path)
+        api_errors = errors["fatal_api_errors"]
         assistant_turns = sum(message.get("role") == "assistant" for message in messages)
         tool_calls = sum(len(message.get("tool_calls") or []) for message in messages)
         rows.append(
@@ -127,10 +179,19 @@ def normalize_pi(
                 "sample_index": int(item["sample_index"]),
                 **score,
                 "completed": bool(score["has_final_answer"]),
-                "timeout": status == "timeout",
+                "timeout": status in {"timeout", "exit124"},
                 "runtime_error": api_errors > 0 or status.startswith(("exit", "err:")),
                 "api_error_count": api_errors,
-                "runner_status": "api_error" if api_errors else status,
+                "assistant_error_event_count": errors["assistant_error_events"],
+                "context_overflow_count": errors["context_overflow_events"],
+                "recovered_context_overflow_count": errors["recovered_context_overflows"],
+                "runner_status": (
+                    "api_error"
+                    if api_errors
+                    else "recovered_overflow"
+                    if errors["recovered_context_overflows"]
+                    else status
+                ),
                 "assistant_turns": assistant_turns,
                 "tool_call_count": tool_calls,
                 "duration_seconds": float(item.get("duration_seconds") or 0),
@@ -167,7 +228,7 @@ def normalize_verl(dataset: Path, validation: Path) -> list[dict[str, Any]]:
                 **score,
                 "completed": bool(score["has_final_answer"]),
                 "timeout": bool(item.get("timeout", False)),
-                "runtime_error": bool(item.get("error", False)),
+                "runtime_error": bool(item.get("runtime_error", False) or item.get("error", False)),
                 "runner_status": "ok",
                 "assistant_turns": int(item.get("num_turns") or item.get("assistant_turns") or 0),
                 "tool_call_count": int(item.get("pi_bash_command_count") or item.get("bash_command_count") or 0),

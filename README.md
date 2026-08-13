@@ -36,7 +36,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - 冻结 eval22 后的训练供给已按源任务身份重新核验：原生 full25 的27个已观测首错中16个命中eval22，剩余11个里又有4个命中chosen-only calibration16，旧 frozen16、val20、test20无额外重叠，最终只保留7对。7对均通过机械、token/mask和Step120纯前向门；正确 semantic-delta/full-SQL均为 `0/7` 占优，平均margin为 `-1.7816/-0.9334`，说明这些原生真实首错仍被Step120系统性误排。训练硬门继续保持48对，当前缺口41；review138即使全部批准，按历史 `22/64` 产率补足缺口的预测概率约 `76.5%`，90%/95%把握需158/172个已批准候选。
 - 42条最低机械风险的review-required任务已完成逐条题意—gold—SQL语义审核：42/42机械可执行、顺序扰动稳定且期望值被查询结果支持，但题意无歧义蕴含gold和SQL完整回答题意均为`0/42`，最终语义批准`0/42`。这证明当前问题是高严重度标签语义失配，不是SQL不可执行；停止审核同队列剩余96条，也不为其消耗NPU。
 - 用`0/42`批准率与历史`22/64` pair产率做两阶段Jeffreys后验压力测试，剩余96条预计仅批准约`1.12`条、形成约`0.39`对pair，补齐41对缺口的预测概率约`7.1×10^-18`。下一动作改为先新建32条显式定义指标、分组、时间范围和输出形态的任务pilot，逐条语义批准后再扩至172个已批准候选，并按32条一批采集真实首错状态。
-- 新增 PI-Agent 与 veRL rollout 的 `10题×每题8条` 同模型、同采样运行时对照门禁：从冻结 val20 按 `5 numeric + 5 table` 固定 evaluation-only 诊断集，使用纯最终结果旁路评分，保留全部80条而不启用 Fastest-K。对照通过后只把 fresh rollout 中的 mixed group 送入 GRPO；全对/全错组从该次优化更新排除但不得永久删除，分别保留到防回归评测与纠错/课程队列。
+- PI-Agent 与 veRL rollout 的 `10题×每题8条` 同模型、同采样运行时门禁已完成但未通过：两臂均为 `0/80` 正确、`10/10` 全错，属于共同触底而非等价证据；PI/veRL 最终回答率为 `86.25%/70.00%`，差 `16.25pp`，且 PI 首轮有 `12/80` 超过30分钟。当前不开放 bucket 筛选或训练；10条 val-only 题始终禁止进入训练，全对/全错也不得永久删除。
 - 所有新增镜像、容器、工作目录和实验名均以 `llin` 开头，不复用或修改其他人的环境。
 
 当前服务器部署：
@@ -119,6 +119,8 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [`docs/disjoint_pair_review_pilot42_20260813_summary.json`](docs/disjoint_pair_review_pilot42_20260813_summary.json)：42条最低机械风险审核试点的分层、SQLite反向扫描稳定性、容量用途与fail-closed状态；敏感审核包只留服务器。
 - [`docs/disjoint_pair_semantic_review_supply_rebase_20260813_summary.json`](docs/disjoint_pair_semantic_review_supply_rebase_20260813_summary.json)：42条逐项语义审核的去标识聚合、剩余96条的两阶段Jeffreys后验压力测试、41对缺口和新任务供给目标。
 - [`docs/disjoint_pair_semantic_review42_20260813.artifact.json`](docs/disjoint_pair_semantic_review42_20260813.artifact.json)、[`docs/disjoint_pair_semantic_review42_20260813_report_notes.json`](docs/disjoint_pair_semantic_review42_20260813_report_notes.json)：技术报告的canonical artifact与受众/结构/图表/来源说明；当前portable reader在本次和既有对照artifact上均停留fallback并超时，因此未发布未完成QA的HTML。
+- [`docs/runtime_parity_10x8_step120_20260813.md`](docs/runtime_parity_10x8_step120_20260813.md)：Step 120 在 PI-Agent 与 veRL rollout 上各80条的同模型、同采样工程对照，记录共同准确率触底、完成率/超时差异、group筛选禁用和下一步终止行为归因。
+- [`docs/runtime_parity_10x8_step120_20260813_summary.json`](docs/runtime_parity_10x8_step120_20260813_summary.json)：不含 prompt、gold、SQL、轨迹、任务标识、逐题哈希或服务器路径的双臂安全聚合。
 - [`docs/semantic_delta_pairwise_canary_20260812.md`](docs/semantic_delta_pairwise_canary_20260812.md)：一次 reference-free pairwise 更新、工程失败修复、训练资源、同数据概率前后门禁与 fail-closed 决策。
 - [`docs/semantic_delta_pairwise_canary_20260812_summary.json`](docs/semantic_delta_pairwise_canary_20260812_summary.json)：不含原始问题、SQL、答案和服务器路径的一步 pairwise 安全聚合结果。
 - [`docs/native_vs_step120_reward_behavior_attribution_20260812.md`](docs/native_vs_step120_reward_behavior_attribution_20260812.md)：原生模型与 Step 120 的相同错误状态概率对照、同题老板原版自由回放和奖励代理错配归因。
@@ -233,6 +235,13 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/run_chosen_only_first_action_one_step.sh`、`scripts/launch_chosen_only_first_action_one_step.sh`、`scripts/analyze_chosen_only_first_action_post_canary.py`：严格执行获准的一步 train48 `0.25/8` 全参 SFT，并在相同 calibration16 上按预注册的 aggregate/per-task NLL、greedy/top-5、mean rank、tool structure 和更早分叉门自动决定是否只开放一次自由回放；无论结果如何都禁止追加训练和 promotion。
 
 ## 已验证状态
+
+### v1.11.2 — 2026-08-13
+
+- 完成 Step 120 的 PI-Agent / veRL `10题×8条×双臂` 16-NPU 并行运行。两臂结构均为80条、10组且样本序号完整；最终结果均为`0/80`、10组全错，准确率差为0但属于共同触底，不能作为运行时等价证据。
+- PI/veRL 最终回答率为`86.25%/70.00%`，绝对差`16.25pp`超过10pp门；PI 首轮30分钟上限有`12/80`超时，恢复后仍有1条达到60分钟上限。完成率、零超时和零运行错误门失败，parity总门失败。
+- 修正 PI 轨迹错误审计：中途 assistant error 后成功重试不再误判为终止失败；首次超时仍永久计入运行时门。安全汇总进一步区分观察到的uniform groups与实际可执行筛选，门禁或语义/数据角色不满足时optimizer排除数保持0。
+- 10条诊断题继续保持evaluation-only，未开放训练、未删除全错组、未挑选单条轨迹。原始题面、gold、SQL、任务标识与轨迹只留服务器，Git仅保存合同、代码、测试、报告和无标识聚合；两机实验vLLM worker已释放为0，本地完整回归为`359 passed`。
 
 ### v1.11.1 — 2026-08-13
 

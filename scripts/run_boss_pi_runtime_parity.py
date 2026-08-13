@@ -11,6 +11,7 @@ import json
 import os
 from pathlib import Path
 import sys
+import time
 from typing import Any
 
 
@@ -29,7 +30,57 @@ def read_jsonl(path: Path) -> list[dict[str, Any]]:
         return [json.loads(line) for line in handle if line.strip()]
 
 
+def validate_pi_model_metadata(
+    path: Path,
+    served_model: str,
+    expected_context_window: int,
+    expected_max_tokens: int,
+) -> dict[str, Any]:
+    """Fail closed when PI client metadata disagrees with the served contract."""
+
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    matches: list[dict[str, Any]] = []
+
+    def visit(value: Any) -> None:
+        if isinstance(value, dict):
+            if value.get("id") == served_model:
+                matches.append(value)
+            for child in value.values():
+                visit(child)
+        elif isinstance(value, list):
+            for child in value:
+                visit(child)
+
+    visit(payload)
+    if len(matches) != 1:
+        raise ValueError(f"expected exactly one PI model entry for {served_model!r}, got {len(matches)}")
+    model = matches[0]
+    actual_context = int(model.get("contextWindow") or 0)
+    actual_max_tokens = int(model.get("maxTokens") or 0)
+    if actual_context != expected_context_window:
+        raise ValueError(
+            f"PI contextWindow mismatch: expected {expected_context_window}, got {actual_context}"
+        )
+    if actual_max_tokens != expected_max_tokens:
+        raise ValueError(
+            f"PI maxTokens mismatch: expected {expected_max_tokens}, got {actual_max_tokens}"
+        )
+    return {
+        "served_model": served_model,
+        "context_window": actual_context,
+        "max_tokens_per_request": actual_max_tokens,
+    }
+
+
 def run(args: argparse.Namespace) -> dict[str, Any]:
+    started_at = datetime.now(timezone.utc)
+    started_monotonic = time.monotonic()
+    pi_model_contract = validate_pi_model_metadata(
+        args.pi_model_config,
+        args.served_model,
+        args.expected_context_window,
+        args.expected_max_tokens,
+    )
     runner = load_module(args.runner, "boss_batch_run_pi_runtime_parity")
     tasks = read_jsonl(args.tasks)
     if len(tasks) != args.expected_tasks:
@@ -91,11 +142,14 @@ def run(args: argparse.Namespace) -> dict[str, Any]:
     summary = {
         "contract": "boss-native-pi-runtime-parity-arm-v1",
         "created_at": datetime.now(timezone.utc).isoformat(),
+        "started_at": started_at.isoformat(),
+        "wall_seconds": time.monotonic() - started_monotonic,
         "tasks": len(tasks),
         "samples_per_task": args.samples_per_task,
         "rows": len(results),
         "max_workers": args.max_workers,
         "served_model": args.served_model,
+        "pi_model_contract": pi_model_contract,
         "status_counts": {
             status: sum(row["status"] == status for row in results)
             for status in sorted({row["status"] for row in results})
@@ -117,10 +171,12 @@ def main() -> None:
     parser.add_argument("--max-workers", type=int, default=32)
     parser.add_argument("--timeout", type=int, default=900)
     parser.add_argument("--served-model", default="Qwen3.6-27B")
+    parser.add_argument("--pi-model-config", type=Path, required=True)
+    parser.add_argument("--expected-context-window", type=int, default=49_152)
+    parser.add_argument("--expected-max-tokens", type=int, default=8_192)
     args = parser.parse_args()
     print(json.dumps(run(args), ensure_ascii=False, indent=2))
 
 
 if __name__ == "__main__":
     main()
-

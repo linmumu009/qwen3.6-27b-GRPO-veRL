@@ -1,0 +1,80 @@
+{
+  "contract": "pi-vs-verl-runtime-parity-10x8-v1",
+  "interpretation": "engineering_parity_smoke_not_formal_statistical_equivalence",
+  "pi_agent": {
+    "rows": 80,
+    "tasks": 10,
+    "accuracy": 0.0,
+    "has_final_answer_rate": 0.8625,
+    "completion_rate": 0.8625,
+    "timeout_rate": 0.0125,
+    "runtime_error_rate": 0.2125,
+    "bucket_counts": {
+      "all_wrong": 10
+    }
+  },
+  "verl_rollout": {
+    "rows": 80,
+    "tasks": 10,
+    "accuracy": 0.0,
+    "has_final_answer_rate": 0.7,
+    "completion_rate": 0.7,
+    "timeout_rate": 0.0,
+    "runtime_error_rate": 0.0,
+    "bucket_counts": {
+      "all_wrong": 10
+    }
+  },
+  "parity_metrics": {
+    "global_accuracy_delta_verl_minus_pi": 0.0,
+    "global_accuracy_absolute_delta": 0.0,
+    "mean_per_task_absolute_accuracy_delta": 0.0,
+    "paired_task_mean_delta_bootstrap95": [
+      0.0,
+      0.0
+    ],
+    "global_bernoulli_jensen_shannon_divergence_bits": 0.0,
+    "completion_rate_absolute_delta": 0.1625000000000001,
+    "bucket_agreement_rate": 1.0
+  },
+  "parity_checks": {
+    "task_keys_identical": true,
+    "both_have_10_tasks": true,
+    "both_have_80_rows": true,
+    "every_group_has_8": true,
+    "sample_indexes_unique": true,
+    "no_timeouts": false,
+    "no_runtime_errors": false,
+    "global_accuracy_delta_at_most_10pp": true,
+    "mean_per_task_delta_at_most_20pp": true,
+    "completion_delta_at_most_10pp": false,
+    "js_divergence_at_most_0_02_bits": true
+  },
+  "parity_smoke_passed": false,
+  "group_routing": {
+    "runtime_bucket_decision_enabled": false,
+    "semantic_review_passed": false,
+    "diagnostic_prompts_training_eligible": false,
+    "training_selection_enabled": false,
+    "observed_mixed_tasks": 0,
+    "observed_all_correct_tasks": 0,
+    "observed_all_wrong_tasks": 10,
+    "candidate_mixed_tasks_after_runtime_parity": 0,
+    "fresh_grpo_eligible_mixed_tasks": 0,
+    "exclude_from_that_optimizer_update_all_correct": 0,
+    "exclude_from_that_optimizer_update_all_wrong": 0,
+    "all_correct_destination": "retain_for_evaluation_and_anti_regression",
+    "all_wrong_destination": "retain_for_correction_sft_curriculum_or_future_rescreen",
+    "permanent_deletion_allowed": false,
+    "individual_trajectory_cherry_picking_allowed": false,
+    "training_requires_strict_semantic_review": true,
+    "evaluation_only_diagnostic_prompts_must_not_enter_training": true,
+    "parity_pass_only_licenses_screening_on_a_separate_training_pool": true,
+    "training_requires_fresh_rollout_after_screening": true
+  },
+  "runtime_audit": {
+    "pi_first_pass_timeout_seconds": 1800,
+    "pi_first_pass_timeout_count": 12,
+    "pi_first_pass_timeouts_are_not_erased_by_resume": true
+  }
+}

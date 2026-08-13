@@ -13,6 +13,9 @@
     "top_k": 20,
     "source": "PI CLI omits sampling overrides; values come from the frozen Step120 generation_config.json and are explicitly mirrored in veRL",
     "max_context_tokens": 49152,
+    "pi_client_context_window": 49152,
+    "pi_client_max_tokens_per_request": 8192,
+    "pi_client_metadata_must_match_served_context": true,
     "max_assistant_turns": 26,
     "max_user_turns": 25,
     "fastest_k": "disabled",
@@ -29,7 +32,7 @@
     "global_bernoulli_js_divergence_bits_max": 0.02
   },
   "decision_policy": {
-    "mixed": "eligible only as a prompt for a fresh full-group GRPO rollout",
+    "mixed": "diagnostic evidence only; a parity pass licenses applying the same screen to a separate strict-semantically-approved training pool, never these val20 prompts",
     "all_correct": "exclude from that optimizer update; retain for evaluation and anti-regression",
     "all_wrong": "exclude from that optimizer update; retain for correction SFT, curriculum, or future rescreen",
     "permanent_delete_uniform_tasks": false,
@@ -37,6 +40,7 @@
   },
   "limitations": [
     "10x8 is an engineering smoke test, not proof of statistical equivalence",
+    "the selected val20 is alignment-reviewed under the older contract, not yet approved by the later strict instruction-gold-SQL semantic audit",
     "diagnostic trajectories are never reused directly in a training update"
   ]
 }
