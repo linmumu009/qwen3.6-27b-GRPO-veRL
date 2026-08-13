@@ -3,6 +3,11 @@ set -euo pipefail
 
 PROJECT_ROOT="${PROJECT_ROOT:-/workspace/llin-verl-grpo}"
 VLLM_ROOT="${VLLM_ROOT:-/vllm}"
+RAY_ROLE_RESOURCE="${RAY_ROLE_RESOURCE:-llin_rollout}"
+if [[ ! "${RAY_ROLE_RESOURCE}" =~ ^[A-Za-z0-9_]+$ ]]; then
+  printf 'invalid RAY_ROLE_RESOURCE: %s\n' "${RAY_ROLE_RESOURCE}" >&2
+  exit 2
+fi
 export PYTHONPATH="${VLLM_ROOT}:${PROJECT_ROOT}/runtime:${PROJECT_ROOT}:${PYTHONPATH:-}"
 export LLIN_PIN_RAY_ROLES=1
 export HCCL_IF_IP=192.168.202.4
@@ -50,7 +55,7 @@ ray start \
   --address=192.168.202.5:26379 \
   --node-ip-address=192.168.202.4 \
   --num-cpus=64 \
-  --resources='{"llin_rollout": 1}' \
+  --resources="{\"${RAY_ROLE_RESOURCE}\": 1}" \
   --disable-usage-stats \
   --min-worker-port=27000 \
   --max-worker-port=27999

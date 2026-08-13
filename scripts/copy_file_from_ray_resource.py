@@ -32,10 +32,12 @@ def validate_payload(payload: bytes, expected_jsonl_rows: int | None = None) -> 
     return result
 
 
-def write_atomic(path: Path, payload: bytes) -> None:
+def write_atomic(path: Path, payload: bytes, mode: int | None = None) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_name(f".{path.name}.ray-copy.tmp")
     temporary.write_bytes(payload)
+    if mode is not None:
+        temporary.chmod(mode)
     temporary.replace(path)
 
 
@@ -46,6 +48,11 @@ def main() -> None:
     parser.add_argument("--resource", default="llin_rollout")
     parser.add_argument("--ray-address", default="192.168.202.5:26379")
     parser.add_argument("--expected-jsonl-rows", type=int)
+    parser.add_argument(
+        "--mode",
+        type=lambda value: int(value, 8),
+        help="optional octal output mode, for example 0600",
+    )
     args = parser.parse_args()
 
     import ray
@@ -57,7 +64,7 @@ def main() -> None:
     ray.init(address=args.ray_address, ignore_reinit_error=True)
     payload = ray.get(read_node_local_file.remote(str(args.source)))
     summary = validate_payload(payload, args.expected_jsonl_rows)
-    write_atomic(args.output, payload)
+    write_atomic(args.output, payload, args.mode)
     summary.update(
         {
             "source": str(args.source),

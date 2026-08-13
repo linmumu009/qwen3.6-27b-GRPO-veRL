@@ -240,6 +240,13 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 已验证状态
 
+### v1.11.7 — 2026-08-13
+
+- 按全量281题筛选要求新增严格server-only数据构建器：仅接收18个非v15沙箱、跨版本唯一题面、机械SQL/gold通过且无确定性语义预警的aggregate/single-metric/comparison任务；模型输入保持老板system、guidance和`bash/read/write/edit`四工具合同，hidden gold/SQL/identity只进入0600 Parquet，训练与晋级均关闭。
+- standalone veRL runner改为可配置题数、`n`、分片大小、Agent workers和vLLM序列上限，同时强制`4,096 + 45,056 = 49,152`上下文合同及`temperature=1.0 / top_p=0.95 / top_k=20`采样合同；每个分片必须精确产出`题数×8`行后才原子落盘，可安全断点续跑。
+- Ray启动脚本保留正式训练默认资源名不变，并允许显式覆盖为`llin_rollout_m05/m06`，支持两台机器各自固定一套TP8×DP2服务；新增统一后台启动器与0600 Ray直传，避免敏感题面、gold和SQL经过本地工作区。
+- 并发选择门固定为同一8题双机同时对照：5号机`max_num_seqs=24`基线、6号机`32`候选，其余模型、上下文、工具、回合、采样和`n=8`完全相同；只有行数、长度、错误/OOM和资源观测均通过才用更快配置启动281题全量推理。
+
 ### v1.11.6 — 2026-08-13
 
 - 5号机已同步跨沙箱筛选器并完成9,500条DWH只读全量运行：`5,253/5,253`条verification SQL可执行且非空，`5,099/5,253`条hidden gold被查询结果支持；全流程CPU实测`1.919s`，未占NPU。

@@ -3,6 +3,11 @@ set -euo pipefail
 
 PROJECT_ROOT="${PROJECT_ROOT:-/workspace/llin-verl-grpo}"
 VLLM_ROOT="${VLLM_ROOT:-/vllm}"
+RAY_ROLE_RESOURCE="${RAY_ROLE_RESOURCE:-llin_trainer}"
+if [[ ! "${RAY_ROLE_RESOURCE}" =~ ^[A-Za-z0-9_]+$ ]]; then
+  printf 'invalid RAY_ROLE_RESOURCE: %s\n' "${RAY_ROLE_RESOURCE}" >&2
+  exit 2
+fi
 mkdir -p "${PROJECT_ROOT}/runs/ray/m05"
 
 export PYTHONPATH="${VLLM_ROOT}:${PROJECT_ROOT}/runtime:${PROJECT_ROOT}:${PYTHONPATH:-}"
@@ -48,7 +53,7 @@ ray start \
   --node-ip-address=192.168.202.5 \
   --port=26379 \
   --num-cpus=64 \
-  --resources='{"llin_trainer": 1}' \
+  --resources="{\"${RAY_ROLE_RESOURCE}\": 1}" \
   --include-dashboard=false \
   --disable-usage-stats \
   --min-worker-port=27000 \

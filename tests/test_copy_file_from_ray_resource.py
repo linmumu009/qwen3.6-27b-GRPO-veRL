@@ -1,4 +1,5 @@
 import json
+import os
 from pathlib import Path
 
 import pytest
@@ -38,3 +39,13 @@ def test_write_atomic_replaces_destination(tmp_path: Path):
 
     assert destination.read_bytes() == b'{"new": true}\n'
     assert not (destination.parent / ".125.jsonl.ray-copy.tmp").exists()
+
+
+def test_write_atomic_can_restrict_sensitive_output_permissions(tmp_path: Path):
+    destination = tmp_path / "sensitive.parquet"
+
+    write_atomic(destination, b"parquet-placeholder", 0o600)
+
+    assert destination.read_bytes() == b"parquet-placeholder"
+    if os.name != "nt":
+        assert destination.stat().st_mode & 0o777 == 0o600
