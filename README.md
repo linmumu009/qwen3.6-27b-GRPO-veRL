@@ -240,6 +240,11 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 已验证状态
 
+### v1.11.16 — 2026-08-13
+
+- 多沙箱standalone后台启动器默认同步启动5秒NPU/HBM采样，并以`exit_code`自动停止；每机全量rollout成功后自动执行server-only最终结果评分和mixed筛选，评分失败会把整个运行标为失败，不会只报告模型生成成功。
+- 正式运行因此具备无人值守闭环：分片原子落盘/断点续跑→完整形状检查→纯最终答案评分→安全聚合与0600 mixed候选；全程不初始化optimizer/actor、不保存checkpoint、不把敏感结果写入Git。
+
 ### v1.11.15 — 2026-08-13
 
 - standalone安全摘要补充每个vLLM引擎最近一次`Running/Waiting`值，用于区分历史触顶与当前长尾剩余请求；与最近16-chip NPU窗口组合判断运行是否仍在推进，不输出请求内容或task identity。

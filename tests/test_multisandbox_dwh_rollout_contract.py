@@ -48,3 +48,7 @@ def test_launcher_passes_concurrency_context_and_sampling_shape_to_runner():
     ):
         assert argument in text
     assert 'export LLIN_ROLLOUT_RESOURCE="${ROLLOUT_RESOURCE}"' in text
+    assert "analyze_multisandbox_dwh_rollout.py" in text
+    assert '[[ "${code}" == "0" && "${ANALYZE_ON_SUCCESS}" == "1" ]]' in text
+    assert "monitor_npu_utilization.py" in text
+    assert '--until-file "${OUTPUT_DIR}/exit_code"' in text
