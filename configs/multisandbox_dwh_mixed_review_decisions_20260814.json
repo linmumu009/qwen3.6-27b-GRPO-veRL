@@ -53,6 +53,16 @@
       "arm": "m06",
       "complete_shard_ranges": [[80, 96]],
       "cumulative_mixed_review_queue_sha256": "f88743a16f4bac44b537f67e23af627b52a43cdcec2ea0020277c42fe044addb"
+    },
+    {
+      "arm": "m05",
+      "complete_shard_ranges": [[96, 112]],
+      "cumulative_mixed_review_queue_sha256": "35c7fb1669f8805bd80048d99a830773272e77d2fc92a63fea97133a16088eda"
+    },
+    {
+      "arm": "m06",
+      "complete_shard_ranges": [[96, 112]],
+      "cumulative_mixed_review_queue_sha256": "bd25f76898bd0c21aab4aabbbb002e1efed76d80979678021ae6761811ea02ce"
     }
   ],
   "decisions": [
@@ -610,14 +620,89 @@
       "reason_codes": ["verification_sql_not_aggregate", "gold_shape_mismatch", "exact_scalar_answer_misrouted"],
       "confidence": "high",
       "severity": "critical"
+    },
+    {
+      "arm": "m05",
+      "source_version": "20260628_v42",
+      "instruction_sha256": "c05552265e505821b9cd063d04a55b72f5dbfad0c9ca2ce97c5df267e6f5657c",
+      "gold_sha256": "f7798876a7abc38efd7a9d9ff039fe780998e87f074f5c3d17d78ea20d493dea",
+      "correct_count": 2,
+      "decision": "rejected",
+      "instruction_unambiguously_entails_gold": false,
+      "verification_sql_fully_answers_instruction": false,
+      "expected_value_supported_by_query_result": true,
+      "final_outcome_routing_trustworthy": false,
+      "reason_codes": ["aggregate_not_requested", "adequate_detail_can_be_misrouted"],
+      "confidence": "high",
+      "severity": "high"
+    },
+    {
+      "arm": "m06",
+      "source_version": "20260628_v42",
+      "instruction_sha256": "264b7f1ec3f131f4909decd61b83d0472dae6cae4aaec43425066c0597acf64c",
+      "gold_sha256": "79db0bc3699b167c515a98d1fc7976862b1744f4369a440aa7d60b303bd14972",
+      "correct_count": 2,
+      "decision": "rejected",
+      "instruction_unambiguously_entails_gold": false,
+      "verification_sql_fully_answers_instruction": false,
+      "expected_value_supported_by_query_result": true,
+      "final_outcome_routing_trustworthy": false,
+      "reason_codes": ["aggregate_not_requested", "adequate_detail_can_be_misrouted"],
+      "confidence": "high",
+      "severity": "high"
+    },
+    {
+      "arm": "m06",
+      "source_version": "20260628_v43",
+      "instruction_sha256": "184b18c29ff8de17b1fc0683cba3ffe9a87904dac6ac826bb29b8a4485257e51",
+      "gold_sha256": "20c054db8d6cf533a0c19f5c11eb352d46fc397727c85516db8856858415303e",
+      "correct_count": 6,
+      "decision": "approved_candidate",
+      "instruction_unambiguously_entails_gold": true,
+      "verification_sql_fully_answers_instruction": true,
+      "expected_value_supported_by_query_result": true,
+      "final_outcome_routing_trustworthy": true,
+      "reason_codes": ["explicit_aggregate_aligned"],
+      "confidence": "high",
+      "severity": "none"
+    },
+    {
+      "arm": "m06",
+      "source_version": "20260628_v43",
+      "instruction_sha256": "492b0bb2e7a9a6c1ea7449eeec88dc7a5f5c8a6ec6e2243256f83f723672c5e3",
+      "gold_sha256": "69ac6535951a5fd9aa250f43e3a97ccb19fab2690e3447c4d1635d181e6ab2cb",
+      "correct_count": 7,
+      "decision": "rejected",
+      "instruction_unambiguously_entails_gold": false,
+      "verification_sql_fully_answers_instruction": false,
+      "expected_value_supported_by_query_result": true,
+      "final_outcome_routing_trustworthy": false,
+      "reason_codes": ["aggregate_not_requested", "adequate_detail_can_be_misrouted"],
+      "confidence": "high",
+      "severity": "high"
+    },
+    {
+      "arm": "m06",
+      "source_version": "20260628_v43",
+      "instruction_sha256": "c18b6262427218f9de1f03bfbc8aab28429486cbacfa28d01e86372af92d241e",
+      "gold_sha256": "84cf27548c4a6ed2df78ab81bbd9ababfd2ac112546473e96a147d8c83ccccd8",
+      "correct_count": 7,
+      "decision": "approved_candidate",
+      "instruction_unambiguously_entails_gold": true,
+      "verification_sql_fully_answers_instruction": true,
+      "expected_value_supported_by_query_result": true,
+      "final_outcome_routing_trustworthy": true,
+      "reason_codes": ["explicit_aggregate_aligned"],
+      "confidence": "high",
+      "severity": "none"
     }
   ],
   "summary": {
-    "reviewed": 37,
-    "approved_candidates": 11,
-    "rejected": 26,
-    "approval_rate": 0.2972972972972973,
-    "rejected_for_unrequested_aggregate": 20,
+    "reviewed": 42,
+    "approved_candidates": 13,
+    "rejected": 29,
+    "approval_rate": 0.30952380952380953,
+    "rejected_for_unrequested_aggregate": 23,
     "rejected_for_date_field_or_incidental_match": 3,
     "rejected_for_uncovered_impact_analysis": 1,
     "rejected_for_source_table_ambiguity": 1,
