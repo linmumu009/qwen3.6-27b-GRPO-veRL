@@ -247,6 +247,12 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 已验证状态
 
+### v1.11.39 — 2026-08-14
+
+- 完成 XTuner、veRL、ms-swift 与 MindSpeed 的源码级选型调研：区分端到端 RL 编排层、训练引擎、模型套件和昇腾加速层，并按 Qwen3.6-27B、Ascend A3、Megatron 并行、双机训推分离、异步长尾和多轮工具合同逐项比较。
+- 将 XTuner、ms-swift、MindSpeed-RL、MindSpeed Core 和 MindSpeed-LLM 官方主干浅克隆到已忽略的 `reference/`，并把既有 veRL 引用快进到最新主干；新增可复现的远端/分支/提交清单，明确引用更新不等于服务器运行时升级。
+- 选型结论保持 veRL 为当前生产框架；优先给 ms-swift 做受限 Qwen3.6/Megatron 兼容 POC，观察 XTuner Beta RL 的真实跨设备权重同步成熟度，不向已暂停新增功能集成的 MindSpeed-RL 迁移。
+
 ### v1.11.38 — 2026-08-14
 
 - 新增 plan-first v3 双模型比较数据适配器：复验 300/300 SQL/gold 后，将首 60 题预冻结、首 48 题按六档各 8 题交错排列，其余 240 题标记为 training-candidate 但继续禁训；Parquet 统一绑定题面、最终 numeric/table gold、验证 SQL、数据库环境和老板原始 system/四工具合同。

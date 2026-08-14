@@ -1,0 +1,73 @@
+{
+  "contract": "framework-reference-manifest-v1",
+  "as_of": "2026-08-14",
+  "reference_root": "reference",
+  "gitignored": true,
+  "repositories": [
+    {
+      "name": "xtuner",
+      "role": "training_engine_and_beta_rl",
+      "path": "reference/xtuner",
+      "remote": "https://github.com/InternLM/xtuner.git",
+      "branch": "main",
+      "commit": "575d7e058040baa7f609b3d5d3f397653877bc25",
+      "commit_date": "2026-08-14T10:38:30+08:00",
+      "acquisition": "shallow_clone"
+    },
+    {
+      "name": "verl",
+      "role": "rl_orchestration_and_training",
+      "path": "reference/verl",
+      "remote": "https://github.com/verl-project/verl.git",
+      "branch": "main",
+      "commit": "5ba5f2f51281522150a6c1c87e3f841d1d220042",
+      "commit_date": "2026-08-14T14:50:54+08:00",
+      "acquisition": "existing_checkout_fast_forwarded_from_922af88"
+    },
+    {
+      "name": "ms-swift",
+      "role": "model_training_rlhf_inference_and_deployment",
+      "path": "reference/ms-swift",
+      "remote": "https://github.com/modelscope/ms-swift.git",
+      "branch": "main",
+      "commit": "c08a1ca7b443bb63cf2597781edf69fa638db54e",
+      "commit_date": "2026-08-14T14:38:53+08:00",
+      "acquisition": "shallow_clone"
+    },
+    {
+      "name": "MindSpeed-RL",
+      "role": "ascend_native_rl_orchestration",
+      "path": "reference/MindSpeed-RL",
+      "remote": "https://github.com/Ascend/MindSpeed-RL.git",
+      "branch": "master",
+      "commit": "26c21e64f84ae8cd26de9483292349a1850099cf",
+      "commit_date": "2026-05-20T10:40:54+08:00",
+      "acquisition": "shallow_clone"
+    },
+    {
+      "name": "MindSpeed",
+      "role": "ascend_megatron_acceleration_core",
+      "path": "reference/MindSpeed",
+      "remote": "https://github.com/Ascend/MindSpeed.git",
+      "branch": "master",
+      "commit": "99c7a37b7466947975d69ccfb9c8d31f2ab06134",
+      "commit_date": "2026-08-06T09:26:22+08:00",
+      "acquisition": "shallow_clone"
+    },
+    {
+      "name": "MindSpeed-LLM",
+      "role": "ascend_llm_model_and_training_suite",
+      "path": "reference/MindSpeed-LLM",
+      "remote": "https://github.com/Ascend/MindSpeed-LLM.git",
+      "branch": "master",
+      "commit": "eabc35035634e15b854ff3a76c49061b0ef3c5c3",
+      "commit_date": "2026-08-13T17:26:42+08:00",
+      "acquisition": "shallow_clone"
+    }
+  ],
+  "notes": [
+    "The reference directory is intentionally excluded from the parent repository by .gitignore.",
+    "Pinned commits describe the source reviewed for the comparison report; they are not deployment pins.",
+    "The existing verl checkout was updated for research only and must not be copied over the validated server runtime."
+  ]
+}
