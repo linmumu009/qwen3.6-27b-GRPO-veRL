@@ -309,8 +309,18 @@ def analyze(
             for key, counts in sorted(difficulty_histograms.items())
         },
         "response_token_distribution": token_distribution(response_lengths_all),
+        "response_token_histogram": {
+            str(key): value for key, value in sorted(Counter(response_lengths_all).items())
+        },
         "response_token_distribution_by_difficulty": {
             key: token_distribution(values)
+            for key, values in sorted(response_lengths_by_difficulty.items())
+        },
+        "response_token_histogram_by_difficulty": {
+            key: {
+                str(token_count): count
+                for token_count, count in sorted(Counter(values).items())
+            }
             for key, values in sorted(response_lengths_by_difficulty.items())
         },
         "mixed_screening_rows": len(selected_rows),

@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 from collections import Counter, defaultdict
 import json
+import math
 import os
 from pathlib import Path
 
@@ -26,6 +27,32 @@ def merge_nested(items: list[dict]) -> dict[str, dict[str, int]]:
         for outer, counts in item.items():
             total[str(outer)].update({str(key): int(value) for key, value in counts.items()})
     return {key: dict(sorted(value.items())) for key, value in sorted(total.items())}
+
+
+def token_distribution_from_histogram(histogram: dict[str, int]) -> dict[str, float | int]:
+    counts = sorted((int(token_count), int(count)) for token_count, count in histogram.items())
+    total = sum(count for _, count in counts)
+    if total == 0:
+        return {"count": 0, "mean": 0.0, "p50": 0, "p90": 0, "p95": 0, "p99": 0, "max": 0}
+
+    def nearest_rank(percentile: float) -> int:
+        target = max(1, math.ceil(percentile * total))
+        cumulative = 0
+        for token_count, count in counts:
+            cumulative += count
+            if cumulative >= target:
+                return token_count
+        raise AssertionError("histogram rank exceeds total")
+
+    return {
+        "count": total,
+        "mean": sum(token_count * count for token_count, count in counts) / total,
+        "p50": nearest_rank(0.50),
+        "p90": nearest_rank(0.90),
+        "p95": nearest_rank(0.95),
+        "p99": nearest_rank(0.99),
+        "max": counts[-1][0],
+    }
 
 
 def write_private_parquet(path: Path, rows: list[dict]) -> None:
@@ -108,6 +135,31 @@ def merge(summary_paths: list[Path], mixed_paths: list[Path], output_dir: Path) 
         "promotion_allowed": False,
         "contains_prompts_gold_sql_task_ids_tool_outputs_or_server_paths": False,
     }
+    if all("difficulty_bucket_counts" in item for item in summaries):
+        summary["difficulty_bucket_counts"] = merge_nested(
+            [item["difficulty_bucket_counts"] for item in summaries]
+        )
+    if all("difficulty_correct_count_histogram" in item for item in summaries):
+        summary["difficulty_correct_count_histogram"] = merge_nested(
+            [item["difficulty_correct_count_histogram"] for item in summaries]
+        )
+    if all("response_token_histogram" in item for item in summaries):
+        token_histogram = merge_counts(
+            [item["response_token_histogram"] for item in summaries]
+        )
+        summary["response_token_histogram"] = token_histogram
+        summary["response_token_distribution"] = token_distribution_from_histogram(
+            token_histogram
+        )
+    if all("response_token_histogram_by_difficulty" in item for item in summaries):
+        by_difficulty = merge_nested(
+            [item["response_token_histogram_by_difficulty"] for item in summaries]
+        )
+        summary["response_token_histogram_by_difficulty"] = by_difficulty
+        summary["response_token_distribution_by_difficulty"] = {
+            level: token_distribution_from_histogram(histogram)
+            for level, histogram in by_difficulty.items()
+        }
     if tasks * samples_per_task != trajectories:
         raise ValueError("merged trajectory shape mismatch")
     output_dir.mkdir(parents=True, exist_ok=True)

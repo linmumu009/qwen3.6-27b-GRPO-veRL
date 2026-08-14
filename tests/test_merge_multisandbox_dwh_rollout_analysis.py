@@ -33,6 +33,12 @@ def arm(
         "correct_count_histogram": {"0": int(correct == 0), "1": int(correct == 1), "2": int(correct == 2)},
         "answer_type_bucket_counts": {"numeric": {bucket: 1}},
         "version_bucket_counts": {"v1": {bucket: 1}},
+        "difficulty_bucket_counts": {"1": {bucket: 1}},
+        "difficulty_correct_count_histogram": {
+            "1": {"0": int(correct == 0), "1": int(correct == 1), "2": int(correct == 2)}
+        },
+        "response_token_histogram": {"5": 1, "9": 1},
+        "response_token_histogram_by_difficulty": {"1": {"5": 1, "9": 1}},
         "mixed_screening_rows": int(bucket == "mixed"),
     }
     summary_path = root / "summary.json"
@@ -54,6 +60,19 @@ def test_merge_sums_safe_counts_and_keeps_mixed_union_disjoint(tmp_path: Path):
     assert result["bucket_counts"] == {"all_wrong": 1, "mixed": 1}
     assert result["mixed_screening_rows"] == 1
     assert result["training_allowed"] is False
+    assert result["difficulty_bucket_counts"] == {"1": {"all_wrong": 1, "mixed": 1}}
+    assert result["difficulty_correct_count_histogram"] == {
+        "1": {"0": 1, "1": 1, "2": 0}
+    }
+    assert result["response_token_distribution"] == {
+        "count": 4,
+        "mean": 7.0,
+        "p50": 5,
+        "p90": 9,
+        "p95": 9,
+        "p99": 9,
+        "max": 9,
+    }
 
 
 def test_merge_accepts_legacy_v1_only_when_both_arms_match(tmp_path: Path):

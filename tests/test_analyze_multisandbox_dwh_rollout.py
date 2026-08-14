@@ -71,6 +71,8 @@ def test_analyze_scores_final_only_and_selects_only_mixed_groups(tmp_path: Path)
         "p99": 8,
         "max": 8,
     }
+    assert summary["response_token_histogram"] == {"0": 1, "5": 1, "6": 1, "8": 1}
+    assert summary["response_token_histogram_by_difficulty"]["1"] == {"5": 1, "6": 1}
     review_rows = [
         json.loads(line)
         for line in (tmp_path / "analysis" / "mixed_review_queue.sensitive.jsonl")
