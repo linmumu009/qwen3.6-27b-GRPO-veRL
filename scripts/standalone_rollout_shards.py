@@ -24,6 +24,16 @@ def shard_path(root: Path, start: int, stop: int) -> Path:
     return root / "shards" / f"tasks_{start:05d}_{stop:05d}.jsonl"
 
 
+def padded_rows_for_equal_chunks(rows: int, chunks: int) -> int:
+    """Return the smallest row count at least ``rows`` divisible by ``chunks``."""
+
+    if rows <= 0:
+        raise ValueError("rows must be positive")
+    if chunks <= 0:
+        raise ValueError("chunks must be positive")
+    return ((rows + chunks - 1) // chunks) * chunks
+
+
 def completed_shard_rows(
     path: Path,
     *,

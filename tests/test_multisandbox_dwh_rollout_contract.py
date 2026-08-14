@@ -21,6 +21,9 @@ def test_standalone_runner_keeps_sampling_and_context_contract_variable_but_expl
         'prompt + response token budgets must equal max context',
         '"--trajectory-timeout-seconds", type=float, default=900.0',
         'trajectory_abort_acknowledged_count',
+        'tail_batch_padding_policy',
+        'batch.padding(padding_rows, padding_candidate="last")',
+        'output = output[:expected]',
     ):
         assert fragment in text
 

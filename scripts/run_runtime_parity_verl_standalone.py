@@ -31,6 +31,7 @@ from verl.workers.rollout.llm_server import LLMServerManager
 
 from scripts.standalone_rollout_shards import (
     completed_shard_rows,
+    padded_rows_for_equal_chunks,
     shard_path,
     shard_ranges,
     write_jsonl_atomic,
@@ -131,6 +132,7 @@ def safe_contract(config, args: argparse.Namespace) -> dict:
         "context_tokens": int(rollout.max_model_len),
         "trajectory_timeout_seconds": args.trajectory_timeout_seconds,
         "task_batch_size": args.task_batch_size,
+        "tail_batch_padding_policy": "duplicate_last_rows_then_trim_before_persisting",
         "batch_validate_mode": True,
         "batch_do_sample": True,
         "effective_sampling_source": "validation_val_kwargs",
@@ -261,10 +263,25 @@ def run(args: argparse.Namespace) -> dict:
         for start, stop, result_path, _ in pending:
             shard_started = time.monotonic()
             batch = build_batch(config, args, tokenizer, dataset, start, stop)
-            output = agent_manager.generate_sequences(batch)
             expected = (stop - start) * args.samples_per_task
+            generated_rows = padded_rows_for_equal_chunks(expected, args.agent_workers)
+            padding_rows = generated_rows - expected
+            if padding_rows:
+                # AgentLoopManager splits a DataProto evenly across workers.  A
+                # remainder shard can therefore need temporary duplicate rows;
+                # they are generated only to satisfy that runtime invariant and
+                # are removed before task/sample identities are assigned or any
+                # shard is persisted.
+                batch.padding(padding_rows, padding_candidate="last")
+            output = agent_manager.generate_sequences(batch)
+            if len(output) != generated_rows:
+                raise ValueError(
+                    f"expected {generated_rows} generated rows, got {len(output)}"
+                )
+            if padding_rows:
+                output = output[:expected]
             if len(output) != expected:
-                raise ValueError(f"expected {expected} output rows, got {len(output)}")
+                raise ValueError(f"expected {expected} persisted rows, got {len(output)}")
 
             prompt_texts = [
                 tokenizer.decode(ids, skip_special_tokens=True) for ids in output.batch["prompts"]
@@ -338,6 +355,7 @@ def run(args: argparse.Namespace) -> dict:
                         "start": start,
                         "stop": stop,
                         "rows": written,
+                        "temporary_padding_rows": padding_rows,
                         "wall_seconds": time.monotonic() - shard_started,
                         "completed_tasks": completed_tasks,
                     }

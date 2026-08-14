@@ -3,6 +3,7 @@ from pathlib import Path
 
 from scripts.standalone_rollout_shards import (
     completed_shard_rows,
+    padded_rows_for_equal_chunks,
     shard_path,
     shard_ranges,
     write_jsonl_atomic,
@@ -13,6 +14,22 @@ def test_shard_ranges_cover_remainder_once():
     assert shard_ranges(281, 32)[0] == (0, 32)
     assert shard_ranges(281, 32)[-1] == (256, 281)
     assert sum(stop - start for start, stop in shard_ranges(281, 32)) == 281
+
+
+def test_tail_batch_padding_only_reaches_next_equal_worker_chunk():
+    assert padded_rows_for_equal_chunks(128, 16) == 128
+    assert padded_rows_for_equal_chunks(104, 16) == 112
+    assert padded_rows_for_equal_chunks(96, 16) == 96
+
+
+def test_tail_batch_padding_rejects_invalid_shapes():
+    for rows, chunks in ((0, 16), (104, 0), (-1, 16), (104, -1)):
+        try:
+            padded_rows_for_equal_chunks(rows, chunks)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError((rows, chunks))
 
 
 def test_atomic_shard_requires_exact_task_sample_shape(tmp_path: Path):
