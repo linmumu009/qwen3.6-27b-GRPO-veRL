@@ -23,6 +23,7 @@ def write_dataset(path: Path, expected_values: tuple[int, ...]) -> None:
                 "verifier_id": f"v:{index}",
                 "instruction_sha256": f"hash{index}",
                 "source_version": "v1",
+                "difficulty_level": index + 1,
                 "training_allowed": False,
             },
         })
@@ -59,6 +60,17 @@ def test_analyze_scores_final_only_and_selects_only_mixed_groups(tmp_path: Path)
     assert len(selected) == 1
     assert selected[0]["extra_info"]["verifier_id"] == "v:0"
     assert summary["training_allowed"] is False
+    assert summary["difficulty_correct_count_histogram"]["1"]["1"] == 1
+    assert summary["difficulty_bucket_counts"]["2"] == {"timed_out": 1}
+    assert summary["response_token_distribution"] == {
+        "count": 4,
+        "mean": 4.75,
+        "p50": 5,
+        "p90": 8,
+        "p95": 8,
+        "p99": 8,
+        "max": 8,
+    }
     review_rows = [
         json.loads(line)
         for line in (tmp_path / "analysis" / "mixed_review_queue.sensitive.jsonl")

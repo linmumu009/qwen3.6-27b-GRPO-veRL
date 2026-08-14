@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 from collections import Counter, defaultdict
 import json
+import math
 import os
 from pathlib import Path
 import re
@@ -57,6 +58,25 @@ def bucket(
     if correct == samples:
         return "all_correct"
     return "mixed"
+
+
+def token_distribution(values: list[int]) -> dict[str, float | int]:
+    if not values:
+        return {"count": 0, "mean": 0.0, "p50": 0, "p90": 0, "p95": 0, "p99": 0, "max": 0}
+    ordered = sorted(values)
+
+    def nearest_rank(percentile: float) -> int:
+        return ordered[max(0, math.ceil(percentile * len(ordered)) - 1)]
+
+    return {
+        "count": len(ordered),
+        "mean": statistics.fmean(ordered),
+        "p50": nearest_rank(0.50),
+        "p90": nearest_rank(0.90),
+        "p95": nearest_rank(0.95),
+        "p99": nearest_rank(0.99),
+        "max": ordered[-1],
+    }
 
 
 def analyze(
@@ -119,6 +139,10 @@ def analyze(
     bucket_counts: Counter[str] = Counter()
     answer_buckets: dict[str, Counter[str]] = defaultdict(Counter)
     version_buckets: dict[str, Counter[str]] = defaultdict(Counter)
+    difficulty_buckets: dict[str, Counter[str]] = defaultdict(Counter)
+    difficulty_histograms: dict[str, Counter[int]] = defaultdict(Counter)
+    response_lengths_all: list[int] = []
+    response_lengths_by_difficulty: dict[str, list[int]] = defaultdict(list)
     total_completed = total_runtime_errors = total_timeouts = total_correct = 0
     total_abort_acks = total_abort_physical = total_abort_errors = 0
     review_rows = []
@@ -155,6 +179,7 @@ def analyze(
         extra = dataset_row["extra_info"]
         answer_type = str(truth["answer_type"])
         version = str(extra["source_version"])
+        difficulty = str(extra.get("difficulty_level", extra.get("difficulty_band", "unknown")))
         response_lengths = [int(row.get("response_tokens", 0)) for row in task_observations]
         per_task.append(
             {
@@ -163,6 +188,7 @@ def analyze(
                 "instruction_sha256": str(extra["instruction_sha256"]),
                 "source_version": version,
                 "answer_type": answer_type,
+                "difficulty_level": difficulty,
                 "correct_count": correct,
                 "completed_count": completed,
                 "runtime_error_count": runtime_errors,
@@ -224,6 +250,10 @@ def analyze(
         bucket_counts[classification] += 1
         answer_buckets[answer_type][classification] += 1
         version_buckets[version][classification] += 1
+        difficulty_buckets[difficulty][classification] += 1
+        difficulty_histograms[difficulty][correct] += 1
+        response_lengths_all.extend(response_lengths)
+        response_lengths_by_difficulty[difficulty].extend(response_lengths)
         total_correct += correct
         total_completed += completed
         total_runtime_errors += runtime_errors
@@ -270,6 +300,18 @@ def analyze(
         },
         "version_bucket_counts": {
             key: dict(sorted(value.items())) for key, value in sorted(version_buckets.items())
+        },
+        "difficulty_bucket_counts": {
+            key: dict(sorted(value.items())) for key, value in sorted(difficulty_buckets.items())
+        },
+        "difficulty_correct_count_histogram": {
+            key: {str(value): counts.get(value, 0) for value in range(samples_per_task + 1)}
+            for key, counts in sorted(difficulty_histograms.items())
+        },
+        "response_token_distribution": token_distribution(response_lengths_all),
+        "response_token_distribution_by_difficulty": {
+            key: token_distribution(values)
+            for key, values in sorted(response_lengths_by_difficulty.items())
         },
         "mixed_screening_rows": len(selected_rows),
         "mixed_review_queue_rows": len(review_rows),
