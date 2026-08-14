@@ -33,6 +33,16 @@
       "arm": "m06",
       "complete_shard_ranges": [[48, 64]],
       "cumulative_mixed_review_queue_sha256": "c6dbeb5c9df8a3f3e60a5e5ed074c8efeaadb6d7a62c05287b263d9649d71729"
+    },
+    {
+      "arm": "m05",
+      "complete_shard_ranges": [[64, 80]],
+      "cumulative_mixed_review_queue_sha256": "3e19584240159d8021d21a770c2076f222d8e2be5df735abb71a08c2847e41c7"
+    },
+    {
+      "arm": "m06",
+      "complete_shard_ranges": [[64, 80]],
+      "cumulative_mixed_review_queue_sha256": "c09752cbe00d93dc00ec42c236111058faa2df55af2c7e92b5f403249518f771"
     }
   ],
   "decisions": [
@@ -395,16 +405,92 @@
       "reason_codes": ["explicit_aggregate_aligned"],
       "confidence": "high",
       "severity": "none"
+    },
+    {
+      "arm": "m05",
+      "source_version": "20260628_v32",
+      "instruction_sha256": "8079bc11c4efb770fbe8c333e66e4671832a51c6a7a0a3007e392affaf2415ea",
+      "gold_sha256": "fb1dd140fdf33631338b804f45519ebc4e2cabcdaf3936aaa29e79859a9f3931",
+      "correct_count": 3,
+      "decision": "rejected",
+      "instruction_unambiguously_entails_gold": false,
+      "verification_sql_fully_answers_instruction": false,
+      "expected_value_supported_by_query_result": true,
+      "final_outcome_routing_trustworthy": false,
+      "reason_codes": ["source_table_ambiguous", "competing_table_semantics"],
+      "confidence": "high",
+      "severity": "critical"
+    },
+    {
+      "arm": "m05",
+      "source_version": "20260628_v35",
+      "instruction_sha256": "84498fdcc29b1eff5a65cba079abcd08c24183a738627e9bbc9e2c7f40efe0b3",
+      "gold_sha256": "79a8b500439f8fac7bad9226cf669b8601c9fb93581ba7315baa382299599b4d",
+      "correct_count": 7,
+      "decision": "approved_candidate",
+      "instruction_unambiguously_entails_gold": true,
+      "verification_sql_fully_answers_instruction": true,
+      "expected_value_supported_by_query_result": true,
+      "final_outcome_routing_trustworthy": true,
+      "reason_codes": ["explicit_aggregate_aligned"],
+      "confidence": "high",
+      "severity": "none"
+    },
+    {
+      "arm": "m05",
+      "source_version": "20260628_v35",
+      "instruction_sha256": "8985ba539652f8bd919b50f26231a7533cfca001f09c0442644d664f9c497276",
+      "gold_sha256": "f89ad78e68ac78d1a7318405fe2a511d3b34a8f274e90ff7dc38b86af70a885d",
+      "correct_count": 1,
+      "decision": "rejected",
+      "instruction_unambiguously_entails_gold": false,
+      "verification_sql_fully_answers_instruction": false,
+      "expected_value_supported_by_query_result": true,
+      "final_outcome_routing_trustworthy": false,
+      "reason_codes": ["aggregate_not_requested", "multi_currency_sum_unsafe", "adequate_detail_can_be_misrouted"],
+      "confidence": "high",
+      "severity": "critical"
+    },
+    {
+      "arm": "m06",
+      "source_version": "20260628_v31",
+      "instruction_sha256": "fa0e6b3f60d1bbc17566dab8c30570f045832ff2d8553da680f027f387dac964",
+      "gold_sha256": "283a9997c2c3439faa069a40c8c151dda897fe5f21b2ad7a1c4b1d56cbed3ac4",
+      "correct_count": 1,
+      "decision": "rejected",
+      "instruction_unambiguously_entails_gold": false,
+      "verification_sql_fully_answers_instruction": false,
+      "expected_value_supported_by_query_result": true,
+      "final_outcome_routing_trustworthy": false,
+      "reason_codes": ["date_field_ambiguous", "incidental_gold_value_match"],
+      "confidence": "high",
+      "severity": "critical"
+    },
+    {
+      "arm": "m06",
+      "source_version": "20260628_v31",
+      "instruction_sha256": "fdaaa8df1dd9ec17d9e3c28e1a90d228fea08fda9845d2ec518ddc00909f8bc4",
+      "gold_sha256": "3525c5cca7f973f42c7a192c89b2e213fabe389487467505ad3ff3e1bb3ce897",
+      "correct_count": 2,
+      "decision": "rejected",
+      "instruction_unambiguously_entails_gold": false,
+      "verification_sql_fully_answers_instruction": false,
+      "expected_value_supported_by_query_result": true,
+      "final_outcome_routing_trustworthy": false,
+      "reason_codes": ["date_field_ambiguous", "incidental_gold_value_match"],
+      "confidence": "high",
+      "severity": "critical"
     }
   ],
   "summary": {
-    "reviewed": 24,
-    "approved_candidates": 7,
-    "rejected": 17,
-    "approval_rate": 0.2916666666666667,
-    "rejected_for_unrequested_aggregate": 15,
-    "rejected_for_date_field_or_incidental_match": 1,
-    "rejected_for_uncovered_impact_analysis": 1
+    "reviewed": 29,
+    "approved_candidates": 8,
+    "rejected": 21,
+    "approval_rate": 0.27586206896551724,
+    "rejected_for_unrequested_aggregate": 16,
+    "rejected_for_date_field_or_incidental_match": 3,
+    "rejected_for_uncovered_impact_analysis": 1,
+    "rejected_for_source_table_ambiguity": 1
   },
   "contains_task_ids_prompts_sql_gold_values_final_answers_or_tool_outputs": false,
   "training_allowed": false,
