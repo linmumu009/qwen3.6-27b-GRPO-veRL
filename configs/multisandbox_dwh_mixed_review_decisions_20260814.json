@@ -1,0 +1,136 @@
+{
+  "contract": "multisandbox-dwh-mixed-semantic-review-decisions-v1",
+  "date": "2026-08-14",
+  "reviewer": "codex_manual_semantic_review",
+  "standard": "approve_only_if_exactly_8_usable_trajectories_are_mixed_and_instruction_unambiguously_entails_gold_and_sql_fully_answers_instruction_and_final_outcome_routing_is_trustworthy",
+  "source_batches": [
+    {
+      "arm": "m05",
+      "complete_shard_ranges": [[0, 16], [16, 32]],
+      "mixed_review_queue_sha256": "40afd09484db873334dda9fa2ee77d820b1b1c9e0e516b31562ae75ecfd6ccd1"
+    },
+    {
+      "arm": "m06",
+      "complete_shard_ranges": [[0, 16], [16, 32]],
+      "mixed_review_queue_sha256": "01de47fe470619932ad1547a9b0bf452980a315c085f6752b81aa22b9aaa6ff5"
+    }
+  ],
+  "decisions": [
+    {
+      "arm": "m05",
+      "source_version": "20260628_v21",
+      "instruction_sha256": "6d0da9e9024db7bcd8363ee5745e6315672597bd97c1c2f4c0ba1453de7ac690",
+      "gold_sha256": "c76368c86932acfd66bcd33682135c9e356fed3a3f1884a52a401b4114c0ee9d",
+      "correct_count": 1,
+      "decision": "rejected",
+      "instruction_unambiguously_entails_gold": false,
+      "verification_sql_fully_answers_instruction": false,
+      "expected_value_supported_by_query_result": true,
+      "final_outcome_routing_trustworthy": false,
+      "reason_codes": ["aggregate_not_requested", "adequate_detail_can_be_misrouted"],
+      "confidence": "high",
+      "severity": "high"
+    },
+    {
+      "arm": "m05",
+      "source_version": "20260628_v24",
+      "instruction_sha256": "18be92d0add8bc0cc76b6e59a63dbad3ad1236c59e13c2b1f3b34671d0297ecb",
+      "gold_sha256": "4ecb18e8f631159c659337953e178d24fe3fe30b3a3efaf6e326c9f047e0f416",
+      "correct_count": 4,
+      "decision": "rejected",
+      "instruction_unambiguously_entails_gold": false,
+      "verification_sql_fully_answers_instruction": false,
+      "expected_value_supported_by_query_result": true,
+      "final_outcome_routing_trustworthy": false,
+      "reason_codes": ["aggregate_not_requested", "adequate_detail_can_be_misrouted"],
+      "confidence": "high",
+      "severity": "high"
+    },
+    {
+      "arm": "m06",
+      "source_version": "20260628_v21",
+      "instruction_sha256": "7b231733fa3924de56c175e7783cd6a6a7b2d7d51d6eb03929f0ec0b636d8cc7",
+      "gold_sha256": "3b4af41b4135b019fbd64e356bd54e1f8586749df8719da2f8058a38bc7ffb9e",
+      "correct_count": 1,
+      "decision": "rejected",
+      "instruction_unambiguously_entails_gold": false,
+      "verification_sql_fully_answers_instruction": false,
+      "expected_value_supported_by_query_result": true,
+      "final_outcome_routing_trustworthy": false,
+      "reason_codes": ["date_field_ambiguous", "incidental_gold_value_match"],
+      "confidence": "high",
+      "severity": "critical"
+    },
+    {
+      "arm": "m06",
+      "source_version": "20260628_v22",
+      "instruction_sha256": "39fd0cc249d554a7cc5287a9e01251b51afa6681637c8c3d243a92b4f457c9bc",
+      "gold_sha256": "c61abd8a5891ae098399c3c697877a781f0065d5e8c9b29fb557c5cc7ef4d48d",
+      "correct_count": 4,
+      "decision": "rejected",
+      "instruction_unambiguously_entails_gold": false,
+      "verification_sql_fully_answers_instruction": false,
+      "expected_value_supported_by_query_result": true,
+      "final_outcome_routing_trustworthy": false,
+      "reason_codes": ["aggregate_not_requested", "adequate_detail_can_be_misrouted"],
+      "confidence": "high",
+      "severity": "high"
+    },
+    {
+      "arm": "m06",
+      "source_version": "20260628_v22",
+      "instruction_sha256": "6dfd42fe0b22fc3e2fadb33b4781781fa08c8b9cd8cdb760ae0f0efc968974d2",
+      "gold_sha256": "6a744a451d758e55a4874ee301889558ce2c6262c37ffc49d875ddfd250427a0",
+      "correct_count": 3,
+      "decision": "approved_candidate",
+      "instruction_unambiguously_entails_gold": true,
+      "verification_sql_fully_answers_instruction": true,
+      "expected_value_supported_by_query_result": true,
+      "final_outcome_routing_trustworthy": true,
+      "reason_codes": ["explicit_aggregate_aligned"],
+      "confidence": "high",
+      "severity": "none"
+    },
+    {
+      "arm": "m06",
+      "source_version": "20260628_v22",
+      "instruction_sha256": "d858dfd3b214eaafc30c458d8142b6f70b28d97d6977b42ba3cc65912622f299",
+      "gold_sha256": "2c53b51da6baf883495e92a65d3319eb5c00e51dfd8859cc4724a20a1b673436",
+      "correct_count": 2,
+      "decision": "rejected",
+      "instruction_unambiguously_entails_gold": false,
+      "verification_sql_fully_answers_instruction": false,
+      "expected_value_supported_by_query_result": true,
+      "final_outcome_routing_trustworthy": false,
+      "reason_codes": ["aggregate_not_requested", "adequate_detail_can_be_misrouted"],
+      "confidence": "high",
+      "severity": "high"
+    },
+    {
+      "arm": "m06",
+      "source_version": "20260628_v24",
+      "instruction_sha256": "42ac0da5a88a7b31607ce52e92f33c2a04683216aa2708cbbef550b33c01cbb3",
+      "gold_sha256": "9e7d21ac43f13add6bee125daf5f5062faff1aa2e34d2e5f32941b6d5ae587f3",
+      "correct_count": 6,
+      "decision": "rejected",
+      "instruction_unambiguously_entails_gold": false,
+      "verification_sql_fully_answers_instruction": false,
+      "expected_value_supported_by_query_result": true,
+      "final_outcome_routing_trustworthy": false,
+      "reason_codes": ["aggregate_not_requested", "adequate_detail_can_be_misrouted"],
+      "confidence": "high",
+      "severity": "high"
+    }
+  ],
+  "summary": {
+    "reviewed": 7,
+    "approved_candidates": 1,
+    "rejected": 6,
+    "approval_rate": 0.14285714285714285,
+    "rejected_for_unrequested_aggregate": 5,
+    "rejected_for_date_field_or_incidental_match": 1
+  },
+  "contains_task_ids_prompts_sql_gold_values_final_answers_or_tool_outputs": false,
+  "training_allowed": false,
+  "promotion_allowed": false
+}

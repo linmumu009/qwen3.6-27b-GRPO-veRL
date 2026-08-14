@@ -38,6 +38,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - 用`0/42`批准率与历史`22/64` pair产率做两阶段Jeffreys后验压力测试，剩余96条预计仅批准约`1.12`条、形成约`0.39`对pair，补齐41对缺口的预测概率约`7.1×10^-18`。下一动作改为先新建32条SQL-first训练候选和3条parity-only哨兵：SQL只负责生成/验收hidden gold，rollout仍只用题面与最终结果；CPU语义门通过后，先在哨兵上做`3×2×双臂`请求级复验，再按32条一批采集真实首错状态。
 - 多沙箱DWH只读筛选已实跑：19个版本、每版500题和独立数据库，共9,500题，CPU机械门仅耗时1.919秒；5,099条gold与SQL结果一致，459条通过高精度门。排除v15、跨版本重复题面和高语义风险任务类型后，得到18个非v15沙箱上的281条直接查询池（234 numeric / 47 table），仍需显式语义审核。推荐先做64题分层pilot，预计从审核到`64×8`双机rollout出结果约5–8小时；不直接投入16–24小时跑完281题。
 - 281题双机筛选采用逐shard累计门禁：每题必须恰有8条完整可用轨迹、无runtime error和超时，并且纯最终结果正确数为`1–7/8`才进入mixed审视队列；`0/8`和`8/8`仅从本次GRPO更新排除，不从源数据永久删除。mixed仍只是候选，须继续人工核对“题意无歧义蕴含gold、SQL完整回答题意、SQL结果支持期望值、最终结果路由可信”，审核前`training_allowed=false`。
+- 首批双机各32题完成后共有7个mixed候选，逐题语义复核仅批准1个、拒绝6个：5个把“查看/给出数据”擅自收窄为求和，1个日期字段口径含混且出现“正文提到gold但最终结论选择另一数值”仍被纯数值包含式评分判对。首批说明mixed难度只是必要条件，不是训练数据质量保证；批准候选在全281题收尾和合并复核前仍保持`training_allowed=false`。
 - PI-Agent 与 veRL rollout 的 `10题×每题8条` 部署路径门禁已完成但未通过：追加调用链审计确认两臂有效采样均为 `temperature=1.0 / top_p=0.95 / top_k=20`，且每个题组的8条轨迹全部互异，不是temperature 0或复制候选；但单次token cap、compaction、墙钟、并发和工具实现并不相同，因此只能结论为“现网路径不兼容”，不能称为严格同配置A/B。当前不开放 bucket 筛选或训练；10条 val-only 题始终禁止进入训练，全对/全错也不得永久删除。
 - 所有新增镜像、容器、工作目录和实验名均以 `llin` 开头，不复用或修改其他人的环境。
 
@@ -240,6 +241,10 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/run_chosen_only_first_action_one_step.sh`、`scripts/launch_chosen_only_first_action_one_step.sh`、`scripts/analyze_chosen_only_first_action_post_canary.py`：严格执行获准的一步 train48 `0.25/8` 全参 SFT，并在相同 calibration16 上按预注册的 aggregate/per-task NLL、greedy/top-5、mean rank、tool structure 和更早分叉门自动决定是否只开放一次自由回放；无论结果如何都禁止追加训练和 promotion。
 
 ## 已验证状态
+
+### v1.11.24 — 2026-08-14
+
+- 完成281题池首批64题、512条轨迹的逐shard复核：技术门得到7个mixed，人工核对题意、gold、verification SQL和8条最终答案后仅1个通过。新增不含题面、SQL、gold值、最终答案或task ID的匿名哈希裁决账本与fail-closed测试；6个拒绝项中5个为未明确要求聚合、1个为日期字段与最终结论路由风险。
 
 ### v1.11.23 — 2026-08-14
 
