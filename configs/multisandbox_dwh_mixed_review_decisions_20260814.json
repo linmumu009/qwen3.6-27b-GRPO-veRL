@@ -73,6 +73,16 @@
       "arm": "m06",
       "complete_shard_ranges": [[112, 128]],
       "cumulative_mixed_review_queue_sha256": "4467ae997300056c1ead1fd470b7c6f7610163c1a458b3ed523ea88b546744b7"
+    },
+    {
+      "arm": "m05",
+      "complete_shard_ranges": [[128, 141]],
+      "cumulative_mixed_review_queue_sha256": "5ef39e05351f27d311b244d85cd86fef136483a962275985caac76568d01e0cb"
+    },
+    {
+      "arm": "m06",
+      "complete_shard_ranges": [[128, 140]],
+      "cumulative_mixed_review_queue_sha256": "4467ae997300056c1ead1fd470b7c6f7610163c1a458b3ed523ea88b546744b7"
     }
   ],
   "decisions": [
@@ -795,14 +805,29 @@
       "reason_codes": ["aggregate_not_requested", "adequate_detail_can_be_misrouted"],
       "confidence": "high",
       "severity": "high"
+    },
+    {
+      "arm": "m05",
+      "source_version": "20260628_v46",
+      "instruction_sha256": "59dc150639f666fd335ef4ca5dd4ef8dd1efa04d1b3b2601bc3b1e79984b5526",
+      "gold_sha256": "e7bfccf92446b1960ca3ee92f0b362e796c40725639330bedda1fd1c4c5b10c0",
+      "correct_count": 3,
+      "decision": "rejected",
+      "instruction_unambiguously_entails_gold": false,
+      "verification_sql_fully_answers_instruction": false,
+      "expected_value_supported_by_query_result": true,
+      "final_outcome_routing_trustworthy": false,
+      "reason_codes": ["aggregate_not_requested", "adequate_detail_can_be_misrouted"],
+      "confidence": "high",
+      "severity": "high"
     }
   ],
   "summary": {
-    "reviewed": 48,
+    "reviewed": 49,
     "approved_candidates": 13,
-    "rejected": 35,
-    "approval_rate": 0.2708333333333333,
-    "rejected_for_unrequested_aggregate": 26,
+    "rejected": 36,
+    "approval_rate": 0.2653061224489796,
+    "rejected_for_unrequested_aggregate": 27,
     "rejected_for_date_field_or_incidental_match": 5,
     "rejected_for_uncovered_impact_analysis": 1,
     "rejected_for_source_table_ambiguity": 2,
