@@ -174,7 +174,10 @@ class PiWorkspaceTool(BaseTool):
         self.operation = str(config.get("operation") or self.name)
         if self.operation not in {"bash", "read", "write", "edit"}:
             raise ValueError(f"unsupported PI operation: {self.operation}")
-        self.lower_root = Path(config.get("sandbox_root", "/pi_sandbox"))
+        self.lower_root = Path(
+            os.environ.get("PI_AGENT_SANDBOX_LOWER")
+            or config.get("sandbox_root", "/pi_sandbox")
+        )
         self.run_root = Path(config.get("run_root", "/workspace/grpo_run/pi_workspaces"))
         self.run_tag = str(config.get("run_tag") or os.environ.get("PI_AGENT_RUN_TAG", "unscoped"))
         self.max_tool_timeout = int(config.get("max_tool_timeout", 60))

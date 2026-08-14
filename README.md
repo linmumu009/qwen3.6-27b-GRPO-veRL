@@ -40,6 +40,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - 281题双机筛选采用逐shard累计门禁：每题必须恰有8条完整可用轨迹、无runtime error和超时，并且纯最终结果正确数为`1–7/8`才进入mixed审视队列；`0/8`和`8/8`仅从本次GRPO更新排除，不从源数据永久删除。mixed仍只是候选，须继续人工核对“题意无歧义蕴含gold、SQL完整回答题意、SQL结果支持期望值、最终结果路由可信”，审核前`training_allowed=false`。
 - 首批双机各32题完成后共有7个mixed候选，逐题语义复核仅批准1个、拒绝6个：5个把“查看/给出数据”擅自收窄为求和，1个日期字段口径含混且出现“正文提到gold但最终结论选择另一数值”仍被纯数值包含式评分判对。首批说明mixed难度只是必要条件，不是训练数据质量保证；批准候选在全281题收尾和合并复核前仍保持`training_allowed=false`。
 - 双机各48题时累计18个mixed候选，语义批准增至3个、拒绝15个；第三个shard新增11个mixed中仅2个通过，9个拒绝项包括8个未明确要求求和却使用SUM gold的任务，以及1个要求评估维表变动影响但SQL/reward只覆盖单一金额汇总的多意图任务。当前优质mixed的累计产率为`3/96=3.125%`（按已完成题计），后续继续逐shard审视，不因高`7/8`正确数自动放宽语义标准。
+- 新 DWH 数据不再复用老板的 instruction-first/backward-SQL 链：单个物流 SQLite 沙箱内以结构化 QueryPlan 同源渲染题面与只读 SQL，再从执行结果生成 gold；首版固定 300 条、每 50 条提升一档，共 6 档。生成不读取老板内嵌 API key，也不依赖外部 API；300/300 已通过可执行、非空、gold 精确重放和现有语义门禁，但仍须先做每档 8 题、每题 4 次的分层 rollout，只有非 `0/4`、非 `4/4` 且语义复核通过的题才可进入训练。
 - PI-Agent 与 veRL rollout 的 `10题×每题8条` 部署路径门禁已完成但未通过：追加调用链审计确认两臂有效采样均为 `temperature=1.0 / top_p=0.95 / top_k=20`，且每个题组的8条轨迹全部互异，不是temperature 0或复制候选；但单次token cap、compaction、墙钟、并发和工具实现并不相同，因此只能结论为“现网路径不兼容”，不能称为严格同配置A/B。当前不开放 bucket 筛选或训练；10条 val-only 题始终禁止进入训练，全对/全错也不得永久删除。
 - 所有新增镜像、容器、工作目录和实验名均以 `llin` 开头，不复用或修改其他人的环境。
 
@@ -242,6 +243,12 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/run_chosen_only_first_action_one_step.sh`、`scripts/launch_chosen_only_first_action_one_step.sh`、`scripts/analyze_chosen_only_first_action_post_canary.py`：严格执行获准的一步 train48 `0.25/8` 全参 SFT，并在相同 calibration16 上按预注册的 aggregate/per-task NLL、greedy/top-5、mean rank、tool structure 和更早分叉门自动决定是否只开放一次自由回放；无论结果如何都禁止追加训练和 promotion。
 
 ## 已验证状态
+
+### v1.11.31 — 2026-08-14
+
+- 新增确定性、无外部 API 的 plan-first 物流 DWH 生成器：一个 SQLite 沙箱生成 300 条任务，按每 50 条一个难度带逐步增加过滤、分组、连接、Top-K、HAVING 和派生比率；题面、SQL 与 gold 共享同一 QueryPlan，避免旧链的语义漂移。
+- 新增精确目录验证器与测试：300/300 SQL 可执行、非空并精确重放 gold，6 档各 50 条，现有 catalog 语义审计为 0 告警；生成摘要固定记录文件哈希且不记录题面、SQL、gold 或 API key。
+- PI workspace 与只读 SQLite 工具支持通过 `PI_AGENT_SANDBOX_LOWER` 指向用户私有沙箱根；新版本已部署到 5 号机 `/data3/llin/qwen3.6-27b-verl-grpo/sandboxes/sft/20260814_llin_dwh_planfirst_v1` 并以同一精确目录验证器复验通过。训练继续关闭，先执行 `6×8×4=192` 条分层 rollout 校准并排除全对/全错题。
 
 ### v1.11.30 — 2026-08-14
 

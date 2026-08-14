@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import os
 import re
 import sqlite3
 from pathlib import Path
@@ -73,7 +74,10 @@ class ReadOnlySQLiteTool(BaseTool):
 
     def __init__(self, config: dict, tool_schema: OpenAIFunctionToolSchema):
         super().__init__(config, tool_schema)
-        self.sandbox_root = config.get("sandbox_root", "/pi_sandbox")
+        self.sandbox_root = (
+            os.environ.get("PI_AGENT_SANDBOX_LOWER")
+            or config.get("sandbox_root", "/pi_sandbox")
+        )
         self.database_name = config.get("database_name", "logistics.sqlite")
         self.max_rows = int(config.get("max_rows", 80))
         self.progress_steps = int(config.get("progress_steps", 100_000))

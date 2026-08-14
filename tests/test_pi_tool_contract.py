@@ -41,3 +41,12 @@ def test_runtime_tool_schemas_are_byte_semantically_equal_to_boss_contract():
     runtime_schemas = [item["tool_schema"] for item in config["tools"]]
 
     assert canonical_json(runtime_schemas) == canonical_json(load_boss_pi_contract()["tools"])
+
+
+def test_runtime_tools_allow_a_server_scoped_sandbox_root_override():
+    root = Path(__file__).resolve().parents[1]
+    workspace_source = (root / "llin_verl" / "pi_workspace_tools.py").read_text(encoding="utf-8")
+    sqlite_source = (root / "llin_verl" / "pi_sqlite_tool.py").read_text(encoding="utf-8")
+
+    assert 'os.environ.get("PI_AGENT_SANDBOX_LOWER")' in workspace_source
+    assert 'os.environ.get("PI_AGENT_SANDBOX_LOWER")' in sqlite_source
