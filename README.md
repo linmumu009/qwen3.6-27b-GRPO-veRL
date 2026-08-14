@@ -42,6 +42,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - 双机各48题时累计18个mixed候选，语义批准增至3个、拒绝15个；第三个shard新增11个mixed中仅2个通过，9个拒绝项包括8个未明确要求求和却使用SUM gold的任务，以及1个要求评估维表变动影响但SQL/reward只覆盖单一金额汇总的多意图任务。当前优质mixed的累计产率为`3/96=3.125%`（按已完成题计），后续继续逐shard审视，不因高`7/8`正确数自动放宽语义标准。
 - 新 DWH 数据不再复用老板的 instruction-first/backward-SQL 链：单个物流 SQLite 沙箱内以结构化 QueryPlan 同源生成只读 SQL 和 hidden gold，再把仅含合成业务语义的约束交给用户私有 OpenAI-compatible API 改写为自然题面；URL、模型名和 key 只从 5 号机 0600 私有配置读取，SQL、gold、数据库行和凭据均不进入请求。最终 `20260814_llin_dwh_planfirst_api_v3` 固定 300 条、每 50 条提升一档，共 6 档，覆盖老板、财务、分析、运营、仓储、区域、采购、客服、计划、销售和普通员工 11 类角色；300/300 SQL/gold 精确重放、300/300 语义保真、零技术词、零重复，训练仍关闭，下一步仍须先做每档 8 题、每题 4 次的分层 rollout，只有非 `0/4`、非 `4/4` 且语义复核通过的题才可进入训练。
 - PI-Agent 与 veRL rollout 的 `10题×每题8条` 部署路径门禁已完成但未通过：追加调用链审计确认两臂有效采样均为 `temperature=1.0 / top_p=0.95 / top_k=20`，且每个题组的8条轨迹全部互异，不是temperature 0或复制候选；但单次token cap、compaction、墙钟、并发和工具实现并不相同，因此只能结论为“现网路径不兼容”，不能称为严格同配置A/B。当前不开放 bucket 筛选或训练；10条 val-only 题始终禁止进入训练，全对/全错也不得永久删除。
+- Step 120 的单请求长上下文阶梯已在空闲 6 号机完成：并发1、TP8、固定生成256 tokens、关闭prefix cache时，2K/40K/48K解码分别为`9.331/9.121/9.190 tokens/s`，40K/48K仍保留2K的`97.75%/98.48%`，未出现“超过40K只剩1/10”；TTFT由`0.300s`增至`3.625/4.318s`，64K因当前`max_model_len=49,152`未执行。该结果只代表单序列速度，不等同于高并发服务总吞吐。
 - 所有新增镜像、容器、工作目录和实验名均以 `llin` 开头，不复用或修改其他人的环境。
 
 当前服务器部署：
@@ -76,6 +77,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [`docs/training_experiment_report_20260731.md`](docs/training_experiment_report_20260731.md)：从初始环境、数据改造、十余次关键尝试到最终 One-Step 与 bounded fully-async 跑通的完整复盘报告。
 - [`docs/trajectory_rollout_investigation_20260731.html`](docs/trajectory_rollout_investigation_20260731.html)：同 prompt 轨迹长度对比、长尾 rollout 超时、完整 GRPO group 队列与 vLLM 真取消方案的可交互调查报告。
 - [`docs/context_48k_tool_turn_validation_20260731.md`](docs/context_48k_tool_turn_validation_20260731.md)：8K/16K/32K/48K 阶梯实跑、显存峰值、system prompt 血缘和工具调用轮次对齐报告。
+- [`docs/long_context_decode_benchmark_step120_20260814.md`](docs/long_context_decode_benchmark_step120_20260814.md)：Step 120 在2K/4K/8K/16K/32K/40K/48K的单请求TTFT、解码速度和端到端墙钟阶梯；64K记录为当前49,152上限的容量边界。
 - [`docs/fastest_k_oversampling_validation_20260731.md`](docs/fastest_k_oversampling_validation_20260731.md)：`4→4` 与 `6→最快4` 的严格单步 A/B、吞吐收益、质量选择偏差和物理 vLLM 取消证据边界。
 - [`docs/fastest_k_efficiency_20step_20260731.html`](docs/fastest_k_efficiency_20step_20260731.html)：五组拓扑/过量采样矩阵、8-group 预热的 20-step fully-async 时序、奖励泄漏复核和下一步效率实验的自包含技术报告。
 - [`docs/fastest_k_abort_debug_20260801.html`](docs/fastest_k_abort_debug_20260801.html)：严格奖励在线门禁、Fastest-K V2–V4 假取消故障链、external/internal request ID 根因、最终 8/8 物理取消和显存释放的完整技术复盘。
@@ -243,6 +245,11 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/run_chosen_only_first_action_one_step.sh`、`scripts/launch_chosen_only_first_action_one_step.sh`、`scripts/analyze_chosen_only_first_action_post_canary.py`：严格执行获准的一步 train48 `0.25/8` 全参 SFT，并在相同 calibration16 上按预注册的 aggregate/per-task NLL、greedy/top-5、mean rank、tool structure 和更早分叉门自动决定是否只开放一次自由回放；无论结果如何都禁止追加训练和 promotion。
 
 ## 已验证状态
+
+### v1.11.37 — 2026-08-14
+
+- 新增无文本落盘的vLLM长上下文单请求基准：固定并发1、256-token生成、TP8和关闭prefix cache，按2K/4K/8K/16K/32K/40K/48K各重复两次，分别记录TTFT、解码吞吐和端到端墙钟；64K超过当前49,152上限时fail closed。
+- Step 120实跑显示40K/48K解码为`9.121/9.190 tokens/s`，相对2K的`9.331 tokens/s`保留`97.75%/98.48%`，没有40K后的10倍下降；TTFT由`0.300s`增至`3.625/4.318s`。结果明确限定为单序列，不外推到高并发服务合计吞吐。
 
 ### v1.11.36 — 2026-08-14
 
