@@ -21,6 +21,11 @@ def test_standalone_runner_keeps_sampling_and_context_contract_variable_but_expl
         'prompt + response token budgets must equal max context',
         '"--trajectory-timeout-seconds", type=float, default=900.0',
         'trajectory_abort_acknowledged_count',
+        '"--model-label", default="step120"',
+        '"--policy-step", type=int, default=120',
+        '"global_steps": args.policy_step',
+        '"native_hf_checkpoint"',
+        '"llin_megatron_to_hf_export"',
         'tail_batch_padding_policy',
         'batch.padding(padding_rows, padding_candidate="last")',
         'output = output[:expected]',
@@ -43,6 +48,8 @@ def test_launcher_passes_concurrency_context_and_sampling_shape_to_runner():
     )
     for argument in (
         "--expected-tasks",
+        "--model-label",
+        "--policy-step",
         "--samples-per-task",
         "--task-batch-size",
         "--max-num-seqs",
@@ -61,6 +68,20 @@ def test_launcher_passes_concurrency_context_and_sampling_shape_to_runner():
     assert 'MAX_NUM_SEQS="${MAX_NUM_SEQS:-32}"' in text
     assert 'TRAJECTORY_TIMEOUT_SECONDS="${TRAJECTORY_TIMEOUT_SECONDS:-900}"' in text
     assert 'MAX_ATTEMPTS="${MAX_ATTEMPTS:-3}"' in text
+
+
+def test_plan_first_finalizer_recovers_remote_per_task_and_runs_paired_comparison():
+    finalizer = (ROOT / "scripts" / "finalize_plan_first_dwh_model_comparison.py").read_text(
+        encoding="utf-8"
+    )
+    launcher = (
+        ROOT / "scripts" / "launch_plan_first_dwh_model_comparison_finalizer.sh"
+    ).read_text(encoding="utf-8")
+    assert "NodeAffinitySchedulingStrategy" in finalizer
+    assert '"per_task": per_task.read_bytes()' in finalizer
+    assert "compare(" in finalizer
+    assert "step120_mixed_training_candidates" in finalizer
+    assert "finalizer_exit_code" in launcher
 
 
 def test_pi_loop_physically_aborts_before_cancelling_timed_out_task():

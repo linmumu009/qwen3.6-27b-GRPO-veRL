@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 from datetime import datetime, timezone
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -36,6 +37,47 @@ from scripts.standalone_rollout_shards import (
     shard_ranges,
     write_jsonl_atomic,
 )
+
+
+def file_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def model_identity(model: Path, policy_step: int) -> dict:
+    """Verify either an exact llin export or the frozen native HF layout."""
+
+    config = model / "config.json"
+    index = model / "model.safetensors.index.json"
+    if not config.is_file() or not index.is_file():
+        raise FileNotFoundError("model config or safetensor index is missing")
+    export_manifest = model / "llin_export_manifest.json"
+    if export_manifest.is_file():
+        payload = json.loads(export_manifest.read_text(encoding="utf-8"))
+        verification = payload.get("verification") or {}
+        actor_checkpoint = str(payload.get("actor_checkpoint") or "")
+        if verification.get("valid") is not True:
+            raise ValueError("llin export manifest verification is not valid")
+        if f"global_step_{policy_step}" not in actor_checkpoint:
+            raise ValueError("llin export manifest policy step mismatch")
+        kind = "llin_megatron_to_hf_export"
+        manifest_sha256 = file_sha256(export_manifest)
+    else:
+        if policy_step != 0:
+            raise ValueError("only the native policy step may omit llin_export_manifest.json")
+        kind = "native_hf_checkpoint"
+        manifest_sha256 = None
+    return {
+        "valid": True,
+        "kind": kind,
+        "policy_step": policy_step,
+        "config_sha256": file_sha256(config),
+        "safetensor_index_sha256": file_sha256(index),
+        "export_manifest_sha256": manifest_sha256,
+    }
 
 
 def build_config(args: argparse.Namespace):
@@ -111,8 +153,12 @@ def build_config(args: argparse.Namespace):
 
 def safe_contract(config, args: argparse.Namespace) -> dict:
     rollout = config.actor_rollout_ref.rollout
+    identity = model_identity(args.model, args.policy_step)
     return {
-        "contract": "verl-standalone-runtime-parity-arm-v1",
+        "contract": "verl-standalone-runtime-parity-arm-v2",
+        "model_label": args.model_label,
+        "policy_step": args.policy_step,
+        "model_identity": identity,
         "model_manifest_exists": (args.model / "llin_export_manifest.json").is_file(),
         "dataset_exists": args.dataset.is_file(),
         "tasks": args.expected_tasks,
@@ -182,7 +228,7 @@ def build_batch(
         "recompute_log_prob": False,
         "do_sample": True,
         "validate": True,
-        "global_steps": 120,
+        "global_steps": args.policy_step,
     }
     return batch
 
@@ -213,9 +259,7 @@ def run(args: argparse.Namespace) -> dict:
     started_monotonic = time.monotonic()
     config = build_config(args)
     contract = safe_contract(config, args)
-    if not contract["dataset_exists"] or (
-        not args.preflight_only and not contract["model_manifest_exists"]
-    ):
+    if not contract["dataset_exists"] or not contract["model_identity"]["valid"]:
         raise FileNotFoundError(contract)
     if args.max_prompt_tokens + args.max_response_tokens != args.max_context_tokens:
         raise ValueError("prompt + response token budgets must equal max context")
@@ -381,6 +425,8 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--project-root", type=Path, default=Path("/workspace/llin-verl-grpo"))
     parser.add_argument("--model", type=Path, required=True)
+    parser.add_argument("--model-label", default="step120")
+    parser.add_argument("--policy-step", type=int, default=120)
     parser.add_argument("--dataset", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--ray-address", default="192.168.202.5:26379")

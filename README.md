@@ -40,7 +40,8 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - 281题双机筛选采用逐shard累计门禁：每题必须恰有8条完整可用轨迹、无runtime error和超时，并且纯最终结果正确数为`1–7/8`才进入mixed审视队列；`0/8`和`8/8`仅从本次GRPO更新排除，不从源数据永久删除。mixed仍只是候选，须继续人工核对“题意无歧义蕴含gold、SQL完整回答题意、SQL结果支持期望值、最终结果路由可信”，审核前`training_allowed=false`。
 - 首批双机各32题完成后共有7个mixed候选，逐题语义复核仅批准1个、拒绝6个：5个把“查看/给出数据”擅自收窄为求和，1个日期字段口径含混且出现“正文提到gold但最终结论选择另一数值”仍被纯数值包含式评分判对。首批说明mixed难度只是必要条件，不是训练数据质量保证；批准候选在全281题收尾和合并复核前仍保持`training_allowed=false`。
 - 双机各48题时累计18个mixed候选，语义批准增至3个、拒绝15个；第三个shard新增11个mixed中仅2个通过，9个拒绝项包括8个未明确要求求和却使用SUM gold的任务，以及1个要求评估维表变动影响但SQL/reward只覆盖单一金额汇总的多意图任务。当前优质mixed的累计产率为`3/96=3.125%`（按已完成题计），后续继续逐shard审视，不因高`7/8`正确数自动放宽语义标准。
-- 新 DWH 数据不再复用老板的 instruction-first/backward-SQL 链：单个物流 SQLite 沙箱内以结构化 QueryPlan 同源生成只读 SQL 和 hidden gold，再把仅含合成业务语义的约束交给用户私有 OpenAI-compatible API 改写为自然题面；URL、模型名和 key 只从 5 号机 0600 私有配置读取，SQL、gold、数据库行和凭据均不进入请求。最终 `20260814_llin_dwh_planfirst_api_v3` 固定 300 条、每 50 条提升一档，共 6 档，覆盖老板、财务、分析、运营、仓储、区域、采购、客服、计划、销售和普通员工 11 类角色；300/300 SQL/gold 精确重放、300/300 语义保真、零技术词、零重复，训练仍关闭，下一步仍须先做每档 8 题、每题 4 次的分层 rollout，只有非 `0/4`、非 `4/4` 且语义复核通过的题才可进入训练。
+- 新 DWH 数据不再复用老板的 instruction-first/backward-SQL 链：单个物流 SQLite 沙箱内以结构化 QueryPlan 同源生成只读 SQL 和 hidden gold，再把仅含合成业务语义的约束交给用户私有 OpenAI-compatible API 改写为自然题面；URL、模型名和 key 只从 5 号机 0600 私有配置读取，SQL、gold、数据库行和凭据均不进入请求。最终 `20260814_llin_dwh_planfirst_api_v3` 固定 300 条、每 50 条提升一档，共 6 档，覆盖老板、财务、分析、运营、仓储、区域、采购、客服、计划、销售和普通员工 11 类角色；300/300 SQL/gold 精确重放、300/300 语义保真、零技术词、零重复。原生成清单中的 `4` 次小校准已被同实际 GRPO 一致的每题 `8` 次双模型比较取代，训练继续关闭。
+- v3 不再直接进入五步训练，先执行基座与 Step 120 的同题概率地图：两模型均对 300 题各生成 8 条独立 PI-Agent 轨迹，共 4,800 条；前 60 题按六档各 10 题冻结为 evaluation-only，其中首个 48 题分片固定为每档 8 题的并发/评分先导，剩余 240 题才是候选供给。模型可见运行时投影严格只包含 `logistics.sqlite`、`schema_dictionary.md` 和空 `documents/`，含 hidden gold/SQL 的 `dwh_tasks.jsonl` 永不复制进工作区；全流程只做最终 numeric/table 结果评分并保持 `training_allowed=false`。
 - PI-Agent 与 veRL rollout 的 `10题×每题8条` 部署路径门禁已完成但未通过：追加调用链审计确认两臂有效采样均为 `temperature=1.0 / top_p=0.95 / top_k=20`，且每个题组的8条轨迹全部互异，不是temperature 0或复制候选；但单次token cap、compaction、墙钟、并发和工具实现并不相同，因此只能结论为“现网路径不兼容”，不能称为严格同配置A/B。当前不开放 bucket 筛选或训练；10条 val-only 题始终禁止进入训练，全对/全错也不得永久删除。
 - Step 120 的单请求长上下文阶梯已在空闲 6 号机完成：并发1、TP8、固定生成256 tokens、关闭prefix cache时，2K/40K/48K解码分别为`9.331/9.121/9.190 tokens/s`，40K/48K仍保留2K的`97.75%/98.48%`，未出现“超过40K只剩1/10”；TTFT由`0.300s`增至`3.625/4.318s`，64K因当前`max_model_len=49,152`未执行。该结果只代表单序列速度，不等同于高并发服务总吞吐。
 - 所有新增镜像、容器、工作目录和实验名均以 `llin` 开头，不复用或修改其他人的环境。
@@ -245,6 +246,12 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/run_chosen_only_first_action_one_step.sh`、`scripts/launch_chosen_only_first_action_one_step.sh`、`scripts/analyze_chosen_only_first_action_post_canary.py`：严格执行获准的一步 train48 `0.25/8` 全参 SFT，并在相同 calibration16 上按预注册的 aggregate/per-task NLL、greedy/top-5、mean rank、tool structure 和更早分叉门自动决定是否只开放一次自由回放；无论结果如何都禁止追加训练和 promotion。
 
 ## 已验证状态
+
+### v1.11.38 — 2026-08-14
+
+- 新增 plan-first v3 双模型比较数据适配器：复验 300/300 SQL/gold 后，将首 60 题预冻结、首 48 题按六档各 8 题交错排列，其余 240 题标记为 training-candidate 但继续禁训；Parquet 统一绑定题面、最终 numeric/table gold、验证 SQL、数据库环境和老板原始 system/四工具合同。
+- 新增最小权限运行时投影：每条轨迹只复制数据库、schema 和空文档目录，任何额外文件或哈希不一致均 fail closed，避免模型从源任务清单读取 hidden gold/SQL。独立 vLLM 运行器现区分原生 HF checkpoint 与经清单验证的 Step 120 HF 导出，并记录正确 policy step。
+- 新增双臂配对分析和 Ray finalizer：按同题汇总 `0–8`、all-wrong/mixed/all-correct 转移、六档与 numeric/table 成功率、Step120 相对基座胜负，以及仅在 240 题候选池内的 Step120 mixed 数量；请求随机性按题级配对解释，不伪称逐请求同 seed。
 
 ### v1.11.37 — 2026-08-14
 
