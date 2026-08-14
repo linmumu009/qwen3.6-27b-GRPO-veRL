@@ -7,11 +7,18 @@ import pyarrow.parquet as pq
 from scripts.merge_multisandbox_dwh_rollout_analysis import merge
 
 
-def arm(tmp_path: Path, name: str, verifier: str, bucket: str, correct: int):
+def arm(
+    tmp_path: Path,
+    name: str,
+    verifier: str,
+    bucket: str,
+    correct: int,
+    contract: str = "boss-multisandbox-dwh-rollout-outcomes-v2",
+):
     root = tmp_path / name
     root.mkdir()
     summary = {
-        "contract": "boss-multisandbox-dwh-rollout-outcomes-v1",
+        "contract": contract,
         "tasks": 1,
         "samples_per_task": 2,
         "trajectories": 2,
@@ -47,3 +54,32 @@ def test_merge_sums_safe_counts_and_keeps_mixed_union_disjoint(tmp_path: Path):
     assert result["bucket_counts"] == {"all_wrong": 1, "mixed": 1}
     assert result["mixed_screening_rows"] == 1
     assert result["training_allowed"] is False
+
+
+def test_merge_accepts_legacy_v1_only_when_both_arms_match(tmp_path: Path):
+    contract = "boss-multisandbox-dwh-rollout-outcomes-v1"
+    summary1, mixed1 = arm(tmp_path, "a", "v:1", "mixed", 1, contract)
+    summary2, mixed2 = arm(tmp_path, "b", "v:2", "all_wrong", 0, contract)
+
+    result = merge([summary1, summary2], [mixed1, mixed2], tmp_path / "merged")
+
+    assert result["tasks"] == 2
+
+
+def test_merge_rejects_mixed_arm_contract_versions(tmp_path: Path):
+    summary1, mixed1 = arm(
+        tmp_path,
+        "a",
+        "v:1",
+        "mixed",
+        1,
+        "boss-multisandbox-dwh-rollout-outcomes-v1",
+    )
+    summary2, mixed2 = arm(tmp_path, "b", "v:2", "all_wrong", 0)
+
+    try:
+        merge([summary1, summary2], [mixed1, mixed2], tmp_path / "merged")
+    except ValueError as error:
+        assert str(error) == "unexpected arm summary contract"
+    else:
+        raise AssertionError("mixed arm contracts must fail closed")

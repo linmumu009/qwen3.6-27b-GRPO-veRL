@@ -40,7 +40,12 @@ def merge(summary_paths: list[Path], mixed_paths: list[Path], output_dir: Path) 
     if len(summary_paths) != 2 or len(mixed_paths) != 2:
         raise ValueError("exactly two arm summaries and mixed datasets are required")
     summaries = [json.loads(path.read_text(encoding="utf-8")) for path in summary_paths]
-    if any(item.get("contract") != "boss-multisandbox-dwh-rollout-outcomes-v1" for item in summaries):
+    contracts = {str(item.get("contract")) for item in summaries}
+    supported_contracts = {
+        "boss-multisandbox-dwh-rollout-outcomes-v1",
+        "boss-multisandbox-dwh-rollout-outcomes-v2",
+    }
+    if len(contracts) != 1 or not contracts <= supported_contracts:
         raise ValueError("unexpected arm summary contract")
     samples = {int(item["samples_per_task"]) for item in summaries}
     if len(samples) != 1:
