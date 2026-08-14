@@ -409,6 +409,8 @@ def rewrite_sandbox(
     socks_proxy: str | None = None,
     resume_incomplete: bool = False,
     limit: int | None = None,
+    contract: str = CONTRACT,
+    instruction_style: str = "boss_api_mixed_company_roles_natural_language_v1",
 ) -> Path:
     if not re.fullmatch(r"[A-Za-z0-9._-]+", version):
         raise ValueError("invalid output version")
@@ -472,7 +474,7 @@ def rewrite_sandbox(
                     final_instruction = results[str(task["task_id"])]
                     updated["natural_language_instruction"] = final_instruction
                     updated["instruction_variants"] = [final_instruction]
-                    updated["instruction_style"] = "boss_api_mixed_company_roles_natural_language_v1"
+                    updated["instruction_style"] = instruction_style
                     updated["instruction_generation"] = {
                         "method": "boss_openai_compatible_chat_api",
                         "source_instruction_sha256": _source_hash(source_instruction),
@@ -480,7 +482,7 @@ def rewrite_sandbox(
                         "attempt_policy": "fail_closed",
                         "requested_max_workers": max_workers,
                     }
-                    updated["generation_contract"] = CONTRACT
+                    updated["generation_contract"] = contract
                     rewritten_by_id[str(task["task_id"])] = updated
                 ordered_partial = [
                     rewritten_by_id[str(task["task_id"])]
@@ -506,7 +508,7 @@ def rewrite_sandbox(
             # A limited run is an API smoke artifact, never a complete sandbox.
             summary_name = "api_smoke_summary.json"
             summary = {
-                "contract": CONTRACT,
+                "contract": contract,
                 "task_count": len(rewritten),
                 "api_used": True,
                 "semantic_validation_passed": len(rewritten),
@@ -516,16 +518,16 @@ def rewrite_sandbox(
                 json.dumps(summary, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
             )
         else:
-            if len(rewritten) != 300:
-                raise ValueError(f"expected 300 API rewrites, got {len(rewritten)}")
+            if len(rewritten) != len(tasks):
+                raise ValueError(f"expected {len(tasks)} API rewrites, got {len(rewritten)}")
             summary_path = incomplete / "generation_summary.json"
             summary = json.loads(summary_path.read_text(encoding="utf-8"))
             summary.update(
                 {
-                    "contract": CONTRACT,
+                    "contract": contract,
                     "environment_id": f"sft/{version}",
                     "external_api_used": True,
-                    "instruction_style": "boss_api_mixed_company_roles_natural_language_v1",
+                    "instruction_style": instruction_style,
                     "api_rewrite_rows": len(rewritten),
                     "api_semantic_validation_passed_rows": len(rewritten),
                     "training_allowed": False,
