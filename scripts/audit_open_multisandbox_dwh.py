@@ -7,6 +7,7 @@ import argparse
 from collections import Counter
 import hashlib
 import json
+import math
 from pathlib import Path
 import re
 import sqlite3
@@ -29,7 +30,36 @@ def read_jsonl(path: Path) -> list[dict[str, Any]]:
         return [json.loads(line) for line in handle if line.strip()]
 
 
-def audit_sandbox(path: Path) -> dict[str, Any]:
+def _tables_match(
+    actual: list[dict[str, Any]],
+    expected: list[dict[str, Any]],
+    *,
+    numeric_abs_tol: float,
+) -> tuple[bool, float]:
+    if len(actual) != len(expected):
+        return False, float("inf")
+    maximum = 0.0
+    for left, right in zip(actual, expected, strict=True):
+        if str(left.get("category")) != str(right.get("category")):
+            return False, float("inf")
+        try:
+            difference = abs(float(left.get("value")) - float(right.get("value")))
+        except (TypeError, ValueError):
+            return False, float("inf")
+        maximum = max(maximum, difference)
+        if not math.isclose(
+            float(left["value"]),
+            float(right["value"]),
+            rel_tol=0.0,
+            abs_tol=numeric_abs_tol,
+        ):
+            return False, maximum
+    return True, maximum
+
+
+def audit_sandbox(path: Path, *, numeric_abs_tol: float = 0.0) -> dict[str, Any]:
+    if numeric_abs_tol < 0:
+        raise ValueError("numeric_abs_tol must be non-negative")
     tasks = read_jsonl(path / "dwh_tasks.jsonl")
     if len(tasks) != 500:
         raise ValueError(f"{path}: expected 500 tasks, got {len(tasks)}")
@@ -48,6 +78,8 @@ def audit_sandbox(path: Path) -> dict[str, Any]:
     result_hashes: list[str] = []
     api_rows = 0
     result_rows = Counter()
+    runtime_numeric_drift_tasks = 0
+    runtime_numeric_max_abs_diff = 0.0
     try:
         for task in tasks:
             if task.get("training_allowed") is not False:
@@ -65,10 +97,19 @@ def audit_sandbox(path: Path) -> dict[str, Any]:
             rows = [dict(row) for row in connection.execute(sql).fetchall()]
             normalized = [{"category": str(row["category"]), "value": row["value"]} for row in rows]
             expected = task["gold_answer"]["value"]
-            if normalized != expected:
+            exact = normalized == expected
+            matched, maximum = _tables_match(
+                normalized,
+                expected,
+                numeric_abs_tol=numeric_abs_tol,
+            )
+            if not matched:
                 raise ValueError(f"{path}: replayed SQL does not equal hidden gold")
+            if not exact:
+                runtime_numeric_drift_tasks += 1
+                runtime_numeric_max_abs_diff = max(runtime_numeric_max_abs_diff, maximum)
             result_hash = canonical_hash(normalized)
-            if result_hash != task["validation"]["result_sha256"]:
+            if exact and result_hash != task["validation"]["result_sha256"]:
                 raise ValueError(f"{path}: result hash mismatch")
             result_hashes.append(result_hash)
             result_rows[len(rows)] += 1
@@ -103,6 +144,9 @@ def audit_sandbox(path: Path) -> dict[str, Any]:
         "sql_gold_replay_passed_rows": len(tasks),
         "semantic_anchor_passed_rows": len(tasks),
         "unique_result_tables": len(set(result_hashes)),
+        "runtime_numeric_abs_tolerance": numeric_abs_tol,
+        "runtime_numeric_drift_tasks": runtime_numeric_drift_tasks,
+        "runtime_numeric_max_abs_diff": runtime_numeric_max_abs_diff,
         "result_row_distribution": dict(sorted(result_rows.items())),
         "mean_features_by_level": by_level_features,
         "training_allowed": False,

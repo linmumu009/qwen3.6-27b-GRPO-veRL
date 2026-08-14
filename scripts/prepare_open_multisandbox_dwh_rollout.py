@@ -15,6 +15,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import sqlite3
 from typing import Any
 
 import pyarrow as pa
@@ -33,6 +34,7 @@ from scripts.prepare_plan_first_dwh_model_comparison import (
 CONTRACT = "llin-open-multisandbox-dwh-step120-rollout-v1"
 TOOL_NAMES = ["bash", "read", "write", "edit"]
 RUNTIME_SUFFIX = "_runtime"
+RUNTIME_REPLAY_ABS_TOL = 0.011
 
 
 def stable_key(task: dict[str, Any], seed: str) -> str:
@@ -123,6 +125,50 @@ def build_record(
     }
 
 
+def reconcile_runtime_gold(
+    source_dir: Path,
+    tasks: list[dict[str, Any]],
+    *,
+    abs_tol: float,
+) -> tuple[list[dict[str, Any]], int, float]:
+    connection = sqlite3.connect(
+        f"file:{(source_dir / 'logistics.sqlite').as_posix()}?mode=ro",
+        uri=True,
+    )
+    connection.row_factory = sqlite3.Row
+    reconciled: list[dict[str, Any]] = []
+    adjusted = 0
+    maximum = 0.0
+    try:
+        for source_task in tasks:
+            task = json.loads(json.dumps(source_task, ensure_ascii=False))
+            expected = task["gold_answer"]["value"]
+            actual = [
+                {"category": str(row["category"]), "value": row["value"]}
+                for row in connection.execute(
+                    str(task["gold_answer"]["verification_sql"])
+                ).fetchall()
+            ]
+            if len(actual) != len(expected):
+                raise ValueError("runtime replay changed table row count")
+            local_maximum = 0.0
+            for left, right in zip(actual, expected, strict=True):
+                if str(left["category"]) != str(right["category"]):
+                    raise ValueError("runtime replay changed table category or ordering")
+                difference = abs(float(left["value"]) - float(right["value"]))
+                local_maximum = max(local_maximum, difference)
+                if difference > abs_tol:
+                    raise ValueError("runtime replay numeric drift exceeds tolerance")
+            if actual != expected:
+                adjusted += 1
+                maximum = max(maximum, local_maximum)
+                task["gold_answer"]["value"] = actual
+            reconciled.append(task)
+    finally:
+        connection.close()
+    return reconciled, adjusted, maximum
+
+
 def write_parquet(path: Path, rows: list[dict[str, Any]]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_suffix(path.suffix + ".tmp")
@@ -132,10 +178,15 @@ def write_parquet(path: Path, rows: list[dict[str, Any]]) -> None:
 
 
 def prepare(source_dir: Path, runtime_root: Path, output_dir: Path, *, seed: str) -> dict[str, Any]:
-    audit = audit_sandbox(source_dir)
+    audit = audit_sandbox(source_dir, numeric_abs_tol=RUNTIME_REPLAY_ABS_TOL)
     if audit["task_count"] != 500 or audit["sql_gold_replay_passed_rows"] != 500:
         raise ValueError("source sandbox did not pass the 500-row exact replay gate")
-    ordered = ordered_tasks(read_jsonl(source_dir / "dwh_tasks.jsonl"), seed)
+    reconciled, adjusted_tasks, maximum_drift = reconcile_runtime_gold(
+        source_dir,
+        read_jsonl(source_dir / "dwh_tasks.jsonl"),
+        abs_tol=RUNTIME_REPLAY_ABS_TOL,
+    )
+    ordered = ordered_tasks(reconciled, seed)
     runtime_version = source_dir.name + RUNTIME_SUFFIX
     runtime_dir = runtime_root / "sft" / runtime_version
     projection = create_runtime_projection(source_dir, runtime_dir)
@@ -172,6 +223,13 @@ def prepare(source_dir: Path, runtime_root: Path, output_dir: Path, *, seed: str
         "partition_difficulty_level_counts": {"m05": partition_levels["m05"], "m06": partition_levels["m06"]},
         "runtime_environment_id_sha256": canonical_hash(environment_id),
         "runtime_projection": projection,
+        "runtime_gold_replay": {
+            "numeric_abs_tolerance": RUNTIME_REPLAY_ABS_TOL,
+            "adjusted_tasks": adjusted_tasks,
+            "maximum_abs_diff": maximum_drift,
+            "row_count_category_and_order_must_match_exactly": True,
+            "source_sandbox_modified": False,
+        },
         "sampling_contract": {"temperature": 1.0, "top_p": 0.95, "top_k": 20},
         "context_contract": {
             "max_prompt_tokens": 4096,

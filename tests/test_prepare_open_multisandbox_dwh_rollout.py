@@ -49,9 +49,21 @@ def make_source(path: Path) -> None:
 def test_prepare_builds_balanced_private_partitions(tmp_path: Path) -> None:
     source = tmp_path / "source"
     make_source(source)
+    tasks_path = source / "dwh_tasks.jsonl"
+    tasks = [json.loads(line) for line in tasks_path.read_text(encoding="utf-8").splitlines()]
+    tasks[0]["gold_answer"]["value"][0]["value"] = 2.01
+    tasks[0]["validation"]["result_sha256"] = __import__(
+        "scripts.audit_open_multisandbox_dwh", fromlist=["canonical_hash"]
+    ).canonical_hash(tasks[0]["gold_answer"]["value"])
+    tasks_path.write_text(
+        "".join(json.dumps(row, ensure_ascii=False) + "\n" for row in tasks),
+        encoding="utf-8",
+    )
     manifest = prepare(source, tmp_path / "sandboxes", tmp_path / "out", seed="s")
     assert manifest["tasks"] == 500
     assert manifest["partition_tasks"] == {"m05": 250, "m06": 250}
+    assert manifest["runtime_gold_replay"]["adjusted_tasks"] == 1
+    assert manifest["runtime_gold_replay"]["maximum_abs_diff"] < 0.011
     assert manifest["partition_difficulty_level_counts"]["m05"] == {str(level): 50 for level in range(1, 6)}
     assert manifest["partition_difficulty_level_counts"]["m06"] == {str(level): 50 for level in range(1, 6)}
     first = pq.read_table(tmp_path / "out" / "open_multisandbox_dwh_m05.sensitive.parquet").to_pylist()
@@ -61,5 +73,9 @@ def test_prepare_builds_balanced_private_partitions(tmp_path: Path) -> None:
         {row["extra_info"]["global_index"] for row in second}
     )
     assert all(row["extra_info"]["training_allowed"] is False for row in first + second)
+    assert all(
+        json.loads(row["reward_model"]["ground_truth"]["expected_value_json"])[0]["value"] == 2.0
+        for row in first + second
+    )
     runtime = tmp_path / "sandboxes" / "sft" / "source_runtime"
     assert sorted(path.name for path in runtime.iterdir()) == ["documents", "logistics.sqlite", "schema_dictionary.md"]
