@@ -46,6 +46,14 @@ class PiAgentLoop(ToolAgentLoop):
         else:
             output = await super().run(sampling_params, **kwargs)
         defaults = {
+            # vLLM attaches these version fields to every completed request.  A
+            # worker whose whole chunk times out would otherwise omit
+            # ``global_steps`` entirely, and the outer DataProto.concat would
+            # receive a shorter non-tensor column than the batch.  Keep the key
+            # present with an explicit unknown value for timeout placeholders.
+            "global_steps": None,
+            "min_global_steps": None,
+            "max_global_steps": None,
             "force_final_triggered": False,
             "force_final_reason": "",
             "force_final_after_assistant_turns": self.force_final_after_assistant_turns,

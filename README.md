@@ -240,6 +240,10 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 已验证状态
 
+### v1.11.22 — 2026-08-14
+
+- 修复独立rollout的混合超时批次拼接：超时占位轨迹显式保留`global_steps/min_global_steps/max_global_steps`列，避免某个agent worker整块超时后外层`DataProto.concat`得到短列；新增合同回归测试覆盖该场景。
+
 ### v1.11.21 — 2026-08-14
 
 - 修复双机后台收尾器的环境传递：显式导出两臂路径、Ray 地址、远端资源、轮询与超时参数，确保脱离启动 shell 后仍能自动等待、回收和合并。

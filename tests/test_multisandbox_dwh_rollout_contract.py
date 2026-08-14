@@ -71,6 +71,15 @@ def test_pi_loop_physically_aborts_before_cancelling_timed_out_task():
     assert "__llin_request_id=request_id, **kwargs" not in text
 
 
+def test_pi_loop_timeout_placeholder_preserves_request_version_columns_for_mixed_batches():
+    text = (ROOT / "llin_verl" / "pi_agent_loop.py").read_text(encoding="utf-8")
+    defaults = text[text.index("        defaults = {") : text.index("        for key, value in defaults.items():")]
+
+    assert '"global_steps": None' in defaults
+    assert '"min_global_steps": None' in defaults
+    assert '"max_global_steps": None' in defaults
+
+
 def test_dual_finalizer_waits_on_remote_node_without_consuming_npu_resource():
     text = (ROOT / "scripts" / "finalize_multisandbox_dwh_dual_server.py").read_text(
         encoding="utf-8"
