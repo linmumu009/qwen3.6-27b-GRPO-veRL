@@ -21,8 +21,8 @@ from pathlib import Path
 from typing import Any, Iterable, Sequence
 
 
-DEFAULT_VERSION = "20260814_llin_dwh_planfirst_v1"
-GENERATOR_CONTRACT = "llin-plan-first-dwh-v1"
+DEFAULT_VERSION = "20260814_llin_dwh_planfirst_v3"
+GENERATOR_CONTRACT = "llin-plan-first-dwh-v3"
 ALLOWED_TASK_TYPES = {
     "aggregate_query",
     "single_metric_query",
@@ -30,6 +30,10 @@ ALLOWED_TASK_TYPES = {
 }
 FORBIDDEN_SQL = re.compile(
     r"\b(?:ATTACH|DETACH|INSERT|UPDATE|DELETE|DROP|ALTER|CREATE|REPLACE|VACUUM|PRAGMA)\b",
+    re.IGNORECASE,
+)
+TECHNICAL_INSTRUCTION_RE = re.compile(
+    r"SQL|SQLite|数据库|数据仓库|表名|字段名|category|value|SELECT|JOIN|GROUP\s+BY|HAVING",
     re.IGNORECASE,
 )
 
@@ -84,7 +88,7 @@ JOIN_SQL = {
 
 METRICS = {
     "shipment_count": ("COUNT(*)", "运单数量"),
-    "customer_count": ("COUNT(DISTINCT s.customer_id)", "去重客户数量"),
+    "customer_count": ("COUNT(DISTINCT s.customer_id)", "不同客户数量"),
     "freight_sum": ("ROUND(SUM(s.freight_amount), 2)", "运费总额"),
     "weight_sum": ("ROUND(SUM(s.weight_kg), 2)", "货物总重量（千克）"),
     "delivery_avg": ("ROUND(AVG(s.delivery_hours), 2)", "平均配送时长（小时）"),
@@ -93,6 +97,92 @@ METRICS = {
         "ROUND(100.0 * SUM(s.delayed_flag) / COUNT(*), 2)",
         "延误率（百分比）",
     ),
+}
+
+SCALAR_QUESTIONS = {
+    "shipment_count": "一共有多少票运单",
+    "customer_count": "涉及多少位不同客户",
+    "freight_sum": "运费一共是多少",
+    "weight_sum": "货物合计有多少千克",
+    "delivery_avg": "平均配送用了多少小时",
+    "freight_avg": "平均每票运费是多少",
+    "delay_rate": "延误率是多少",
+}
+
+SCALAR_CONTEXTS = {
+    "shipment_count": (
+        ("company_owner", "我想快速了解一下这个月的业务量。"),
+        ("operations", "我在排下个月的运营资源，先确认一下这批业务的规模。"),
+        ("data_analyst", "我在整理月度分析，需要核对一个基础指标。"),
+        ("planning", "我在做产能规划，想先看看这批货的单量。"),
+        ("general_employee", "我手上需要一个简单的业务规模数字。"),
+    ),
+    "customer_count": (
+        ("company_owner", "我想快速了解这段时间的客户覆盖情况。"),
+        ("customer_service", "我在安排客户回访，需要先核对覆盖范围。"),
+        ("data_analyst", "我在做客户覆盖分析，需要一个基础数字。"),
+        ("sales", "我在整理客户跟进计划，想先了解业务覆盖面。"),
+        ("general_employee", "我想确认一下这批业务涉及的客户范围。"),
+    ),
+    "freight_sum": (
+        ("company_owner", "我想快速了解这部分业务的运输成本。"),
+        ("finance", "我在核对运输费用，需要确认一笔汇总数据。"),
+        ("data_analyst", "我在做费用分析，需要核对一个成本指标。"),
+        ("operations", "我在复盘运输成本，需要先确认整体投入。"),
+        ("general_employee", "我想确认一下这批业务花了多少运输费用。"),
+    ),
+    "weight_sum": (
+        ("company_owner", "我想快速了解这部分业务的整体货量。"),
+        ("warehouse_manager", "我在复盘仓库吞吐情况，需要核对货量。"),
+        ("planning", "我在安排后续运力，想先了解这批货的规模。"),
+        ("data_analyst", "我在整理货量分析，需要一个汇总指标。"),
+        ("general_employee", "我想确认一下这批货的整体规模。"),
+    ),
+    "delivery_avg": (
+        ("company_owner", "我想快速了解这部分业务的配送效率。"),
+        ("customer_service", "我在关注客户体验，需要看一下配送速度。"),
+        ("operations", "我在做履约复盘，需要核对时效表现。"),
+        ("data_analyst", "我在分析配送效率，需要一个时效指标。"),
+        ("general_employee", "我想确认一下这批运单送得快不快。"),
+    ),
+}
+
+GROUP_CONTEXTS = {
+    "服务等级": (
+        ("company_owner", "我想看看不同配送服务的表现差别。"),
+        ("operations", "我在复盘各类配送服务的表现。"),
+        ("customer_service", "我想比较不同配送服务给客户带来的实际表现。"),
+        ("sales", "我在设计客户服务方案，想比较不同配送服务。"),
+        ("data_analyst", "我在做配送服务对比分析。"),
+    ),
+    "仓库名称": (
+        ("warehouse_manager", "我在做仓库月度复盘，想比较各仓的情况。"),
+        ("operations", "我需要比较不同仓库的运营表现。"),
+        ("finance", "我在核对各仓相关的业务数据，需要做一次横向比较。"),
+        ("planning", "我在安排仓网资源，想了解各仓之间的差别。"),
+        ("data_analyst", "我在整理仓库横向对比。"),
+    ),
+    "区域名称": (
+        ("regional_manager", "我在做区域经营复盘，想比较各地情况。"),
+        ("company_owner", "我想了解各区域的业务表现。"),
+        ("sales", "我在安排区域客户工作，需要一份区域对比。"),
+        ("finance", "我在做区域经营核对，需要比较各地数据。"),
+        ("data_analyst", "我在分析不同区域的表现差异。"),
+    ),
+    "承运商名称": (
+        ("procurement", "我在准备承运商续约评估，需要比较各家的表现。"),
+        ("operations", "我在复盘承运质量，想比较不同承运商。"),
+        ("finance", "我在核对承运合作数据，需要比较不同承运商。"),
+        ("company_owner", "我想看看不同承运商的履约表现。"),
+        ("data_analyst", "我在做承运商表现分析。"),
+    ),
+}
+
+GROUP_LABELS = {
+    "服务等级": "配送服务",
+    "仓库名称": "仓库",
+    "区域名称": "区域",
+    "承运商名称": "承运商",
 }
 
 
@@ -148,7 +238,7 @@ def build_plans() -> list[QueryPlan]:
                         metric_description=metric_description,
                         joins=(),
                         filters=(
-                            _filter(month_sql, f"发运日期在 {start} 至 {end}（含首尾）"),
+                            _filter(month_sql, f"2025 年 {month} 月发出"),
                         ),
                     )
                 )
@@ -166,11 +256,11 @@ def build_plans() -> list[QueryPlan]:
                         metric_description=metric_description,
                         joins=(),
                         filters=(
-                            _filter(month_sql, f"发运日期在 {start} 至 {end}（含首尾）"),
-                            _filter("s.status = '已签收'", "运单状态为“已签收”"),
+                            _filter(month_sql, f"2025 年 {month} 月发出"),
+                            _filter("s.status = '已签收'", "已经签收"),
                             _filter(
                                 f"s.service_level = {_sql_quote(service)}",
-                                f"服务等级为“{service}”",
+                                f"选择了“{service}”服务",
                             ),
                         ),
                     )
@@ -188,8 +278,8 @@ def build_plans() -> list[QueryPlan]:
                         metric_description=metric_description,
                         joins=(),
                         filters=(
-                            _filter(month_sql, f"发运日期在 {start} 至 {end}（含首尾）"),
-                            _filter("s.status <> '已取消'", "排除状态为“已取消”的运单"),
+                            _filter(month_sql, f"2025 年 {month} 月发出"),
+                            _filter("s.status <> '已取消'", "没有取消"),
                         ),
                         group_sql="s.service_level",
                         group_description="服务等级",
@@ -210,11 +300,11 @@ def build_plans() -> list[QueryPlan]:
                         metric_description=metric_description,
                         joins=("warehouses",),
                         filters=(
-                            _filter(month_sql, f"发运日期在 {start} 至 {end}（含首尾）"),
-                            _filter("s.status = '已签收'", "运单状态为“已签收”"),
+                            _filter(month_sql, f"2025 年 {month} 月发出"),
+                            _filter("s.status = '已签收'", "已经签收"),
                             _filter(
                                 f"w.warehouse_type = {_sql_quote(warehouse_type)}",
-                                f"仓库类型为“{warehouse_type}”",
+                                f"发货仓类型为“{warehouse_type}”",
                             ),
                         ),
                         group_sql="w.warehouse_name",
@@ -237,15 +327,15 @@ def build_plans() -> list[QueryPlan]:
                         metric_description=metric_description,
                         joins=("warehouses", "regions"),
                         filters=(
-                            _filter(month_sql, f"发运日期在 {start} 至 {end}（含首尾）"),
-                            _filter("s.status = '已签收'", "运单状态为“已签收”"),
+                            _filter(month_sql, f"2025 年 {month} 月发出"),
+                            _filter("s.status = '已签收'", "已经签收"),
                             _filter(
                                 f"s.service_level = {_sql_quote(service)}",
-                                f"服务等级为“{service}”",
+                                f"选择了“{service}”服务",
                             ),
                             _filter(
                                 f"r.region_tier = {_sql_quote(region_tier)}",
-                                f"区域层级为“{region_tier}”",
+                                f"发货仓位于“{region_tier}”",
                             ),
                         ),
                         group_sql="r.region_name",
@@ -269,19 +359,19 @@ def build_plans() -> list[QueryPlan]:
                     metric_description=delay_description,
                     joins=("warehouses", "carriers", "customers"),
                     filters=(
-                        _filter(month_sql, f"发运日期在 {start} 至 {end}（含首尾）"),
-                        _filter("s.status = '已签收'", "运单状态为“已签收”"),
+                        _filter(month_sql, f"2025 年 {month} 月发出"),
+                        _filter("s.status = '已签收'", "已经签收"),
                         _filter(
                             f"s.service_level = {_sql_quote(service)}",
-                            f"服务等级为“{service}”",
+                            f"选择了“{service}”服务",
                         ),
                         _filter(
                             f"c.carrier_level = {_sql_quote(carrier_level)}",
-                            f"承运商等级为“{carrier_level}”",
+                            f"由“{carrier_level}”级承运商负责",
                         ),
                         _filter(
                             f"u.customer_segment = {_sql_quote(segment)}",
-                            f"客户分层为“{segment}”",
+                            f"客户属于“{segment}”",
                         ),
                     ),
                     group_sql="c.carrier_name",
@@ -289,7 +379,7 @@ def build_plans() -> list[QueryPlan]:
                     order_direction="DESC",
                     limit=5,
                     having_sql="COUNT(*) >= 3",
-                    having_description="每个承运商至少有 3 票满足条件的运单",
+                    having_description="只看至少有 3 票符合这些条件的承运商",
                 )
             )
 
@@ -319,22 +409,50 @@ def compile_sql(plan: QueryPlan) -> str:
     return "\n".join(lines)
 
 
+def _instruction_style_index(plan: QueryPlan) -> int:
+    number = int(plan.plan_id.rsplit("_", 1)[-1])
+    # Mix task position, month block, and difficulty band so metric selection
+    # does not lock one metric to one speaker persona.
+    return (number + number // 5 + plan.difficulty_band) % 5
+
+
 def render_instruction(plan: QueryPlan) -> str:
-    conditions = "；".join(item.description for item in plan.filters)
-    if plan.having_description:
-        conditions += f"；并要求{plan.having_description}"
+    conditions = "、".join(item.description for item in plan.filters)
+    style = _instruction_style_index(plan)
     if plan.group_sql:
+        group_label = GROUP_LABELS[str(plan.group_description)]
         direction = "从高到低" if plan.order_direction == "DESC" else "从低到高"
-        limit_text = f"，只保留前 {plan.limit} 行" if plan.limit else ""
-        return (
-            f"请查询物流数据仓库，按{plan.group_description}分组计算{plan.metric_description}。"
-            f"统计条件：{conditions}。按指标值{direction}排序{limit_text}。"
-            "请返回 category 和 value 两列；不要估算，必须使用数据库中的精确结果。"
+        limit_text = f"，只列前 {plan.limit} 名" if plan.limit else ""
+        having_text = f"另外，{plan.having_description}。" if plan.having_description else ""
+        contexts = GROUP_CONTEXTS[str(plan.group_description)]
+        context = contexts[style][1]
+        metric_request = f"我需要知道各{group_label}的{plan.metric_description}。"
+        endings = (
+            f"请按结果{direction}排好{limit_text}，把名称和对应结果列出来。",
+            f"结果按{direction}排列{limit_text}，让我能直接比较。",
+            f"请把各项结果{direction}列出{limit_text}。",
+            f"按结果{direction}整理{limit_text}，同时写清楚对应的{group_label}。",
+            f"请按{direction}给出结果{limit_text}。",
         )
-    return (
-        f"请查询物流数据仓库并计算{plan.metric_description}。统计条件：{conditions}。"
-        "只返回一个精确数值，不要分组，也不要估算。"
+        return f"{context}{metric_request}范围只看{conditions}的运单。{having_text}{endings[style]}"
+
+    endings = (
+        "请直接告诉我结果。",
+        "给我最终数字就可以。",
+        "请给出汇总后的结果。",
+        "麻烦直接报出结果。",
+        "请告诉我算出来是多少。",
     )
+    question = SCALAR_QUESTIONS[plan.metric_key]
+    context = SCALAR_CONTEXTS[plan.metric_key][style][1]
+    return f"{context}只看{conditions}的运单，{question}？{endings[style]}"
+
+
+def instruction_role(plan: QueryPlan) -> str:
+    style = _instruction_style_index(plan)
+    if plan.group_sql:
+        return GROUP_CONTEXTS[str(plan.group_description)][style][0]
+    return SCALAR_CONTEXTS[plan.metric_key][style][0]
 
 
 def _create_schema(connection: sqlite3.Connection) -> None:
@@ -579,6 +697,8 @@ def build_task(database: Path, plan: QueryPlan) -> dict[str, Any]:
         },
         "_qa_status": "passed",
         "generation_contract": GENERATOR_CONTRACT,
+        "instruction_style": "mixed_company_roles_natural_language_v1",
+        "instruction_role": instruction_role(plan),
     }
 
 
@@ -669,6 +789,12 @@ def validate_task_set(tasks: Sequence[dict[str, Any]]) -> None:
             raise ValueError(f"unsupported task type: {task['task_type']}")
         if task["_qa_status"] != "passed" or not task["validation"]["checked"]:
             raise ValueError(f"unvalidated task: {task['task_id']}")
+        instruction = str(task["natural_language_instruction"])
+        technical_match = TECHNICAL_INSTRUCTION_RE.search(instruction)
+        if technical_match:
+            raise ValueError(
+                f"technical instruction term {technical_match.group(0)!r}: {task['task_id']}"
+            )
     if set(band_counts.values()) != {50}:
         raise ValueError(f"unbalanced difficulty bands: {band_counts}")
 
@@ -761,6 +887,16 @@ def generate(output_root: Path, version: str = DEFAULT_VERSION) -> Path:
         "database_integrity_check": "ok",
         "semantic_source": "query_plan",
         "external_api_used": False,
+        "instruction_style": "mixed_company_roles_natural_language_v1",
+        "instruction_role_counts": dict(
+            sorted(
+                {
+                    role: sum(task["instruction_role"] == role for task in tasks)
+                    for role in {task["instruction_role"] for task in tasks}
+                }.items()
+            )
+        ),
+        "training_allowed": False,
         "files": {
             "logistics.sqlite": _sha256(database),
             "dwh_tasks.jsonl": _sha256(tasks_path),

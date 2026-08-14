@@ -40,7 +40,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - 281题双机筛选采用逐shard累计门禁：每题必须恰有8条完整可用轨迹、无runtime error和超时，并且纯最终结果正确数为`1–7/8`才进入mixed审视队列；`0/8`和`8/8`仅从本次GRPO更新排除，不从源数据永久删除。mixed仍只是候选，须继续人工核对“题意无歧义蕴含gold、SQL完整回答题意、SQL结果支持期望值、最终结果路由可信”，审核前`training_allowed=false`。
 - 首批双机各32题完成后共有7个mixed候选，逐题语义复核仅批准1个、拒绝6个：5个把“查看/给出数据”擅自收窄为求和，1个日期字段口径含混且出现“正文提到gold但最终结论选择另一数值”仍被纯数值包含式评分判对。首批说明mixed难度只是必要条件，不是训练数据质量保证；批准候选在全281题收尾和合并复核前仍保持`training_allowed=false`。
 - 双机各48题时累计18个mixed候选，语义批准增至3个、拒绝15个；第三个shard新增11个mixed中仅2个通过，9个拒绝项包括8个未明确要求求和却使用SUM gold的任务，以及1个要求评估维表变动影响但SQL/reward只覆盖单一金额汇总的多意图任务。当前优质mixed的累计产率为`3/96=3.125%`（按已完成题计），后续继续逐shard审视，不因高`7/8`正确数自动放宽语义标准。
-- 新 DWH 数据不再复用老板的 instruction-first/backward-SQL 链：单个物流 SQLite 沙箱内以结构化 QueryPlan 同源渲染题面与只读 SQL，再从执行结果生成 gold；首版固定 300 条、每 50 条提升一档，共 6 档。生成不读取老板内嵌 API key，也不依赖外部 API；300/300 已通过可执行、非空、gold 精确重放和现有语义门禁，但仍须先做每档 8 题、每题 4 次的分层 rollout，只有非 `0/4`、非 `4/4` 且语义复核通过的题才可进入训练。
+- 新 DWH 数据不再复用老板的 instruction-first/backward-SQL 链：单个物流 SQLite 沙箱内以结构化 QueryPlan 同源生成只读 SQL 和 hidden gold，再把仅含合成业务语义的约束交给用户私有 OpenAI-compatible API 改写为自然题面；URL、模型名和 key 只从 5 号机 0600 私有配置读取，SQL、gold、数据库行和凭据均不进入请求。最终 `20260814_llin_dwh_planfirst_api_v3` 固定 300 条、每 50 条提升一档，共 6 档，覆盖老板、财务、分析、运营、仓储、区域、采购、客服、计划、销售和普通员工 11 类角色；300/300 SQL/gold 精确重放、300/300 语义保真、零技术词、零重复，训练仍关闭，下一步仍须先做每档 8 题、每题 4 次的分层 rollout，只有非 `0/4`、非 `4/4` 且语义复核通过的题才可进入训练。
 - PI-Agent 与 veRL rollout 的 `10题×每题8条` 部署路径门禁已完成但未通过：追加调用链审计确认两臂有效采样均为 `temperature=1.0 / top_p=0.95 / top_k=20`，且每个题组的8条轨迹全部互异，不是temperature 0或复制候选；但单次token cap、compaction、墙钟、并发和工具实现并不相同，因此只能结论为“现网路径不兼容”，不能称为严格同配置A/B。当前不开放 bucket 筛选或训练；10条 val-only 题始终禁止进入训练，全对/全错也不得永久删除。
 - 所有新增镜像、容器、工作目录和实验名均以 `llin` 开头，不复用或修改其他人的环境。
 
@@ -243,6 +243,12 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/run_chosen_only_first_action_one_step.sh`、`scripts/launch_chosen_only_first_action_one_step.sh`、`scripts/analyze_chosen_only_first_action_post_canary.py`：严格执行获准的一步 train48 `0.25/8` 全参 SFT，并在相同 calibration16 上按预注册的 aggregate/per-task NLL、greedy/top-5、mean rank、tool structure 和更早分叉门自动决定是否只开放一次自由回放；无论结果如何都禁止追加训练和 promotion。
 
 ## 已验证状态
+
+### v1.11.36 — 2026-08-14
+
+- 将 plan-first DWH 生成器升级到 v3：第 4 档明确区分“发货仓类型”与具体仓库名称，避免先锁死比较维度的歧义；API 改写器新增失败原因反馈、等价业务说法支持、仓库类型显式门禁、断点行重新校验、显式重试和连接关闭，避免隐藏重试把低并发放大。
+- 新增自然语言质量审计与选择性修订器：检查 11 类角色覆盖、语义约束、技术词、重复、口语化、开头模板和长度；可在 QueryPlan/gold/角色完全未变且旧题面重新校验通过时复用已有行，只重写指定难度档或新门禁拒绝项。
+- 5 号机最终部署 `/data3/llin/qwen3.6-27b-verl-grpo/sandboxes/sft/20260814_llin_dwh_planfirst_api_v3`：先复用 250 条并重写第 4 档 50 条，再只重写 1 条残余歧义；最终 300/300 SQL/gold 重放和语义门通过，300 条题面唯一、零技术词、291 种规范化开头，沙箱目录 0700、文件 0600，`training_allowed=false`。
 
 ### v1.11.35 — 2026-08-14
 

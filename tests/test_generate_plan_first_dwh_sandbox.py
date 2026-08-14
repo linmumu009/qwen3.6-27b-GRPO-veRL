@@ -8,6 +8,7 @@ import pytest
 
 from scripts.generate_plan_first_dwh_sandbox import (
     DEFAULT_VERSION,
+    TECHNICAL_INSTRUCTION_RE,
     build_plans,
     compile_sql,
     generate,
@@ -33,6 +34,25 @@ def test_plan_first_rendering_is_complete_and_unique() -> None:
     assert {plan.difficulty_band for plan in plans} == set(range(1, 7))
 
 
+def test_band_four_filters_warehouse_type_without_fixing_grouped_warehouse() -> None:
+    plans = [plan for plan in build_plans() if plan.difficulty_band == 4]
+
+    assert len(plans) == 50
+    assert all(plan.group_sql == "w.warehouse_name" for plan in plans)
+    assert all(
+        any(
+            item.sql.startswith("w.warehouse_type =")
+            and item.description.startswith("发货仓类型为“")
+            for item in plan.filters
+        )
+        for plan in plans
+    )
+    assert all(
+        not any(item.sql.startswith("w.warehouse_name =") for item in plan.filters)
+        for plan in plans
+    )
+
+
 def test_generated_sandbox_contract_and_balance(generated: Path) -> None:
     tasks = _read_jsonl(generated / "dwh_tasks.jsonl")
     assert len(tasks) == 300
@@ -43,12 +63,35 @@ def test_generated_sandbox_contract_and_balance(generated: Path) -> None:
     assert all(task["validation"]["checked_against_database"] is True for task in tasks)
     assert all(task["validation"]["expected_result_exists"] is True for task in tasks)
     assert all(task["validation"]["semantic_source"] == "query_plan" for task in tasks)
+    assert all(task["instruction_style"] == "mixed_company_roles_natural_language_v1" for task in tasks)
+    assert all(
+        TECHNICAL_INSTRUCTION_RE.search(task["natural_language_instruction"]) is None
+        for task in tasks
+    )
+    assert all("请查询" not in task["natural_language_instruction"] for task in tasks)
+    roles = {task["instruction_role"] for task in tasks}
+    assert {
+        "company_owner",
+        "finance",
+        "data_analyst",
+        "operations",
+        "warehouse_manager",
+        "regional_manager",
+        "procurement",
+        "customer_service",
+        "planning",
+        "sales",
+        "general_employee",
+    } <= roles
     assert {band: sum(task["difficulty_band"] == band for task in tasks) for band in range(1, 7)} == {
         band: 50 for band in range(1, 7)
     }
     summary = json.loads((generated / "generation_summary.json").read_text(encoding="utf-8"))
     assert summary["environment_id"] == f"sft/{DEFAULT_VERSION}"
     assert summary["external_api_used"] is False
+    assert summary["training_allowed"] is False
+    assert summary["instruction_style"] == "mixed_company_roles_natural_language_v1"
+    assert len(summary["instruction_role_counts"]) >= 11
     assert set(summary["files"]) == {
         "logistics.sqlite",
         "dwh_tasks.jsonl",

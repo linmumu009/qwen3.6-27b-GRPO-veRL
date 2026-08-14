@@ -33,3 +33,12 @@ def test_explicit_aligned_query_is_not_flagged():
     assert classify(row) == []
     result = audit([row])
     assert result["records_with_any_flag"] == 0
+
+
+def test_business_context_with_an_explicit_metric_is_not_treated_as_broad():
+    row = record(
+        "我在做费用分析。只看2025年3月已经签收的运单，运费总额是多少？",
+        "SELECT SUM(freight_amount) FROM shipments WHERE DATE(ship_date) >= '2025-03-01'",
+    )
+
+    assert classify(row) == []

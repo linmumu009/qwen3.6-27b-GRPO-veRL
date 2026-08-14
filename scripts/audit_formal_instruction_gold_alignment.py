@@ -14,6 +14,11 @@ from typing import Any, Iterable
 BROAD_ANALYSIS_RE = re.compile(
     r"原因|问题|建议|优化|改进|措施|策略|分析报告|分析结论|趋势|波动|表现|情况|看法|诊断"
 )
+EXPLICIT_BUSINESS_METRIC_RE = re.compile(
+    r"多少票运单|运单数量|多少位不同客户|不同客户数量|"
+    r"运费(?:总额|合计|一共|平均)|平均每票运费|"
+    r"货物(?:总重量|合计有多少千克)|平均配送(?:时长|用了多少小时)|延误率"
+)
 TEMPORAL_SQL_RE = re.compile(
     r"\b(?:date|time|year|month|day|period|latest|current)\b|日期|时间|月份|年度",
     re.IGNORECASE,
@@ -35,7 +40,9 @@ def classify(record: dict[str, Any]) -> list[str]:
     answer_type = str(gold.get("answer_type") or "")
     issues: list[str] = []
 
-    broad = bool(BROAD_ANALYSIS_RE.search(instruction))
+    broad = bool(BROAD_ANALYSIS_RE.search(instruction)) and not bool(
+        EXPLICIT_BUSINESS_METRIC_RE.search(instruction)
+    )
     latest = bool(re.search(r"最新|最近|这一期|本期|当前|202[0-9][年\-/]", instruction))
     if broad and answer_type in {"numeric", "table"}:
         issues.append("broad_instruction_exact_hidden_target")
