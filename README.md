@@ -243,6 +243,13 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 已验证状态
 
+### v1.11.27 — 2026-08-14
+
+- 完成老板沙箱生成链与 DWH 语义错位根因审计：确认 step5 先生成题面、后独立 backward-generate SQL/gold，且 fallback 改变查询语义时不回写题面；现有 QA 只验证可执行性并以 `on_fail=tag` 保留失败样本。
+- 9,500 条 SFT DWH 中有 2,411 条“SUM SQL 但题面无明确聚合词”；最终 281 池中为 97 条，其中 87 条是 `single_metric_query + SUM`。已审 18 个 mixed 全部匹配 raw `natural_language_instruction` 且与 instruction 统一前备份一致，排除后续 variant 选择作为当前主因。
+- 相关生成器和老板服务器后处理代码已复制到 5 号机 `/data3/llin/qwen3.6-27b-verl-grpo/source_snapshots/rjx_sandbox_pipeline_20260814`，共 263 个文件；只含源码和哈希，不含数据、轨迹、模型、Git 元数据或凭据。修复方向改为复用 SQLite/schema、以新 task ID 重建 plan-aligned instruction—gold—SQL，并在 fresh rollout 前保持训练关闭。
+- 完整证据、代码路径和不浪费旧数据的修复方案见 [`docs/boss_sandbox_generation_root_cause_audit_20260814.md`](docs/boss_sandbox_generation_root_cause_audit_20260814.md)。
+
 ### v1.11.26 — 2026-08-14
 
 - 双机281题筛选完成第4个完整分片（各64题、合计128题/1024轨迹）的增量分析与匿名语义复核：累计24个mixed候选中7个批准、17个拒绝；批准项在全量收尾前继续保持训练关闭。
