@@ -30,6 +30,7 @@ from verl.protocol import DataProto
 from verl.utils.dataset.rl_dataset import RLHFDataset, collate_fn
 from verl.workers.rollout.llm_server import LLMServerManager
 
+from scripts.pi_runtime_preflight import validate_dataset_runtime_environments
 from scripts.standalone_rollout_shards import (
     completed_shard_rows,
     padded_rows_for_equal_chunks,
@@ -257,8 +258,13 @@ def write_progress(args: argparse.Namespace, completed_tasks: int, completed_row
 def run(args: argparse.Namespace) -> dict:
     started_at = datetime.now(timezone.utc)
     started_monotonic = time.monotonic()
+    runtime_preflight = validate_dataset_runtime_environments(
+        args.dataset,
+        args.tool_sandbox_root,
+    )
     config = build_config(args)
     contract = safe_contract(config, args)
+    contract["runtime_environment_preflight"] = runtime_preflight
     if not contract["dataset_exists"] or not contract["model_identity"]["valid"]:
         raise FileNotFoundError(contract)
     if args.max_prompt_tokens + args.max_response_tokens != args.max_context_tokens:
@@ -428,6 +434,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--model-label", default="step120")
     parser.add_argument("--policy-step", type=int, default=120)
     parser.add_argument("--dataset", type=Path, required=True)
+    parser.add_argument("--tool-sandbox-root", type=Path, default=Path("/pi_sandbox"))
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--ray-address", default="192.168.202.5:26379")
     parser.add_argument("--expected-tasks", type=int, default=10)

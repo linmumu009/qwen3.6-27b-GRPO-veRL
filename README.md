@@ -248,6 +248,11 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 已验证状态
 
+### v1.11.45 — 2026-08-15
+
+- standalone PI-Agent rollout 新增工具运行时可见性硬门禁：在加载模型或占用NPU前，从采样Parquet聚合提取`environment_id`，并在实际工具根目录`/pi_sandbox`下验证环境目录、SQLite、schema和documents完整可读；数据库必须以只读方式成功打开且包含关系对象。
+- 门禁只把环境数量和组件状态写入安全合同，不输出environment ID、题面、gold、SQL或数据库内容；数据库误放在项目目录而未进入PI-Agent挂载时立即失败，避免把工具不可用误判为模型全错。
+
 ### v1.11.44 — 2026-08-15
 
 - 双机DWH结果分析新增response token直方图及分Level直方图，finalizer据此精确重建双机合并后的均值、P50/P90/P95/P99和最大长度，不再用两个arm的分位数近似。
