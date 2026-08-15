@@ -6,6 +6,7 @@ from scripts.standalone_rollout_shards import (
     padded_rows_for_equal_chunks,
     shard_path,
     shard_ranges,
+    trajectory_admission_contract,
     write_jsonl_atomic,
 )
 
@@ -30,6 +31,34 @@ def test_tail_batch_padding_rejects_invalid_shapes():
             pass
         else:
             raise AssertionError((rows, chunks))
+
+
+def test_trajectory_admission_accepts_exact_dual_dp_capacity():
+    contract = trajectory_admission_contract(
+        task_batch_size=6,
+        samples_per_task=8,
+        max_num_seqs_per_dp_engine=24,
+        data_parallel_size=2,
+    )
+
+    assert contract["valid"] is True
+    assert contract["requested_trajectories_per_shard"] == 48
+    assert contract["aggregate_sequence_capacity"] == 48
+    assert contract["unused_sequence_capacity"] == 0
+
+
+def test_trajectory_admission_rejects_queue_timeout_shape():
+    try:
+        trajectory_admission_contract(
+            task_batch_size=48,
+            samples_per_task=8,
+            max_num_seqs_per_dp_engine=24,
+            data_parallel_size=2,
+        )
+    except ValueError as exc:
+        assert "requested=384, capacity=48" in str(exc)
+    else:
+        raise AssertionError("oversubscribed rollout shard was accepted")
 
 
 def test_atomic_shard_requires_exact_task_sample_shape(tmp_path: Path):

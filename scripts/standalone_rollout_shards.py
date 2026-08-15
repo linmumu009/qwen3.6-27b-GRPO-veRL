@@ -9,6 +9,48 @@ from pathlib import Path
 from typing import Iterable
 
 
+def trajectory_admission_contract(
+    *,
+    task_batch_size: int,
+    samples_per_task: int,
+    max_num_seqs_per_dp_engine: int,
+    data_parallel_size: int,
+) -> dict[str, int | bool | str]:
+    """Fail closed when one shard starts more trajectories than vLLM can admit.
+
+    AgentLoopWorker starts every row in its chunk concurrently, and the PI
+    trajectory timeout starts before vLLM admission.  Allowing a shard to
+    exceed the aggregate DP sequence capacity therefore turns queue wait into
+    false trajectory timeouts.  Keep the invariant in a dependency-free helper
+    so launchers and tests can audit it without importing veRL.
+    """
+
+    values = {
+        "task_batch_size": task_batch_size,
+        "samples_per_task": samples_per_task,
+        "max_num_seqs_per_dp_engine": max_num_seqs_per_dp_engine,
+        "data_parallel_size": data_parallel_size,
+    }
+    if any(value <= 0 for value in values.values()):
+        raise ValueError("trajectory admission inputs must be positive")
+    requested = task_batch_size * samples_per_task
+    capacity = max_num_seqs_per_dp_engine * data_parallel_size
+    if requested > capacity:
+        raise ValueError(
+            "trajectory admission overflow: "
+            f"requested={requested}, capacity={capacity}; "
+            "reduce task_batch_size or samples_per_task"
+        )
+    return {
+        "contract": "verl-standalone-trajectory-admission-v1",
+        "valid": True,
+        "timeout_starts_before_vllm_admission": True,
+        "requested_trajectories_per_shard": requested,
+        "aggregate_sequence_capacity": capacity,
+        "unused_sequence_capacity": capacity - requested,
+    }
+
+
 def shard_ranges(total_tasks: int, task_batch_size: int) -> list[tuple[int, int]]:
     if total_tasks <= 0:
         raise ValueError("total_tasks must be positive")

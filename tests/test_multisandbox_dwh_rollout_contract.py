@@ -27,6 +27,7 @@ def test_standalone_runner_keeps_sampling_and_context_contract_variable_but_expl
         '"native_hf_checkpoint"',
         '"llin_megatron_to_hf_export"',
         'tail_batch_padding_policy',
+        'contract["trajectory_admission"] = trajectory_admission_contract(',
         'batch.padding(padding_rows, padding_candidate="last")',
         'output = output[:expected]',
     ):

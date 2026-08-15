@@ -36,6 +36,7 @@ from scripts.standalone_rollout_shards import (
     padded_rows_for_equal_chunks,
     shard_path,
     shard_ranges,
+    trajectory_admission_contract,
     write_jsonl_atomic,
 )
 
@@ -265,6 +266,12 @@ def run(args: argparse.Namespace) -> dict:
     config = build_config(args)
     contract = safe_contract(config, args)
     contract["runtime_environment_preflight"] = runtime_preflight
+    contract["trajectory_admission"] = trajectory_admission_contract(
+        task_batch_size=args.task_batch_size,
+        samples_per_task=args.samples_per_task,
+        max_num_seqs_per_dp_engine=int(config.actor_rollout_ref.rollout.max_num_seqs),
+        data_parallel_size=int(config.actor_rollout_ref.rollout.data_parallel_size),
+    )
     if not contract["dataset_exists"] or not contract["model_identity"]["valid"]:
         raise FileNotFoundError(contract)
     if args.max_prompt_tokens + args.max_response_tokens != args.max_context_tokens:
