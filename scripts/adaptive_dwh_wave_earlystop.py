@@ -179,6 +179,57 @@ def prepare_remaining_pool(
     return manifest
 
 
+def prepare_initial_pool(
+    source_dataset_path: Path,
+    output_dataset_path: Path,
+    safe_manifest_path: Path,
+    *,
+    expected_tasks: int,
+) -> dict[str, Any]:
+    source_rows = pq.read_table(source_dataset_path).to_pylist()
+    identities = [_identity(row) for row in source_rows]
+    if len(source_rows) != expected_tasks:
+        raise ValueError(f"expected {expected_tasks} source tasks, got {len(source_rows)}")
+    if len(set(identities)) != len(identities):
+        raise ValueError("source dataset identities are not unique")
+    prepared: list[dict[str, Any]] = []
+    for original_index, source in enumerate(source_rows):
+        record = deepcopy(source)
+        extra = dict(record["extra_info"])
+        extra.update(
+            {
+                "adaptive_wave_contract": CONTRACT,
+                "adaptive_original_task_index": original_index,
+                "adaptive_samples_observed": 0,
+                "adaptive_correct_count": 0,
+                "adaptive_completed_count": 0,
+                "adaptive_timeout_count": 0,
+                "adaptive_runtime_error_count": 0,
+                "adaptive_decision": "start_two_sample_screen",
+                "training_allowed": False,
+                "promotion_allowed": False,
+            }
+        )
+        record["extra_info"] = extra
+        prepared.append(record)
+    write_private_parquet(output_dataset_path, prepared, empty_from=source_dataset_path)
+    manifest = {
+        "contract": CONTRACT,
+        "stage": "initial_two_sample_pool",
+        "source_tasks": len(source_rows),
+        "remaining_tasks": len(prepared),
+        "remaining_difficulty_counts": _difficulty_counts(prepared),
+        "source_dataset_sha256": file_sha256(source_dataset_path),
+        "remaining_dataset_sha256": file_sha256(output_dataset_path),
+        "identity_is_instruction_sha256": True,
+        "contains_prompts_gold_sql_task_ids_outputs_or_server_paths": False,
+        "training_allowed": False,
+        "promotion_allowed": False,
+    }
+    write_json(safe_manifest_path, manifest)
+    return manifest
+
+
 def select_after_wave(
     input_dataset_path: Path,
     wave_per_task_path: Path,
@@ -187,9 +238,12 @@ def select_after_wave(
     safe_manifest_path: Path,
     *,
     expected_prior_samples: int,
+    max_samples: int = MAX_SAMPLES,
 ) -> dict[str, Any]:
-    if expected_prior_samples not in (2, 4):
-        raise ValueError("expected prior samples must be 2 or 4")
+    if max_samples not in (6, 8):
+        raise ValueError("maximum samples must be 6 or 8")
+    if expected_prior_samples not in (0, 2, 4, 6) or expected_prior_samples >= max_samples:
+        raise ValueError("expected prior samples must be a valid earlier two-sample wave")
     dataset = pq.read_table(input_dataset_path).to_pylist()
     results = _results_by_identity(wave_per_task_path)
     identities = [_identity(row) for row in dataset]
@@ -228,7 +282,7 @@ def select_after_wave(
                     if is_mixed
                     else (
                         f"continue_after_{observed_samples}"
-                        if observed_samples < MAX_SAMPLES
+                        if observed_samples < max_samples
                         else "max_samples_reached_unresolved"
                     )
                 ),
@@ -253,6 +307,7 @@ def select_after_wave(
         "input_tasks": len(dataset),
         "wave_samples_per_task": WAVE_SAMPLES,
         "samples_observed_per_input_task": observed_samples,
+        "maximum_samples_per_task": max_samples,
         "new_mixed_tasks": len(mixed_rows),
         "unresolved_tasks": len(unresolved_rows),
         "new_mixed_difficulty_counts": _difficulty_counts(mixed_rows),
@@ -270,6 +325,79 @@ def select_after_wave(
     }
     write_json(safe_manifest_path, manifest)
     return manifest
+
+
+def finalize_four_wave(
+    initial_pool_path: Path,
+    mixed_after_two_path: Path,
+    mixed_after_four_path: Path,
+    mixed_after_six_path: Path,
+    mixed_after_eight_path: Path,
+    unresolved_after_eight_path: Path,
+    output_dir: Path,
+) -> dict[str, Any]:
+    initial = pq.read_table(initial_pool_path).to_pylist()
+    mixed2 = pq.read_table(mixed_after_two_path).to_pylist()
+    mixed4 = pq.read_table(mixed_after_four_path).to_pylist()
+    mixed6 = pq.read_table(mixed_after_six_path).to_pylist()
+    mixed8 = pq.read_table(mixed_after_eight_path).to_pylist()
+    unresolved8 = pq.read_table(unresolved_after_eight_path).to_pylist()
+    initial_identities = {_identity(row) for row in initial}
+    partitions = [mixed2, mixed4, mixed6, mixed8, unresolved8]
+    identity_sets = [{_identity(row) for row in rows} for rows in partitions]
+    if any(
+        identity_sets[i] & identity_sets[j]
+        for i in range(len(identity_sets))
+        for j in range(i + 1, len(identity_sets))
+    ):
+        raise ValueError("eight-sample partitions overlap")
+    if set().union(*identity_sets) != initial_identities:
+        raise ValueError("eight-sample partitions do not cover the initial pool")
+    candidates = [*mixed2, *mixed4, *mixed6, *mixed8]
+    output_dir.mkdir(parents=True, exist_ok=True)
+    candidate_path = output_dir / "grpo_variance_candidates.sensitive.parquet"
+    unresolved_path = output_dir / "unresolved_after_eight.sensitive.parquet"
+    write_private_parquet(candidate_path, candidates, empty_from=initial_pool_path)
+    write_private_parquet(unresolved_path, unresolved8, empty_from=initial_pool_path)
+    unresolved_after_two = len(initial) - len(mixed2)
+    unresolved_after_four = unresolved_after_two - len(mixed4)
+    unresolved_after_six = unresolved_after_four - len(mixed6)
+    if unresolved_after_six != len(mixed8) + len(unresolved8):
+        raise ValueError("four-wave partition counts are inconsistent")
+    actual = 2 * (
+        len(initial) + unresolved_after_two + unresolved_after_four + unresolved_after_six
+    )
+    full_eight = len(initial) * 8
+    summary = {
+        "contract": CONTRACT,
+        "stage": "complete_after_eight_samples",
+        "initial_tasks": len(initial),
+        "mixed_after_two_tasks": len(mixed2),
+        "mixed_after_four_tasks": len(mixed4),
+        "mixed_after_six_tasks": len(mixed6),
+        "mixed_after_eight_tasks": len(mixed8),
+        "variance_candidate_tasks": len(candidates),
+        "unresolved_after_eight_tasks": len(unresolved8),
+        "sample_count_distribution": {
+            "2": len(mixed2),
+            "4": len(mixed4),
+            "6": len(mixed6),
+            "8": len(mixed8) + len(unresolved8),
+        },
+        "actual_sampling_trajectories": actual,
+        "actual_trajectories_including_existing_two": actual,
+        "full_eight_sampling_baseline_trajectories": full_eight,
+        "avoided_trajectories_vs_full_eight": full_eight - actual,
+        "candidate_difficulty_counts": _difficulty_counts(candidates),
+        "candidate_dataset_sha256": file_sha256(candidate_path),
+        "unresolved_dataset_sha256": file_sha256(unresolved_path),
+        "candidate_payload_is_prompt_and_gold_not_sampled_trajectory": True,
+        "contains_prompts_gold_sql_task_ids_outputs_or_server_paths": False,
+        "training_allowed": False,
+        "promotion_allowed": False,
+    }
+    write_json(output_dir / "adaptive_final_safe_summary.json", summary)
+    return summary
 
 
 def finalize(
@@ -344,6 +472,12 @@ def main() -> None:
     prepare.add_argument("--safe-manifest", type=Path, required=True)
     prepare.add_argument("--expected-remaining-tasks", type=int, required=True)
 
+    prepare_initial = subparsers.add_parser("prepare-initial")
+    prepare_initial.add_argument("--source-dataset", type=Path, required=True)
+    prepare_initial.add_argument("--output-dataset", type=Path, required=True)
+    prepare_initial.add_argument("--safe-manifest", type=Path, required=True)
+    prepare_initial.add_argument("--expected-tasks", type=int, required=True)
+
     select = subparsers.add_parser("select-after-wave")
     select.add_argument("--input-dataset", type=Path, required=True)
     select.add_argument("--wave-per-task", type=Path, required=True)
@@ -351,6 +485,7 @@ def main() -> None:
     select.add_argument("--mixed-dataset", type=Path, required=True)
     select.add_argument("--safe-manifest", type=Path, required=True)
     select.add_argument("--expected-prior-samples", type=int, required=True)
+    select.add_argument("--max-samples", type=int, default=MAX_SAMPLES)
 
     finish = subparsers.add_parser("finalize")
     finish.add_argument("--initial-pool", type=Path, required=True)
@@ -358,6 +493,15 @@ def main() -> None:
     finish.add_argument("--mixed-after-six", type=Path, required=True)
     finish.add_argument("--unresolved-after-six", type=Path, required=True)
     finish.add_argument("--output-dir", type=Path, required=True)
+
+    finish_eight = subparsers.add_parser("finalize-four-wave")
+    finish_eight.add_argument("--initial-pool", type=Path, required=True)
+    finish_eight.add_argument("--mixed-after-two", type=Path, required=True)
+    finish_eight.add_argument("--mixed-after-four", type=Path, required=True)
+    finish_eight.add_argument("--mixed-after-six", type=Path, required=True)
+    finish_eight.add_argument("--mixed-after-eight", type=Path, required=True)
+    finish_eight.add_argument("--unresolved-after-eight", type=Path, required=True)
+    finish_eight.add_argument("--output-dir", type=Path, required=True)
 
     args = parser.parse_args()
     if args.command == "prepare-remaining":
@@ -370,6 +514,13 @@ def main() -> None:
             args.safe_manifest,
             expected_remaining_tasks=args.expected_remaining_tasks,
         )
+    elif args.command == "prepare-initial":
+        result = prepare_initial_pool(
+            args.source_dataset,
+            args.output_dataset,
+            args.safe_manifest,
+            expected_tasks=args.expected_tasks,
+        )
     elif args.command == "select-after-wave":
         result = select_after_wave(
             args.input_dataset,
@@ -378,13 +529,24 @@ def main() -> None:
             args.mixed_dataset,
             args.safe_manifest,
             expected_prior_samples=args.expected_prior_samples,
+            max_samples=args.max_samples,
         )
-    else:
+    elif args.command == "finalize":
         result = finalize(
             args.initial_pool,
             args.mixed_after_four,
             args.mixed_after_six,
             args.unresolved_after_six,
+            args.output_dir,
+        )
+    else:
+        result = finalize_four_wave(
+            args.initial_pool,
+            args.mixed_after_two,
+            args.mixed_after_four,
+            args.mixed_after_six,
+            args.mixed_after_eight,
+            args.unresolved_after_eight,
             args.output_dir,
         )
     print(json.dumps(result, ensure_ascii=False, indent=2))
