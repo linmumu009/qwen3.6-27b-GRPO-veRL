@@ -1,0 +1,166 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "采样效率是否已经最优",
+    "generatedAt": "2026-08-16T17:54:27+08:00",
+    "blocks": [
+      {"id": "title", "type": "markdown", "body": "# 采样效率是否已经最优"},
+      {
+        "id": "executive_summary",
+        "type": "markdown",
+        "sourceId": "efficiency_summary",
+        "body": "## Executive Summary\n\n- **当前配置安全，但不是效率最优。** 两机模型、随机采样、94K上下文和滚动准入均有效，且没有runtime error或OOM；但加权平均AICore仅15.8%，vLLM序列容量平均只使用约63.6%。\n- **最大浪费来自固定补满6条。** 我们的目标只是证明题目有正确和错误两种最终结果，因此应改为每次补2条、出现明确一对一错立即停止。51题的补采预算仍以306条为上限，理论最好可降到102条，最多节省204条。\n- **第二个瓶颈是端到端agent窗口过于保守。** 工具执行约占每条轨迹执行时间的21%，而vLLM等待几乎为零；当部分agent执行工具时，生成服务缺少足够备用轨迹。下一轮应把逻辑agent窗口与物理vLLM序列上限解耦，从1.25倍容量开始门禁。\n- **不要中途改当前运行。** 当前已完成216/306条，只剩90条；此时停止重启的损失大于收益。应让本轮完整收尾，再把改动用于下一个沙箱。"
+      },
+      {
+        "id": "definitions",
+        "type": "markdown",
+        "sourceId": "efficiency_summary",
+        "body": "## 判断最优的口径\n\n本次以“每小时确认多少个mixed候选”为主指标，而不是单看NPU占用率。候选必须在同一道题上出现至少一个明确正确和一个明确错误；辅助指标是每个候选消耗的轨迹数、AICore均值和序列容量占用，安全护栏是OOM/runtime error、超时率与冻结采样合同。数据截至北京时间2026年8月16日17:54，当前补采运行尚未结束。"
+      },
+      {
+        "id": "underfed_finding",
+        "type": "markdown",
+        "sourceId": "efficiency_summary",
+        "body": "## 生成服务长期吃不满\n\n两机共完成216条有效持久化轨迹，runtime error为0，但平均AICore仅15.8%、NPU利用率26.8%。更关键的是，vLLM运行序列只达到物理上限的约63.6%，达到上限的监控采样仅约9.9%，而等待队列接近零。这说明瓶颈不是vLLM容量不足，而是端到端agent窗口内有太多轨迹正在执行工具或等待下一轮，无法持续向生成服务供给请求。"
+      },
+      {"id": "utilization_chart_block", "type": "chart", "chartId": "utilization_chart"},
+      {
+        "id": "host_detail",
+        "type": "markdown",
+        "sourceId": "efficiency_summary",
+        "body": "## 5号机是更明显的慢臂\n\n5号机每个DP引擎最多24条序列，已完成96条中有18条超时，超时率18.8%；6号机以32条序列运行，120条中8条超时，超时率6.7%。这不能单独证明把5号机直接升到32就一定更快，但足以支持28→32的容量门禁。两机工作量132:174与容量48:64几乎完全同比，因此当前问题不是静态分片不公平。"
+      },
+      {"id": "host_table_block", "type": "table", "tableId": "host_table"},
+      {
+        "id": "sample_efficiency",
+        "type": "markdown",
+        "sourceId": "efficiency_summary",
+        "body": "## 固定六条补采与目标不匹配\n\n当前51个探针都会固定生成6条新轨迹，即使第1或第2条补采已经让题目出现明确一对一错，后续轨迹仍会继续生成。对“寻找可训练题面+gold”这个目标，最省样本的策略是2+2+2分波：每波后立即评分，已mixed就冻结，未mixed才继续。该策略最坏仍为306条，不会超过当前预算；最好为102条，最多节省67%。"
+      },
+      {
+        "id": "recommended_next_steps",
+        "type": "markdown",
+        "sourceId": "efficiency_summary",
+        "body": "## 下一轮建议配置\n\n1. 保持Step120、temperature=1/top_p=.95/top_k=20、TP8×DP2、94K和30分钟不变。\n2. 把固定+6改为2+2+2，明确mixed立即停止该题。\n3. 把逻辑agent窗口从物理序列容量的1.0倍提高到1.25倍：5号机60、6号机80；只有vLLM等待p95低于30秒、超时率增加不超过2个百分点且无OOM，才升到72/96。\n4. 5号机单独做max_num_seqs 28→32容量门，不直接跳档；6号机保持32。\n5. 以后以mixed候选/小时做晋级指标。若只提高NPU利用率但候选/小时不升，就回退。"
+      },
+      {"id": "priority_table_block", "type": "table", "tableId": "priority_table"},
+      {
+        "id": "further_questions",
+        "type": "markdown",
+        "body": "## Further Questions\n\n- 2+2+2每一波的新mixed命中率是多少，实际能节省多少条而非理论上限？\n- 逻辑agent窗口1.25倍时，vLLM等待和真实30分钟超时是否仍稳定？\n- 5号机在28和32序列下的候选/小时、AICore与超时率是否优于当前24？\n- 后续跨机动态领取任务是否能进一步消除最后一批尾部不均衡？"
+      },
+      {
+        "id": "caveats",
+        "type": "markdown",
+        "sourceId": "efficiency_summary",
+        "body": "## Caveats and Assumptions\n\n- 当前运行未结束，最近利用率受到最后90条尾部影响；结论主要依赖全运行累计均值和调度占用，而非单次NPU快照。\n- 20%–35%的逻辑窗口提速是基于当前序列填充率和工具时间占比的工程估计，尚不是A/B实测。\n- 90K输出上限在已完成轨迹中没有触顶，最大仅31.4K；但直接缩短长度会改变候选判定和跨轮一致性，因此本轮不建议动。\n- 判断状态为“可带限制分享”：瓶颈方向证据充分，具体最优窗口仍必须通过容量门实测。"
+      }
+    ],
+    "charts": [
+      {
+        "id": "utilization_chart",
+        "title": "两机累计资源利用与序列填充",
+        "subtitle": "当前有效恢复运行，截至北京时间2026年8月16日17:54",
+        "type": "bar",
+        "dataset": "utilization_chart",
+        "sourceId": "efficiency_summary",
+        "encodings": {
+          "x": {"field": "metric", "type": "nominal"},
+          "y": {"field": "value", "type": "quantitative"},
+          "color": {"field": "host", "type": "nominal"}
+        },
+        "valueFormat": "percent",
+        "layout": "full"
+      }
+    ],
+    "tables": [
+      {
+        "id": "host_table",
+        "title": "两机效率明细",
+        "subtitle": "仅统计已完成的完整原子分片；时间为每轨迹中位数",
+        "dataset": "host_table",
+        "sourceId": "efficiency_summary",
+        "columns": [
+          {"field": "host", "label": "机器"},
+          {"field": "completed", "label": "完成轨迹", "format": "number"},
+          {"field": "timeout_rate", "label": "超时率", "format": "percent"},
+          {"field": "aicore_mean", "label": "AICore均值", "format": "percent"},
+          {"field": "scheduler_fill", "label": "序列填充", "format": "percent"},
+          {"field": "response_p50", "label": "输出token P50", "format": "number"},
+          {"field": "total_seconds_p50", "label": "总耗时P50(秒)", "format": "number"}
+        ],
+        "defaultSort": {"field": "host", "direction": "asc"}
+      },
+      {
+        "id": "priority_table",
+        "title": "效率改动优先级",
+        "subtitle": "先改样本策略，再做容量门；冻结合同最后才考虑调整",
+        "dataset": "priority_table",
+        "sourceId": "efficiency_summary",
+        "columns": [
+          {"field": "priority", "label": "优先级", "format": "number"},
+          {"field": "change", "label": "改动"},
+          {"field": "expected", "label": "预期收益"},
+          {"field": "risk", "label": "主要风险"},
+          {"field": "decision", "label": "动作"}
+        ],
+        "defaultSort": {"field": "priority", "direction": "asc"}
+      }
+    ],
+    "sources": [
+      {"id": "efficiency_summary", "label": "当前双机采样效率安全汇总", "path": "docs/rollout_sampling_efficiency_review_20260816_summary.json"}
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "generatedAt": "2026-08-16T17:54:27+08:00",
+    "status": "ready",
+    "datasets": {
+      "utilization_chart": [
+        {"host": "5号机", "metric": "AICore", "value": 0.14438453536754508},
+        {"host": "6号机", "metric": "AICore", "value": 0.1707875521557719},
+        {"host": "5号机", "metric": "NPU利用率", "value": 0.25410367545076284},
+        {"host": "6号机", "metric": "NPU利用率", "value": 0.28290942280945757},
+        {"host": "5号机", "metric": "序列填充", "value": 0.6768784669692385},
+        {"host": "6号机", "metric": "序列填充", "value": 0.605736301369863}
+      ],
+      "host_table": [
+        {"host": "5号机", "completed": 96, "timeout_rate": 0.1875, "aicore_mean": 0.14438453536754508, "scheduler_fill": 0.6768784669692385, "response_p50": 9040, "total_seconds_p50": 1388.349404887},
+        {"host": "6号机", "completed": 120, "timeout_rate": 0.06666666666666667, "aicore_mean": 0.1707875521557719, "scheduler_fill": 0.605736301369863, "response_p50": 9736, "total_seconds_p50": 1361.599808829}
+      ],
+      "priority_table": [
+        {"priority": 1, "change": "补采改为2+2+2并及时早停", "expected": "最多节省204/306条；最坏不增加预算", "risk": "需要每波即时评分和持续服务", "decision": "下一沙箱直接采用"},
+        {"priority": 2, "change": "逻辑agent窗口提高到1.25倍", "expected": "预计缩短墙钟20%–35%", "risk": "vLLM排队可能增加真实超时", "decision": "先做容量门"},
+        {"priority": 3, "change": "5号机24→28→32序列", "expected": "提高慢臂吞吐并减少双机尾差", "risk": "容量或延迟恶化", "decision": "逐档测试"},
+        {"priority": 4, "change": "缩短94K或30分钟合同", "expected": "可能释放更多容量", "risk": "改变候选分布和一致性", "decision": "暂不调整"}
+      ]
+    }
+  },
+  "sources": [
+    {
+      "id": "efficiency_summary",
+      "label": "当前双机采样效率安全汇总",
+      "path": "docs/rollout_sampling_efficiency_review_20260816_summary.json",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM read_json_auto('docs/rollout_sampling_efficiency_review_20260816_summary.json')",
+        "description": "读取当前两机冻结合同、完整原子分片进度、逐轨迹安全遥测、NPU聚合和效率方案边界。",
+        "tables_used": ["docs/rollout_sampling_efficiency_review_20260816_summary.json"],
+        "filters": [
+          "只统计有效v3-02恢复运行",
+          "只统计完整持久化原子分片",
+          "不读取或输出题面、gold、SQL、task ID、最终答案或工具结果"
+        ],
+        "metric_definitions": {
+          "scheduler_running_share_of_cap": "每机vLLM running均值除以该机每DP引擎max_num_seqs",
+          "timeout_rate": "超时轨迹除以完整持久化轨迹",
+          "adaptive_topup_saving": "固定六条预算306减去分波策略实际轨迹数",
+          "primary_efficiency_metric": "单位墙钟小时确认的明确mixed候选数"
+        }
+      }
+    }
+  ]
+}

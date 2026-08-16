@@ -1,0 +1,186 @@
+{
+  "generated_at": "2026-08-16T17:54:27+08:00",
+  "as_of_utc": "2026-08-16T09:54:27Z",
+  "decision": {
+    "is_current_configuration_globally_optimal": false,
+    "is_current_configuration_safe_and_consistent": true,
+    "change_current_inflight_run": false,
+    "confidence": "share_with_caveats",
+    "primary_reason": "The fixed six-response top-up over-collects after variance is already proven, while the end-to-end agent window underfeeds vLLM during tool and multi-turn gaps."
+  },
+  "current_contract": {
+    "model": "Step120",
+    "temperature": 1.0,
+    "top_p": 0.95,
+    "top_k": 20,
+    "prompt_tokens": 4096,
+    "response_tokens": 90112,
+    "context_tokens": 94208,
+    "timeout_seconds": 1800,
+    "tensor_parallel": 8,
+    "data_parallel": 2,
+    "h05_max_num_seqs_per_engine": 24,
+    "h06_max_num_seqs_per_engine": 32,
+    "h05_agent_window": 48,
+    "h06_agent_window": 64,
+    "samples_per_selected_task": 6
+  },
+  "current_progress": {
+    "selected_tasks": 51,
+    "planned_topup_trajectories": 306,
+    "completed_tasks": 36,
+    "completed_trajectories": 216,
+    "completed_trajectory_share": 0.7058823529411765,
+    "remaining_tasks": 15,
+    "remaining_trajectories": 90,
+    "runtime_errors": 0,
+    "timeouts": 26,
+    "timeout_rate": 0.12037037037037036
+  },
+  "host_efficiency": [
+    {
+      "host": "h05",
+      "completed_trajectories": 96,
+      "timeout_rate": 0.1875,
+      "aicore_mean": 0.14438453536754508,
+      "npu_util_mean": 0.25410367545076284,
+      "scheduler_running_share_of_cap": 0.6768784669692385,
+      "scheduler_at_cap_share": 0.15431164901664146,
+      "tool_share_of_execution": 0.20888697883126336,
+      "response_tokens_p50": 9040,
+      "response_tokens_p95": 18196,
+      "response_tokens_max": 31385,
+      "generation_seconds_p50": 750.6220817174762,
+      "tool_seconds_p50": 188.40446516685188,
+      "total_seconds_p50": 1388.349404887
+    },
+    {
+      "host": "h06",
+      "completed_trajectories": 120,
+      "timeout_rate": 0.06666666666666667,
+      "aicore_mean": 0.1707875521557719,
+      "npu_util_mean": 0.28290942280945757,
+      "scheduler_running_share_of_cap": 0.605736301369863,
+      "scheduler_at_cap_share": 0.042617960426179605,
+      "tool_share_of_execution": 0.21175065088044548,
+      "response_tokens_p50": 9736,
+      "response_tokens_p95": 16791,
+      "response_tokens_max": 22843,
+      "generation_seconds_p50": 602.5785364313051,
+      "tool_seconds_p50": 175.81800052057952,
+      "total_seconds_p50": 1361.599808829
+    }
+  ],
+  "aggregate_efficiency": {
+    "aicore_mean": 0.15756770833333333,
+    "npu_util_mean": 0.2684865451388889,
+    "scheduler_running_share_of_cap": 0.6363315983517676,
+    "scheduler_at_cap_share": 0.09863429438543247,
+    "vllm_waiting_mean_h05": 0.22995461422087746,
+    "vllm_waiting_mean_h06": 0.0380517503805175,
+    "tool_share_of_execution_h05": 0.20888697883126336,
+    "tool_share_of_execution_h06": 0.21175065088044548
+  },
+  "configuration_assessment": [
+    {
+      "dimension": "sampling distribution",
+      "current": "temperature 1.0, top_p 0.95, top_k 20",
+      "assessment": "keep",
+      "reason": "Matches the GRPO variance-discovery objective."
+    },
+    {
+      "dimension": "model topology",
+      "current": "TP8 x DP2 per server",
+      "assessment": "keep for now",
+      "reason": "Stable at 94K with zero OOM; changing TP/DP would confound the data screen."
+    },
+    {
+      "dimension": "selected-task top-up",
+      "current": "always add six responses",
+      "assessment": "change next run",
+      "reason": "The objective is to prove non-zero variance, so sampling should stop as soon as explicit correct and wrong outcomes both exist."
+    },
+    {
+      "dimension": "agent admission window",
+      "current": "equal to vLLM sequence capacity",
+      "assessment": "capacity-gate modest oversubscription",
+      "reason": "Only about 64% of sequence capacity is running on average and vLLM waiting is near zero, while about 21% of execution time is spent in tools."
+    },
+    {
+      "dimension": "h05 max sequences",
+      "current": "24 per DP engine",
+      "assessment": "gate 28 then 32",
+      "reason": "h06 is stable at 32 on the same model contract; h05 remains materially slower and has a higher timeout rate."
+    },
+    {
+      "dimension": "94K and 30-minute limits",
+      "current": "frozen",
+      "assessment": "keep until a controlled parity test",
+      "reason": "Observed outputs do not approach 90K, but shortening the contract would change which tasks appear mixed and break comparability."
+    }
+  ],
+  "recommended_next_configuration": {
+    "topup_policy": "two responses at a time, then stop immediately when one explicit correct and one explicit wrong are observed; otherwise add two more up to six",
+    "agent_window_gate": [
+      {
+        "host": "h05",
+        "stage_1": 60,
+        "stage_2": 72,
+        "physical_sequence_capacity": 48
+      },
+      {
+        "host": "h06",
+        "stage_1": 80,
+        "stage_2": 96,
+        "physical_sequence_capacity": 64
+      }
+    ],
+    "h05_sequence_gate": [28, 32],
+    "retain": [
+      "Step120 model",
+      "temperature/top-p/top-k",
+      "TP8 x DP2",
+      "94K context",
+      "30-minute timeout",
+      "atomic task/sample identities"
+    ],
+    "go_no_go": {
+      "primary_metric": "confirmed mixed candidates per wall-clock hour",
+      "secondary_metrics": [
+        "trajectories per confirmed mixed candidate",
+        "AICore mean",
+        "scheduler running share of capacity"
+      ],
+      "guardrails": [
+        "runtime errors and OOM remain zero",
+        "timeout rate does not increase by more than 2 percentage points",
+        "vLLM waiting p95 remains below 30 seconds",
+        "sampling and length contracts remain unchanged"
+      ]
+    }
+  },
+  "opportunity_bounds": {
+    "adaptive_topup_current_max_trajectories": 306,
+    "adaptive_topup_best_case_trajectories": 102,
+    "adaptive_topup_best_case_saved_trajectories": 204,
+    "adaptive_topup_best_case_saving_rate": 0.6666666666666666,
+    "logical_window_realistic_wall_time_gain_low": 0.2,
+    "logical_window_realistic_wall_time_gain_high": 0.35,
+    "logical_window_theoretical_upper_bound_from_current_fill": 0.5715082958008238,
+    "note": "The 20-35% wall-time range is an engineering estimate, not a completed A/B result."
+  },
+  "validation": {
+    "status": "share_with_caveats",
+    "verified": [
+      "current model, sampling, topology, context, timeout and admission contracts",
+      "completed rows, timeouts, runtime errors, response lengths and telemetry",
+      "AICore/NPU utilization and scheduler occupancy",
+      "workload split is proportional to the 48:64 server capacity ratio"
+    ],
+    "caveats": [
+      "The current run is incomplete and recent utilization includes the final tail.",
+      "No oversubscription or h05 max-sequence A/B has been run yet.",
+      "Candidate yield from the remaining probes is not known, so adaptive top-up savings are bounded rather than forecast precisely."
+    ]
+  }
+}
