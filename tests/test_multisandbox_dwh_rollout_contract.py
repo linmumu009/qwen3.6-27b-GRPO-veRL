@@ -86,6 +86,28 @@ def test_launcher_passes_concurrency_context_and_sampling_shape_to_runner():
     assert 'TRAJECTORY_TIMEOUT_SECONDS="${TRAJECTORY_TIMEOUT_SECONDS:-900}"' in text
     assert 'ROLLING_ADMISSION="${ROLLING_ADMISSION:-0}"' in text
     assert 'MAX_ATTEMPTS="${MAX_ATTEMPTS:-3}"' in text
+    assert "nohup bash -c '" in text
+    assert "nohup bash -lc '" not in text
+
+
+def test_timeout_retry_finalizer_preserves_explicit_environment():
+    text = (
+        ROOT / "scripts" / "launch_plan_first_dwh_timeout_retry_arm_finalizer.sh"
+    ).read_text(encoding="utf-8")
+    assert "nohup bash -c '" in text
+    assert "nohup bash -lc '" not in text
+    assert (
+        "export PROJECT_ROOT ORIGINAL_DATASET ORIGINAL_SHARDS_DIR RETRY_DATASET "
+        "RETRY_RUN_DIR OUTPUT_DIR"
+    ) in text
+    for argument in (
+        '--original-dataset "${ORIGINAL_DATASET}"',
+        '--original-shards-dir "${ORIGINAL_SHARDS_DIR}"',
+        '--retry-dataset "${RETRY_DATASET}"',
+        '--retry-run-dir "${RETRY_RUN_DIR}"',
+        '--output-dir "${OUTPUT_DIR}"',
+    ):
+        assert argument in text
 
 
 def test_plan_first_finalizer_recovers_remote_per_task_and_runs_paired_comparison():

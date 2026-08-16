@@ -11,7 +11,7 @@ OUTPUT_DIR="${OUTPUT_DIR:?OUTPUT_DIR is required}"
 export PROJECT_ROOT ORIGINAL_DATASET ORIGINAL_SHARDS_DIR RETRY_DATASET RETRY_RUN_DIR OUTPUT_DIR
 mkdir -p "${OUTPUT_DIR}"
 export PYTHONPATH="${PROJECT_ROOT}:${PYTHONPATH:-}"
-nohup bash -lc '
+nohup bash -c '
   set +e
   python3 "${PROJECT_ROOT}/scripts/plan_first_dwh_timeout_retry.py" finalize-arm \
     --original-dataset "${ORIGINAL_DATASET}" \

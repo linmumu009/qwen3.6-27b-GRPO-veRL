@@ -53,7 +53,7 @@ if [[ -s "${OUTPUT_DIR}/driver.pid" ]] && kill -0 "$(<"${OUTPUT_DIR}/driver.pid"
 fi
 
 date -Iseconds > "${OUTPUT_DIR}/started_at"
-nohup bash -lc '
+nohup bash -c '
   set +e
   attempt=1
   code=1
