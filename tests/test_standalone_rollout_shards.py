@@ -74,7 +74,7 @@ def test_rolling_admission_defaults_to_full_capacity_and_refills():
     assert contract["refill_on_each_trajectory_completion"] is True
 
 
-def test_rolling_admission_rejects_window_above_capacity():
+def test_rolling_admission_rejects_unapproved_window_above_capacity():
     try:
         rolling_admission_contract(
             enabled=True,
@@ -85,6 +85,50 @@ def test_rolling_admission_rejects_window_above_capacity():
         assert "requested=49, capacity=48" in str(exc)
     else:
         raise AssertionError("oversubscribed rolling window was accepted")
+
+
+def test_rolling_admission_accepts_explicit_125_percent_agent_supply():
+    contract = rolling_admission_contract(
+        enabled=True,
+        requested_window_trajectories=60,
+        aggregate_sequence_capacity=48,
+        max_window_multiplier=1.25,
+    )
+
+    assert contract["valid"] is True
+    assert contract["effective_window_trajectories"] == 60
+    assert contract["max_allowed_window_trajectories"] == 60
+    assert contract["logical_to_physical_ratio"] == 1.25
+    assert contract["logical_oversubscription_enabled"] is True
+
+
+def test_rolling_admission_rejects_window_above_explicit_multiplier():
+    try:
+        rolling_admission_contract(
+            enabled=True,
+            requested_window_trajectories=61,
+            aggregate_sequence_capacity=48,
+            max_window_multiplier=1.25,
+        )
+    except ValueError as exc:
+        assert "requested=61, capacity=48, max_allowed=60" in str(exc)
+    else:
+        raise AssertionError("rolling window exceeded its explicit multiplier")
+
+
+def test_rolling_admission_rejects_unsafe_multiplier():
+    for multiplier in (0.99, 2.01, float("inf")):
+        try:
+            rolling_admission_contract(
+                enabled=True,
+                requested_window_trajectories=48,
+                aggregate_sequence_capacity=48,
+                max_window_multiplier=multiplier,
+            )
+        except ValueError:
+            pass
+        else:
+            raise AssertionError(multiplier)
 
 
 def test_atomic_shard_requires_exact_task_sample_shape(tmp_path: Path):

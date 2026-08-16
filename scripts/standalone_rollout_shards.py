@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import math
 import os
 from pathlib import Path
 from typing import Iterable
@@ -56,28 +57,48 @@ def rolling_admission_contract(
     enabled: bool,
     requested_window_trajectories: int,
     aggregate_sequence_capacity: int,
-) -> dict[str, int | bool | str]:
-    """Validate the refill window used by the per-trajectory scheduler."""
+    max_window_multiplier: float = 1.0,
+) -> dict[str, int | float | bool | str]:
+    """Validate the refill window used by the per-trajectory scheduler.
+
+    ``aggregate_sequence_capacity`` is the physical vLLM sequence limit.  A
+    larger logical window can be useful for tool-using agents because some
+    trajectories are executing tools while other trajectories are generating.
+    Oversubscription is therefore allowed only when the launcher explicitly
+    raises ``max_window_multiplier``; the historical default remains 1.0x.
+    """
 
     if requested_window_trajectories < 0:
         raise ValueError("rolling admission window cannot be negative")
     if aggregate_sequence_capacity <= 0:
         raise ValueError("aggregate sequence capacity must be positive")
+    if not math.isfinite(max_window_multiplier) or not 1.0 <= max_window_multiplier <= 2.0:
+        raise ValueError("rolling admission max window multiplier must be within [1.0, 2.0]")
     effective_window = (
         requested_window_trajectories or aggregate_sequence_capacity if enabled else 0
     )
-    if effective_window > aggregate_sequence_capacity:
+    max_allowed_window = math.floor(aggregate_sequence_capacity * max_window_multiplier)
+    if effective_window > max_allowed_window:
         raise ValueError(
             "rolling admission overflow: "
-            f"requested={effective_window}, capacity={aggregate_sequence_capacity}"
+            f"requested={effective_window}, capacity={aggregate_sequence_capacity}, "
+            f"max_allowed={max_allowed_window}"
         )
     return {
-        "contract": "verl-standalone-rolling-admission-v1",
+        "contract": "verl-standalone-rolling-admission-v2",
         "enabled": enabled,
         "valid": True,
         "requested_window_trajectories": requested_window_trajectories,
         "effective_window_trajectories": effective_window,
         "aggregate_sequence_capacity": aggregate_sequence_capacity,
+        "max_window_multiplier": max_window_multiplier,
+        "max_allowed_window_trajectories": max_allowed_window,
+        "logical_to_physical_ratio": (
+            effective_window / aggregate_sequence_capacity if enabled else 0.0
+        ),
+        "logical_oversubscription_enabled": bool(
+            enabled and effective_window > aggregate_sequence_capacity
+        ),
         "refill_on_each_trajectory_completion": enabled,
         "atomic_persistence_scope": "configured_task_shard",
     }

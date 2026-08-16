@@ -29,11 +29,12 @@ def test_standalone_runner_keeps_sampling_and_context_contract_variable_but_expl
         'tail_batch_padding_policy',
         'contract["trajectory_admission"] = trajectory_admission_contract(',
         'contract["rolling_admission"] = rolling_admission_contract(',
+        'max_window_multiplier=args.rolling_window_max_multiplier',
         'worker.generate_sequences.remote(unit)',
         'ray.wait(list(inflight), num_returns=1)',
         'batch.padding(padding_rows, padding_candidate="last")',
         'output = output[:expected]',
-        'stamp_trajectory_enqueue(unit, epoch_ns=enqueued_epoch_ns)',
+        'stamp_trajectory_enqueue(unit)',
         'stamp_trajectory_enqueue(batch, epoch_ns=enqueued_epoch_ns)',
         'enqueued_epoch_ns = time.time_ns()',
         '"__num_turns__"',
@@ -75,6 +76,7 @@ def test_launcher_passes_concurrency_context_and_sampling_shape_to_runner():
         "--trajectory-timeout-seconds",
         "--rolling-admission",
         "--rolling-window-trajectories",
+        "--rolling-window-max-multiplier",
     ):
         assert argument in text
     assert 'export LLIN_ROLLOUT_RESOURCE="${ROLLOUT_RESOURCE}"' in text
@@ -85,6 +87,7 @@ def test_launcher_passes_concurrency_context_and_sampling_shape_to_runner():
     assert 'MAX_NUM_SEQS="${MAX_NUM_SEQS:-32}"' in text
     assert 'TRAJECTORY_TIMEOUT_SECONDS="${TRAJECTORY_TIMEOUT_SECONDS:-900}"' in text
     assert 'ROLLING_ADMISSION="${ROLLING_ADMISSION:-0}"' in text
+    assert 'ROLLING_WINDOW_MAX_MULTIPLIER="${ROLLING_WINDOW_MAX_MULTIPLIER:-1.0}"' in text
     assert 'MAX_ATTEMPTS="${MAX_ATTEMPTS:-3}"' in text
     assert "nohup bash -c '" in text
     assert "nohup bash -lc '" not in text

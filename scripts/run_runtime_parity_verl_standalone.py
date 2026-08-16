@@ -397,7 +397,6 @@ def run_rolling_pending_shards(
     completed_tasks: int,
     completed_rows: int,
     window_trajectories: int,
-    enqueued_epoch_ns: int,
 ) -> tuple[int, int]:
     """Keep the vLLM admission window full while retaining atomic shard files."""
 
@@ -441,7 +440,10 @@ def run_rolling_pending_shards(
                 break
             worker = workers[worker_cursor % len(workers)]
             worker_cursor += 1
-            stamp_trajectory_enqueue(unit, epoch_ns=enqueued_epoch_ns)
+            # Stamp at the actual logical scheduler admission time.  Reusing
+            # the run-start clock for later refills inflates queue-wait
+            # telemetry by all prior shard wall time.
+            stamp_trajectory_enqueue(unit)
             reference = worker.generate_sequences.remote(unit)
             inflight[reference] = (key, task_index, sample_index)
 
@@ -519,6 +521,7 @@ def run(args: argparse.Namespace) -> dict:
         aggregate_sequence_capacity=int(
             contract["trajectory_admission"]["aggregate_sequence_capacity"]
         ),
+        max_window_multiplier=args.rolling_window_max_multiplier,
     )
     if not contract["dataset_exists"] or not contract["model_identity"]["valid"]:
         raise FileNotFoundError(contract)
@@ -579,7 +582,6 @@ def run(args: argparse.Namespace) -> dict:
                 window_trajectories=int(
                     contract["rolling_admission"]["effective_window_trajectories"]
                 ),
-                enqueued_epoch_ns=enqueued_epoch_ns,
             )
             pending = []
         for start, stop, result_path, _ in pending:
@@ -712,6 +714,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--trajectory-timeout-seconds", type=float, default=900.0)
     parser.add_argument("--rolling-admission", type=int, choices=(0, 1), default=0)
     parser.add_argument("--rolling-window-trajectories", type=int, default=0)
+    parser.add_argument("--rolling-window-max-multiplier", type=float, default=1.0)
     parser.add_argument("--preflight-only", action="store_true")
     return parser.parse_args()
 
