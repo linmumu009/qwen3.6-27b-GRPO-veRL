@@ -100,12 +100,15 @@ def test_timeout_retry_finalizer_preserves_explicit_environment():
         "export PROJECT_ROOT ORIGINAL_DATASET ORIGINAL_SHARDS_DIR RETRY_DATASET "
         "RETRY_RUN_DIR OUTPUT_DIR"
     ) in text
+    assert "export EXPECTED_TASKS SAMPLES_PER_TASK" in text
     for argument in (
         '--original-dataset "${ORIGINAL_DATASET}"',
         '--original-shards-dir "${ORIGINAL_SHARDS_DIR}"',
         '--retry-dataset "${RETRY_DATASET}"',
         '--retry-run-dir "${RETRY_RUN_DIR}"',
         '--output-dir "${OUTPUT_DIR}"',
+        '--expected-tasks "${EXPECTED_TASKS}"',
+        '--samples-per-task "${SAMPLES_PER_TASK}"',
     ):
         assert argument in text
 

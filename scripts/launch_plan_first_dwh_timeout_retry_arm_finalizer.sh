@@ -7,8 +7,11 @@ ORIGINAL_SHARDS_DIR="${ORIGINAL_SHARDS_DIR:?ORIGINAL_SHARDS_DIR is required}"
 RETRY_DATASET="${RETRY_DATASET:?RETRY_DATASET is required}"
 RETRY_RUN_DIR="${RETRY_RUN_DIR:?RETRY_RUN_DIR is required}"
 OUTPUT_DIR="${OUTPUT_DIR:?OUTPUT_DIR is required}"
+EXPECTED_TASKS="${EXPECTED_TASKS:-300}"
+SAMPLES_PER_TASK="${SAMPLES_PER_TASK:-8}"
 
 export PROJECT_ROOT ORIGINAL_DATASET ORIGINAL_SHARDS_DIR RETRY_DATASET RETRY_RUN_DIR OUTPUT_DIR
+export EXPECTED_TASKS SAMPLES_PER_TASK
 mkdir -p "${OUTPUT_DIR}"
 export PYTHONPATH="${PROJECT_ROOT}:${PYTHONPATH:-}"
 nohup bash -c '
@@ -19,6 +22,8 @@ nohup bash -c '
     --retry-dataset "${RETRY_DATASET}" \
     --retry-run-dir "${RETRY_RUN_DIR}" \
     --output-dir "${OUTPUT_DIR}" \
+    --expected-tasks "${EXPECTED_TASKS}" \
+    --samples-per-task "${SAMPLES_PER_TASK}" \
     > "${OUTPUT_DIR}/retry_arm_finalizer.log" 2>&1
   code=$?
   printf "%s\n" "${code}" > "${OUTPUT_DIR}/exit_code"

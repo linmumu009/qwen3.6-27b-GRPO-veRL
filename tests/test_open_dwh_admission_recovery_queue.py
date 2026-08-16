@@ -3,7 +3,10 @@ from pathlib import Path
 
 import pytest
 
-from scripts.run_open_dwh_admission_recovery_queue import rollout_environment
+from scripts.run_open_dwh_admission_recovery_queue import (
+    launch_v20_finalizer,
+    rollout_environment,
+)
 
 
 def args(tmp_path: Path, *, max_num_seqs: int) -> Namespace:
@@ -64,3 +67,26 @@ def test_queue_rejects_oversubscribed_full_batch(tmp_path: Path):
             task_batch_size=48,
             analyze_on_success=True,
         )
+
+
+def test_v20_finalizer_freezes_single_arm_shape(tmp_path: Path, monkeypatch):
+    captured = {}
+
+    def fake_run(command, *, env, check):
+        captured.update({"command": command, "env": env, "check": check})
+
+    full_args = args(tmp_path, max_num_seqs=32)
+    full_args.v20_reconciled_dir = tmp_path / "reconciled"
+    full_args.v20_original_dataset = tmp_path / "original.parquet"
+    full_args.v20_original_run_dir = tmp_path / "original-run"
+    full_args.v20_retry_dataset = tmp_path / "retry.parquet"
+    full_args.v20_retry_run_dir = tmp_path / "retry-run"
+    monkeypatch.setattr(
+        "scripts.run_open_dwh_admission_recovery_queue.subprocess.run", fake_run
+    )
+
+    launch_v20_finalizer(full_args)
+
+    assert captured["env"]["EXPECTED_TASKS"] == "250"
+    assert captured["env"]["SAMPLES_PER_TASK"] == "8"
+    assert captured["check"] is True

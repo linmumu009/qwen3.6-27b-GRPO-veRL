@@ -144,6 +144,8 @@ def launch_v20_finalizer(args: argparse.Namespace) -> None:
             "RETRY_DATASET": str(args.v20_retry_dataset),
             "RETRY_RUN_DIR": str(args.v20_retry_run_dir),
             "OUTPUT_DIR": str(args.v20_reconciled_dir),
+            "EXPECTED_TASKS": "250",
+            "SAMPLES_PER_TASK": "8",
         }
     )
     subprocess.run(
