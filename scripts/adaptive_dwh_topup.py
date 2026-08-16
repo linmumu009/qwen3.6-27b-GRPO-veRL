@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """Build and reconcile a two-stage DWH rollout screen.
 
-Stage one samples every task twice.  Stage two adds six trajectories only for
-tasks that already produced a correct answer, match an anonymous structural
-signature learned from earlier mixed tasks, or enter a small deterministic
-exploration reserve.  Sensitive prompts and labels stay in private Parquet;
-all JSON manifests contain aggregate counts and structural metadata only.
+Stage one samples every task twice.  A task that already produced one correct
+and one completed wrong answer has proven non-zero reward variance and stops
+immediately.  Stage two adds six trajectories only for still-uncertain tasks
+that produced a correct answer, match an anonymous structural signature learned
+from earlier mixed tasks, or enter a small deterministic exploration reserve.
+Sensitive prompts and labels stay in private Parquet; all JSON manifests contain
+aggregate counts and structural metadata only.
 """
 
 from __future__ import annotations
@@ -28,8 +30,8 @@ from scripts.standalone_rollout_shards import shard_ranges, write_jsonl_atomic
 
 
 PROFILE_CONTRACT = "llin-adaptive-dwh-reference-profile-v1"
-SELECTION_CONTRACT = "llin-adaptive-dwh-topup-selection-v1"
-FINAL_CONTRACT = "llin-adaptive-dwh-eight-trajectory-final-v1"
+SELECTION_CONTRACT = "llin-adaptive-dwh-topup-selection-v2"
+FINAL_CONTRACT = "llin-adaptive-dwh-variance-screen-final-v2"
 SCREEN_SAMPLES = 2
 TOPUP_SAMPLES = 6
 FINAL_SAMPLES = SCREEN_SAMPLES + TOPUP_SAMPLES
@@ -111,6 +113,10 @@ def is_explicit_mixed(row: dict[str, Any]) -> bool:
     correct = int(row["correct_count"])
     completed = int(row["completed_count"])
     return correct > 0 and completed - correct > 0
+
+
+def confirmed_mixed_path(topup_dataset_path: Path) -> Path:
+    return topup_dataset_path.with_name("confirmed_mixed2.sensitive.parquet")
 
 
 def profile_reference(
@@ -215,10 +221,11 @@ def prepare_topup(
         if int(result["correct_count"]) > SCREEN_SAMPLES:
             raise ValueError("screen correct count exceeds two-sample contract")
         signature = structural_signature(tasks_by_hash[identity])
+        direct_mixed = is_explicit_mixed(result)
         reasons: list[str] = []
-        if int(result["correct_count"]) > 0:
+        if not direct_mixed and int(result["correct_count"]) > 0:
             reasons.append("screen_correct")
-        if signature in reference_signatures:
+        if not direct_mixed and signature in reference_signatures:
             reasons.append("reference_structure")
         candidates.append(
             {
@@ -226,51 +233,67 @@ def prepare_topup(
                 "identity": identity,
                 "signature": signature,
                 "difficulty": str(extra["difficulty_level"]),
+                "direct_mixed": direct_mixed,
                 "reasons": reasons,
                 "result": result,
                 "record": record,
             }
         )
 
+    direct_indices = {row["index"] for row in candidates if row["direct_mixed"]}
     selected_indices = {row["index"] for row in candidates if row["reasons"]}
     for level in sorted({row["difficulty"] for row in candidates}):
         remaining = [
             row
             for row in candidates
-            if row["difficulty"] == level and row["index"] not in selected_indices
+            if row["difficulty"] == level
+            and row["index"] not in selected_indices
+            and row["index"] not in direct_indices
         ]
         remaining.sort(key=lambda row: _stable_exploration_key(seed, row["identity"]))
         for row in remaining[:exploration_per_level]:
             row["reasons"].append("exploration")
             selected_indices.add(row["index"])
 
+    direct_rows: list[dict[str, Any]] = []
+    direct_difficulty_counts: Counter[str] = Counter()
     selected_rows: list[dict[str, Any]] = []
     reason_counts: Counter[str] = Counter()
     difficulty_counts: Counter[str] = Counter()
     screen_correct_histogram: Counter[str] = Counter()
     selected_with_screen_timeout = 0
     for row in candidates:
-        if row["index"] not in selected_indices:
+        if row["index"] not in selected_indices and row["index"] not in direct_indices:
             continue
         record = deepcopy(row["record"])
         result = row["result"]
         extra = dict(record["extra_info"])
+        is_direct = row["index"] in direct_indices
         extra.update(
             {
                 "adaptive_contract": SELECTION_CONTRACT,
                 "adaptive_original_task_index": int(row["index"]),
                 "adaptive_structural_signature_sha256": row["signature"],
-                "adaptive_selection_reasons": sorted(row["reasons"]),
+                "adaptive_selection_reasons": (
+                    ["confirmed_mixed"] if is_direct else sorted(row["reasons"])
+                ),
+                "adaptive_decision": (
+                    "confirmed_mixed_stop" if is_direct else "topup_uncertain"
+                ),
                 "adaptive_screen_correct_count": int(result["correct_count"]),
                 "adaptive_screen_completed_count": int(result["completed_count"]),
                 "adaptive_screen_timeout_count": int(result["trajectory_timeout_count"]),
                 "adaptive_screen_samples": SCREEN_SAMPLES,
-                "adaptive_topup_samples": TOPUP_SAMPLES,
+                "adaptive_topup_samples": 0 if is_direct else TOPUP_SAMPLES,
                 "training_allowed": False,
                 "promotion_allowed": False,
             }
         )
         record["extra_info"] = extra
+        if is_direct:
+            direct_rows.append(record)
+            direct_difficulty_counts[row["difficulty"]] += 1
+            continue
         selected_rows.append(record)
         reason_counts.update(row["reasons"])
         difficulty_counts[row["difficulty"]] += 1
@@ -278,12 +301,20 @@ def prepare_topup(
         selected_with_screen_timeout += int(int(result["trajectory_timeout_count"]) > 0)
     if not selected_rows:
         raise ValueError("adaptive selector produced no top-up tasks")
+    direct_path = confirmed_mixed_path(output_dataset_path)
+    write_private_parquet(direct_path, direct_rows, empty_from=screen_dataset_path)
     write_private_parquet(output_dataset_path, selected_rows)
     manifest = {
         "contract": SELECTION_CONTRACT,
         "screen_tasks": len(dataset),
         "screen_samples_per_task": SCREEN_SAMPLES,
+        "confirmed_mixed_tasks": len(direct_rows),
+        "confirmed_mixed_difficulty_counts": dict(sorted(direct_difficulty_counts.items())),
+        "confirmed_mixed_sampling_stopped_after": SCREEN_SAMPLES,
+        "confirmed_mixed_avoided_topup_trajectories": len(direct_rows) * TOPUP_SAMPLES,
+        "confirmed_mixed_candidate_dataset_sha256": file_sha256(direct_path),
         "selected_tasks": len(selected_rows),
+        "topup_selected_tasks": len(selected_rows),
         "topup_samples_per_selected_task": TOPUP_SAMPLES,
         "selection_reason_counts_nonexclusive": dict(sorted(reason_counts.items())),
         "selected_difficulty_counts": dict(sorted(difficulty_counts.items())),
@@ -294,6 +325,7 @@ def prepare_topup(
         "screen_dataset_sha256": file_sha256(screen_dataset_path),
         "topup_dataset_sha256": file_sha256(output_dataset_path),
         "selection_identity_is_instruction_sha256": True,
+        "sampling_objective": "prove_nonzero_reward_variance_not_collect_offline_training_trajectories",
         "contains_prompts_gold_sql_task_ids_outputs_or_server_paths": False,
         "training_allowed": False,
         "promotion_allowed": False,
@@ -313,6 +345,10 @@ def finalize(
 ) -> dict[str, Any]:
     screen_dataset = pq.read_table(screen_dataset_path).to_pylist()
     topup_dataset = pq.read_table(topup_dataset_path).to_pylist()
+    direct_path = confirmed_mixed_path(topup_dataset_path)
+    if not direct_path.is_file():
+        raise ValueError("confirmed mixed candidate dataset is missing")
+    direct_dataset = pq.read_table(direct_path).to_pylist()
     if len(screen_dataset) != expected_screen_tasks:
         raise ValueError("screen dataset shape mismatch")
     screen_observations, _ = load_complete_shards(
@@ -354,6 +390,21 @@ def finalize(
             row["adaptive_phase"] = "topup"
             merged[(selected_index, SCREEN_SAMPLES + sample_index)] = row
 
+    direct_original_indices = {
+        int(row["extra_info"]["adaptive_original_task_index"])
+        for row in direct_dataset
+    }
+    if len(direct_original_indices) != len(direct_dataset):
+        raise ValueError("duplicate original task in confirmed mixed dataset")
+    if direct_original_indices & selected_original_indices:
+        raise ValueError("confirmed mixed and top-up datasets overlap")
+    for row in direct_dataset:
+        extra = row["extra_info"]
+        if str(extra.get("adaptive_contract")) != SELECTION_CONTRACT:
+            raise ValueError("confirmed mixed row contract mismatch")
+        if str(extra.get("adaptive_decision")) != "confirmed_mixed_stop":
+            raise ValueError("confirmed mixed row decision mismatch")
+
     for start, stop in shard_ranges(len(topup_dataset), 48):
         rows = [
             merged[(task_index, sample_index)]
@@ -377,35 +428,59 @@ def finalize(
     relaxed_rows = [topup_dataset[index] for index in relaxed_indices]
     relaxed_path = output_dir / "outcomes" / "relaxed_mixed_candidates.sensitive.parquet"
     write_private_parquet(relaxed_path, relaxed_rows, empty_from=topup_dataset_path)
+    all_candidate_rows = [*direct_dataset, *relaxed_rows]
+    all_candidate_path = output_dir / "outcomes" / "grpo_variance_candidates.sensitive.parquet"
+    write_private_parquet(
+        all_candidate_path,
+        all_candidate_rows,
+        empty_from=screen_dataset_path,
+    )
     relaxed_difficulty = Counter(
         str(topup_dataset[index]["extra_info"]["difficulty_level"])
         for index in relaxed_indices
     )
+    direct_difficulty = Counter(
+        str(row["extra_info"]["difficulty_level"]) for row in direct_dataset
+    )
+    candidate_difficulty = direct_difficulty + relaxed_difficulty
     relaxed_with_timeout = sum(
         int(int(per_task[index]["trajectory_timeout_count"]) > 0)
         for index in relaxed_indices
     )
     selected = len(topup_dataset)
+    direct = len(direct_dataset)
     baseline = expected_screen_tasks * FINAL_SAMPLES
     actual = expected_screen_tasks * SCREEN_SAMPLES + selected * TOPUP_SAMPLES
     summary = {
         "contract": FINAL_CONTRACT,
         "screen_tasks": expected_screen_tasks,
         "screen_trajectories": expected_screen_tasks * SCREEN_SAMPLES,
+        "confirmed_mixed_after_two_tasks": direct,
+        "confirmed_mixed_avoided_topup_trajectories": direct * TOPUP_SAMPLES,
         "selected_tasks": selected,
+        "topup_selected_tasks": selected,
         "topup_trajectories": selected * TOPUP_SAMPLES,
         "final_selected_trajectories": selected * FINAL_SAMPLES,
         "actual_sampling_trajectories": actual,
         "full_eight_sampling_baseline_trajectories": baseline,
         "avoided_trajectories": baseline - actual,
         "strict_mixed_tasks": int(outcome["mixed_screening_rows"]),
-        "relaxed_explicit_mixed_tasks": len(relaxed_indices),
+        "topup_relaxed_explicit_mixed_tasks": len(relaxed_indices),
+        "relaxed_explicit_mixed_tasks": direct + len(relaxed_indices),
+        "grpo_variance_candidate_tasks": direct + len(relaxed_indices),
+        "confirmed_mixed_difficulty_counts": dict(sorted(direct_difficulty.items())),
+        "grpo_variance_candidate_difficulty_counts": dict(
+            sorted(candidate_difficulty.items())
+        ),
         "relaxed_explicit_mixed_with_timeout": relaxed_with_timeout,
         "relaxed_explicit_mixed_difficulty_counts": dict(sorted(relaxed_difficulty.items())),
         "timeout_trajectories": int(outcome["timeout_trajectories"]),
         "runtime_error_trajectories": int(outcome["runtime_error_trajectories"]),
         "correct_trajectories": int(outcome["correct_trajectories"]),
         "relaxed_candidate_dataset_sha256": file_sha256(relaxed_path),
+        "grpo_candidate_dataset_sha256": file_sha256(all_candidate_path),
+        "direct_mixed_requires_eight_offline_trajectories": False,
+        "candidate_payload_is_prompt_and_gold_not_sampled_trajectory": True,
         "selection_biased_screening": True,
         "contains_prompts_gold_sql_task_ids_outputs_or_server_paths": False,
         "training_allowed": False,

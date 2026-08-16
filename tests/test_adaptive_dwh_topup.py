@@ -10,6 +10,7 @@ from scripts.adaptive_dwh_topup import (
     PROFILE_CONTRACT,
     SELECTION_CONTRACT,
     canonical_hash,
+    confirmed_mixed_path,
     finalize,
     prepare_topup,
     profile_reference,
@@ -128,14 +129,19 @@ def test_profile_and_prepare_select_hits_structure_and_exploration(tmp_path: Pat
     )
 
     assert manifest["contract"] == SELECTION_CONTRACT
-    assert manifest["selected_tasks"] == 4
+    assert manifest["confirmed_mixed_tasks"] == 1
+    assert manifest["confirmed_mixed_avoided_topup_trajectories"] == 6
+    assert manifest["selected_tasks"] == 3
     assert manifest["selection_reason_counts_nonexclusive"] == {
         "exploration": 2,
         "reference_structure": 1,
-        "screen_correct": 1,
     }
     selected = pq.read_table(topup_path).to_pylist()
-    assert [row["extra_info"]["adaptive_original_task_index"] for row in selected] == [0, 1, 2, 3]
+    assert [row["extra_info"]["adaptive_original_task_index"] for row in selected] == [1, 2, 3]
+    direct = pq.read_table(confirmed_mixed_path(topup_path)).to_pylist()
+    assert [row["extra_info"]["adaptive_original_task_index"] for row in direct] == [0]
+    assert direct[0]["extra_info"]["adaptive_decision"] == "confirmed_mixed_stop"
+    assert direct[0]["extra_info"]["adaptive_topup_samples"] == 0
     assert all(row["extra_info"]["training_allowed"] is False for row in selected)
 
 
@@ -158,21 +164,44 @@ def test_finalize_merges_two_plus_six_and_keeps_timeout_mixed_relaxed(tmp_path: 
             {"source_task_index": 1, "sample_index": 1, "output": "最终答案 9", "response_tokens": 5},
         ],
     )
-    selected = dataset_record(sources[0], 0)
-    selected["extra_info"].update(
+    direct = dataset_record(sources[0], 0)
+    direct["extra_info"].update(
         {
             "adaptive_contract": SELECTION_CONTRACT,
             "adaptive_original_task_index": 0,
+            "adaptive_decision": "confirmed_mixed_stop",
+        }
+    )
+    selected = dataset_record(sources[1], 1)
+    selected["extra_info"].update(
+        {
+            "adaptive_contract": SELECTION_CONTRACT,
+            "adaptive_original_task_index": 1,
+            "adaptive_decision": "topup_uncertain",
         }
     )
     topup_dataset = tmp_path / "topup.parquet"
     pq.write_table(pa.Table.from_pylist([selected]), topup_dataset)
+    pq.write_table(pa.Table.from_pylist([direct]), confirmed_mixed_path(topup_dataset))
     topup_shards = tmp_path / "topup-shards"
     topup_shards.mkdir()
     topup_outputs = [
-        {"source_task_index": 0, "sample_index": sample, "output": "最终答案 9", "response_tokens": 5}
-        for sample in range(5)
+        {
+            "source_task_index": 0,
+            "sample_index": 0,
+            "output": "最终答案 1",
+            "response_tokens": 5,
+        }
     ]
+    topup_outputs.extend(
+        {
+            "source_task_index": 0,
+            "sample_index": sample,
+            "output": "最终答案 9",
+            "response_tokens": 5,
+        }
+        for sample in range(1, 5)
+    )
     topup_outputs.append(
         {
             "source_task_index": 0,
@@ -196,13 +225,23 @@ def test_finalize_merges_two_plus_six_and_keeps_timeout_mixed_relaxed(tmp_path: 
     assert summary["contract"] == FINAL_CONTRACT
     assert summary["actual_sampling_trajectories"] == 10
     assert summary["avoided_trajectories"] == 6
+    assert summary["confirmed_mixed_after_two_tasks"] == 1
     assert summary["strict_mixed_tasks"] == 0
-    assert summary["relaxed_explicit_mixed_tasks"] == 1
+    assert summary["topup_relaxed_explicit_mixed_tasks"] == 1
+    assert summary["relaxed_explicit_mixed_tasks"] == 2
+    assert summary["grpo_variance_candidate_tasks"] == 2
     assert summary["relaxed_explicit_mixed_with_timeout"] == 1
     relaxed = pq.read_table(
         tmp_path / "final" / "outcomes" / "relaxed_mixed_candidates.sensitive.parquet"
     ).to_pylist()
     assert len(relaxed) == 1
+    candidates = pq.read_table(
+        tmp_path / "final" / "outcomes" / "grpo_variance_candidates.sensitive.parquet"
+    ).to_pylist()
+    assert len(candidates) == 2
+    assert {
+        row["extra_info"]["adaptive_original_task_index"] for row in candidates
+    } == {0, 1}
 
 
 def test_topup_launcher_fills_capacity_without_changing_frozen_contract(

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Unattended two-sample screen -> six-sample top-up controller for one arm."""
+"""Unattended variance screen with early-stop and uncertain-task top-up."""
 
 from __future__ import annotations
 
@@ -133,11 +133,16 @@ def run(args: argparse.Namespace) -> None:
             seed=args.seed,
         )
     selected_tasks = int(manifest["selected_tasks"])
+    confirmed_mixed_tasks = int(manifest["confirmed_mixed_tasks"])
     write_status(
         args.queue_dir,
         stage="launching_topup",
         arm_label=args.arm_label,
         selected_tasks=selected_tasks,
+        confirmed_mixed_tasks=confirmed_mixed_tasks,
+        confirmed_mixed_avoided_topup_trajectories=(
+            confirmed_mixed_tasks * TOPUP_SAMPLES
+        ),
         topup_trajectories=selected_tasks * TOPUP_SAMPLES,
     )
     launch_topup(args, selected_tasks)
@@ -154,6 +159,7 @@ def run(args: argparse.Namespace) -> None:
         stage="finalizing_eight_trajectory_groups",
         arm_label=args.arm_label,
         selected_tasks=selected_tasks,
+        confirmed_mixed_tasks=confirmed_mixed_tasks,
     )
     final_summary_path = args.final_output_dir / "adaptive_final_safe_summary.json"
     if final_summary_path.is_file():
@@ -172,8 +178,10 @@ def run(args: argparse.Namespace) -> None:
         stage="complete",
         arm_label=args.arm_label,
         selected_tasks=selected_tasks,
+        confirmed_mixed_tasks=confirmed_mixed_tasks,
         strict_mixed_tasks=int(summary["strict_mixed_tasks"]),
         relaxed_explicit_mixed_tasks=int(summary["relaxed_explicit_mixed_tasks"]),
+        grpo_variance_candidate_tasks=int(summary["grpo_variance_candidate_tasks"]),
         avoided_trajectories=int(summary["avoided_trajectories"]),
     )
 
