@@ -9,11 +9,11 @@ from scripts.adaptive_dwh_topup import (
     FINAL_CONTRACT,
     PROFILE_CONTRACT,
     SELECTION_CONTRACT,
+    canonical_hash,
     finalize,
     prepare_topup,
     profile_reference,
 )
-from scripts.prepare_plan_first_dwh_model_comparison import canonical_hash
 from scripts.run_adaptive_dwh_topup_queue import launch_topup
 
 

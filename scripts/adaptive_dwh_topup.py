@@ -24,7 +24,6 @@ import pyarrow.parquet as pq
 
 from scripts.analyze_multisandbox_dwh_rollout import analyze
 from scripts.plan_first_dwh_timeout_retry import load_complete_shards
-from scripts.prepare_plan_first_dwh_model_comparison import canonical_hash, file_sha256
 from scripts.standalone_rollout_shards import shard_ranges, write_jsonl_atomic
 
 
@@ -34,6 +33,19 @@ FINAL_CONTRACT = "llin-adaptive-dwh-eight-trajectory-final-v1"
 SCREEN_SAMPLES = 2
 TOPUP_SAMPLES = 6
 FINAL_SAMPLES = SCREEN_SAMPLES + TOPUP_SAMPLES
+
+
+def canonical_hash(value: Any) -> str:
+    payload = json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
+def file_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def read_jsonl(path: Path) -> list[dict[str, Any]]:
