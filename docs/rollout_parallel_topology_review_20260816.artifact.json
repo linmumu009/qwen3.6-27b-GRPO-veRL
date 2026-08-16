@@ -1,0 +1,194 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "94K采样并行拓扑是否最优",
+    "generatedAt": "2026-08-16T21:21:28+08:00",
+    "blocks": [
+      {"id": "title", "type": "markdown", "body": "# 94K采样并行拓扑是否最优"},
+      {
+        "id": "technical_summary",
+        "type": "markdown",
+        "sourceId": "topology_summary",
+        "body": "## Technical Summary\n\n- **当前采样不是TP8×CP2，而是TP8×DP2×DCP1。** CP2属于Megatron训练侧的TP4×PP2×CP2；纯vLLM采样目前没有启用上下文并行。\n- **TP8×DP2稳定，但没有被证明是94K效率最优。** 当前两机零OOM/runtime error，却只有约63.6%的序列槽位在运行，AICore均值约15.8%；拓扑和agent供给都还有优化空间。\n- **第一候选应是TP8×DCP2×DP2。** Step120有4个KV heads，而TP8会把每个KV head复制两份；安装版vLLM-Ascend允许该结构使用DCP2，在不增加设备的情况下把每卡全注意力KV缓存减半。代价是额外解码通信，必须实测。\n- **第二候选是TP4×DP4。** 它把独立副本从2个提高到4个；历史8K同为5→4时墙钟快约5.7%，但4→4又慢约3.9%，且94K容量尚未验证，所以不能直接晋级。\n- **在剩余424题前先做短交叉门禁。** 先比较DCP1/DCP2，再测TP4×DP4；只有吞吐至少提高10%、94K容量通过且错误/超时不恶化，才切换主采样。"
+      },
+      {
+        "id": "finding_current",
+        "type": "markdown",
+        "sourceId": "topology_summary",
+        "body": "## 当前合同把训练CP与采样DP混在了口头表述里\n\n当前两台采样服务器各使用16张NPU，实际合同明确为TP8×DP2，每个服务器启动两套8卡vLLM副本；没有DCP2或PCP2。训练侧才是TP4×PP2×CP2。这个区别很重要：训练CP用于分摊长序列前反向，采样侧的DCP用于消除KV缓存复制，优化对象完全不同。"
+      },
+      {
+        "id": "finding_memory",
+        "type": "markdown",
+        "sourceId": "topology_summary",
+        "body": "## DCP2正好消除TP8对4个KV heads的二次复制\n\n模型共64层，其中16层是全注意力、48层是线性注意力；全注意力有4个KV heads、head dim为256。BF16下唯一KV状态为64 KiB/token。TP4恰好每卡一个KV head；TP8在DCP1下仍至少每卡一个KV head，因此横跨8卡会保存两份。DCP2沿序列维度切分这份复制，使单卡每条满94,208-token序列的全注意力KV估算从1.4375 GiB降到0.71875 GiB。该数学不含固定GDN状态、激活和运行时工作区，因此只能用于相对比较。"
+      },
+      {"id": "memory_chart_block", "type": "chart", "chartId": "memory_chart"},
+      {
+        "id": "candidate_interpretation",
+        "type": "markdown",
+        "sourceId": "topology_summary",
+        "body": "## 吞吐目标使TP4×DP4仍然值得竞争\n\nDCP2主要释放KV容量，不保证单token更快；它还会为GQA解码增加collective。当前响应P50约9K–10K、P95约17K–18K，实际典型长度远低于94K上限，因此更多独立副本可能比更深TP更重要。TP4×DP4将副本数翻倍，并消除KV-head复制，但每卡权重从约6.47 GiB升到12.94 GiB。TP2×DP8理论上还能增加副本，但每卡权重约25.87 GiB、单条满长注意力KV约2.875 GiB，尾部风险更高，只应作为第三阶段研究门。"
+      },
+      {"id": "candidate_table_block", "type": "table", "tableId": "candidate_table"},
+      {
+        "id": "historical_evidence",
+        "type": "markdown",
+        "sourceId": "historical_matrix",
+        "body": "## 既有8K矩阵支持测试TP4，但不足以直接切换\n\n在旧单步工程矩阵中，相同5→4形状下，TP4×DP4的队列等待为307.72秒、完整step为388.97秒，相对TP8×DP2分别快7.4%和5.7%。反例是4→4时TP4×DP4反而慢约3.9%。每个格子只有一次运行，且上下文仅8K、包含训练阶段，因此这些结果只能证明TP4是合理候选，不能代表当前94K独立采样的真实排名。"
+      },
+      {
+        "id": "scope_definitions",
+        "type": "markdown",
+        "sourceId": "topology_summary",
+        "body": "## Scope, Data, and Metric Definitions\n\n范围是Step120模型在单机16张NPU上的独立PI-Agent采样，不涉及Megatron训练更新。冻结模型哈希、temperature=1、top_p=.95、top_k=20、4,096 prompt、90,112 response、94,208总上下文与1,800秒超时。拓扑门的首要系统指标是完成生成tokens/墙钟小时，其次是完成轨迹/小时；进入真实剩余题池后，以确认GRPO方差候选/小时为最终业务指标。"
+      },
+      {
+        "id": "methodology",
+        "type": "markdown",
+        "sourceId": "topology_summary",
+        "body": "## 门禁必须交叉机器并分阶段扩容量\n\n1. 在同一小批代表性任务上，5号机跑TP8×DP2×DCP1、6号机跑TP8×DCP2×DP2，再交换两机拓扑，抵消机器差异。\n2. DCP对照结束后，以相同任务测试TP4×DP4；先通过94K加载、单条满长和稳定max_num_seqs容量门。\n3. 只有TP4获胜后才测试TP2×DP8。\n4. 每个拓扑均需记录生成tokens/小时、轨迹/小时、队列/生成/工具/总耗时、HBM、AICore、超时和runtime error。\n5. 获胜拓扑还要配合逻辑agent窗口超额准入；当前约21%的执行时间在工具阶段，物理vLLM槽位平均只运行约63.6%，单改TP/DP不会解决供给不足。"
+      },
+      {"id": "gate_table_block", "type": "table", "tableId": "gate_table"},
+      {
+        "id": "limitations",
+        "type": "markdown",
+        "sourceId": "topology_summary",
+        "body": "## Limitations, Uncertainty, and Robustness Checks\n\n- DCP2在安装版vLLM-Ascend中标为实验功能；结构约束通过不等于Qwen3.5吞吐或稳定性已经通过。\n- KV估算只覆盖16层全注意力，不含48层GDN的固定每序列状态、激活、图缓存、通信工作区和碎片。它能比较方向，不能直接给出安全max_num_seqs。\n- 当前输出长度来自已完成v20补采，存在选择偏差；94K仍必须作为单请求容量护栏。\n- 历史TP4/TP8矩阵是8K单次工程测试，不能给出置信区间。\n- DCP2的缓存收益只有在更高逻辑供给或更高序列容量下才可能转化为吞吐；若保持当前欠供给，额外通信可能使结果反而变慢。"
+      },
+      {
+        "id": "recommendation",
+        "type": "markdown",
+        "sourceId": "topology_summary",
+        "body": "## 推荐下一步\n\n1. 暂不启动剩余424题的主筛选。\n2. 第一轮只做TP8×DCP1×DP2与TP8×DCP2×DP2双机交叉门禁。\n3. 第二轮测试TP4×DP4；TP2×DP8仅在TP4获胜后进入。\n4. 候选必须相对基线至少提升10%的生成tokens/小时，同时保持94K单条通过、OOM/runtime error为0；真实续跑阶段超时率不得增加超过2个百分点。\n5. PCP2暂不进入第一轮，因为它会扩大world size，主要优化超长prefill TTFT，而当前目标是多条独立工具轨迹的总吞吐。"
+      },
+      {
+        "id": "further_questions",
+        "type": "markdown",
+        "body": "## Further Questions\n\n- DCP2在Qwen3.5混合全注意力/GDN模型上的实际KV块数、decode通信占比和tokens/小时是多少？\n- TP4×DP4在94K、典型10K–18K和真实最长尾三种长度下的最高稳定max_num_seqs分别是多少？\n- TP2×DP8是否能在0.80显存预算内通过94K单请求并维持足够的每副本batch效率？\n- 获胜拓扑与1.25×逻辑agent窗口叠加时，收益是否可加，还是会转化为排队和真实超时？"
+      }
+    ],
+    "charts": [
+      {
+        "id": "memory_chart",
+        "title": "候选拓扑的单卡权重与满94K注意力KV",
+        "subtitle": "GiB/NPU；KV仅含16层全注意力，用于相对比较",
+        "type": "bar",
+        "dataset": "memory_chart",
+        "sourceId": "topology_summary",
+        "encodings": {
+          "x": {"field": "topology", "type": "nominal"},
+          "y": {"field": "gib", "type": "quantitative"},
+          "color": {"field": "component", "type": "nominal"}
+        },
+        "valueFormat": "number",
+        "layout": "full"
+      }
+    ],
+    "tables": [
+      {
+        "id": "candidate_table",
+        "title": "候选拓扑比较",
+        "subtitle": "所有方案固定单机16张NPU与94K上下文合同",
+        "dataset": "candidate_table",
+        "sourceId": "topology_summary",
+        "columns": [
+          {"field": "priority", "label": "顺序", "format": "number"},
+          {"field": "topology", "label": "拓扑"},
+          {"field": "replicas", "label": "DP副本", "format": "number"},
+          {"field": "weight_gib", "label": "权重GiB/卡", "format": "number"},
+          {"field": "kv_gib", "label": "满94K注意力KV GiB/卡", "format": "number"},
+          {"field": "status", "label": "判断"}
+        ],
+        "defaultSort": {"field": "priority", "direction": "asc"}
+      },
+      {
+        "id": "gate_table",
+        "title": "并行拓扑晋级门",
+        "subtitle": "先验证容量，再比较吞吐，最后进入真实候选产出",
+        "dataset": "gate_table",
+        "sourceId": "topology_summary",
+        "columns": [
+          {"field": "stage", "label": "阶段", "format": "number"},
+          {"field": "comparison", "label": "比较"},
+          {"field": "must_pass", "label": "硬条件"},
+          {"field": "promotion", "label": "晋级条件"}
+        ],
+        "defaultSort": {"field": "stage", "direction": "asc"}
+      }
+    ],
+    "sources": [
+      {"id": "topology_summary", "label": "Step120采样并行拓扑复核汇总", "path": "docs/rollout_parallel_topology_review_20260816_summary.json"},
+      {"id": "historical_matrix", "label": "既有TP8与TP4单步工程矩阵", "path": "docs/fastest_k_efficiency_20step_20260731.artifact.json"}
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "generatedAt": "2026-08-16T21:21:28+08:00",
+    "status": "ready",
+    "datasets": {
+      "memory_chart": [
+        {"topology": "TP8·DCP1·DP2", "component": "权重", "gib": 6.468367751687765},
+        {"topology": "TP8·DCP1·DP2", "component": "满94K注意力KV", "gib": 1.4375},
+        {"topology": "TP8·DCP2·DP2", "component": "权重", "gib": 6.468367751687765},
+        {"topology": "TP8·DCP2·DP2", "component": "满94K注意力KV", "gib": 0.71875},
+        {"topology": "TP4·DP4", "component": "权重", "gib": 12.93673550337553},
+        {"topology": "TP4·DP4", "component": "满94K注意力KV", "gib": 1.4375},
+        {"topology": "TP2·DP8", "component": "权重", "gib": 25.87347100675106},
+        {"topology": "TP2·DP8", "component": "满94K注意力KV", "gib": 2.875}
+      ],
+      "candidate_table": [
+        {"priority": 0, "topology": "TP8×DP2×DCP1", "replicas": 2, "weight_gib": 6.47, "kv_gib": 1.438, "status": "稳定基线；未证明最优"},
+        {"priority": 1, "topology": "TP8×DCP2×DP2", "replicas": 2, "weight_gib": 6.47, "kv_gib": 0.719, "status": "第一门；最低改动"},
+        {"priority": 2, "topology": "TP4×DP4", "replicas": 4, "weight_gib": 12.94, "kv_gib": 1.438, "status": "第二门；吞吐候选"},
+        {"priority": 3, "topology": "TP2×DP8", "replicas": 8, "weight_gib": 25.87, "kv_gib": 2.875, "status": "高风险研究门"}
+      ],
+      "gate_table": [
+        {"stage": 1, "comparison": "TP8 DCP1 vs DCP2双机交叉", "must_pass": "同模型/采样；94K；零OOM/runtime", "promotion": "生成tokens/小时至少+10%"},
+        {"stage": 2, "comparison": "获胜TP8 vs TP4×DP4", "must_pass": "满长单条与稳定容量门", "promotion": "轨迹/小时与tokens/小时均占优"},
+        {"stage": 3, "comparison": "可选TP2×DP8", "must_pass": "仅TP4获胜后；94K不预empt失控", "promotion": "相对TP4再提升至少10%"},
+        {"stage": 4, "comparison": "获胜拓扑跑剩余题池", "must_pass": "2+2+2早停；逻辑窗口门", "promotion": "mixed候选/小时最高且超时增幅≤2pp"}
+      ]
+    }
+  },
+  "sources": [
+    {
+      "id": "topology_summary",
+      "label": "Step120采样并行拓扑复核汇总",
+      "path": "docs/rollout_parallel_topology_review_20260816_summary.json",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM read_json_auto('docs/rollout_parallel_topology_review_20260816_summary.json')",
+        "description": "汇总当前双机执行合同、Step120模型结构、安装版vLLM-Ascend上下文并行说明、已完成采样遥测和候选拓扑容量数学。",
+        "tables_used": ["docs/rollout_parallel_topology_review_20260816_summary.json"],
+        "filters": [
+          "仅使用非敏感聚合、模型公开结构与执行合同",
+          "不包含题面、gold、SQL、task ID、最终答案或工具输出",
+          "区分已验证事实、理论估算和待门禁假设"
+        ],
+        "metric_definitions": {
+          "weight_gib_per_npu": "模型索引总权重字节数除以TP规模和2^30",
+          "attention_kv_gib_per_94208_token_sequence_per_npu": "16层全注意力BF16 K/V按KV heads、head dim、TP复制及DCP序列分片计算",
+          "system_primary_metric": "完成生成tokens除以墙钟小时",
+          "business_primary_metric": "确认至少一条明确正确和一条明确错误的题目数除以墙钟小时"
+        }
+      }
+    },
+    {
+      "id": "historical_matrix",
+      "label": "既有TP8与TP4单步工程矩阵",
+      "path": "docs/fastest_k_efficiency_20step_20260731.artifact.json",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT rollout_topology, candidates, selected, queue_wait_s, step_s FROM historical_topology_matrix",
+        "description": "读取旧8K单步矩阵的TP8×DP2与TP4×DP4工程实测；仅用于候选排序，不外推为94K结论。",
+        "tables_used": ["docs/fastest_k_efficiency_20step_20260731.artifact.json"],
+        "filters": ["同为5→4时比较", "保留4→4反例", "单次运行不作因果或置信区间声明"]
+      }
+    }
+  ]
+}

@@ -1,0 +1,154 @@
+{
+  "generated_at": "2026-08-16T21:21:28+08:00",
+  "decision": {
+    "current_sampling_topology_is_proven_optimal": false,
+    "current_sampling_topology_is_stable": true,
+    "actual_sampling_topology": "TP8 x DP2 x DCP1",
+    "training_topology_not_sampling_topology": "TP4 x PP2 x CP2",
+    "recommended_first_candidate": "TP8 x DCP2 x DP2",
+    "recommended_second_candidate": "TP4 x DP4",
+    "confidence": "share_with_caveats",
+    "reason": "The current rollout does not use CP2. TP8 duplicates four GQA KV heads across eight TP ranks, while installed vLLM-Ascend supports DCP2 for this exact TP8/4-KV-head ratio; however DCP adds decode collectives and TP4xDP4 has only limited 8K evidence, so a controlled gate is required."
+  },
+  "current_contract": {
+    "model": "Qwen3.5/Qwen3.6 dense 27B Step120 HF export",
+    "model_weight_bytes": 55562855904,
+    "model_weight_gib": 51.74694201350212,
+    "tensor_parallel_size": 8,
+    "data_parallel_size": 2,
+    "decode_context_parallel_size": 1,
+    "rollout_npus_per_server": 16,
+    "context_tokens": 94208,
+    "prompt_tokens": 4096,
+    "response_tokens": 90112,
+    "max_num_batched_tokens_per_engine": 16384,
+    "h05_max_num_seqs_per_engine": 24,
+    "h06_max_num_seqs_per_engine": 32,
+    "temperature": 1.0,
+    "top_p": 0.95,
+    "top_k": 20,
+    "timeout_seconds": 1800
+  },
+  "model_structure": {
+    "layers": 64,
+    "full_attention_layers": 16,
+    "linear_attention_layers": 48,
+    "attention_heads": 24,
+    "kv_heads": 4,
+    "head_dim": 256,
+    "dtype": "bfloat16",
+    "max_position_embeddings": 262144,
+    "unique_full_attention_kv_bytes_per_token": 65536,
+    "interpretation": "TP4 assigns one KV head per rank. TP8 without DCP must replicate each KV head twice; DCP2 reuses the TP group to shard that duplicated KV cache by sequence."
+  },
+  "observed_workload": {
+    "as_of": "completed v20 adaptive top-up run",
+    "h05_response_tokens_p50": 9040,
+    "h05_response_tokens_p95": 18196,
+    "h05_response_tokens_max": 31385,
+    "h06_response_tokens_p50": 9736,
+    "h06_response_tokens_p95": 16791,
+    "h06_response_tokens_max": 22843,
+    "weighted_scheduler_fill": 0.6363315983517676,
+    "weighted_aicore_mean": 0.15756770833333333,
+    "weighted_npu_utilization": 0.2684865451388889,
+    "tool_time_share_approx": 0.21,
+    "interpretation": "The 94K contract is a tail guardrail; observed responses are mostly 9K-18K. Current vLLM is also underfed during tool phases, so topology tuning must be combined with logical-agent oversubscription."
+  },
+  "topology_candidates": [
+    {
+      "topology": "TP8 x DP2 x DCP1",
+      "status": "current baseline",
+      "dp_replicas": 2,
+      "weight_gib_per_npu": 6.468367751687765,
+      "attention_kv_kib_per_token_per_npu": 16,
+      "attention_kv_gib_per_94208_token_sequence_per_npu": 1.4375,
+      "expected_strength": "proven 94K stability and lowest operational risk",
+      "expected_weakness": "KV-head replication and only two independent replicas"
+    },
+    {
+      "topology": "TP8 x DCP2 x DP2",
+      "status": "first gate",
+      "dp_replicas": 2,
+      "weight_gib_per_npu": 6.468367751687765,
+      "attention_kv_kib_per_token_per_npu": 8,
+      "attention_kv_gib_per_94208_token_sequence_per_npu": 0.71875,
+      "expected_strength": "same devices and replicas while removing the TP8 KV duplication",
+      "expected_weakness": "experimental DCP path adds decode collectives and has no local Qwen3.5 throughput result"
+    },
+    {
+      "topology": "TP4 x DP4",
+      "status": "second gate",
+      "dp_replicas": 4,
+      "weight_gib_per_npu": 12.93673550337553,
+      "attention_kv_kib_per_token_per_npu": 16,
+      "attention_kv_gib_per_94208_token_sequence_per_npu": 1.4375,
+      "expected_strength": "twice as many independent replicas and no KV-head replication",
+      "expected_weakness": "twice the weight memory per NPU and unverified 94K stable capacity"
+    },
+    {
+      "topology": "TP2 x DP8",
+      "status": "optional research gate",
+      "dp_replicas": 8,
+      "weight_gib_per_npu": 25.87347100675106,
+      "attention_kv_kib_per_token_per_npu": 32,
+      "attention_kv_gib_per_94208_token_sequence_per_npu": 2.875,
+      "expected_strength": "maximum independent replica count",
+      "expected_weakness": "tightest long-context memory and highest tail/preemption risk"
+    }
+  ],
+  "historical_topology_evidence": {
+    "scope": "one-run 8K GRPO engineering matrix, not the current 94K standalone screen",
+    "tp8_dp2_5_to_4_queue_wait_seconds": 332.16,
+    "tp4_dp4_5_to_4_queue_wait_seconds": 307.72,
+    "tp4_same_shape_queue_wait_improvement": 0.07357899807321772,
+    "tp8_dp2_5_to_4_step_seconds": 412.34,
+    "tp4_dp4_5_to_4_step_seconds": 388.97,
+    "tp4_same_shape_step_improvement": 0.056676529077945265,
+    "counterexample": "At 4-to-4, TP4xDP4 was about 3.9% slower than TP8xDP2, so the historical matrix is directionally useful but inconclusive."
+  },
+  "installed_runtime_evidence": {
+    "vllm_version": "0.18.0+empty",
+    "vllm_ascend_version": "0.18.1.dev44+ga43c8cc80",
+    "dcp_status": "experimental but implemented",
+    "dcp_world_size_behavior": "reuses TP ranks and does not add devices",
+    "gqa_constraint": "(tensor_parallel_size / num_key_value_heads) must be at least and divisible by decode_context_parallel_size",
+    "qwen_constraint_check": "(8 / 4) = 2, therefore DCP2 satisfies the installed guide's GQA constraint",
+    "pcp_priority": "defer",
+    "pcp_reason": "PCP expands world size and primarily improves long-prefill TTFT; the current objective is aggregate independent trajectory throughput with mostly 9K-18K responses and substantial tool time."
+  },
+  "recommended_gate": {
+    "do_not_start_remaining_424_tasks_before_gate": true,
+    "phase_0": "Keep model hash, task/sample identities, temperature/top-p/top-k, 94K context and 30-minute timeout frozen.",
+    "phase_1": "Cross over TP8xDP2xDCP1 and TP8xDCP2xDP2 between h05 and h06 on the same small representative task set.",
+    "phase_2": "Run TP4xDP4 on the same set after 94K load, one-max-length request and stable-capacity preflight pass.",
+    "phase_3": "Test TP2xDP8 only if TP4xDP4 wins and TP2 passes the same 94K capacity gate.",
+    "primary_metric": "completed generated tokens per wall-clock hour, followed by completed trajectories per hour",
+    "business_metric": "confirmed GRPO variance candidates per wall-clock hour in the continuation screen",
+    "guardrails": [
+      "runtime errors and OOM remain zero",
+      "94K single-request capacity passes",
+      "timeout rate does not worsen by more than 2 percentage points on a sufficiently sized continuation slice",
+      "no change to sampling distribution, model or scoring",
+      "candidate topology must improve throughput by at least 10% to justify operational change"
+    ],
+    "logical_admission_note": "Whichever topology wins must also use a logical agent window above the physical vLLM sequence count, because current tool phases leave only about 64% of physical slots running."
+  },
+  "validation": {
+    "status": "share_with_caveats",
+    "verified": [
+      "actual current rollout contract is TP8xDP2 with no DCP2 or PCP2",
+      "training CP2 is a separate Megatron topology",
+      "Step120 model structure and weight size",
+      "installed DCP2 GQA constraint and world-size behavior",
+      "current response-length, utilization and scheduler-fill distributions",
+      "historical 8K TP4/TP8 matrix arithmetic"
+    ],
+    "not_yet_verified": [
+      "Qwen3.5 Step120 end-to-end throughput under DCP2",
+      "TP4xDP4 maximum stable sequence capacity at 94K",
+      "TP2xDP8 94K load and tail behavior",
+      "topology ranking under the new 2+2+2 early-stop controller"
+    ]
+  }
+}
