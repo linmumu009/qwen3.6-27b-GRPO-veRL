@@ -31,6 +31,8 @@ def test_retry_environment_fills_exact_h05_capacity(tmp_path: Path):
     assert environment["SAMPLES_PER_TASK"] == "1"
     assert environment["TASK_BATCH_SIZE"] == "48"
     assert environment["ANALYZE_ON_SUCCESS"] == "0"
+    assert environment["ROLLING_ADMISSION"] == "1"
+    assert environment["ROLLING_WINDOW_TRAJECTORIES"] == "48"
 
 
 def test_full_environment_fills_exact_h06_capacity(tmp_path: Path):
@@ -47,6 +49,8 @@ def test_full_environment_fills_exact_h06_capacity(tmp_path: Path):
     assert environment["SAMPLES_PER_TASK"] == "8"
     assert environment["TASK_BATCH_SIZE"] == "8"
     assert environment["ANALYZE_ON_SUCCESS"] == "1"
+    assert environment["ROLLING_ADMISSION"] == "1"
+    assert environment["ROLLING_WINDOW_TRAJECTORIES"] == "64"
 
 
 def test_queue_rejects_oversubscribed_full_batch(tmp_path: Path):

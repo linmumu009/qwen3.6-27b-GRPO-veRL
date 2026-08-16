@@ -34,6 +34,7 @@ from scripts.pi_runtime_preflight import validate_dataset_runtime_environments
 from scripts.standalone_rollout_shards import (
     completed_shard_rows,
     padded_rows_for_equal_chunks,
+    rolling_admission_contract,
     shard_path,
     shard_ranges,
     trajectory_admission_contract,
@@ -180,6 +181,8 @@ def safe_contract(config, args: argparse.Namespace) -> dict:
         "context_tokens": int(rollout.max_model_len),
         "trajectory_timeout_seconds": args.trajectory_timeout_seconds,
         "task_batch_size": args.task_batch_size,
+        "rolling_admission_enabled": bool(args.rolling_admission),
+        "rolling_window_trajectories_requested": args.rolling_window_trajectories,
         "tail_batch_padding_policy": "duplicate_last_rows_then_trim_before_persisting",
         "batch_validate_mode": True,
         "batch_do_sample": True,
@@ -256,6 +259,163 @@ def write_progress(args: argparse.Namespace, completed_tasks: int, completed_row
     temporary.replace(path)
 
 
+def decode_single_trajectory(
+    output: DataProto,
+    tokenizer,
+    *,
+    task_index: int,
+    sample_index: int,
+) -> dict:
+    """Convert one completed worker result into the existing shard row schema."""
+
+    if len(output) != 1:
+        raise ValueError(f"rolling worker returned {len(output)} rows instead of one")
+    prompt = tokenizer.decode(output.batch["prompts"][0], skip_special_tokens=True)
+    solution = tokenizer.decode(output.batch["responses"][0], skip_special_tokens=True)
+    response_tokens = int(
+        output.batch["responses"][0].ne(tokenizer.pad_token_id).sum().cpu().item()
+    )
+    turns = output.non_tensor_batch.get("num_turns", np.zeros(1, dtype=int))
+    timeouts = output.non_tensor_batch.get(
+        "trajectory_timeout", np.zeros(1, dtype=bool)
+    )
+    timeout_seconds = output.non_tensor_batch.get(
+        "trajectory_timeout_seconds", np.zeros(1, dtype=float)
+    )
+    abort_acknowledged = output.non_tensor_batch.get(
+        "trajectory_abort_acknowledged_count", np.zeros(1, dtype=int)
+    )
+    abort_physical = output.non_tensor_batch.get(
+        "trajectory_abort_physical_request_count", np.zeros(1, dtype=int)
+    )
+    abort_errors = output.non_tensor_batch.get(
+        "trajectory_abort_error_count", np.zeros(1, dtype=int)
+    )
+    return {
+        "source_task_index": task_index,
+        "sample_index": sample_index,
+        "input": prompt,
+        "output": solution,
+        "num_turns": int(turns[0]),
+        "response_tokens": response_tokens,
+        "trajectory_timeout": bool(timeouts[0]),
+        "trajectory_timeout_seconds": float(timeout_seconds[0]),
+        "trajectory_abort_acknowledged_count": int(abort_acknowledged[0]),
+        "trajectory_abort_physical_request_count": int(abort_physical[0]),
+        "trajectory_abort_error_count": int(abort_errors[0]),
+        "runtime_error": False,
+    }
+
+
+def run_rolling_pending_shards(
+    *,
+    config,
+    args: argparse.Namespace,
+    tokenizer,
+    dataset: RLHFDataset,
+    agent_manager: AgentLoopManager,
+    pending: list[tuple[int, int, Path, int]],
+    completed_tasks: int,
+    completed_rows: int,
+    window_trajectories: int,
+) -> tuple[int, int]:
+    """Keep the vLLM admission window full while retaining atomic shard files."""
+
+    buffers: dict[tuple[int, int, Path], dict] = {}
+
+    def units():
+        for start, stop, result_path, _ in pending:
+            batch = build_batch(config, args, tokenizer, dataset, start, stop)
+            expected = (stop - start) * args.samples_per_task
+            if len(batch) != expected:
+                raise ValueError(f"expected {expected} rolling rows, got {len(batch)}")
+            key = (start, stop, result_path)
+            buffers[key] = {
+                "expected": expected,
+                "rows": {},
+                "started": time.monotonic(),
+            }
+            for offset in range(expected):
+                task_index = start + offset // args.samples_per_task
+                sample_index = offset % args.samples_per_task
+                unit = batch[offset : offset + 1]
+                priority = task_index * args.samples_per_task + sample_index
+                unit.non_tensor_batch["priority"] = np.array([priority], dtype=np.int64)
+                yield key, task_index, sample_index, unit
+
+    iterator = iter(units())
+    workers = agent_manager.agent_loop_workers
+    if not workers:
+        raise RuntimeError("rolling admission requires at least one agent loop worker")
+    inflight: dict[object, tuple[tuple[int, int, Path], int, int]] = {}
+    worker_cursor = 0
+    exhausted = False
+
+    def refill() -> None:
+        nonlocal worker_cursor, exhausted
+        while not exhausted and len(inflight) < window_trajectories:
+            try:
+                key, task_index, sample_index, unit = next(iterator)
+            except StopIteration:
+                exhausted = True
+                break
+            worker = workers[worker_cursor % len(workers)]
+            worker_cursor += 1
+            reference = worker.generate_sequences.remote(unit)
+            inflight[reference] = (key, task_index, sample_index)
+
+    refill()
+    while inflight:
+        ready, _ = ray.wait(list(inflight), num_returns=1)
+        reference = ready[0]
+        key, task_index, sample_index = inflight.pop(reference)
+        output = ray.get(reference)
+        state = buffers[key]
+        identity = (task_index, sample_index)
+        if identity in state["rows"]:
+            raise ValueError(f"duplicate rolling trajectory identity {identity}")
+        state["rows"][identity] = decode_single_trajectory(
+            output,
+            tokenizer,
+            task_index=task_index,
+            sample_index=sample_index,
+        )
+        if len(state["rows"]) == state["expected"]:
+            start, stop, result_path = key
+            ordered = [
+                state["rows"][(task, sample)]
+                for task in range(start, stop)
+                for sample in range(args.samples_per_task)
+            ]
+            written = write_jsonl_atomic(result_path, ordered)
+            if written != state["expected"]:
+                raise ValueError(
+                    f"expected to write {state['expected']} rolling rows, wrote {written}"
+                )
+            completed_tasks += stop - start
+            completed_rows += written
+            write_progress(args, completed_tasks, completed_rows)
+            print(
+                json.dumps(
+                    {
+                        "event": "rolling_shard_complete",
+                        "start": start,
+                        "stop": stop,
+                        "rows": written,
+                        "wall_seconds": time.monotonic() - state["started"],
+                        "completed_tasks": completed_tasks,
+                        "rolling_window_trajectories": window_trajectories,
+                    }
+                ),
+                flush=True,
+            )
+            del buffers[key]
+        refill()
+    if buffers:
+        raise RuntimeError("rolling scheduler exhausted with incomplete shard buffers")
+    return completed_tasks, completed_rows
+
+
 def run(args: argparse.Namespace) -> dict:
     started_at = datetime.now(timezone.utc)
     started_monotonic = time.monotonic()
@@ -271,6 +431,13 @@ def run(args: argparse.Namespace) -> dict:
         samples_per_task=args.samples_per_task,
         max_num_seqs_per_dp_engine=int(config.actor_rollout_ref.rollout.max_num_seqs),
         data_parallel_size=int(config.actor_rollout_ref.rollout.data_parallel_size),
+    )
+    contract["rolling_admission"] = rolling_admission_contract(
+        enabled=bool(args.rolling_admission),
+        requested_window_trajectories=args.rolling_window_trajectories,
+        aggregate_sequence_capacity=int(
+            contract["trajectory_admission"]["aggregate_sequence_capacity"]
+        ),
     )
     if not contract["dataset_exists"] or not contract["model_identity"]["valid"]:
         raise FileNotFoundError(contract)
@@ -317,6 +484,21 @@ def run(args: argparse.Namespace) -> dict:
     try:
         server_manager = LLMServerManager.create(config=config)
         agent_manager = AgentLoopManager.create(config=config, llm_client=server_manager.get_client())
+        if args.rolling_admission:
+            completed_tasks, completed_rows = run_rolling_pending_shards(
+                config=config,
+                args=args,
+                tokenizer=tokenizer,
+                dataset=dataset,
+                agent_manager=agent_manager,
+                pending=pending,
+                completed_tasks=completed_tasks,
+                completed_rows=completed_rows,
+                window_trajectories=int(
+                    contract["rolling_admission"]["effective_window_trajectories"]
+                ),
+            )
+            pending = []
         for start, stop, result_path, _ in pending:
             shard_started = time.monotonic()
             batch = build_batch(config, args, tokenizer, dataset, start, stop)
@@ -455,6 +637,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--max-response-tokens", type=int, default=45056)
     parser.add_argument("--max-context-tokens", type=int, default=49152)
     parser.add_argument("--trajectory-timeout-seconds", type=float, default=900.0)
+    parser.add_argument("--rolling-admission", type=int, choices=(0, 1), default=0)
+    parser.add_argument("--rolling-window-trajectories", type=int, default=0)
     parser.add_argument("--preflight-only", action="store_true")
     return parser.parse_args()
 

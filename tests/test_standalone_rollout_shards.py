@@ -4,6 +4,7 @@ from pathlib import Path
 from scripts.standalone_rollout_shards import (
     completed_shard_rows,
     padded_rows_for_equal_chunks,
+    rolling_admission_contract,
     shard_path,
     shard_ranges,
     trajectory_admission_contract,
@@ -59,6 +60,31 @@ def test_trajectory_admission_rejects_queue_timeout_shape():
         assert "requested=384, capacity=48" in str(exc)
     else:
         raise AssertionError("oversubscribed rollout shard was accepted")
+
+
+def test_rolling_admission_defaults_to_full_capacity_and_refills():
+    contract = rolling_admission_contract(
+        enabled=True,
+        requested_window_trajectories=0,
+        aggregate_sequence_capacity=48,
+    )
+
+    assert contract["valid"] is True
+    assert contract["effective_window_trajectories"] == 48
+    assert contract["refill_on_each_trajectory_completion"] is True
+
+
+def test_rolling_admission_rejects_window_above_capacity():
+    try:
+        rolling_admission_contract(
+            enabled=True,
+            requested_window_trajectories=49,
+            aggregate_sequence_capacity=48,
+        )
+    except ValueError as exc:
+        assert "requested=49, capacity=48" in str(exc)
+    else:
+        raise AssertionError("oversubscribed rolling window was accepted")
 
 
 def test_atomic_shard_requires_exact_task_sample_shape(tmp_path: Path):

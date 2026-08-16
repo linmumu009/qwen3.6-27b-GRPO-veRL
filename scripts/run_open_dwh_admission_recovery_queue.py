@@ -87,6 +87,8 @@ def rollout_environment(
             "MAX_RESPONSE_TOKENS": "90112",
             "MAX_CONTEXT_TOKENS": "94208",
             "TRAJECTORY_TIMEOUT_SECONDS": "1800",
+            "ROLLING_ADMISSION": "1",
+            "ROLLING_WINDOW_TRAJECTORIES": str(args.max_num_seqs * 2),
             "RAY_ADDRESS": args.ray_address,
             "ROLLOUT_RESOURCE": args.rollout_resource,
             "ANALYZE_ON_SUCCESS": "1" if analyze_on_success else "0",

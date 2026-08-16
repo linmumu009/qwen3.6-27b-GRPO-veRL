@@ -51,6 +51,38 @@ def trajectory_admission_contract(
     }
 
 
+def rolling_admission_contract(
+    *,
+    enabled: bool,
+    requested_window_trajectories: int,
+    aggregate_sequence_capacity: int,
+) -> dict[str, int | bool | str]:
+    """Validate the refill window used by the per-trajectory scheduler."""
+
+    if requested_window_trajectories < 0:
+        raise ValueError("rolling admission window cannot be negative")
+    if aggregate_sequence_capacity <= 0:
+        raise ValueError("aggregate sequence capacity must be positive")
+    effective_window = (
+        requested_window_trajectories or aggregate_sequence_capacity if enabled else 0
+    )
+    if effective_window > aggregate_sequence_capacity:
+        raise ValueError(
+            "rolling admission overflow: "
+            f"requested={effective_window}, capacity={aggregate_sequence_capacity}"
+        )
+    return {
+        "contract": "verl-standalone-rolling-admission-v1",
+        "enabled": enabled,
+        "valid": True,
+        "requested_window_trajectories": requested_window_trajectories,
+        "effective_window_trajectories": effective_window,
+        "aggregate_sequence_capacity": aggregate_sequence_capacity,
+        "refill_on_each_trajectory_completion": enabled,
+        "atomic_persistence_scope": "configured_task_shard",
+    }
+
+
 def shard_ranges(total_tasks: int, task_batch_size: int) -> list[tuple[int, int]]:
     if total_tasks <= 0:
         raise ValueError("total_tasks must be positive")
