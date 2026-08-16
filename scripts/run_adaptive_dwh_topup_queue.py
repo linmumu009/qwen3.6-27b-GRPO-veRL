@@ -129,6 +129,7 @@ def run(args: argparse.Namespace) -> None:
             args.reference_profile,
             args.topup_dataset,
             args.selection_manifest,
+            reference_per_signature=args.reference_per_signature,
             exploration_per_level=args.exploration_per_level,
             seed=args.seed,
         )
@@ -204,6 +205,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--topup-run-dir", type=Path, required=True)
     parser.add_argument("--final-output-dir", type=Path, required=True)
     parser.add_argument("--queue-dir", type=Path, required=True)
+    parser.add_argument("--reference-per-signature", type=int, default=2)
     parser.add_argument("--exploration-per-level", type=int, default=2)
     parser.add_argument("--seed", default="adaptive-dwh-topup-v1")
     parser.add_argument("--ray-address", default="192.168.202.5:26379")

@@ -30,7 +30,7 @@ from scripts.standalone_rollout_shards import shard_ranges, write_jsonl_atomic
 
 
 PROFILE_CONTRACT = "llin-adaptive-dwh-reference-profile-v1"
-SELECTION_CONTRACT = "llin-adaptive-dwh-topup-selection-v2"
+SELECTION_CONTRACT = "llin-adaptive-dwh-topup-selection-v3"
 FINAL_CONTRACT = "llin-adaptive-dwh-variance-screen-final-v2"
 SCREEN_SAMPLES = 2
 TOPUP_SAMPLES = 6
@@ -184,9 +184,12 @@ def prepare_topup(
     output_dataset_path: Path,
     safe_manifest_path: Path,
     *,
+    reference_per_signature: int,
     exploration_per_level: int,
     seed: str,
 ) -> dict[str, Any]:
+    if reference_per_signature < 0:
+        raise ValueError("reference_per_signature cannot be negative")
     if exploration_per_level < 0:
         raise ValueError("exploration_per_level cannot be negative")
     dataset = pq.read_table(screen_dataset_path).to_pylist()
@@ -225,8 +228,6 @@ def prepare_topup(
         reasons: list[str] = []
         if not direct_mixed and int(result["correct_count"]) > 0:
             reasons.append("screen_correct")
-        if not direct_mixed and signature in reference_signatures:
-            reasons.append("reference_structure")
         candidates.append(
             {
                 "index": index,
@@ -234,6 +235,7 @@ def prepare_topup(
                 "signature": signature,
                 "difficulty": str(extra["difficulty_level"]),
                 "direct_mixed": direct_mixed,
+                "reference_match": signature in reference_signatures,
                 "reasons": reasons,
                 "result": result,
                 "record": record,
@@ -242,6 +244,19 @@ def prepare_topup(
 
     direct_indices = {row["index"] for row in candidates if row["direct_mixed"]}
     selected_indices = {row["index"] for row in candidates if row["reasons"]}
+    for signature in sorted(reference_signatures):
+        remaining = [
+            row
+            for row in candidates
+            if row["signature"] == signature
+            and row["reference_match"]
+            and row["index"] not in selected_indices
+            and row["index"] not in direct_indices
+        ]
+        remaining.sort(key=lambda row: _stable_exploration_key(seed, row["identity"]))
+        for row in remaining[:reference_per_signature]:
+            row["reasons"].append("reference_structure")
+            selected_indices.add(row["index"])
     for level in sorted({row["difficulty"] for row in candidates}):
         remaining = [
             row
@@ -321,6 +336,7 @@ def prepare_topup(
         "selected_screen_correct_count_histogram": dict(sorted(screen_correct_histogram.items())),
         "selected_with_screen_timeout": selected_with_screen_timeout,
         "reference_structural_signatures": len(reference_signatures),
+        "reference_per_signature": reference_per_signature,
         "exploration_per_level": exploration_per_level,
         "screen_dataset_sha256": file_sha256(screen_dataset_path),
         "topup_dataset_sha256": file_sha256(output_dataset_path),
@@ -506,6 +522,7 @@ def main() -> None:
     prepare_parser.add_argument("--reference-profile", type=Path, required=True)
     prepare_parser.add_argument("--output-dataset", type=Path, required=True)
     prepare_parser.add_argument("--safe-manifest", type=Path, required=True)
+    prepare_parser.add_argument("--reference-per-signature", type=int, default=2)
     prepare_parser.add_argument("--exploration-per-level", type=int, default=2)
     prepare_parser.add_argument("--seed", default="adaptive-dwh-topup-v1")
 
@@ -528,6 +545,7 @@ def main() -> None:
             args.reference_profile,
             args.output_dataset,
             args.safe_manifest,
+            reference_per_signature=args.reference_per_signature,
             exploration_per_level=args.exploration_per_level,
             seed=args.seed,
         )

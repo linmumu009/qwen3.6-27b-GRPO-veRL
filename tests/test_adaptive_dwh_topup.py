@@ -124,6 +124,7 @@ def test_profile_and_prepare_select_hits_structure_and_exploration(tmp_path: Pat
         profile_path,
         topup_path,
         manifest_path,
+        reference_per_signature=1,
         exploration_per_level=1,
         seed="test",
     )
