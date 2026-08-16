@@ -33,6 +33,14 @@ def test_standalone_runner_keeps_sampling_and_context_contract_variable_but_expl
         'ray.wait(list(inflight), num_returns=1)',
         'batch.padding(padding_rows, padding_candidate="last")',
         'output = output[:expected]',
+        'stamp_trajectory_enqueue(unit)',
+        'stamp_trajectory_enqueue(batch)',
+        '"__num_turns__"',
+        'trajectory_queue_wait_seconds',
+        'trajectory_generation_seconds',
+        'trajectory_tool_seconds',
+        'trajectory_total_seconds',
+        'trajectory_timeout_partial_response_tokens',
     ):
         assert fragment in text
 
@@ -44,6 +52,8 @@ def test_ray_start_defaults_unchanged_and_allow_distinct_dual_rollout_resources(
     assert 'RAY_ROLE_RESOURCE="${RAY_ROLE_RESOURCE:-llin_rollout}"' in m06
     assert '--resources="{\\"${RAY_ROLE_RESOURCE}\\": 1}"' in m05
     assert '--resources="{\\"${RAY_ROLE_RESOURCE}\\": 1}"' in m06
+    for text in (m05, m06):
+        assert 'python3 "${PROJECT_ROOT}/scripts/patch_verl_abort_partial_tokens.py"' in text
 
 
 def test_launcher_passes_concurrency_context_and_sampling_shape_to_runner():
@@ -100,6 +110,10 @@ def test_pi_loop_physically_aborts_before_cancelling_timed_out_task():
     assert "await WORKSPACES.release(request_id)" in text
     assert 'kwargs["__llin_request_id"] = request_id' in text
     assert "__llin_request_id=request_id, **kwargs" not in text
+    assert "ContextVar" in text
+    assert "self._llin_trajectory_telemetry" not in text
+    assert 'abort_report.get("partial_response_tokens", 0)' in text
+    assert "telemetry.timeout_active_generation_tokens" in text
 
 
 def test_pi_loop_timeout_placeholder_preserves_request_version_columns_for_mixed_batches():

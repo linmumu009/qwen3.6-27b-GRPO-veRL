@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import asyncio
 from contextlib import suppress
+from contextvars import ContextVar, Token
+import time
 from typing import Any
 from uuid import uuid4
 
@@ -12,6 +14,13 @@ from verl.experimental.agent_loop.tool_agent_loop import AgentData, AgentState, 
 
 from llin_verl.force_final_policy import build_force_final_instruction, decide_force_final
 from llin_verl.pi_workspace_tools import WORKSPACES
+from llin_verl.trajectory_telemetry import TrajectoryTelemetry
+
+
+_TRAJECTORY_TELEMETRY: ContextVar[TrajectoryTelemetry | None] = ContextVar(
+    "llin_trajectory_telemetry",
+    default=None,
+)
 
 
 class PiAgentLoop(ToolAgentLoop):
@@ -36,6 +45,29 @@ class PiAgentLoop(ToolAgentLoop):
     async def run(self, sampling_params: dict[str, Any], **kwargs: Any):
         request_id = str(kwargs.get("__llin_request_id") or uuid4().hex)
         kwargs["__llin_request_id"] = request_id
+        telemetry = TrajectoryTelemetry.start(kwargs.get("extra_info", {}) or {})
+        context_token: Token = _TRAJECTORY_TELEMETRY.set(telemetry)
+        try:
+            return await self._run_with_telemetry(
+                sampling_params,
+                request_id=request_id,
+                telemetry=telemetry,
+                **kwargs,
+            )
+        finally:
+            _TRAJECTORY_TELEMETRY.reset(context_token)
+
+    async def _run_with_telemetry(
+        self,
+        sampling_params: dict[str, Any],
+        *,
+        request_id: str,
+        telemetry: TrajectoryTelemetry,
+        **kwargs: Any,
+    ) -> AgentLoopOutput:
+        """Run one trajectory with task-local telemetry state."""
+        if kwargs.get("__llin_request_id") != request_id:
+            raise RuntimeError("trajectory request identity changed before execution")
         if self.agent_timeout_seconds > 0:
             task = asyncio.create_task(super().run(sampling_params, **kwargs))
             done, _ = await asyncio.wait({task}, timeout=self.agent_timeout_seconds)
@@ -73,7 +105,37 @@ class PiAgentLoop(ToolAgentLoop):
             output.extra_fields.update(WORKSPACES.snapshot(str(request_id)))
             await WORKSPACES.release(str(request_id))
             output.extra_fields["pi_workspace_released"] = True
+        timed_out = bool(output.extra_fields.get("trajectory_timeout"))
+        if not timed_out:
+            telemetry.snapshot(
+                response_tokens=len(output.response_ids),
+                generated_tokens=sum(int(value) for value in output.response_mask),
+                assistant_turns=telemetry.assistant_turns,
+                user_turns=telemetry.user_turns,
+            )
+        output.extra_fields.update(
+            telemetry.finish(
+                timed_out=timed_out,
+                active_generation_tokens=telemetry.timeout_active_generation_tokens,
+            )
+        )
         return output
+
+    @staticmethod
+    def _telemetry() -> TrajectoryTelemetry:
+        telemetry = _TRAJECTORY_TELEMETRY.get()
+        if telemetry is None:
+            raise RuntimeError("trajectory telemetry context is unavailable")
+        return telemetry
+
+    def _capture_telemetry(self, agent_data: AgentData) -> None:
+        telemetry = self._telemetry()
+        telemetry.snapshot(
+            response_tokens=len(agent_data.response_mask),
+            generated_tokens=sum(int(value) for value in agent_data.response_mask),
+            assistant_turns=agent_data.assistant_turns,
+            user_turns=agent_data.user_turns,
+        )
 
     async def _abort_timed_out_trajectory(
         self,
@@ -89,6 +151,10 @@ class PiAgentLoop(ToolAgentLoop):
             )
         except Exception as exc:  # preserve the batch even if abort telemetry fails
             abort_report = {"error": f"{type(exc).__name__}: {exc}"}
+        telemetry = self._telemetry()
+        telemetry.timeout_active_generation_tokens = int(
+            abort_report.get("partial_response_tokens", 0) or 0
+        )
         task.cancel()
         with suppress(asyncio.CancelledError, Exception):
             await task
@@ -145,6 +211,7 @@ class PiAgentLoop(ToolAgentLoop):
                 audios=audios,
                 mm_processor_kwargs=mm_processor_kwargs,
             )
+        telemetry = self._telemetry()
         return AgentLoopOutput(
             prompt_ids=prompt_ids,
             response_ids=[],
@@ -152,14 +219,27 @@ class PiAgentLoop(ToolAgentLoop):
             multi_modal_data=multi_modal_data,
             mm_processor_kwargs=mm_processor_kwargs,
             response_logprobs=None,
-            num_turns=0,
+            num_turns=(
+                telemetry.assistant_turns
+                + telemetry.user_turns
+                + 1
+            ),
             metrics={"trajectory_timeout": 1},
             routed_experts=None,
             extra_fields={},
         )
 
     async def _handle_processing_tools_state(self, agent_data: AgentData) -> AgentState:
-        state = await super()._handle_processing_tools_state(agent_data)
+        tool_calls = min(len(agent_data.tool_calls), self.max_parallel_calls)
+        started = time.monotonic()
+        try:
+            state = await super()._handle_processing_tools_state(agent_data)
+        finally:
+            self._telemetry().add_tools(
+                time.monotonic() - started,
+                tool_calls,
+            )
+            self._capture_telemetry(agent_data)
         if state != AgentState.GENERATING or getattr(agent_data, "_llin_force_final_active", False):
             return state
 
@@ -240,7 +320,16 @@ class PiAgentLoop(ToolAgentLoop):
                 final_limit = min(final_limit, int(configured_limit))
             sampling_params["max_tokens"] = max(1, final_limit)
 
-        state = await super()._handle_generating_state(agent_data, sampling_params, ignore_termination)
+        started = time.monotonic()
+        try:
+            state = await super()._handle_generating_state(
+                agent_data,
+                sampling_params,
+                ignore_termination,
+            )
+        finally:
+            self._telemetry().add_generation(time.monotonic() - started)
+            self._capture_telemetry(agent_data)
         if getattr(agent_data, "_llin_force_final_active", False) and state == AgentState.PROCESSING_TOOLS:
             agent_data.extra_fields["force_final_tool_call_rejected"] = True
             agent_data.metrics["force_final_tool_call_rejected"] = 1

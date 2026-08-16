@@ -126,6 +126,7 @@ def test_rollout_node_applies_worker_side_patches_before_ray_start() -> None:
         'python3 "${PROJECT_ROOT}/scripts/patch_verl_fastest_k_abort_observability.py"',
         'python3 "${PROJECT_ROOT}/scripts/patch_verl_fastest_k_abort_retry.py"',
         'python3 "${PROJECT_ROOT}/scripts/patch_verl_vllm_abort_api.py"',
+        'python3 "${PROJECT_ROOT}/scripts/patch_verl_abort_partial_tokens.py"',
     ):
         assert patch_call in text
         assert text.index(patch_call) < text.index(ray_start)
@@ -183,6 +184,7 @@ def test_both_ray_nodes_apply_fully_async_queue_patch_before_start() -> None:
             'python3 "${PROJECT_ROOT}/scripts/patch_verl_fastest_k_abort_observability.py"',
             'python3 "${PROJECT_ROOT}/scripts/patch_verl_fastest_k_abort_retry.py"',
             'python3 "${PROJECT_ROOT}/scripts/patch_verl_vllm_abort_api.py"',
+            'python3 "${PROJECT_ROOT}/scripts/patch_verl_abort_partial_tokens.py"',
             'python3 "${PROJECT_ROOT}/scripts/patch_verl_fully_async_observability.py"',
         ):
             assert patch_call in text
@@ -466,6 +468,37 @@ def test_fastest_k_abort_observability_upgrade_is_idempotent(tmp_path: Path) -> 
     compile(client_text, str(client), "exec")
 
 
+def test_abort_partial_token_patch_is_idempotent(tmp_path: Path) -> None:
+    import importlib.util
+
+    retry_source = (ROOT / "scripts" / "patch_verl_fastest_k_abort_retry.py").read_text(
+        encoding="utf-8"
+    )
+    function_start = retry_source.index("    new = '''\\\n", retry_source.index("def patch_client"))
+    function_start += len("    new = '''\\\n")
+    function_end = retry_source.index("\n'''", function_start)
+    v3_function = retry_source[function_start:function_end]
+
+    target = tmp_path / "llm_server.py"
+    target.write_text(
+        "import asyncio\nfrom typing import Any\n\nclass Client:\n" + v3_function + "\n",
+        encoding="utf-8",
+    )
+
+    patch_path = ROOT / "scripts" / "patch_verl_abort_partial_tokens.py"
+    spec = importlib.util.spec_from_file_location("abort_partial_tokens", patch_path)
+    assert spec and spec.loader
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+
+    assert module.patch_client(target) == "patched"
+    assert module.patch_client(target) == "already-patched"
+    patched = target.read_text(encoding="utf-8")
+    assert "LLIN_ABORT_PARTIAL_TOKENS_V1" in patched
+    assert '"partial_response_tokens"' in patched
+    compile(patched, str(target), "exec")
+
+
 def test_vllm_abort_patch_uses_public_external_id_api(tmp_path: Path) -> None:
     import importlib.util
 
@@ -491,10 +524,63 @@ def test_vllm_abort_patch_uses_public_external_id_api(tmp_path: Path) -> None:
     assert module.patch_server(target) == "patched"
     assert module.patch_server(target) == "already-patched"
     patched = target.read_text(encoding="utf-8")
-    assert "LLIN_VLLM_PUBLIC_ABORT_V4" in patched
+    assert "LLIN_VLLM_PUBLIC_ABORT_V5" in patched
     assert "external_req_ids" in patched
+    assert "num_output_tokens" in patched
+    assert '"partial_response_tokens"' in patched
     assert "await self.engine.abort(request_id)" in patched
     assert "request_states.get(request_id)" not in patched
+    compile(patched, str(target), "exec")
+
+
+def test_vllm_abort_patch_upgrades_existing_v4_installation(tmp_path: Path) -> None:
+    import importlib.util
+
+    target = tmp_path / "vllm_async_server.py"
+    target.write_text(
+        '''\
+from typing import Any
+
+class Server:
+    async def abort_request(self, request_id: str, reset_prefix_cache: bool = True) -> dict[str, Any]:
+        """LLIN_VLLM_PUBLIC_ABORT_V4: abort an external vLLM request ID."""
+        try:
+            # vLLM 0.18 request_states is keyed by internal IDs. The public
+            # AsyncLLM.abort API resolves the external ID through
+            # output_processor.external_req_ids before touching EngineCore.
+            external_req_ids = getattr(self.engine.output_processor, "external_req_ids", {})
+            registered = bool(external_req_ids.get(request_id))
+            if not registered:
+                return {"aborted": False, "error": f"Request {request_id} not found"}
+
+            await self.engine.abort(request_id)
+
+            if reset_prefix_cache:
+                await self.clear_kv_cache()
+                logger.info(f"Prefix cache reset after abort request {request_id}")
+
+            logger.info(f"Aborted request through public AsyncLLM API: {request_id}")
+            return {"aborted": True, "request_id": request_id}
+
+        except Exception as e:
+            logger.error(f"Error aborting request {request_id}: {e}")
+            return {"aborted": False, "request_id": request_id, "error": str(e)}
+''',
+        encoding="utf-8",
+    )
+
+    patch_path = ROOT / "scripts" / "patch_verl_vllm_abort_api.py"
+    spec = importlib.util.spec_from_file_location("vllm_abort_api_v4_upgrade", patch_path)
+    assert spec and spec.loader
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+
+    assert module.patch_server(target) == "patched"
+    assert module.patch_server(target) == "already-patched"
+    patched = target.read_text(encoding="utf-8")
+    assert "LLIN_VLLM_PUBLIC_ABORT_V5" in patched
+    assert "LLIN_VLLM_PUBLIC_ABORT_V4" not in patched
+    assert "partial_response_tokens" in patched
     compile(patched, str(target), "exec")
 
 

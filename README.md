@@ -160,6 +160,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - [`docs/leadership_experiment_update_methodology_20260806.md`](docs/leadership_experiment_update_methodology_20260806.md)：从多轮实际修订中提炼的领导汇报方法论，固化四段结构、数字精度、口径边界、抗奖励投机表述、行动项口吻和自检清单。
 - `llin_verl/pi_sqlite_tool.py`：只读 SQLite 轨迹工具。
 - `llin_verl/pi_workspace_tools.py`、`llin_verl/pi_agent_loop.py`：完整 PI 四工具、轨迹级共享沙箱、事件审计和统一清理。
+- `llin_verl/trajectory_telemetry.py`：异步上下文隔离的逐轨迹遥测，分别记录调度排队、模型生成、工具执行、执行/总耗时，并在超时物理终止前只保留已生成 token 数量而不复制内容。
 - `llin_verl/pi_sqlite_cli.py`：为官方昇腾镜像补齐的受限只读 sqlite3 CLI 兼容层。
 - `llin_verl/pi_reward.py`：最终答案、可执行 SQL 证据、必需表和安全协议联合奖励 V2。
 - `llin_verl/boss_reward_shadow.py`、`scripts/replay_boss_reward_shadow.py`：DWH 结果门控候选奖励、KB 文档/拒答影子信号和老板历史 verdict 并行回放；当前不接训练入口。
@@ -193,7 +194,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/run_pi_grpo_fully_async_tp4_pp2_cp2.sh`：TP4/PP2/CP2 训练、TP8/DP2 rollout 的 bounded fully-async 配置，按完整 GRPO group 入队并以 queued tokens 做背压。
 - `scripts/patch_verl_fastest_k_oversampling.py`：给 fully-async AgentLoop 增加可配置候选过量采样、最快 K quorum、完整 GRPO group 选择和逐请求 vLLM 取消链路。
 - `scripts/patch_verl_fastest_k_abort_observability.py`、`scripts/patch_verl_fastest_k_abort_retry.py`：区分无活跃请求、服务端确认、自然完成、重试耗尽与取消失败，并关闭 Fastest-K 取消注册竞争。
-- `scripts/patch_verl_vllm_abort_api.py`：修复 vLLM 0.18 external/internal request ID 混用，使用公开 `AsyncLLM.abort(external_id)` 真正终止物理请求。
+- `scripts/patch_verl_vllm_abort_api.py`、`scripts/patch_verl_abort_partial_tokens.py`：修复 vLLM 0.18 external/internal request ID 混用，物理终止前读取无内容的部分 token 计数，再汇总到逻辑轨迹。
 - `scripts/monitor_npu_utilization.py`、`scripts/monitor_vllm_cache_metrics.py`：两机 NPU 稳态利用率与两路 vLLM prefix-cache 计数采样。
 - `scripts/analyze_grpo_steady_state.py`：汇总 20-step 稳态耗时、长尾、NPU 利用率和 cache 命中率，并输出 fully-async 切换判据。
 - `scripts/analyze_trajectory_comparison.py`：只读扫描老板轨迹、同源 converted 轨迹、本次 320 条 rollout 与 20-step 日志，输出可复查的长度和超时统计。
@@ -247,6 +248,12 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - `scripts/run_chosen_only_first_action_one_step.sh`、`scripts/launch_chosen_only_first_action_one_step.sh`、`scripts/analyze_chosen_only_first_action_post_canary.py`：严格执行获准的一步 train48 `0.25/8` 全参 SFT，并在相同 calibration16 上按预注册的 aggregate/per-task NLL、greedy/top-5、mean rank、tool structure 和更早分叉门自动决定是否只开放一次自由回放；无论结果如何都禁止追加训练和 promotion。
 
 ## 已验证状态
+
+### v1.11.46 — 2026-08-16
+
+- 为 standalone PI rollout 增加逐轨迹排队、生成、工具执行、执行/总耗时、调用/回合数与 token 计数；状态通过 `ContextVar` 隔离，避免同一 agent worker 并发轨迹相互串写。
+- 超时路径在公开 vLLM abort 删除请求状态前读取已生成 token 数，只保存计数、不保存额外内容；逻辑请求层聚合多物理请求，原子 shard 与安全摘要同步输出遥测覆盖率及 p50/p95/max。
+- 滚动和批量调度均在真正提交前写入 enqueue 时间，后续运行可直接判断长尾来自排队、生成还是工具执行；旧的在途进程不热改，其结果仍按旧合同处理。
 
 ### v1.11.45 — 2026-08-15
 

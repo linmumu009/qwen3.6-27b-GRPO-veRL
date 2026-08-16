@@ -34,6 +34,18 @@ def percentile(values: list[int | float], fraction: float) -> float | None:
     return float(ordered[index])
 
 
+def describe(values: list[int | float]) -> dict:
+    """Return content-free distribution statistics for one numeric field."""
+
+    return {
+        "count": len(values),
+        "mean": statistics.fmean(values) if values else None,
+        "p50": percentile(values, 0.50),
+        "p95": percentile(values, 0.95),
+        "max": max(values) if values else None,
+    }
+
+
 def read_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8")) if path.is_file() else {}
 
@@ -52,6 +64,20 @@ def summarize(run_dir: Path) -> dict:
     completed_tasks = completed_rows = runtime_errors = timeout_rows = at_response_budget = 0
     timeout_abort_acks = timeout_abort_physical = timeout_abort_errors = 0
     response_lengths: list[int] = []
+    timing_fields = {
+        "queue_wait": "trajectory_queue_wait_seconds",
+        "generation": "trajectory_generation_seconds",
+        "tool_execution": "trajectory_tool_seconds",
+        "execution": "trajectory_execution_seconds",
+        "total": "trajectory_total_seconds",
+        "overhead": "trajectory_overhead_seconds",
+    }
+    trajectory_timings: dict[str, list[float]] = {
+        name: [] for name in timing_fields
+    }
+    telemetry_rows = queue_wait_available_rows = 0
+    timeout_partial_response_tokens: list[int] = []
+    timeout_partial_generation_tokens: list[int] = []
     complete_shards = 0
     if tasks and samples:
         for start, stop in shard_ranges(tasks, batch_size):
@@ -81,6 +107,26 @@ def summarize(run_dir: Path) -> dict:
                     length = int(row.get("response_tokens", 0))
                     response_lengths.append(length)
                     at_response_budget += length >= int(contract.get("max_response_tokens", 0))
+                    if row.get("trajectory_telemetry_contract"):
+                        telemetry_rows += 1
+                    for name, field in timing_fields.items():
+                        if field not in row:
+                            continue
+                        value = float(row[field])
+                        if value >= 0:
+                            trajectory_timings[name].append(value)
+                    queue_wait_available_rows += bool(
+                        row.get("trajectory_queue_wait_available")
+                    )
+                    if row.get("trajectory_timeout"):
+                        if "trajectory_timeout_partial_response_tokens" in row:
+                            timeout_partial_response_tokens.append(
+                                max(0, int(row["trajectory_timeout_partial_response_tokens"]))
+                            )
+                        if "trajectory_timeout_partial_generation_tokens" in row:
+                            timeout_partial_generation_tokens.append(
+                                max(0, int(row["trajectory_timeout_partial_generation_tokens"]))
+                            )
 
     driver_text = (run_dir / "driver.log").read_text(
         encoding="utf-8", errors="ignore"
@@ -148,6 +194,16 @@ def summarize(run_dir: Path) -> dict:
             "p95": percentile(response_lengths, 0.95),
             "max": max(response_lengths) if response_lengths else None,
             "at_budget_rows": at_response_budget,
+        },
+        "trajectory_telemetry": {
+            "contract": contract.get("trajectory_telemetry", {}).get("contract"),
+            "rows": telemetry_rows,
+            "queue_wait_available_rows": queue_wait_available_rows,
+            "timing_seconds": {
+                name: describe(values) for name, values in trajectory_timings.items()
+            },
+            "timeout_partial_response_tokens": describe(timeout_partial_response_tokens),
+            "timeout_partial_generation_tokens": describe(timeout_partial_generation_tokens),
         },
         "npu": {
             "rows": len(npu_rows),

@@ -123,6 +123,8 @@ python3 "${PROJECT_ROOT}/scripts/patch_verl_fastest_k_abort_retry.py" \
   --llm-server "${VERL_ROOT}/verl/workers/rollout/llm_server.py"
 python3 "${PROJECT_ROOT}/scripts/patch_verl_vllm_abort_api.py" \
   --target "${VERL_ROOT}/verl/workers/rollout/vllm_rollout/vllm_async_server.py"
+python3 "${PROJECT_ROOT}/scripts/patch_verl_abort_partial_tokens.py" \
+  --llm-server "${VERL_ROOT}/verl/workers/rollout/llm_server.py"
 python3 "${PROJECT_ROOT}/scripts/patch_verl_fully_async_observability.py" \
   --trainer "${VERL_ROOT}/verl/experimental/fully_async_policy/fully_async_trainer.py" \
   --main "${VERL_ROOT}/verl/experimental/fully_async_policy/fully_async_main.py"

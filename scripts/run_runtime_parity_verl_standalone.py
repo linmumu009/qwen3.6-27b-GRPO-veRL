@@ -25,6 +25,7 @@ from torch.utils.data import DataLoader
 from torch.utils.data import Subset
 from transformers import AutoTokenizer
 
+from llin_verl.trajectory_telemetry import ENQUEUED_EPOCH_NS_KEY, TELEMETRY_CONTRACT
 from verl.experimental.agent_loop import AgentLoopManager
 from verl.protocol import DataProto
 from verl.utils.dataset.rl_dataset import RLHFDataset, collate_fn
@@ -180,6 +181,14 @@ def safe_contract(config, args: argparse.Namespace) -> dict:
         "max_response_tokens": int(config.data.max_response_length),
         "context_tokens": int(rollout.max_model_len),
         "trajectory_timeout_seconds": args.trajectory_timeout_seconds,
+        "trajectory_telemetry": {
+            "contract": TELEMETRY_CONTRACT,
+            "queue_clock": "unix_epoch_ns_cross_process",
+            "generation_scope": "agent_generating_state_wall",
+            "tool_scope": "agent_processing_tools_state_wall",
+            "total_scope": "enqueue_to_agent_completion",
+            "timeout_partial_tokens": "completed_turn_buffer_plus_active_vllm_request",
+        },
         "task_batch_size": args.task_batch_size,
         "rolling_admission_enabled": bool(args.rolling_admission),
         "rolling_window_trajectories_requested": args.rolling_window_trajectories,
@@ -259,6 +268,70 @@ def write_progress(args: argparse.Namespace, completed_tasks: int, completed_row
     temporary.replace(path)
 
 
+def stamp_trajectory_enqueue(batch: DataProto, *, epoch_ns: int | None = None) -> None:
+    """Attach a per-row enqueue timestamp without mutating dataset-owned dicts."""
+
+    timestamp = time.time_ns() if epoch_ns is None else int(epoch_ns)
+    existing = batch.non_tensor_batch.get("extra_info")
+    if existing is None:
+        existing = np.array([{} for _ in range(len(batch))], dtype=object)
+    if len(existing) != len(batch):
+        raise ValueError("extra_info length does not match trajectory batch")
+    stamped = np.empty(len(batch), dtype=object)
+    for index, value in enumerate(existing):
+        extra_info = dict(value) if isinstance(value, dict) else {}
+        extra_info[ENQUEUED_EPOCH_NS_KEY] = timestamp
+        stamped[index] = extra_info
+    batch.non_tensor_batch["extra_info"] = stamped
+
+
+def _non_tensor_scalar(output: DataProto, key: str, index: int, default):
+    values = output.non_tensor_batch.get(key)
+    if values is None or index >= len(values) or values[index] is None:
+        return default
+    return values[index]
+
+
+def trajectory_telemetry_row(output: DataProto, index: int) -> dict:
+    """Extract stable scalar telemetry columns from one generated row."""
+
+    float_fields = (
+        "trajectory_queue_wait_seconds",
+        "trajectory_generation_seconds",
+        "trajectory_tool_seconds",
+        "trajectory_execution_seconds",
+        "trajectory_total_seconds",
+        "trajectory_overhead_seconds",
+    )
+    int_fields = (
+        "trajectory_generation_calls",
+        "trajectory_tool_calls",
+        "trajectory_assistant_turns",
+        "trajectory_user_turns",
+        "trajectory_response_tokens_observed",
+        "trajectory_generated_tokens_observed",
+        "trajectory_timeout_partial_response_tokens",
+        "trajectory_timeout_partial_generation_tokens",
+    )
+    row = {
+        field: float(_non_tensor_scalar(output, field, index, -1.0))
+        for field in float_fields
+    }
+    row.update(
+        {
+            field: int(_non_tensor_scalar(output, field, index, 0))
+            for field in int_fields
+        }
+    )
+    row["trajectory_queue_wait_available"] = bool(
+        _non_tensor_scalar(output, "trajectory_queue_wait_available", index, False)
+    )
+    row["trajectory_telemetry_contract"] = str(
+        _non_tensor_scalar(output, "trajectory_telemetry_contract", index, "")
+    )
+    return row
+
+
 def decode_single_trajectory(
     output: DataProto,
     tokenizer,
@@ -275,7 +348,10 @@ def decode_single_trajectory(
     response_tokens = int(
         output.batch["responses"][0].ne(tokenizer.pad_token_id).sum().cpu().item()
     )
-    turns = output.non_tensor_batch.get("num_turns", np.zeros(1, dtype=int))
+    turns = output.non_tensor_batch.get(
+        "__num_turns__",
+        output.non_tensor_batch.get("num_turns", np.zeros(1, dtype=int)),
+    )
     timeouts = output.non_tensor_batch.get(
         "trajectory_timeout", np.zeros(1, dtype=bool)
     )
@@ -291,7 +367,7 @@ def decode_single_trajectory(
     abort_errors = output.non_tensor_batch.get(
         "trajectory_abort_error_count", np.zeros(1, dtype=int)
     )
-    return {
+    row = {
         "source_task_index": task_index,
         "sample_index": sample_index,
         "input": prompt,
@@ -305,6 +381,8 @@ def decode_single_trajectory(
         "trajectory_abort_error_count": int(abort_errors[0]),
         "runtime_error": False,
     }
+    row.update(trajectory_telemetry_row(output, 0))
+    return row
 
 
 def run_rolling_pending_shards(
@@ -361,6 +439,7 @@ def run_rolling_pending_shards(
                 break
             worker = workers[worker_cursor % len(workers)]
             worker_cursor += 1
+            stamp_trajectory_enqueue(unit)
             reference = worker.generate_sequences.remote(unit)
             inflight[reference] = (key, task_index, sample_index)
 
@@ -512,6 +591,7 @@ def run(args: argparse.Namespace) -> dict:
                 # are removed before task/sample identities are assigned or any
                 # shard is persisted.
                 batch.padding(padding_rows, padding_candidate="last")
+            stamp_trajectory_enqueue(batch)
             output = agent_manager.generate_sequences(batch)
             if len(output) != generated_rows:
                 raise ValueError(
@@ -531,7 +611,10 @@ def run(args: argparse.Namespace) -> dict:
             response_lengths = (
                 output.batch["responses"].ne(tokenizer.pad_token_id).sum(dim=-1).cpu().tolist()
             )
-            turns = output.non_tensor_batch.get("num_turns", np.zeros(len(output), dtype=int))
+            turns = output.non_tensor_batch.get(
+                "__num_turns__",
+                output.non_tensor_batch.get("num_turns", np.zeros(len(output), dtype=int)),
+            )
             timeouts = output.non_tensor_batch.get(
                 "trajectory_timeout", np.zeros(len(output), dtype=bool)
             )
@@ -549,38 +632,24 @@ def run(args: argparse.Namespace) -> dict:
             )
             task_indices = np.repeat(np.arange(start, stop), args.samples_per_task)
             sample_indices = np.tile(np.arange(args.samples_per_task), stop - start)
-            rows = (
-                {
-                    "source_task_index": int(task_index),
-                    "sample_index": int(sample_index),
-                    "input": prompt,
-                    "output": solution,
-                    "num_turns": int(num_turns),
-                    "response_tokens": int(response_tokens),
-                    "trajectory_timeout": bool(timed_out),
-                    "trajectory_timeout_seconds": float(timed_out_after),
-                    "trajectory_abort_acknowledged_count": int(abort_ack),
-                    "trajectory_abort_physical_request_count": int(physical_requests),
-                    "trajectory_abort_error_count": int(abort_error_count),
+            rows = []
+            for offset in range(expected):
+                row = {
+                    "source_task_index": int(task_indices[offset]),
+                    "sample_index": int(sample_indices[offset]),
+                    "input": prompt_texts[offset],
+                    "output": output_texts[offset],
+                    "num_turns": int(turns[offset]),
+                    "response_tokens": int(response_lengths[offset]),
+                    "trajectory_timeout": bool(timeouts[offset]),
+                    "trajectory_timeout_seconds": float(timeout_seconds[offset]),
+                    "trajectory_abort_acknowledged_count": int(abort_acknowledged[offset]),
+                    "trajectory_abort_physical_request_count": int(abort_physical[offset]),
+                    "trajectory_abort_error_count": int(abort_errors[offset]),
                     "runtime_error": False,
                 }
-                for task_index, sample_index, prompt, solution, num_turns, response_tokens,
-                    timed_out, timed_out_after, abort_ack, physical_requests,
-                    abort_error_count in zip(
-                    task_indices,
-                    sample_indices,
-                    prompt_texts,
-                    output_texts,
-                    turns,
-                    response_lengths,
-                    timeouts,
-                    timeout_seconds,
-                    abort_acknowledged,
-                    abort_physical,
-                    abort_errors,
-                    strict=True,
-                )
-            )
+                row.update(trajectory_telemetry_row(output, offset))
+                rows.append(row)
             written = write_jsonl_atomic(result_path, rows)
             if written != expected:
                 raise ValueError(f"expected to write {expected} rows, wrote {written}")

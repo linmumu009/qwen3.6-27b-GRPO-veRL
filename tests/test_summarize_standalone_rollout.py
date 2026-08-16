@@ -19,6 +19,9 @@ def test_summary_reports_shape_scheduler_lengths_and_npu_without_content(tmp_pat
             "top_k": 20,
             "context_tokens": 49152,
             "trajectory_timeout_seconds": 900,
+            "trajectory_telemetry": {
+                "contract": "llin-pi-trajectory-telemetry-v1",
+            },
         }),
         encoding="utf-8",
     )
@@ -31,6 +34,19 @@ def test_summary_reports_shape_scheduler_lengths_and_npu_without_content(tmp_pat
     rows[0]["trajectory_abort_acknowledged_count"] = 1
     rows[0]["trajectory_abort_physical_request_count"] = 1
     rows[0]["trajectory_abort_error_count"] = 0
+    for index, row in enumerate(rows):
+        row.update({
+            "trajectory_telemetry_contract": "llin-pi-trajectory-telemetry-v1",
+            "trajectory_queue_wait_available": True,
+            "trajectory_queue_wait_seconds": index + 0.5,
+            "trajectory_generation_seconds": index + 4.0,
+            "trajectory_tool_seconds": index + 1.0,
+            "trajectory_execution_seconds": index + 6.0,
+            "trajectory_total_seconds": index + 6.5,
+            "trajectory_overhead_seconds": 1.0,
+        })
+    rows[0]["trajectory_timeout_partial_response_tokens"] = 321
+    rows[0]["trajectory_timeout_partial_generation_tokens"] = 300
     write_jsonl_atomic(shard_path(tmp_path, 0, 2), rows)
     (tmp_path / "driver.log").write_text(
         "data.truncation=error\n"
@@ -55,6 +71,15 @@ def test_summary_reports_shape_scheduler_lengths_and_npu_without_content(tmp_pat
     assert result["scheduler"]["waiting_latest"] == 0
     assert result["scheduler"]["at_sequence_cap_samples"] == 1
     assert result["response_tokens"]["at_budget_rows"] == 1
+    telemetry = result["trajectory_telemetry"]
+    assert telemetry["contract"] == "llin-pi-trajectory-telemetry-v1"
+    assert telemetry["rows"] == 4
+    assert telemetry["queue_wait_available_rows"] == 4
+    assert telemetry["timing_seconds"]["generation"]["p50"] == 5.0
+    assert telemetry["timing_seconds"]["tool_execution"]["max"] == 4.0
+    assert telemetry["timing_seconds"]["total"]["count"] == 4
+    assert telemetry["timeout_partial_response_tokens"]["max"] == 321
+    assert telemetry["timeout_partial_generation_tokens"]["max"] == 300
     assert result["npu"]["aicore_mean"] == 80
     assert result["npu"]["recent_aicore_mean"] == 80
     assert result["driver_error_markers"]["context_or_truncation"] == 0
