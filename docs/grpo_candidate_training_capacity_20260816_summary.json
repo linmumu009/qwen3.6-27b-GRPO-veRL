@@ -1,0 +1,96 @@
+{
+  "generated_at": "2026-08-16T17:20:00+08:00",
+  "decision": {
+    "confirmed_v20_direct_mixed": 25,
+    "v20_screened_tasks": 500,
+    "v20_screen_trajectories": 1000,
+    "direct_mixed_rate": 0.05,
+    "targeted_probe_tasks": 51,
+    "targeted_probe_completed_tasks": 0,
+    "targeted_probe_status": "failed",
+    "confirmed_v20_candidate_floor": 25,
+    "v20_candidate_ceiling_if_all_probes_pass": 76,
+    "unexpanded_after_two_sample_screen": 424
+  },
+  "candidate_pool": [
+    {
+      "source": "281-task multisandbox pool",
+      "count": 13,
+      "status": "semantic_review_approved_but_training_flag_still_false"
+    },
+    {
+      "source": "plan-first 300-task Step120 map",
+      "count": 46,
+      "status": "empirical_mixed_candidate_pending_semantic_review"
+    },
+    {
+      "source": "v20 500-task two-sample screen",
+      "count": 25,
+      "status": "direct_mixed_candidate_pending_semantic_review"
+    }
+  ],
+  "pool_totals": {
+    "empirical_candidates": 84,
+    "semantic_review_completed": 13,
+    "formally_training_allowed": 0,
+    "deduplication_assumption": "The three source pools are treated as distinct; run a cross-pool instruction/gold hash deduplication before training."
+  },
+  "current_training_contract": {
+    "groups_per_optimizer_step": 2,
+    "responses_per_group": 8,
+    "online_trajectories_per_optimizer_step": 16,
+    "training_context_tokens": 49152,
+    "training_response_tokens": 45056,
+    "screening_context_tokens": 94208,
+    "screening_response_tokens": 90112
+  },
+  "training_scenarios": [
+    {
+      "exposures_per_task": 1,
+      "prompt_groups": 84,
+      "online_trajectories": 672,
+      "optimizer_steps": 42,
+      "recommendation": "maximum first full pass after the five-step canary passes"
+    },
+    {
+      "exposures_per_task": 2,
+      "prompt_groups": 168,
+      "online_trajectories": 1344,
+      "optimizer_steps": 84,
+      "recommendation": "recommended initial ceiling; second pass only after the first-pass gate passes"
+    },
+    {
+      "exposures_per_task": 3,
+      "prompt_groups": 252,
+      "online_trajectories": 2016,
+      "optimizer_steps": 126,
+      "recommendation": "not recommended without fresh held-out improvement evidence"
+    }
+  ],
+  "recommended_execution": [
+    {
+      "phase": 1,
+      "name": "48K parity gate",
+      "scope": "10-20 reviewed candidates",
+      "purpose": "confirm that mixedness survives the shorter training rollout contract"
+    },
+    {
+      "phase": 2,
+      "name": "five-step canary",
+      "scope": "10 distinct prompts and 80 online trajectories",
+      "purpose": "stop early if boss-exact accuracy, completion, or process quality regresses"
+    },
+    {
+      "phase": 3,
+      "name": "first pass",
+      "scope": "up to 42 total optimizer steps over 84 prompts",
+      "purpose": "one exposure per task"
+    },
+    {
+      "phase": 4,
+      "name": "conditional second pass",
+      "scope": "up to 84 cumulative optimizer steps",
+      "purpose": "second exposure only if the first pass improves held-out metrics"
+    }
+  ]
+}

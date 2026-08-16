@@ -1,0 +1,160 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "GRPO候选供给与训练步数核算",
+    "generatedAt": "2026-08-16T17:20:00+08:00",
+    "blocks": [
+      {
+        "id": "title",
+        "type": "markdown",
+        "body": "# GRPO候选供给与训练步数核算"
+      },
+      {
+        "id": "executive_summary",
+        "type": "markdown",
+        "sourceId": "capacity_summary",
+        "body": "## 结论摘要\n\n- 本轮500题目前只确认25题在首2条轨迹中直接出现至少一对一错，占5%；这不是500题的最终上限。另有51题被选为定向探针，但两机补采队列均已失败且尚无有效完成，因此当前不能把它们计入候选。其余424题是在效率策略下未扩采，不等于已经证明不适合GRPO。\n- 项目累计84题是三个来源的经验候选之和：13题完成语义批准、46题为plan-first mixed候选、25题为本轮直接mixed候选。84不等于84题已经可直接开训；目前正式training_allowed仍为false，且训练前还应做跨池哈希去重。\n- 当前训练配置每步消费2个prompt group，每组在线生成8条轨迹，因此每步共16条轨迹。84题每题使用一次可形成42步；使用两次为累计84步。建议两次是初期上限，第三次以上没有新held-out提升证据，不值得。\n- 筛选使用94,208上下文/90,112输出，而当前训练使用49,152上下文/45,056输出。步数核算有效，但mixed属性可能不完全迁移；训练前必须先做48K口径小门禁。"
+      },
+      {
+        "id": "candidate_status",
+        "type": "markdown",
+        "sourceId": "capacity_summary",
+        "body": "## 25题代表什么\n\n25题是首筛的**确认下限**：每题仅看两条独立Step120轨迹，就已经观察到至少一次明确正确和一次明确错误，足以证明最终结果奖励存在非零方差。它不是全500题的最终可用量。51题定向补采尚未成功，424题则按节省算力的早停策略没有继续扩采，因此不能把475题统称为不可用。"
+      },
+      {
+        "id": "candidate_table_block",
+        "type": "table",
+        "tableId": "candidate_table"
+      },
+      {
+        "id": "candidate_chart_block",
+        "type": "chart",
+        "chartId": "candidate_chart"
+      },
+      {
+        "id": "training_capacity",
+        "type": "markdown",
+        "sourceId": "capacity_summary",
+        "body": "## 84题在当前配置下能训练多少步\n\n当前合同是每个optimizer step消费2个独立prompt group、每组8条在线轨迹。一次任务曝光是该题作为一个group重新在线采8条，不是把筛选阶段轨迹回放8次。公式为：完整训练步数 = 任务数 × 每题曝光次数 ÷ 2。一个完整首轮是42步；第二轮完成后累计84步。"
+      },
+      {
+        "id": "scenario_table_block",
+        "type": "table",
+        "tableId": "scenario_table"
+      },
+      {
+        "id": "recommended_sequence",
+        "type": "markdown",
+        "sourceId": "capacity_summary",
+        "body": "## 推荐执行顺序\n\n1. 先对语义通过且去重后的10–20题做48K训练口径重采门禁，确认短上下文下仍能产生mixed group。\n2. 只启动5步金丝雀：10个不同prompt、80条新在线轨迹；同一步内不得重复同一道题。\n3. 老板exact准确率、完整收尾与过程质量均不过线就停止；通过才扩到累计42步，完成84题的一次曝光。\n4. 首轮held-out指标确实提升后，才运行第二轮到累计84步；二次曝光是初期上限。\n5. 每次在线重采后仍须检查组内是否有对有错。若变成全对或全错，该group不应提供最终正确性更新，避免把历史mixed标签当成永久属性。"
+      },
+      {
+        "id": "further_questions",
+        "type": "markdown",
+        "body": "## 后续需要回答的问题\n\n- 51题探针队列失败的具体原因是什么，能否在冻结采样合同下无损恢复？\n- 46题与25题经过逐题语义审核后实际能保留多少？\n- 三个候选池按instruction/gold哈希去重后是否仍为84题？\n- 在49,152训练上下文下，这些题的在线mixed率是否接近94,208筛选口径？"
+      },
+      {
+        "id": "caveats",
+        "type": "markdown",
+        "sourceId": "capacity_summary",
+        "body": "## 口径与风险\n\n- 84是经验候选数，不是最终批准训练数；当前正式training_allowed为0。\n- 只有13题已完成语义批准；46题和25题仍可能因题意、gold或验证路由问题被剔除。\n- 先前相同2×8配置的Step120→125五步金丝雀没有提升老板exact指标，因此本次即便换成预筛mixed题，也只能先做短金丝雀，不能直接把42或84步视为安全。\n- 候选来源条形图仅表达13/46/25的规模差异；审核成熟度仍以旁边的精确表格为准。"
+      }
+    ],
+    "charts": [
+      {
+        "id": "candidate_chart",
+        "title": "累计84个经验候选的来源构成",
+        "subtitle": "条形长度表示题数；三类审核成熟度不同",
+        "type": "bar",
+        "dataset": "candidate_pool",
+        "sourceId": "capacity_summary",
+        "encodings": {
+          "x": {"field": "source", "type": "nominal"},
+          "y": {"field": "count", "type": "quantitative"}
+        },
+        "valueFormat": "number",
+        "layout": "full"
+      }
+    ],
+    "tables": [
+      {
+        "id": "candidate_table",
+        "title": "累计84题的证据成熟度",
+        "subtitle": "不同来源不能按同一审核状态理解",
+        "dataset": "candidate_pool",
+        "sourceId": "capacity_summary",
+        "columns": [
+          {"field": "source", "label": "来源"},
+          {"field": "count", "label": "题数", "format": "number"},
+          {"field": "status", "label": "当前状态"}
+        ],
+        "defaultSort": {"field": "count", "direction": "desc"}
+      },
+      {
+        "id": "scenario_table",
+        "title": "84题在2 groups × 8 responses配置下的容量",
+        "subtitle": "每次曝光都会重新在线生成8条轨迹",
+        "dataset": "training_scenarios",
+        "sourceId": "capacity_summary",
+        "columns": [
+          {"field": "exposures_per_task", "label": "每题曝光次数", "format": "number"},
+          {"field": "prompt_groups", "label": "Prompt groups", "format": "number"},
+          {"field": "online_trajectories", "label": "在线轨迹", "format": "number"},
+          {"field": "optimizer_steps", "label": "Optimizer steps", "format": "number"},
+          {"field": "recommendation", "label": "建议"}
+        ],
+        "defaultSort": {"field": "exposures_per_task", "direction": "asc"}
+      }
+    ],
+    "sources": [
+      {
+        "id": "capacity_summary",
+        "label": "候选供给与训练合同安全汇总",
+        "path": "docs/grpo_candidate_training_capacity_20260816_summary.json"
+      }
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "generatedAt": "2026-08-16T17:20:00+08:00",
+    "status": "ready",
+    "datasets": {
+      "candidate_pool": [
+        {"source": "281池批准", "count": 13, "status": "语义批准；训练开关仍关闭"},
+        {"source": "300题mixed", "count": 46, "status": "经验候选；待语义审核"},
+        {"source": "500题direct", "count": 25, "status": "经验候选；待语义审核"}
+      ],
+      "training_scenarios": [
+        {"exposures_per_task": 1, "prompt_groups": 84, "online_trajectories": 672, "optimizer_steps": 42, "recommendation": "五步金丝雀通过后的一轮上限"},
+        {"exposures_per_task": 2, "prompt_groups": 168, "online_trajectories": 1344, "optimizer_steps": 84, "recommendation": "建议的初期累计上限；第二轮须条件开放"},
+        {"exposures_per_task": 3, "prompt_groups": 252, "online_trajectories": 2016, "optimizer_steps": 126, "recommendation": "没有新held-out提升证据时不建议"}
+      ]
+    }
+  },
+  "sources": [
+    {
+      "id": "capacity_summary",
+      "label": "候选供给与训练合同安全汇总",
+      "path": "docs/grpo_candidate_training_capacity_20260816_summary.json",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM read_json_auto('docs/grpo_candidate_training_capacity_20260816_summary.json')",
+        "description": "读取仅含聚合数量、候选成熟度、冻结训练合同和步数推导的安全汇总。",
+        "tables_used": ["docs/grpo_candidate_training_capacity_20260816_summary.json"],
+        "filters": [
+          "v20直接候选仅统计首2条中同时出现明确正确与明确错误的任务",
+          "失败或未完成的定向补采不计入确认候选",
+          "84题按三个已知来源相加，训练前仍需跨池哈希去重"
+        ],
+        "metric_definitions": {
+          "direct_mixed_rate": "首2条同时至少一条正确和一条明确错误的任务数除以500",
+          "optimizer_steps": "任务数乘以每题曝光次数再除以每步2个prompt groups",
+          "online_trajectories": "prompt groups乘以每组8条在线轨迹"
+        }
+      }
+    }
+  ]
+}
