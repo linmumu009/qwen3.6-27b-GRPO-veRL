@@ -184,6 +184,7 @@ def safe_contract(config, args: argparse.Namespace) -> dict:
         "trajectory_telemetry": {
             "contract": TELEMETRY_CONTRACT,
             "queue_clock": "unix_epoch_ns_cross_process",
+            "queue_scope": "model_service_ready_to_agent_execution_start",
             "generation_scope": "agent_generating_state_wall",
             "tool_scope": "agent_processing_tools_state_wall",
             "total_scope": "enqueue_to_agent_completion",
@@ -396,6 +397,7 @@ def run_rolling_pending_shards(
     completed_tasks: int,
     completed_rows: int,
     window_trajectories: int,
+    enqueued_epoch_ns: int,
 ) -> tuple[int, int]:
     """Keep the vLLM admission window full while retaining atomic shard files."""
 
@@ -439,7 +441,7 @@ def run_rolling_pending_shards(
                 break
             worker = workers[worker_cursor % len(workers)]
             worker_cursor += 1
-            stamp_trajectory_enqueue(unit)
+            stamp_trajectory_enqueue(unit, epoch_ns=enqueued_epoch_ns)
             reference = worker.generate_sequences.remote(unit)
             inflight[reference] = (key, task_index, sample_index)
 
@@ -563,6 +565,7 @@ def run(args: argparse.Namespace) -> dict:
     try:
         server_manager = LLMServerManager.create(config=config)
         agent_manager = AgentLoopManager.create(config=config, llm_client=server_manager.get_client())
+        enqueued_epoch_ns = time.time_ns()
         if args.rolling_admission:
             completed_tasks, completed_rows = run_rolling_pending_shards(
                 config=config,
@@ -576,6 +579,7 @@ def run(args: argparse.Namespace) -> dict:
                 window_trajectories=int(
                     contract["rolling_admission"]["effective_window_trajectories"]
                 ),
+                enqueued_epoch_ns=enqueued_epoch_ns,
             )
             pending = []
         for start, stop, result_path, _ in pending:
@@ -591,7 +595,7 @@ def run(args: argparse.Namespace) -> dict:
                 # are removed before task/sample identities are assigned or any
                 # shard is persisted.
                 batch.padding(padding_rows, padding_candidate="last")
-            stamp_trajectory_enqueue(batch)
+            stamp_trajectory_enqueue(batch, epoch_ns=enqueued_epoch_ns)
             output = agent_manager.generate_sequences(batch)
             if len(output) != generated_rows:
                 raise ValueError(
