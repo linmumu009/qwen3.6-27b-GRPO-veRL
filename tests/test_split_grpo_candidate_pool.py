@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+import subprocess
+import sys
 
 import pyarrow as pa
 import pyarrow.parquet as pq
@@ -63,6 +65,20 @@ def test_hamilton_allocation_matches_requested_128_by_difficulty():
     )
 
     assert allocation == {"1": 6, "2": 30, "3": 9, "4": 41, "5": 32, "unknown": 10}
+
+
+def test_split_cli_can_run_by_direct_file_path():
+    script = Path(__file__).resolve().parents[1] / "scripts" / "split_grpo_candidate_pool.py"
+    result = subprocess.run(
+        [sys.executable, str(script), "--help"],
+        cwd=script.parent,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+    assert result.returncode == 0, result.stderr
+    assert "difficulty-stratified GRPO split" in result.stdout
 
 
 def test_split_is_deterministic_disjoint_and_owner_authorized(tmp_path: Path):
