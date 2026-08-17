@@ -9,6 +9,7 @@ from scripts.adaptive_dwh_wave_earlystop import (
     CONTRACT,
     finalize,
     finalize_four_wave,
+    finalize_three_wave,
     prepare_initial_pool,
     prepare_remaining_pool,
     select_after_wave,
@@ -272,6 +273,71 @@ def test_full_four_wave_screen_stops_at_two_four_and_eight(tmp_path: Path):
     assert summary["actual_sampling_trajectories"] == 18
     assert summary["full_eight_sampling_baseline_trajectories"] == 32
     assert summary["avoided_trajectories_vs_full_eight"] == 14
+
+
+def test_three_wave_screen_can_stop_globally_at_six(tmp_path: Path):
+    source_rows = [record(index, level=index + 1) for index in range(3)]
+    source = tmp_path / "source.parquet"
+    write_parquet(source, source_rows)
+    initial = tmp_path / "initial.parquet"
+    prepare_initial_pool(source, initial, tmp_path / "pool.safe.json", expected_tasks=3)
+
+    def select_wave(dataset: Path, rows: list[dict], prior: int, label: str):
+        per_task = tmp_path / f"{label}.jsonl"
+        write_jsonl(per_task, rows)
+        unresolved = tmp_path / f"unresolved{label}.parquet"
+        mixed = tmp_path / f"mixed{label}.parquet"
+        select_after_wave(
+            dataset,
+            per_task,
+            unresolved,
+            mixed,
+            tmp_path / f"wave{label}.safe.json",
+            expected_prior_samples=prior,
+            max_samples=6,
+        )
+        return unresolved, mixed
+
+    unresolved2, mixed2 = select_wave(
+        initial,
+        [
+            result(0, correct=1, completed=2),
+            result(1, correct=0, completed=2),
+            result(2, correct=0, completed=2),
+        ],
+        0,
+        "2",
+    )
+    unresolved4, mixed4 = select_wave(
+        unresolved2,
+        [
+            {**result(0, correct=1, completed=2), "instruction_sha256": "hash-1"},
+            {**result(1, correct=0, completed=2), "instruction_sha256": "hash-2"},
+        ],
+        2,
+        "4",
+    )
+    unresolved6, mixed6 = select_wave(
+        unresolved4,
+        [{**result(0, correct=0, completed=2), "instruction_sha256": "hash-2"}],
+        4,
+        "6",
+    )
+    summary = finalize_three_wave(
+        initial,
+        mixed2,
+        mixed4,
+        mixed6,
+        unresolved6,
+        tmp_path / "final6",
+    )
+    assert summary["stage"] == "complete_after_six_samples"
+    assert summary["maximum_samples_per_task"] == 6
+    assert summary["variance_candidate_tasks"] == 2
+    assert summary["unresolved_after_six_tasks"] == 1
+    assert summary["sample_count_distribution"] == {"2": 1, "4": 1, "6": 1}
+    assert summary["actual_sampling_trajectories"] == 12
+    assert summary["avoided_trajectories_vs_full_six"] == 6
 
 
 def test_wave_launcher_uses_h06_full_physical_capacity_with_125_percent_window(

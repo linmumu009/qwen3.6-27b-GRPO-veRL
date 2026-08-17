@@ -400,6 +400,75 @@ def finalize_four_wave(
     return summary
 
 
+def finalize_three_wave(
+    initial_pool_path: Path,
+    mixed_after_two_path: Path,
+    mixed_after_four_path: Path,
+    mixed_after_six_path: Path,
+    unresolved_after_six_path: Path,
+    output_dir: Path,
+) -> dict[str, Any]:
+    """Finalize an initial 2+2+2 screen capped at six samples per task."""
+    initial = pq.read_table(initial_pool_path).to_pylist()
+    mixed2 = pq.read_table(mixed_after_two_path).to_pylist()
+    mixed4 = pq.read_table(mixed_after_four_path).to_pylist()
+    mixed6 = pq.read_table(mixed_after_six_path).to_pylist()
+    unresolved6 = pq.read_table(unresolved_after_six_path).to_pylist()
+    initial_identities = {_identity(row) for row in initial}
+    partitions = [mixed2, mixed4, mixed6, unresolved6]
+    identity_sets = [{_identity(row) for row in rows} for rows in partitions]
+    if any(
+        identity_sets[i] & identity_sets[j]
+        for i in range(len(identity_sets))
+        for j in range(i + 1, len(identity_sets))
+    ):
+        raise ValueError("six-sample partitions overlap")
+    if set().union(*identity_sets) != initial_identities:
+        raise ValueError("six-sample partitions do not cover the initial pool")
+
+    candidates = [*mixed2, *mixed4, *mixed6]
+    output_dir.mkdir(parents=True, exist_ok=True)
+    candidate_path = output_dir / "grpo_variance_candidates.sensitive.parquet"
+    unresolved_path = output_dir / "unresolved_after_six.sensitive.parquet"
+    write_private_parquet(candidate_path, candidates, empty_from=initial_pool_path)
+    write_private_parquet(unresolved_path, unresolved6, empty_from=initial_pool_path)
+    unresolved_after_two = len(initial) - len(mixed2)
+    unresolved_after_four = unresolved_after_two - len(mixed4)
+    if unresolved_after_four != len(mixed6) + len(unresolved6):
+        raise ValueError("three-wave partition counts are inconsistent")
+    actual = 2 * (len(initial) + unresolved_after_two + unresolved_after_four)
+    full_six = len(initial) * 6
+    summary = {
+        "contract": CONTRACT,
+        "stage": "complete_after_six_samples",
+        "maximum_samples_per_task": 6,
+        "initial_tasks": len(initial),
+        "mixed_after_two_tasks": len(mixed2),
+        "mixed_after_four_tasks": len(mixed4),
+        "mixed_after_six_tasks": len(mixed6),
+        "variance_candidate_tasks": len(candidates),
+        "unresolved_after_six_tasks": len(unresolved6),
+        "sample_count_distribution": {
+            "2": len(mixed2),
+            "4": len(mixed4),
+            "6": len(mixed6) + len(unresolved6),
+        },
+        "actual_sampling_trajectories": actual,
+        "actual_trajectories_including_existing_two": actual,
+        "full_six_sampling_baseline_trajectories": full_six,
+        "avoided_trajectories_vs_full_six": full_six - actual,
+        "candidate_difficulty_counts": _difficulty_counts(candidates),
+        "candidate_dataset_sha256": file_sha256(candidate_path),
+        "unresolved_dataset_sha256": file_sha256(unresolved_path),
+        "candidate_payload_is_prompt_and_gold_not_sampled_trajectory": True,
+        "contains_prompts_gold_sql_task_ids_outputs_or_server_paths": False,
+        "training_allowed": False,
+        "promotion_allowed": False,
+    }
+    write_json(output_dir / "adaptive_final_safe_summary.json", summary)
+    return summary
+
+
 def finalize(
     initial_pool_path: Path,
     mixed_after_four_path: Path,
