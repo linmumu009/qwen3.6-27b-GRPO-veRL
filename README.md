@@ -249,6 +249,13 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 已验证状态
 
+### v1.11.70 — 2026-08-17
+
+- 将0号机`/data3/models/Qwen3.8-27b`完整复制到5/6号机，与Qwen3.6原模型平行存储；三机55,586,115,141字节文件清单摘要一致，并新增架构关键字段、完整HF tensor key、Transformers config/tokenizer和chat template的失败关闭兼容门禁。
+- 新增隔离双机Qwen3.8工程冒烟入口和精确Ray物理资源门禁；实机采用5号机16卡Megatron `TP4×PP2×CP2`训练、6号机16卡vLLM `TP8×DP2`推理，从Qwen3.8原始HF权重完成16条多轮工具轨迹、权重同步和1个优化步，退出码为0且不保存检查点。
+- 首次运行复现Ascend host-pinned optimizer offload `207001`启动故障；主训练入口加入默认值不变的offload开关，Qwen3.8冒烟改用device-side optimizer后通过。单步生成816.20秒、actor更新296.09秒，训练最大已分配显存38.57GiB，确认当前两机效率优先分配仍应保持训练16卡、推理16卡。
+- 明确禁止把Qwen3.6 Step120权重当作Qwen3.8恢复点；正式切换必须从Qwen3.8基座重新建立基线、金丝雀和训练链路。测试完成后隔离Ray与容器已停止，模型副本和审计日志保留。
+
 ### v1.11.68 — 2026-08-17
 
 - 首次161题续训启动在任何rollout或参数更新前失败：两机Ray和数据门禁均通过，但5号机初始化HybridDeviceOptimizer时申请Ascend host-pinned内存返回`207001`；运行目录无rollout/checkpoint、训练步为0，两机NPU已回到约2.9–3.1GiB驱动基线，失败运行保留审计且不从其恢复。新监督器除双机NPU连续空闲外，还要求5号机`MemAvailable≥1.2TiB`且`Mlocked≤128GiB`连续通过，避免外部任务刚释放NPU但host-pinned内存尚未回落时立即重启。
