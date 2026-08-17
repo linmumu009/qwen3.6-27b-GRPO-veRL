@@ -1,0 +1,185 @@
+{
+  "contract": "llin-qwen38-topology-decision-safe-evidence-v1",
+  "date": "2026-08-17",
+  "model": {
+    "label": "Qwen3.8-27B native HF",
+    "policy_step": 0,
+    "reasoning_effort": "medium",
+    "config_sha256": "191e0af232104ed8b65258cf3fb2b842e288008baca7633c11b82a1ac7203aab",
+    "safetensor_index_sha256": "77042094076611b69791a610065f28b7013b8c621795fa86ddccc8bac7d1b9df"
+  },
+  "workload": {
+    "benchmark_tasks": 32,
+    "samples_per_task": 2,
+    "completed_rows_per_run": 64,
+    "max_prompt_tokens": 4096,
+    "max_response_tokens": 90112,
+    "context_tokens": 94208,
+    "trajectory_timeout_seconds": 1800,
+    "temperature": 1,
+    "top_p": 0.95,
+    "top_k": 20,
+    "rolling_window_multiplier": 1.25
+  },
+  "capacity": {
+    "TP8xDP2": {
+      "npu_count": 16,
+      "weight_gib_per_card": 6.5904,
+      "full_context_concurrency_per_replica": 26.4,
+      "configured_max_num_seqs": 32
+    },
+    "TP4xDP4": {
+      "npu_count": 16,
+      "weight_gib_per_card": 13.0092,
+      "full_context_concurrency_per_replica": 20.93,
+      "configured_max_num_seqs": 16
+    },
+    "TP4xDP3": {
+      "npu_count": 12,
+      "weight_gib_per_card": 13.0092,
+      "full_context_concurrency_per_replica": 20.93,
+      "configured_max_num_seqs": 16
+    }
+  },
+  "runs": [
+    {
+      "run_id": "r1-tp8dp2-m05",
+      "round": 1,
+      "host": "m05",
+      "topology": "TP8xDP2",
+      "max_num_seqs": 32,
+      "completed_rows": 64,
+      "wall_seconds": 2047,
+      "response_tokens": 679331,
+      "response_tokens_per_hour": 1194719.8827552516,
+      "trajectories_per_hour": 112.55495847581827,
+      "trajectory_timeout_rows": 9,
+      "hbm_usage_max": 85,
+      "runtime_error_rows": 0,
+      "exit_code": 0
+    },
+    {
+      "run_id": "r1-tp4dp4-m06",
+      "round": 1,
+      "host": "m06",
+      "topology": "TP4xDP4",
+      "max_num_seqs": 16,
+      "completed_rows": 64,
+      "wall_seconds": 2027,
+      "response_tokens": 796506,
+      "response_tokens_per_hour": 1414613.5175135669,
+      "trajectories_per_hour": 113.66551554020721,
+      "trajectory_timeout_rows": 4,
+      "hbm_usage_max": 83,
+      "runtime_error_rows": 0,
+      "exit_code": 0
+    },
+    {
+      "run_id": "r1-tp4dp3-m00",
+      "round": 1,
+      "host": "m00",
+      "topology": "TP4xDP3",
+      "max_num_seqs": 16,
+      "completed_rows": 64,
+      "wall_seconds": 2422,
+      "response_tokens": 694428,
+      "response_tokens_per_hour": 1032180.3468208093,
+      "trajectories_per_hour": 95.12799339388934,
+      "trajectory_timeout_rows": 7,
+      "hbm_usage_max": 83,
+      "runtime_error_rows": 0,
+      "exit_code": 0
+    },
+    {
+      "run_id": "r2-tp4dp4-m05",
+      "round": 2,
+      "host": "m05",
+      "topology": "TP4xDP4",
+      "max_num_seqs": 16,
+      "completed_rows": 64,
+      "wall_seconds": 2029,
+      "response_tokens": 729740,
+      "response_tokens_per_hour": 1294758.008871365,
+      "trajectories_per_hour": 113.55347461803844,
+      "trajectory_timeout_rows": 3,
+      "hbm_usage_max": 83,
+      "runtime_error_rows": 0,
+      "exit_code": 0
+    },
+    {
+      "run_id": "r2-tp8dp2-m06",
+      "round": 2,
+      "host": "m06",
+      "topology": "TP8xDP2",
+      "max_num_seqs": 32,
+      "completed_rows": 64,
+      "wall_seconds": 2030,
+      "response_tokens": 793359,
+      "response_tokens_per_hour": 1406942.0689655172,
+      "trajectories_per_hour": 113.49753694581281,
+      "trajectory_timeout_rows": 7,
+      "hbm_usage_max": 84,
+      "runtime_error_rows": 0,
+      "exit_code": 0
+    }
+  ],
+  "decision": {
+    "selected_topology": "TP4xDP4",
+    "selected_max_num_seqs": 16,
+    "tp4_mean_response_tokens_per_hour": 1354685.763192466,
+    "tp8_mean_response_tokens_per_hour": 1300830.9758603843,
+    "tp4_uplift_fraction": 0.04140029591197392,
+    "m05_tp4_uplift_fraction": 0.08373354085763318,
+    "m06_tp4_uplift_fraction": 0.00545256888486545,
+    "tp4_mean_trajectories_per_hour": 113.60949507912282,
+    "tp8_mean_trajectories_per_hour": 113.02624771081554,
+    "tp4_timeout_rows": 7,
+    "tp8_timeout_rows": 16,
+    "tp4_timeout_rate": 0.0546875,
+    "tp8_timeout_rate": 0.125,
+    "tp4_maxseq16_headroom_fraction": 0.23554706163401817,
+    "tp4_maxseq20_headroom_fraction": 0.04443382704252263,
+    "maxseq20_selected": false
+  },
+  "formal_launch": {
+    "stage": "running_v15_wave2",
+    "m05": {
+      "topology": "TP4xDP4",
+      "npu_count": 16,
+      "max_num_seqs": 16,
+      "physical_sequence_capacity": 64,
+      "logical_window_trajectories": 80,
+      "tasks_per_version": 182,
+      "total_tasks": 546
+    },
+    "m06": {
+      "topology": "TP4xDP4",
+      "npu_count": 16,
+      "max_num_seqs": 16,
+      "physical_sequence_capacity": 64,
+      "logical_window_trajectories": 80,
+      "tasks_per_version": 182,
+      "total_tasks": 546
+    },
+    "m00": {
+      "topology": "TP4xDP3",
+      "npu_count": 12,
+      "max_num_seqs": 16,
+      "physical_sequence_capacity": 48,
+      "logical_window_trajectories": 60,
+      "tasks_per_version": 136,
+      "total_tasks": 408
+    },
+    "version_order": [
+      "v15",
+      "v20",
+      "v21"
+    ],
+    "sampling_protocol": "strict adaptive 2+2+2",
+    "source_tasks_per_version": 500,
+    "total_source_tasks": 1500,
+    "training_allowed": false
+  },
+  "partition_manifest_contract": "llin-qwen38-three-host-rerun-partition-v1",
+  "contains_prompts_gold_sql_task_ids_tool_outputs_or_server_paths": false
+}

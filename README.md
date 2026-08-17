@@ -249,6 +249,13 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 已验证状态
 
+### v1.11.71 — 2026-08-17
+
+- 独立PI-Agent rollout入口新增Qwen3.8原生HF、`reasoning_effort=medium`及可配置TP/DP/NPU合同；模型身份、94,208上下文、1,800秒超时、`temperature=1/top_p=.95/top_k=20`、1.25×滚动窗口和严格`2+2+2`早停均失败关闭，禁止混用Qwen3.6 Step120导出权重。
+- 同一32题×2条轨迹在5/6号机完成TP8×DP2与TP4×DP4互换交叉基准：五次运行均64/64完成且无runtime error/OOM/上下文截断；TP4两机平均生成吞吐为1,354,686 token/小时，比TP8高4.14%，超时率为5.47%对12.50%，峰值HBM为83%对84–85%。
+- 满94,208 token实测容量为TP4每副本20.93条；正式锁定5/6号机`TP4×DP4,max_num_seqs=16`和0号机12卡`TP4×DP3,max_num_seqs=16`，不采用仅余4.44%容量的并发20。v15/v20/v21各500题已按`182/182/136`难度平衡、跨机互斥分片，三机均已进入v15首轮2条采样，随后自动执行v20与v21。
+- 新增不含题面或隐藏验证材料的[拓扑决策报告](docs/qwen38_27b_topology_decision_20260817.html)、[安全证据](docs/qwen38_27b_topology_decision_20260817.safe.json)和[可复现notebook](docs/qwen38_27b_topology_decision_20260817.ipynb)。
+
 ### v1.11.70 — 2026-08-17
 
 - 将0号机`/data3/models/Qwen3.8-27b`完整复制到5/6号机，与Qwen3.6原模型平行存储；三机55,586,115,141字节文件清单摘要一致，并新增架构关键字段、完整HF tensor key、Transformers config/tokenizer和chat template的失败关闭兼容门禁。

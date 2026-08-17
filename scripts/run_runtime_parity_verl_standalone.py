@@ -96,14 +96,15 @@ def build_config(args: argparse.Namespace):
         "data.return_raw_chat=True",
         "data.return_multi_modal_inputs=False",
         "data.truncation=error",
+        f"+data.apply_chat_template_kwargs.reasoning_effort={args.reasoning_effort}",
         "data.continuous_token.enable=True",
         "data.continuous_token.model_family=qwen35",
         f"actor_rollout_ref.model.path={args.model}",
         "actor_rollout_ref.model.use_remove_padding=False",
         "actor_rollout_ref.rollout.name=vllm",
         "actor_rollout_ref.rollout.mode=async",
-        "actor_rollout_ref.rollout.tensor_model_parallel_size=8",
-        "actor_rollout_ref.rollout.data_parallel_size=2",
+        f"actor_rollout_ref.rollout.tensor_model_parallel_size={args.tensor_parallel_size}",
+        f"actor_rollout_ref.rollout.data_parallel_size={args.data_parallel_size}",
         "actor_rollout_ref.rollout.pipeline_model_parallel_size=1",
         f"actor_rollout_ref.rollout.gpu_memory_utilization={args.gpu_memory_utilization}",
         f"actor_rollout_ref.rollout.max_num_batched_tokens={args.max_num_batched_tokens}",
@@ -117,7 +118,7 @@ def build_config(args: argparse.Namespace):
         "actor_rollout_ref.rollout.disable_log_stats=False",
         f"actor_rollout_ref.rollout.n={args.samples_per_task}",
         "actor_rollout_ref.rollout.nnodes=1",
-        "actor_rollout_ref.rollout.n_gpus_per_node=16",
+        f"actor_rollout_ref.rollout.n_gpus_per_node={args.rollout_npus}",
         "actor_rollout_ref.rollout.multi_turn.enable=True",
         f"actor_rollout_ref.rollout.multi_turn.tool_config_path={args.project_root}/configs/pi_workspace_tools.yaml",
         f"actor_rollout_ref.rollout.agent.agent_loop_config_path={args.project_root}/configs/pi_agent_loops.yaml",
@@ -136,8 +137,8 @@ def build_config(args: argparse.Namespace):
         "actor_rollout_ref.rollout.val_kwargs.top_k=20",
         "actor_rollout_ref.rollout.val_kwargs.do_sample=True",
         "rollout.nnodes=1",
-        "rollout.n_gpus_per_node=16",
-        "trainer.n_gpus_per_node=16",
+        f"rollout.n_gpus_per_node={args.rollout_npus}",
+        f"trainer.n_gpus_per_node={args.rollout_npus}",
     ]
     previous_cwd = Path.cwd()
     try:
@@ -162,6 +163,7 @@ def safe_contract(config, args: argparse.Namespace) -> dict:
         "contract": "verl-standalone-runtime-parity-arm-v2",
         "model_label": args.model_label,
         "policy_step": args.policy_step,
+        "reasoning_effort": args.reasoning_effort,
         "model_identity": identity,
         "model_manifest_exists": (args.model / "llin_export_manifest.json").is_file(),
         "dataset_exists": args.dataset.is_file(),
@@ -502,6 +504,8 @@ def run_rolling_pending_shards(
 def run(args: argparse.Namespace) -> dict:
     started_at = datetime.now(timezone.utc)
     started_monotonic = time.monotonic()
+    if args.tensor_parallel_size * args.data_parallel_size != args.rollout_npus:
+        raise ValueError("tensor parallel × data parallel must equal rollout NPUs")
     runtime_preflight = validate_dataset_runtime_environments(
         args.dataset,
         args.tool_sandbox_root,
@@ -697,6 +701,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--model", type=Path, required=True)
     parser.add_argument("--model-label", default="step120")
     parser.add_argument("--policy-step", type=int, default=120)
+    parser.add_argument("--reasoning-effort", choices=("low", "medium", "xhigh"), default="medium")
     parser.add_argument("--dataset", type=Path, required=True)
     parser.add_argument("--tool-sandbox-root", type=Path, default=Path("/pi_sandbox"))
     parser.add_argument("--output-dir", type=Path, required=True)
@@ -705,6 +710,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--samples-per-task", type=int, default=8)
     parser.add_argument("--task-batch-size", type=int, default=10)
     parser.add_argument("--max-num-seqs", type=int, default=24)
+    parser.add_argument("--tensor-parallel-size", type=int, default=8)
+    parser.add_argument("--data-parallel-size", type=int, default=2)
+    parser.add_argument("--rollout-npus", type=int, default=16)
     parser.add_argument("--agent-workers", type=int, default=16)
     parser.add_argument("--max-num-batched-tokens", type=int, default=16384)
     parser.add_argument("--gpu-memory-utilization", type=float, default=0.80)

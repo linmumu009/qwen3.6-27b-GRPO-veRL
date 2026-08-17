@@ -57,6 +57,8 @@ def test_summary_reports_shape_scheduler_lengths_and_npu_without_content(tmp_pat
         writer = csv.DictWriter(handle, fieldnames=["aicore_pct", "npu_util_pct", "hbm_usage_pct", "hbm_bandwidth_pct"])
         writer.writeheader()
         writer.writerow({"aicore_pct": 80, "npu_util_pct": 90, "hbm_usage_pct": 70, "hbm_bandwidth_pct": 60})
+    (tmp_path / "started_at").write_text("2026-08-17T00:00:00+00:00\n", encoding="utf-8")
+    (tmp_path / "finished_at").write_text("2026-08-17T01:00:00+00:00\n", encoding="utf-8")
 
     result = summarize(tmp_path)
 
@@ -71,6 +73,10 @@ def test_summary_reports_shape_scheduler_lengths_and_npu_without_content(tmp_pat
     assert result["scheduler"]["waiting_latest"] == 0
     assert result["scheduler"]["at_sequence_cap_samples"] == 1
     assert result["response_tokens"]["at_budget_rows"] == 1
+    assert result["response_tokens"]["total"] == 36
+    assert result["response_tokens"]["mean"] == 9
+    assert result["throughput"]["trajectories_per_hour"] == 4
+    assert result["throughput"]["response_tokens_per_hour"] == 36
     telemetry = result["trajectory_telemetry"]
     assert telemetry["contract"] == "llin-pi-trajectory-telemetry-v1"
     assert telemetry["rows"] == 4

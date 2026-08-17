@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Qwen3.8-27B 94K rollout 拓扑工程决策</title>
+  <style>
+    :root { color-scheme: light; --ink:#172033; --muted:#59647a; --line:#dce2ec; --blue:#265dd8; --green:#137a52; --bg:#f5f7fb; }
+    * { box-sizing: border-box; }
+    body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.62 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif; }
+    main { width:min(1120px,calc(100% - 32px)); margin:32px auto 64px; }
+    header,section { background:#fff; border:1px solid var(--line); border-radius:16px; padding:24px 28px; margin-bottom:18px; box-shadow:0 8px 28px rgba(33,47,78,.05); }
+    h1 { margin:0 0 6px; font-size:30px; line-height:1.25; }
+    h2 { margin:0 0 14px; font-size:20px; }
+    p { margin:8px 0; }
+    .meta { color:var(--muted); }
+    .decision { border-left:6px solid var(--green); }
+    .decision strong { color:var(--green); }
+    .cards { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin:18px 0 4px; }
+    .card { background:#f7f9fd; border:1px solid var(--line); border-radius:12px; padding:14px; }
+    .card b { display:block; font-size:22px; color:var(--blue); }
+    .card span { color:var(--muted); font-size:13px; }
+    .table-wrap { overflow-x:auto; }
+    table { border-collapse:collapse; width:100%; min-width:760px; }
+    th,td { border-bottom:1px solid var(--line); padding:10px 9px; text-align:right; white-space:nowrap; }
+    th:first-child,td:first-child,th:nth-child(2),td:nth-child(2) { text-align:left; }
+    th { color:var(--muted); background:#f8f9fc; font-weight:650; }
+    tr:last-child td { border-bottom:0; }
+    code { background:#eef2f8; border-radius:5px; padding:2px 5px; }
+    ul { margin:8px 0; padding-left:22px; }
+    .ok { color:var(--green); font-weight:700; }
+    .note { color:var(--muted); font-size:13px; }
+    @media (max-width:760px) { .cards { grid-template-columns:repeat(2,minmax(0,1fr)); } header,section { padding:20px; } }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Qwen3.8-27B 94K rollout 拓扑工程决策</h1>
+    <div class="meta">2026-08-17 · 同一32题、每题2条、5/6号机拓扑互换交叉基准 · 安全指标报告</div>
+  </header>
+
+  <section class="decision">
+    <h2>结论先行</h2>
+    <p><strong>建议成立且已落地：</strong>5/6号机采用 <code>TP4×DP4</code>、每副本 <code>max_num_seqs=16</code>；0号机12张空闲卡采用 <code>TP4×DP3</code>、每副本16。三机均已启动 v15→v20→v21 的严格自适应 <code>2+2+2</code> 队列。</p>
+    <div class="cards">
+      <div class="card"><b>+4.14%</b><span>TP4 两机平均生成token吞吐</span></div>
+      <div class="card"><b>5.47%</b><span>TP4超时率；TP8为12.50%</span></div>
+      <div class="card"><b>83%</b><span>TP4四副本实测峰值HBM</span></div>
+      <div class="card"><b>23.55%</b><span>TP4并发16的满94K容量余量</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>交叉基准结果</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>轮次</th><th>机器 / 拓扑</th><th>完成轨迹</th><th>墙钟(s)</th><th>响应token</th><th>token/小时</th><th>轨迹/小时</th><th>超时</th><th>峰值HBM</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>m05 · TP8×DP2</td><td>64</td><td>2,047</td><td>679,331</td><td>1,194,720</td><td>112.55</td><td>9</td><td>85%</td></tr>
+          <tr><td>1</td><td>m06 · TP4×DP4</td><td>64</td><td>2,027</td><td>796,506</td><td>1,414,614</td><td>113.67</td><td>4</td><td>83%</td></tr>
+          <tr><td>1</td><td>m00 · TP4×DP3</td><td>64</td><td>2,422</td><td>694,428</td><td>1,032,180</td><td>95.13</td><td>7</td><td>83%</td></tr>
+          <tr><td>2</td><td>m05 · TP4×DP4</td><td>64</td><td>2,029</td><td>729,740</td><td>1,294,758</td><td>113.55</td><td>3</td><td>83%</td></tr>
+          <tr><td>2</td><td>m06 · TP8×DP2</td><td>64</td><td>2,030</td><td>793,359</td><td>1,406,942</td><td>113.50</td><td>7</td><td>84%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>按机器配对，TP4在m05提升8.37%，在m06提升0.55%；两机平均为1,354,686 token/小时，对比TP8的1,300,831 token/小时。TP4的总超时为7/128，TP8为16/128，且所有运行均64/64完成、runtime error/OOM/上下文截断为0。</p>
+  </section>
+
+  <section>
+    <h2>容量与并发决策</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>拓扑</th><th>每卡权重</th><th>满94,208 token容量/副本</th><th>配置并发/副本</th><th>最坏容量余量</th></tr></thead>
+        <tbody>
+          <tr><td>TP8×DP2</td><td>6.5904 GiB</td><td>26.40</td><td>32</td><td>-21.21%</td></tr>
+          <tr><td>TP4×DP4</td><td>13.0092 GiB</td><td>20.93</td><td>16</td><td>23.55%</td></tr>
+          <tr><td>TP4×DP3</td><td>13.0092 GiB</td><td>20.93</td><td>16</td><td>23.55%</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><code>max_num_seqs=20</code> 的满上下文余量仅4.44%，不足以覆盖工具型Agent的长度聚集、运行时碎片和遥测波动，因此本轮不作为正式配置。TP8的32是调度上限，不代表32条都可同时跑满94K；这也是TP4并发16更稳妥的原因。</p>
+  </section>
+
+  <section>
+    <h2>正式三机队列</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>机器</th><th>拓扑</th><th>NPU</th><th>物理/逻辑并发</th><th>每版本题数</th><th>三版本总题数</th><th>状态</th></tr></thead>
+        <tbody>
+          <tr><td>m05</td><td>TP4×DP4</td><td>16</td><td>64 / 80</td><td>182</td><td>546</td><td class="ok">v15 wave2运行中</td></tr>
+          <tr><td>m06</td><td>TP4×DP4</td><td>16</td><td>64 / 80</td><td>182</td><td>546</td><td class="ok">v15 wave2运行中</td></tr>
+          <tr><td>m00</td><td>TP4×DP3</td><td>12</td><td>48 / 60</td><td>136</td><td>408</td><td class="ok">v15 wave2运行中</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>每个版本500题按4:4:3比例、按难度1–5平衡且跨机互斥，合计完整覆盖1,500题。三机均使用Qwen3.8原生HF基座（policy step 0）和 <code>reasoning_effort=medium</code>；Qwen3.6 Step120权重未混用。</p>
+  </section>
+
+  <section>
+    <h2>保持不变的采样合同</h2>
+    <ul>
+      <li>prompt 4,096 + response 90,112 = 上下文94,208 tokens；单轨迹超时1,800秒。</li>
+      <li><code>temperature=1</code>、<code>top_p=.95</code>、<code>top_k=20</code>。</li>
+      <li>逻辑窗口为物理序列容量的1.25倍，完成一条即滚动补位。</li>
+      <li>严格2→4→6条早停：累计出现至少一正一错即冻结，仅未决题进入下一波。</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>证据边界</h2>
+    <p>这是32题×2条的小批交叉工程基准，已消除单一机器偏差，但随机生成长度仍会造成波动，不能宣称TP4对所有负载统计学最优。当前证据足以支持正式效率配置；正式队列的持续吞吐、超时率和候选产出仍应作为后续复核依据。</p>
+    <p class="note">本报告只含聚合指标与模型哈希，不含prompt、gold、SQL、任务ID、工具输出或服务器路径。原始数据继续保持training_allowed=false。</p>
+  </section>
+</main>
+</body>
+</html>

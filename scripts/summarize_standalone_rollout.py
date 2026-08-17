@@ -156,11 +156,21 @@ def summarize(run_dir: Path) -> dict:
     max_seqs = int(contract.get("max_num_seqs_per_dp_engine", 0))
     running = [row[0] for row in scheduler]
     waiting = [row[1] for row in scheduler]
+    wall_seconds = (finished - started).total_seconds() if started and finished else None
+    trajectories_per_hour = (
+        completed_rows * 3600 / wall_seconds if wall_seconds and wall_seconds > 0 else None
+    )
+    response_tokens_total = sum(response_lengths)
+    response_tokens_per_hour = (
+        response_tokens_total * 3600 / wall_seconds
+        if wall_seconds and wall_seconds > 0
+        else None
+    )
     return {
         "contract": "verl-standalone-rollout-safe-summary-v1",
         "finished": finished is not None,
         "exit_code": exit_code,
-        "wall_seconds": (finished - started).total_seconds() if started and finished else None,
+        "wall_seconds": wall_seconds,
         "tasks": tasks,
         "samples_per_task": samples,
         "completed_tasks": completed_tasks,
@@ -190,10 +200,16 @@ def summarize(run_dir: Path) -> dict:
             "at_sequence_cap_samples": sum(value >= max_seqs for value in running) if max_seqs else 0,
         },
         "response_tokens": {
+            "total": response_tokens_total,
+            "mean": statistics.fmean(response_lengths) if response_lengths else None,
             "p50": percentile(response_lengths, 0.50),
             "p95": percentile(response_lengths, 0.95),
             "max": max(response_lengths) if response_lengths else None,
             "at_budget_rows": at_response_budget,
+        },
+        "throughput": {
+            "trajectories_per_hour": trajectories_per_hour,
+            "response_tokens_per_hour": response_tokens_per_hour,
         },
         "trajectory_telemetry": {
             "contract": contract.get("trajectory_telemetry", {}).get("contract"),
