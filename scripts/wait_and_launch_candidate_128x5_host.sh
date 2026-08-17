@@ -50,11 +50,19 @@ ssh -o BatchMode=yes "root@${ROLLOUT_HOST}" \
 
 npu_process_pattern='^\|[[:space:]]*[0-9]+[[:space:]]+[0-9]+[[:space:]]+\|[[:space:]]*[0-9]+[[:space:]]+\|[[:space:]]*[[:alnum:]_]'
 local_npu_busy() {
-  npu-smi info | grep -Eq "${npu_process_pattern}"
+  local output
+  if ! output="$(npu-smi info 2>&1)" || [[ -z "${output}" ]]; then
+    return 0
+  fi
+  grep -Eq "${npu_process_pattern}" <<< "${output}"
 }
 remote_npu_busy() {
-  ssh -o BatchMode=yes "root@${ROLLOUT_HOST}" npu-smi info \
-    | grep -Eq "${npu_process_pattern}"
+  local output
+  if ! output="$(ssh -o BatchMode=yes "root@${ROLLOUT_HOST}" npu-smi info 2>&1)" \
+    || [[ -z "${output}" ]]; then
+    return 0
+  fi
+  grep -Eq "${npu_process_pattern}" <<< "${output}"
 }
 
 printf 'waiting_for_two_hosts_idle\n' > "${SUPERVISOR_DIR}/state"
