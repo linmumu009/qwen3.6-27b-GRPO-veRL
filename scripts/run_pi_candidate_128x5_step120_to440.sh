@@ -63,6 +63,8 @@ tool_timeout_seconds=${AGENT_TIMEOUT_SECONDS}
 validation=final_only_test33
 owner_authorized_training=true
 promotion_allowed=false
+checkpoint_payload=model,extra
+optimizer_checkpoint_saved=false
 EOF
 
 DATA_DIR="${SPLIT_DIR}" \
@@ -72,6 +74,7 @@ SOURCE_CHECKPOINT="${SOURCE_CHECKPOINT}" \
 START_POLICY_STEP="${START_POLICY_STEP}" \
 NEW_TRAINING_STEPS="${NEW_TRAINING_STEPS}" \
 LOAD_OPTIMIZER_STATE=false \
+SAVE_OPTIMIZER_STATE=false \
 RUN_NAME="${RUN_NAME}" \
 OUTPUT_DIR="${OUTPUT_DIR}" \
 SAVE_FREQ="${SAVE_FREQ}" \

@@ -148,6 +148,7 @@ def test_candidate_128x5_contract_is_exact_and_relaxes_only_timeouts():
         "MAX_ACTOR_CKPT_TO_KEEP=2",
         "DATA_PREFLIGHT_MODE=prevalidated",
         "LOAD_OPTIMIZER_STATE=false",
+        "SAVE_OPTIMIZER_STATE=false",
         "pi_workspace_tools_relaxed1800.yaml",
     ):
         assert expected in run_script
@@ -159,6 +160,9 @@ def test_candidate_128x5_contract_is_exact_and_relaxes_only_timeouts():
     assert "[[:space:]]+\\|[[:space:]]*[[:alnum:]_]" in supervisor
     assert "split_grpo_candidate_pool.py' validate" in supervisor
     assert "+actor_rollout_ref.rollout.multi_turn.agent_timeout_seconds" in base_runner
+    assert 'CHECKPOINT_SAVE_CONTENTS="[model,extra]"' in (
+        ROOT / "scripts" / "run_pi_banded_2x8_resume.sh"
+    ).read_text(encoding="utf-8")
 
 
 def test_unattended_pipeline_is_fail_closed_between_stages():

@@ -28,6 +28,7 @@ NEW_ROLLOUT_GROUPS="$((TOTAL_ROLLOUT_GROUPS - ROLLOUT_START_INDEX + 1))"
 EXPECTED_NEW_ROLLOUT_GROUPS="$((NEW_TRAINING_STEPS * GROUPS_PER_STEP))"
 LEARNING_RATE="${LEARNING_RATE:-1e-7}"
 LOAD_OPTIMIZER_STATE="${LOAD_OPTIMIZER_STATE:-true}"
+SAVE_OPTIMIZER_STATE="${SAVE_OPTIMIZER_STATE:-true}"
 SAVE_FREQ="${SAVE_FREQ:-${FINAL_POLICY_STEP}}"
 TEST_FREQ="${TEST_FREQ:-${FINAL_POLICY_STEP}}"
 MAX_ACTOR_CKPT_TO_KEEP="${MAX_ACTOR_CKPT_TO_KEEP:-1}"
@@ -50,6 +51,20 @@ case "${LOAD_OPTIMIZER_STATE}" in
   *)
     printf 'LOAD_OPTIMIZER_STATE must be true or false, got: %s\n' \
       "${LOAD_OPTIMIZER_STATE}" >&2
+    exit 2
+    ;;
+esac
+
+case "${SAVE_OPTIMIZER_STATE}" in
+  true)
+    CHECKPOINT_SAVE_CONTENTS="[model,optimizer,extra]"
+    ;;
+  false)
+    CHECKPOINT_SAVE_CONTENTS="[model,extra]"
+    ;;
+  *)
+    printf 'SAVE_OPTIMIZER_STATE must be true or false, got: %s\n' \
+      "${SAVE_OPTIMIZER_STATE}" >&2
     exit 2
     ;;
 esac
@@ -109,6 +124,7 @@ validation=${VALIDATION_LABEL}
 checkpoint_frequency=${SAVE_FREQ}
 max_actor_checkpoints_to_keep=${MAX_ACTOR_CKPT_TO_KEEP}
 checkpoint_load_contents=${CHECKPOINT_LOAD_CONTENTS}
+checkpoint_save_contents=${CHECKPOINT_SAVE_CONTENTS}
 optimizer_state=${OPTIMIZER_STATE}
 agent_timeout_seconds=${AGENT_TIMEOUT_SECONDS}
 data_seed=${DATA_SEED}
@@ -166,4 +182,4 @@ bash "${PROJECT_ROOT}/scripts/run_pi_grpo_fully_async_tp4_pp2_cp2.sh" \
   trainer.del_local_ckpt_after_load=False \
   async_training.use_trainer_do_validate=False \
   "actor_rollout_ref.actor.checkpoint.load_contents=${CHECKPOINT_LOAD_CONTENTS}" \
-  'actor_rollout_ref.actor.checkpoint.save_contents=[model,optimizer,extra]'
+  "actor_rollout_ref.actor.checkpoint.save_contents=${CHECKPOINT_SAVE_CONTENTS}"
