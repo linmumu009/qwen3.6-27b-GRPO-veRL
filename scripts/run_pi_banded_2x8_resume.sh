@@ -28,6 +28,15 @@ NEW_ROLLOUT_GROUPS="$((TOTAL_ROLLOUT_GROUPS - ROLLOUT_START_INDEX + 1))"
 EXPECTED_NEW_ROLLOUT_GROUPS="$((NEW_TRAINING_STEPS * GROUPS_PER_STEP))"
 LEARNING_RATE="${LEARNING_RATE:-1e-7}"
 LOAD_OPTIMIZER_STATE="${LOAD_OPTIMIZER_STATE:-true}"
+SAVE_FREQ="${SAVE_FREQ:-${FINAL_POLICY_STEP}}"
+TEST_FREQ="${TEST_FREQ:-${FINAL_POLICY_STEP}}"
+MAX_ACTOR_CKPT_TO_KEEP="${MAX_ACTOR_CKPT_TO_KEEP:-1}"
+LOG_VAL_GENERATIONS="${LOG_VAL_GENERATIONS:-20}"
+VALIDATION_LABEL="${VALIDATION_LABEL:-final_only_boss_val20}"
+AGENT_TIMEOUT_SECONDS="${AGENT_TIMEOUT_SECONDS:-900}"
+DATA_SEED="${DATA_SEED:-20260730}"
+DATA_PREFLIGHT_MODE="${DATA_PREFLIGHT_MODE:-boss}"
+WORKSPACE_TOOL_CONFIG_PATH="${WORKSPACE_TOOL_CONFIG_PATH:-${PROJECT_ROOT}/configs/pi_workspace_tools.yaml}"
 
 case "${LOAD_OPTIMIZER_STATE}" in
   true)
@@ -55,11 +64,27 @@ if (( NEW_ROLLOUT_GROUPS != EXPECTED_NEW_ROLLOUT_GROUPS )); then
     "${NEW_ROLLOUT_GROUPS}" "${EXPECTED_NEW_ROLLOUT_GROUPS}" >&2
   exit 2
 fi
+if (( SAVE_FREQ <= 0 || FINAL_POLICY_STEP % SAVE_FREQ != 0 )); then
+  printf 'SAVE_FREQ must be positive and divide final policy step %s, got: %s\n' \
+    "${FINAL_POLICY_STEP}" "${SAVE_FREQ}" >&2
+  exit 2
+fi
 if [[ ! -f "${SOURCE_CHECKPOINT}/actor/ckpt_contents.json" ]]; then
   printf 'Source checkpoint not found: %s\n' "${SOURCE_CHECKPOINT}" >&2
   exit 2
 fi
-python3 "${PROJECT_ROOT}/scripts/check_boss_alignment_contract.py" --data-dir "${DATA_DIR}"
+case "${DATA_PREFLIGHT_MODE}" in
+  boss)
+    python3 "${PROJECT_ROOT}/scripts/check_boss_alignment_contract.py" --data-dir "${DATA_DIR}"
+    ;;
+  prevalidated)
+    ;;
+  *)
+    printf 'DATA_PREFLIGHT_MODE must be boss or prevalidated, got: %s\n' \
+      "${DATA_PREFLIGHT_MODE}" >&2
+    exit 2
+    ;;
+esac
 python3 "${PROJECT_ROOT}/scripts/check_formal_data_on_ray.py" \
   --train-file "${TRAIN_FILE}" \
   --val-file "${VAL_FILE}" \
@@ -80,10 +105,14 @@ rollout_start_index=${ROLLOUT_START_INDEX}
 rollout_total_limit=${TOTAL_ROLLOUT_GROUPS}
 new_rollout_groups=${NEW_ROLLOUT_GROUPS}
 context_tokens=${MAX_CONTEXT_TOKENS}
-validation=final_only_boss_val20
-checkpoint=final_only_model_optimizer_extra
+validation=${VALIDATION_LABEL}
+checkpoint_frequency=${SAVE_FREQ}
+max_actor_checkpoints_to_keep=${MAX_ACTOR_CKPT_TO_KEEP}
 checkpoint_load_contents=${CHECKPOINT_LOAD_CONTENTS}
 optimizer_state=${OPTIMIZER_STATE}
+agent_timeout_seconds=${AGENT_TIMEOUT_SECONDS}
+data_seed=${DATA_SEED}
+data_preflight_mode=${DATA_PREFLIGHT_MODE}
 EOF
 
 PI_REWARD_MODE=banded_v1 \
@@ -94,7 +123,7 @@ TOTAL_TRAINING_STEPS="${FINAL_POLICY_STEP}" \
 TOTAL_ROLLOUT_GROUPS="${TOTAL_ROLLOUT_GROUPS}" \
 GROUPS_PER_STEP="${GROUPS_PER_STEP}" \
 RESPONSES_PER_GROUP="${RESPONSES_PER_GROUP}" \
-SAVE_FREQ="${FINAL_POLICY_STEP}" \
+SAVE_FREQ="${SAVE_FREQ}" \
 FASTEST_K="${RESPONSES_PER_GROUP}" \
 OVERSAMPLE_CANDIDATES="${RESPONSES_PER_GROUP}" \
 PREWARM_GROUPS="${PREWARM_GROUPS}" \
@@ -104,6 +133,7 @@ MAX_PROMPT_TOKENS=4096 \
 MAX_RESPONSE_TOKENS=45056 \
 MAX_ASSISTANT_TURNS=26 \
 MAX_USER_TURNS=25 \
+AGENT_TIMEOUT_SECONDS="${AGENT_TIMEOUT_SECONDS}" \
 MAX_QUEUE_TOKENS="${MAX_QUEUE_TOKENS}" \
 ROLLOUT_GPU_MEMORY_UTILIZATION=0.80 \
 ROLLOUT_MAX_BATCHED_TOKENS=16384 \
@@ -114,7 +144,9 @@ WEIGHT_BUCKET_MB=2560 \
 bash "${PROJECT_ROOT}/scripts/run_pi_grpo_fully_async_tp4_pp2_cp2.sh" \
   data.train_files="${TRAIN_FILE}" \
   data.val_files="${VAL_FILE}" \
-  actor_rollout_ref.rollout.multi_turn.tool_config_path="${PROJECT_ROOT}/configs/pi_workspace_tools.yaml" \
+  data.shuffle=True \
+  data.seed="${DATA_SEED}" \
+  actor_rollout_ref.rollout.multi_turn.tool_config_path="${WORKSPACE_TOOL_CONFIG_PATH}" \
   actor_rollout_ref.rollout.agent.agent_loop_config_path="${PROJECT_ROOT}/configs/pi_agent_loops.yaml" \
   actor_rollout_ref.actor.optim.lr="${LEARNING_RATE}" \
   actor_rollout_ref.actor.megatron.optimizer_offload=False \
@@ -124,11 +156,11 @@ bash "${PROJECT_ROOT}/scripts/run_pi_grpo_fully_async_tp4_pp2_cp2.sh" \
   actor_rollout_ref.rollout.val_kwargs.temperature=0 \
   actor_rollout_ref.rollout.val_kwargs.do_sample=False \
   trainer.val_before_train=False \
-  trainer.test_freq="${FINAL_POLICY_STEP}" \
-  trainer.log_val_generations=20 \
+  trainer.test_freq="${TEST_FREQ}" \
+  trainer.log_val_generations="${LOG_VAL_GENERATIONS}" \
   trainer.validation_data_dir="${OUTPUT_DIR}/validation" \
-  trainer.save_freq="${FINAL_POLICY_STEP}" \
-  trainer.max_actor_ckpt_to_keep=1 \
+  trainer.save_freq="${SAVE_FREQ}" \
+  trainer.max_actor_ckpt_to_keep="${MAX_ACTOR_CKPT_TO_KEEP}" \
   trainer.resume_mode=resume_path \
   trainer.resume_from_path="${SOURCE_CHECKPOINT}" \
   trainer.del_local_ckpt_after_load=False \

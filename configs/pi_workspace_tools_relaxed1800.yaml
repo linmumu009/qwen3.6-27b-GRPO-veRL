@@ -1,0 +1,76 @@
+tools:
+  - class_name: "llin_verl.pi_workspace_tools.PiWorkspaceTool"
+    config: &pi_tool_config
+      type: "native"
+      operation: "bash"
+      sandbox_root: "/pi_sandbox"
+      run_root: "/workspace/grpo_run/pi_workspaces"
+      max_tool_timeout: 1800
+      max_tool_output: 51200
+      max_tool_lines: 2000
+    tool_schema:
+      type: function
+      function:
+        name: bash
+        description: "Execute a bash command in the current working directory. Returns stdout and stderr. Output is truncated to last 2000 lines or 50KB (whichever is hit first). If truncated, full output is saved to a temp file. Optionally provide a timeout in seconds."
+        parameters:
+          type: object
+          properties:
+            command: {type: string, description: "Bash command to execute"}
+            timeout: {type: number, description: "Timeout in seconds (optional, no default timeout)"}
+          required: [command]
+  - class_name: "llin_verl.pi_workspace_tools.PiWorkspaceTool"
+    config:
+      <<: *pi_tool_config
+      operation: "read"
+    tool_schema:
+      type: function
+      function:
+        name: read
+        description: "Read the contents of a file. Supports text files and images (jpg, png, gif, webp). Images are sent as attachments. For text files, output is truncated to 2000 lines or 50KB."
+        parameters:
+          type: object
+          properties:
+            path: {type: string, description: "Path to the file to read (relative or absolute)"}
+            offset: {type: number, description: "Line number to start reading from (1-indexed)"}
+            limit: {type: number, description: "Maximum number of lines to read"}
+          required: [path]
+  - class_name: "llin_verl.pi_workspace_tools.PiWorkspaceTool"
+    config:
+      <<: *pi_tool_config
+      operation: "edit"
+    tool_schema:
+      type: function
+      function:
+        name: edit
+        description: "Edit a single file using exact text replacement."
+        parameters:
+          type: object
+          properties:
+            path: {type: string, description: "Path to the file to edit (relative or absolute)"}
+            edits:
+              type: array
+              items:
+                type: object
+                properties:
+                  oldText: {type: string}
+                  newText: {type: string}
+                required: [oldText, newText]
+                additionalProperties: false
+          required: [path, edits]
+          additionalProperties: false
+  - class_name: "llin_verl.pi_workspace_tools.PiWorkspaceTool"
+    config:
+      <<: *pi_tool_config
+      operation: "write"
+    tool_schema:
+      type: function
+      function:
+        name: write
+        description: "Write content to a file. Creates the file if it does not exist and overwrites it otherwise."
+        parameters:
+          type: object
+          properties:
+            path: {type: string, description: "Path to the file to write"}
+            content: {type: string, description: "Content to write"}
+          required: [path, content]

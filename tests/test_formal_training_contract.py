@@ -100,8 +100,10 @@ def test_banded_2x8_resume_contract_and_final_only_checkpoint():
         'NEW_ROLLOUT_GROUPS="$((TOTAL_ROLLOUT_GROUPS - ROLLOUT_START_INDEX + 1))"',
         'EXPECTED_NEW_ROLLOUT_GROUPS="$((NEW_TRAINING_STEPS * GROUPS_PER_STEP))"',
         "reward.custom_reward_function.name=compute_score_banded_v1",
-        'trainer.test_freq="${FINAL_POLICY_STEP}"',
-        'trainer.save_freq="${FINAL_POLICY_STEP}"',
+        'TEST_FREQ="${TEST_FREQ:-${FINAL_POLICY_STEP}}"',
+        'SAVE_FREQ="${SAVE_FREQ:-${FINAL_POLICY_STEP}}"',
+        'trainer.test_freq="${TEST_FREQ}"',
+        'trainer.save_freq="${SAVE_FREQ}"',
         "[model,optimizer,extra]",
     )
     for item in expected:
@@ -115,6 +117,47 @@ def test_banded_2x8_resume_contract_and_final_only_checkpoint():
     assert 'LOAD_OPTIMIZER_STATE="${LOAD_OPTIMIZER_STATE:-true}"' in launcher
     assert "expected_global_step_%s_got_%s" in launcher
     assert "verify_checkpoint_integrity.py" in launcher
+
+
+def test_candidate_128x5_contract_is_exact_and_relaxes_only_timeouts():
+    run_script = (
+        ROOT / "scripts" / "run_pi_candidate_128x5_step120_to440.sh"
+    ).read_text(encoding="utf-8")
+    launcher = (
+        ROOT / "scripts" / "launch_pi_candidate_128x5_step120_to440.sh"
+    ).read_text(encoding="utf-8")
+    supervisor = (
+        ROOT / "scripts" / "wait_and_launch_candidate_128x5_host.sh"
+    ).read_text(encoding="utf-8")
+    base_runner = (
+        ROOT / "scripts" / "run_pi_grpo_fully_async_tp4_pp2_cp2.sh"
+    ).read_text(encoding="utf-8")
+
+    for expected in (
+        "START_POLICY_STEP=120",
+        "TRAIN_TASKS=128",
+        "TEST_TASKS=33",
+        "TRAIN_EPOCHS=5",
+        "GROUPS_PER_STEP=2",
+        "RESPONSES_PER_GROUP=8",
+        'STEPS_PER_EPOCH="$((GROUPS_PER_EPOCH / GROUPS_PER_STEP))"',
+        'NEW_TRAINING_STEPS="$((TRAIN_EPOCHS * STEPS_PER_EPOCH))"',
+        'FINAL_POLICY_STEP="$((START_POLICY_STEP + NEW_TRAINING_STEPS))"',
+        "SAVE_FREQ=40",
+        "AGENT_TIMEOUT_SECONDS=1800",
+        "MAX_ACTOR_CKPT_TO_KEEP=2",
+        "DATA_PREFLIGHT_MODE=prevalidated",
+        "LOAD_OPTIMIZER_STATE=false",
+        "pi_workspace_tools_relaxed1800.yaml",
+    ):
+        assert expected in run_script
+    assert "expected_global_step_%s_got_%s" in launcher
+    assert "EXPECTED_TEST_ROWS=33" in launcher
+    assert "verify_checkpoint_integrity.py" in launcher
+    assert "waiting_for_two_hosts_idle" in supervisor
+    assert "REQUIRED_IDLE_CHECKS" in supervisor
+    assert "split_grpo_candidate_pool.py' validate" in supervisor
+    assert "+actor_rollout_ref.rollout.multi_turn.agent_timeout_seconds" in base_runner
 
 
 def test_unattended_pipeline_is_fail_closed_between_stages():

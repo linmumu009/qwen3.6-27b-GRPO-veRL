@@ -27,6 +27,7 @@ MAX_PROMPT_TOKENS="${MAX_PROMPT_TOKENS:-4096}"
 MAX_RESPONSE_TOKENS="${MAX_RESPONSE_TOKENS:-45056}"
 MAX_ASSISTANT_TURNS="${MAX_ASSISTANT_TURNS:-25}"
 MAX_USER_TURNS="${MAX_USER_TURNS:-24}"
+AGENT_TIMEOUT_SECONDS="${AGENT_TIMEOUT_SECONDS:-900}"
 MAX_PARALLEL_TOOL_CALLS="${MAX_PARALLEL_TOOL_CALLS:-4}"
 MAX_TOOL_RESPONSE_CHARS="${MAX_TOOL_RESPONSE_CHARS:-32768}"
 ROLLOUT_MAX_BATCHED_TOKENS="${ROLLOUT_MAX_BATCHED_TOKENS:-8192}"
@@ -76,6 +77,10 @@ if (( OVERSAMPLE_CANDIDATES < FASTEST_K )); then
 fi
 if (( PREWARM_GROUPS < 0 )); then
   printf 'Invalid prewarm group count: %s\n' "${PREWARM_GROUPS}" >&2
+  exit 2
+fi
+if ! [[ "${AGENT_TIMEOUT_SECONDS}" =~ ^[0-9]+$ ]] || (( AGENT_TIMEOUT_SECONDS <= 0 )); then
+  printf 'Invalid agent timeout seconds: %s\n' "${AGENT_TIMEOUT_SECONDS}" >&2
   exit 2
 fi
 if [[ ! -d "${MEGATRON_BRIDGE_ROOT}/megatron/bridge" ]]; then
@@ -219,6 +224,7 @@ python3 -m verl.experimental.fully_async_policy.fully_async_main \
   actor_rollout_ref.rollout.load_format=safetensors \
   actor_rollout_ref.rollout.log_prob_micro_batch_size_per_gpu=1 \
   actor_rollout_ref.rollout.multi_turn.enable=True \
+  +actor_rollout_ref.rollout.multi_turn.agent_timeout_seconds="${AGENT_TIMEOUT_SECONDS}" \
   actor_rollout_ref.rollout.multi_turn.tool_config_path="${PROJECT_ROOT}/configs/pi_sqlite_tool.yaml" \
   actor_rollout_ref.rollout.multi_turn.max_assistant_turns="${MAX_ASSISTANT_TURNS}" \
   actor_rollout_ref.rollout.multi_turn.max_user_turns="${MAX_USER_TURNS}" \
