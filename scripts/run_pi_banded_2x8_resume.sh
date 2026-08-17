@@ -36,6 +36,7 @@ LOG_VAL_GENERATIONS="${LOG_VAL_GENERATIONS:-20}"
 VALIDATION_LABEL="${VALIDATION_LABEL:-final_only_boss_val20}"
 AGENT_TIMEOUT_SECONDS="${AGENT_TIMEOUT_SECONDS:-900}"
 DATA_SEED="${DATA_SEED:-20260730}"
+DATA_SHUFFLE="${DATA_SHUFFLE:-true}"
 DATA_PREFLIGHT_MODE="${DATA_PREFLIGHT_MODE:-boss}"
 WORKSPACE_TOOL_CONFIG_PATH="${WORKSPACE_TOOL_CONFIG_PATH:-${PROJECT_ROOT}/configs/pi_workspace_tools.yaml}"
 
@@ -65,6 +66,15 @@ case "${SAVE_OPTIMIZER_STATE}" in
   *)
     printf 'SAVE_OPTIMIZER_STATE must be true or false, got: %s\n' \
       "${SAVE_OPTIMIZER_STATE}" >&2
+    exit 2
+    ;;
+esac
+
+case "${DATA_SHUFFLE}" in
+  true|false)
+    ;;
+  *)
+    printf 'DATA_SHUFFLE must be true or false, got: %s\n' "${DATA_SHUFFLE}" >&2
     exit 2
     ;;
 esac
@@ -128,6 +138,7 @@ checkpoint_save_contents=${CHECKPOINT_SAVE_CONTENTS}
 optimizer_state=${OPTIMIZER_STATE}
 agent_timeout_seconds=${AGENT_TIMEOUT_SECONDS}
 data_seed=${DATA_SEED}
+data_shuffle=${DATA_SHUFFLE}
 data_preflight_mode=${DATA_PREFLIGHT_MODE}
 EOF
 
@@ -160,7 +171,7 @@ WEIGHT_BUCKET_MB=2560 \
 bash "${PROJECT_ROOT}/scripts/run_pi_grpo_fully_async_tp4_pp2_cp2.sh" \
   data.train_files="${TRAIN_FILE}" \
   data.val_files="${VAL_FILE}" \
-  data.shuffle=True \
+  data.shuffle="${DATA_SHUFFLE}" \
   data.seed="${DATA_SEED}" \
   actor_rollout_ref.rollout.multi_turn.tool_config_path="${WORKSPACE_TOOL_CONFIG_PATH}" \
   actor_rollout_ref.rollout.agent.agent_loop_config_path="${PROJECT_ROOT}/configs/pi_agent_loops.yaml" \

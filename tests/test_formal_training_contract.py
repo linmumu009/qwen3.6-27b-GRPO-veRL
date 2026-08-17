@@ -149,6 +149,7 @@ def test_candidate_128x5_contract_is_exact_and_relaxes_only_timeouts():
         "DATA_PREFLIGHT_MODE=prevalidated",
         "LOAD_OPTIMIZER_STATE=false",
         "SAVE_OPTIMIZER_STATE=false",
+        "DATA_SHUFFLE=false",
         "pi_workspace_tools_relaxed1800.yaml",
     ):
         assert expected in run_script
@@ -160,9 +161,19 @@ def test_candidate_128x5_contract_is_exact_and_relaxes_only_timeouts():
     assert "[[:space:]]+\\|[[:space:]]*[[:alnum:]_]" in supervisor
     assert 'if ! output="$(npu-smi info 2>&1)"' in supervisor
     assert "return 0" in supervisor
+    assert "MIN_HOST_MEM_AVAILABLE_KB" in supervisor
+    assert "MAX_HOST_MLOCKED_KB" in supervisor
+    assert "local_host_memory_busy" in supervisor
     assert "split_grpo_candidate_pool.py' validate" in supervisor
+    assert "build_grpo_candidate_curriculum.py' build" in supervisor
+    assert "prepare_candidate_step120_resume_view.sh' trainer" in supervisor
+    assert "train128x5.curriculum.sensitive.parquet" in run_script
+    assert "curriculum=2_then_4_then_6_then_legacy8" in run_script
     assert "+actor_rollout_ref.rollout.multi_turn.agent_timeout_seconds" in base_runner
     assert 'CHECKPOINT_SAVE_CONTENTS="[model,extra]"' in (
+        ROOT / "scripts" / "run_pi_banded_2x8_resume.sh"
+    ).read_text(encoding="utf-8")
+    assert 'data.shuffle="${DATA_SHUFFLE}"' in (
         ROOT / "scripts" / "run_pi_banded_2x8_resume.sh"
     ).read_text(encoding="utf-8")
 

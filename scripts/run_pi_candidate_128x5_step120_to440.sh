@@ -3,10 +3,13 @@ set -euo pipefail
 
 PROJECT_ROOT="${PROJECT_ROOT:-/workspace/llin-verl-grpo}"
 SPLIT_DIR="${SPLIT_DIR:-${PROJECT_ROOT}/runs/llin-grpo-candidate-pool-161-20260817-01/split-128-33-seed20260817}"
-TRAIN_FILE="${TRAIN_FILE:-${SPLIT_DIR}/train128.sensitive.parquet}"
+CANONICAL_TRAIN_FILE="${CANONICAL_TRAIN_FILE:-${SPLIT_DIR}/train128.sensitive.parquet}"
+CURRICULUM_FILE="${CURRICULUM_FILE:-${SPLIT_DIR}/train128x5.curriculum.sensitive.parquet}"
+CURRICULUM_SUMMARY="${CURRICULUM_SUMMARY:-${SPLIT_DIR}/train128x5.curriculum.safe.json}"
 TEST_FILE="${TEST_FILE:-${SPLIT_DIR}/test33.sensitive.parquet}"
 SAFE_SUMMARY="${SAFE_SUMMARY:-${SPLIT_DIR}/split.safe.json}"
-SOURCE_CHECKPOINT="${SOURCE_CHECKPOINT:-${PROJECT_ROOT}/runs/llin-pi-dense-correctness-step100-to-step120-20260810-01/checkpoints/global_step_120}"
+SOURCE_MODEL_CHECKPOINT="${SOURCE_MODEL_CHECKPOINT:-${PROJECT_ROOT}/runs/llin-pi-dense-correctness-step100-to-step120-20260810-01/checkpoints/global_step_120}"
+SOURCE_CHECKPOINT="${SOURCE_CHECKPOINT:-${PROJECT_ROOT}/runs/resume-views/llin-candidate128-curriculum-step120/global_step_120}"
 RUN_NAME="${RUN_NAME:-llin-grpo-candidate128-5epoch-step120-to440-$(date +%Y%m%d-%H%M%S)}"
 OUTPUT_DIR="${OUTPUT_DIR:-${PROJECT_ROOT}/runs/${RUN_NAME}}"
 
@@ -34,17 +37,25 @@ if (( NEW_TRAINING_STEPS != 320 || FINAL_POLICY_STEP != 440 )); then
 fi
 
 python3 "${PROJECT_ROOT}/scripts/split_grpo_candidate_pool.py" validate \
-  --train "${TRAIN_FILE}" \
+  --train "${CANONICAL_TRAIN_FILE}" \
   --test "${TEST_FILE}" \
   --safe-summary "${SAFE_SUMMARY}" \
   --expected-rows 161 \
   --expected-train-rows "${TRAIN_TASKS}" \
   --sandbox-root /pi_sandbox
 
+python3 "${PROJECT_ROOT}/scripts/build_grpo_candidate_curriculum.py" validate \
+  --canonical-train "${CANONICAL_TRAIN_FILE}" \
+  --curriculum "${CURRICULUM_FILE}" \
+  --safe-summary "${CURRICULUM_SUMMARY}" \
+  --expected-tasks "${TRAIN_TASKS}" \
+  --exposures "${TRAIN_EPOCHS}"
+
 mkdir -p "${OUTPUT_DIR}"
 cat > "${OUTPUT_DIR}/candidate_training_contract.txt" <<EOF
 contract=llin-grpo-candidate128-five-epoch-step120-v1
 source_checkpoint=${SOURCE_CHECKPOINT}
+source_model_checkpoint=${SOURCE_MODEL_CHECKPOINT}
 start_policy_step=${START_POLICY_STEP}
 train_tasks=${TRAIN_TASKS}
 test_tasks=${TEST_TASKS}
@@ -61,6 +72,9 @@ kept_checkpoints=2
 agent_timeout_seconds=${AGENT_TIMEOUT_SECONDS}
 tool_timeout_seconds=${AGENT_TIMEOUT_SECONDS}
 validation=final_only_test33
+curriculum=2_then_4_then_6_then_legacy8
+curriculum_file=${CURRICULUM_FILE}
+data_shuffle=false
 owner_authorized_training=true
 promotion_allowed=false
 checkpoint_payload=model,extra
@@ -68,7 +82,7 @@ optimizer_checkpoint_saved=false
 EOF
 
 DATA_DIR="${SPLIT_DIR}" \
-TRAIN_FILE="${TRAIN_FILE}" \
+TRAIN_FILE="${CURRICULUM_FILE}" \
 VAL_FILE="${TEST_FILE}" \
 SOURCE_CHECKPOINT="${SOURCE_CHECKPOINT}" \
 START_POLICY_STEP="${START_POLICY_STEP}" \
@@ -84,6 +98,7 @@ LOG_VAL_GENERATIONS="${TEST_TASKS}" \
 VALIDATION_LABEL=final_only_candidate_test33 \
 AGENT_TIMEOUT_SECONDS="${AGENT_TIMEOUT_SECONDS}" \
 DATA_SEED=20260817 \
+DATA_SHUFFLE=false \
 DATA_PREFLIGHT_MODE=prevalidated \
 WORKSPACE_TOOL_CONFIG_PATH="${PROJECT_ROOT}/configs/pi_workspace_tools_relaxed1800.yaml" \
 bash "${PROJECT_ROOT}/scripts/run_pi_banded_2x8_resume.sh"

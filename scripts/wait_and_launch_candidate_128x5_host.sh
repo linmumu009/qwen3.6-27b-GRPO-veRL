@@ -6,11 +6,17 @@ CONTAINER_PROJECT_ROOT="${CONTAINER_PROJECT_ROOT:-/workspace/llin-verl-grpo}"
 TRAINER_CONTAINER="${TRAINER_CONTAINER:-llin-verl-trainer-m05-20260730}"
 ROLLOUT_HOST="${ROLLOUT_HOST:-192.168.202.4}"
 ROLLOUT_CONTAINER="${ROLLOUT_CONTAINER:-llin-verl-rollout-m06-20260730}"
-RUN_NAME="${RUN_NAME:-llin-grpo-candidate128-5epoch-step120-to440-20260817-01}"
+RUN_NAME="${RUN_NAME:-llin-grpo-candidate128-curriculum-step120-to440-20260817-02}"
 SUPERVISOR_DIR="${HOST_PROJECT_ROOT}/runs/${RUN_NAME}-supervisor"
 SPLIT_DIR="${CONTAINER_PROJECT_ROOT}/runs/llin-grpo-candidate-pool-161-20260817-01/split-128-33-seed20260817"
+CANONICAL_TRAIN_FILE="${SPLIT_DIR}/train128.sensitive.parquet"
+CURRICULUM_FILE="${SPLIT_DIR}/train128x5.curriculum.sensitive.parquet"
+CURRICULUM_SUMMARY="${SPLIT_DIR}/train128x5.curriculum.safe.json"
+CANONICAL_TRAIN_SHA256="53efb4c94e3fd4b48db0fccb484afbd20131074833872e3c0a97d0e840663348"
 POLL_SECONDS="${POLL_SECONDS:-60}"
 REQUIRED_IDLE_CHECKS="${REQUIRED_IDLE_CHECKS:-3}"
+MIN_HOST_MEM_AVAILABLE_KB="${MIN_HOST_MEM_AVAILABLE_KB:-1288490189}"
+MAX_HOST_MLOCKED_KB="${MAX_HOST_MLOCKED_KB:-134217728}"
 
 mkdir -p "${SUPERVISOR_DIR}"
 exec 9>"${HOST_PROJECT_ROOT}/runs/.candidate128x5-training.lock"
@@ -38,7 +44,7 @@ cleanup() {
 trap cleanup EXIT
 
 validate_command="python3 '${CONTAINER_PROJECT_ROOT}/scripts/split_grpo_candidate_pool.py' validate \
-  --train '${SPLIT_DIR}/train128.sensitive.parquet' \
+  --train '${CANONICAL_TRAIN_FILE}' \
   --test '${SPLIT_DIR}/test33.sensitive.parquet' \
   --safe-summary '${SPLIT_DIR}/split.safe.json' \
   --expected-rows 161 --expected-train-rows 128 --sandbox-root /pi_sandbox"
@@ -47,6 +53,26 @@ docker exec "${TRAINER_CONTAINER}" bash -lc "${validate_command}" \
 ssh -o BatchMode=yes "root@${ROLLOUT_HOST}" \
   "docker exec '${ROLLOUT_CONTAINER}' bash -lc \"${validate_command}\"" \
   > "${SUPERVISOR_DIR}/rollout_asset_validation.json"
+
+curriculum_command="python3 '${CONTAINER_PROJECT_ROOT}/scripts/build_grpo_candidate_curriculum.py' build \
+  --canonical-train '${CANONICAL_TRAIN_FILE}' \
+  --output '${CURRICULUM_FILE}' \
+  --safe-summary '${CURRICULUM_SUMMARY}' \
+  --expected-canonical-sha256 '${CANONICAL_TRAIN_SHA256}' \
+  --expected-tasks 128 --exposures 5 --groups-per-step 2 \
+  --seed 20260817-curriculum-v1"
+docker exec "${TRAINER_CONTAINER}" bash -lc "${curriculum_command}" \
+  > "${SUPERVISOR_DIR}/trainer_curriculum_build.json"
+ssh -o BatchMode=yes "root@${ROLLOUT_HOST}" \
+  "docker exec '${ROLLOUT_CONTAINER}' bash -lc \"${curriculum_command}\"" \
+  > "${SUPERVISOR_DIR}/rollout_curriculum_build.json"
+
+docker exec "${TRAINER_CONTAINER}" bash -lc \
+  "bash '${CONTAINER_PROJECT_ROOT}/scripts/prepare_candidate_step120_resume_view.sh' trainer" \
+  > "${SUPERVISOR_DIR}/trainer_resume_view.log"
+ssh -o BatchMode=yes "root@${ROLLOUT_HOST}" \
+  "docker exec '${ROLLOUT_CONTAINER}' bash -lc \"bash '${CONTAINER_PROJECT_ROOT}/scripts/prepare_candidate_step120_resume_view.sh' rollout\"" \
+  > "${SUPERVISOR_DIR}/rollout_resume_view.log"
 
 npu_process_pattern='^\|[[:space:]]*[0-9]+[[:space:]]+[0-9]+[[:space:]]+\|[[:space:]]*[0-9]+[[:space:]]+\|[[:space:]]*[[:alnum:]_]'
 local_npu_busy() {
@@ -64,11 +90,22 @@ remote_npu_busy() {
   fi
   grep -Eq "${npu_process_pattern}" <<< "${output}"
 }
+local_host_memory_busy() {
+  local available_kb mlocked_kb
+  available_kb="$(awk '/^MemAvailable:/ {print $2}' /proc/meminfo 2>/dev/null || true)"
+  mlocked_kb="$(awk '/^Mlocked:/ {print $2}' /proc/meminfo 2>/dev/null || true)"
+  if [[ ! "${available_kb}" =~ ^[0-9]+$ || ! "${mlocked_kb}" =~ ^[0-9]+$ ]]; then
+    return 0
+  fi
+  printf '%s\n' "${available_kb}" > "${SUPERVISOR_DIR}/last_mem_available_kb"
+  printf '%s\n' "${mlocked_kb}" > "${SUPERVISOR_DIR}/last_mlocked_kb"
+  (( available_kb < MIN_HOST_MEM_AVAILABLE_KB || mlocked_kb > MAX_HOST_MLOCKED_KB ))
+}
 
-printf 'waiting_for_two_hosts_idle\n' > "${SUPERVISOR_DIR}/state"
+printf 'waiting_for_two_hosts_idle_and_host_memory\n' > "${SUPERVISOR_DIR}/state"
 idle_checks=0
 while (( idle_checks < REQUIRED_IDLE_CHECKS )); do
-  if local_npu_busy || remote_npu_busy; then
+  if local_npu_busy || remote_npu_busy || local_host_memory_busy; then
     idle_checks=0
   else
     idle_checks=$((idle_checks + 1))
