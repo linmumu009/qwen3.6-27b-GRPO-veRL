@@ -48,7 +48,7 @@ ssh -o BatchMode=yes "root@${ROLLOUT_HOST}" \
   "docker exec '${ROLLOUT_CONTAINER}' bash -lc \"${validate_command}\"" \
   > "${SUPERVISOR_DIR}/rollout_asset_validation.json"
 
-npu_process_pattern='^\|[[:space:]]*[0-9]+[[:space:]]+[0-9]+[[:space:]]+\|[[:space:]]*[0-9]+[[:space:]]+[[:alpha:]_]'
+npu_process_pattern='^\|[[:space:]]*[0-9]+[[:space:]]+[0-9]+[[:space:]]+\|[[:space:]]*[0-9]+[[:space:]]+\|[[:space:]]*[[:alnum:]_]'
 local_npu_busy() {
   npu-smi info | grep -Eq "${npu_process_pattern}"
 }

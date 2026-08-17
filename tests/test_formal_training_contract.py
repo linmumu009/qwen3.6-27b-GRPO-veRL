@@ -156,6 +156,7 @@ def test_candidate_128x5_contract_is_exact_and_relaxes_only_timeouts():
     assert "verify_checkpoint_integrity.py" in launcher
     assert "waiting_for_two_hosts_idle" in supervisor
     assert "REQUIRED_IDLE_CHECKS" in supervisor
+    assert "[[:space:]]+\\|[[:space:]]*[[:alnum:]_]" in supervisor
     assert "split_grpo_candidate_pool.py' validate" in supervisor
     assert "+actor_rollout_ref.rollout.multi_turn.agent_timeout_seconds" in base_runner
 
