@@ -130,6 +130,10 @@ def test_formal_qwen38_train70_script_freezes_shape_context_reward_and_final_onl
     assert "MAX_CONTEXT_TOKENS=53248" in script
     assert "AGENT_TIMEOUT_SECONDS=1800" in script
     assert "ROLLOUT_TP=4 ROLLOUT_NPUS=16" in script
+    assert "EMBEDDING_WEIGHT_MIB=2425" in script
+    assert "MIN_WEIGHT_BUCKET_MB=2560" in script
+    assert 'WEIGHT_BUCKET_MB="${WEIGHT_BUCKET_MB:-2560}"' in script
+    assert "WEIGHT_BUCKET_MB < MIN_WEIGHT_BUCKET_MB" in script
     assert "OPTIMIZER_CPU_OFFLOAD=false" in script
     assert "ENGINE_OPTIMIZER_OFFLOAD=false" in script
     assert "PI_REWARD_MODE=banded_v2" in script

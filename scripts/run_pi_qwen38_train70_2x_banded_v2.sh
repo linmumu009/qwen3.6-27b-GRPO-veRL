@@ -23,9 +23,17 @@ AGENT_TIMEOUT_SECONDS=1800
 PREWARM_GROUPS=4
 MAX_QUEUE_GROUPS=6
 MAX_QUEUE_TOKENS="$((MAX_QUEUE_GROUPS * RESPONSES_PER_GROUP * MAX_CONTEXT_TOKENS))"
+EMBEDDING_WEIGHT_MIB=2425
+MIN_WEIGHT_BUCKET_MB=2560
+WEIGHT_BUCKET_MB="${WEIGHT_BUCKET_MB:-2560}"
 
 if (( TOTAL_ROLLOUT_GROUPS != 140 || TOTAL_TRAINING_STEPS != 70 )); then
   printf 'unexpected Qwen3.8 train70 shape\n' >&2
+  exit 2
+fi
+if (( WEIGHT_BUCKET_MB < MIN_WEIGHT_BUCKET_MB )); then
+  printf 'weight sync bucket %s MiB cannot safely hold the %s MiB Qwen3.8 embedding tensor; require at least %s MiB\n' \
+    "${WEIGHT_BUCKET_MB}" "${EMBEDDING_WEIGHT_MIB}" "${MIN_WEIGHT_BUCKET_MB}" >&2
   exit 2
 fi
 python3 "${PROJECT_ROOT}/scripts/assemble_qwen38_train70.py" validate \
@@ -63,6 +71,8 @@ trainer_topology=tp4_pp2_cp2
 rollout_npus=16
 rollout_topology=tp4_dp4
 rollout_max_num_seqs_per_replica=16
+embedding_weight_mib=${EMBEDDING_WEIGHT_MIB}
+weight_sync_bucket_mib=${WEIGHT_BUCKET_MB}
 optimizer_offload=device_side
 checkpoint_frequency=${TOTAL_TRAINING_STEPS}
 kept_checkpoints=1
@@ -103,7 +113,7 @@ ROLLOUT_MAX_BATCHED_TOKENS=16384 \
 ROLLOUT_MAX_SEQS=16 \
 AGENT_WORKERS=12 \
 CONCURRENT_SAMPLES_PER_REPLICA=6 \
-WEIGHT_BUCKET_MB=512 \
+WEIGHT_BUCKET_MB="${WEIGHT_BUCKET_MB}" \
 OPTIMIZER_CPU_OFFLOAD=false \
 ENGINE_OPTIMIZER_OFFLOAD=false \
 bash "${PROJECT_ROOT}/scripts/run_pi_grpo_fully_async_tp4_pp2_cp2.sh" \

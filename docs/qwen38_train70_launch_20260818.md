@@ -59,8 +59,15 @@ rows are silently reused.
 
 ## Launch
 
-Formal run name: `llin-qwen38-grpo-train70-2x-banded-v2-20260818-01`.
-The unattended supervisor was started on machine 5 on 2026-08-18 and performs data,
-sandbox, model, idle-NPU, Ray topology and 1×16 HCCL fan-out gates before entering
-the training process. Sensitive Parquet files, prompts, gold values, SQL, task IDs,
-server paths, checkpoints and raw logs are not committed to Git.
+Attempt `llin-qwen38-grpo-train70-2x-banded-v2-20260818-01` passed data,
+sandbox, model, idle-NPU, Ray topology, 1×16 HCCL fan-out, trainer initialization
+and all four TP4 rollout-replica initialization gates. It then failed closed before
+the first rollout or optimizer update: the 512 MiB parameter-sync bucket could not
+hold Qwen3.8's indivisible 2,425 MiB BF16 embedding tensor.
+
+The formal wrapper now defaults to a 2,560 MiB bucket and refuses smaller values
+before starting distributed work. Attempt 01 remains immutable as an audit record;
+the clean retry uses run name `llin-qwen38-grpo-train70-2x-banded-v2-20260818-02`
+and never resumes from the empty failed directory. Sensitive Parquet files, prompts,
+gold values, SQL, task IDs, server paths, checkpoints and raw logs are not committed
+to Git.
