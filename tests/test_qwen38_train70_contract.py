@@ -9,9 +9,27 @@ import pyarrow.parquet as pq
 import pytest
 
 from scripts.assemble_qwen38_train70 import assemble, identity, validate
+from scripts.pi_runtime_preflight import validate_reward_entrypoint
 
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def test_reward_entrypoint_preflight_imports_and_requires_callable(tmp_path: Path) -> None:
+    package = tmp_path / "project" / "reward_pkg"
+    package.mkdir(parents=True)
+    (package / "__init__.py").write_text("", encoding="utf-8")
+    (package / "helper.py").write_text("VALUE = 1.0\n", encoding="utf-8")
+    module = package / "reward.py"
+    module.write_text(
+        "from reward_pkg.helper import VALUE\n\ndef expected_reward():\n    return VALUE\n",
+        encoding="utf-8",
+    )
+    result = validate_reward_entrypoint(module, "expected_reward")
+    assert result["reward_module_imported"] is True
+    assert result["reward_function_callable"] is True
+    with pytest.raises(AttributeError, match="missing or not callable"):
+        validate_reward_entrypoint(module, "missing_reward")
 
 
 def _rows() -> list[dict]:
@@ -164,3 +182,5 @@ def test_host_launcher_uses_only_m05_trainer_and_m06_rollout() -> None:
     assert "start_ray_qwen38_smoke_m05.sh" in script
     assert "start_ray_qwen38_smoke_m06.sh" in script
     assert "pi_runtime_preflight.py" in script
+    assert "--reward-path" in script
+    assert "--reward-function compute_score_banded_v2" in script

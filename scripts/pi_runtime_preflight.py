@@ -4,9 +4,11 @@
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import json
 from pathlib import Path, PurePosixPath
 import sqlite3
+import sys
 
 import pyarrow.parquet as pq
 
@@ -93,14 +95,56 @@ def validate_dataset_runtime_environments(dataset: Path, sandbox_root: Path) -> 
     }
 
 
+def validate_reward_entrypoint(module_path: Path, function_name: str) -> dict:
+    """Import the exact reward module and require a callable entry point."""
+
+    path = module_path.resolve(strict=True)
+    if not path.is_file():
+        raise FileNotFoundError("PI runtime preflight reward module is not a file")
+    if not function_name.isidentifier():
+        raise ValueError("PI runtime preflight reward function name is invalid")
+    spec = importlib.util.spec_from_file_location("llin_pi_runtime_reward_preflight", path)
+    if spec is None or spec.loader is None:
+        raise ImportError("PI runtime preflight could not load the reward module")
+    module = importlib.util.module_from_spec(spec)
+    project_root = str(path.parent.parent)
+    sys.path.insert(0, project_root)
+    try:
+        spec.loader.exec_module(module)
+    finally:
+        try:
+            sys.path.remove(project_root)
+        except ValueError:
+            pass
+    reward_fn = getattr(module, function_name, None)
+    if not callable(reward_fn):
+        raise AttributeError(
+            f"PI runtime preflight reward function is missing or not callable: {function_name}"
+        )
+    return {
+        "reward_module_imported": True,
+        "reward_function": function_name,
+        "reward_function_callable": True,
+        "reward_module_path_emitted": False,
+    }
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--dataset", type=Path, required=True)
     parser.add_argument("--sandbox-root", type=Path, required=True)
+    parser.add_argument("--reward-path", type=Path)
+    parser.add_argument("--reward-function")
     args = parser.parse_args()
+    if (args.reward_path is None) != (args.reward_function is None):
+        parser.error("--reward-path and --reward-function must be provided together")
+    result = validate_dataset_runtime_environments(args.dataset, args.sandbox_root)
+    if args.reward_path is not None:
+        result.update(validate_reward_entrypoint(args.reward_path, args.reward_function))
+        result["contract"] = "pi-agent-runtime-and-reward-preflight-v2"
     print(
         json.dumps(
-            validate_dataset_runtime_environments(args.dataset, args.sandbox_root),
+            result,
             ensure_ascii=False,
             indent=2,
         )

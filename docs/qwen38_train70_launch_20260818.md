@@ -67,7 +67,14 @@ hold Qwen3.8's indivisible 2,425 MiB BF16 embedding tensor.
 
 The formal wrapper now defaults to a 2,560 MiB bucket and refuses smaller values
 before starting distributed work. Attempt 01 remains immutable as an audit record;
-the clean retry uses run name `llin-qwen38-grpo-train70-2x-banded-v2-20260818-02`
-and never resumes from the empty failed directory. Sensitive Parquet files, prompts,
-gold values, SQL, task IDs, server paths, checkpoints and raw logs are not committed
-to Git.
+attempt `-02` proved the 2,560 MiB first parameter sync in 13.3 seconds, then failed
+closed during prewarm because the rollout host's stale reward module did not contain
+the `compute_score_banded_v2` entry point. Its queue remained empty and no optimizer
+update ran.
+
+The runtime preflight now imports the exact reward module and requires the configured
+entry point to be callable independently on both hosts before model or Ray startup.
+Attempt 01 and 02 remain immutable audit records; the clean retry uses run name
+`llin-qwen38-grpo-train70-2x-banded-v2-20260818-03` and never resumes from either
+failed directory. Sensitive Parquet files, prompts, gold values, SQL, task IDs,
+server paths, checkpoints and raw logs are not committed to Git.

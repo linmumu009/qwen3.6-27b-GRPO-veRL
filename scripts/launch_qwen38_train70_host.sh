@@ -61,7 +61,9 @@ docker exec "${TRAINER_CONTAINER}" bash -lc "${validate}" > "${SUPERVISOR_DIR}/t
 ssh -o BatchMode=yes "root@${ROLLOUT_HOST}" \
   "docker exec '${ROLLOUT_CONTAINER}' bash -lc \"${validate}\"" > "${SUPERVISOR_DIR}/rollout_data_validation.json"
 runtime_preflight="python3 '${CONTAINER_PROJECT_ROOT}/scripts/pi_runtime_preflight.py' \
-  --dataset '${POOL_DIR}/train70x2.sensitive.parquet' --sandbox-root /pi_sandbox"
+  --dataset '${POOL_DIR}/train70x2.sensitive.parquet' --sandbox-root /pi_sandbox \
+  --reward-path '${CONTAINER_PROJECT_ROOT}/llin_verl/pi_reward.py' \
+  --reward-function compute_score_banded_v2"
 docker exec "${TRAINER_CONTAINER}" bash -lc "${runtime_preflight}" \
   > "${SUPERVISOR_DIR}/trainer_runtime_preflight.json"
 ssh -o BatchMode=yes "root@${ROLLOUT_HOST}" \
