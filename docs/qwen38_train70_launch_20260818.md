@@ -78,3 +78,11 @@ Attempt 01 and 02 remain immutable audit records; the clean retry uses run name
 `llin-qwen38-grpo-train70-2x-banded-v2-20260818-03` and never resumes from either
 failed directory. Sensitive Parquet files, prompts, gold values, SQL, task IDs,
 server paths, checkpoints and raw logs are not committed to Git.
+
+Attempt 03 passed both-host runtime/reward preflight, Ray and 1×16 HCCL gates. Its
+initial 2,560 MiB parameter sync completed in 14.19 seconds. Four fully scored
+prewarm groups containing 302,909 queued tokens completed in 727.59 seconds; the
+first optimizer step then completed in 196.88 seconds, including 187.34 seconds of
+actor update. Parameter version 1 synchronized in 9.20 seconds and step 2 started
+with one scored group still queued. This proves the model, Agent tools, strict
+banded-v2 reward, queue, actor update and post-update weight sync end to end.
