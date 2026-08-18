@@ -1,0 +1,32 @@
+{
+  "audience": "product stakeholders",
+  "delivery_mode": "html",
+  "report_question": "老板 v15 轨迹数据生成中的语义不匹配是什么、为什么发生、有哪些表现、应如何整改，以及我们的新生成链改善了什么。",
+  "decision_useful_answer": "旧数据的核心问题是机械自洽替代了语义一致；旧 v15 有六类重叠语义预警和一类确认绑定冲突。旧数据不得直接训练，新链路必须坚持同源计划、语义锚点、SQL/gold 重放和训练禁用门。",
+  "scope_and_baseline": "以修正后的 v15 full276 全量审计为统计口径；绑定冲突回看原 full277；改进效果采用八沙箱 4000 条最终 API 版总审计。",
+  "required_structure_mapping": {
+    "Title": "老板 v15 轨迹数据的语义不匹配复盘",
+    "Executive Summary": "Executive Summary",
+    "Key findings with visual evidence": "问题、核心原因和 6+1 分类证据；使用精确表格",
+    "Recommended next steps": "建议与硬门",
+    "Further questions": "仍需验证的边界",
+    "Caveats and assumptions": "效果边界"
+  },
+  "chart_map": [
+    {
+      "section": "6 类可统计预警 + 1 类确认冲突",
+      "analytical_question": "命中数最高的三类审计触发器分别覆盖多少 v15 任务？",
+      "family": "Comparison & Ranking",
+      "chart_type": "ranked bar",
+      "fields": ["label", "affected_tasks"],
+      "supported_takeaway": "时间语义缺失和任务定义漂移覆盖最广；图只展示前三类，全部六类在正文中给出；类别重叠，不能相加为错误数。",
+      "palette_policy": "single-root preferred",
+      "delivery_artifact": "docs/boss_v15_semantic_mismatch_20260818.html"
+    }
+  ],
+  "source_notes": [
+    "旧 v15 六类 warning 数量来自保存的 full276 label_quality_audit；warning 是确定性审核触发器，不自动等同于逐条人工判错。",
+    "7 个示例均来自 v15 manifest/既有审计，但在报告中只做业务化转述，不写完整 SQL、gold 数值、轨迹或服务器路径。",
+    "新 4000 条的效果数字来自八沙箱总审计；结构门通过不替代独立人工语义审核或训练 canary。"
+  ]
+}

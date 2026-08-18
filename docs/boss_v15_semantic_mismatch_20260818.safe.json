@@ -1,0 +1,118 @@
+{
+  "contract": "boss-v15-semantic-mismatch-review-v1",
+  "date": "2026-08-18",
+  "scope": {
+    "original_dataset": "boss v15 DWH full277",
+    "audited_dataset": "boss v15 DWH full276 after removing the weaker duplicate-label task",
+    "audited_tasks": 276,
+    "mechanically_replayed_tasks": 276,
+    "tasks_with_at_least_one_semantic_warning": 271,
+    "warning_rate": 0.9818840579710145,
+    "warning_categories_are_overlapping": true
+  },
+  "warning_categories": [
+    {
+      "order": 1,
+      "code": "latest_instruction_without_temporal_sql",
+      "label": "时间语义未落实",
+      "affected_tasks": 219,
+      "rate": 0.7934782608695652,
+      "v15_example": "题面明确要求分析 2026-05-28 的时效表现，hidden SQL 却没有日期过滤，只按线路汇总延误数。",
+      "risk": "历史全量或任意日期结果会被奖励为指定日期、最新一期或当前结果。"
+    },
+    {
+      "order": 2,
+      "code": "later_task_definition_drift",
+      "label": "轨迹题意与后续任务定义漂移",
+      "affected_tasks": 192,
+      "rate": 0.6956521739130435,
+      "v15_example": "当前任务要求汇总最新一期服务质量关键指标；源轨迹实际完成月度六指标报告，而 hidden target 又缩成按承运商汇总单一准时率。",
+      "risk": "同一 task 身份的轨迹、当前 instruction 与奖励目标不是同一个问题。"
+    },
+    {
+      "order": 3,
+      "code": "broad_instruction_exact_hidden_target",
+      "label": "开放题意被收窄为唯一精确目标",
+      "affected_tasks": 137,
+      "rate": 0.4963768115942029,
+      "v15_example": "题面要求分析最新一期货损异常并做根因分析，还提到报告数据变化；hidden target 只按发件方汇总货损数量并取三行。",
+      "risk": "合理但不同的分析会被判错，碰巧命中窄表格的回答反而被奖励。"
+    },
+    {
+      "order": 4,
+      "code": "limit_without_order_by",
+      "label": "截取结果但没有确定排序",
+      "affected_tasks": 91,
+      "rate": 0.32971014492753625,
+      "v15_example": "题面要求比较最新一期质量异常在各时间段的声明价值差异；hidden SQL 按部门汇总后直接 LIMIT 3，没有 ORDER BY，也没有按时间段比较。",
+      "risk": "gold 依赖数据库偶然返回顺序，重放可成功但语义和结果都不稳定。"
+    },
+    {
+      "order": 5,
+      "code": "broad_instruction_reduced_to_row_count",
+      "label": "分析或建议任务退化为行数",
+      "affected_tasks": 28,
+      "rate": 0.10144927536231885,
+      "v15_example": "题面要求根据最新一期运单事件给出优化建议，并关注周报波动；hidden target 只是统计事件表共有多少行。",
+      "risk": "模型无需理解业务、趋势或异常，只报数据量就可能拿到满分。"
+    },
+    {
+      "order": 6,
+      "code": "numeric_gold_without_aggregation",
+      "label": "宽泛问题绑定单个原始或极值数值",
+      "affected_tasks": 21,
+      "rate": 0.07608695652173914,
+      "v15_example": "题面询问最新一期温度记录的业务痛点和优化方法；hidden target 只取温度字段最大的一条记录作为唯一数值答案。",
+      "risk": "一个极值被错误当作完整业务诊断，解释与建议部分无法被正确评价。"
+    }
+  ],
+  "confirmed_binding_conflict": {
+    "label": "相同 instruction 绑定不同 gold",
+    "conflicting_instruction_pairs_in_full277": 1,
+    "involved_tasks": 2,
+    "v15_example": "同一句“汇总服务质量最新一期关键指标，出报告”一条绑定承运商投诉率前五，另一条绑定承运商准时率前三；两条都没有最新一期过滤。",
+    "disposition": "保留相对更接近题意的一条、删除另一条后，full276 的 instruction-to-gold 冲突数降为 0；保留项仍不是人工语义金标准。"
+  },
+  "root_causes": [
+    "生成与验收以 verification SQL 能执行、结果非空且等于 expected value 为主，证明的是数据库机械自洽，不是 instruction 与 SQL/gold 语义一致。",
+    "自然语言题意、源轨迹、后续任务定义和 hidden target 可以分别变化，缺少不可分割的语义合同与版本绑定。",
+    "开放式业务请求被自动映射为窄查询，但没有显式记录指标、时间范围、过滤、分组、排序、Top-K 和输出形态。",
+    "生成后缺少 fail-closed 语义门：时间缺失、无序 LIMIT、非聚合数值、行数替代分析和 instruction-to-gold 冲突未在 rollout 前阻断。"
+  ],
+  "improvements": [
+    "改为 EvidencePlan/QueryPlan 同源生成：先从真实数据库确定月份、过滤值、分组维度、指标、排序和输出，再由同一计划生成 SQL、hidden gold 和题面草稿。",
+    "API 只负责把合成业务草稿改写得像人说话；时间、筛选、分组、指标、方向和前五等语义锚点必须逐字保留，缺失即拒绝。",
+    "每条 SQL 在对应 SQLite 重放并与完整 hidden gold 比较；每个沙箱内 task、instruction 和 SQL 必须各自唯一。",
+    "难度从旧 Band 5 起步，按必要证据链、跨期比较、流程诊断、基线归因和经营权衡分五级，不再用表面 JOIN 数量代替难度。",
+    "所有新任务默认 training_allowed=false；只有采样产生奖励方差并通过独立语义审核后才允许进入训练。"
+  ],
+  "improved_results": {
+    "sandboxes": 8,
+    "tasks": 4000,
+    "tasks_per_sandbox": 500,
+    "levels_per_sandbox": 5,
+    "tasks_per_level_per_sandbox": 100,
+    "sql_gold_replay_passed": 4000,
+    "semantic_anchor_passed": 4000,
+    "api_naturalized_and_validated": 4000,
+    "training_allowed": false,
+    "interpretation": "这些结果证明新管线的结构化语义合同、执行重放和改写保真门正常；它们不等于 4000 条已经完成人工语义批准，也不等于 GRPO 已经提升。"
+  },
+  "recommended_gates": [
+    "旧 v15 数据只作历史证据或逐条修复来源，不得因 SQL 可执行就直接训练。",
+    "任何题意改写必须触发 SQL、gold 和语义合同的整组再验证；禁止只改 instruction 或只改答案。",
+    "将六类预警、instruction-to-gold 唯一性、SQL 重放和语义锚点完整性设为生成时硬门。",
+    "rollout 前做分层人工语义审核；mixed 只代表有学习信号，不代表标签正确。",
+    "训练前继续保持禁训标记，并用小规模 canary 同时观察老板 reward、严格最终结果正确率和人工语义正确率。"
+  ],
+  "sources": [
+    "docs/training_data_provenance_quality_audit_20260806.artifact.json",
+    "scripts/audit_boss_dataset_labels.py",
+    "scripts/audit_formal_instruction_gold_alignment.py",
+    "docs/open_multisandbox_dwh_generation_strategy_20260815.md",
+    "scripts/generate_open_multisandbox_dwh.py",
+    "scripts/rewrite_open_multisandbox_dwh_instructions_api.py",
+    "scripts/audit_open_multisandbox_dwh.py"
+  ],
+  "contains_full_prompts_sql_gold_values_tool_outputs_or_server_paths": false
+}
