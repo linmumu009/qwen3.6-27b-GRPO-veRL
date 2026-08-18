@@ -7,14 +7,17 @@ from llin_verl.pi_reward import (
     boss_reward_components,
     compute_score,
     compute_score_banded_v1,
+    compute_score_banded_v2,
     compute_score_dense30,
     contains_expected_number,
     dense_final_answer_correctness,
+    execute_readonly_sql,
     extract_final_assistant_answer,
     extract_selects,
     final_answer_correct,
     rows_contain_unique_projection,
     safe_projection_sql,
+    strict_table_answer_match,
 )
 from llin_verl.pi_tool_contract import command_is_safe
 
@@ -25,6 +28,16 @@ def make_database(root: Path) -> None:
     connection = sqlite3.connect(database)
     connection.execute("create table fact_quality_incident(value real)")
     connection.executemany("insert into fact_quality_incident values (?)", [(600.0,), (21.62,)])
+    connection.commit()
+    connection.close()
+
+
+def make_table_database(root: Path) -> None:
+    database = root / "table" / "version" / "logistics.sqlite"
+    database.parent.mkdir(parents=True)
+    connection = sqlite3.connect(database)
+    connection.execute("create table fact_rank(category text, value real)")
+    connection.executemany("insert into fact_rank values (?, ?)", [("A", 10.0), ("B", 8.0)])
     connection.commit()
     connection.close()
 
@@ -147,6 +160,22 @@ def test_safe_projection_preserves_tables_aggregates_and_date_filter():
     assert safe_projection_sql(candidate.replace("SUM(dwell_minutes)", "SUM(other_value)"), gold, {"fact_waybill_event"}) is False
 
 
+def test_readonly_sql_has_a_real_execution_deadline(tmp_path):
+    database = tmp_path / "deadline.sqlite"
+    sqlite3.connect(database).close()
+    expensive = (
+        "WITH RECURSIVE seq(x) AS (SELECT 1 UNION ALL SELECT x + 1 FROM seq WHERE x < 100000000) "
+        "SELECT SUM(x) FROM seq"
+    )
+
+    try:
+        execute_readonly_sql(database, expensive, query_timeout_seconds=0.001)
+    except sqlite3.OperationalError as exc:
+        assert "interrupt" in str(exc).casefold()
+    else:
+        raise AssertionError("expensive verifier SQL exceeded its deadline without interruption")
+
+
 def test_wrong_answer_gets_evidence_progress_but_not_accuracy(tmp_path, monkeypatch):
     make_database(tmp_path)
     monkeypatch.setenv("PI_AGENT_SANDBOX_LOWER", str(tmp_path))
@@ -242,6 +271,98 @@ def test_boss_number_match_allows_extra_values_but_strict_table_answer_does_not(
 
     assert boss_numbers_match("复核结果包括 10、20，另外观察到 30。", expected) is True
     assert final_answer_correct("复核结果包括 10、20，另外观察到 30。", "table", expected, 1e-3, 1e-5) is False
+
+
+def test_strict_table_answer_binds_labels_values_order_and_cardinality():
+    expected = [
+        {"category": "华东区", "value": 10},
+        {"category": "华南区", "value": 8},
+    ]
+    correct = """最终结果：
+
+| 排名 | 类别 | 数值 |
+| ---: | --- | ---: |
+| 1 | 华东区 | 10 |
+| 2 | 华南区 | 8 |
+"""
+
+    assert final_answer_correct(correct, "table", expected, 1e-3, 1e-5) is True
+    assert final_answer_correct(correct.replace("华东区 | 10", "华东区 | 8").replace("华南区 | 8", "华南区 | 10"), "table", expected, 1e-3, 1e-5) is False
+    assert final_answer_correct(correct.replace("| 1 | 华东区 | 10 |\n| 2 | 华南区 | 8 |", "| 1 | 华南区 | 8 |\n| 2 | 华东区 | 10 |"), "table", expected, 1e-3, 1e-5) is False
+    assert final_answer_correct(correct + "| 3 | 华北区 | 999 |\n", "table", expected, 1e-3, 1e-5) is False
+    assert final_answer_correct(correct.replace("| 1 | 华东区 | 10 |", "| 0 | 华北区 | 999 |\n| 1 | 华东区 | 10 |"), "table", expected, 1e-3, 1e-5) is False
+    assert final_answer_correct(correct.replace("| 2 | 华南区 | 8 |", "| 2 | 华东区 | 8 |"), "table", expected, 1e-3, 1e-5) is False
+
+
+def test_strict_table_answer_supports_json_and_plain_ranked_lists():
+    expected = [{"category": "A", "value": 10}, {"category": "B", "value": 8}]
+    json_answer = '结果为：[{"rank":1,"category":"A","value":10},{"rank":2,"category":"B","value":8}]'
+    plain_answer = "最终排名：\n1. A：10\n2. B：8"
+
+    assert strict_table_answer_match(json_answer, expected, 1e-3, 1e-5) == (True, "json", 2)
+    assert strict_table_answer_match(plain_answer, expected, 1e-3, 1e-5) == (True, "plain", 2)
+
+    ascii_answer = "+----------+-------+\n| category | value |\n+----------+-------+\n| A        | 10    |\n| B        | 8     |\n+----------+-------+"
+    assert strict_table_answer_match(ascii_answer, expected, 1e-3, 1e-5) == (True, "markdown", 2)
+
+
+def test_strict_table_answer_finds_one_consistent_value_column_in_wide_markdown():
+    expected = [{"category": "A", "value": 10}, {"category": "B", "value": 8}]
+    answer = """| 排名 | 类别 | 样本数 | 指标值 | 同比变化 |
+|---:|---|---:|---:|---:|
+| 1 | A | 120 | 10 | 3.5 |
+| 2 | B | 110 | 8 | -1.2 |"""
+
+    assert strict_table_answer_match(answer, expected, 1e-3, 1e-5) == (True, "markdown", 2)
+
+    with_units = answer.replace("| 10 |", "| 10 件 |", 1).replace("| 8 |", "| 8 件 |", 1)
+    assert strict_table_answer_match(with_units, expected, 1e-3, 1e-5) == (True, "markdown", 2)
+
+
+def test_strict_table_answer_rejects_previous_reward_hacks():
+    expected = [{"category": "A", "value": 10}, {"category": "B", "value": 20}]
+
+    assert final_answer_correct("A=20\nB=10", "table", expected, 1e-3, 1e-5) is False
+    assert final_answer_correct("1. B=20\n2. A=10", "table", expected, 1e-3, 1e-5) is False
+    assert final_answer_correct("A=10\nB=20\nC=999", "table", expected, 1e-3, 1e-5) is False
+    assert final_answer_correct("A=10 和 999\nB=20", "table", expected, 1e-3, 1e-5) is False
+    assert final_answer_correct("Alpha=10\nBeta=20", "table", expected, 1e-3, 1e-5) is False
+
+
+def test_banded_reward_cannot_promote_swapped_table_rows(tmp_path, monkeypatch):
+    make_table_database(tmp_path)
+    monkeypatch.setenv("PI_AGENT_SANDBOX_LOWER", str(tmp_path))
+    ground_truth = {
+        "environment_id": "table/version",
+        "answer_type": "table",
+        "expected_value": [{"category": "A", "value": 10}, {"category": "B", "value": 8}],
+        "verification_sql": "SELECT category, value FROM fact_rank ORDER BY value DESC",
+        "required_tables": ["fact_rank"],
+    }
+    tool_evidence = evidence(
+        'sqlite3 /workspace/logistics.sqlite "SELECT category, value FROM fact_rank ORDER BY value DESC"'
+    )
+
+    swapped = compute_score_banded_v2(
+        "llin_pi_dwh_v2",
+        "最终结果：\n| 类别 | 数值 |\n|---|---:|\n| A | 8 |\n| B | 10 |",
+        ground_truth,
+        tool_evidence,
+    )
+    correct = compute_score_banded_v2(
+        "llin_pi_dwh_v2",
+        "最终结果：\n| 类别 | 数值 |\n|---|---:|\n| A | 10 |\n| B | 8 |",
+        ground_truth,
+        tool_evidence,
+    )
+
+    assert swapped["final_answer_correct"] == 0.0
+    assert swapped["sql_evidence_correct"] == 1.0
+    assert swapped["score"] <= 0.5
+    assert correct["final_answer_correct"] == 1.0
+    assert correct["final_answer_match_mode"] == "markdown"
+    assert correct["strict_table_rows_parsed"] == 2.0
+    assert correct["score"] >= 0.8
 
 
 def test_boss_reward_components_port_upstream_result_process_efficiency_formula():
@@ -386,4 +507,27 @@ def test_banded_entry_point_is_pinned_and_preserves_hard_gate(tmp_path, monkeypa
     )
 
     assert result["banded_reward_enabled"] == 1.0
+    assert result["reward_contract"] == "banded-v1"
     assert result["score"] >= 0.8
+
+
+def test_banded_v2_entry_point_is_pinned_to_strict_table_judging(tmp_path, monkeypatch):
+    make_table_database(tmp_path)
+    monkeypatch.setenv("PI_AGENT_SANDBOX_LOWER", str(tmp_path))
+    result = compute_score_banded_v2(
+        "llin_pi_dwh_v2",
+        "A=8\nB=10",
+        {
+            "environment_id": "table/version",
+            "answer_type": "table",
+            "expected_value": [{"category": "A", "value": 10}, {"category": "B", "value": 8}],
+            "verification_sql": "SELECT category, value FROM fact_rank ORDER BY value DESC",
+            "required_tables": ["fact_rank"],
+        },
+        evidence('sqlite3 /workspace/logistics.sqlite "SELECT category, value FROM fact_rank ORDER BY value DESC"'),
+    )
+
+    assert result["banded_reward_enabled"] == 1.0
+    assert result["reward_contract"] == "banded-v2-strict-table-v1"
+    assert result["final_answer_correct"] == 0.0
+    assert result["score"] <= 0.5

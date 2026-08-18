@@ -27,7 +27,7 @@ assistant
 
 def test_outcome_shadow_accepts_table_labels_and_values():
     result = score_final_outcome(
-        "assistant\n最终：A 为 10，B 为 20。",
+        "assistant\n最终：\n| 类别 | 数值 |\n|---|---:|\n| A | 10 |\n| B | 20 |",
         {
             "answer_type": "table",
             "expected_value_json": '[{"category":"A","value":10},{"category":"B","value":20}]',
@@ -36,7 +36,17 @@ def test_outcome_shadow_accepts_table_labels_and_values():
     assert result["outcome_only_score"] == 1
 
 
+def test_outcome_shadow_rejects_swapped_table_bindings():
+    result = score_final_outcome(
+        "assistant\n最终：\n| 类别 | 数值 |\n|---|---:|\n| A | 20 |\n| B | 10 |",
+        {
+            "answer_type": "table",
+            "expected_value_json": '[{"category":"A","value":10},{"category":"B","value":20}]',
+        },
+    )
+    assert result["outcome_only_score"] == 0
+
+
 def test_expected_value_is_required():
     with pytest.raises(ValueError, match="expected final value"):
         expected_value_from_ground_truth({"answer_type": "numeric"})
-

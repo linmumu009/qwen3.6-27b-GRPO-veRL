@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 from collections import Counter
+from functools import lru_cache
 import json
 import math
 import os
 import re
 import sqlite3
+import time
 from pathlib import Path
 from typing import Any, Iterable
 from urllib.parse import quote
@@ -60,6 +62,20 @@ _SQL_KEYWORDS = {
     "time",
     "true",
 }
+
+_TABLE_LABEL_KEYS = {"category", "date", "label", "name", "类别", "分类", "日期", "名称", "项目"}
+_TABLE_VALUE_KEYS = {"value", "metric", "amount", "count", "score", "数值", "指标值", "金额", "数量", "结果"}
+_TABLE_RANK_KEYS = {"rank", "ranking", "序号", "排名", "名次"}
+_MARKDOWN_SEPARATOR_RE = re.compile(r"^:?-{2,}:?$")
+_ASCII_TABLE_BORDER_RE = re.compile(r"^\s*\+(?:[-=:]+\+)+\s*$")
+_PLAIN_TABLE_ROW_RE = re.compile(
+    r"^\s*(?:(?P<rank>\d+)\s*[.)、]\s*|[-*+]\s*)?"
+    r"(?P<label>.+?)\s*(?:[:：=]|\s+[-—]\s+)\s*(?P<value>.+?)\s*$"
+)
+_PLAIN_RANKED_ROW_RE = re.compile(
+    r"^\s*(?P<rank>\d+)\s*[.)、]\s*(?P<label>.+?)\s+"
+    r"(?P<value>[-+]?(?:\d+(?:,\d{3})*(?:\.\d+)?|\.\d+)(?:[eE][-+]?\d+)?(?:\s*[%％])?)\s*$"
+)
 
 
 def extract_numbers(text: str) -> list[float]:
@@ -138,20 +154,70 @@ def _database_path(sandbox_root: str | Path, environment_id: str) -> Path:
     return database
 
 
-def execute_readonly_sql(database: Path, sql: str, max_rows: int = 10_000) -> list[tuple[Any, ...]]:
+def execute_readonly_sql(
+    database: Path,
+    sql: str,
+    max_rows: int = 10_000,
+    query_timeout_seconds: float = 5.0,
+) -> list[tuple[Any, ...]]:
     if not re.match(r"^\s*(?:SELECT|WITH)\b", sql or "", re.IGNORECASE):
         raise ValueError("only SELECT/WITH verifier SQL is allowed")
+    if query_timeout_seconds <= 0:
+        raise ValueError("query_timeout_seconds must be positive")
     uri = f"file:{quote(database.as_posix(), safe='/')}?mode=ro&immutable=1"
     connection = sqlite3.connect(uri, uri=True, timeout=5.0)
+    deadline = time.monotonic() + query_timeout_seconds
     try:
         connection.execute("PRAGMA query_only=ON")
+        connection.set_progress_handler(lambda: int(time.monotonic() >= deadline), 10_000)
         cursor = connection.execute(sql)
         rows = cursor.fetchmany(max_rows + 1)
         if len(rows) > max_rows:
             raise ValueError("SQL evidence exceeds max_rows")
         return rows
     finally:
+        connection.set_progress_handler(None, 0)
         connection.close()
+
+
+@lru_cache(maxsize=2048)
+def _cached_gold_rows(
+    database_path: str,
+    database_mtime_ns: int,
+    database_size: int,
+    sql: str,
+    max_rows: int,
+    query_timeout_seconds: float,
+) -> tuple[tuple[Any, ...], ...]:
+    del database_mtime_ns, database_size
+    return tuple(
+        execute_readonly_sql(
+            Path(database_path),
+            sql,
+            max_rows=max_rows,
+            query_timeout_seconds=query_timeout_seconds,
+        )
+    )
+
+
+def execute_cached_gold_sql(
+    database: Path,
+    sql: str,
+    *,
+    max_rows: int = 10_000,
+    query_timeout_seconds: float = 5.0,
+) -> list[tuple[Any, ...]]:
+    stat = database.stat()
+    return list(
+        _cached_gold_rows(
+            str(database),
+            stat.st_mtime_ns,
+            stat.st_size,
+            sql,
+            max_rows,
+            query_timeout_seconds,
+        )
+    )
 
 
 def _values_equal(left: Any, right: Any, abs_tol: float, rel_tol: float) -> bool:
@@ -343,23 +409,277 @@ def sql_evidence_mode(
     return "none"
 
 
+def _normalize_table_text(value: Any) -> str:
+    text = str(value).strip()
+    text = re.sub(r"^[`*_~\"']+|[`*_~\"']+$", "", text)
+    return " ".join(text.split()).casefold()
+
+
+def _single_finite_number(value: Any) -> float | None:
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, (int, float)):
+        number = float(value)
+        return number if math.isfinite(number) else None
+    text = str(value).strip()
+    matches = list(_NUMBER_RE.finditer(text))
+    if len(matches) != 1:
+        return None
+    residue = (text[: matches[0].start()] + text[matches[0].end() :]).strip()
+    residue = re.sub(r"^[￥¥$€£]\s*|\s*[%％]$", "", residue).strip()
+    residue = re.sub(r"^[`*_~()（）\[\]{}\s]+|[`*_~()（）\[\]{}\s]+$", "", residue)
+    if residue:
+        return None
+    try:
+        number = float(matches[0].group(0).replace(",", ""))
+    except ValueError:
+        return None
+    return number if math.isfinite(number) else None
+
+
+def _single_table_cell_number(value: Any) -> float | None:
+    """Return the only number in a table cell while permitting unit text."""
+    if isinstance(value, (int, float)) and not isinstance(value, bool):
+        number = float(value)
+        return number if math.isfinite(number) else None
+    matches = list(_NUMBER_RE.finditer(str(value)))
+    if len(matches) != 1:
+        return None
+    try:
+        number = float(matches[0].group(0).replace(",", ""))
+    except ValueError:
+        return None
+    return number if math.isfinite(number) else None
+
+
+def _integer_rank(value: Any) -> int | None:
+    number = _single_finite_number(value)
+    if number is None or not number.is_integer() or number < 1:
+        return None
+    return int(number)
+
+
+def _json_table_candidates(answer: str) -> list[tuple[str, list[tuple[str, float, int | None]]]]:
+    decoder = json.JSONDecoder()
+    payloads: list[Any] = []
+    seen_spans: set[tuple[int, int]] = set()
+    for start, character in enumerate(answer):
+        if character not in "[{":
+            continue
+        try:
+            payload, length = decoder.raw_decode(answer[start:])
+        except json.JSONDecodeError:
+            continue
+        span = (start, start + length)
+        if span not in seen_spans:
+            seen_spans.add(span)
+            payloads.append(payload)
+        if len(payloads) >= 32:
+            break
+
+    output: list[tuple[str, list[tuple[str, float, int | None]]]] = []
+    for payload in payloads:
+        rows = payload
+        if isinstance(payload, dict):
+            rows = next(
+                (payload.get(key) for key in ("rows", "data", "result", "results") if isinstance(payload.get(key), list)),
+                None,
+            )
+        if not isinstance(rows, list) or not rows or not all(isinstance(item, dict) for item in rows):
+            continue
+        parsed: list[tuple[str, float, int | None]] = []
+        for item in rows:
+            folded = {_normalize_table_text(key): value for key, value in item.items()}
+            label = next((folded[key] for key in _TABLE_LABEL_KEYS if key in folded), None)
+            value = next((folded[key] for key in _TABLE_VALUE_KEYS if key in folded), None)
+            rank = next((_integer_rank(folded[key]) for key in _TABLE_RANK_KEYS if key in folded), None)
+            number = _single_finite_number(value)
+            normalized_label = _normalize_table_text(label) if label is not None else ""
+            if not normalized_label or number is None:
+                parsed = []
+                break
+            parsed.append((normalized_label, number, rank))
+        if parsed:
+            output.append(("json", parsed))
+    return output
+
+
+def _markdown_cells(line: str) -> list[str]:
+    cells = [cell.strip() for cell in line.strip().split("|")]
+    if cells and not cells[0]:
+        cells.pop(0)
+    if cells and not cells[-1]:
+        cells.pop()
+    return cells
+
+
+def _markdown_table_candidates(
+    answer: str,
+    expected_rows: list[tuple[str, float]],
+    abs_tol: float,
+    rel_tol: float,
+) -> list[tuple[str, list[tuple[str, float, int | None]]]]:
+    blocks: list[list[str]] = []
+    current: list[str] = []
+    for line in answer.splitlines() + [""]:
+        if "|" in line or _ASCII_TABLE_BORDER_RE.fullmatch(line):
+            current.append(line)
+        elif current:
+            blocks.append(current)
+            current = []
+
+    output: list[tuple[str, list[tuple[str, float, int | None]]]] = []
+    expected_by_label = dict(expected_rows)
+    for block in blocks:
+        matrix = [_markdown_cells(line) for line in block]
+        matched: list[tuple[int, int, str, list[str]]] = []
+        for line_index, cells in enumerate(matrix):
+            if len(cells) < 2 or all(_MARKDOWN_SEPARATOR_RE.fullmatch(cell.replace(" ", "")) for cell in cells):
+                continue
+            label_hits = [
+                (column, folded)
+                for column, cell in enumerate(cells)
+                if (folded := _normalize_table_text(cell)) in expected_by_label
+            ]
+            if len(label_hits) == 1:
+                matched.append((line_index, label_hits[0][0], label_hits[0][1], cells))
+        if len(matched) != len(expected_rows):
+            continue
+        if [label for _, _, label, _ in matched] != [label for label, _ in expected_rows]:
+            continue
+        label_columns = {column for _, column, _, _ in matched}
+        if len(label_columns) != 1:
+            continue
+        label_column = next(iter(label_columns))
+        widths = {len(cells) for _, _, _, cells in matched}
+        if len(widths) != 1:
+            continue
+        width = next(iter(widths))
+        value_columns: list[int] = []
+        for column in range(width):
+            if column == label_column:
+                continue
+            actual_values = [_single_table_cell_number(cells[column]) for _, _, _, cells in matched]
+            if all(value is not None for value in actual_values) and all(
+                math.isclose(float(actual), expected, abs_tol=abs_tol, rel_tol=rel_tol)
+                for actual, (_, expected) in zip(actual_values, expected_rows, strict=True)
+            ):
+                value_columns.append(column)
+        if len(value_columns) != 1:
+            continue
+        value_column = value_columns[0]
+        matched_indices = [line_index for line_index, _, _, _ in matched]
+        if matched_indices != list(range(matched_indices[0], matched_indices[0] + len(matched_indices))):
+            continue
+        extra_data_row = False
+        for line_index, cells in enumerate(matrix):
+            if line_index in matched_indices or len(cells) != width:
+                continue
+            folded_cells = {_normalize_table_text(cell) for cell in cells}
+            if folded_cells & _TABLE_LABEL_KEYS and folded_cells & _TABLE_VALUE_KEYS:
+                continue
+            label_cell = _normalize_table_text(cells[label_column])
+            value_cell = _single_table_cell_number(cells[value_column])
+            if label_cell and value_cell is not None:
+                extra_data_row = True
+                break
+        if extra_data_row:
+            continue
+        rank_column = next(
+            (
+                column
+                for cells in matrix[: matched_indices[0]]
+                for column, cell in enumerate(cells)
+                if column < width and _normalize_table_text(cell) in _TABLE_RANK_KEYS
+            ),
+            None,
+        )
+        parsed: list[tuple[str, float, int | None]] = []
+        for _, _, label, cells in matched:
+            rank = _integer_rank(cells[rank_column]) if rank_column is not None else None
+            parsed.append((label, float(_single_table_cell_number(cells[value_column])), rank))
+        output.append(("markdown", parsed))
+    return output
+
+
+def _plain_table_candidates(answer: str) -> list[tuple[str, list[tuple[str, float, int | None]]]]:
+    blocks: list[list[tuple[str, float, int | None]]] = []
+    current: list[tuple[str, float, int | None]] = []
+    for line in answer.splitlines() + [""]:
+        match = _PLAIN_TABLE_ROW_RE.fullmatch(line) or _PLAIN_RANKED_ROW_RE.fullmatch(line)
+        row: tuple[str, float, int | None] | None = None
+        if match:
+            label = _normalize_table_text(match.group("label"))
+            value = _single_finite_number(match.group("value"))
+            rank = _integer_rank(match.group("rank")) if match.group("rank") else None
+            if label and value is not None:
+                row = (label, value, rank)
+        if row is not None:
+            current.append(row)
+        elif current:
+            blocks.append(current)
+            current = []
+    return [("plain", rows) for rows in blocks if rows]
+
+
+def strict_table_answer_match(
+    answer: str,
+    expected: list[Any],
+    abs_tol: float,
+    rel_tol: float,
+) -> tuple[bool, str, int]:
+    """Match an ordered category/value table without independent token hits.
+
+    Rows must be structurally parseable as JSON, Markdown, or a contiguous
+    plain-text list.  Cardinality, row order, label/value binding, duplicate
+    labels, and optional explicit ranks are checked together.  This prevents a
+    number dump or a permutation of the gold rows from entering a correct band.
+    """
+    expected_rows: list[tuple[str, float]] = []
+    for item in expected:
+        if not isinstance(item, dict):
+            return False, "invalid_gold", 0
+        label = item.get("category", item.get("date"))
+        value = _single_finite_number(item.get("value"))
+        normalized_label = _normalize_table_text(label) if label is not None else ""
+        if not normalized_label or value is None:
+            return False, "invalid_gold", 0
+        expected_rows.append((normalized_label, value))
+    if not expected_rows or len({label for label, _ in expected_rows}) != len(expected_rows):
+        return False, "invalid_gold", 0
+
+    candidates = [
+        *_json_table_candidates(answer),
+        *_markdown_table_candidates(answer, expected_rows, abs_tol, rel_tol),
+        *_plain_table_candidates(answer),
+    ]
+    largest = max((len(rows) for _, rows in candidates), default=0)
+    for mode, rows in candidates:
+        if len(rows) != len(expected_rows):
+            continue
+        labels = [label for label, _, _ in rows]
+        if len(set(labels)) != len(labels):
+            continue
+        ranks = [rank for _, _, rank in rows]
+        if any(rank is not None for rank in ranks) and ranks != list(range(1, len(rows) + 1)):
+            continue
+        if all(
+            actual_label == expected_label
+            and math.isclose(actual_value, expected_value, abs_tol=abs_tol, rel_tol=rel_tol)
+            for (actual_label, actual_value, _), (expected_label, expected_value) in zip(rows, expected_rows, strict=True)
+        ):
+            return True, mode, len(rows)
+    return False, "none", largest
+
+
 def _table_answer_correct(
     answer: str,
     expected: list[Any],
     abs_tol: float,
     rel_tol: float,
 ) -> bool:
-    folded = answer.casefold()
-    for item in expected:
-        if not isinstance(item, dict):
-            return False
-        label = item.get("category", item.get("date"))
-        if label is not None and str(label).strip().casefold() not in folded:
-            return False
-        value = item.get("value")
-        if value is not None and not contains_expected_number(answer, float(value), abs_tol, rel_tol):
-            return False
-    return bool(expected)
+    matched, _, _ = strict_table_answer_match(answer, expected, abs_tol, rel_tol)
+    return matched
 
 
 def final_answer_correct(
@@ -603,6 +923,7 @@ def compute_score(
     extra_info: dict[str, Any],
     _dense_weight_override: float | None = None,
     _banded_reward_override: bool | None = None,
+    _reward_contract_override: str | None = None,
     **_: Any,
 ) -> dict[str, Any]:
     """Return the boss-primary online reward and strict guardrail metrics.
@@ -639,16 +960,27 @@ def compute_score(
             expected_value = json.loads(str(ground_truth["expected_value_json"]))
         except json.JSONDecodeError:
             expected_value = None
-    answer_ok = final_answer_correct(
-        answer,
-        str(ground_truth.get("answer_type") or ""),
-        expected_value,
-        abs_tol,
-        rel_tol,
-    )
+    answer_type = str(ground_truth.get("answer_type") or "")
+    final_answer_match_mode = "numeric" if answer_type == "numeric" else "none"
+    strict_table_rows_parsed = 0
+    if answer_type == "table" and isinstance(expected_value, list):
+        answer_ok, final_answer_match_mode, strict_table_rows_parsed = strict_table_answer_match(
+            answer,
+            expected_value,
+            abs_tol,
+            rel_tol,
+        )
+    else:
+        answer_ok = final_answer_correct(
+            answer,
+            answer_type,
+            expected_value,
+            abs_tol,
+            rel_tol,
+        )
     dense_correctness = dense_final_answer_correctness(
         answer,
-        str(ground_truth.get("answer_type") or ""),
+        answer_type,
         expected_value,
         abs_tol,
         rel_tol,
@@ -658,19 +990,39 @@ def compute_score(
     evidence_mode = "none"
     verifier_error = ""
     gold_sql_verified = False
+    sql_evidence_queries_checked = 0
+    sql_evidence_queries_truncated = 0
     try:
+        try:
+            sql_query_timeout_seconds = float(os.environ.get("PI_REWARD_SQL_TIMEOUT_SECONDS", "5"))
+            max_evidence_selects = int(os.environ.get("PI_REWARD_MAX_EVIDENCE_SELECTS", "32"))
+        except ValueError as exc:
+            raise ValueError("PI reward SQL timeout/select limits must be numeric") from exc
+        if sql_query_timeout_seconds <= 0 or max_evidence_selects <= 0:
+            raise ValueError("PI reward SQL timeout/select limits must be positive")
         database = _database_path(
             os.environ.get("PI_AGENT_SANDBOX_LOWER", "/pi_sandbox"),
             str(ground_truth["environment_id"]),
         )
         verification_sql = str(ground_truth["verification_sql"])
-        expected_rows = execute_readonly_sql(database, verification_sql)
+        expected_rows = execute_cached_gold_sql(
+            database,
+            verification_sql,
+            query_timeout_seconds=sql_query_timeout_seconds,
+        )
         gold_sql_verified = bool(expected_rows)
-        for sql in selects:
+        selected_evidence_sql = selects[-max_evidence_selects:]
+        sql_evidence_queries_truncated = max(0, len(selects) - len(selected_evidence_sql))
+        for sql in selected_evidence_sql:
+            sql_evidence_queries_checked += 1
             try:
                 mode = sql_evidence_mode(
                     sql,
-                    execute_readonly_sql(database, sql),
+                    execute_readonly_sql(
+                        database,
+                        sql,
+                        query_timeout_seconds=sql_query_timeout_seconds,
+                    ),
                     verification_sql,
                     expected_rows,
                     required_tables,
@@ -717,7 +1069,7 @@ def compute_score(
         raise ValueError("PI_DENSE_CORRECTNESS_WEIGHT must be in [0, 1]")
     blended_score = (1.0 - dense_weight) * base_score + dense_weight * dense_correctness
     if _banded_reward_override is None:
-        banded_reward_enabled = os.environ.get("PI_REWARD_MODE", "blend") == "banded_v1"
+        banded_reward_enabled = os.environ.get("PI_REWARD_MODE", "blend") in {"banded_v1", "banded_v2"}
     else:
         banded_reward_enabled = bool(_banded_reward_override)
     score = (
@@ -730,6 +1082,11 @@ def compute_score(
         )
         if banded_reward_enabled
         else (blended_score if eligible else 0.0)
+    )
+    reward_contract = _reward_contract_override or (
+        "banded-v2-strict-table-v1"
+        if os.environ.get("PI_REWARD_MODE") == "banded_v2"
+        else ("banded-v1" if banded_reward_enabled else "blend-v1")
     )
     strict_correct = bool(
         answer_ok
@@ -746,6 +1103,7 @@ def compute_score(
         "dense_final_answer_correctness": dense_correctness,
         "dense_correctness_weight": dense_weight,
         "banded_reward_enabled": float(banded_reward_enabled),
+        "reward_contract": reward_contract,
         "acc": float(strict_correct),
         "boss_reward": boss["reward"],
         "boss_result_score": boss["result_score"],
@@ -760,8 +1118,12 @@ def compute_score(
         "boss_task_fit": boss["task_fit"],
         "evidence_reward": round(evidence_reward, 6),
         "final_answer_correct": float(answer_ok),
+        "final_answer_match_mode": final_answer_match_mode,
+        "strict_table_rows_parsed": float(strict_table_rows_parsed),
         "sql_evidence_correct": float(sql_evidence),
         "sql_evidence_mode": evidence_mode,
+        "sql_evidence_queries_checked": float(sql_evidence_queries_checked),
+        "sql_evidence_queries_truncated": float(sql_evidence_queries_truncated),
         "required_table_used": float(required_table_used),
         "successful_bash": float(successful_bash),
         "safe": float(safe),
@@ -840,5 +1202,32 @@ def compute_score_banded_v1(
         extra_info,
         _dense_weight_override=0.0,
         _banded_reward_override=True,
+        _reward_contract_override="banded-v1",
+        **kwargs,
+    )
+
+
+def compute_score_banded_v2(
+    data_source: str,
+    solution_str: str,
+    ground_truth: dict[str, Any],
+    extra_info: dict[str, Any],
+    **kwargs: Any,
+) -> dict[str, Any]:
+    """Strict table-safe correctness bands for Qwen3.8 GRPO training.
+
+    The band geometry is unchanged from v1.  Table correctness now requires a
+    structurally parsed, ordered, cardinality-exact category/value result with
+    one consistent value column; independent label/number containment cannot
+    enter a correct band.
+    """
+    return compute_score(
+        data_source,
+        solution_str,
+        ground_truth,
+        extra_info,
+        _dense_weight_override=0.0,
+        _banded_reward_override=True,
+        _reward_contract_override="banded-v2-strict-table-v1",
         **kwargs,
     )

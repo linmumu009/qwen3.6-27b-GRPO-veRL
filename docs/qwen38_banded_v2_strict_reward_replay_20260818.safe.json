@@ -1,0 +1,80 @@
+{
+  "contract": "llin-qwen38-banded-v2-strict-reward-replay-safe-v1",
+  "date": "2026-08-18",
+  "model": "Qwen3.8-27B native HF",
+  "policy_step": 0,
+  "reward_contract": "banded-v2-strict-table-v1",
+  "population": {
+    "previously_approved_variance_candidates": 70,
+    "observed_trajectories": 286,
+    "completed_trajectories": 234,
+    "legacy_correct_trajectories": 82,
+    "strict_correct_trajectories": 22
+  },
+  "result": {
+    "legacy_mixed_tasks": 70,
+    "strict_mixed_tasks": 20,
+    "tasks_removed_by_strict_reward_gate": 50,
+    "strict_retention_rate": 0.2857142857142857,
+    "preserve_all_70_gate_passed": false,
+    "training_allowed": false,
+    "promotion_allowed": false
+  },
+  "by_host": {
+    "machine_0": {
+      "approved_tasks": 21,
+      "observed_trajectories": 86,
+      "completed_trajectories": 71,
+      "legacy_correct_trajectories": 25,
+      "strict_correct_trajectories": 7,
+      "strict_mixed_tasks": 6,
+      "strict_parse_latency_ms": {"p50": 0.249846, "p95": 0.469336, "max": 0.852624}
+    },
+    "machine_5": {
+      "approved_tasks": 20,
+      "observed_trajectories": 82,
+      "completed_trajectories": 65,
+      "legacy_correct_trajectories": 23,
+      "strict_correct_trajectories": 5,
+      "strict_mixed_tasks": 4,
+      "strict_parse_latency_ms": {"p50": 0.262402, "p95": 0.419103, "max": 0.999658}
+    },
+    "machine_6": {
+      "approved_tasks": 29,
+      "observed_trajectories": 118,
+      "completed_trajectories": 98,
+      "legacy_correct_trajectories": 34,
+      "strict_correct_trajectories": 10,
+      "strict_mixed_tasks": 10,
+      "strict_parse_latency_ms": {"p50": 0.249544, "p95": 0.451897, "max": 1.017136}
+    }
+  },
+  "strict_mixed_by_sandbox": {
+    "v15": 5,
+    "v20": 11,
+    "v21": 4
+  },
+  "strict_mixed_by_difficulty": {
+    "level_1": 0,
+    "level_2": 2,
+    "level_3": 7,
+    "level_4": 6,
+    "level_5": 5
+  },
+  "automatic_checks": {
+    "all_70_tasks_covered_by_replay": true,
+    "legacy_variance_reproduced_for_all_70": true,
+    "strict_label_value_binding": true,
+    "strict_row_order": true,
+    "strict_cardinality": true,
+    "duplicate_label_rejection": true,
+    "extra_row_and_extra_number_rejection": true,
+    "short_label_substring_rejection": true,
+    "gold_query_result_cache_added": true,
+    "candidate_sql_count_cap_added": true,
+    "sqlite_execution_deadline_added": true,
+    "qualified_private_outputs_remain_training_disabled": true
+  },
+  "interpretation": "The legacy containment judge reproduced variance for all 70 approved tasks, but only 20 retain at least one strict row-bound correct trajectory and one completed strict wrong trajectory. The remaining 50 are automatically excluded rather than manually relabeled or admitted.",
+  "contains_prompts_gold_sql_task_ids_hashes_server_paths_final_answers_or_tool_outputs": false
+}
