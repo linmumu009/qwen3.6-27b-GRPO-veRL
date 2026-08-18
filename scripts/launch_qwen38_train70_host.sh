@@ -110,6 +110,57 @@ docker exec "${TRAINER_CONTAINER}" bash -lc \
   > "${SUPERVISOR_DIR}/training_launcher.log" 2>&1
 training_exit=$?
 set -e
+if [[ "${training_exit}" == "0" ]]; then
+  printf 'verifying_step70_checkpoint\n' > "${SUPERVISOR_DIR}/state"
+  set +e
+  docker exec -i "${TRAINER_CONTAINER}" python3 - "${CONTAINER_PROJECT_ROOT}/runs/${RUN_NAME}" <<'PY' \
+    > "${SUPERVISOR_DIR}/step70_checkpoint_gate.json" 2>&1
+import json
+from pathlib import Path
+import sys
+
+run = Path(sys.argv[1])
+root = run / "checkpoints"
+steps = sorted(path for path in root.glob("global_step_*") if path.is_dir())
+expected = root / "global_step_70"
+actor = expected / "actor"
+manifest_path = actor / "ckpt_contents.json"
+model_format = None
+model_shards = 0
+metadata_exists = False
+if manifest_path.is_file():
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    model_entry = ((manifest.get("contents") or {}).get("model") or {})
+    model_format = model_entry.get("format")
+    relative = Path(str(model_entry.get("path") or ""))
+    if relative.parts and not relative.is_absolute() and ".." not in relative.parts:
+        model_dir = actor / relative
+        model_shards = len(list(model_dir.glob("*.distcp")))
+        metadata_exists = (model_dir / "metadata.json").is_file() or (model_dir / ".metadata").is_file()
+valid = (
+    steps == [expected]
+    and model_format == "megatron_dist_checkpoint"
+    and metadata_exists
+    and model_shards > 0
+)
+print(json.dumps({
+    "contract": "llin-qwen38-train70-step70-completion-gate-v1",
+    "valid": valid,
+    "observed_checkpoint_steps": [path.name for path in steps],
+    "expected_step": 70,
+    "model_format": model_format,
+    "model_shards": model_shards,
+    "metadata_exists": metadata_exists,
+    "contains_server_paths": False,
+}))
+raise SystemExit(0 if valid else 1)
+PY
+  checkpoint_gate_exit=$?
+  set -e
+  if [[ "${checkpoint_gate_exit}" != "0" ]]; then
+    training_exit=86
+  fi
+fi
 printf '%s\n' "${training_exit}" > "${SUPERVISOR_DIR}/exit_code"
 date --iso-8601=seconds > "${SUPERVISOR_DIR}/finished_at"
 if [[ "${training_exit}" == "0" ]]; then

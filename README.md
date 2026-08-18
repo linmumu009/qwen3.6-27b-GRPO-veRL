@@ -249,6 +249,13 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 已验证状态
 
+### v1.11.85 — 2026-08-18
+
+- Qwen3.8正式训练`-03`在第4步遇到一条超时轨迹的`response_logprobs=None`；旧异步队列把生成任务异常误转为正常终止并返回0，实际仅写出`global_step_4`，不得当作70步成品。新增缺失log-prob轨迹的零response-mask/零loss占位，保持8条group形状但不伪造行为策略概率；`-04`在进入优化前因补充完整checkpoint格式而主动停止，最终修复后的`-05`从原生基座重新启动。
+- 正式训练强制保存Megatron distributed model checkpoint，避开PP2在线HF导出缺张量；监督器新增硬性Step70完成门：只有退出码0、checkpoint目录仅含完整`global_step_70/actor`、model格式正确且metadata/shard存在时才可写成功。训练后评测监督器独立重复该门，并要求Ray清理完成和训练监督器进程退出。
+- 冻结v15/v20/v21中未参与训练的`488/461/481=1,430`题，70个训练identity全部精确排除且交集为0；按难度平衡为5/6号机各715题。Step70严格导出和逐文件SHA256跨机复制后，两机各以TP4×DP4、每副本并发16执行`2+2+2`，`reasoning_effort=medium`、94,208上下文和30分钟全轨迹超时保持不变；训练失败或模型/数据校验失败时禁止启动评测。
+- 服务器侧无人值守链已部署并跟随修复后的`-05`：当前评测状态为`waiting_for_training`，不会读取`-03`的Step4残留或已停止的`-04`。新增[训练后留出评测安排](docs/qwen38_step70_heldout_eval_20260818.md)和[安全状态](docs/qwen38_step70_heldout_eval_20260818.safe.json)。
+
 ### v1.11.84 — 2026-08-18
 
 - Qwen3.8正式训练`-03`通过两机运行环境/奖励入口、Ray和1→16 HCCL门禁；首次`2,560 MiB`参数同步14.19秒，4个完整计分预热组含302,909 tokens、727.59秒完成，证明Agent工具链与`banded-v2`奖励端到端可用。

@@ -1,0 +1,52 @@
+{
+  "contract": "llin-qwen38-step70-post-train-heldout-supervisor-v1",
+  "date": "2026-08-18",
+  "failed_training_attempt": {
+    "label": "attempt_03",
+    "observed_optimizer_steps": 4,
+    "expected_optimizer_steps": 70,
+    "process_exit_code": 0,
+    "accepted_as_complete": false,
+    "heldout_evaluation_started": false,
+    "failure": "one timed-out trajectory had no rollout log-prob tensor and terminated the async queue"
+  },
+  "superseded_training_attempt": {
+    "label": "attempt_04",
+    "accepted_as_complete": false,
+    "reason": "stopped before optimizer updates so the final-save format could be changed from online HF to Megatron distributed checkpoint"
+  },
+  "corrected_training_attempt": {
+    "label": "attempt_05",
+    "initialization": "native_qwen38_27b",
+    "required_final_step": 70,
+    "completion_requires_exact_step70_checkpoint": true,
+    "status_at_publication": "launched"
+  },
+  "heldout": {
+    "full_tasks": 1500,
+    "excluded_training_tasks": 70,
+    "training_overlap_tasks": 0,
+    "tasks": 1430,
+    "version_counts": {
+      "v15": 488,
+      "v20": 461,
+      "v21": 481
+    },
+    "host_counts": {
+      "m05": 715,
+      "m06": 715
+    }
+  },
+  "evaluation": {
+    "status_at_publication": "waiting_for_training",
+    "adaptive_sampling": "strict_2_plus_2_plus_2_max_6",
+    "topology_per_host": "tp4_dp4_16_npus",
+    "max_num_seqs_per_replica": 16,
+    "reasoning_effort": "medium",
+    "max_context_tokens": 94208,
+    "trajectory_timeout_seconds": 1800,
+    "training_allowed": false,
+    "promotion_allowed": false
+  },
+  "contains_prompts_gold_sql_task_ids_tool_outputs_or_server_paths": false
+}

@@ -5,7 +5,7 @@ import pytest
 
 from scripts.run_qwen38_adaptive_dwh_three_wave_queue import (
     launch_wave,
-    native_model_identity,
+    model_identity,
     validate_topology,
 )
 
@@ -58,16 +58,23 @@ def test_qwen38_topology_contract_fails_closed(changes: dict) -> None:
         validate_topology(topology(**changes))
 
 
-def test_native_model_gate_rejects_training_export(tmp_path: Path) -> None:
+def test_model_gate_accepts_native_step0_and_verified_step70_export(tmp_path: Path) -> None:
     model = tmp_path / "model"
     model.mkdir()
     (model / "config.json").write_text("{}", encoding="utf-8")
     (model / "model.safetensors.index.json").write_text("{}", encoding="utf-8")
-    identity = native_model_identity(model)
+    identity = model_identity(model, 0)
     assert identity["kind"] == "native_hf_checkpoint"
-    (model / "llin_export_manifest.json").write_text("{}", encoding="utf-8")
-    with pytest.raises(ValueError, match="converted training checkpoint"):
-        native_model_identity(model)
+    (model / "llin_export_manifest.json").write_text(
+        '{"actor_checkpoint":"/runs/formal/global_step_70/actor",'
+        '"verification":{"valid":true}}',
+        encoding="utf-8",
+    )
+    trained = model_identity(model, 70)
+    assert trained["kind"] == "llin_megatron_to_hf_export"
+    assert trained["policy_step"] == 70
+    with pytest.raises(ValueError, match="policy step mismatch"):
+        model_identity(model, 69)
 
 
 def test_qwen38_wave_launcher_passes_medium_and_configurable_topology(
@@ -81,6 +88,8 @@ def test_qwen38_wave_launcher_passes_medium_and_configurable_topology(
     args = Namespace(
         project_root=tmp_path,
         model=tmp_path / "model",
+        model_label="qwen38-27b-grpo-step70",
+        policy_step=70,
         reasoning_effort="medium",
         task_batch_size=32,
         max_num_seqs=16,
@@ -99,8 +108,8 @@ def test_qwen38_wave_launcher_passes_medium_and_configurable_topology(
     )
     launch_wave(args, tmp_path / "wave.parquet", tmp_path / "run", 250)
     environment = captured["env"]
-    assert environment["MODEL_LABEL"] == "qwen38-27b-native-hf"
-    assert environment["POLICY_STEP"] == "0"
+    assert environment["MODEL_LABEL"] == "qwen38-27b-grpo-step70"
+    assert environment["POLICY_STEP"] == "70"
     assert environment["REASONING_EFFORT"] == "medium"
     assert environment["TENSOR_PARALLEL_SIZE"] == "4"
     assert environment["DATA_PARALLEL_SIZE"] == "4"

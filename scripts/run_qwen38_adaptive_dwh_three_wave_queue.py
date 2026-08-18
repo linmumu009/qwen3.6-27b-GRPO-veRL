@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run one Qwen3.8 native-HF DWH arm with strict 2+2+2 early stopping."""
+"""Run one Qwen3.8 HF DWH arm with strict 2+2+2 early stopping."""
 
 from __future__ import annotations
 
@@ -28,20 +28,36 @@ QUEUE_CONTRACT = "llin-qwen38-adaptive-dwh-2plus2plus2-queue-v1"
 WAVE_TARGETS = (2, 4, 6)
 
 
-def native_model_identity(model: Path) -> dict[str, object]:
+def model_identity(model: Path, policy_step: int) -> dict[str, object]:
+    """Accept native Step0 or an exactly verified llin Megatron-to-HF export."""
+
     config = model / "config.json"
     index = model / "model.safetensors.index.json"
     if not config.is_file() or not index.is_file():
-        raise FileNotFoundError("native HF model config or safetensor index is missing")
-    if (model / "llin_export_manifest.json").exists():
-        raise ValueError("Qwen3.8 rerun must not use a converted training checkpoint")
+        raise FileNotFoundError("HF model config or safetensor index is missing")
+    export_manifest = model / "llin_export_manifest.json"
+    if export_manifest.is_file():
+        payload = json.loads(export_manifest.read_text(encoding="utf-8"))
+        verification = payload.get("verification") or {}
+        actor_checkpoint = str(payload.get("actor_checkpoint") or "")
+        if verification.get("valid") is not True:
+            raise ValueError("llin export manifest verification is not valid")
+        if policy_step <= 0 or f"global_step_{policy_step}" not in actor_checkpoint:
+            raise ValueError("llin export manifest policy step mismatch")
+        kind = "llin_megatron_to_hf_export"
+        manifest_sha256 = file_sha256(export_manifest)
+    else:
+        if policy_step != 0:
+            raise ValueError("only native Step0 may omit llin_export_manifest.json")
+        kind = "native_hf_checkpoint"
+        manifest_sha256 = None
     return {
         "valid": True,
-        "kind": "native_hf_checkpoint",
-        "policy_step": 0,
+        "kind": kind,
+        "policy_step": policy_step,
         "config_sha256": file_sha256(config),
         "safetensor_index_sha256": file_sha256(index),
-        "export_manifest_sha256": None,
+        "export_manifest_sha256": manifest_sha256,
     }
 
 
@@ -54,8 +70,8 @@ def write_status(queue_dir: Path, *, stage: str, arm_label: str, **fields: objec
             "stage": stage,
             "arm_label": arm_label,
             "updated_at": datetime.now(timezone.utc).isoformat(),
-            "model_label": "qwen38-27b-native-hf",
-            "policy_step": 0,
+            "model_label": fields.pop("model_label", "qwen38-27b-native-hf"),
+            "policy_step": fields.pop("policy_step", 0),
             "reasoning_effort": "medium",
             "training_allowed": False,
             "contains_prompts_gold_sql_task_ids_tool_outputs_or_server_paths": False,
@@ -106,8 +122,8 @@ def launch_wave(args: argparse.Namespace, dataset: Path, run_dir: Path, tasks: i
             "RUN_NAME": run_dir.name,
             "OUTPUT_DIR": str(run_dir),
             "MODEL": str(args.model),
-            "MODEL_LABEL": "qwen38-27b-native-hf",
-            "POLICY_STEP": "0",
+            "MODEL_LABEL": args.model_label,
+            "POLICY_STEP": str(args.policy_step),
             "REASONING_EFFORT": args.reasoning_effort,
             "DATASET": str(dataset),
             "EXPECTED_TASKS": str(tasks),
@@ -168,7 +184,7 @@ def prepare_or_validate_pool(args: argparse.Namespace) -> dict:
 
 def run(args: argparse.Namespace) -> dict:
     topology = validate_topology(args)
-    identity = native_model_identity(args.model)
+    identity = model_identity(args.model, args.policy_step)
     write_status(
         args.queue_dir,
         stage="preparing_initial_pool",
@@ -176,6 +192,8 @@ def run(args: argparse.Namespace) -> dict:
         expected_tasks=args.expected_tasks,
         topology=topology,
         model_identity=identity,
+        model_label=args.model_label,
+        policy_step=args.policy_step,
     )
     args.work_dir.mkdir(parents=True, exist_ok=True)
     pool = prepare_or_validate_pool(args)
@@ -198,6 +216,8 @@ def run(args: argparse.Namespace) -> dict:
             current_wave_samples_per_task=WAVE_SAMPLES,
             samples_observed_after_wave=target_samples,
             topology=topology,
+            model_label=args.model_label,
+            policy_step=args.policy_step,
         )
         if current_tasks:
             launch_wave(args, current_dataset, run_dir, current_tasks)
@@ -249,6 +269,8 @@ def run(args: argparse.Namespace) -> dict:
         stage="complete",
         arm_label=args.arm_label,
         topology=topology,
+        model_label=args.model_label,
+        policy_step=args.policy_step,
         initial_tasks=int(summary["initial_tasks"]),
         mixed_after_two_tasks=int(summary["mixed_after_two_tasks"]),
         mixed_after_four_tasks=int(summary["mixed_after_four_tasks"]),
@@ -265,6 +287,8 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--project-root", type=Path, default=Path("/workspace/llin-verl-grpo"))
     parser.add_argument("--model", type=Path, required=True)
+    parser.add_argument("--model-label", default="qwen38-27b-native-hf")
+    parser.add_argument("--policy-step", type=int, default=0)
     parser.add_argument("--reasoning-effort", choices=("medium",), default="medium")
     parser.add_argument("--arm-label", required=True)
     parser.add_argument("--rollout-resource", required=True)
@@ -301,6 +325,8 @@ def main() -> None:
             stage="failed",
             arm_label=args.arm_label,
             error_type=type(exc).__name__,
+            model_label=args.model_label,
+            policy_step=args.policy_step,
         )
         (args.queue_dir / "exit_code").write_text("1\n", encoding="utf-8")
         raise

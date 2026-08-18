@@ -33,8 +33,8 @@ def write_status(queue_dir: Path, *, stage: str, host_label: str, **fields: obje
                 "stage": stage,
                 "host_label": host_label,
                 "updated_at": datetime.now(timezone.utc).isoformat(),
-                "model_label": "qwen38-27b-native-hf",
-                "policy_step": 0,
+                "model_label": fields.pop("model_label", "qwen38-27b-native-hf"),
+                "policy_step": fields.pop("policy_step", 0),
                 "reasoning_effort": "medium",
                 "training_allowed": False,
                 "contains_prompts_gold_sql_task_ids_tool_outputs_or_server_paths": False,
@@ -57,6 +57,10 @@ def arm_command(args: argparse.Namespace, version: str, dataset: Path, tasks: in
         str(args.project_root),
         "--model",
         str(args.model),
+        "--model-label",
+        args.model_label,
+        "--policy-step",
+        str(args.policy_step),
         "--reasoning-effort",
         "medium",
         "--arm-label",
@@ -123,6 +127,8 @@ def run(args: argparse.Namespace) -> dict:
         arm_order=[version for version, _ in arms],
         arm_task_counts=task_counts,
         completed_arms=completed,
+        model_label=args.model_label,
+        policy_step=args.policy_step,
     )
     for version, dataset in arms:
         arm_exit = args.queue_dir / version / "exit_code"
@@ -141,6 +147,8 @@ def run(args: argparse.Namespace) -> dict:
             arm_order=[item[0] for item in arms],
             arm_task_counts=task_counts,
             completed_arms=list(completed),
+            model_label=args.model_label,
+            policy_step=args.policy_step,
         )
     result = {
         "arm_order": [version for version, _ in arms],
@@ -148,7 +156,14 @@ def run(args: argparse.Namespace) -> dict:
         "completed_arms": completed,
         "total_tasks": sum(task_counts.values()),
     }
-    write_status(args.queue_dir, stage="complete", host_label=args.host_label, **result)
+    write_status(
+        args.queue_dir,
+        stage="complete",
+        host_label=args.host_label,
+        model_label=args.model_label,
+        policy_step=args.policy_step,
+        **result,
+    )
     return result
 
 
@@ -156,6 +171,8 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--project-root", type=Path, default=Path("/workspace/llin-verl-grpo"))
     parser.add_argument("--model", type=Path, required=True)
+    parser.add_argument("--model-label", default="qwen38-27b-native-hf")
+    parser.add_argument("--policy-step", type=int, default=0)
     parser.add_argument("--host-label", required=True)
     parser.add_argument("--arm", type=parse_arm, action="append", required=True)
     parser.add_argument("--rollout-resource", required=True)
@@ -188,6 +205,8 @@ def main() -> None:
             stage="failed",
             host_label=args.host_label,
             error_type=type(exc).__name__,
+            model_label=args.model_label,
+            policy_step=args.policy_step,
         )
         (args.queue_dir / "exit_code").write_text("1\n", encoding="utf-8")
         raise

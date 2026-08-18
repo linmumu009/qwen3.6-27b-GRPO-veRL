@@ -129,6 +129,7 @@ bash "${PROJECT_ROOT}/scripts/run_pi_grpo_fully_async_tp4_pp2_cp2.sh" \
   actor_rollout_ref.rollout.top_p=0.95 \
   actor_rollout_ref.rollout.top_k=20 \
   actor_rollout_ref.actor.optim.lr=1e-7 \
+  actor_rollout_ref.actor.megatron.use_dist_checkpointing=True \
   reward.custom_reward_function.name=compute_score_banded_v2 \
   trainer.project_name=llin-qwen38-verl-grpo \
   trainer.val_before_train=false \

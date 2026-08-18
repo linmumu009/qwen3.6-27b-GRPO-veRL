@@ -8,6 +8,8 @@ def test_host_queue_builds_sequential_strict_medium_arm_command(tmp_path: Path) 
     args = Namespace(
         project_root=tmp_path,
         model=tmp_path / "model",
+        model_label="qwen38-27b-grpo-step70",
+        policy_step=70,
         rollout_resource="q38_m00",
         tensor_parallel_size=4,
         data_parallel_size=3,
@@ -29,6 +31,8 @@ def test_host_queue_builds_sequential_strict_medium_arm_command(tmp_path: Path) 
     command = arm_command(args, "v21", tmp_path / "v21.parquet", 300)
     rendered = " ".join(command)
     assert "--reasoning-effort medium" in rendered
+    assert "--model-label qwen38-27b-grpo-step70" in rendered
+    assert "--policy-step 70" in rendered
     assert "--tensor-parallel-size 4" in rendered
     assert "--data-parallel-size 3" in rendered
     assert "--rollout-npus 12" in rendered
