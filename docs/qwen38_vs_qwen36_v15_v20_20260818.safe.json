@@ -1,0 +1,106 @@
+{
+  "contract": "llin-qwen38-v15-v20-comparison-safe-evidence-v1",
+  "date": "2026-08-18",
+  "scope": {
+    "qwen38_model": "Qwen3.8-27B native HF",
+    "qwen38_policy_step": 0,
+    "qwen36_model": "Qwen3.6-27B Step 120",
+    "qwen36_policy_step": 120,
+    "reasoning_effort": "medium",
+    "source_tasks_per_version": 500,
+    "sampling_protocol": "strict adaptive 2+2+2",
+    "max_trajectories_per_task": 6,
+    "training_allowed": false
+  },
+  "shared_rollout_contract": {
+    "max_prompt_tokens": 4096,
+    "max_response_tokens": 90112,
+    "context_tokens": 94208,
+    "trajectory_timeout_seconds": 1800,
+    "temperature": 1.0,
+    "top_p": 0.95,
+    "top_k": 20,
+    "rolling_window_multiplier": 1.25
+  },
+  "qwen38_final": {
+    "v15": {
+      "tasks": 500,
+      "mixed_after_2": 1,
+      "mixed_after_4": 5,
+      "mixed_after_6": 6,
+      "mixed_candidates": 12,
+      "mixed_candidate_rate": 0.024,
+      "unresolved_after_6": 488,
+      "actual_trajectories": 2986,
+      "full_six_trajectories": 3000,
+      "saved_trajectories": 14,
+      "difficulty_counts": {"level_1": 0, "level_2": 1, "level_3": 6, "level_4": 4, "level_5": 1}
+    },
+    "v20": {
+      "tasks": 500,
+      "mixed_after_2": 13,
+      "mixed_after_4": 17,
+      "mixed_after_6": 9,
+      "mixed_candidates": 39,
+      "mixed_candidate_rate": 0.078,
+      "unresolved_after_6": 461,
+      "actual_trajectories": 2914,
+      "full_six_trajectories": 3000,
+      "saved_trajectories": 86,
+      "difficulty_counts": {"level_1": 2, "level_2": 17, "level_3": 10, "level_4": 7, "level_5": 3}
+    }
+  },
+  "v20_comparison": {
+    "qwen36_step120": {
+      "first_two_trajectories": 1000,
+      "correct_trajectories": 50,
+      "correct_trajectory_rate": 0.05,
+      "completed_trajectories": 805,
+      "completion_rate": 0.805,
+      "normalized_non_completion_rate": 0.195,
+      "raw_timeout_tags": 159,
+      "tasks_with_at_least_one_correct_after_2": 40,
+      "tasks_with_at_least_one_correct_rate": 0.08,
+      "direct_mixed_after_2": 25,
+      "direct_mixed_after_2_rate": 0.05,
+      "mixed_candidates_after_6": 68,
+      "mixed_candidate_rate_after_6": 0.136
+    },
+    "qwen38_native_step0": {
+      "first_two_trajectories": 1000,
+      "correct_trajectories": 23,
+      "correct_trajectory_rate": 0.023,
+      "completed_trajectories": 800,
+      "completion_rate": 0.8,
+      "normalized_non_completion_rate": 0.2,
+      "raw_timeout_tags": 200,
+      "tasks_with_at_least_one_correct_after_2": 20,
+      "tasks_with_at_least_one_correct_rate": 0.04,
+      "direct_mixed_after_2": 13,
+      "direct_mixed_after_2_rate": 0.026,
+      "mixed_candidates_after_6": 39,
+      "mixed_candidate_rate_after_6": 0.078
+    },
+    "delta_qwen38_minus_qwen36": {
+      "correct_trajectory_rate_percentage_points": -2.7,
+      "correct_trajectory_relative_change": -0.54,
+      "completion_rate_percentage_points": -0.5,
+      "normalized_non_completion_rate_percentage_points": 0.5,
+      "tasks_with_at_least_one_correct_rate_percentage_points": -4.0,
+      "mixed_candidate_rate_after_6_percentage_points": -5.8,
+      "mixed_candidate_relative_change": -0.4264705882352941,
+      "mixed_candidate_count": -29
+    }
+  },
+  "comparability": {
+    "same_v20_task_set": true,
+    "same_sampling_and_context_contract": true,
+    "different_policy_training_stage": true,
+    "raw_timeout_tags_directly_comparable": false,
+    "reason_raw_timeout_not_comparable": "The legacy Qwen3.6 summary has 36 first-two trajectories that were neither completed nor tagged timeout; compare completion or normalized non-completion instead.",
+    "conclusion_boundary": "This is a production-candidate comparison between Qwen3.6 Step120 and native Qwen3.8 Step0, not a native-to-native architecture comparison.",
+    "v15_qwen36_strict_500_task_baseline_available": false,
+    "v21_included": false
+  },
+  "contains_prompts_gold_sql_task_ids_tool_outputs_or_server_paths": false
+}

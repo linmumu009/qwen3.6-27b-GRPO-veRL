@@ -1,0 +1,120 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "Qwen3.8 与 Qwen3.6 的 v15/v20 轨迹结果对比",
+    "description": "Qwen3.8 原生 Step0 的三机严格 2+2+2 结果，以及与 Qwen3.6 Step120 在同一 v20 500题上的可比分析。",
+    "generatedAt": "2026-08-18T02:00:00Z",
+    "cards": [
+      {"id": "q38_v15", "description": "Qwen3.8 原生 Step0 的 v15 mixed 候选率。", "dataset": "summary", "sourceId": "safe", "metrics": [{"label": "Qwen3.8 v15候选率", "field": "q38_v15_candidate_rate", "format": "percent"}]},
+      {"id": "q38_v20", "description": "Qwen3.8 原生 Step0 的 v20 mixed 候选率。", "dataset": "summary", "sourceId": "safe", "metrics": [{"label": "Qwen3.8 v20候选率", "field": "q38_v20_candidate_rate", "format": "percent"}]},
+      {"id": "candidate_gap", "description": "同一 v20 500题上的候选率差。", "dataset": "summary", "sourceId": "safe", "metrics": [{"label": "候选率差", "field": "candidate_rate_gap", "format": "percent", "signed": true}]},
+      {"id": "completion_gap", "description": "同一 v20 首2条轨迹的完成率差。", "dataset": "summary", "sourceId": "safe", "metrics": [{"label": "完成率差", "field": "completion_rate_gap", "format": "percent", "signed": true}]}
+    ],
+    "charts": [{
+      "id": "quality_comparison",
+      "title": "Qwen3.8 的正确轨迹与 mixed 候选产出均低于 Qwen3.6 Step120",
+      "subtitle": "同一 v20 500题；正确轨迹率按首2条的1000条轨迹计算，候选率按最多6条后的500题计算。",
+      "type": "bar",
+      "dataset": "quality_metrics",
+      "sourceId": "safe",
+      "encodings": {
+        "x": {"field": "metric", "type": "ordinal", "label": "指标"},
+        "y": {"field": "value", "type": "quantitative", "label": "比例", "format": "percent"},
+        "color": {"field": "model", "type": "nominal", "label": "模型/阶段"}
+      },
+      "yAxisTitle": "比例",
+      "valueFormat": "percent",
+      "layout": "full"
+    }],
+    "tables": [
+      {
+        "id": "v20_audit",
+        "title": "v20 同题对比明细",
+        "dataset": "v20_metrics",
+        "sourceId": "safe",
+        "columns": [
+          {"field": "metric", "label": "指标", "type": "text"},
+          {"field": "qwen36", "label": "Qwen3.6 Step120", "format": "percent"},
+          {"field": "qwen38", "label": "Qwen3.8 native Step0", "format": "percent"},
+          {"field": "delta", "label": "Qwen3.8 - Qwen3.6", "format": "percent", "movement": true},
+          {"field": "note", "label": "口径", "type": "text"}
+        ]
+      },
+      {
+        "id": "q38_versions",
+        "title": "Qwen3.8 已完成版本结果",
+        "dataset": "q38_versions",
+        "sourceId": "safe",
+        "columns": [
+          {"field": "version", "label": "版本", "type": "text"},
+          {"field": "tasks", "label": "题数", "type": "number"},
+          {"field": "after2", "label": "2条发现", "type": "number"},
+          {"field": "after4", "label": "4条新增", "type": "number"},
+          {"field": "after6", "label": "6条新增", "type": "number"},
+          {"field": "candidates", "label": "候选合计", "type": "number"},
+          {"field": "candidate_rate", "label": "候选率", "format": "percent"},
+          {"field": "trajectories", "label": "实际轨迹", "type": "number"},
+          {"field": "saved", "label": "早停节省", "type": "number"}
+        ]
+      }
+    ],
+    "sources": [{
+      "id": "safe",
+      "label": "Qwen3.8 v15/v20 与 Qwen3.6 v20 聚合安全汇总",
+      "path": "docs/qwen38_vs_qwen36_v15_v20_20260818.safe.json",
+      "query": {
+        "engine": "snapshot",
+        "sql": "SELECT model, correct_trajectories / 1000.0 AS correct_trajectory_rate, mixed_candidates / 500.0 AS mixed_candidate_rate, completed_trajectories / 1000.0 AS completion_rate FROM safe_rollout_summary WHERE version = 'v20'",
+        "description": "从已复核的安全聚合中计算同一v20任务集的正确轨迹率、mixed候选率和完成率。",
+        "executed_at": "2026-08-18T02:00:00Z",
+        "tables_used": ["safe_rollout_summary"],
+        "filters": ["version = v20", "Qwen3.6 Step120 or Qwen3.8 native Step0"],
+        "metric_definitions": ["correct_trajectory_rate = correct_trajectories / 1000", "mixed_candidate_rate = mixed_candidates / 500", "completion_rate = completed_trajectories / 1000"]
+      }
+    }],
+    "blocks": [
+      {"id": "title", "type": "markdown", "body": "# Qwen3.8 与 Qwen3.6 的 v15/v20 轨迹结果对比\n\n2026-08-18 · 只包含聚合指标，不含题面、gold、SQL、任务标识、工具输出或服务器路径。"},
+      {"id": "summary", "type": "markdown", "sourceId": "safe", "body": "## 技术摘要\n\nQwen3.8 原生 Step0 已在三机 TP4 队列完成 v15 和 v20：v15 得到 **12/500（2.4%）** mixed 候选，v20 得到 **39/500（7.8%）**。同一 v20 500题上，历史 Qwen3.6 Step120 最多6条得到 **68/500（13.6%）**，因此当前 Qwen3.8 少29道、候选率低5.8个百分点。"},
+      {"id": "metrics", "type": "metric-strip", "cardIds": ["q38_v15", "q38_v20", "candidate_gap", "completion_gap"]},
+      {"id": "finding_intro", "type": "markdown", "sourceId": "safe", "body": "## 关键发现与可视证据\n\n质量差距在首2条就出现：Qwen3.8 的正确轨迹率为 **2.3%**，Qwen3.6 Step120 为 **5.0%**；最多6条后，mixed 候选率分别为 **7.8%** 和 **13.6%**。"},
+      {"id": "quality_chart", "type": "chart", "chartId": "quality_comparison", "layout": "full"},
+      {"id": "finding_outro", "type": "markdown", "sourceId": "safe", "body": "图中两项指标的分母不同，但每一项内部使用同一批 v20 数据和同一口径。Qwen3.8 首2条至少出现一次正确答案的题仅 **20/500（4.0%）**，Qwen3.6 Step120 为 **40/500（8.0%）**，说明候选率下降主要来自正确证据更少。"},
+      {"id": "scope", "type": "markdown", "sourceId": "safe", "body": "## 范围、数据与指标定义\n\n两者共享 `4,096 prompt + 90,112 response = 94,208 tokens`、30分钟轨迹超时、`temperature=1 / top_p=.95 / top_k=20` 和1.25×逻辑窗口。mixed候选指同一道题在已采轨迹中同时出现至少一条正确和一条完成但错误的轨迹；严格2+2+2在2、4、6条后判定并早停。v15没有同样的Qwen3.6 500题严格2+2+2基线，因此只报告Qwen3.8绝对结果，不做跨批次拼接比较。"},
+      {"id": "q38_table", "type": "table", "tableId": "q38_versions", "layout": "full"},
+      {"id": "method", "type": "markdown", "sourceId": "safe", "body": "## 方法\n\nQwen3.8 的500题按182/182/136分到三台机器，完成后按互斥分片合并。Qwen3.6 v20 使用历史同500题结果：首2条共1000条轨迹，随后只对未形成mixed的题追加第3–4条和第5–6条。比较同时查看首2条正确轨迹率、至少一条正确的题占比、最多6条mixed候选率，以及完成/非完成率。"},
+      {"id": "audit_table", "type": "table", "tableId": "v20_audit", "layout": "full"},
+      {"id": "limits", "type": "markdown", "sourceId": "safe", "body": "## 限制与稳健性\n\n最重要的限制是训练阶段不同：Qwen3.6 是领域训练后的 Step120，Qwen3.8 是原生 Step0。因此，这份结果回答的是“当前哪个模型更适合直接生产 GRPO 候选”，不能回答“Qwen3.8 架构是否弱于 Qwen3.6”。此外，Qwen3.6 旧汇总中有36条首2轨迹既未标 completed 也未标 timeout，原始 timeout 标签不可直接横比；采用非完成率后两者为 **19.5% 对 20.0%**，只差0.5个百分点，说明当前 TP4 工程运行稳定，主要差距是正确性而非拓扑。"},
+      {"id": "recommendation", "type": "markdown", "sourceId": "safe", "body": "## 建议的下一步\n\n1. 继续完成 Qwen3.8 的 v21，并按相同口径冻结最终结果。\n2. 当前不要用原生 Qwen3.8 Step0 替换 Qwen3.6 Step120 作为候选生产模型。\n3. 若要判断 Qwen3.8 的模型潜力，应先做领域 SFT/蒸馏或短训练，再进行 Step-matched 或 native-to-native 对照。\n4. 保留 TP4×DP4/TP4×DP3：完成率证据未显示拓扑导致质量下降。"},
+      {"id": "questions", "type": "markdown", "body": "## 后续问题\n\n- v21 完成后，Qwen3.8 的候选率是否仍显著低于历史 Qwen3.6 的34/500？\n- Qwen3.8 经同等领域训练后，正确轨迹率能否恢复到5%附近？\n- 在同一模型阶段下，TP4与TP8是否保持候选质量等价？"}
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "generatedAt": "2026-08-18T02:00:00Z",
+    "status": "ready",
+    "datasets": {
+      "summary": [{"q38_v15_candidate_rate": 0.024, "q38_v20_candidate_rate": 0.078, "candidate_rate_gap": -0.058, "completion_rate_gap": -0.005}],
+      "quality_metrics": [
+        {"metric": "首2条正确轨迹率", "model": "Qwen3.6 Step120", "value": 0.05},
+        {"metric": "首2条正确轨迹率", "model": "Qwen3.8 native Step0", "value": 0.023},
+        {"metric": "最多6条mixed候选率", "model": "Qwen3.6 Step120", "value": 0.136},
+        {"metric": "最多6条mixed候选率", "model": "Qwen3.8 native Step0", "value": 0.078}
+      ],
+      "v20_metrics": [
+        {"metric": "首2条正确轨迹率", "qwen36": 0.05, "qwen38": 0.023, "delta": -0.027, "note": "50/1000 vs 23/1000"},
+        {"metric": "首2条至少1条正确的题占比", "qwen36": 0.08, "qwen38": 0.04, "delta": -0.04, "note": "40/500 vs 20/500"},
+        {"metric": "首2条直接mixed率", "qwen36": 0.05, "qwen38": 0.026, "delta": -0.024, "note": "25/500 vs 13/500"},
+        {"metric": "最多6条mixed候选率", "qwen36": 0.136, "qwen38": 0.078, "delta": -0.058, "note": "68/500 vs 39/500"},
+        {"metric": "首2条完成率", "qwen36": 0.805, "qwen38": 0.8, "delta": -0.005, "note": "805/1000 vs 800/1000"},
+        {"metric": "首2条标准化非完成率", "qwen36": 0.195, "qwen38": 0.2, "delta": 0.005, "note": "使用1-completed；可比"}
+      ],
+      "q38_versions": [
+        {"version": "v15", "tasks": 500, "after2": 1, "after4": 5, "after6": 6, "candidates": 12, "candidate_rate": 0.024, "trajectories": 2986, "saved": 14},
+        {"version": "v20", "tasks": 500, "after2": 13, "after4": 17, "after6": 9, "candidates": 39, "candidate_rate": 0.078, "trajectories": 2914, "saved": 86}
+      ]
+    }
+  },
+  "package_info": {"root": "docs", "manifestPath": "qwen38_vs_qwen36_v15_v20_20260818.artifact.json", "snapshotPath": "qwen38_vs_qwen36_v15_v20_20260818.artifact.json"}
+}
