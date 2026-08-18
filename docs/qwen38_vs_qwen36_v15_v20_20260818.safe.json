@@ -1,5 +1,5 @@
 {
-  "contract": "llin-qwen38-v15-v20-comparison-safe-evidence-v1",
+  "contract": "llin-qwen38-v15-v20-v21-comparison-safe-evidence-v2",
   "date": "2026-08-18",
   "scope": {
     "qwen38_model": "Qwen3.8-27B native HF",
@@ -48,6 +48,20 @@
       "full_six_trajectories": 3000,
       "saved_trajectories": 86,
       "difficulty_counts": {"level_1": 2, "level_2": 17, "level_3": 10, "level_4": 7, "level_5": 3}
+    },
+    "v21": {
+      "tasks": 500,
+      "mixed_after_2": 7,
+      "mixed_after_4": 3,
+      "mixed_after_6": 9,
+      "mixed_candidates": 19,
+      "mixed_candidate_rate": 0.038,
+      "unresolved_after_6": 481,
+      "actual_trajectories": 2966,
+      "full_six_trajectories": 3000,
+      "saved_trajectories": 34,
+      "runtime_errors": 0,
+      "host_candidate_counts": {"machine_0": 3, "machine_5": 4, "machine_6": 12}
     }
   },
   "v20_comparison": {
@@ -92,6 +106,23 @@
       "mixed_candidate_count": -29
     }
   },
+  "v21_comparison": {
+    "qwen36_step120": {
+      "tasks": 500,
+      "mixed_candidates_after_6": 34,
+      "mixed_candidate_rate_after_6": 0.068
+    },
+    "qwen38_native_step0": {
+      "tasks": 500,
+      "mixed_candidates_after_6": 19,
+      "mixed_candidate_rate_after_6": 0.038
+    },
+    "delta_qwen38_minus_qwen36": {
+      "mixed_candidate_count": -15,
+      "mixed_candidate_rate_after_6_percentage_points": -3.0,
+      "mixed_candidate_relative_change": -0.4411764705882353
+    }
+  },
   "comparability": {
     "same_v20_task_set": true,
     "same_sampling_and_context_contract": true,
@@ -100,7 +131,8 @@
     "reason_raw_timeout_not_comparable": "The legacy Qwen3.6 summary has 36 first-two trajectories that were neither completed nor tagged timeout; compare completion or normalized non-completion instead.",
     "conclusion_boundary": "This is a production-candidate comparison between Qwen3.6 Step120 and native Qwen3.8 Step0, not a native-to-native architecture comparison.",
     "v15_qwen36_strict_500_task_baseline_available": false,
-    "v21_included": false
+    "same_v21_task_set": true,
+    "v21_included": true
   },
   "contains_prompts_gold_sql_task_ids_tool_outputs_or_server_paths": false
 }
