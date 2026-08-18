@@ -6,7 +6,7 @@
 <meta name="color-scheme" content="light dark" />
 <meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; img-src data: blob:; font-src data:; style-src &#39;unsafe-inline&#39;; script-src &#39;unsafe-inline&#39; blob:; connect-src &#39;none&#39;; media-src data: blob:; worker-src blob:; frame-src &#39;self&#39; data: blob:; object-src &#39;none&#39;; base-uri &#39;none&#39;; form-action &#39;none&#39;" />
 <meta name="referrer" content="no-referrer" />
-<title>老板 v15 轨迹数据的语义不匹配复盘</title>
+<title>老板 v15 轨迹数据为什么会答非所问</title>
 <style data-data-analytics-portable-fallback="true">
 :root{color-scheme:light dark;--portable-canvas:#fff;--portable-surface:#fff;--portable-surface-subtle:#f7f7f7;--portable-ink:#0d0d0d;--portable-muted:#5d5d5d;--portable-tertiary:#8f8f8f;--portable-table-text:#5d5d5d;--portable-border:rgba(13,13,13,.1);--portable-accent:#0285ff;--portable-positive:#00692a;--portable-positive-bg:#edfaf2;--portable-negative:#ba2623;--portable-negative-bg:#fff0f0;--portable-warning-bg:#fff8e6;--portable-warning-border:#e7b84b;--portable-radius:16px;--portable-safe-area-top:env(safe-area-inset-top,0px);--portable-safe-area-right:env(safe-area-inset-right,0px);--portable-safe-area-bottom:env(safe-area-inset-bottom,0px);--portable-safe-area-left:env(safe-area-inset-left,0px);font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--portable-canvas);color:var(--portable-ink)}
 @media(prefers-color-scheme:dark){:root{--portable-canvas:#181818;--portable-surface:#212121;--portable-surface-subtle:#2a2a2a;--portable-ink:#dfdfdf;--portable-muted:#cdcdcd;--portable-tertiary:#afafaf;--portable-table-text:#cdcdcd;--portable-border:rgba(255,255,255,.12);--portable-accent:#66b5ff;--portable-positive:#79d996;--portable-positive-bg:rgba(64,180,99,.16);--portable-negative:#ff8583;--portable-negative-bg:rgba(224,74,70,.16);--portable-warning-bg:#302817;--portable-warning-border:#8b6a20}.portable-static-chart-light{display:none!important}.portable-static-chart-dark{display:block!important}}
@@ -34,34 +34,200 @@ html:not([data-portable-source-tooltips-ready]) .portable-chart-summary>.portabl
 </style>
 </head>
 <body>
-<main id="data-analytics-portable-fallback" class="portable-fallback" data-portable-fallback="true" data-portable-surface="report"><header class="portable-page-header"><div class="portable-page-heading"><p class="portable-surface-label">Data Analytics report</p><h1>老板 v15 轨迹数据的语义不匹配复盘</h1><p class="portable-description">解释旧 v15 数据为何 SQL/gold 机械自洽却仍与题意失配，并记录 6+1 类问题、整改建议、新生成链和当前效果边界。</p></div><div class="portable-page-meta"><time datetime="2026-08-18T18:00:00+08:00">Aug 18, 2026, 10:00 AM UTC</time></div></header><div class="portable-block-stack">
-<div class="portable-block portable-layout-full" data-artifact-block-id="executive_summary" data-artifact-block-type="markdown" data-layout="full"><section class="portable-markdown"><h2>Executive Summary</h2>
-<ul><li><strong>核心问题不是 SQL 跑不通，而是奖励目标答非所问。</strong> 修正后的 v15 full276 有 <code>276/276</code> 条 SQL 与 expected value 机械自洽，但 <code>271/276</code> 条命中至少一项语义预警；这会奖励“命中某个数据库结果”而不是“完整回答用户问题”。</li><li><strong>审计识别出 <span class="portable-source-tooltip portable-source-value" data-portable-source-host="true" tabindex="0" aria-describedby="portable-source-tooltip-1"><span class="portable-source-value-text">6</span><span class="portable-source-tooltip-content" id="portable-source-tooltip-1" role="tooltip"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 6</span><strong>Source: v15 语义失配与新链路安全汇总</strong><span class="portable-source-meta">File: docs/boss_v15_semantic_mismatch_20260818.safe.json</span></span></span> 类重叠预警，另确认 <span class="portable-source-tooltip portable-source-value" data-portable-source-host="true" tabindex="0" aria-describedby="portable-source-tooltip-2"><span class="portable-source-value-text">1</span><span class="portable-source-tooltip-content" id="portable-source-tooltip-2" role="tooltip"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 1</span><strong>Source: v15 语义失配与新链路安全汇总</strong><span class="portable-source-meta">File: docs/boss_v15_semantic_mismatch_20260818.safe.json</span></span></span> 类 instruction—gold 绑定冲突。</strong> 高频问题是时间条件缺失、轨迹与任务定义漂移、开放问题被收窄为唯一答案、无序 LIMIT、分析退化为行数，以及宽泛问题绑定单个数值。</li><li><strong>根因是生成链只锁住了 SQL—数据库结果，没有锁住 instruction—轨迹—SQL—gold。</strong> 后续改写或任务定义变化没有触发整组再生成和语义复验。</li><li><strong>我们的新链已经把结构性语义门前移。</strong> 八个沙箱 <span class="portable-source-tooltip portable-source-value" data-portable-source-host="true" tabindex="0" aria-describedby="portable-source-tooltip-3"><span class="portable-source-value-text">4000</span><span class="portable-source-tooltip-content" id="portable-source-tooltip-3" role="tooltip"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 4000</span><strong>Source: v15 语义失配与新链路安全汇总</strong><span class="portable-source-meta">File: docs/boss_v15_semantic_mismatch_20260818.safe.json</span></span></span> 条任务全部通过 SQL/gold 重放、语义锚点和 API 改写保真门；但这只证明生成合同有效，仍不能替代人工语义批准或训练效果验证。</li></ul></section><div class="portable-inline-source portable-source-summary" data-source-id="semantic_review_summary"><div class="portable-inline-source-content portable-source-summary-content"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for Executive Summary</span><strong>Source: v15 语义失配与新链路安全汇总</strong><span class="portable-source-meta">File: docs/boss_v15_semantic_mismatch_20260818.safe.json</span><p class="portable-source-description-data">汇总 full276 六类预警、full277 绑定冲突、脱敏实例和八沙箱 4000 条最终审计。</p></div></div></div>
-<div class="portable-block portable-layout-full" data-artifact-block-id="problem" data-artifact-block-type="markdown" data-layout="full"><section class="portable-markdown"><h2><span class="portable-source-tooltip portable-source-value" data-portable-source-host="true" tabindex="0" aria-describedby="portable-source-tooltip-4"><span class="portable-source-value-text">1</span><span class="portable-source-tooltip-content" id="portable-source-tooltip-4" role="tooltip"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 1</span><strong>Source: 老板 v15 标签来源与质量审计</strong><span class="portable-source-meta">File: docs/training_data_provenance_quality_audit_20260806.artifact.json</span></span></span>. 问题是什么：机械正确掩盖了语义错误</h2>
-<p>旧管线把 <code>verification SQL 能执行 + 查询结果等于 expected value</code> 当作主要正确性证据。这个证据只能证明 gold 是某条 SQL 在某个 SQLite 上的结果，不能证明这条 SQL 是自然语言问题的完整、唯一且业务合理的解释。</p>
-<p>因此，同一条数据可以同时满足“数据库重放完全正确”和“用户问题没有被回答”。一旦用于 GRPO，模型只要学会逼近窄 hidden target 就会得到奖励；真正完成时间比较、根因分析、多指标报告或优化建议的回答，反而可能因为没有复现那个窄表格或数字而被判错。</p></section><div class="portable-inline-source portable-source-summary" data-source-id="legacy_audit"><div class="portable-inline-source-content portable-source-summary-content"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 1. 问题是什么：机械正确掩盖了语义错误</span><strong>Source: 老板 v15 标签来源与质量审计</strong><span class="portable-source-meta">File: docs/training_data_provenance_quality_audit_20260806.artifact.json</span><p class="portable-source-description-data">逐条重放 hidden SQL、核对 expected value，并统计 instruction/gold 冲突与语义预警。</p></div></div></div>
-<div class="portable-block portable-layout-full" data-artifact-block-id="root_cause" data-artifact-block-type="markdown" data-layout="full"><section class="portable-markdown"><h2><span class="portable-source-tooltip portable-source-value" data-portable-source-host="true" tabindex="0" aria-describedby="portable-source-tooltip-5"><span class="portable-source-value-text">2</span><span class="portable-source-tooltip-content" id="portable-source-tooltip-5" role="tooltip"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 2</span><strong>Source: v15 语义失配与新链路安全汇总</strong><span class="portable-source-meta">File: docs/boss_v15_semantic_mismatch_20260818.safe.json</span></span></span>. 核心原因：四个对象没有被同一语义合同绑定</h2>
-<ol><li><strong>验收层级错位。</strong> 数据库重放被当成语义验收，缺少“题意是否无歧义推出 SQL/gold”的硬门。</li><li><strong>版本链断开。</strong> 自然语言题意、源轨迹、后续任务定义和 hidden target 可以分别变化；任务改写后没有强制重建轨迹、SQL 和 gold。</li><li><strong>开放任务与窄查询并行生成。</strong> “分析、诊断、建议、报告”等业务意图没有先拆成明确指标、时间窗、过滤、分组、排序和输出形态，随后却绑定一个精确数字或短表。</li><li><strong>缺少失败关闭规则。</strong> 时间缺失、LIMIT 无排序、行数替代分析、数值缺聚合和相同 instruction 多 gold 没有在 rollout 前阻断。</li></ol>
-<p>这解释了为什么 <code>_qa_status=passed</code>、<code>checked_against_database=true</code> 和 <span class="portable-source-tooltip portable-source-value" data-portable-source-host="true" tabindex="0" aria-describedby="portable-source-tooltip-6"><span class="portable-source-value-text">100%</span><span class="portable-source-tooltip-content" id="portable-source-tooltip-6" role="tooltip"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 100%</span><strong>Source: v15 语义失配与新链路安全汇总</strong><span class="portable-source-meta">File: docs/boss_v15_semantic_mismatch_20260818.safe.json</span></span></span> SQL 重放仍无法保证训练标签可信。</p></section><div class="portable-inline-source portable-source-summary" data-source-id="semantic_review_summary"><div class="portable-inline-source-content portable-source-summary-content"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 2. 核心原因：四个对象没有被同一语义合同绑定</span><strong>Source: v15 语义失配与新链路安全汇总</strong><span class="portable-source-meta">File: docs/boss_v15_semantic_mismatch_20260818.safe.json</span><p class="portable-source-description-data">汇总 full276 六类预警、full277 绑定冲突、脱敏实例和八沙箱 4000 条最终审计。</p></div></div></div>
-<div class="portable-block portable-layout-full" data-artifact-block-id="manifestations_intro" data-artifact-block-type="markdown" data-layout="full"><section class="portable-markdown"><h2><span class="portable-source-tooltip portable-source-value" data-portable-source-host="true" tabindex="0" aria-describedby="portable-source-tooltip-7"><span class="portable-source-value-text">3</span><span class="portable-source-tooltip-content" id="portable-source-tooltip-7" role="tooltip"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 3</span><strong>Source: v15 语义失配与新链路安全汇总</strong><span class="portable-source-meta">File: docs/boss_v15_semantic_mismatch_20260818.safe.json</span></span></span>. 表现：<span class="portable-source-tooltip portable-source-value" data-portable-source-host="true" tabindex="0" aria-describedby="portable-source-tooltip-8"><span class="portable-source-value-text">6</span><span class="portable-source-tooltip-content" id="portable-source-tooltip-8" role="tooltip"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 6</span><strong>Source: v15 语义失配与新链路安全汇总</strong><span class="portable-source-meta">File: docs/boss_v15_semantic_mismatch_20260818.safe.json</span></span></span> 类可统计预警 + <span class="portable-source-tooltip portable-source-value" data-portable-source-host="true" tabindex="0" aria-describedby="portable-source-tooltip-9"><span class="portable-source-value-text">1</span><span class="portable-source-tooltip-content" id="portable-source-tooltip-9" role="tooltip"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 1</span><strong>Source: v15 语义失配与新链路安全汇总</strong><span class="portable-source-meta">File: docs/boss_v15_semantic_mismatch_20260818.safe.json</span></span></span> 类确认冲突</h2>
-<p>六类预警不是互斥桶：同一条任务可能同时缺时间过滤、使用无序 LIMIT，并把开放分析缩成一个窄表。因此 <code>219+192+137+91+28+21</code> 不能相加当作错误任务数；可信的总体口径是 <code>271/276</code> 条至少命中一项预警。预警是高价值审核触发器，单靠正则本身不是最终人工判决。</p></section><div class="portable-inline-source portable-source-summary" data-source-id="semantic_review_summary"><div class="portable-inline-source-content portable-source-summary-content"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 3. 表现：6 类可统计预警 + 1 类确认冲突</span><strong>Source: v15 语义失配与新链路安全汇总</strong><span class="portable-source-meta">File: docs/boss_v15_semantic_mismatch_20260818.safe.json</span><p class="portable-source-description-data">汇总 full276 六类预警、full277 绑定冲突、脱敏实例和八沙箱 4000 条最终审计。</p></div></div></div>
-<div class="portable-block portable-layout-full" data-artifact-block-id="warning_chart_block" data-artifact-block-type="chart" data-layout="full"><figure class="portable-content-card portable-chart-summary" data-artifact-id="warning_categories_chart" data-artifact-kind="chart" data-chart-id="warning_categories_chart" data-portable-visual-title="v15 三类高频语义预警命中任务数" data-portable-source-host="true" tabindex="0" aria-label="v15 三类高频语义预警命中任务数" aria-describedby="portable-source-tooltip-10"><figcaption class="portable-visual-header"><strong>v15 三类高频语义预警命中任务数</strong></figcaption><div class="portable-inline-source" data-source-id="warning_categories_chart_query"><div class="portable-inline-source-content portable-source-tooltip-content" id="portable-source-tooltip-10" role="tooltip"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for v15 三类高频语义预警命中任务数</span><strong>Source: v15 语义失配与新链路安全汇总</strong><span class="portable-source-meta">File: docs/boss_v15_semantic_mismatch_20260818.safe.json</span><p class="portable-source-description-data">展示命中任务数最高的三类重叠语义预警。</p><pre class="portable-source-query-data" aria-hidden="true"><code>SELECT * FROM (VALUES (&#39;时间&#39;,219),(&#39;漂移&#39;,192),(&#39;收窄&#39;,137)) AS t(label,affected_tasks) ORDER BY affected_tasks DESC</code></pre></div></div><div class="portable-table-scroll"><table><caption>v15 三类高频语义预警命中任务数 data</caption><thead><tr><th scope="col">预警类别</th><th scope="col" class="portable-table-number">命中任务数</th></tr></thead><tbody><tr><td>时间</td><td class="portable-table-number">219</td></tr><tr><td>漂移</td><td class="portable-table-number">192</td></tr><tr><td>收窄</td><td class="portable-table-number">137</td></tr></tbody></table></div></figure></div>
-<div class="portable-block portable-layout-full" data-artifact-block-id="warning_examples" data-artifact-block-type="markdown" data-layout="full"><section class="portable-markdown"><h3>每类一个 v15 实例，以及为什么危险</h3>
-<ol><li><strong>时间语义未落实（219条）。</strong> 题面指定分析 2026-05-28 的时效表现，SQL 却没有日期过滤，只按线路汇总延误数；历史全量可能被奖励为指定日期结果。</li><li><strong>轨迹题意与后续定义漂移（192条）。</strong> 当前任务要求最新服务质量报告，源轨迹实际做月度六指标报告，hidden target 又只剩按承运商汇总准时率；同一 task 身份对应三个问题。</li><li><strong>开放题意收窄为唯一目标（137条）。</strong> 题面要求货损根因分析和报告变化，hidden target 仅按发件方汇总货损并取三行；合理分析会因没有复现窄表而被判错。</li><li><strong>LIMIT 没有确定排序（91条）。</strong> 题面要求按时间段比较声明价值，SQL 却按部门汇总后无序取三行；gold 依赖数据库偶然返回顺序。</li><li><strong>分析或建议退化为行数（28条）。</strong> 题面要求运单事件优化建议和周报波动分析，hidden target 只是事件表行数；模型无需理解业务就可能得分。</li><li><strong>宽泛问题绑定单个数值（21条）。</strong> 题面询问温度业务痛点和优化，hidden target 只取一个最大温度值；极值被误当成完整诊断。</li></ol></section><div class="portable-inline-source portable-source-summary" data-source-id="semantic_review_summary"><div class="portable-inline-source-content portable-source-summary-content"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 每类一个 v15 实例，以及为什么危险</span><strong>Source: v15 语义失配与新链路安全汇总</strong><span class="portable-source-meta">File: docs/boss_v15_semantic_mismatch_20260818.safe.json</span><p class="portable-source-description-data">汇总 full276 六类预警、full277 绑定冲突、脱敏实例和八沙箱 4000 条最终审计。</p></div></div></div>
-<div class="portable-block portable-layout-full" data-artifact-block-id="binding_conflict" data-artifact-block-type="markdown" data-layout="full"><section class="portable-markdown"><h3>第 <span class="portable-source-tooltip portable-source-value" data-portable-source-host="true" tabindex="0" aria-describedby="portable-source-tooltip-11"><span class="portable-source-value-text">7</span><span class="portable-source-tooltip-content" id="portable-source-tooltip-11" role="tooltip"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 7</span><strong>Source: 老板 v15 标签来源与质量审计</strong><span class="portable-source-meta">File: docs/training_data_provenance_quality_audit_20260806.artifact.json</span></span></span> 类：相同 instruction 绑定不同 gold</h3>
-<p>原 full277 中，同一句“汇总服务质量最新一期关键指标，出报告”同时绑定了两套互不相同的 hidden target：一套是按承运商统计投诉率前五，另一套是按承运商名称统计准时率前三；两套都没有最新一期过滤。该冲突会让相同模型回答在不同样本中被相反奖励。</p>
-<p>我们删除了语义更弱的一条，使 full276 的 instruction→gold 冲突数降为 <span class="portable-source-tooltip portable-source-value" data-portable-source-host="true" tabindex="0" aria-describedby="portable-source-tooltip-12"><span class="portable-source-value-text">0</span><span class="portable-source-tooltip-content" id="portable-source-tooltip-12" role="tooltip"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 0</span><strong>Source: 老板 v15 标签来源与质量审计</strong><span class="portable-source-meta">File: docs/training_data_provenance_quality_audit_20260806.artifact.json</span></span></span>；但保留项仍只是在两者中相对更接近题意，并不是理想人工 gold。</p></section><div class="portable-inline-source portable-source-summary" data-source-id="legacy_audit"><div class="portable-inline-source-content portable-source-summary-content"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 第 7 类：相同 instruction 绑定不同 gold</span><strong>Source: 老板 v15 标签来源与质量审计</strong><span class="portable-source-meta">File: docs/training_data_provenance_quality_audit_20260806.artifact.json</span><p class="portable-source-description-data">逐条重放 hidden SQL、核对 expected value，并统计 instruction/gold 冲突与语义预警。</p></div></div></div>
-<div class="portable-block portable-layout-full" data-artifact-block-id="recommendations" data-artifact-block-type="markdown" data-layout="full"><section class="portable-markdown"><h2><span class="portable-source-tooltip portable-source-value" data-portable-source-host="true" tabindex="0" aria-describedby="portable-source-tooltip-13"><span class="portable-source-value-text">4</span><span class="portable-source-tooltip-content" id="portable-source-tooltip-13" role="tooltip"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 4</span><strong>Source: v15 语义失配与新链路安全汇总</strong><span class="portable-source-meta">File: docs/boss_v15_semantic_mismatch_20260818.safe.json</span></span></span>. 建议：把语义审核放到 rollout 之前</h2>
-<ol><li><strong>采用 SQL-first / EvidencePlan-first。</strong> 先明确指标、单位、时间窗、过滤、分组、排序、Top-K 和输出形态，再生成可执行 SQL、gold 和自然语言题面。</li><li><strong>建立不可分割的版本绑定。</strong> instruction、SQL、gold、数据库哈希和语义合同共同形成任务身份；改任何一项都必须整组重放与复审。</li><li><strong>把 <span class="portable-source-tooltip portable-source-value" data-portable-source-host="true" tabindex="0" aria-describedby="portable-source-tooltip-14"><span class="portable-source-value-text">6</span><span class="portable-source-tooltip-content" id="portable-source-tooltip-14" role="tooltip"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 6</span><strong>Source: v15 语义失配与新链路安全汇总</strong><span class="portable-source-meta">File: docs/boss_v15_semantic_mismatch_20260818.safe.json</span></span></span>+1 类检查变成生成时硬门。</strong> 尤其阻断 latest 无时间、LIMIT 无排序、分析退化成 COUNT(*)、非聚合单值和相同 instruction 多 gold。</li><li><strong>mixed 之后仍做独立语义审核。</strong> 有对有错只说明当前模型存在奖励方差，不说明题目和标签正确。</li><li><strong>旧 v15 不直接修补后训练。</strong> 仅保留历史证据；若要挽救，必须逐题重写并重新生成 SQL/gold，而不是只改题面或只改答案。</li><li><strong>训练采用短 canary。</strong> 同时观察老板 reward、严格最终结果正确率和人工语义正确率，三者不同向时停止。</li></ol></section><div class="portable-inline-source portable-source-summary" data-source-id="semantic_review_summary"><div class="portable-inline-source-content portable-source-summary-content"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 4. 建议：把语义审核放到 rollout 之前</span><strong>Source: v15 语义失配与新链路安全汇总</strong><span class="portable-source-meta">File: docs/boss_v15_semantic_mismatch_20260818.safe.json</span><p class="portable-source-description-data">汇总 full276 六类预警、full277 绑定冲突、脱敏实例和八沙箱 4000 条最终审计。</p></div></div></div>
-<div class="portable-block portable-layout-full" data-artifact-block-id="our_improvements" data-artifact-block-type="markdown" data-layout="full"><section class="portable-markdown"><h2><span class="portable-source-tooltip portable-source-value" data-portable-source-host="true" tabindex="0" aria-describedby="portable-source-tooltip-15"><span class="portable-source-value-text">5</span><span class="portable-source-tooltip-content" id="portable-source-tooltip-15" role="tooltip"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 5</span><strong>Source: 八沙箱开放 DWH 生成策略</strong><span class="portable-source-meta">File: docs/open_multisandbox_dwh_generation_strategy_20260815.md</span></span></span>. 我们做的改进：从同一 EvidencePlan 生成题、SQL 和答案</h2>
-<ul><li>从每个真实 SQLite 的月份、分类和值域建立结构化 EvidencePlan；题面草稿、验证 SQL 和 hidden gold 由同一个计划生成。</li><li>API 只负责把业务草稿改写成老板、分析者、运营、仓储、客服等不同角色会说的话；时间、过滤、分组、指标、方向和前五等语义锚点必须保留，缺一即拒绝。</li><li>每条 SQL 都在对应数据库重新执行，并与完整 gold 逐项比较；每个沙箱内 task、instruction 和 SQL 均要求唯一。</li><li>新难度从旧 Band <span class="portable-source-tooltip portable-source-value" data-portable-source-host="true" tabindex="0" aria-describedby="portable-source-tooltip-16"><span class="portable-source-value-text">5</span><span class="portable-source-tooltip-content" id="portable-source-tooltip-16" role="tooltip"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 5</span><strong>Source: 八沙箱开放 DWH 生成策略</strong><span class="portable-source-meta">File: docs/open_multisandbox_dwh_generation_strategy_20260815.md</span></span></span> 作为 Level <span class="portable-source-tooltip portable-source-value" data-portable-source-host="true" tabindex="0" aria-describedby="portable-source-tooltip-17"><span class="portable-source-value-text">1</span><span class="portable-source-tooltip-content" id="portable-source-tooltip-17" role="tooltip"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 1</span><strong>Source: 八沙箱开放 DWH 生成策略</strong><span class="portable-source-meta">File: docs/open_multisandbox_dwh_generation_strategy_20260815.md</span></span></span> 起点，按必要证据链逐步增加跨期比较、流程诊断、基线归因和经营权衡，不再用冗余 JOIN 制造表面难度。</li><li>所有数据继续保持 <code>training_allowed=false</code>，只有 rollout 方差和独立语义审核都通过后才允许进入训练。</li></ul></section><div class="portable-inline-source portable-source-summary" data-source-id="new_generation_contract"><div class="portable-inline-source-content portable-source-summary-content"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 5. 我们做的改进：从同一 EvidencePlan 生成题、SQL 和答案</span><strong>Source: 八沙箱开放 DWH 生成策略</strong><span class="portable-source-meta">File: docs/open_multisandbox_dwh_generation_strategy_20260815.md</span><p class="portable-source-description-data">记录 EvidencePlan、难度分级、API 语义锚点、SQL/gold 重放和禁训合同。</p></div></div></div>
-<div class="portable-block portable-layout-full" data-artifact-block-id="effects" data-artifact-block-type="markdown" data-layout="full"><section class="portable-markdown"><h2><span class="portable-source-tooltip portable-source-value" data-portable-source-host="true" tabindex="0" aria-describedby="portable-source-tooltip-18"><span class="portable-source-value-text">6</span><span class="portable-source-tooltip-content" id="portable-source-tooltip-18" role="tooltip"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 6</span><strong>Source: v15 语义失配与新链路安全汇总</strong><span class="portable-source-meta">File: docs/boss_v15_semantic_mismatch_20260818.safe.json</span></span></span>. 改进后的效果：结构门已通过，训练收益仍待验证</h2>
-<p>新链路在 v15、v20、v21、v22、v23、v24、v25、v26 八个独立沙箱各生成 <span class="portable-source-tooltip portable-source-value" data-portable-source-host="true" tabindex="0" aria-describedby="portable-source-tooltip-19"><span class="portable-source-value-text">500</span><span class="portable-source-tooltip-content" id="portable-source-tooltip-19" role="tooltip"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 500</span><strong>Source: v15 语义失配与新链路安全汇总</strong><span class="portable-source-meta">File: docs/boss_v15_semantic_mismatch_20260818.safe.json</span></span></span> 条，共 <span class="portable-source-tooltip portable-source-value" data-portable-source-host="true" tabindex="0" aria-describedby="portable-source-tooltip-20"><span class="portable-source-value-text">4000</span><span class="portable-source-tooltip-content" id="portable-source-tooltip-20" role="tooltip"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 4000</span><strong>Source: v15 语义失配与新链路安全汇总</strong><span class="portable-source-meta">File: docs/boss_v15_semantic_mismatch_20260818.safe.json</span></span></span> 条；每个沙箱五级难度各 <span class="portable-source-tooltip portable-source-value" data-portable-source-host="true" tabindex="0" aria-describedby="portable-source-tooltip-21"><span class="portable-source-value-text">100</span><span class="portable-source-tooltip-content" id="portable-source-tooltip-21" role="tooltip"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 100</span><strong>Source: v15 语义失配与新链路安全汇总</strong><span class="portable-source-meta">File: docs/boss_v15_semantic_mismatch_20260818.safe.json</span></span></span> 条。最终总审计结果为 <code>4000/4000</code> SQL/gold 重放通过、<code>4000/4000</code> 语义锚点通过、<code>4000/4000</code> API 自然化改写通过，且所有任务继续禁训。</p>
-<p>这已经解决旧管线最关键的结构缺口：题面改写不能丢失指标、时间和输出要求，SQL 与 gold 必须在同源数据库重放一致。但它仍不是“<span class="portable-source-tooltip portable-source-value" data-portable-source-host="true" tabindex="0" aria-describedby="portable-source-tooltip-22"><span class="portable-source-value-text">4000</span><span class="portable-source-tooltip-content" id="portable-source-tooltip-22" role="tooltip"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 4000</span><strong>Source: v15 语义失配与新链路安全汇总</strong><span class="portable-source-meta">File: docs/boss_v15_semantic_mismatch_20260818.safe.json</span></span></span> 条人工语义全对”的证明，更不是“GRPO 一定提升”的证明；人工语义审核和小规模训练 canary 仍是最后两道门。</p></section><div class="portable-inline-source portable-source-summary" data-source-id="semantic_review_summary"><div class="portable-inline-source-content portable-source-summary-content"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 6. 改进后的效果：结构门已通过，训练收益仍待验证</span><strong>Source: v15 语义失配与新链路安全汇总</strong><span class="portable-source-meta">File: docs/boss_v15_semantic_mismatch_20260818.safe.json</span><p class="portable-source-description-data">汇总 full276 六类预警、full277 绑定冲突、脱敏实例和八沙箱 4000 条最终审计。</p></div></div></div>
-<div class="portable-block portable-layout-full" data-artifact-block-id="further_questions" data-artifact-block-type="markdown" data-layout="full"><section class="portable-markdown"><h2>仍需验证的边界</h2>
-<ul><li>从新 4000 条中分层抽样做人工审核后，真实语义批准率是多少？</li><li>语义批准后的任务在基座与 Step 120 上是否仍集中于 <code>2–6/8</code> 的有效学习区间？</li><li>老板 reward、严格最终结果正确率和人工语义正确率在短 canary 中是否同向变化？</li><li>跨沙箱合并训练时，是否需要增加全局 instruction→gold 唯一性与数据库环境身份联合门？</li></ul></section></div>
-<div class="portable-block portable-layout-full" data-artifact-block-id="caveats" data-artifact-block-type="markdown" data-layout="full"><section class="portable-markdown"><h2>效果边界与假设</h2>
-<ul><li>六类计数来自确定性启发式审计，类别重叠且不是逐条人工错误率；但后续 <span class="portable-source-tooltip portable-source-value" data-portable-source-host="true" tabindex="0" aria-describedby="portable-source-tooltip-23"><span class="portable-source-value-text">42</span><span class="portable-source-tooltip-content" id="portable-source-tooltip-23" role="tooltip"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 42</span><strong>Source: v15 语义失配与新链路安全汇总</strong><span class="portable-source-meta">File: docs/boss_v15_semantic_mismatch_20260818.safe.json</span></span></span> 条最低机械风险任务的人工审核得到 <code>0/42</code> 语义批准，说明风险不是纯粹的规则误报。</li><li>旧 full276 的 <code>276/276</code> SQL 重放只证明机械自洽；新 <span class="portable-source-tooltip portable-source-value" data-portable-source-host="true" tabindex="0" aria-describedby="portable-source-tooltip-24"><span class="portable-source-value-text">4000</span><span class="portable-source-tooltip-content" id="portable-source-tooltip-24" role="tooltip"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 4000</span><strong>Source: v15 语义失配与新链路安全汇总</strong><span class="portable-source-meta">File: docs/boss_v15_semantic_mismatch_20260818.safe.json</span></span></span> 条的双重门也主要证明结构合同与重放保真。两者都不能替代业务专家审核。</li><li>报告中的 v15 实例是对原任务的业务化转述，未写入完整 prompt、SQL、gold 数值、轨迹或服务器路径。</li></ul></section><div class="portable-inline-source portable-source-summary" data-source-id="semantic_review_summary"><div class="portable-inline-source-content portable-source-summary-content"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 效果边界与假设</span><strong>Source: v15 语义失配与新链路安全汇总</strong><span class="portable-source-meta">File: docs/boss_v15_semantic_mismatch_20260818.safe.json</span><p class="portable-source-description-data">汇总 full276 六类预警、full277 绑定冲突、脱敏实例和八沙箱 4000 条最终审计。</p></div></div></div></div><section class="portable-sources" aria-labelledby="portable-sources-heading"><h2 id="portable-sources-heading">Sources</h2><ol><li><strong>v15 语义失配与新链路安全汇总</strong><span class="portable-source-meta">docs/boss_v15_semantic_mismatch_20260818.safe.json · json</span><p>汇总 full276 六类预警、full277 绑定冲突、脱敏实例和八沙箱 4000 条最终审计。</p></li><li><strong>老板 v15 标签来源与质量审计</strong><span class="portable-source-meta">docs/training_data_provenance_quality_audit_20260806.artifact.json · python</span><p>逐条重放 hidden SQL、核对 expected value，并统计 instruction/gold 冲突与语义预警。</p></li><li><strong>八沙箱开放 DWH 生成策略</strong><span class="portable-source-meta">docs/open_multisandbox_dwh_generation_strategy_20260815.md · contract-audit</span><p>记录 EvidencePlan、难度分级、API 语义锚点、SQL/gold 重放和禁训合同。</p></li></ol></section></main>
+<main id="data-analytics-portable-fallback" class="portable-fallback" data-portable-fallback="true" data-portable-surface="report"><header class="portable-page-header"><div class="portable-page-heading"><p class="portable-surface-label">Data Analytics report</p><h1>老板 v15 轨迹数据为什么会答非所问</h1><p class="portable-description">用6个原生v15案例拆解题面、原SQL与正确SQL的差距，并对照原生成流程和整改后的生成流程。</p></div><div class="portable-page-meta"><time datetime="2026-08-18T21:00:00+08:00">Aug 18, 2026, 1:00 PM UTC</time></div></header><div class="portable-block-stack">
+<div class="portable-block portable-layout-full" data-artifact-block-id="problem" data-artifact-block-type="markdown" data-layout="full"><section class="portable-markdown"><h2><span class="portable-source-tooltip portable-source-value" data-portable-source-host="true" tabindex="0" aria-describedby="portable-source-tooltip-1"><span class="portable-source-value-text">1</span><span class="portable-source-tooltip-content" id="portable-source-tooltip-1" role="tooltip"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 1</span><strong>Source: 老板 v15 原生案例与纠正 SQL</strong><span class="portable-source-meta">File: docs/boss_v15_semantic_mismatch_20260818.safe.json</span></span></span>. 问题是什么：SQL算对了，但算的不是用户问的东西</h2>
+<p>修正后的v15共有276道题。<code>276/276</code>条verification SQL都能执行，查询结果也和hidden gold一致；但<code>271/276</code>条至少触发了一项语义预警。</p>
+<p>这两个数字并不矛盾。前者只说明“这条SQL在数据库里能算出这个答案”，后者指出“这条SQL未必回答了题面”。如果把这种数据用于GRPO，模型会被奖励去猜hidden SQL，而不是理解用户真正的业务需求。</p></section><div class="portable-inline-source portable-source-summary" data-source-id="native_examples"><div class="portable-inline-source-content portable-source-summary-content"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 1. 问题是什么：SQL算对了，但算的不是用户问的东西</span><strong>Source: 老板 v15 原生案例与纠正 SQL</strong><span class="portable-source-meta">File: docs/boss_v15_semantic_mismatch_20260818.safe.json</span><p class="portable-source-description-data">从老板v15原始审核队列只读提取7个task的题面和verification SQL；纠正SQL按v15真实表结构编写并只读执行。</p></div></div></div>
+<div class="portable-block portable-layout-full" data-artifact-block-id="root_cause" data-artifact-block-type="markdown" data-layout="full"><section class="portable-markdown"><h2><span class="portable-source-tooltip portable-source-value" data-portable-source-host="true" tabindex="0" aria-describedby="portable-source-tooltip-2"><span class="portable-source-value-text">2</span><span class="portable-source-tooltip-content" id="portable-source-tooltip-2" role="tooltip"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 2</span><strong>Source: 老板沙箱生成链根因审计</strong><span class="portable-source-meta">File: docs/boss_sandbox_generation_root_cause_audit_20260814.md</span></span></span>. 核心原因：题目先写，答案再从数据库里硬凑</h2>
+<p>老板的原流程不是先确定“这道题究竟要查什么”，而是：</p>
+<ol><li>先按任务模板写出一句自然语言题面。</li><li>再去SQLite里寻找一条能返回非空结果的SQL。</li><li>如果原定查询没有数据，就继续fallback：去掉日期、换指标、换分组，甚至退化成<code>SUM</code>、<code>MAX</code>或<code>COUNT(*)</code>。</li><li>只要新SQL能返回结果，这个结果就成为hidden gold；已经写好的题面却不会跟着改变。</li><li>QA最后只检查SQL能不能执行、结果是不是非空，不会重新问“它还在回答原题吗”。</li></ol>
+<p>最典型的后果是：题目问2026-05-28，数据库当天没有数据。正确处理应当是放弃这道题或明确回答无数据；旧流程却会把日期条件删掉，用其他日期的数据生成一个非空gold。<strong>问题不是模型不会做题，而是答案生成器偷偷换了题。</strong></p></section><div class="portable-inline-source portable-source-summary" data-source-id="legacy_pipeline"><div class="portable-inline-source-content portable-source-summary-content"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 2. 核心原因：题目先写，答案再从数据库里硬凑</span><strong>Source: 老板沙箱生成链根因审计</strong><span class="portable-source-meta">File: docs/boss_sandbox_generation_root_cause_audit_20260814.md</span><p class="portable-source-description-data">只读核对原生成器step5任务构造、SQL fallback、QA和instruction rewrite流程。</p></div></div></div>
+<div class="portable-block portable-layout-full" data-artifact-block-id="manifestations_intro" data-artifact-block-type="markdown" data-layout="full"><section class="portable-markdown"><h2><span class="portable-source-tooltip portable-source-value" data-portable-source-host="true" tabindex="0" aria-describedby="portable-source-tooltip-3"><span class="portable-source-value-text">3</span><span class="portable-source-tooltip-content" id="portable-source-tooltip-3" role="tooltip"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 3</span><strong>Source: 老板 v15 原生案例与纠正 SQL</strong><span class="portable-source-meta">File: docs/boss_v15_semantic_mismatch_20260818.safe.json</span></span></span>. 六类题内语义错误：把原题面和原SQL放在一起看</h2>
+<p>六类统计会重叠，同一道题可能同时缺日期、换分组、又使用无序<code>LIMIT</code>，所以六类数量不能直接相加。总体口径仍是<code>271/276</code>道至少命中一项预警。</p>
+<p>每条原生instruction前面都有完全相同的沙箱说明，内容是数据库、文档目录和数据字典位置。为避免重复六次，下面只原样展示每条instruction中<code>任务：</code>后面的原生任务句；把这段共同前缀接在前面，就是完整原生题面。</p></section><div class="portable-inline-source portable-source-summary" data-source-id="native_examples"><div class="portable-inline-source-content portable-source-summary-content"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 3. 六类题内语义错误：把原题面和原SQL放在一起看</span><strong>Source: 老板 v15 原生案例与纠正 SQL</strong><span class="portable-source-meta">File: docs/boss_v15_semantic_mismatch_20260818.safe.json</span><p class="portable-source-description-data">从老板v15原始审核队列只读提取7个task的题面和verification SQL；纠正SQL按v15真实表结构编写并只读执行。</p></div></div></div>
+<div class="portable-block portable-layout-full" data-artifact-block-id="case_time" data-artifact-block-type="markdown" data-layout="full"><section class="portable-markdown"><h3><span class="portable-source-tooltip portable-source-value" data-portable-source-host="true" tabindex="0" aria-describedby="portable-source-tooltip-4"><span class="portable-source-value-text">3.1</span><span class="portable-source-tooltip-content" id="portable-source-tooltip-4" role="tooltip"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 3.1</span><strong>Source: 老板 v15 原生案例与纠正 SQL</strong><span class="portable-source-meta">File: docs/boss_v15_semantic_mismatch_20260818.safe.json</span></span></span> 时间语义未落实（219条）｜task_000060</h3>
+<p><strong>原生题面</strong></p>
+<blockquote>请帮我看下“联动分析时效分析宽表”在2026-05-28这一天的各项关联指标表现情况。</blockquote>
+<p><strong>原生verification SQL</strong></p>
+<pre><code>SELECT route_id, SUM(delay_count)
+FROM dim_dws_timeliness_analysis
+GROUP BY route_id
+LIMIT 3;</code></pre>
+<p><strong>按题面应该执行的SQL</strong></p>
+<pre><code>SELECT stat_date, region, route_id, time_slot, carrier_id,
+       on_time_rate, avg_transit_hours,
+       delay_count, severe_delay_count
+FROM dim_dws_timeliness_analysis
+WHERE DATE(stat_date) = &#39;2026-05-28&#39;
+ORDER BY region, route_id, time_slot, carrier_id;</code></pre>
+<p><strong>差距</strong>：原SQL完全删除了<code>2026-05-28</code>，并把“各项关联指标”缩成“线路+延误数”。纠正SQL已在v15库只读执行，结果为0行。</p>
+<p><strong>错误原因</strong>：<strong>指定日期没有数据时，正确结论是“无数据/这道题不能生成”，不是删掉日期后拿历史数据冒充答案。</strong></p></section><div class="portable-inline-source portable-source-summary" data-source-id="native_examples"><div class="portable-inline-source-content portable-source-summary-content"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 3.1 时间语义未落实（219条）｜task_000060</span><strong>Source: 老板 v15 原生案例与纠正 SQL</strong><span class="portable-source-meta">File: docs/boss_v15_semantic_mismatch_20260818.safe.json</span><p class="portable-source-description-data">从老板v15原始审核队列只读提取7个task的题面和verification SQL；纠正SQL按v15真实表结构编写并只读执行。</p></div></div></div>
+<div class="portable-block portable-layout-full" data-artifact-block-id="case_drift" data-artifact-block-type="markdown" data-layout="full"><section class="portable-markdown"><h3><span class="portable-source-tooltip portable-source-value" data-portable-source-host="true" tabindex="0" aria-describedby="portable-source-tooltip-5"><span class="portable-source-value-text">3.2</span><span class="portable-source-tooltip-content" id="portable-source-tooltip-5" role="tooltip"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 3.2</span><strong>Source: 老板 v15 原生案例与纠正 SQL</strong><span class="portable-source-meta">File: docs/boss_v15_semantic_mismatch_20260818.safe.json</span></span></span> 轨迹题意与后续任务定义漂移（192条）｜task_000147</h3>
+<p><strong>原生题面</strong></p>
+<blockquote>对最新一期服务质量的关键指标进行汇总然后形成报告</blockquote>
+<p><strong>原生verification SQL</strong></p>
+<pre><code>SELECT t2.carrier_name, SUM(t1.on_time_rate)
+FROM fact_dws_service_quality_analysis t1
+JOIN dim_carrier t2 ON t1.carrier_name = t2.carrier_id
+GROUP BY t2.carrier_name
+LIMIT 3;</code></pre>
+<p><strong>按当前题面应该执行的SQL</strong></p>
+<pre><code>WITH latest AS (
+  SELECT MAX(DATE(stat_date)) AS stat_date
+  FROM fact_dws_service_quality_analysis
+)
+SELECT q.stat_date,
+       COALESCE(c.carrier_name, q.carrier_name) AS carrier,
+       SUM(q.total_order_cnt) AS total_orders,
+       SUM(q.damage_cnt) AS damage_orders,
+       SUM(q.loss_cnt) AS loss_orders,
+       ROUND(SUM(q.damage_rate*q.total_order_cnt)/NULLIF(SUM(q.total_order_cnt),0),4) AS damage_rate,
+       ROUND(SUM(q.loss_rate*q.total_order_cnt)/NULLIF(SUM(q.total_order_cnt),0),4) AS loss_rate,
+       ROUND(SUM(q.complaint_rate*q.total_order_cnt)/NULLIF(SUM(q.total_order_cnt),0),4) AS complaint_rate,
+       ROUND(SUM(q.return_rate*q.total_order_cnt)/NULLIF(SUM(q.total_order_cnt),0),4) AS return_rate,
+       ROUND(SUM(q.on_time_rate*q.total_order_cnt)/NULLIF(SUM(q.total_order_cnt),0),4) AS on_time_rate,
+       ROUND(SUM(q.satisfaction_score*q.total_order_cnt)/NULLIF(SUM(q.total_order_cnt),0),2) AS satisfaction_score
+FROM fact_dws_service_quality_analysis q
+JOIN latest l ON DATE(q.stat_date)=l.stat_date
+LEFT JOIN dim_carrier c ON q.carrier_name=c.carrier_id
+GROUP BY q.stat_date, COALESCE(c.carrier_name,q.carrier_name)
+ORDER BY total_orders DESC, carrier;</code></pre>
+<p><strong>差距</strong>：当前题面要最新一期关键指标报告；源轨迹做的是按月多指标报告；hidden SQL又变成无日期的单一准时率表。</p>
+<p><strong>错误原因</strong>：<strong>一个task身份里塞了三道不同的题。模型无论回答题面、模仿轨迹还是命中hidden SQL，都可能被另外两套定义判错。</strong></p></section><div class="portable-inline-source portable-source-summary" data-source-id="native_examples"><div class="portable-inline-source-content portable-source-summary-content"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 3.2 轨迹题意与后续任务定义漂移（192条）｜task_000147</span><strong>Source: 老板 v15 原生案例与纠正 SQL</strong><span class="portable-source-meta">File: docs/boss_v15_semantic_mismatch_20260818.safe.json</span><p class="portable-source-description-data">从老板v15原始审核队列只读提取7个task的题面和verification SQL；纠正SQL按v15真实表结构编写并只读执行。</p></div></div></div>
+<div class="portable-block portable-layout-full" data-artifact-block-id="case_narrow" data-artifact-block-type="markdown" data-layout="full"><section class="portable-markdown"><h3><span class="portable-source-tooltip portable-source-value" data-portable-source-host="true" tabindex="0" aria-describedby="portable-source-tooltip-6"><span class="portable-source-value-text">3.3</span><span class="portable-source-tooltip-content" id="portable-source-tooltip-6" role="tooltip"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 3.3</span><strong>Source: 老板 v15 原生案例与纠正 SQL</strong><span class="portable-source-meta">File: docs/boss_v15_semantic_mismatch_20260818.safe.json</span></span></span> 时间趋势题被收窄成单日分组（137条）｜task_000257</h3>
+<p><strong>原生题面</strong></p>
+<blockquote>帮我看看货损记录从2026年3月27日到6月28日这段时间，货损数量的趋势是上升了还是下降了？</blockquote>
+<p><strong>原生verification SQL</strong></p>
+<pre><code>SELECT t2.sender_info, SUM(t1.damage_qty)
+FROM fact_cargo_damage_record t1
+JOIN fact_waybill t2 ON t1.fact_waybill_id=t2.waybill_no
+WHERE DATE(occurred_at)=&#39;2026-06-27&#39;
+GROUP BY t2.sender_info
+LIMIT 3;</code></pre>
+<p><strong>按题面应该执行的SQL</strong></p>
+<pre><code>SELECT DATE(occurred_at) AS day,
+       SUM(damage_qty) AS damage_qty
+FROM fact_cargo_damage_record
+WHERE DATE(occurred_at) BETWEEN &#39;2026-03-27&#39; AND &#39;2026-06-28&#39;
+GROUP BY DATE(occurred_at)
+ORDER BY day;</code></pre>
+<p><strong>差距</strong>：题面要三个月的时间趋势；原SQL只看6月27日，把维度换成发件方，再截三行。纠正SQL返回91个日粒度结果。</p>
+<p><strong>错误原因</strong>：<strong>它不是“少查了一点”，而是把时间趋势题换成了单日客户排行题。</strong></p></section><div class="portable-inline-source portable-source-summary" data-source-id="native_examples"><div class="portable-inline-source-content portable-source-summary-content"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 3.3 时间趋势题被收窄成单日分组（137条）｜task_000257</span><strong>Source: 老板 v15 原生案例与纠正 SQL</strong><span class="portable-source-meta">File: docs/boss_v15_semantic_mismatch_20260818.safe.json</span><p class="portable-source-description-data">从老板v15原始审核队列只读提取7个task的题面和verification SQL；纠正SQL按v15真实表结构编写并只读执行。</p></div></div></div>
+<div class="portable-block portable-layout-full" data-artifact-block-id="case_limit" data-artifact-block-type="markdown" data-layout="full"><section class="portable-markdown"><h3><span class="portable-source-tooltip portable-source-value" data-portable-source-host="true" tabindex="0" aria-describedby="portable-source-tooltip-7"><span class="portable-source-value-text">3.4</span><span class="portable-source-tooltip-content" id="portable-source-tooltip-7" role="tooltip"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 3.4</span><strong>Source: 老板 v15 原生案例与纠正 SQL</strong><span class="portable-source-meta">File: docs/boss_v15_semantic_mismatch_20260818.safe.json</span></span></span> 比较维度被换掉，而且LIMIT没有排序（91条）｜task_000036</h3>
+<p><strong>原生题面</strong></p>
+<blockquote>最新一期里，不同时间段发生的质量异常事件，对应的货物声明价值有没有明显差别？</blockquote>
+<p><strong>原生verification SQL</strong></p>
+<pre><code>SELECT t2.dept_name, SUM(t1.cargo_declared_value)
+FROM fact_quality_incident t1
+JOIN dim_department t2 ON t1.dim_department_id=t2.dept_id
+GROUP BY t2.dept_name
+LIMIT 3;</code></pre>
+<p><strong>按题面应该执行的SQL</strong></p>
+<pre><code>WITH latest AS (
+  SELECT MAX(DATE(reported_at)) AS day
+  FROM fact_quality_incident
+)
+SELECT CASE
+         WHEN CAST(strftime(&#39;%H&#39;,reported_at) AS INTEGER)&lt;6 THEN &#39;00:00-05:59&#39;
+         WHEN CAST(strftime(&#39;%H&#39;,reported_at) AS INTEGER)&lt;12 THEN &#39;06:00-11:59&#39;
+         WHEN CAST(strftime(&#39;%H&#39;,reported_at) AS INTEGER)&lt;18 THEN &#39;12:00-17:59&#39;
+         ELSE &#39;18:00-23:59&#39;
+       END AS time_slot,
+       COUNT(*) AS incident_count,
+       ROUND(AVG(cargo_declared_value),2) AS avg_declared_value,
+       ROUND(SUM(cargo_declared_value),2) AS total_declared_value
+FROM fact_quality_incident
+JOIN latest ON DATE(reported_at)=latest.day
+GROUP BY time_slot
+ORDER BY MIN(CAST(strftime(&#39;%H&#39;,reported_at) AS INTEGER));</code></pre>
+<p><strong>差距</strong>：题面按时间段比较，原SQL却按部门分组；题面说最新一期，原SQL没有日期；<code>LIMIT 3</code>也没有<code>ORDER BY</code>。</p>
+<p><strong>错误原因</strong>：<strong>时间、分组维度和排序三处同时答错，返回三行只是数据库碰巧先吐出的三行。</strong></p></section><div class="portable-inline-source portable-source-summary" data-source-id="native_examples"><div class="portable-inline-source-content portable-source-summary-content"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 3.4 比较维度被换掉，而且LIMIT没有排序（91条）｜task_000036</span><strong>Source: 老板 v15 原生案例与纠正 SQL</strong><span class="portable-source-meta">File: docs/boss_v15_semantic_mismatch_20260818.safe.json</span><p class="portable-source-description-data">从老板v15原始审核队列只读提取7个task的题面和verification SQL；纠正SQL按v15真实表结构编写并只读执行。</p></div></div></div>
+<div class="portable-block portable-layout-full" data-artifact-block-id="case_count" data-artifact-block-type="markdown" data-layout="full"><section class="portable-markdown"><h3><span class="portable-source-tooltip portable-source-value" data-portable-source-host="true" tabindex="0" aria-describedby="portable-source-tooltip-8"><span class="portable-source-value-text">3.5</span><span class="portable-source-tooltip-content" id="portable-source-tooltip-8" role="tooltip"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 3.5</span><strong>Source: 老板 v15 原生案例与纠正 SQL</strong><span class="portable-source-meta">File: docs/boss_v15_semantic_mismatch_20260818.safe.json</span></span></span> 两项分析任务退化成COUNT(*)（28条）｜task_000109</h3>
+<p><strong>原生题面</strong></p>
+<blockquote>最近运单事件最新一期的数据出来后，我们发现有些可以优化的地方；另外，dim_weekly_report这张表里的指标最近起伏有点大，也得一起看看怎么稳住。</blockquote>
+<p><strong>原生verification SQL</strong></p>
+<pre><code>SELECT COUNT(*) FROM fact_waybill_event;</code></pre>
+<p><strong>按题面至少需要两组SQL</strong></p>
+<pre><code>WITH latest AS (
+  SELECT MAX(DATE(occurred_at)) AS day FROM fact_waybill_event
+)
+SELECT DATE(e.occurred_at) AS day, e.event_type,
+       COUNT(*) AS event_count,
+       ROUND(AVG(e.dwell_minutes),1) AS avg_dwell_minutes,
+       MAX(e.dwell_minutes) AS max_dwell_minutes
+FROM fact_waybill_event e
+JOIN latest l ON DATE(e.occurred_at)=l.day
+GROUP BY DATE(e.occurred_at),e.event_type
+ORDER BY avg_dwell_minutes DESC,event_count DESC;
+
+SELECT week_start,week_end,aggregated_kpi_values,generation_status
+FROM dim_weekly_report
+ORDER BY DATE(week_start) DESC
+LIMIT 8;</code></pre>
+<p><strong>差距</strong>：题面同时要求最新运单事件优化和周报波动分析；原SQL只数事件表总行数，连<code>dim_weekly_report</code>都没读取。</p>
+<p><strong>错误原因</strong>：<strong>用户问“哪里有问题、怎么稳住”，标签却只问“表里一共有几行”。这是把业务分析降级成点名册计数。</strong></p></section><div class="portable-inline-source portable-source-summary" data-source-id="native_examples"><div class="portable-inline-source-content portable-source-summary-content"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 3.5 两项分析任务退化成COUNT(*)（28条）｜task_000109</span><strong>Source: 老板 v15 原生案例与纠正 SQL</strong><span class="portable-source-meta">File: docs/boss_v15_semantic_mismatch_20260818.safe.json</span><p class="portable-source-description-data">从老板v15原始审核队列只读提取7个task的题面和verification SQL；纠正SQL按v15真实表结构编写并只读执行。</p></div></div></div>
+<div class="portable-block portable-layout-full" data-artifact-block-id="case_numeric" data-artifact-block-type="markdown" data-layout="full"><section class="portable-markdown"><h3><span class="portable-source-tooltip portable-source-value" data-portable-source-host="true" tabindex="0" aria-describedby="portable-source-tooltip-9"><span class="portable-source-value-text">3.6</span><span class="portable-source-tooltip-content" id="portable-source-tooltip-9" role="tooltip"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 3.6</span><strong>Source: 老板 v15 原生案例与纠正 SQL</strong><span class="portable-source-meta">File: docs/boss_v15_semantic_mismatch_20260818.safe.json</span></span></span> 完整诊断被一个最大温度值代替（21条）｜task_000113</h3>
+<p><strong>原生题面</strong></p>
+<blockquote>分析一下温度记录最新一期存在的问题和改进方案。</blockquote>
+<p><strong>原生verification SQL</strong></p>
+<pre><code>SELECT temperature_value
+FROM fact_temperature_record
+ORDER BY temperature_value DESC
+LIMIT 1;</code></pre>
+<p><strong>按题面应该先取得的诊断证据</strong></p>
+<pre><code>WITH latest AS (
+  SELECT MAX(DATE(recorded_at)) AS day FROM fact_temperature_record
+)
+SELECT t.entity_type,t.entity_id,
+       COUNT(*) AS record_count,
+       SUM(t.excursion_flag) AS excursion_count,
+       ROUND(100.0*SUM(t.excursion_flag)/NULLIF(COUNT(*),0),2) AS excursion_rate_pct,
+       ROUND(AVG(t.actual_temp_c),2) AS avg_actual_temp_c,
+       ROUND(MAX(ABS(CAST(t.deviation_degree AS REAL))),2) AS max_abs_deviation
+FROM fact_temperature_record t
+JOIN latest l ON DATE(t.recorded_at)=l.day
+GROUP BY t.entity_type,t.entity_id
+ORDER BY excursion_rate_pct DESC,max_abs_deviation DESC,record_count DESC;</code></pre>
+<p><strong>差距</strong>：题面要最新一期、问题定位和改进方案；原SQL没有最新日期、没有异常率、没有对象分组，只取全表最大值。</p>
+<p><strong>错误原因</strong>：<strong>最高温度只能说明“出现过一个高值”，不能说明问题在哪、影响多大，更不可能推出改进方案。</strong></p></section><div class="portable-inline-source portable-source-summary" data-source-id="native_examples"><div class="portable-inline-source-content portable-source-summary-content"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 3.6 完整诊断被一个最大温度值代替（21条）｜task_000113</span><strong>Source: 老板 v15 原生案例与纠正 SQL</strong><span class="portable-source-meta">File: docs/boss_v15_semantic_mismatch_20260818.safe.json</span><p class="portable-source-description-data">从老板v15原始审核队列只读提取7个task的题面和verification SQL；纠正SQL按v15真实表结构编写并只读执行。</p></div></div></div>
+<div class="portable-block portable-layout-full" data-artifact-block-id="warning_scale_note" data-artifact-block-type="markdown" data-layout="full"><section class="portable-markdown"><h3>六类问题的规模</h3>
+<p>下图只帮助比较审核工作量：时间条件缺失和任务定义漂移覆盖最广，应当优先修复。由于同一道题可以同时命中多类，条形长度不能相加，也不能直接当作人工确认错误数。</p></section><div class="portable-inline-source portable-source-summary" data-source-id="native_examples"><div class="portable-inline-source-content portable-source-summary-content"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 六类问题的规模</span><strong>Source: 老板 v15 原生案例与纠正 SQL</strong><span class="portable-source-meta">File: docs/boss_v15_semantic_mismatch_20260818.safe.json</span><p class="portable-source-description-data">从老板v15原始审核队列只读提取7个task的题面和verification SQL；纠正SQL按v15真实表结构编写并只读执行。</p></div></div></div>
+<div class="portable-block portable-layout-full" data-artifact-block-id="warning_scale_block" data-artifact-block-type="chart" data-layout="full"><figure class="portable-content-card portable-chart-summary" data-artifact-id="warning_scale_chart" data-artifact-kind="chart" data-chart-id="warning_scale_chart" data-portable-visual-title="六类语义预警命中任务数" data-portable-source-host="true" tabindex="0" aria-label="六类语义预警命中任务数" aria-describedby="portable-source-tooltip-10"><figcaption class="portable-visual-header"><strong>六类语义预警命中任务数</strong></figcaption><div class="portable-inline-source" data-source-id="warning_scale_source"><div class="portable-inline-source-content portable-source-tooltip-content" id="portable-source-tooltip-10" role="tooltip"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 六类语义预警命中任务数</span><strong>Source: 老板v15语义预警统计</strong><span class="portable-source-meta">File: docs/boss_v15_semantic_mismatch_20260818.safe.json</span><p class="portable-source-description-data">full276六类重叠语义预警的命中任务数。</p><pre class="portable-source-query-data" aria-hidden="true"><code>SELECT * FROM (VALUES (&#39;时间缺失&#39;,219),(&#39;定义漂移&#39;,192),(&#39;题意收窄&#39;,137),(&#39;无序LIMIT&#39;,91),(&#39;退化行数&#39;,28),(&#39;单个数值&#39;,21)) AS t(label,affected_tasks) ORDER BY affected_tasks DESC</code></pre></div></div><div class="portable-table-scroll"><table><caption>六类语义预警命中任务数 data</caption><thead><tr><th scope="col">语义预警</th><th scope="col" class="portable-table-number">命中任务数</th></tr></thead><tbody><tr><td>时间缺失</td><td class="portable-table-number">219</td></tr><tr><td>定义漂移</td><td class="portable-table-number">192</td></tr><tr><td>题意收窄</td><td class="portable-table-number">137</td></tr><tr><td>无序LIMIT</td><td class="portable-table-number">91</td></tr><tr><td>退化行数</td><td class="portable-table-number">28</td></tr><tr><td>单个数值</td><td class="portable-table-number">21</td></tr></tbody></table></div></figure></div>
+<div class="portable-block portable-layout-full" data-artifact-block-id="binding_conflict" data-artifact-block-type="markdown" data-layout="full"><section class="portable-markdown"><h2>不是“第7类”，而是更严重的跨样本标签冲突</h2>
+<p>前面六类是在一条题目内部比较题面和SQL。下面这个问题发生在两条样本之间，因此不应该硬塞进同一层级。</p>
+<p><strong>相同的原生题面</strong></p>
+<blockquote>对最新一期服务质量的关键指标进行汇总然后形成报告</blockquote>
+<p><strong>task_000033绑定的SQL</strong></p>
+<pre><code>SELECT carrier_name,SUM(complaint_rate)
+FROM fact_dws_service_quality_analysis
+GROUP BY carrier_name
+LIMIT 5;</code></pre>
+<p><strong>task_000147绑定的SQL</strong></p>
+<pre><code>SELECT t2.carrier_name,SUM(t1.on_time_rate)
+FROM fact_dws_service_quality_analysis t1
+JOIN dim_carrier t2 ON t1.carrier_name=t2.carrier_id
+GROUP BY t2.carrier_name
+LIMIT 3;</code></pre>
+<p>一条只验投诉率前五，另一条只验准时率前三；两条都没有“最新一期”，也都不是“关键指标报告”。这会让同一个模型回答在一个样本得分、在另一个样本失分。</p>
+<p><strong>处理结果</strong>：我们删除了更弱的<code>task_000033</code>，使full276不再存在相同instruction绑定不同gold；但保留<code>task_000147</code>只是“两条坏标签里相对接近的一条”，仍然需要按3.2的多指标SQL重建。</p></section><div class="portable-inline-source portable-source-summary" data-source-id="native_examples"><div class="portable-inline-source-content portable-source-summary-content"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 不是“第7类”，而是更严重的跨样本标签冲突</span><strong>Source: 老板 v15 原生案例与纠正 SQL</strong><span class="portable-source-meta">File: docs/boss_v15_semantic_mismatch_20260818.safe.json</span><p class="portable-source-description-data">从老板v15原始审核队列只读提取7个task的题面和verification SQL；纠正SQL按v15真实表结构编写并只读执行。</p></div></div></div>
+<div class="portable-block portable-layout-full" data-artifact-block-id="recommendations" data-artifact-block-type="markdown" data-layout="full"><section class="portable-markdown"><h2><span class="portable-source-tooltip portable-source-value" data-portable-source-host="true" tabindex="0" aria-describedby="portable-source-tooltip-11"><span class="portable-source-value-text">4</span><span class="portable-source-tooltip-content" id="portable-source-tooltip-11" role="tooltip"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 4</span><strong>Source: 老板沙箱生成链根因审计</strong><span class="portable-source-meta">File: docs/boss_sandbox_generation_root_cause_audit_20260814.md</span></span></span>. 建议：旧v15不要继续修修补补后直接训练</h2>
+<ol><li><strong>保留SQLite和schema，重建任务层。</strong> 数据库资产可以复用，旧instruction—SQL—gold三元组不能直接复用。</li><li><strong>所有题先写结构化QueryPlan。</strong> 明确指标、聚合、时间、筛选、分组、排序和输出形态，再生成题面和SQL。</li><li><strong>禁止改变题意的fallback。</strong> 指定日期没有数据就丢弃任务，不能去掉日期；分析任务无法用SQL完整验收，就进入SFT/reference或增加明确rubric，不能压成一个数字。</li><li><strong>任何改写都必须整组复验。</strong> 改instruction、SQL或gold中的任意一个，都要重新执行SQL并重新检查语义。</li><li><strong>rollout之后仍需人工审核。</strong> mixed只说明模型有对有错，不说明题和答案标签正确。</li></ol></section><div class="portable-inline-source portable-source-summary" data-source-id="legacy_pipeline"><div class="portable-inline-source-content portable-source-summary-content"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 4. 建议：旧v15不要继续修修补补后直接训练</span><strong>Source: 老板沙箱生成链根因审计</strong><span class="portable-source-meta">File: docs/boss_sandbox_generation_root_cause_audit_20260814.md</span><p class="portable-source-description-data">只读核对原生成器step5任务构造、SQL fallback、QA和instruction rewrite流程。</p></div></div></div>
+<div class="portable-block portable-layout-full" data-artifact-block-id="legacy_flow" data-artifact-block-type="markdown" data-layout="full"><section class="portable-markdown"><h2><span class="portable-source-tooltip portable-source-value" data-portable-source-host="true" tabindex="0" aria-describedby="portable-source-tooltip-12"><span class="portable-source-value-text">5</span><span class="portable-source-tooltip-content" id="portable-source-tooltip-12" role="tooltip"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 5</span><strong>Source: 老板沙箱生成链根因审计</strong><span class="portable-source-meta">File: docs/boss_sandbox_generation_root_cause_audit_20260814.md</span></span></span>. 我们做了什么改进</h2>
+<h3>原生流程</h3>
+<ol><li>任务模板先写题面。</li><li>从数据库反向寻找能返回非空结果的SQL。</li><li>查询失败时修改日期、指标、聚合或分组。</li><li>查询结果直接成为hidden gold。</li><li>QA只检查SQL可执行和结果非空。</li><li>LLM再改写题面。</li><li>数据进入rollout或训练候选。</li></ol>
+<p>原流程的真正source of truth是“哪条SQL碰巧返回了数据”。题面只是先写好的外壳。</p></section><div class="portable-inline-source portable-source-summary" data-source-id="legacy_pipeline"><div class="portable-inline-source-content portable-source-summary-content"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 5. 我们做了什么改进</span><strong>Source: 老板沙箱生成链根因审计</strong><span class="portable-source-meta">File: docs/boss_sandbox_generation_root_cause_audit_20260814.md</span><p class="portable-source-description-data">只读核对原生成器step5任务构造、SQL fallback、QA和instruction rewrite流程。</p></div></div></div>
+<div class="portable-block portable-layout-full" data-artifact-block-id="new_flow" data-artifact-block-type="markdown" data-layout="full"><section class="portable-markdown"><h3>改动后的流程</h3>
+<ol><li>读取数据库真实存在的日期、分类和值域。</li><li>先生成并冻结EvidencePlan/QueryPlan。</li><li>从计划编译SQL并执行，得到完整gold。</li><li>从同一计划生成标准题面。</li><li>API只负责把话说得自然，不允许改语义锚点。</li><li>改写后重新检查日期、指标、筛选、分组、排序和输出形态。</li><li>全量重放SQL并比较完整gold，同时检查唯一性。</li><li>数据保持<code>training_allowed=false</code>。</li><li>完成每题8次采样、人工语义审核和短canary后才放行。</li></ol>
+<p>新流程的source of truth是结构化计划。题面、SQL和gold都从同一个计划生成，任何一项变动都会触发整组复验。</p></section><div class="portable-inline-source portable-source-summary" data-source-id="new_pipeline"><div class="portable-inline-source-content portable-source-summary-content"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 改动后的流程</span><strong>Source: 八沙箱开放DWH生成策略</strong><span class="portable-source-meta">File: docs/open_multisandbox_dwh_generation_strategy_20260815.md</span><p class="portable-source-description-data">记录EvidencePlan/QueryPlan、语义锚点、SQL/gold重放、难度分级和禁训门。</p></div></div></div>
+<div class="portable-block portable-layout-full" data-artifact-block-id="what_changed" data-artifact-block-type="markdown" data-layout="full"><section class="portable-markdown"><h3>我们真正改变了什么</h3>
+<p>| 环节 | 原流程 | 改动后 | |---|---|---| | 题目来源 | 先写自然语言模板 | 先冻结EvidencePlan/QueryPlan | | SQL失败 | 换日期、换指标、换聚合直到非空 | 直接拒绝并重新生成，不允许换题 | | 题面与SQL | 两套逻辑分别生成 | 从同一计划生成 | | API改写 | 只看语句是否自然 | 日期、指标、分组、排序等锚点缺一即拒绝 | | gold验收 | SQL可执行、结果非空 | 完整结果重放 + 语义锚点 + 唯一性 | | 难度 | JOIN多看起来就难 | 按必要证据链、跨期、归因和经营权衡分级 | | 训练放行 | 生成后可能直接进入候选 | 默认禁训，必须经过采样、人工审核和canary |</p></section><div class="portable-inline-source portable-source-summary" data-source-id="new_pipeline"><div class="portable-inline-source-content portable-source-summary-content"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 我们真正改变了什么</span><strong>Source: 八沙箱开放DWH生成策略</strong><span class="portable-source-meta">File: docs/open_multisandbox_dwh_generation_strategy_20260815.md</span><p class="portable-source-description-data">记录EvidencePlan/QueryPlan、语义锚点、SQL/gold重放、难度分级和禁训门。</p></div></div></div>
+<div class="portable-block portable-layout-full" data-artifact-block-id="effects" data-artifact-block-type="markdown" data-layout="full"><section class="portable-markdown"><h2><span class="portable-source-tooltip portable-source-value" data-portable-source-host="true" tabindex="0" aria-describedby="portable-source-tooltip-13"><span class="portable-source-value-text">6</span><span class="portable-source-tooltip-content" id="portable-source-tooltip-13" role="tooltip"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 6</span><strong>Source: 老板 v15 原生案例与纠正 SQL</strong><span class="portable-source-meta">File: docs/boss_v15_semantic_mismatch_20260818.safe.json</span></span></span>. 改进后的效果：生成链的结构问题已被堵住，训练收益还不能提前宣称</h2>
+<p>我们在v15、v20、v21、v22、v23、v24、v25、v26八个沙箱各生成500道，共4000道：</p>
+<ul><li><code>4000/4000</code>条SQL与完整gold重放一致；</li><li><code>4000/4000</code>条API自然化后保留全部语义锚点；</li><li>每个沙箱500条task、instruction和SQL各自唯一；</li><li>五级难度各100条；</li><li><code>4000/4000</code>条仍保持<code>training_allowed=false</code>。</li></ul>
+<p>这说明旧流程里“题面写完后SQL偷偷换题”“改写丢语义”“同题绑定冲突答案”三类结构缺口已经有硬门阻断。</p>
+<p>但当前效果只证明<strong>生成合同生效</strong>，不等于4000道题都已经被业务专家逐条批准，更不等于GRPO训练一定提升。最终还需要分层人工审核、每题8次采样和短训练canary。</p></section><div class="portable-inline-source portable-source-summary" data-source-id="native_examples"><div class="portable-inline-source-content portable-source-summary-content"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 6. 改进后的效果：生成链的结构问题已被堵住，训练收益还不能提前宣称</span><strong>Source: 老板 v15 原生案例与纠正 SQL</strong><span class="portable-source-meta">File: docs/boss_v15_semantic_mismatch_20260818.safe.json</span><p class="portable-source-description-data">从老板v15原始审核队列只读提取7个task的题面和verification SQL；纠正SQL按v15真实表结构编写并只读执行。</p></div></div></div>
+<div class="portable-block portable-layout-full" data-artifact-block-id="boundary" data-artifact-block-type="markdown" data-layout="full"><section class="portable-markdown"><h2>读这些数字时要注意</h2>
+<ul><li>六类数量是确定性预警，不是六个互斥错误桶，也不能相加得到错误总数。</li><li><code>271/276</code>表示至少触发一项高风险检查，不表示271条都已经由人工逐条判死刑。</li><li>原生例子保留了真实task句和真实verification SQL，但没有写入expected gold值或数据库业务行。</li><li>报告中的纠正SQL按v15真实表结构编写并只读执行；task_000060按题面查询得到0行，这恰好证明旧生成器应该拒绝该任务，而不应删除日期。</li></ul></section><div class="portable-inline-source portable-source-summary" data-source-id="native_examples"><div class="portable-inline-source-content portable-source-summary-content"><span class="portable-source-tooltip-heading" aria-hidden="true">Source for 读这些数字时要注意</span><strong>Source: 老板 v15 原生案例与纠正 SQL</strong><span class="portable-source-meta">File: docs/boss_v15_semantic_mismatch_20260818.safe.json</span><p class="portable-source-description-data">从老板v15原始审核队列只读提取7个task的题面和verification SQL；纠正SQL按v15真实表结构编写并只读执行。</p></div></div></div></div><section class="portable-sources" aria-labelledby="portable-sources-heading"><h2 id="portable-sources-heading">Sources</h2><ol><li><strong>老板 v15 原生案例与纠正 SQL</strong><span class="portable-source-meta">docs/boss_v15_semantic_mismatch_20260818.safe.json · source-audit</span><p>从老板v15原始审核队列只读提取7个task的题面和verification SQL；纠正SQL按v15真实表结构编写并只读执行。</p></li><li><strong>老板沙箱生成链根因审计</strong><span class="portable-source-meta">docs/boss_sandbox_generation_root_cause_audit_20260814.md · source-audit</span><p>只读核对原生成器step5任务构造、SQL fallback、QA和instruction rewrite流程。</p></li><li><strong>八沙箱开放DWH生成策略</strong><span class="portable-source-meta">docs/open_multisandbox_dwh_generation_strategy_20260815.md · contract-audit</span><p>记录EvidencePlan/QueryPlan、语义锚点、SQL/gold重放、难度分级和禁训门。</p></li></ol></section></main>
 <script data-data-analytics-portable-source-tooltips="true">(() => {
   const RUNTIME_FLAG = "__dataAnalyticsPortableSourceTooltipsInitialized";
   const READY_ATTRIBUTE = "data-portable-source-tooltips-ready";
@@ -402,123 +568,152 @@ html:not([data-portable-source-tooltips-ready]) .portable-chart-summary>.portabl
 })();</script>
 <div id="data-analytics-portable-reader" aria-hidden="true" inert></div>
 <template id="data-analytics-portable-artifact-payload-source" data-compression="gzip-base64">
-H4sIAAAAAAACCu1b63Pb1pX/VzDsdJLYsizKb830Q9qmW++mTTdJd2dn06FgEpK5pkiFpPyYjGdA
-vfgw+JBEiRJJPShLFiObpGQrEp/i/2LjXgCf9C9szz0ACFKUnTbd6exMvsgGCVzc8/qdc37n8jub
-74FtJOifEgZsj9yucSHoCD6ZFGwjNt4fdI/xzqBtwBaY8o/xTvjQL0z6/PDRBO91jwmBoG3kO9tD
-wR9w+7y2EXvfW4PuoAc+UMUQXW9zD+03OLVVVNs1unxA42UlO6tWSnItKlfjRKppc3GyE1dyq7YB
-m0sIOP3uySBb3KbuPdfCMZrZY0vgw3K1LreWua/+/fOr4z6Pi6P5Ot0+UMP79KhF4kdyIy5XE9r2
-Kp1Nkp1DbS5+1pRI7VgtH5DWMnfzsp1TDhtapqxtr74TQ3T5iKZrpFFXy2W4XDlQ0ps0ktKWTsmi
-RFpLJBqnyxG6kVdPa8qy9E6ctg3YxgWv4OeDguvToG3ENjw0fPPK0O0r9ttf22+PDA2NDA1dHoL/
-2AZszvu8Pxiwjfz3dza3yzZie8T7vW7vuMPJB4Vxn98tBBzsFovSQFS5GoVdvlzVthdQVdr2rFp6
-QRZacrUkNxokVqDLB8xQ94wHx6Y8nuFbNzkyV9TCSVIuqOXCWTNHonFcjiQrWjhOkltnTUmuxtVC
-Udmpy/VFurJLN2ZpJAWbQE+4x/vBGHyQDwhB67b1vQZ8U36ncBckCggTvDfodjr8wkO38MgRmJqY
-4P1PzJvAXd4ruuPbKYHd7+HvCR5dASg0GlCuJujKgbZ0qp5USDlK5or0MEzFhm3ANskH79tGbC6f
-M3D1ni8QcDy033CYO5pwByb4oPO+Ayw0dNt+ezDAjwmD/xPweW0DNnztyHc2wTvu9oLUrinnA9c9
-thPv+BQ/Dp8FvvWAKN/Cxr767PPPfvM1d4n73Zdf/IH7+D8+/fzPn33FffwRzRxrmaOPBobtdz4Z
-+Pgj2pxW9hofDdjvDLPL9LGyP/vRgP3arU8+4T79igt+zCQd4MfGBGdQcDmCfOBB4BPuiy9/+9mX
-3K//i+v+gvvtZ1/95lxokMNlZafe4w80L2ovV5XsrO4/zNpW/wH3ffp0wCZ4nT6X2zseAPkfw58x
-t+ABK6ERTEfw+ibcXt5jsQ4uBO4UeWl7OmB7Yn26e+edZb6dAosE+aD7oWBZq9edYWsPec+U8Duf
-f4IHx/NOTdwT/LanfzHcyRJLF3veP92T9C8sfqR/0m1EfDvXCdwSWE23VAg/vsUpjQVSzpL518p+
-6J0YUmcP6XKSlDfk02eAUXMv6es1pXzIXR8aGuLoeoHmRaURwfjXDa5rzCOM884nDn7K5Q5a1GSB
-aboVVkqndH2X1lNyNaEedaCkR0lBP+9m8Qwo4Zj0+x4KXt7rFBzfTvEed1B/i66woZuDRnK5WGmT
-T4L3e9VmftatOE1M0fWCFo7T9Cl33+1yCV7ICIDgW1VSqXHC40nmiBxzJ0wBSmNTLRc4tzcQ9E85
-YSXMIKhZkPZ8pOiK8wqPHDrou31eh9PnDfoxUZqubJiBNEXY1G//8/ccphKltKIs7/ZozzcpeB0T
-U56gO8B7Xfd8jx2uR/etrwgEIcGMPzE87sbghKuv1oy9XOlY1dReUHgcPJ9UMRN+9tDtErxO4U8e
-3vtODGnZU1J/QSLzSn3vnRj69E939cjR0llluvZODJkZF9VOFiXlRUgtl0gqQlIS6usvA7Z7Hp/z
-gSVKMTuZSDDB+x+4fI/ApPd8rie2EdsvuL+9TPDwT3xTQT3n2UwzCY8F5xRgjAULLn7vL7jPjPu5
-r/D+b7zfeK9wly6BF7VnsEqQq3G6WgH34tSTBbka18TsWVNSRYmuVsjuCokdKrkyC5y0tr5Bo6KW
-Kb8Tpy9d4uR2mZaek1RCyc4y8YxIp/koNzp86+bV4Vs3RyFm2fJyNdHjuF3VDaTt1jw8ZzefQwRV
-w2/IwYJcFbVCzerEZ82c2l6Tm1nc5lsxj/fTzZRc3Uctk/qS0liiG/m34roqSigt3FmW6PIRyW0o
-pbSSLtLICarjrbj+TpxGNSEwqJV5EnlJwnXuJmdmHWMDEkm+UApltbzDscrLGn5vxTRzqG6AA8Vh
-5YMvpKsVTLB0vSA3jpVmnewcAg4yV5GrCcwfpJyVa1HMve/EEIYhrqBuv8QkLFfrJF2Rq6JSStNC
-BOAis0XqSe7zu3+4+zU8FZmnGylNFIm0IlfrakGiyweg98YuScZIuUXf5HBNfc/xZVQkEZumVuhW
-jeS26GqlU0om97V0SG4l5fo8WPqtmO5R/llToq8LNB/F+3q0hKK+FdP4LCgN9QSu1ShBBTu/RiMr
-Vk2Q5CqRVnBRde8FSS7Q5SOlMUvm47gvsigZuTGu7Uud7UcW5MYrJTuLqZKcvFYaSRqLsY3OUnFP
-97BMkUTjTNlsJ3MvQRPdmUjfz1xRmylqYlZth7keFAE7WmCGLEocQA9KJLfXlfymlimeNXNya15t
-r5HkvloJ0dWELgKDHpqP0uUIs1Ic6tqZFs215cZzuV4nJ7u4PI3WSHieRlbUcklpzGBJr+1LaiWE
-Jf2PqmgvgJ1Jv++eR5j4ANjYBznToeWGKNciZ80sxjctPVcKZZr4XsmtyPV5QyNraqUCiEQze0q5
-oNTbNBbjRh8KfveY28nSBKLSTItG99SCxF3m6OauWtlGn1JKUbneiyijHGktya28XG2oL0L6i8Gm
-IRoH1AK8qO7jJWh7poUK57DZWq3QzZSBVyRfRCSBK3dQ4ORqTMnOmh6NxsDn1faa8RhdrajhfWX2
-WK2U1KKox1N2FhEHopDFqFxNy9Us+E8qoqTmIRuwdpA56jdeCLHSDgBMSpKrItQ9GFLJCkRrSqKZ
-Y9ooqMdv3op5M9r03FWWoPZjwr8V18mi9FbMW0FOD5vtl4h/iHnwlswLJV0Erf7Ll3/6AoK2WCAb
-z0BRL0Kk9EJuZjWxqbYXlP1Zoy4J8v5xIciRg0MA4tMMiRwgHJ81c0p+ExJEWaKRlA5ylbR6OsMK
-GUARBCTQyU6WSmG6FaaxXbIQg2BvQoBj6wraYztlgBtXRYkkK+pMi+S25GodpYHkmTjQpp/L1X1l
-f1YtFOlWk0ZWAL1KGVWUQNzIjpZeOxcR5+rGvmHg9/mCDic/FRA+EAnDgxwmWJLYJLmts2aW5HJy
-dZ9UauphoaN7Zlgdo1ikI+iC9e2D3KVL2r5E08fkcFqp72npNbkVRyzqsTYs1VqikZQeV+yps6YE
-meRg4a2YR7YAsnnqBc1s0dIeIEaiCCnNwKu34jq4duGVlikyDxyGHSjRCM2/0pZO6UqJNEV8fZdz
-s6XBnPUUojjYkqF2F1gvSr3ugm4cYamVQTmAIHZKDBxJKqHbtVknkWPIuo26+QoWnosSp6eKb7zX
-YLuYFHEVuZpQ9mcRL4AfKUiIqSgDFACG66mVGF0pwb5NmoT5IKikFMUYBbYld6pvaC5Cn82DR68m
-AF2Y27JcCw6u7GdgzXaYNnYw4yqNWfg2sUjqSUhKp0skXCetbSqGzpqSlk2SVILEj9D4DBj2lden
-sDLzXBpZUTZLagHNcp2ZhVmW7ByqR7tk7o2WKal7sySyprsH7sOoI1ju58DubAewOZb2MYmYWsAk
-rzTraigL3rgoKbkqSUnWVM2RnawOlKiJfJHz+zwe31SQI9G4ttpgimT4pbbXEM/k+jxwWiwjcKOO
-b3lHIMgHpwK/muQDAcE1+k4MjTrvC84HgsvBj/PwOtZz3eMDwq+AxhtllrYPDf2SwSs6vdyIg0hv
-luX2uloJ6WmPdXfgWu3CT097BiHIMlHA4fYG/b4PRP61QQ5op8TBWTPLikWSrGBbhvUidxmrRKwY
-sSJkYG/pjLFC1XmrwjGgh5EB9JBC6GMZQGnW0dymw8mtNiC9pe7D7pDGYhgeaHGl+T2NpHRvY2j5
-TpzGnMONDtvvXLbfGb5sv3br8h375eHbl4ftoxymO/CK2BYmWUzhJr8BZBzTPRRXYkNuLZHkc3I6
-C+1FV1WP9bzOjrCq3mxK8T90taK9XJUbJ0RsknKBblWxxCNrRZAmvqytb0FiiazR/Cu1/hJ1hsQA
-lkUkskPm3/x0J+hiBh2s+ev4gEEXsn/vvpf/PLeg8JifmPQIgfd71C84Wkkqhw00FOuxkBkxi3Yz
-tkj8UFv73kweultgdZjfV1MtUt44a0aG7XfoeuGsGdU7ke1VbX2bSmGo9plncMj33rgyfJsDQ2aO
-6XLE8GqJAW/8COOfZnZpfhNdj2XmfSpFlXpbPakg9UMax2qlortGYp4kX+vkLXNhSFysUoAcznaA
-C2KB1clCiPqYauRqAtOLtR86a0bsd4atYiGzjZ4JdeDhNM2LdOWA5uPwCaN9EOWhyDFyFylvaGtz
-JJSl+QiwBXMla03y16a4N4dFSHKfRL+nUpRG22o7RZbndcHD8xCdiTAIzsKXA8qQA19ttEilRupp
-uRqVq/sGVd+dw/SU3dPVsTYchL1267wNUUz1aI/GN63FFVmUcP9Gmu2RQm7MUSlKkgty45iu1HD/
-uAypHZPkilyNqgWJCQKFKq4KtV5uy1p5IYr01Fl6wtJzELtbKZTB0iwZnTUjd+wXiQJaxZqx/AOW
-jeT5AV1NICxYfFGKQv+V0clOKBwY+lm3zpKWfLqu/rBiVk8kdAx1TDtNchtaoc5y4/Q33hvMCkxI
-GtHrz3Mdc2T49oUWaKegba4/kxvH1hoWuMyFIo3t0jfbJFbEN/TxqX2G/vA0qFN/Xw4LcZrZ0vKi
-kppX957rzcPBoZ4PoPKeZxLcZBK8t5lnQNBHgsq2linT6vek/gLXVzI57FtRlH77ZXoGeKJ5kezs
-4dPsHTm6ESJiU91+qVYqWKNiE2SUXD8Vne+5vS4Gtz7vmMfNCMv3gqny6hV3CxLwWTPbp7wxSrA4
-fAEuw3JzYpMzqGq5WjI7MpLchc6L+VwXrDCggYSd34TiLK1XiPBguG6Wlnr+xjdCibRDdjNyfVGu
-xnFnwKl16fqsCdUh2c1AqrMgDhYYNLasVqJKIgy4V8dG6UXf+0kqruwd4FMmTuEUDWpwthFtpqVD
-vEUao8aYViu7OqnczKrl73G/eqvI2jSSL6IW6dYJzb8CCm/7JdyWjCPi60UicjEksqWt7ZjEAM0d
-keYhm/KIzEUludU2qUVQi5U9ml+0kNx0+UBbi8vVOjeEnApQLMtrWqEmN+IYWmxrO6o4J1dLsKNK
-jeaOaGJXbS8g6GK5hBWFkpqnM2+wojB6jb+rdRScvokJwevCWvIDVeT1QQ4hAwiUWEzvEFkZxOq3
-A7PolmvPSDTeaRjDYSVdhCr5ypjbHwhyV7tocPzQ4LMiPe0LwAN0mD+qj3knhr72TV75N+58Q9Mh
-4JIVnbfB0QXaaVHq6R+19e1OqieNuvLyGfhOsgLNYfQ1dKWsC8VQwd1bHACbQX157GN0eF+KkKrU
-YQFZh03mDuFvaxuKX6wOWEYGrErX5EZDbi3rFelMi7TntEIDaUW966gmyE6csLmTnq+Bs9Kn7vS5
-SDd3SXIVpiJMBRBbRksNSj/YIXPH2CZxHj4oBIKsMWMK79uqWQlbGklxv/niz3/8+uNLn8BEY31D
-b9Xiy1Amv7dh66TiCfdjwcUcJ5WAoAhllWevlJfPrF6m95H5KEQHcLZITB7R1YR+ZABjvbRK8kUM
-aLpSIydlnRRjd0LeyUHW02dujI3qZFjj1APDOwhAuV1WC7sklcBeTp8wNOYwhLF6RN4OaP9nu5Bt
-pRZdXgCfY5bSxBT4UzgO9EENKAPzvIPJc+BkA6MbACFd0yvgyApeGtS5kUdxNxhZymaJc/Je3v/E
-oKcBw9W9aVLZ1Ic8fuER7wc/lKu7wD+xlgQLWtQAYO2i1MXdGp8z7UUZNAF2ktQCzRyTUJ6Wtn96
-qvRN+R3uCTbHnBC8wQ9h0I1BTgfnUBa6gHRNbecgAzUSej1rRRZ9FIhnTnRuBhWJEye5kaCVJLSa
-+U1S3jD4VFg4H5EbLR1gDhtQJIlNsrmJQICcPJFWut521szp5Uo8qhTbEAuM6eYMVkhPmzh8SR/i
-hoH2LRdIZNHkgWBnwMaDcx9tqkfPaSyGVQ8ubMwdUmhbMxxVcY5BY0pN7YKlG0tkugjflrdpPs44
-I7CfureoRl9DiqwcsVnfOqCMEet9kNUkklZqJLUAqmCpXClFu2YIzNcxKpDlgywff0OfLSoNY3ZF
-K0mDjgYgyxex5ehiDlcOEJ6NhJfA2gzVBrFUqGHZDdtm1tMnwPNzrJn5q967oGZRQgOsh7EQxqbF
-2NDKAY5gwRUye9yvea+Lu8Expr7OfS48FDycnVN/OFGma9CSSVHSnlNfhDDitaVTGImXdsn2Bolt
-qSdFmt/sUMk/hJTisw6Nt1lX6m3SWoQWaFFSGkk1tUvXZ9RCAfGJZagimc/IrTXuX7+4+0cOCEZx
-Sy0UtfVt3Kax7ajIxi9sXtvYA1qzvU6lEDdqng/gPR7fI8H1qzHeExBG9TY4HzVzNCIjbOQczmoz
-LRwbQc8SjZO5kFququ0cmds1QbA77N83qO8/MmYnVj4U7TcHOYxwnOXi+AhqZBZ/MAo7eY07BfxE
-ri19rORikEFO5zD8WEFnHj/JFwHe34mhh8ND7K+d/R1mf6+xv9fZX7znpj5hQyXpjpaa1dH7Bs7b
-QLlznfFbj19CqNT39EF/ahYYQ7jrnTiNKAy9IRvoIhyD343CUlfhz2jv5A7FBXLSco81DvvewM4V
-sPoGEjbDD1NvcjWN7oSFB7oTnjHocKY4jlT3npP5N525WF7ETsKYPs0Cu5t8ftbM6tkL54mMoJOr
-22TnsIeVNss0DE29eYaBPFZlDFMAJlLAhvQMGGBKET6CCVFrnpRncAyJU3RzEmrJZ2QO0AYHCjgc
-g4DOHZkPwWyJA9AqZ2kyReLh7ntzXYuxQAEsPEiqe7O0WED30/MwBzwwY/6gnKnuaKElrLZ+YrYc
-m/IH7wt+OLsX+DElu9yIa3kR4wBEYYcpO7lv5aAzM66WoLA9nKaxFt06IaGsTliioClQFmZJ62RX
-SYShYNnJkoOFs+YmrGv9GsNWp4fzRbJZJ/U9sO5XQWGSsw8PwegSB0Cw09w8EK/1BDc6/FZcunn1
-9iimYpgzw5SvtkWkupY5Mt7000sbkrcUT9BG42awyjGIKXzZSdGI/gg718rAJgMDLXxGy4swjGSJ
-AFztUOzbD7LkQ0XQQucsQqJCtmew4ldDaZKKsOH75sV+4OQfCvwH4dN6ghbyaCislk/R+sjsQ3++
-fEDXdwEbkP8S90iqApR20zzKKuGpQzxgwsbD4Nt4Fgy1ioQ70ooQjIwJ5a4P68fi5FYCB+7a84S2
-9r2OM9nZLg9jE1pudOjq9eHRLicCaMfKHZ/GDrheUV7X2HAaJkzA5sZ2jeSY2etqyzsnfjpzGvNE
-Q/dJn5w1JGC6m5S0cFzLFOXaJo7u9XMQWACy3g3OPSMesXMTbGINjbwGmGc5FsEqOLm6RMrHZjvD
-tsuoF2j79dNKyKSDV1VqJLHZURcya9KK2nqltoH1pvl96CnmdvUSadLvm5gMdrWenHFKRj+4A5Nn
-xgqRtSLkw9PZvx+V/vJ0wBbw8pOB+75zx9N//FltHLsxNoJ3Pemcf2aHZLtPQMPpNuPkHyYQ20Dv
-4deRYfsdiBPzPkbF97nPfme46z5Gave779otOGB3foTSZzs9c43+uxuwgWIc7JTgiO3WncFrv7QN
-wKFZY/gCy7G5w4+beUCn3jXwQOq878DDNmDzuwMP4OSkZe5x0cTjKtJsCKY2q7Y+OPvor/Bu0W/e
-Gbx5XnRs5f+G6ci5ucjFExGTV7ToAbswC+liHYNgy4R0dZcCPjgP6e9J3Qq43lcB/8cTE6voncGJ
-OR0BvN8+ICd7OAc1j6yYPtKlhosmKH2kv2PvFv7atcGhi4T/h81YOsL+uFFLt43fO23pF9y3u0W0
-Dw3aL7TvP34e0xEWBzL6qISNZSBiYrsoOUw642+AymTDmW6Z3zuf6QtoPXh2sUv/gwY4FjHfO8dh
-P1+4J4z5/IKDHwsKfgbYPr8L/meH8bjghFW6Wg7WZna1GbYBm8/jcviFwJSH5TKsJjhsoGwDrPk1
-vzWbrs73bm9Q8E/6BTyxYRuxQX1wypjcuROyE+4pQUh8GbrN/DN2JlCEkpydKCFSnUT0WQRiITOc
-Ls9wRx5jZgY3KvUXdH3zvAjs0AN3/hgznnO4WChrp4lcTz8Bsd2msdiPopUYYMDvACyEPZ5xlat1
-64lTq7zXOvJaiXvsOHvltd8ZRnnDdSVx0DdZXSBv51QsnIZiJ3b7CazTdUBWFIrq6al5ChM+sajM
-KsH1jgTW30YwZDO6hF5BjIEfzUftcKg4JWnbq6Q5zXy3Vwog21jLcmNoCFg3CNir516VmlXD+/jC
-fpJB1b8TBwxkkyzo4ubXlNwqicbxoJdVpBsWo7AGCbOkEjumYqhXFprZw0ijuVMkl3QynT3ZzyRw
-8J4daub6s1z99q9X6qyVMUktaDYLjR4qDDpIS0MCiIB9IRS6T3/+IdTPP4T6+YdQ/w9+CDXJOx/w
-44LD7R3zwUYNu3855Q26J5hNff4gf88jXDG+ugKdp+AfvB+c8LDtetwPBf+TP/hc1tsd+tf3fYGg
-4PpS4F1feD1PjJ90T/S/2bj+PVzqt/p7HmUa9HlYv+v0TT75NHB3gumPgRrbjxC0XPr5cfNCAJ2b
-F4/ZD8G7L3/Ptvu52/vA/AICO+D0C4LX/Oj++bsmoZsPBMFG5md+YcwvBO5brnXk168D93m/cTdg
-pm6Muz/b4p9ti6f/C6RUO1+AQAAA
+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
 </template>
 <template id="data-analytics-portable-reader-runtime-source" data-compression="gzip-base64">
 H4sIAAAAAAACCuy9a3fjNrYg+v38CilTV0MeQ4pk15MyyqfiR6e665VyVdLVjseESUhCTIEKCNnl

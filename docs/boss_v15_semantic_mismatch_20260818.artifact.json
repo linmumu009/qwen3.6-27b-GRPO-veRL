@@ -3,30 +3,30 @@
   "manifest": {
     "version": 1,
     "surface": "report",
-    "title": "老板 v15 轨迹数据的语义不匹配复盘",
-    "description": "解释旧 v15 数据为何 SQL/gold 机械自洽却仍与题意失配，并记录 6+1 类问题、整改建议、新生成链和当前效果边界。",
-    "generatedAt": "2026-08-18T18:00:00+08:00",
+    "title": "老板 v15 轨迹数据为什么会答非所问",
+    "description": "用6个原生v15案例拆解题面、原SQL与正确SQL的差距，并对照原生成流程和整改后的生成流程。",
+    "generatedAt": "2026-08-18T21:00:00+08:00",
     "charts": [
       {
-        "id": "warning_categories_chart",
-        "title": "v15 三类高频语义预警命中任务数",
-        "subtitle": "full276 全量审计；前三类可重叠，不表示互斥构成",
+        "id": "warning_scale_chart",
+        "title": "六类语义预警命中任务数",
+        "subtitle": "full276；类别可重叠，不能相加为错误总数",
         "type": "bar",
-        "dataset": "warning_chart",
-        "sourceId": "semantic_review_summary",
+        "dataset": "warning_scale",
+        "sourceId": "native_examples",
         "source": {
-          "id": "warning_categories_chart_query",
-          "label": "v15 语义失配与新链路安全汇总",
+          "id": "warning_scale_source",
+          "label": "老板v15语义预警统计",
           "path": "docs/boss_v15_semantic_mismatch_20260818.safe.json",
           "query": {
             "engine": "duckdb",
             "language": "sql",
-            "sql": "SELECT * FROM (VALUES ('时间',219),('漂移',192),('收窄',137)) AS t(label,affected_tasks) ORDER BY affected_tasks DESC",
-            "description": "展示命中任务数最高的三类重叠语义预警。"
+            "sql": "SELECT * FROM (VALUES ('时间缺失',219),('定义漂移',192),('题意收窄',137),('无序LIMIT',91),('退化行数',28),('单个数值',21)) AS t(label,affected_tasks) ORDER BY affected_tasks DESC",
+            "description": "full276六类重叠语义预警的命中任务数。"
           }
         },
         "encodings": {
-          "x": {"field": "label", "type": "nominal", "label": "预警类别"},
+          "x": {"field": "label", "type": "nominal", "label": "语义预警"},
           "y": {"field": "affected_tasks", "type": "quantitative", "label": "命中任务数"}
         },
         "valueFormat": "number"
@@ -34,33 +34,33 @@
     ],
     "sources": [
       {
-        "id": "semantic_review_summary",
-        "label": "v15 语义失配与新链路安全汇总",
+        "id": "native_examples",
+        "label": "老板 v15 原生案例与纠正 SQL",
         "path": "docs/boss_v15_semantic_mismatch_20260818.safe.json",
         "query": {
-          "engine": "json",
+          "engine": "source-audit",
           "language": "json",
-          "description": "汇总 full276 六类预警、full277 绑定冲突、脱敏实例和八沙箱 4000 条最终审计。"
+          "description": "从老板v15原始审核队列只读提取7个task的题面和verification SQL；纠正SQL按v15真实表结构编写并只读执行。"
         }
       },
       {
-        "id": "legacy_audit",
-        "label": "老板 v15 标签来源与质量审计",
-        "path": "docs/training_data_provenance_quality_audit_20260806.artifact.json",
+        "id": "legacy_pipeline",
+        "label": "老板沙箱生成链根因审计",
+        "path": "docs/boss_sandbox_generation_root_cause_audit_20260814.md",
         "query": {
-          "engine": "python",
-          "language": "python",
-          "description": "逐条重放 hidden SQL、核对 expected value，并统计 instruction/gold 冲突与语义预警。"
+          "engine": "source-audit",
+          "language": "text",
+          "description": "只读核对原生成器step5任务构造、SQL fallback、QA和instruction rewrite流程。"
         }
       },
       {
-        "id": "new_generation_contract",
-        "label": "八沙箱开放 DWH 生成策略",
+        "id": "new_pipeline",
+        "label": "八沙箱开放DWH生成策略",
         "path": "docs/open_multisandbox_dwh_generation_strategy_20260815.md",
         "query": {
           "engine": "contract-audit",
           "language": "text",
-          "description": "记录 EvidencePlan、难度分级、API 语义锚点、SQL/gold 重放和禁训合同。"
+          "description": "记录EvidencePlan/QueryPlan、语义锚点、SQL/gold重放、难度分级和禁训门。"
         }
       }
     ],
@@ -68,148 +68,180 @@
       {
         "id": "title",
         "type": "markdown",
-        "body": "# 老板 v15 轨迹数据的语义不匹配复盘",
-        "layout": "full"
-      },
-      {
-        "id": "executive_summary",
-        "type": "markdown",
-        "body": "## Executive Summary\n\n- **核心问题不是 SQL 跑不通，而是奖励目标答非所问。** 修正后的 v15 full276 有 `276/276` 条 SQL 与 expected value 机械自洽，但 `271/276` 条命中至少一项语义预警；这会奖励“命中某个数据库结果”而不是“完整回答用户问题”。\n- **审计识别出 6 类重叠预警，另确认 1 类 instruction—gold 绑定冲突。** 高频问题是时间条件缺失、轨迹与任务定义漂移、开放问题被收窄为唯一答案、无序 LIMIT、分析退化为行数，以及宽泛问题绑定单个数值。\n- **根因是生成链只锁住了 SQL—数据库结果，没有锁住 instruction—轨迹—SQL—gold。** 后续改写或任务定义变化没有触发整组再生成和语义复验。\n- **我们的新链已经把结构性语义门前移。** 八个沙箱 4000 条任务全部通过 SQL/gold 重放、语义锚点和 API 改写保真门；但这只证明生成合同有效，仍不能替代人工语义批准或训练效果验证。",
-        "sourceId": "semantic_review_summary",
+        "body": "# 老板 v15 轨迹数据为什么会答非所问",
         "layout": "full"
       },
       {
         "id": "problem",
         "type": "markdown",
-        "body": "## 1. 问题是什么：机械正确掩盖了语义错误\n\n旧管线把 `verification SQL 能执行 + 查询结果等于 expected value` 当作主要正确性证据。这个证据只能证明 gold 是某条 SQL 在某个 SQLite 上的结果，不能证明这条 SQL 是自然语言问题的完整、唯一且业务合理的解释。\n\n因此，同一条数据可以同时满足“数据库重放完全正确”和“用户问题没有被回答”。一旦用于 GRPO，模型只要学会逼近窄 hidden target 就会得到奖励；真正完成时间比较、根因分析、多指标报告或优化建议的回答，反而可能因为没有复现那个窄表格或数字而被判错。",
-        "sourceId": "legacy_audit",
+        "body": "## 1. 问题是什么：SQL算对了，但算的不是用户问的东西\n\n修正后的v15共有276道题。`276/276`条verification SQL都能执行，查询结果也和hidden gold一致；但`271/276`条至少触发了一项语义预警。\n\n这两个数字并不矛盾。前者只说明“这条SQL在数据库里能算出这个答案”，后者指出“这条SQL未必回答了题面”。如果把这种数据用于GRPO，模型会被奖励去猜hidden SQL，而不是理解用户真正的业务需求。",
+        "sourceId": "native_examples",
         "layout": "full"
       },
       {
         "id": "root_cause",
         "type": "markdown",
-        "body": "## 2. 核心原因：四个对象没有被同一语义合同绑定\n\n1. **验收层级错位。** 数据库重放被当成语义验收，缺少“题意是否无歧义推出 SQL/gold”的硬门。\n2. **版本链断开。** 自然语言题意、源轨迹、后续任务定义和 hidden target 可以分别变化；任务改写后没有强制重建轨迹、SQL 和 gold。\n3. **开放任务与窄查询并行生成。** “分析、诊断、建议、报告”等业务意图没有先拆成明确指标、时间窗、过滤、分组、排序和输出形态，随后却绑定一个精确数字或短表。\n4. **缺少失败关闭规则。** 时间缺失、LIMIT 无排序、行数替代分析、数值缺聚合和相同 instruction 多 gold 没有在 rollout 前阻断。\n\n这解释了为什么 `_qa_status=passed`、`checked_against_database=true` 和 100% SQL 重放仍无法保证训练标签可信。",
-        "sourceId": "semantic_review_summary",
+        "body": "## 2. 核心原因：题目先写，答案再从数据库里硬凑\n\n老板的原流程不是先确定“这道题究竟要查什么”，而是：\n\n1. 先按任务模板写出一句自然语言题面。\n2. 再去SQLite里寻找一条能返回非空结果的SQL。\n3. 如果原定查询没有数据，就继续fallback：去掉日期、换指标、换分组，甚至退化成`SUM`、`MAX`或`COUNT(*)`。\n4. 只要新SQL能返回结果，这个结果就成为hidden gold；已经写好的题面却不会跟着改变。\n5. QA最后只检查SQL能不能执行、结果是不是非空，不会重新问“它还在回答原题吗”。\n\n最典型的后果是：题目问2026-05-28，数据库当天没有数据。正确处理应当是放弃这道题或明确回答无数据；旧流程却会把日期条件删掉，用其他日期的数据生成一个非空gold。**问题不是模型不会做题，而是答案生成器偷偷换了题。**",
+        "sourceId": "legacy_pipeline",
         "layout": "full"
       },
       {
         "id": "manifestations_intro",
         "type": "markdown",
-        "body": "## 3. 表现：6 类可统计预警 + 1 类确认冲突\n\n六类预警不是互斥桶：同一条任务可能同时缺时间过滤、使用无序 LIMIT，并把开放分析缩成一个窄表。因此 `219+192+137+91+28+21` 不能相加当作错误任务数；可信的总体口径是 `271/276` 条至少命中一项预警。预警是高价值审核触发器，单靠正则本身不是最终人工判决。",
-        "sourceId": "semantic_review_summary",
+        "body": "## 3. 六类题内语义错误：把原题面和原SQL放在一起看\n\n六类统计会重叠，同一道题可能同时缺日期、换分组、又使用无序`LIMIT`，所以六类数量不能直接相加。总体口径仍是`271/276`道至少命中一项预警。\n\n每条原生instruction前面都有完全相同的沙箱说明，内容是数据库、文档目录和数据字典位置。为避免重复六次，下面只原样展示每条instruction中`任务：`后面的原生任务句；把这段共同前缀接在前面，就是完整原生题面。",
+        "sourceId": "native_examples",
         "layout": "full"
       },
       {
-        "id": "warning_chart_block",
-        "type": "chart",
-        "chartId": "warning_categories_chart"
+        "id": "case_time",
+        "type": "markdown",
+        "body": "### 3.1 时间语义未落实（219条）｜task_000060\n\n**原生题面**\n\n> 请帮我看下“联动分析时效分析宽表”在2026-05-28这一天的各项关联指标表现情况。\n\n**原生verification SQL**\n\n```sql\nSELECT route_id, SUM(delay_count)\nFROM dim_dws_timeliness_analysis\nGROUP BY route_id\nLIMIT 3;\n```\n\n**按题面应该执行的SQL**\n\n```sql\nSELECT stat_date, region, route_id, time_slot, carrier_id,\n       on_time_rate, avg_transit_hours,\n       delay_count, severe_delay_count\nFROM dim_dws_timeliness_analysis\nWHERE DATE(stat_date) = '2026-05-28'\nORDER BY region, route_id, time_slot, carrier_id;\n```\n\n**差距**：原SQL完全删除了`2026-05-28`，并把“各项关联指标”缩成“线路+延误数”。纠正SQL已在v15库只读执行，结果为0行。\n\n**错误原因**：**指定日期没有数据时，正确结论是“无数据/这道题不能生成”，不是删掉日期后拿历史数据冒充答案。**",
+        "sourceId": "native_examples",
+        "layout": "full"
       },
       {
-        "id": "warning_examples",
+        "id": "case_drift",
         "type": "markdown",
-        "body": "### 每类一个 v15 实例，以及为什么危险\n\n1. **时间语义未落实（219条）。** 题面指定分析 2026-05-28 的时效表现，SQL 却没有日期过滤，只按线路汇总延误数；历史全量可能被奖励为指定日期结果。\n2. **轨迹题意与后续定义漂移（192条）。** 当前任务要求最新服务质量报告，源轨迹实际做月度六指标报告，hidden target 又只剩按承运商汇总准时率；同一 task 身份对应三个问题。\n3. **开放题意收窄为唯一目标（137条）。** 题面要求货损根因分析和报告变化，hidden target 仅按发件方汇总货损并取三行；合理分析会因没有复现窄表而被判错。\n4. **LIMIT 没有确定排序（91条）。** 题面要求按时间段比较声明价值，SQL 却按部门汇总后无序取三行；gold 依赖数据库偶然返回顺序。\n5. **分析或建议退化为行数（28条）。** 题面要求运单事件优化建议和周报波动分析，hidden target 只是事件表行数；模型无需理解业务就可能得分。\n6. **宽泛问题绑定单个数值（21条）。** 题面询问温度业务痛点和优化，hidden target 只取一个最大温度值；极值被误当成完整诊断。",
-        "sourceId": "semantic_review_summary",
+        "body": "### 3.2 轨迹题意与后续任务定义漂移（192条）｜task_000147\n\n**原生题面**\n\n> 对最新一期服务质量的关键指标进行汇总然后形成报告\n\n**原生verification SQL**\n\n```sql\nSELECT t2.carrier_name, SUM(t1.on_time_rate)\nFROM fact_dws_service_quality_analysis t1\nJOIN dim_carrier t2 ON t1.carrier_name = t2.carrier_id\nGROUP BY t2.carrier_name\nLIMIT 3;\n```\n\n**按当前题面应该执行的SQL**\n\n```sql\nWITH latest AS (\n  SELECT MAX(DATE(stat_date)) AS stat_date\n  FROM fact_dws_service_quality_analysis\n)\nSELECT q.stat_date,\n       COALESCE(c.carrier_name, q.carrier_name) AS carrier,\n       SUM(q.total_order_cnt) AS total_orders,\n       SUM(q.damage_cnt) AS damage_orders,\n       SUM(q.loss_cnt) AS loss_orders,\n       ROUND(SUM(q.damage_rate*q.total_order_cnt)/NULLIF(SUM(q.total_order_cnt),0),4) AS damage_rate,\n       ROUND(SUM(q.loss_rate*q.total_order_cnt)/NULLIF(SUM(q.total_order_cnt),0),4) AS loss_rate,\n       ROUND(SUM(q.complaint_rate*q.total_order_cnt)/NULLIF(SUM(q.total_order_cnt),0),4) AS complaint_rate,\n       ROUND(SUM(q.return_rate*q.total_order_cnt)/NULLIF(SUM(q.total_order_cnt),0),4) AS return_rate,\n       ROUND(SUM(q.on_time_rate*q.total_order_cnt)/NULLIF(SUM(q.total_order_cnt),0),4) AS on_time_rate,\n       ROUND(SUM(q.satisfaction_score*q.total_order_cnt)/NULLIF(SUM(q.total_order_cnt),0),2) AS satisfaction_score\nFROM fact_dws_service_quality_analysis q\nJOIN latest l ON DATE(q.stat_date)=l.stat_date\nLEFT JOIN dim_carrier c ON q.carrier_name=c.carrier_id\nGROUP BY q.stat_date, COALESCE(c.carrier_name,q.carrier_name)\nORDER BY total_orders DESC, carrier;\n```\n\n**差距**：当前题面要最新一期关键指标报告；源轨迹做的是按月多指标报告；hidden SQL又变成无日期的单一准时率表。\n\n**错误原因**：**一个task身份里塞了三道不同的题。模型无论回答题面、模仿轨迹还是命中hidden SQL，都可能被另外两套定义判错。**",
+        "sourceId": "native_examples",
+        "layout": "full"
+      },
+      {
+        "id": "case_narrow",
+        "type": "markdown",
+        "body": "### 3.3 时间趋势题被收窄成单日分组（137条）｜task_000257\n\n**原生题面**\n\n> 帮我看看货损记录从2026年3月27日到6月28日这段时间，货损数量的趋势是上升了还是下降了？\n\n**原生verification SQL**\n\n```sql\nSELECT t2.sender_info, SUM(t1.damage_qty)\nFROM fact_cargo_damage_record t1\nJOIN fact_waybill t2 ON t1.fact_waybill_id=t2.waybill_no\nWHERE DATE(occurred_at)='2026-06-27'\nGROUP BY t2.sender_info\nLIMIT 3;\n```\n\n**按题面应该执行的SQL**\n\n```sql\nSELECT DATE(occurred_at) AS day,\n       SUM(damage_qty) AS damage_qty\nFROM fact_cargo_damage_record\nWHERE DATE(occurred_at) BETWEEN '2026-03-27' AND '2026-06-28'\nGROUP BY DATE(occurred_at)\nORDER BY day;\n```\n\n**差距**：题面要三个月的时间趋势；原SQL只看6月27日，把维度换成发件方，再截三行。纠正SQL返回91个日粒度结果。\n\n**错误原因**：**它不是“少查了一点”，而是把时间趋势题换成了单日客户排行题。**",
+        "sourceId": "native_examples",
+        "layout": "full"
+      },
+      {
+        "id": "case_limit",
+        "type": "markdown",
+        "body": "### 3.4 比较维度被换掉，而且LIMIT没有排序（91条）｜task_000036\n\n**原生题面**\n\n> 最新一期里，不同时间段发生的质量异常事件，对应的货物声明价值有没有明显差别？\n\n**原生verification SQL**\n\n```sql\nSELECT t2.dept_name, SUM(t1.cargo_declared_value)\nFROM fact_quality_incident t1\nJOIN dim_department t2 ON t1.dim_department_id=t2.dept_id\nGROUP BY t2.dept_name\nLIMIT 3;\n```\n\n**按题面应该执行的SQL**\n\n```sql\nWITH latest AS (\n  SELECT MAX(DATE(reported_at)) AS day\n  FROM fact_quality_incident\n)\nSELECT CASE\n         WHEN CAST(strftime('%H',reported_at) AS INTEGER)<6 THEN '00:00-05:59'\n         WHEN CAST(strftime('%H',reported_at) AS INTEGER)<12 THEN '06:00-11:59'\n         WHEN CAST(strftime('%H',reported_at) AS INTEGER)<18 THEN '12:00-17:59'\n         ELSE '18:00-23:59'\n       END AS time_slot,\n       COUNT(*) AS incident_count,\n       ROUND(AVG(cargo_declared_value),2) AS avg_declared_value,\n       ROUND(SUM(cargo_declared_value),2) AS total_declared_value\nFROM fact_quality_incident\nJOIN latest ON DATE(reported_at)=latest.day\nGROUP BY time_slot\nORDER BY MIN(CAST(strftime('%H',reported_at) AS INTEGER));\n```\n\n**差距**：题面按时间段比较，原SQL却按部门分组；题面说最新一期，原SQL没有日期；`LIMIT 3`也没有`ORDER BY`。\n\n**错误原因**：**时间、分组维度和排序三处同时答错，返回三行只是数据库碰巧先吐出的三行。**",
+        "sourceId": "native_examples",
+        "layout": "full"
+      },
+      {
+        "id": "case_count",
+        "type": "markdown",
+        "body": "### 3.5 两项分析任务退化成COUNT(*)（28条）｜task_000109\n\n**原生题面**\n\n> 最近运单事件最新一期的数据出来后，我们发现有些可以优化的地方；另外，dim_weekly_report这张表里的指标最近起伏有点大，也得一起看看怎么稳住。\n\n**原生verification SQL**\n\n```sql\nSELECT COUNT(*) FROM fact_waybill_event;\n```\n\n**按题面至少需要两组SQL**\n\n```sql\nWITH latest AS (\n  SELECT MAX(DATE(occurred_at)) AS day FROM fact_waybill_event\n)\nSELECT DATE(e.occurred_at) AS day, e.event_type,\n       COUNT(*) AS event_count,\n       ROUND(AVG(e.dwell_minutes),1) AS avg_dwell_minutes,\n       MAX(e.dwell_minutes) AS max_dwell_minutes\nFROM fact_waybill_event e\nJOIN latest l ON DATE(e.occurred_at)=l.day\nGROUP BY DATE(e.occurred_at),e.event_type\nORDER BY avg_dwell_minutes DESC,event_count DESC;\n\nSELECT week_start,week_end,aggregated_kpi_values,generation_status\nFROM dim_weekly_report\nORDER BY DATE(week_start) DESC\nLIMIT 8;\n```\n\n**差距**：题面同时要求最新运单事件优化和周报波动分析；原SQL只数事件表总行数，连`dim_weekly_report`都没读取。\n\n**错误原因**：**用户问“哪里有问题、怎么稳住”，标签却只问“表里一共有几行”。这是把业务分析降级成点名册计数。**",
+        "sourceId": "native_examples",
+        "layout": "full"
+      },
+      {
+        "id": "case_numeric",
+        "type": "markdown",
+        "body": "### 3.6 完整诊断被一个最大温度值代替（21条）｜task_000113\n\n**原生题面**\n\n> 分析一下温度记录最新一期存在的问题和改进方案。\n\n**原生verification SQL**\n\n```sql\nSELECT temperature_value\nFROM fact_temperature_record\nORDER BY temperature_value DESC\nLIMIT 1;\n```\n\n**按题面应该先取得的诊断证据**\n\n```sql\nWITH latest AS (\n  SELECT MAX(DATE(recorded_at)) AS day FROM fact_temperature_record\n)\nSELECT t.entity_type,t.entity_id,\n       COUNT(*) AS record_count,\n       SUM(t.excursion_flag) AS excursion_count,\n       ROUND(100.0*SUM(t.excursion_flag)/NULLIF(COUNT(*),0),2) AS excursion_rate_pct,\n       ROUND(AVG(t.actual_temp_c),2) AS avg_actual_temp_c,\n       ROUND(MAX(ABS(CAST(t.deviation_degree AS REAL))),2) AS max_abs_deviation\nFROM fact_temperature_record t\nJOIN latest l ON DATE(t.recorded_at)=l.day\nGROUP BY t.entity_type,t.entity_id\nORDER BY excursion_rate_pct DESC,max_abs_deviation DESC,record_count DESC;\n```\n\n**差距**：题面要最新一期、问题定位和改进方案；原SQL没有最新日期、没有异常率、没有对象分组，只取全表最大值。\n\n**错误原因**：**最高温度只能说明“出现过一个高值”，不能说明问题在哪、影响多大，更不可能推出改进方案。**",
+        "sourceId": "native_examples",
+        "layout": "full"
+      },
+      {
+        "id": "warning_scale_note",
+        "type": "markdown",
+        "body": "### 六类问题的规模\n\n下图只帮助比较审核工作量：时间条件缺失和任务定义漂移覆盖最广，应当优先修复。由于同一道题可以同时命中多类，条形长度不能相加，也不能直接当作人工确认错误数。",
+        "sourceId": "native_examples",
+        "layout": "full"
+      },
+      {
+        "id": "warning_scale_block",
+        "type": "chart",
+        "chartId": "warning_scale_chart",
         "layout": "full"
       },
       {
         "id": "binding_conflict",
         "type": "markdown",
-        "body": "### 第 7 类：相同 instruction 绑定不同 gold\n\n原 full277 中，同一句“汇总服务质量最新一期关键指标，出报告”同时绑定了两套互不相同的 hidden target：一套是按承运商统计投诉率前五，另一套是按承运商名称统计准时率前三；两套都没有最新一期过滤。该冲突会让相同模型回答在不同样本中被相反奖励。\n\n我们删除了语义更弱的一条，使 full276 的 instruction→gold 冲突数降为 0；但保留项仍只是在两者中相对更接近题意，并不是理想人工 gold。",
-        "sourceId": "legacy_audit",
+        "body": "## 不是“第7类”，而是更严重的跨样本标签冲突\n\n前面六类是在一条题目内部比较题面和SQL。下面这个问题发生在两条样本之间，因此不应该硬塞进同一层级。\n\n**相同的原生题面**\n\n> 对最新一期服务质量的关键指标进行汇总然后形成报告\n\n**task_000033绑定的SQL**\n\n```sql\nSELECT carrier_name,SUM(complaint_rate)\nFROM fact_dws_service_quality_analysis\nGROUP BY carrier_name\nLIMIT 5;\n```\n\n**task_000147绑定的SQL**\n\n```sql\nSELECT t2.carrier_name,SUM(t1.on_time_rate)\nFROM fact_dws_service_quality_analysis t1\nJOIN dim_carrier t2 ON t1.carrier_name=t2.carrier_id\nGROUP BY t2.carrier_name\nLIMIT 3;\n```\n\n一条只验投诉率前五，另一条只验准时率前三；两条都没有“最新一期”，也都不是“关键指标报告”。这会让同一个模型回答在一个样本得分、在另一个样本失分。\n\n**处理结果**：我们删除了更弱的`task_000033`，使full276不再存在相同instruction绑定不同gold；但保留`task_000147`只是“两条坏标签里相对接近的一条”，仍然需要按3.2的多指标SQL重建。",
+        "sourceId": "native_examples",
         "layout": "full"
       },
       {
         "id": "recommendations",
         "type": "markdown",
-        "body": "## 4. 建议：把语义审核放到 rollout 之前\n\n1. **采用 SQL-first / EvidencePlan-first。** 先明确指标、单位、时间窗、过滤、分组、排序、Top-K 和输出形态，再生成可执行 SQL、gold 和自然语言题面。\n2. **建立不可分割的版本绑定。** instruction、SQL、gold、数据库哈希和语义合同共同形成任务身份；改任何一项都必须整组重放与复审。\n3. **把 6+1 类检查变成生成时硬门。** 尤其阻断 latest 无时间、LIMIT 无排序、分析退化成 COUNT(*)、非聚合单值和相同 instruction 多 gold。\n4. **mixed 之后仍做独立语义审核。** 有对有错只说明当前模型存在奖励方差，不说明题目和标签正确。\n5. **旧 v15 不直接修补后训练。** 仅保留历史证据；若要挽救，必须逐题重写并重新生成 SQL/gold，而不是只改题面或只改答案。\n6. **训练采用短 canary。** 同时观察老板 reward、严格最终结果正确率和人工语义正确率，三者不同向时停止。",
-        "sourceId": "semantic_review_summary",
+        "body": "## 4. 建议：旧v15不要继续修修补补后直接训练\n\n1. **保留SQLite和schema，重建任务层。** 数据库资产可以复用，旧instruction—SQL—gold三元组不能直接复用。\n2. **所有题先写结构化QueryPlan。** 明确指标、聚合、时间、筛选、分组、排序和输出形态，再生成题面和SQL。\n3. **禁止改变题意的fallback。** 指定日期没有数据就丢弃任务，不能去掉日期；分析任务无法用SQL完整验收，就进入SFT/reference或增加明确rubric，不能压成一个数字。\n4. **任何改写都必须整组复验。** 改instruction、SQL或gold中的任意一个，都要重新执行SQL并重新检查语义。\n5. **rollout之后仍需人工审核。** mixed只说明模型有对有错，不说明题和答案标签正确。",
+        "sourceId": "legacy_pipeline",
         "layout": "full"
       },
       {
-        "id": "our_improvements",
+        "id": "legacy_flow",
         "type": "markdown",
-        "body": "## 5. 我们做的改进：从同一 EvidencePlan 生成题、SQL 和答案\n\n- 从每个真实 SQLite 的月份、分类和值域建立结构化 EvidencePlan；题面草稿、验证 SQL 和 hidden gold 由同一个计划生成。\n- API 只负责把业务草稿改写成老板、分析者、运营、仓储、客服等不同角色会说的话；时间、过滤、分组、指标、方向和前五等语义锚点必须保留，缺一即拒绝。\n- 每条 SQL 都在对应数据库重新执行，并与完整 gold 逐项比较；每个沙箱内 task、instruction 和 SQL 均要求唯一。\n- 新难度从旧 Band 5 作为 Level 1 起点，按必要证据链逐步增加跨期比较、流程诊断、基线归因和经营权衡，不再用冗余 JOIN 制造表面难度。\n- 所有数据继续保持 `training_allowed=false`，只有 rollout 方差和独立语义审核都通过后才允许进入训练。",
-        "sourceId": "new_generation_contract",
+        "body": "## 5. 我们做了什么改进\n\n### 原生流程\n\n1. 任务模板先写题面。\n2. 从数据库反向寻找能返回非空结果的SQL。\n3. 查询失败时修改日期、指标、聚合或分组。\n4. 查询结果直接成为hidden gold。\n5. QA只检查SQL可执行和结果非空。\n6. LLM再改写题面。\n7. 数据进入rollout或训练候选。\n\n原流程的真正source of truth是“哪条SQL碰巧返回了数据”。题面只是先写好的外壳。",
+        "sourceId": "legacy_pipeline",
+        "layout": "full"
+      },
+      {
+        "id": "new_flow",
+        "type": "markdown",
+        "body": "### 改动后的流程\n\n1. 读取数据库真实存在的日期、分类和值域。\n2. 先生成并冻结EvidencePlan/QueryPlan。\n3. 从计划编译SQL并执行，得到完整gold。\n4. 从同一计划生成标准题面。\n5. API只负责把话说得自然，不允许改语义锚点。\n6. 改写后重新检查日期、指标、筛选、分组、排序和输出形态。\n7. 全量重放SQL并比较完整gold，同时检查唯一性。\n8. 数据保持`training_allowed=false`。\n9. 完成每题8次采样、人工语义审核和短canary后才放行。\n\n新流程的source of truth是结构化计划。题面、SQL和gold都从同一个计划生成，任何一项变动都会触发整组复验。",
+        "sourceId": "new_pipeline",
+        "layout": "full"
+      },
+      {
+        "id": "what_changed",
+        "type": "markdown",
+        "body": "### 我们真正改变了什么\n\n| 环节 | 原流程 | 改动后 |\n|---|---|---|\n| 题目来源 | 先写自然语言模板 | 先冻结EvidencePlan/QueryPlan |\n| SQL失败 | 换日期、换指标、换聚合直到非空 | 直接拒绝并重新生成，不允许换题 |\n| 题面与SQL | 两套逻辑分别生成 | 从同一计划生成 |\n| API改写 | 只看语句是否自然 | 日期、指标、分组、排序等锚点缺一即拒绝 |\n| gold验收 | SQL可执行、结果非空 | 完整结果重放 + 语义锚点 + 唯一性 |\n| 难度 | JOIN多看起来就难 | 按必要证据链、跨期、归因和经营权衡分级 |\n| 训练放行 | 生成后可能直接进入候选 | 默认禁训，必须经过采样、人工审核和canary |",
+        "sourceId": "new_pipeline",
         "layout": "full"
       },
       {
         "id": "effects",
         "type": "markdown",
-        "body": "## 6. 改进后的效果：结构门已通过，训练收益仍待验证\n\n新链路在 v15、v20、v21、v22、v23、v24、v25、v26 八个独立沙箱各生成 500 条，共 4000 条；每个沙箱五级难度各 100 条。最终总审计结果为 `4000/4000` SQL/gold 重放通过、`4000/4000` 语义锚点通过、`4000/4000` API 自然化改写通过，且所有任务继续禁训。\n\n这已经解决旧管线最关键的结构缺口：题面改写不能丢失指标、时间和输出要求，SQL 与 gold 必须在同源数据库重放一致。但它仍不是“4000 条人工语义全对”的证明，更不是“GRPO 一定提升”的证明；人工语义审核和小规模训练 canary 仍是最后两道门。",
-        "sourceId": "semantic_review_summary",
+        "body": "## 6. 改进后的效果：生成链的结构问题已被堵住，训练收益还不能提前宣称\n\n我们在v15、v20、v21、v22、v23、v24、v25、v26八个沙箱各生成500道，共4000道：\n\n- `4000/4000`条SQL与完整gold重放一致；\n- `4000/4000`条API自然化后保留全部语义锚点；\n- 每个沙箱500条task、instruction和SQL各自唯一；\n- 五级难度各100条；\n- `4000/4000`条仍保持`training_allowed=false`。\n\n这说明旧流程里“题面写完后SQL偷偷换题”“改写丢语义”“同题绑定冲突答案”三类结构缺口已经有硬门阻断。\n\n但当前效果只证明**生成合同生效**，不等于4000道题都已经被业务专家逐条批准，更不等于GRPO训练一定提升。最终还需要分层人工审核、每题8次采样和短训练canary。",
+        "sourceId": "native_examples",
         "layout": "full"
       },
       {
-        "id": "further_questions",
+        "id": "boundary",
         "type": "markdown",
-        "body": "## 仍需验证的边界\n\n- 从新 4000 条中分层抽样做人工审核后，真实语义批准率是多少？\n- 语义批准后的任务在基座与 Step 120 上是否仍集中于 `2–6/8` 的有效学习区间？\n- 老板 reward、严格最终结果正确率和人工语义正确率在短 canary 中是否同向变化？\n- 跨沙箱合并训练时，是否需要增加全局 instruction→gold 唯一性与数据库环境身份联合门？",
-        "layout": "full"
-      },
-      {
-        "id": "caveats",
-        "type": "markdown",
-        "body": "## 效果边界与假设\n\n- 六类计数来自确定性启发式审计，类别重叠且不是逐条人工错误率；但后续 42 条最低机械风险任务的人工审核得到 `0/42` 语义批准，说明风险不是纯粹的规则误报。\n- 旧 full276 的 `276/276` SQL 重放只证明机械自洽；新 4000 条的双重门也主要证明结构合同与重放保真。两者都不能替代业务专家审核。\n- 报告中的 v15 实例是对原任务的业务化转述，未写入完整 prompt、SQL、gold 数值、轨迹或服务器路径。",
-        "sourceId": "semantic_review_summary",
+        "body": "## 读这些数字时要注意\n\n- 六类数量是确定性预警，不是六个互斥错误桶，也不能相加得到错误总数。\n- `271/276`表示至少触发一项高风险检查，不表示271条都已经由人工逐条判死刑。\n- 原生例子保留了真实task句和真实verification SQL，但没有写入expected gold值或数据库业务行。\n- 报告中的纠正SQL按v15真实表结构编写并只读执行；task_000060按题面查询得到0行，这恰好证明旧生成器应该拒绝该任务，而不应删除日期。",
+        "sourceId": "native_examples",
         "layout": "full"
       }
     ]
   },
   "snapshot": {
     "version": 1,
-    "generatedAt": "2026-08-18T18:00:00+08:00",
+    "generatedAt": "2026-08-18T21:00:00+08:00",
     "status": "ready",
     "datasets": {
-      "warning_chart": [
-        {"label": "时间", "affected_tasks": 219},
-        {"label": "漂移", "affected_tasks": 192},
-        {"label": "收窄", "affected_tasks": 137}
-      ],
-      "warning_categories": [
-        {"label": "时间语义未落实", "affected_tasks": 219, "rate_text": "79.3%", "v15_example": "指定 2026-05-28 的时效表现，SQL 却无日期过滤，仅按线路汇总延误数", "risk": "历史全量被奖励为指定日期/最新结果"},
-        {"label": "轨迹题意与后续定义漂移", "affected_tasks": 192, "rate_text": "69.6%", "v15_example": "当前要求最新服务质量报告，源轨迹做月度六指标，hidden target 又只剩准时率", "risk": "同一任务身份对应三个不同问题"},
-        {"label": "开放题意收窄为唯一目标", "affected_tasks": 137, "rate_text": "49.6%", "v15_example": "要求货损根因分析和报告变化，hidden target 仅按发件方汇总货损并取三行", "risk": "合理分析被判错，碰巧命中窄表格被奖励"},
-        {"label": "LIMIT 没有确定排序", "affected_tasks": 91, "rate_text": "33.0%", "v15_example": "要求按时间段比较声明价值，SQL 却按部门汇总后无序取三行", "risk": "gold 依赖数据库偶然返回顺序"},
-        {"label": "分析或建议退化为行数", "affected_tasks": 28, "rate_text": "10.1%", "v15_example": "要求运单事件优化建议和周报波动分析，hidden target 只是事件表行数", "risk": "无需业务理解，报数据量即可得分"},
-        {"label": "宽泛问题绑定单个数值", "affected_tasks": 21, "rate_text": "7.6%", "v15_example": "要求温度业务痛点和优化，hidden target 只取一个最大温度值", "risk": "极值被误当成完整诊断"}
-      ],
-      "before_after": [
-        {"order": 1, "check": "SQL 与 gold 的数据库重放", "old_result": "276/276 通过", "new_result": "4000/4000 通过", "interpretation": "两边都具备机械自洽；单独看这一层无法区分语义质量"},
-        {"order": 2, "check": "题面语义约束", "old_result": "271/276 命中至少一项预警", "new_result": "4000/4000 语义锚点保留", "interpretation": "新链把时间、过滤、分组、指标、排序与输出形态前移为生成合同"},
-        {"order": 3, "check": "自然语言改写", "old_result": "192/276 出现后续定义漂移", "new_result": "4000/4000 API 改写后复验", "interpretation": "API 只改表达，不能改语义锚点"},
-        {"order": 4, "check": "instruction/SQL 唯一性", "old_result": "full277 有1组同题异 gold", "new_result": "每沙箱500条 task/instruction/SQL 各自唯一", "interpretation": "重复或冲突在写盘前失败"},
-        {"order": 5, "check": "训练开放状态", "old_result": "旧数据曾进入历史训练", "new_result": "4000条全部 training_allowed=false", "interpretation": "结构审计通过后仍须 rollout 方差、人工审核与 canary"}
+      "warning_scale": [
+        {"label": "时间缺失", "affected_tasks": 219},
+        {"label": "定义漂移", "affected_tasks": 192},
+        {"label": "题意收窄", "affected_tasks": 137},
+        {"label": "无序LIMIT", "affected_tasks": 91},
+        {"label": "退化行数", "affected_tasks": 28},
+        {"label": "单个数值", "affected_tasks": 21}
       ]
     }
   },
   "sources": [
     {
-      "id": "semantic_review_summary",
-      "label": "v15 语义失配与新链路安全汇总",
+      "id": "native_examples",
+      "label": "老板v15原生案例与纠正SQL",
       "path": "docs/boss_v15_semantic_mismatch_20260818.safe.json",
       "query": {
-        "engine": "json",
+        "engine": "source-audit",
         "language": "json",
-        "description": "整合保存的旧 v15 审计、新八沙箱审计和脱敏实例。"
+        "description": "只保留报告需要的题面、SQL、分类和只读执行结论。"
       }
     },
     {
-      "id": "legacy_audit",
-      "label": "老板 v15 标签来源与质量审计",
-      "path": "docs/training_data_provenance_quality_audit_20260806.artifact.json",
+      "id": "legacy_pipeline",
+      "label": "老板沙箱生成链根因审计",
+      "path": "docs/boss_sandbox_generation_root_cause_audit_20260814.md",
       "query": {
-        "engine": "python",
-        "language": "python",
-        "description": "逐条执行 verification SQL，区分机械自洽与语义可信。"
+        "engine": "source-audit",
+        "language": "text",
+        "description": "核对原生生成链和语义错位根因。"
       }
     },
     {
-      "id": "new_generation_contract",
-      "label": "八沙箱开放 DWH 生成策略",
+      "id": "new_pipeline",
+      "label": "八沙箱开放DWH生成策略",
       "path": "docs/open_multisandbox_dwh_generation_strategy_20260815.md",
       "query": {
         "engine": "contract-audit",
         "language": "text",
-        "description": "定义 EvidencePlan、语义锚点、SQL/gold 重放、难度分级与禁训门。"
+        "description": "定义整改后的同源计划、硬门和放行流程。"
       }
     }
   ]

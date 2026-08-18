@@ -1,32 +1,40 @@
 {
   "audience": "product stakeholders",
   "delivery_mode": "html",
-  "report_question": "老板 v15 轨迹数据生成中的语义不匹配是什么、为什么发生、有哪些表现、应如何整改，以及我们的新生成链改善了什么。",
-  "decision_useful_answer": "旧数据的核心问题是机械自洽替代了语义一致；旧 v15 有六类重叠语义预警和一类确认绑定冲突。旧数据不得直接训练，新链路必须坚持同源计划、语义锚点、SQL/gold 重放和训练禁用门。",
-  "scope_and_baseline": "以修正后的 v15 full276 全量审计为统计口径；绑定冲突回看原 full277；改进效果采用八沙箱 4000 条最终 API 版总审计。",
+  "report_question": "老板v15轨迹数据的语义不匹配是什么、为什么发生、有哪些原生表现，以及我们的整改流程和当前效果是什么。",
+  "decision_useful_answer": "旧流程先写题面、再用可返回非空结果的SQL硬凑gold，fallback改变SQL语义却不改题面；因此SQL/gold机械自洽不能证明任务语义可信。",
+  "scope_and_baseline": "六类数量采用删除task_000033后的full276；原生案例和跨样本冲突回看原full277；改进效果采用八沙箱4000条最终API版审计。",
   "required_structure_mapping": {
-    "Title": "老板 v15 轨迹数据的语义不匹配复盘",
-    "Executive Summary": "Executive Summary",
-    "Key findings with visual evidence": "问题、核心原因和 6+1 分类证据；使用精确表格",
-    "Recommended next steps": "建议与硬门",
-    "Further questions": "仍需验证的边界",
-    "Caveats and assumptions": "效果边界"
+    "Title": "老板v15轨迹数据为什么会答非所问",
+    "Executive Summary": "按用户明确要求删除；第1节直接解释问题，不设置替代摘要块。",
+    "Key findings with visual evidence": "第3节用6个原生题面、原SQL、纠正SQL、差距和错误原因逐项展示；跨样本冲突单独成章。",
+    "Recommended next steps": "第4节给出旧数据处置和生成硬门。",
+    "Further questions": "并入第6节效果边界，避免增加松散尾部章节。",
+    "Caveats and assumptions": "末节说明预警口径、原生证据边界和纠正SQL验证。"
   },
   "chart_map": [
     {
-      "section": "6 类可统计预警 + 1 类确认冲突",
-      "analytical_question": "命中数最高的三类审计触发器分别覆盖多少 v15 任务？",
+      "section": "六类题内语义错误",
+      "analytical_question": "六类重叠语义预警各覆盖多少full276任务？",
       "family": "Comparison & Ranking",
-      "chart_type": "ranked bar",
+      "chart_type": "ranked vertical bar",
       "fields": ["label", "affected_tasks"],
-      "supported_takeaway": "时间语义缺失和任务定义漂移覆盖最广；图只展示前三类，全部六类在正文中给出；类别重叠，不能相加为错误数。",
+      "supported_takeaway": "时间语义缺失和任务定义漂移覆盖最广；类别重叠，不能相加为错误总数。",
       "palette_policy": "single-root preferred",
       "delivery_artifact": "docs/boss_v15_semantic_mismatch_20260818.html"
     }
   ],
+  "layout_changes": [
+    "删除Executive Summary和指标卡；只在六个原生案例之后保留一张克制的规模比较图。",
+    "每类问题独立为一个全宽单栏案例卡片。",
+    "共同沙箱前缀只解释一次，避免六次重复。",
+    "将原生流程、改进后流程和改变点拆成连续三个区块。",
+    "把相同instruction绑定不同gold提升为独立的跨样本一致性缺陷，而不是第7个题内类别。"
+  ],
   "source_notes": [
-    "旧 v15 六类 warning 数量来自保存的 full276 label_quality_audit；warning 是确定性审核触发器，不自动等同于逐条人工判错。",
-    "7 个示例均来自 v15 manifest/既有审计，但在报告中只做业务化转述，不写完整 SQL、gold 数值、轨迹或服务器路径。",
-    "新 4000 条的效果数字来自八沙箱总审计；结构门通过不替代独立人工语义审核或训练 canary。"
+    "六类warning数量来自保存的full276 label quality audit；warning是确定性审核触发器，不自动等同于逐条人工判错。",
+    "7个task的原生任务句和verification SQL从5号机boss v15原始审核队列只读提取；不包含expected gold值或数据库业务行。",
+    "纠正SQL依据v15真实SQLite表结构编写，并在只读模式执行；task_000060为0行，其余查询均返回非空结果。",
+    "新4000条效果数字来自八沙箱总审计；结构门通过不替代独立人工语义审核或训练canary。"
   ]
 }

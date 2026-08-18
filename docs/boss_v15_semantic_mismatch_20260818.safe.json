@@ -1,15 +1,18 @@
 {
-  "contract": "boss-v15-semantic-mismatch-review-v1",
+  "contract": "boss-v15-semantic-mismatch-review-v2",
   "date": "2026-08-18",
   "scope": {
     "original_dataset": "boss v15 DWH full277",
-    "audited_dataset": "boss v15 DWH full276 after removing the weaker duplicate-label task",
+    "audited_dataset": "boss v15 DWH full276 after removing task_000033",
     "audited_tasks": 276,
     "mechanically_replayed_tasks": 276,
     "tasks_with_at_least_one_semantic_warning": 271,
     "warning_rate": 0.9818840579710145,
-    "warning_categories_are_overlapping": true
+    "warning_categories_are_overlapping": true,
+    "raw_examples_source": "boss v15 original review queue",
+    "raw_examples_include_expected_values": false
   },
+  "shared_instruction_prefix": "沙箱布局：\n- 数据库：/workspace/logistics.sqlite（用 sqlite3 查询，只读，勿修改）\n- 知识库文档：/workspace/documents/（业务规范/操作手册）\n- 数据字典：/workspace/schema_dictionary.md（列出所有表及用途，查库前先读以避免盲目探索）\n\n任务：",
   "warning_categories": [
     {
       "order": 1,
@@ -17,8 +20,13 @@
       "label": "时间语义未落实",
       "affected_tasks": 219,
       "rate": 0.7934782608695652,
-      "v15_example": "题面明确要求分析 2026-05-28 的时效表现，hidden SQL 却没有日期过滤，只按线路汇总延误数。",
-      "risk": "历史全量或任意日期结果会被奖励为指定日期、最新一期或当前结果。"
+      "task_id": "task_000060",
+      "native_task_body": "请帮我看下“联动分析时效分析宽表”在2026-05-28这一天的各项关联指标表现情况。",
+      "native_verification_sql": "SELECT route_id, SUM(delay_count) FROM dim_dws_timeliness_analysis GROUP BY route_id LIMIT 3",
+      "corrected_sql": "SELECT stat_date, region, route_id, time_slot, carrier_id, on_time_rate, avg_transit_hours, delay_count, severe_delay_count FROM dim_dws_timeliness_analysis WHERE DATE(stat_date) = '2026-05-28' ORDER BY region, route_id, time_slot, carrier_id",
+      "corrected_sql_validation": "Executed read-only against the v15 schema; returned 0 rows.",
+      "difference": "原 SQL 完全删除了 2026-05-28，并只返回线路和延误数；题面要求的是指定日期的各项关联指标。",
+      "sharp_reason": "指定日期没有数据时，正确结果应是“无数据/任务不可生成”，不是偷偷删掉日期后拿历史数据冒充答案。"
     },
     {
       "order": 2,
@@ -26,65 +34,100 @@
       "label": "轨迹题意与后续任务定义漂移",
       "affected_tasks": 192,
       "rate": 0.6956521739130435,
-      "v15_example": "当前任务要求汇总最新一期服务质量关键指标；源轨迹实际完成月度六指标报告，而 hidden target 又缩成按承运商汇总单一准时率。",
-      "risk": "同一 task 身份的轨迹、当前 instruction 与奖励目标不是同一个问题。"
+      "task_id": "task_000147",
+      "native_task_body": "对最新一期服务质量的关键指标进行汇总然后形成报告",
+      "native_verification_sql": "SELECT t2.carrier_name, SUM(t1.on_time_rate) FROM fact_dws_service_quality_analysis t1 JOIN dim_carrier t2 ON t1.carrier_name = t2.carrier_id GROUP BY t2.carrier_name LIMIT 3",
+      "corrected_sql": "WITH latest AS (SELECT MAX(DATE(stat_date)) AS stat_date FROM fact_dws_service_quality_analysis) SELECT q.stat_date, COALESCE(c.carrier_name, q.carrier_name) AS carrier, SUM(q.total_order_cnt) AS total_orders, SUM(q.damage_cnt) AS damage_orders, SUM(q.loss_cnt) AS loss_orders, ROUND(SUM(q.damage_rate * q.total_order_cnt) / NULLIF(SUM(q.total_order_cnt), 0), 4) AS damage_rate, ROUND(SUM(q.loss_rate * q.total_order_cnt) / NULLIF(SUM(q.total_order_cnt), 0), 4) AS loss_rate, ROUND(SUM(q.complaint_rate * q.total_order_cnt) / NULLIF(SUM(q.total_order_cnt), 0), 4) AS complaint_rate, ROUND(SUM(q.return_rate * q.total_order_cnt) / NULLIF(SUM(q.total_order_cnt), 0), 4) AS return_rate, ROUND(SUM(q.on_time_rate * q.total_order_cnt) / NULLIF(SUM(q.total_order_cnt), 0), 4) AS on_time_rate, ROUND(SUM(q.satisfaction_score * q.total_order_cnt) / NULLIF(SUM(q.total_order_cnt), 0), 2) AS satisfaction_score FROM fact_dws_service_quality_analysis q JOIN latest l ON DATE(q.stat_date) = l.stat_date LEFT JOIN dim_carrier c ON q.carrier_name = c.carrier_id GROUP BY q.stat_date, COALESCE(c.carrier_name, q.carrier_name) ORDER BY total_orders DESC, carrier",
+      "corrected_sql_validation": "Executed read-only against the v15 schema; returned 1 carrier summary row.",
+      "source_trajectory_observation": "源轨迹做的是按月输出多项服务质量指标；当前 hidden target 只剩承运商准时率。",
+      "difference": "题面、源轨迹和 hidden target 分别对应“最新一期关键指标报告”“月度多指标报告”“无日期的单一准时率表”。",
+      "sharp_reason": "一个 task 身份里塞了三道不同的题，模型无论答哪一道都可能被另一套标签判错。"
     },
     {
       "order": 3,
       "code": "broad_instruction_exact_hidden_target",
-      "label": "开放题意被收窄为唯一精确目标",
+      "label": "题目要求趋势，答案却被收窄成单日分组",
       "affected_tasks": 137,
       "rate": 0.4963768115942029,
-      "v15_example": "题面要求分析最新一期货损异常并做根因分析，还提到报告数据变化；hidden target 只按发件方汇总货损数量并取三行。",
-      "risk": "合理但不同的分析会被判错，碰巧命中窄表格的回答反而被奖励。"
+      "task_id": "task_000257",
+      "native_task_body": "帮我看看货损记录从2026年3月27日到6月28日这段时间，货损数量的趋势是上升了还是下降了？",
+      "native_verification_sql": "SELECT t2.sender_info, SUM(t1.damage_qty) FROM fact_cargo_damage_record t1 JOIN fact_waybill t2 ON t1.fact_waybill_id = t2.waybill_no WHERE DATE(occurred_at) = '2026-06-27' GROUP BY t2.sender_info LIMIT 3",
+      "corrected_sql": "SELECT DATE(occurred_at) AS day, SUM(damage_qty) AS damage_qty FROM fact_cargo_damage_record WHERE DATE(occurred_at) BETWEEN '2026-03-27' AND '2026-06-28' GROUP BY DATE(occurred_at) ORDER BY day",
+      "corrected_sql_validation": "Executed read-only against the v15 schema; returned 91 daily rows.",
+      "difference": "题面要求 3月27日至6月28日的时间趋势；原 SQL 只看 6月27日，并把维度换成发件方，再随意截三行。",
+      "sharp_reason": "它不是“少查了一点”，而是把时间趋势题换成了单日客户排行题。"
     },
     {
       "order": 4,
       "code": "limit_without_order_by",
-      "label": "截取结果但没有确定排序",
+      "label": "比较维度被换掉，而且 LIMIT 没有排序",
       "affected_tasks": 91,
       "rate": 0.32971014492753625,
-      "v15_example": "题面要求比较最新一期质量异常在各时间段的声明价值差异；hidden SQL 按部门汇总后直接 LIMIT 3，没有 ORDER BY，也没有按时间段比较。",
-      "risk": "gold 依赖数据库偶然返回顺序，重放可成功但语义和结果都不稳定。"
+      "task_id": "task_000036",
+      "native_task_body": "最新一期里，不同时间段发生的质量异常事件，对应的货物声明价值有没有明显差别？",
+      "native_verification_sql": "SELECT t2.dept_name, SUM(t1.cargo_declared_value) FROM fact_quality_incident t1 JOIN dim_department t2 ON t1.dim_department_id = t2.dept_id GROUP BY t2.dept_name LIMIT 3",
+      "corrected_sql": "WITH latest AS (SELECT MAX(DATE(reported_at)) AS day FROM fact_quality_incident) SELECT CASE WHEN CAST(strftime('%H', reported_at) AS INTEGER) < 6 THEN '00:00-05:59' WHEN CAST(strftime('%H', reported_at) AS INTEGER) < 12 THEN '06:00-11:59' WHEN CAST(strftime('%H', reported_at) AS INTEGER) < 18 THEN '12:00-17:59' ELSE '18:00-23:59' END AS time_slot, COUNT(*) AS incident_count, ROUND(AVG(cargo_declared_value), 2) AS avg_declared_value, ROUND(SUM(cargo_declared_value), 2) AS total_declared_value FROM fact_quality_incident JOIN latest ON DATE(reported_at) = latest.day GROUP BY time_slot ORDER BY MIN(CAST(strftime('%H', reported_at) AS INTEGER))",
+      "corrected_sql_validation": "Executed read-only against the v15 schema; returned 4 ordered time-slot rows.",
+      "difference": "题面按时间段比较，原 SQL 却按部门分组；题面说最新一期，原 SQL没有日期条件；LIMIT 3 也没有 ORDER BY。",
+      "sharp_reason": "这条 SQL 同时答错了时间、分组维度和排序，返回三行只是数据库碰巧先吐出的三行。"
     },
     {
       "order": 5,
       "code": "broad_instruction_reduced_to_row_count",
-      "label": "分析或建议任务退化为行数",
+      "label": "两项分析任务退化为 COUNT(*)",
       "affected_tasks": 28,
       "rate": 0.10144927536231885,
-      "v15_example": "题面要求根据最新一期运单事件给出优化建议，并关注周报波动；hidden target 只是统计事件表共有多少行。",
-      "risk": "模型无需理解业务、趋势或异常，只报数据量就可能拿到满分。"
+      "task_id": "task_000109",
+      "native_task_body": "最近运单事件最新一期的数据出来后，我们发现有些可以优化的地方；另外，dim_weekly_report这张表里的指标最近起伏有点大，也得一起看看怎么稳住。",
+      "native_verification_sql": "SELECT COUNT(*) FROM fact_waybill_event",
+      "corrected_sql_part_1": "WITH latest AS (SELECT MAX(DATE(occurred_at)) AS day FROM fact_waybill_event) SELECT DATE(e.occurred_at) AS day, e.event_type, COUNT(*) AS event_count, ROUND(AVG(e.dwell_minutes), 1) AS avg_dwell_minutes, MAX(e.dwell_minutes) AS max_dwell_minutes FROM fact_waybill_event e JOIN latest l ON DATE(e.occurred_at) = l.day GROUP BY DATE(e.occurred_at), e.event_type ORDER BY avg_dwell_minutes DESC, event_count DESC",
+      "corrected_sql_part_2": "SELECT week_start, week_end, aggregated_kpi_values, generation_status FROM dim_weekly_report ORDER BY DATE(week_start) DESC LIMIT 8",
+      "corrected_sql_validation": "Executed read-only against the v15 schema; returned 7 event-type rows and 8 weekly-report rows.",
+      "difference": "题面要求分析最新运单事件、定位优化环节，并解释周报波动；原 SQL 只数了事件表总行数，甚至没有读取 dim_weekly_report。",
+      "sharp_reason": "用户问“哪里有问题、怎么稳住”，标签却只问“表里一共有几行”。这是把业务分析降级成点名册计数。"
     },
     {
       "order": 6,
       "code": "numeric_gold_without_aggregation",
-      "label": "宽泛问题绑定单个原始或极值数值",
+      "label": "完整诊断被一个最大温度值代替",
       "affected_tasks": 21,
       "rate": 0.07608695652173914,
-      "v15_example": "题面询问最新一期温度记录的业务痛点和优化方法；hidden target 只取温度字段最大的一条记录作为唯一数值答案。",
-      "risk": "一个极值被错误当作完整业务诊断，解释与建议部分无法被正确评价。"
+      "task_id": "task_000113",
+      "native_task_body": "分析一下温度记录最新一期存在的问题和改进方案。",
+      "native_verification_sql": "SELECT temperature_value FROM fact_temperature_record ORDER BY temperature_value DESC LIMIT 1",
+      "corrected_sql": "WITH latest AS (SELECT MAX(DATE(recorded_at)) AS day FROM fact_temperature_record) SELECT t.entity_type, t.entity_id, COUNT(*) AS record_count, SUM(t.excursion_flag) AS excursion_count, ROUND(100.0 * SUM(t.excursion_flag) / NULLIF(COUNT(*), 0), 2) AS excursion_rate_pct, ROUND(AVG(t.actual_temp_c), 2) AS avg_actual_temp_c, ROUND(MAX(ABS(CAST(t.deviation_degree AS REAL))), 2) AS max_abs_deviation FROM fact_temperature_record t JOIN latest l ON DATE(t.recorded_at) = l.day GROUP BY t.entity_type, t.entity_id ORDER BY excursion_rate_pct DESC, max_abs_deviation DESC, record_count DESC",
+      "corrected_sql_validation": "Executed read-only against the v15 schema; returned 14 entity-level diagnostic rows.",
+      "difference": "题面要最新一期的问题定位和改进方案；原 SQL 没有最新日期、没有异常率、没有对象分组，只取全表最大温度值。",
+      "sharp_reason": "最高温度只能说明“出现过一个高值”，不能说明问题在哪、影响多大，更不可能推出改进方案。"
     }
   ],
-  "confirmed_binding_conflict": {
-    "label": "相同 instruction 绑定不同 gold",
+  "cross_sample_binding_conflict": {
+    "label": "独立的数据集一致性缺陷：相同题面绑定不同 gold",
     "conflicting_instruction_pairs_in_full277": 1,
     "involved_tasks": 2,
-    "v15_example": "同一句“汇总服务质量最新一期关键指标，出报告”一条绑定承运商投诉率前五，另一条绑定承运商准时率前三；两条都没有最新一期过滤。",
-    "disposition": "保留相对更接近题意的一条、删除另一条后，full276 的 instruction-to-gold 冲突数降为 0；保留项仍不是人工语义金标准。"
+    "native_task_body": "对最新一期服务质量的关键指标进行汇总然后形成报告",
+    "task_000033_sql": "SELECT carrier_name, SUM(complaint_rate) FROM fact_dws_service_quality_analysis GROUP BY carrier_name LIMIT 5",
+    "task_000147_sql": "SELECT t2.carrier_name, SUM(t1.on_time_rate) FROM fact_dws_service_quality_analysis t1 JOIN dim_carrier t2 ON t1.carrier_name = t2.carrier_id GROUP BY t2.carrier_name LIMIT 3",
+    "corrected_sql_reference": "Use the multi-metric latest-period SQL from task_000147 above.",
+    "difference": "同一句题面一条只验投诉率前五，另一条只验准时率前三；两条都没有最新一期过滤，也都没有覆盖关键指标报告。",
+    "sharp_reason": "这不是同一道题的两种合理答案，而是同一句话被贴了两张互相冲突的答案卡；相同回答可能在一个样本得分、在另一个样本失分。",
+    "disposition": "task_000033 was removed; task_000147 was retained only as the relatively closer item and still requires semantic repair."
   },
-  "root_causes": [
-    "生成与验收以 verification SQL 能执行、结果非空且等于 expected value 为主，证明的是数据库机械自洽，不是 instruction 与 SQL/gold 语义一致。",
-    "自然语言题意、源轨迹、后续任务定义和 hidden target 可以分别变化，缺少不可分割的语义合同与版本绑定。",
-    "开放式业务请求被自动映射为窄查询，但没有显式记录指标、时间范围、过滤、分组、排序、Top-K 和输出形态。",
-    "生成后缺少 fail-closed 语义门：时间缺失、无序 LIMIT、非聚合数值、行数替代分析和 instruction-to-gold 冲突未在 rollout 前阻断。"
+  "legacy_process": [
+    "先按 task_type 模板写自然语言题面。",
+    "再从 SQLite 反向寻找能返回非空结果的 SQL。",
+    "首选查询为空时允许去掉日期、改聚合、改维度，最后退化到 SUM、AVG、MAX、COUNT(*) 或 SELECT * LIMIT 1。",
+    "SQL 一旦返回非空结果，该结果就成为 hidden gold；题面不随 fallback 一起重写。",
+    "QA 主要检查字段存在、SQL 可执行和结果非空；on_fail=tag 允许失败样本继续保留。",
+    "后续 LLM 改写只检查表达和格式，没有重新核对 QueryPlan/SQL 语义。"
   ],
-  "improvements": [
-    "改为 EvidencePlan/QueryPlan 同源生成：先从真实数据库确定月份、过滤值、分组维度、指标、排序和输出，再由同一计划生成 SQL、hidden gold 和题面草稿。",
-    "API 只负责把合成业务草稿改写得像人说话；时间、筛选、分组、指标、方向和前五等语义锚点必须逐字保留，缺失即拒绝。",
-    "每条 SQL 在对应 SQLite 重放并与完整 hidden gold 比较；每个沙箱内 task、instruction 和 SQL 必须各自唯一。",
-    "难度从旧 Band 5 起步，按必要证据链、跨期比较、流程诊断、基线归因和经营权衡分五级，不再用表面 JOIN 数量代替难度。",
-    "所有新任务默认 training_allowed=false；只有采样产生奖励方差并通过独立语义审核后才允许进入训练。"
+  "improved_process": [
+    "先从真实数据库可用日期、分类和值域构建 EvidencePlan/QueryPlan。",
+    "同一计划编译 verification SQL，执行得到完整 gold，再渲染 canonical instruction。",
+    "API 只自然化语言；日期、指标、筛选、分组、排序、Top-K 和输出形态作为语义锚点，缺失即拒绝。",
+    "改写后重新执行 SQL、比较完整 gold，并检查 task/instruction/SQL 唯一性。",
+    "任何空结果或语义不完整都 fail closed，不允许改变题意的 fallback。",
+    "全部任务保持 training_allowed=false，经过8次采样、人工语义审核和canary后才能放行。"
   ],
   "improved_results": {
     "sandboxes": 8,
@@ -96,23 +139,9 @@
     "semantic_anchor_passed": 4000,
     "api_naturalized_and_validated": 4000,
     "training_allowed": false,
-    "interpretation": "这些结果证明新管线的结构化语义合同、执行重放和改写保真门正常；它们不等于 4000 条已经完成人工语义批准，也不等于 GRPO 已经提升。"
+    "interpretation": "这些结果证明新管线的同源语义合同、执行重放和改写保真门生效；它们不等于4000条已经完成人工语义批准，也不等于GRPO已经提升。"
   },
-  "recommended_gates": [
-    "旧 v15 数据只作历史证据或逐条修复来源，不得因 SQL 可执行就直接训练。",
-    "任何题意改写必须触发 SQL、gold 和语义合同的整组再验证；禁止只改 instruction 或只改答案。",
-    "将六类预警、instruction-to-gold 唯一性、SQL 重放和语义锚点完整性设为生成时硬门。",
-    "rollout 前做分层人工语义审核；mixed 只代表有学习信号，不代表标签正确。",
-    "训练前继续保持禁训标记，并用小规模 canary 同时观察老板 reward、严格最终结果正确率和人工语义正确率。"
-  ],
-  "sources": [
-    "docs/training_data_provenance_quality_audit_20260806.artifact.json",
-    "scripts/audit_boss_dataset_labels.py",
-    "scripts/audit_formal_instruction_gold_alignment.py",
-    "docs/open_multisandbox_dwh_generation_strategy_20260815.md",
-    "scripts/generate_open_multisandbox_dwh.py",
-    "scripts/rewrite_open_multisandbox_dwh_instructions_api.py",
-    "scripts/audit_open_multisandbox_dwh.py"
-  ],
-  "contains_full_prompts_sql_gold_values_tool_outputs_or_server_paths": false
+  "contains_native_prompts_and_sql": true,
+  "contains_expected_gold_values_or_database_rows": false,
+  "contains_credentials_or_server_paths": false
 }
