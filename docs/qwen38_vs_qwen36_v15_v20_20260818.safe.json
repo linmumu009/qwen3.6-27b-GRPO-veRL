@@ -61,8 +61,22 @@
       "full_six_trajectories": 3000,
       "saved_trajectories": 34,
       "runtime_errors": 0,
-      "host_candidate_counts": {"machine_0": 3, "machine_5": 4, "machine_6": 12}
+      "host_candidate_counts": {"machine_0": 3, "machine_5": 4, "machine_6": 12},
+      "difficulty_counts": {"level_1": 0, "level_2": 7, "level_3": 1, "level_4": 5, "level_5": 6}
     }
+  },
+  "qwen38_aggregate": {
+    "sandboxes": ["v15", "v20", "v21"],
+    "screened_task_records": 1500,
+    "variance_candidate_records": 70,
+    "variance_candidate_rate": 0.04666666666666667,
+    "difficulty_counts": {"level_1": 2, "level_2": 25, "level_3": 17, "level_4": 16, "level_5": 10},
+    "difficulty_rates": {"level_1": 0.02857142857142857, "level_2": 0.35714285714285715, "level_3": 0.24285714285714285, "level_4": 0.22857142857142856, "level_5": 0.14285714285714285},
+    "trainable_now_records": 0,
+    "training_allowed": false,
+    "status_note": "All 70 records passed the reward-variance gate but remain pending semantic/gold review and explicit training approval.",
+    "cross_sandbox_identity_deduplication_performed": false,
+    "counting_note": "The total is the sum of candidate records from the three sandbox outputs; run the existing instruction-identity collision gate before creating one combined training pool."
   },
   "v20_comparison": {
     "qwen36_step120": {

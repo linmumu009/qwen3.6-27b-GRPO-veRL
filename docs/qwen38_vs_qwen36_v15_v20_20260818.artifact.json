@@ -5,7 +5,7 @@
     "surface": "report",
     "title": "Qwen3.8 与 Qwen3.6 的 v15/v20/v21 轨迹结果对比",
     "description": "Qwen3.8 原生 Step0 的三机严格 2+2+2 最终结果，以及与 Qwen3.6 Step120 在同一 v20/v21 任务集上的可比分析。",
-    "generatedAt": "2026-08-18T07:30:00Z",
+    "generatedAt": "2026-08-18T07:49:31Z",
     "cards": [
       {"id": "q38_v15", "description": "Qwen3.8 原生 Step0 的 v15 mixed 候选率。", "dataset": "summary", "sourceId": "safe", "metrics": [{"label": "Qwen3.8 v15候选率", "field": "q38_v15_candidate_rate", "format": "percent"}]},
       {"id": "q38_v20", "description": "Qwen3.8 原生 Step0 的 v20 mixed 候选率。", "dataset": "summary", "sourceId": "safe", "metrics": [{"label": "Qwen3.8 v20候选率", "field": "q38_v20_candidate_rate", "format": "percent"}]},
@@ -71,6 +71,20 @@
           {"field": "delta", "label": "Qwen3.8 - Qwen3.6", "format": "percent", "movement": true},
           {"field": "note", "label": "口径", "type": "text"}
         ]
+      },
+      {
+        "id": "q38_difficulty",
+        "title": "Qwen3.8 三批GRPO方差候选难度分布",
+        "dataset": "q38_difficulty",
+        "sourceId": "safe_difficulty",
+        "columns": [
+          {"field": "difficulty", "label": "难度", "type": "text"},
+          {"field": "v15", "label": "v15", "type": "number"},
+          {"field": "v20", "label": "v20", "type": "number"},
+          {"field": "v21", "label": "v21", "type": "number"},
+          {"field": "total", "label": "合计", "type": "number"},
+          {"field": "share", "label": "占70道比例", "format": "percent"}
+        ]
       }
     ],
     "sources": [{
@@ -86,27 +100,42 @@
         "filters": ["version = v20", "Qwen3.6 Step120 or Qwen3.8 native Step0"],
         "metric_definitions": ["correct_trajectory_rate = correct_trajectories / 1000", "mixed_candidate_rate = mixed_candidates / 500", "completion_rate = completed_trajectories / 1000"]
       }
+    }, {
+      "id": "safe_difficulty",
+      "label": "Qwen3.8 v15/v20/v21 九份最终安全汇总的候选难度计数",
+      "path": "docs/qwen38_vs_qwen36_v15_v20_20260818.safe.json",
+      "query": {
+        "engine": "snapshot",
+        "sql": "SELECT difficulty_level, SUM(candidate_tasks) AS candidate_tasks FROM qwen38_safe_rollout_summary WHERE version IN ('v15', 'v20', 'v21') GROUP BY difficulty_level ORDER BY difficulty_level",
+        "description": "将三批、三台机器的最终安全汇总按版本与难度相加；只统计通过mixed奖励方差门的候选记录。",
+        "executed_at": "2026-08-18T07:49:31Z",
+        "tables_used": ["qwen38_safe_rollout_summary"],
+        "filters": ["version in v15, v20, v21", "stage = complete_after_six_samples", "training_allowed = false"],
+        "metric_definitions": ["variance candidate = at least one correct and one completed incorrect trajectory within at most six samples", "difficulty share = candidate records at level / 70"]
+      }
     }],
     "blocks": [
       {"id": "title", "type": "markdown", "body": "# Qwen3.8 与 Qwen3.6 的 v15/v20/v21 轨迹结果对比\n\n2026-08-18 · 只包含聚合指标，不含题面、gold、SQL、任务标识、工具输出或服务器路径。"},
-      {"id": "summary", "type": "markdown", "sourceId": "safe", "body": "## 技术摘要\n\nQwen3.8 原生 Step0 已在三机 TP4 队列完成 v15、v20 和 v21，分别得到 **12/500（2.4%）**、**39/500（7.8%）** 和 **19/500（3.8%）** mixed 候选。历史 Qwen3.6 Step120 在同一 v20/v21 任务集分别得到 **68/500（13.6%）** 和 **34/500（6.8%）**；两批合计Qwen3.8为58道、Qwen3.6为102道。"},
+      {"id": "summary", "type": "markdown", "sourceId": "safe", "body": "## 技术摘要\n\nQwen3.8 原生 Step0 已在三机 TP4 队列完成 v15、v20 和 v21，分别得到 **12/500（2.4%）**、**39/500（7.8%）** 和 **19/500（3.8%）** mixed 候选，三批合计 **70/1500（4.67%）**。这70道已通过GRPO奖励方差门，但当前全部仍为 `training_allowed=false`；必须完成语义、gold与跨沙箱身份碰撞审核后，才可称为正式可训练数据。"},
       {"id": "metrics", "type": "metric-strip", "cardIds": ["q38_v15", "q38_v20", "q38_v21", "candidate_gap", "v21_candidate_gap", "completion_gap"]},
       {"id": "finding_intro", "type": "markdown", "sourceId": "safe", "body": "## 关键发现与可视证据\n\nv20的质量差距在首2条就出现：Qwen3.8正确轨迹率为 **2.3%**，Qwen3.6 Step120为 **5.0%**；最多6条后的mixed候选率分别为 **7.8%** 和 **13.6%**。v21同样为 **3.8% 对 6.8%**。"},
       {"id": "quality_chart", "type": "chart", "chartId": "quality_comparison", "layout": "full"},
       {"id": "finding_outro", "type": "markdown", "sourceId": "safe", "body": "每一项内部使用同一版本、同一批任务和同一口径。v20中，Qwen3.8首2条至少出现一次正确答案的题仅 **20/500（4.0%）**，Qwen3.6 Step120为 **40/500（8.0%）**；v21最终候选也少15道，说明Qwen3.8 Step0的候选产出偏低并非v20单批偶然。"},
       {"id": "scope", "type": "markdown", "sourceId": "safe", "body": "## 范围、数据与指标定义\n\n两者共享 `4,096 prompt + 90,112 response = 94,208 tokens`、30分钟轨迹超时、`temperature=1 / top_p=.95 / top_k=20` 和1.25×逻辑窗口。mixed候选指同一道题在已采轨迹中同时出现至少一条正确和一条完成但错误的轨迹；严格2+2+2在2、4、6条后判定并早停。v20和v21有同任务集历史Qwen3.6基线；v15没有，因此v15只报告Qwen3.8绝对结果。"},
       {"id": "q38_table", "type": "table", "tableId": "q38_versions", "layout": "full"},
+      {"id": "difficulty_intro", "type": "markdown", "sourceId": "safe_difficulty", "body": "## 70道候选以难度2为主\n\n三批候选的难度1–5分布为 **2 / 25 / 17 / 16 / 10**，其中难度2占 **35.7%**，难度3–5合计43道、占 **61.4%**。这些数字是三个沙箱候选记录的直接求和，尚未执行跨沙箱instruction身份去重，因此合池前仍必须经过现有碰撞门。"},
+      {"id": "difficulty_table", "type": "table", "tableId": "q38_difficulty", "layout": "full"},
       {"id": "method", "type": "markdown", "sourceId": "safe", "body": "## 方法\n\nQwen3.8的每版500题按182/182/136分到三台机器，完成后按互斥分片合并。v21三机分别产出4/12/3道候选，合计19道；2/4/6条阶段分别发现7/3/9道，实际采样2,966条。Qwen3.6 v20/v21使用历史同500题结果；首2条后只对未形成mixed的题追加第3–4条和第5–6条。"},
       {"id": "audit_table", "type": "table", "tableId": "v20_audit", "layout": "full"},
       {"id": "v21_audit_table", "type": "table", "tableId": "v21_audit", "layout": "full"},
-      {"id": "limits", "type": "markdown", "sourceId": "safe", "body": "## 限制与稳健性\n\n最重要的限制是训练阶段不同：Qwen3.6 是领域训练后的 Step120，Qwen3.8 是原生 Step0。因此，这份结果回答的是“当前哪个模型更适合直接生产 GRPO 候选”，不能回答“Qwen3.8 架构是否弱于 Qwen3.6”。此外，Qwen3.6 旧汇总中有36条首2轨迹既未标 completed 也未标 timeout，原始 timeout 标签不可直接横比；采用非完成率后两者为 **19.5% 对 20.0%**，只差0.5个百分点，说明当前 TP4 工程运行稳定，主要差距是正确性而非拓扑。"},
+      {"id": "limits", "type": "markdown", "sourceId": "safe", "body": "## 限制与稳健性\n\n最重要的限制是训练阶段不同：Qwen3.6 是领域训练后的 Step120，Qwen3.8 是原生 Step0。因此，这份结果回答的是“当前哪个模型更适合直接生产 GRPO 候选”，不能回答“Qwen3.8 架构是否弱于 Qwen3.6”。此外，70道是三批候选记录求和，不是已经完成跨沙箱身份去重和语义审核的最终训练池；当前正式可训练数仍是0。Qwen3.6旧汇总的原始timeout标签也不可直接横比；统一采用非完成率后两者只差0.5个百分点。"},
       {"id": "recommendation", "type": "markdown", "sourceId": "safe", "body": "## 建议的下一步\n\n1. 当前不要用原生Qwen3.8 Step0替换Qwen3.6 Step120作为候选生产模型。\n2. 若要判断Qwen3.8的模型潜力，应先做领域SFT/蒸馏或短训练，再进行Step-matched或native-to-native对照。\n3. 保留TP4×DP4/TP4×DP3：完成率和零runtime error证据未显示拓扑导致质量下降。\n4. v15/v20/v21候选仍需语义审核，mixed门通过不等于允许训练。"},
       {"id": "questions", "type": "markdown", "body": "## 后续问题\n\n- Qwen3.8经同等领域训练后，正确轨迹率能否恢复到5%附近？\n- 在同一模型阶段下，TP4与TP8是否保持候选质量等价？\n- v15/v20/v21候选通过语义审核后的最终可训练保留率是多少？"}
     ]
   },
   "snapshot": {
     "version": 1,
-    "generatedAt": "2026-08-18T07:30:00Z",
+    "generatedAt": "2026-08-18T07:49:31Z",
     "status": "ready",
     "datasets": {
       "summary": [{"q38_v15_candidate_rate": 0.024, "q38_v20_candidate_rate": 0.078, "q38_v21_candidate_rate": 0.038, "candidate_rate_gap": -0.058, "v21_candidate_rate_gap": -0.03, "completion_rate_gap": -0.005}],
@@ -133,6 +162,13 @@
         {"version": "v15", "tasks": 500, "after2": 1, "after4": 5, "after6": 6, "candidates": 12, "candidate_rate": 0.024, "trajectories": 2986, "saved": 14},
         {"version": "v20", "tasks": 500, "after2": 13, "after4": 17, "after6": 9, "candidates": 39, "candidate_rate": 0.078, "trajectories": 2914, "saved": 86},
         {"version": "v21", "tasks": 500, "after2": 7, "after4": 3, "after6": 9, "candidates": 19, "candidate_rate": 0.038, "trajectories": 2966, "saved": 34}
+      ],
+      "q38_difficulty": [
+        {"difficulty": "难度1", "v15": 0, "v20": 2, "v21": 0, "total": 2, "share": 0.02857142857142857},
+        {"difficulty": "难度2", "v15": 1, "v20": 17, "v21": 7, "total": 25, "share": 0.35714285714285715},
+        {"difficulty": "难度3", "v15": 6, "v20": 10, "v21": 1, "total": 17, "share": 0.24285714285714285},
+        {"difficulty": "难度4", "v15": 4, "v20": 7, "v21": 5, "total": 16, "share": 0.22857142857142856},
+        {"difficulty": "难度5", "v15": 1, "v20": 3, "v21": 6, "total": 10, "share": 0.14285714285714285}
       ]
     }
   },
