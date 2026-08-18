@@ -144,6 +144,25 @@
     "example_query_plan": "fact_cargo_damage_record；occurred_at区间过滤；SUM(damage_qty)；按DATE(occurred_at)分组并按日期排序。",
     "fail_closed_rule": "指定时间没有数据时拒绝整道任务并重新生成，不允许删除时间条件或替换指标来制造非空结果。"
   },
+  "instruction_generation_comparison": {
+    "legacy_instruction_chain": [
+      "taxonomy先分配task_type。",
+      "step5的_build_instruction根据task_type选择自然语言模板并填槽，先产出natural_language_instruction。",
+      "_try_backward_generation随后独立从SQLite反向寻找非空SQL；fallback只改SQL和gold，不回写题面。",
+      "Step 5b围绕原题面生成instruction variants，但没有按结构化QueryPlan或SQL逐项复验。",
+      "后续选择一个variant作为最终instruction。"
+    ],
+    "legacy_answer_chain": "SQLite -> backward SQL generation -> semantic fallback -> verification SQL -> hidden gold",
+    "improved_instruction_chain": [
+      "读取真实月份、分类和值域。",
+      "冻结EvidencePlan和QueryPlan。",
+      "从同一计划渲染包含日期、指标、筛选、分组、Top-K、排序和输出形态的canonical instruction。",
+      "外部API只接收合成角色、canonical业务题面、任务类型和语义锚点，只负责自然化表达。",
+      "API结果逐项复验全部语义锚点，缺失或改变即拒绝并重试。"
+    ],
+    "improved_answer_chain": "同一QueryPlan -> verification SQL -> read-only execution -> complete hidden gold -> full replay",
+    "core_difference": "原生题面链和答案链分别生成；新流程让二者共享同一份冻结计划，语言模型只能改变说法，不能改变题意。"
+  },
   "improved_results": {
     "sandboxes": 8,
     "tasks": 4000,
