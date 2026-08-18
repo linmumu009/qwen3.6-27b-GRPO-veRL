@@ -1,0 +1,67 @@
+{
+  "contract": "llin-qwen38-grpo-candidate-semantic-audit-safe-v1",
+  "date": "2026-08-18",
+  "population": {
+    "model": "Qwen3.8-27B native HF",
+    "policy_step": 0,
+    "sandboxes": ["v15", "v20", "v21"],
+    "screened_task_records": 1500,
+    "variance_candidate_records": 70,
+    "sampling_protocol": "strict adaptive 2+2+2",
+    "maximum_samples_per_task": 6
+  },
+  "audit_result": {
+    "reviewed_candidates": 70,
+    "approved_candidates": 70,
+    "rejected_candidates": 0,
+    "needs_manual_review": 0,
+    "all_candidates_accounted_for": true,
+    "cross_host_and_cross_sandbox_identity_unique": true,
+    "training_allowed": false,
+    "promotion_allowed": false
+  },
+  "by_sandbox": {
+    "v15": {"candidates": 12, "approved": 12, "rejected": 0, "needs_manual_review": 0},
+    "v20": {"candidates": 39, "approved": 39, "rejected": 0, "needs_manual_review": 0},
+    "v21": {"candidates": 19, "approved": 19, "rejected": 0, "needs_manual_review": 0}
+  },
+  "by_host": {
+    "machine_0": {"candidates": 21, "approved": 21, "private_parquet_mode": "0600"},
+    "machine_5": {"candidates": 20, "approved": 20, "private_parquet_mode": "0600"},
+    "machine_6": {"candidates": 29, "approved": 29, "private_parquet_mode": "0600"}
+  },
+  "difficulty_counts": {
+    "level_1": 2,
+    "level_2": 25,
+    "level_3": 17,
+    "level_4": 16,
+    "level_5": 10
+  },
+  "audit_method": {
+    "candidate_identity_and_prompt_routing_reconciled": true,
+    "reward_and_final_outcome_routing_reconciled": true,
+    "verification_sql_replayed_in_read_only_mode": true,
+    "replayed_results_match_hidden_gold_and_result_hash": true,
+    "instruction_to_semantic_contract_review_passes": 70,
+    "sql_to_instruction_adversarial_review_passes": 70,
+    "external_api_used_for_review": false,
+    "approval_requires_both_semantic_passes_and_all_evidence_checks": true
+  },
+  "rule_refinement_audit_trail": {
+    "initial_approved": 69,
+    "initial_pending": 1,
+    "initial_pending_reason": "Level 5 open explanation used equivalent wording not covered by the first lexical rule.",
+    "resolution": "Added equivalent open-explanation wording to the general rule and reran all 70 candidates; no per-row override was used.",
+    "final_approved": 70
+  },
+  "private_output_validation": {
+    "approved_rows": 70,
+    "unique_candidate_identities": 70,
+    "explicit_semantic_reviewed_true_rows": 70,
+    "training_allowed_false_rows": 70,
+    "promotion_allowed_false_rows": 70,
+    "all_private_parquets_mode_0600": true
+  },
+  "interpretation": "All 70 variance candidates passed the semantic, SQL, gold, and final-outcome routing audit and are approved candidate records. Training and promotion remain explicitly disabled until a later in-scope dataset assembly or training authorization step.",
+  "contains_prompts_sql_gold_values_task_ids_hashes_server_paths_or_tool_outputs": false
+}
