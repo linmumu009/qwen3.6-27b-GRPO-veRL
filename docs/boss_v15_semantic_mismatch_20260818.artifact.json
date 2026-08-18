@@ -157,7 +157,7 @@
       {
         "id": "recommendations",
         "type": "markdown",
-        "body": "## 4. 建议：旧v15不要继续修修补补后直接训练\n\n1. **保留SQLite和schema，重建任务层。** 数据库资产可以复用，旧instruction—SQL—gold三元组不能直接复用。\n2. **所有题先写结构化QueryPlan。** 明确指标、聚合、时间、筛选、分组、排序和输出形态，再生成题面和SQL。\n3. **禁止改变题意的fallback。** 指定日期没有数据就丢弃任务，不能去掉日期；分析任务无法用SQL完整验收，就进入SFT/reference或增加明确rubric，不能压成一个数字。\n4. **任何改写都必须整组复验。** 改instruction、SQL或gold中的任意一个，都要重新执行SQL并重新检查语义。\n5. **rollout之后仍需人工审核。** mixed只说明模型有对有错，不说明题和答案标签正确。",
+        "body": "## 4. 建议：旧v15不要继续修修补补后直接训练\n\n1. **保留SQLite和schema，重建任务层。** 数据库资产可以复用，旧instruction—SQL—gold三元组不能直接复用。\n2. **所有题先写结构化计划。** 先冻结[业务证据清单（EvidencePlan）和数据查询方案（QueryPlan）](#evidence-query-plan-note)，明确指标、聚合、时间、筛选、分组、排序和输出形态，再生成题面和SQL。\n3. **禁止改变题意的fallback。** 指定日期没有数据就丢弃任务，不能去掉日期；分析任务无法用SQL完整验收，就进入SFT/reference或增加明确rubric，不能压成一个数字。\n4. **任何改写都必须整组复验。** 改instruction、SQL或gold中的任意一个，都要重新执行SQL并重新检查语义。\n5. **rollout之后仍需人工审核。** mixed只说明模型有对有错，不说明题和答案标签正确。",
         "sourceId": "legacy_pipeline",
         "layout": "full"
       },
@@ -171,14 +171,14 @@
       {
         "id": "new_flow",
         "type": "markdown",
-        "body": "### 改动后的流程\n\n1. 读取数据库真实存在的日期、分类和值域。\n2. 先生成并冻结EvidencePlan/QueryPlan。\n3. 从计划编译SQL并执行，得到完整gold。\n4. 从同一计划生成标准题面。\n5. API只负责把话说得自然，不允许改语义锚点。\n6. 改写后重新检查日期、指标、筛选、分组、排序和输出形态。\n7. 全量重放SQL并比较完整gold，同时检查唯一性。\n8. 数据保持`training_allowed=false`。\n9. 完成每题8次采样、人工语义审核和短canary后才放行。\n\n新流程的source of truth是结构化计划。题面、SQL和gold都从同一个计划生成，任何一项变动都会触发整组复验。",
+        "body": "### 改动后的流程\n\n1. 读取数据库真实存在的日期、分类和值域。\n2. 先生成并冻结[业务证据清单（EvidencePlan）和数据查询方案（QueryPlan）](#evidence-query-plan-note)。\n3. 从计划编译SQL并执行，得到完整gold。\n4. 从同一计划生成标准题面。\n5. API只负责把话说得自然，不允许改语义锚点。\n6. 改写后重新检查日期、指标、筛选、分组、排序和输出形态。\n7. 全量重放SQL并比较完整gold，同时检查唯一性。\n8. 数据保持`training_allowed=false`。\n9. 完成每题8次采样、人工语义审核和短canary后才放行。\n\n新流程的source of truth是结构化计划。题面、SQL和gold都从同一个计划生成，任何一项变动都会触发整组复验。",
         "sourceId": "new_pipeline",
         "layout": "full"
       },
       {
         "id": "what_changed",
         "type": "markdown",
-        "body": "### 我们真正改变了什么\n\n| 环节 | 原流程 | 改动后 |\n|---|---|---|\n| 题目来源 | 先写自然语言模板 | 先冻结EvidencePlan/QueryPlan |\n| SQL失败 | 换日期、换指标、换聚合直到非空 | 直接拒绝并重新生成，不允许换题 |\n| 题面与SQL | 两套逻辑分别生成 | 从同一计划生成 |\n| API改写 | 只看语句是否自然 | 日期、指标、分组、排序等锚点缺一即拒绝 |\n| gold验收 | SQL可执行、结果非空 | 完整结果重放 + 语义锚点 + 唯一性 |\n| 难度 | JOIN多看起来就难 | 按必要证据链、跨期、归因和经营权衡分级 |\n| 训练放行 | 生成后可能直接进入候选 | 默认禁训，必须经过采样、人工审核和canary |",
+        "body": "### 我们真正改变了什么\n\n- **题目从哪里来：** 原来先写自然语言模板；现在先冻结[业务证据清单（EvidencePlan）和数据查询方案（QueryPlan）](#evidence-query-plan-note)。\n- **SQL查不到数据时怎么办：** 原来会换日期、换指标、换聚合直到非空；现在直接拒绝并重新生成，不允许换题。\n- **题面与SQL是什么关系：** 原来由两套逻辑分别生成；现在从同一份计划生成。\n- **API改写检查什么：** 原来只看语句是否自然；现在日期、指标、分组、排序等锚点缺一即拒绝。\n- **gold怎么验收：** 原来只检查SQL可执行、结果非空；现在检查完整结果重放、语义锚点和唯一性。\n- **难度怎么定义：** 原来看JOIN多不多；现在看必要证据链、跨期、归因和经营权衡。\n- **什么时候允许训练：** 原来生成后可能直接进入候选；现在默认禁训，必须经过采样、人工审核和canary。",
         "sourceId": "new_pipeline",
         "layout": "full"
       },
@@ -194,6 +194,13 @@
         "type": "markdown",
         "body": "## 读这些数字时要注意\n\n- 六类数量是确定性预警，不是六个互斥错误桶，也不能相加得到错误总数。\n- `271/276`表示至少触发一项高风险检查，不表示271条都已经由人工逐条判死刑。\n- 原生例子保留了真实task句和真实verification SQL，但没有写入expected gold值或数据库业务行。\n- 报告中的纠正SQL按v15真实表结构编写并只读执行；task_000060按题面查询得到0行，这恰好证明旧生成器应该拒绝该任务，而不应删除日期。",
         "sourceId": "native_examples",
+        "layout": "full"
+      },
+      {
+        "id": "evidence-query-plan-note",
+        "type": "markdown",
+        "body": "## 注释：EvidencePlan / QueryPlan 到底是什么\n\n这两个词不是训练算法，也不是模型里的特殊模块。它们是我们在**出题阶段**增加的两份结构化清单，目的是让题面、SQL和标准答案始终说同一件事。\n\n### EvidencePlan：业务证据清单\n\n它先用业务语言写清楚：**要回答这道题，必须拿出哪些证据。** 至少包括时间范围、要看的指标、如何计算、按什么粒度展示，以及最后要判断什么。它约束的是“问题到底在问什么”。\n\n### QueryPlan：数据查询方案\n\n它再把业务证据清单翻译成数据库动作：**查哪张表、用哪个时间字段、怎么筛选、怎么汇总、按什么分组和排序。** 它约束的是“数据库到底该怎么查”。\n\n以报告中的货损趋势题为例：题目要看2026年3月27日至6月28日货损数量是上升还是下降。\n\n1. **业务证据清单先锁定题意：** 时间范围是3月27日至6月28日；指标是货损数量；按天汇总；输出每日趋势；判断上升还是下降。\n2. **数据查询方案再落实到数据库：** 查`fact_cargo_damage_record`；时间字段用`occurred_at`；按日期区间筛选；对`damage_qty`求和；按日分组并按日期排序。\n3. **最后生成完整任务：** 同一份计划同时生成自然语言题面、verification SQL和完整gold。\n\n它们之间的关系是：**业务证据清单 → 数据查询方案 → 题面 + SQL + gold**。前一层先锁定业务问题，后一层只负责忠实地把它落到数据库上。\n\n旧流程的问题正是少了这两层：题面先写，SQL随后为了返回非空结果自行换日期、换指标或换分组，最后把改过题意的查询结果当成gold。新流程中，如果指定时间没有数据，整道题会被拒绝并重新生成；绝不允许偷偷删掉时间条件，把另一道题的答案塞回来。",
+        "sourceId": "terminology_note",
         "layout": "full"
       }
     ]
@@ -242,6 +249,16 @@
         "engine": "contract-audit",
         "language": "text",
         "description": "定义整改后的同源计划、硬门和放行流程。"
+      }
+    },
+    {
+      "id": "terminology_note",
+      "label": "整改流程术语与货损趋势示例",
+      "path": "docs/boss_v15_semantic_mismatch_20260818.safe.json",
+      "query": {
+        "engine": "contract-explanation",
+        "language": "json",
+        "description": "用task_000257说明业务证据清单、数据查询方案及二者与题面、SQL、gold的关系。"
       }
     }
   ]

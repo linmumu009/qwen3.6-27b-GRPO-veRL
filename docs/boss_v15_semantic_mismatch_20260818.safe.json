@@ -129,6 +129,21 @@
     "任何空结果或语义不完整都 fail closed，不允许改变题意的 fallback。",
     "全部任务保持 training_allowed=false，经过8次采样、人工语义审核和canary后才能放行。"
   ],
+  "terminology_note": {
+    "evidence_plan": {
+      "chinese_name": "业务证据清单",
+      "plain_definition": "先用业务语言写清楚回答题目必须具备哪些证据，锁定时间范围、指标、算法、展示粒度和判断目标。"
+    },
+    "query_plan": {
+      "chinese_name": "数据查询方案",
+      "plain_definition": "把业务证据清单翻译成数据库动作，锁定表、时间字段、过滤、聚合、分组、排序和输出列。"
+    },
+    "relationship": "业务证据清单 -> 数据查询方案 -> 题面 + verification SQL + 完整 gold",
+    "example_task_id": "task_000257",
+    "example_evidence_plan": "2026-03-27至2026-06-28；货损数量；按天求和；输出每日趋势；判断上升还是下降。",
+    "example_query_plan": "fact_cargo_damage_record；occurred_at区间过滤；SUM(damage_qty)；按DATE(occurred_at)分组并按日期排序。",
+    "fail_closed_rule": "指定时间没有数据时拒绝整道任务并重新生成，不允许删除时间条件或替换指标来制造非空结果。"
+  },
   "improved_results": {
     "sandboxes": 8,
     "tasks": 4000,
