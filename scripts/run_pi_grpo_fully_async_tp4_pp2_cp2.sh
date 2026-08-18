@@ -33,6 +33,8 @@ MAX_TOOL_RESPONSE_CHARS="${MAX_TOOL_RESPONSE_CHARS:-32768}"
 ROLLOUT_MAX_BATCHED_TOKENS="${ROLLOUT_MAX_BATCHED_TOKENS:-8192}"
 ROLLOUT_MAX_SEQS="${ROLLOUT_MAX_SEQS:-16}"
 ROLLOUT_GPU_MEMORY_UTILIZATION="${ROLLOUT_GPU_MEMORY_UTILIZATION:-0.60}"
+OPTIMIZER_CPU_OFFLOAD="${OPTIMIZER_CPU_OFFLOAD:-true}"
+ENGINE_OPTIMIZER_OFFLOAD="${ENGINE_OPTIMIZER_OFFLOAD:-true}"
 AGENT_WORKERS="${AGENT_WORKERS:-8}"
 CONCURRENT_SAMPLES_PER_REPLICA="${CONCURRENT_SAMPLES_PER_REPLICA:-16}"
 FASTEST_K="${FASTEST_K:-4}"
@@ -44,6 +46,17 @@ PI_DENSE_CORRECTNESS_WEIGHT="${PI_DENSE_CORRECTNESS_WEIGHT:-0}"
 # Keeping this many worst-case tokens prevents an oversized-group
 # producer from blocking before the trainer can collect its first full batch.
 MAX_QUEUE_TOKENS="${MAX_QUEUE_TOKENS:-$((GROUPS_PER_STEP * RESPONSES_PER_GROUP * MAX_CONTEXT_TOKENS))}"
+
+case "${OPTIMIZER_CPU_OFFLOAD}" in
+  true) OPTIMIZER_CPU_OFFLOAD_ARG='+actor_rollout_ref.actor.optim.override_optimizer_config.optimizer_cpu_offload=True' ;;
+  false) OPTIMIZER_CPU_OFFLOAD_ARG='+actor_rollout_ref.actor.optim.override_optimizer_config.optimizer_cpu_offload=False' ;;
+  *) printf 'OPTIMIZER_CPU_OFFLOAD must be true or false\n' >&2; exit 2 ;;
+esac
+case "${ENGINE_OPTIMIZER_OFFLOAD}" in
+  true) ENGINE_OPTIMIZER_OFFLOAD_ARG='actor_rollout_ref.actor.megatron.optimizer_offload=True' ;;
+  false) ENGINE_OPTIMIZER_OFFLOAD_ARG='actor_rollout_ref.actor.megatron.optimizer_offload=False' ;;
+  *) printf 'ENGINE_OPTIMIZER_OFFLOAD must be true or false\n' >&2; exit 2 ;;
+esac
 
 if (( TRAIN_TP * TRAIN_PP * TRAIN_CP != TRAIN_NPUS )); then
   printf 'Invalid training topology: TP(%s) * PP(%s) * CP(%s) != NPUs(%s)\n' \
@@ -166,7 +179,7 @@ python3 -m verl.experimental.fully_async_policy.fully_async_main \
   actor_rollout_ref.actor.optim.lr=1e-6 \
   actor_rollout_ref.actor.optim.lr_decay_style=constant \
   actor_rollout_ref.actor.optim.lr_decay_steps="${TOTAL_TRAINING_STEPS}" \
-  +actor_rollout_ref.actor.optim.override_optimizer_config.optimizer_cpu_offload=True \
+  "${OPTIMIZER_CPU_OFFLOAD_ARG}" \
   +actor_rollout_ref.actor.optim.override_optimizer_config.optimizer_offload_fraction=1 \
   +actor_rollout_ref.actor.optim.override_optimizer_config.overlap_cpu_optimizer_d2h_h2d=True \
   actor_rollout_ref.actor.ppo_mini_batch_size="${GROUPS_PER_STEP}" \
@@ -182,7 +195,7 @@ python3 -m verl.experimental.fully_async_policy.fully_async_main \
   actor_rollout_ref.actor.megatron.pipeline_model_parallel_size="${TRAIN_PP}" \
   actor_rollout_ref.actor.megatron.context_parallel_size="${TRAIN_CP}" \
   actor_rollout_ref.actor.megatron.param_offload=False \
-  actor_rollout_ref.actor.megatron.optimizer_offload=True \
+  "${ENGINE_OPTIMIZER_OFFLOAD_ARG}" \
   actor_rollout_ref.actor.megatron.grad_offload=True \
   actor_rollout_ref.actor.megatron.dtype=bfloat16 \
   actor_rollout_ref.actor.megatron.use_distributed_optimizer=True \

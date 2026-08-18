@@ -3,6 +3,8 @@
 
 from __future__ import annotations
 
+import argparse
+import json
 from pathlib import Path, PurePosixPath
 import sqlite3
 
@@ -89,3 +91,22 @@ def validate_dataset_runtime_environments(dataset: Path, sandbox_root: Path) -> 
         "sqlite_has_relations": True,
         "environment_ids_emitted": False,
     }
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--dataset", type=Path, required=True)
+    parser.add_argument("--sandbox-root", type=Path, required=True)
+    args = parser.parse_args()
+    print(
+        json.dumps(
+            validate_dataset_runtime_environments(args.dataset, args.sandbox_root),
+            ensure_ascii=False,
+            indent=2,
+        )
+    )
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

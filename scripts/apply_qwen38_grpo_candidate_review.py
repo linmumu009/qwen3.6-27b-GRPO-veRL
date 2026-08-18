@@ -104,8 +104,10 @@ def apply_review(
         raise ValueError("review decisions contain candidates absent from host Parquets")
     if source_schema is None:
         raise ValueError("no candidate Parquets supplied")
+    # Infer from approved rows so new nested review fields are persisted.
+    # Keep the original schema only when there are no approved rows.
     approved_table = (
-        pa.Table.from_pylist(approved_rows, schema=source_schema)
+        pa.Table.from_pylist(approved_rows)
         if approved_rows
         else pa.Table.from_batches([], schema=source_schema)
     )
