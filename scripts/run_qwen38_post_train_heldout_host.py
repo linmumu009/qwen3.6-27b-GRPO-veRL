@@ -27,6 +27,28 @@ HOST_TASKS = {
     "m00": {"v15": 162, "v20": 153, "v21": 161},
 }
 HOST_TOTALS = {host: sum(tasks.values()) for host, tasks in HOST_TASKS.items()}
+RUNTIME_FILES = (
+    "adaptive_dwh_wave_earlystop.py",
+    "analyze_multisandbox_dwh_rollout.py",
+    "launch_multisandbox_dwh_standalone.sh",
+    "monitor_npu_utilization.py",
+    "patch_verl_abort_partial_tokens.py",
+    "patch_verl_agent_loop_continuous_token.py",
+    "patch_verl_fastest_k_abort_observability.py",
+    "patch_verl_fastest_k_abort_retry.py",
+    "patch_verl_fastest_k_oversampling.py",
+    "patch_verl_force_final_config.py",
+    "patch_verl_none_rollout_logprobs.py",
+    "patch_verl_vllm_abort_api.py",
+    "patch_verl_vllm_dp_weight_sync.py",
+    "pi_runtime_preflight.py",
+    "run_adaptive_dwh_wave_earlystop_queue.py",
+    "run_qwen38_adaptive_dwh_three_wave_queue.py",
+    "run_qwen38_host_rerun_queue.py",
+    "run_runtime_parity_verl_standalone.py",
+    "standalone_rollout_shards.py",
+    "start_ray_qwen38_topology_benchmark.sh",
+)
 
 
 def utc_now() -> str:
@@ -261,6 +283,42 @@ def transfer_model(args: argparse.Namespace) -> None:
             )
 
 
+def sync_remote_runtime(args: argparse.Namespace) -> None:
+    local_scripts = args.host_project / "scripts"
+    sources = [local_scripts / name for name in RUNTIME_FILES]
+    missing = [str(path) for path in sources if not path.is_file()]
+    if missing:
+        raise FileNotFoundError(f"frozen runtime files are missing: {missing}")
+    expected = {path.name: file_sha256(path) for path in sources}
+    remote_scripts = str(local_scripts)
+    hosts: dict[str, dict[str, Any]] = {}
+    for host in ("m06", "m00"):
+        ssh_host = str(host_specs(args)[host]["ssh"])
+        remote(ssh_host, ["mkdir", "-p", remote_scripts])
+        run(["scp", "-q", *[str(path) for path in sources], f"root@{ssh_host}:{remote_scripts}/"])
+        remote_paths = [f"{remote_scripts}/{name}" for name in RUNTIME_FILES]
+        raw = remote(ssh_host, ["sha256sum", *remote_paths], capture=True)
+        observed = {
+            Path(line.split(maxsplit=1)[1]).name: line.split(maxsplit=1)[0]
+            for line in raw.splitlines()
+            if len(line.split(maxsplit=1)) == 2
+        }
+        if observed != expected:
+            raise RuntimeError(f"{host} frozen runtime SHA256 mismatch")
+        hosts[host] = {"status": "passed", "file_count": len(observed)}
+    write_json(
+        args.supervisor_dir / "runtime_bundle.safe.json",
+        {
+            "contract": "llin-qwen38-heldout-runtime-bundle-v1",
+            "status": "passed",
+            "file_count": len(expected),
+            "files": expected,
+            "hosts": hosts,
+            "contains_prompts_gold_sql_task_ids_tool_outputs_or_server_paths": False,
+        },
+    )
+
+
 def assert_idle(output: str, host: str) -> None:
     pattern = re.compile(r"^\|\s*\d+\s+\d+\s*\|\s*\d+\s*\|\s*[A-Za-z0-9_]", re.MULTILINE)
     if not output.strip() or pattern.search(output):
@@ -428,6 +486,8 @@ def execute(args: argparse.Namespace) -> None:
         export_model(args, actor)
         status(args.supervisor_dir, "copying_verified_model_to_m06_and_m00")
         transfer_model(args)
+        status(args.supervisor_dir, "syncing_frozen_runtime_to_m06_and_m00")
+        sync_remote_runtime(args)
         status(args.supervisor_dir, "starting_three_independent_tp4dp4_clusters")
         start_ray(args)
         ray_started = True

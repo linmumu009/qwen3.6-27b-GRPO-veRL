@@ -38,6 +38,11 @@ def test_post_train_evaluation_is_step70_leak_free_and_three_host() -> None:
         'remote_verifier = f"{remote_supervisor}/verify_model_transfer.py"',
         'f"root@{ssh_host}:{remote_verifier}"',
         '["python3", remote_verifier, "verify"',
+        '"run_qwen38_adaptive_dwh_three_wave_queue.py"',
+        '"run_runtime_parity_verl_standalone.py"',
+        '"start_ray_qwen38_topology_benchmark.sh"',
+        'status(args.supervisor_dir, "syncing_frozen_runtime_to_m06_and_m00")',
+        '"contract": "llin-qwen38-heldout-runtime-bundle-v1"',
         '"adaptive_sampling": "strict_2_plus_2_plus_2_max_6"',
     ):
         assert fragment in source
