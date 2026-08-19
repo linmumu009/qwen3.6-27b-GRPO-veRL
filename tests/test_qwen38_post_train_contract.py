@@ -43,6 +43,7 @@ def test_qwen38_training_and_evaluation_ray_starts_install_none_logprob_patch() 
     ):
         source = (ROOT / "scripts" / name).read_text(encoding="utf-8")
         assert "patch_verl_none_rollout_logprobs.py" in source
+        assert "--detach-utils /verl/verl/experimental/fully_async_policy/detach_utils.py" in source
 
 
 def test_qwen38_formal_training_saves_dist_checkpoint_for_exact_export() -> None:

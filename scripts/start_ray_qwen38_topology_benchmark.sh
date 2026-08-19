@@ -28,7 +28,7 @@ python3 "${PROJECT_ROOT}/scripts/patch_verl_fastest_k_abort_observability.py" --
 python3 "${PROJECT_ROOT}/scripts/patch_verl_fastest_k_abort_retry.py" --agent-loop /verl/verl/experimental/agent_loop/agent_loop.py --llm-server /verl/verl/workers/rollout/llm_server.py
 python3 "${PROJECT_ROOT}/scripts/patch_verl_vllm_abort_api.py" --target /verl/verl/workers/rollout/vllm_rollout/vllm_async_server.py
 python3 "${PROJECT_ROOT}/scripts/patch_verl_abort_partial_tokens.py" --llm-server /verl/verl/workers/rollout/llm_server.py
-python3 "${PROJECT_ROOT}/scripts/patch_verl_none_rollout_logprobs.py" --agent-loop /verl/verl/experimental/agent_loop/agent_loop.py
+python3 "${PROJECT_ROOT}/scripts/patch_verl_none_rollout_logprobs.py" --agent-loop /verl/verl/experimental/agent_loop/agent_loop.py --detach-utils /verl/verl/experimental/fully_async_policy/detach_utils.py
 
 observed_npus="$(python3 -c 'import torch_npu; print(torch_npu.npu.device_count())')"
 if [[ "${observed_npus}" != "${EXPECTED_NPUS}" ]]; then
