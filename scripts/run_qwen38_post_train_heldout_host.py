@@ -471,6 +471,29 @@ def stop_ray(args: argparse.Namespace) -> None:
             )
 
 
+def stop_queues(args: argparse.Namespace) -> None:
+    # Queue drivers are launched with docker exec -d and are not Ray children.
+    # Stop their full eval-specific process trees before stopping Ray; otherwise
+    # an internal retry can recreate actors while Ray cleanup is in progress.
+    pattern = f"[{args.eval_name[0]}]{args.eval_name[1:]}"
+    shell = command_text(
+        [
+            "pkill", "-TERM", "-f", "--", pattern,
+        ]
+    ) + "; sleep 2; " + command_text(["pkill", "-KILL", "-f", "--", pattern]) + " || true"
+    for host, spec in host_specs(args).items():
+        command = ["docker", "exec", str(spec["container"]), "bash", "-lc", shell]
+        if spec["ssh"] is None:
+            subprocess.run(command, check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        else:
+            subprocess.run(
+                ["ssh", "-o", "BatchMode=yes", f"root@{spec['ssh']}", command_text(command)],
+                check=False,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+
+
 def execute(args: argparse.Namespace) -> None:
     args.supervisor_dir.mkdir(parents=True, exist_ok=True)
     lock = (args.host_project / "runs" / ".qwen38-step70-heldout.lock").open("w")
@@ -509,6 +532,7 @@ def execute(args: argparse.Namespace) -> None:
         (args.supervisor_dir / "exit_code").write_text("1\n", encoding="utf-8")
         raise
     finally:
+        stop_queues(args)
         if ray_started:
             stop_ray(args)
         (args.supervisor_dir / "finished_at").write_text(utc_now() + "\n", encoding="utf-8")

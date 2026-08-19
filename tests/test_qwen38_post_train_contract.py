@@ -53,6 +53,10 @@ def test_post_train_evaluation_is_step70_leak_free_and_three_host() -> None:
     reverify = source.index('status(args.supervisor_dir, "reverifying_frozen_heldout_data")')
     assert preflight < wait < reverify
 
+    stop_queues = source.index("stop_queues(args)")
+    stop_ray = source.index("stop_ray(args)", stop_queues)
+    assert stop_queues < stop_ray
+
 
 def test_qwen38_training_and_evaluation_ray_starts_install_none_logprob_patch() -> None:
     for name in (
