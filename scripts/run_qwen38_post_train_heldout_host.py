@@ -285,21 +285,28 @@ def transfer_model(args: argparse.Namespace) -> None:
 
 def sync_remote_runtime(args: argparse.Namespace) -> None:
     local_scripts = args.host_project / "scripts"
-    sources = [local_scripts / name for name in RUNTIME_FILES]
+    script_sources = [local_scripts / name for name in RUNTIME_FILES]
+    project_sources = [args.host_project / "runtime" / "sitecustomize.py"]
+    sources = script_sources + project_sources
     missing = [str(path) for path in sources if not path.is_file()]
     if missing:
         raise FileNotFoundError(f"frozen runtime files are missing: {missing}")
-    expected = {path.name: file_sha256(path) for path in sources}
+    expected = {
+        path.relative_to(args.host_project).as_posix(): file_sha256(path)
+        for path in sources
+    }
     remote_scripts = str(local_scripts)
+    remote_runtime = str(args.host_project / "runtime")
     hosts: dict[str, dict[str, Any]] = {}
     for host in ("m06", "m00"):
         ssh_host = str(host_specs(args)[host]["ssh"])
-        remote(ssh_host, ["mkdir", "-p", remote_scripts])
-        run(["scp", "-q", *[str(path) for path in sources], f"root@{ssh_host}:{remote_scripts}/"])
-        remote_paths = [f"{remote_scripts}/{name}" for name in RUNTIME_FILES]
+        remote(ssh_host, ["mkdir", "-p", remote_scripts, remote_runtime])
+        run(["scp", "-q", *[str(path) for path in script_sources], f"root@{ssh_host}:{remote_scripts}/"])
+        run(["scp", "-q", str(project_sources[0]), f"root@{ssh_host}:{remote_runtime}/sitecustomize.py"])
+        remote_paths = [str(args.host_project / relative) for relative in expected]
         raw = remote(ssh_host, ["sha256sum", *remote_paths], capture=True)
         observed = {
-            Path(line.split(maxsplit=1)[1]).name: line.split(maxsplit=1)[0]
+            Path(line.split(maxsplit=1)[1]).relative_to(args.host_project).as_posix(): line.split(maxsplit=1)[0]
             for line in raw.splitlines()
             if len(line.split(maxsplit=1)) == 2
         }

@@ -24,6 +24,11 @@ def apply_role_pinning() -> None:
         return
 
     def create_resource_pool(self: ResourcePoolManager) -> None:
+        # RayResourcePool creates placement groups eagerly. Checking available
+        # accelerators afterwards races with those reservations and can report
+        # zero free NPUs even though this call reserved them itself. Validate
+        # capacity first; Ray scheduling remains the final allocation gate.
+        self._check_resource_available()
         for pool_name, process_on_nodes in self.resource_pool_spec.items():
             resource_pool = RayResourcePool(
                 process_on_nodes=process_on_nodes,
@@ -33,7 +38,6 @@ def apply_role_pinning() -> None:
                 accelerator_type=accelerator_for_pool(pool_name),
             )
             self.resource_pool_dict[pool_name] = resource_pool
-        self._check_resource_available()
 
     ResourcePoolManager.create_resource_pool = create_resource_pool
     ResourcePoolManager._llin_role_pinning = True
