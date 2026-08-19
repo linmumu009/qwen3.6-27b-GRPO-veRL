@@ -30,9 +30,16 @@ def test_post_train_evaluation_is_step70_leak_free_and_two_host() -> None:
         '"--data-parallel-size", "4"',
         '"--max-num-seqs", "16"',
         '"copying_verified_model_to_m06"',
+        'f"{args.container_project}/reference/Megatron-Bridge-de93536e/src"',
+        'f"PYTHONPATH={export_pythonpath}"',
         '"adaptive_sampling": "strict_2_plus_2_plus_2_max_6"',
     ):
         assert fragment in source
+
+    preflight = source.index('status(args.supervisor_dir, "preflighting_frozen_heldout_data")')
+    wait = source.index("wait_for_training(args)", preflight)
+    reverify = source.index('status(args.supervisor_dir, "reverifying_frozen_heldout_data")')
+    assert preflight < wait < reverify
 
 
 def test_qwen38_training_and_evaluation_ray_starts_install_none_logprob_patch() -> None:

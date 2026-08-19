@@ -165,9 +165,17 @@ def export_model(args: argparse.Namespace, actor: Path) -> None:
     if args.export_model.exists():
         verify_export_manifest(args.export_model)
         return
+    export_pythonpath = ":".join(
+        [
+            "/vllm",
+            f"{args.container_project}/reference/Megatron-Bridge-de93536e/src",
+            f"{args.container_project}/runtime",
+            args.container_project,
+        ]
+    )
     run(
         [
-            "docker", "exec", args.container,
+            "docker", "exec", "-e", f"PYTHONPATH={export_pythonpath}", args.container,
             "python3", f"{args.container_project}/scripts/export_megatron_dist_to_hf.py",
             "--actor-checkpoint", str(actor).replace(str(args.host_project), args.container_project),
             "--base-model", "/models/Qwen3.8-27B",
@@ -340,8 +348,10 @@ def execute(args: argparse.Namespace) -> None:
     (args.supervisor_dir / "supervisor.pid").write_text(f"{os.getpid()}\n", encoding="utf-8")
     ray_started = False
     try:
+        status(args.supervisor_dir, "preflighting_frozen_heldout_data")
+        verify_heldout_data(args)
         wait_for_training(args)
-        status(args.supervisor_dir, "verifying_frozen_heldout_data")
+        status(args.supervisor_dir, "reverifying_frozen_heldout_data")
         verify_heldout_data(args)
         status(args.supervisor_dir, "verifying_final_checkpoint")
         actor = verify_checkpoint(args)
