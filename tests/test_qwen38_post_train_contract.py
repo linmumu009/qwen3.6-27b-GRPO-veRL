@@ -35,6 +35,9 @@ def test_post_train_evaluation_is_step70_leak_free_and_three_host() -> None:
         '"env", f"PYTHONPATH={args.container_project}"',
         'f"{args.container_project}/reference/Megatron-Bridge-de93536e/src"',
         'f"PYTHONPATH={export_pythonpath}"',
+        'remote_verifier = f"{remote_supervisor}/verify_model_transfer.py"',
+        'f"root@{ssh_host}:{remote_verifier}"',
+        '["python3", remote_verifier, "verify"',
         '"adaptive_sampling": "strict_2_plus_2_plus_2_max_6"',
     ):
         assert fragment in source

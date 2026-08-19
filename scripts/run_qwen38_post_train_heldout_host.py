@@ -223,6 +223,18 @@ def transfer_model(args: argparse.Namespace) -> None:
         ssh_host = str(host_specs(args)[host]["ssh"])
         remote(ssh_host, ["mkdir", "-p", remote_supervisor])
         run(["scp", "-q", str(manifest), f"root@{ssh_host}:{remote_supervisor}/model_transfer.safe.json"])
+        # The rollout hosts are deployment trees, not Git checkouts.  Stage the
+        # exact verifier beside the manifest so transfer integrity never
+        # depends on a host having the latest repository scripts installed.
+        remote_verifier = f"{remote_supervisor}/verify_model_transfer.py"
+        run(
+            [
+                "scp",
+                "-q",
+                str(args.host_project / "scripts" / "verify_model_transfer.py"),
+                f"root@{ssh_host}:{remote_verifier}",
+            ]
+        )
         remote_partial = remote_final + ".incomplete"
         present = remote(
             ssh_host,
@@ -237,14 +249,14 @@ def transfer_model(args: argparse.Namespace) -> None:
             )
             remote(
                 ssh_host,
-                ["python3", str(args.host_project / "scripts/verify_model_transfer.py"), "verify", "--model-dir", remote_partial, "--manifest", f"{remote_supervisor}/model_transfer.safe.json"],
+                ["python3", remote_verifier, "verify", "--model-dir", remote_partial, "--manifest", f"{remote_supervisor}/model_transfer.safe.json"],
                 log=args.supervisor_dir / f"remote_model_verify_{host}.log",
             )
             remote(ssh_host, ["mv", remote_partial, remote_final])
         else:
             remote(
                 ssh_host,
-                ["python3", str(args.host_project / "scripts/verify_model_transfer.py"), "verify", "--model-dir", remote_final, "--manifest", f"{remote_supervisor}/model_transfer.safe.json"],
+                ["python3", remote_verifier, "verify", "--model-dir", remote_final, "--manifest", f"{remote_supervisor}/model_transfer.safe.json"],
                 log=args.supervisor_dir / f"remote_model_verify_{host}.log",
             )
 
