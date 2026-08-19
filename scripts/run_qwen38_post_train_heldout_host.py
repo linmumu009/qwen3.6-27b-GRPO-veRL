@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Wait for formal Step70, export it, then run two-host heldout 2+2+2 evaluation."""
+"""Wait for formal Step70, export it, then run three-host heldout 2+2+2 evaluation."""
 
 from __future__ import annotations
 
@@ -22,9 +22,11 @@ MODEL_LABEL = "qwen38-27b-grpo-step70"
 POLICY_STEP = 70
 VERSIONS = ("v15", "v20", "v21")
 HOST_TASKS = {
-    "m05": {"v15": 244, "v20": 230, "v21": 241},
-    "m06": {"v15": 244, "v20": 231, "v21": 240},
+    "m05": {"v15": 163, "v20": 154, "v21": 160},
+    "m06": {"v15": 163, "v20": 154, "v21": 160},
+    "m00": {"v15": 162, "v20": 153, "v21": 161},
 }
+HOST_TOTALS = {host: sum(tasks.values()) for host, tasks in HOST_TASKS.items()}
 
 
 def utc_now() -> str:
@@ -56,6 +58,28 @@ def remote(host: str, parts: list[str], *, capture: bool = False, log: Path | No
     return run(["ssh", "-o", "BatchMode=yes", f"root@{host}", command_text(parts)], log=log, capture=capture)
 
 
+def host_specs(args: argparse.Namespace) -> dict[str, dict[str, str | None]]:
+    return {
+        "m05": {"ssh": None, "container": args.container, "node_ip": "192.168.202.5", "ifname": "eno0"},
+        "m06": {"ssh": args.remote_host, "container": args.remote_container, "node_ip": "192.168.202.4", "ifname": "eno0"},
+        "m00": {"ssh": args.m00_host, "container": args.m00_container, "node_ip": "10.10.2.2", "ifname": "enp196s0f0"},
+    }
+
+
+def on_host(
+    args: argparse.Namespace,
+    host: str,
+    parts: list[str],
+    *,
+    capture: bool = False,
+    log: Path | None = None,
+) -> str:
+    ssh_host = host_specs(args)[host]["ssh"]
+    if ssh_host is None:
+        return run(parts, capture=capture, log=log)
+    return remote(str(ssh_host), parts, capture=capture, log=log)
+
+
 def status(supervisor_dir: Path, stage: str, **fields: Any) -> None:
     write_json(
         supervisor_dir / "post_train_eval.safe.json",
@@ -66,7 +90,7 @@ def status(supervisor_dir: Path, stage: str, **fields: Any) -> None:
             "model_label": MODEL_LABEL,
             "policy_step": POLICY_STEP,
             "heldout_tasks": 1430,
-            "host_task_counts": {"m05": 715, "m06": 715},
+            "host_task_counts": HOST_TOTALS,
             "adaptive_sampling": "strict_2_plus_2_plus_2_max_6",
             "reasoning_effort": "medium",
             "training_allowed": False,
@@ -144,19 +168,20 @@ def verify_heldout_data(args: argparse.Namespace) -> None:
         raise ValueError("heldout manifest contract mismatch")
     if manifest.get("heldout_tasks") != 1430 or manifest.get("training_overlap_tasks") != 0:
         raise ValueError("heldout count or leakage gate failed")
-    if manifest.get("host_task_counts") != {"m05": 715, "m06": 715}:
+    if manifest.get("host_task_counts") != HOST_TOTALS:
         raise ValueError("heldout host balance gate failed")
     by_version = {item["version"]: item for item in manifest["versions"]}
-    for host in ("m05", "m06"):
+    for host in HOST_TASKS:
         for version in VERSIONS:
             expected = by_version[version]["partitions"][host]
             if int(expected["tasks"]) != HOST_TASKS[host][version]:
                 raise ValueError("heldout partition task count mismatch")
             path = root / "partitions" / f"{version}_{host}.sensitive.parquet"
-            if host == "m05":
-                observed = file_sha256(path)
-            else:
-                observed = remote(args.remote_host, ["sha256sum", str(path)], capture=True).split()[0]
+            observed = (
+                file_sha256(path)
+                if host == "m05"
+                else on_host(args, host, ["sha256sum", str(path)], capture=True).split()[0]
+            )
             if observed != expected["dataset_sha256"]:
                 raise ValueError("heldout partition SHA256 mismatch")
 
@@ -193,30 +218,35 @@ def transfer_model(args: argparse.Namespace) -> None:
         log=args.supervisor_dir / "model_transfer_hash.log",
     )
     remote_supervisor = str(args.supervisor_dir)
-    remote(args.remote_host, ["mkdir", "-p", remote_supervisor])
-    run(["scp", "-q", str(manifest), f"root@{args.remote_host}:{remote_supervisor}/model_transfer.safe.json"])
     remote_final = str(args.export_model)
-    remote_partial = remote_final + ".incomplete"
-    # `test` with check=True cannot represent absence, so query via a shell-safe marker.
-    present = remote(args.remote_host, ["bash", "-lc", f"test -d {shlex.quote(remote_final)} && echo yes || echo no"], capture=True).strip() == "yes"
-    if not present:
-        remote(args.remote_host, ["mkdir", "-p", remote_partial])
-        run(
-            ["rsync", "--archive", "--partial", "--human-readable", str(args.export_model) + "/", f"root@{args.remote_host}:{remote_partial}/"],
-            log=args.supervisor_dir / "model_rsync.log",
-        )
-        remote(
-            args.remote_host,
-            ["python3", str(args.host_project / "scripts/verify_model_transfer.py"), "verify", "--model-dir", remote_partial, "--manifest", f"{remote_supervisor}/model_transfer.safe.json"],
-            log=args.supervisor_dir / "remote_model_verify.log",
-        )
-        remote(args.remote_host, ["mv", remote_partial, remote_final])
-    else:
-        remote(
-            args.remote_host,
-            ["python3", str(args.host_project / "scripts/verify_model_transfer.py"), "verify", "--model-dir", remote_final, "--manifest", f"{remote_supervisor}/model_transfer.safe.json"],
-            log=args.supervisor_dir / "remote_model_verify.log",
-        )
+    for host in ("m06", "m00"):
+        ssh_host = str(host_specs(args)[host]["ssh"])
+        remote(ssh_host, ["mkdir", "-p", remote_supervisor])
+        run(["scp", "-q", str(manifest), f"root@{ssh_host}:{remote_supervisor}/model_transfer.safe.json"])
+        remote_partial = remote_final + ".incomplete"
+        present = remote(
+            ssh_host,
+            ["bash", "-lc", f"test -d {shlex.quote(remote_final)} && echo yes || echo no"],
+            capture=True,
+        ).strip() == "yes"
+        if not present:
+            remote(ssh_host, ["mkdir", "-p", remote_partial])
+            run(
+                ["rsync", "--archive", "--partial", "--human-readable", str(args.export_model) + "/", f"root@{ssh_host}:{remote_partial}/"],
+                log=args.supervisor_dir / f"model_rsync_{host}.log",
+            )
+            remote(
+                ssh_host,
+                ["python3", str(args.host_project / "scripts/verify_model_transfer.py"), "verify", "--model-dir", remote_partial, "--manifest", f"{remote_supervisor}/model_transfer.safe.json"],
+                log=args.supervisor_dir / f"remote_model_verify_{host}.log",
+            )
+            remote(ssh_host, ["mv", remote_partial, remote_final])
+        else:
+            remote(
+                ssh_host,
+                ["python3", str(args.host_project / "scripts/verify_model_transfer.py"), "verify", "--model-dir", remote_final, "--manifest", f"{remote_supervisor}/model_transfer.safe.json"],
+                log=args.supervisor_dir / f"remote_model_verify_{host}.log",
+            )
 
 
 def assert_idle(output: str, host: str) -> None:
@@ -226,27 +256,40 @@ def assert_idle(output: str, host: str) -> None:
 
 
 def start_ray(args: argparse.Namespace) -> None:
-    assert_idle(run(["npu-smi", "info"], capture=True), "m05")
-    assert_idle(remote(args.remote_host, ["npu-smi", "info"], capture=True), "m06")
-    run(["docker", "exec", args.container, "bash", "-lc", "ray stop --force"], log=args.supervisor_dir / "ray_cleanup.log")
-    remote(args.remote_host, ["docker", "exec", args.remote_container, "bash", "-lc", "ray stop --force"], log=args.supervisor_dir / "ray_cleanup.log")
+    specs = host_specs(args)
+    for host, spec in specs.items():
+        assert_idle(on_host(args, host, ["npu-smi", "info"], capture=True), host)
+        on_host(
+            args,
+            host,
+            ["docker", "exec", str(spec["container"]), "bash", "-lc", "ray stop --force"],
+            log=args.supervisor_dir / f"ray_cleanup_{host}.log",
+        )
     common = f"bash {args.container_project}/scripts/start_ray_qwen38_topology_benchmark.sh"
-    local_env = " ".join(
-        [
-            "NODE_IP=192.168.202.5", "RAY_PORT=46379", "RAY_RESOURCE=q38_m05", "EXPECTED_NPUS=16",
-            "RAY_MIN_WORKER_PORT=47000", "RAY_MAX_WORKER_PORT=47999", "RAY_TEMP_DIR=/tmp/q38-step70-heldout-m05",
-            "HCCL_IF_IP=192.168.202.5", "HCCL_SOCKET_IFNAME=eno0", "HCCL_IF_BASE_PORT=63000",
-            "HCCL_HOST_SOCKET_PORT_RANGE=63100-63163", "HCCL_NPU_SOCKET_PORT_RANGE=63200-63263", common,
-        ]
-    )
-    remote_env = local_env.replace("192.168.202.5", "192.168.202.4").replace("q38_m05", "q38_m06").replace("m05", "m06").replace("63000", "64000").replace("63100-63163", "64100-64163").replace("63200-63263", "64200-64263")
-    run(["docker", "exec", args.container, "bash", "-lc", local_env], log=args.supervisor_dir / "ray_m05.log")
-    remote(args.remote_host, ["docker", "exec", args.remote_container, "bash", "-lc", remote_env], log=args.supervisor_dir / "ray_m06.log")
+    base_ports = {"m05": 63000, "m06": 64000, "m00": 65000}
+    for host, spec in specs.items():
+        port = base_ports[host]
+        environment = " ".join(
+            [
+                f"NODE_IP={spec['node_ip']}", "RAY_PORT=46379", f"RAY_RESOURCE=q38_{host}", "EXPECTED_NPUS=16",
+                "RAY_MIN_WORKER_PORT=47000", "RAY_MAX_WORKER_PORT=47999", f"RAY_TEMP_DIR=/tmp/q38-step70-heldout-{host}",
+                f"HCCL_IF_IP={spec['node_ip']}", f"HCCL_SOCKET_IFNAME={spec['ifname']}", f"HCCL_IF_BASE_PORT={port}",
+                f"HCCL_HOST_SOCKET_PORT_RANGE={port + 100}-{port + 163}",
+                f"HCCL_NPU_SOCKET_PORT_RANGE={port + 200}-{port + 263}", common,
+            ]
+        )
+        on_host(
+            args,
+            host,
+            ["docker", "exec", str(spec["container"]), "bash", "-lc", environment],
+            log=args.supervisor_dir / f"ray_{host}.log",
+        )
 
 
 def queue_command(args: argparse.Namespace, host: str) -> list[str]:
     root = f"{args.container_project}/runs/{args.eval_name}"
     parts = [
+        "env", f"PYTHONPATH={args.container_project}",
         "python3", f"{args.container_project}/scripts/run_qwen38_host_rerun_queue.py",
         "--project-root", args.container_project,
         "--model", str(args.export_model).replace(str(args.host_project), args.container_project),
@@ -262,7 +305,7 @@ def queue_command(args: argparse.Namespace, host: str) -> list[str]:
             "--rolling-window-trajectories", "80", "--monitor-first-card", "0", "--monitor-num-cards", "16",
             "--runs-dir", f"{root}/{host}/waves", "--run-prefix", f"{args.eval_name}-{host}",
             "--state-root", f"{root}/{host}/state", "--final-root", f"{root}/{host}/final",
-            "--queue-dir", f"{root}/{host}/queue", "--ray-address", "192.168.202.5:46379" if host == "m05" else "192.168.202.4:46379",
+            "--queue-dir", f"{root}/{host}/queue", "--ray-address", f"{host_specs(args)[host]['node_ip']}:46379",
             "--poll-seconds", "30", "--stage-timeout-seconds", "1209600",
         ]
     )
@@ -270,15 +313,12 @@ def queue_command(args: argparse.Namespace, host: str) -> list[str]:
 
 
 def launch_queues(args: argparse.Namespace) -> None:
-    for host, container in (("m05", args.container), ("m06", args.remote_container)):
+    for host, spec in host_specs(args).items():
         command = command_text(queue_command(args, host))
         root = f"{args.container_project}/runs/{args.eval_name}/{host}"
         shell = f"mkdir -p {shlex.quote(root)} && {command} > {shlex.quote(root + '/host_queue.log')} 2>&1"
-        parts = ["docker", "exec", "-d", container, "bash", "-lc", shell]
-        if host == "m05":
-            run(parts)
-        else:
-            remote(args.remote_host, parts)
+        parts = ["docker", "exec", "-d", str(spec["container"]), "bash", "-lc", shell]
+        on_host(args, host, parts)
 
 
 def read_exit(path: Path) -> int | None:
@@ -286,18 +326,25 @@ def read_exit(path: Path) -> int | None:
 
 
 def wait_queues(args: argparse.Namespace) -> None:
-    local_exit = args.host_project / "runs" / args.eval_name / "m05" / "queue" / "exit_code"
-    remote_exit = str(args.host_project / "runs" / args.eval_name / "m06" / "queue" / "exit_code")
     while True:
-        m05 = read_exit(local_exit)
-        raw = remote(args.remote_host, ["bash", "-lc", f"test -f {shlex.quote(remote_exit)} && cat {shlex.quote(remote_exit)} || true"], capture=True).strip()
-        m06 = int(raw) if raw else None
-        status(args.supervisor_dir, "evaluating", host_exit_codes={"m05": m05, "m06": m06})
-        if m05 is not None and m05 != 0:
-            raise RuntimeError(f"m05 heldout queue failed with {m05}")
-        if m06 is not None and m06 != 0:
-            raise RuntimeError(f"m06 heldout queue failed with {m06}")
-        if m05 == 0 and m06 == 0:
+        exit_codes: dict[str, int | None] = {}
+        for host in HOST_TASKS:
+            path = args.host_project / "runs" / args.eval_name / host / "queue" / "exit_code"
+            if host == "m05":
+                exit_codes[host] = read_exit(path)
+            else:
+                raw = on_host(
+                    args,
+                    host,
+                    ["bash", "-lc", f"test -f {shlex.quote(str(path))} && cat {shlex.quote(str(path))} || true"],
+                    capture=True,
+                ).strip()
+                exit_codes[host] = int(raw) if raw else None
+        status(args.supervisor_dir, "evaluating", host_exit_codes=exit_codes)
+        failures = {host: code for host, code in exit_codes.items() if code not in (None, 0)}
+        if failures:
+            raise RuntimeError(f"heldout queues failed: {failures}")
+        if all(code == 0 for code in exit_codes.values()):
             return
         time.sleep(args.poll_seconds)
 
@@ -306,12 +353,13 @@ def aggregate(args: argparse.Namespace) -> dict[str, Any]:
     versions = []
     for version in VERSIONS:
         per_host = {}
-        for host in ("m05", "m06"):
+        for host in HOST_TASKS:
             path = args.host_project / "runs" / args.eval_name / host / "final" / version / "adaptive_final_safe_summary.json"
-            if host == "m05":
-                payload = json.loads(path.read_text(encoding="utf-8"))
-            else:
-                payload = json.loads(remote(args.remote_host, ["cat", str(path)], capture=True))
+            payload = (
+                json.loads(path.read_text(encoding="utf-8"))
+                if host == "m05"
+                else json.loads(on_host(args, host, ["cat", str(path)], capture=True))
+            )
             if int(payload.get("initial_tasks", -1)) != HOST_TASKS[host][version]:
                 raise ValueError("host final summary task count mismatch")
             per_host[host] = payload
@@ -333,8 +381,17 @@ def aggregate(args: argparse.Namespace) -> dict[str, Any]:
 
 
 def stop_ray(args: argparse.Namespace) -> None:
-    subprocess.run(["docker", "exec", args.container, "bash", "-lc", "ray stop --force"], check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    subprocess.run(["ssh", "-o", "BatchMode=yes", f"root@{args.remote_host}", command_text(["docker", "exec", args.remote_container, "bash", "-lc", "ray stop --force"])], check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    for host, spec in host_specs(args).items():
+        command = ["docker", "exec", str(spec["container"]), "bash", "-lc", "ray stop --force"]
+        if spec["ssh"] is None:
+            subprocess.run(command, check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        else:
+            subprocess.run(
+                ["ssh", "-o", "BatchMode=yes", f"root@{spec['ssh']}", command_text(command)],
+                check=False,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
 
 
 def execute(args: argparse.Namespace) -> None:
@@ -357,9 +414,9 @@ def execute(args: argparse.Namespace) -> None:
         actor = verify_checkpoint(args)
         status(args.supervisor_dir, "exporting_final_model")
         export_model(args, actor)
-        status(args.supervisor_dir, "copying_verified_model_to_m06")
+        status(args.supervisor_dir, "copying_verified_model_to_m06_and_m00")
         transfer_model(args)
-        status(args.supervisor_dir, "starting_two_independent_tp4dp4_clusters")
+        status(args.supervisor_dir, "starting_three_independent_tp4dp4_clusters")
         start_ray(args)
         ray_started = True
         status(args.supervisor_dir, "launching_heldout_queues")
@@ -385,6 +442,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--container", default="llin-verl-qwen38-smoke-m05-20260817")
     parser.add_argument("--remote-container", default="llin-verl-qwen38-smoke-m06-20260817")
     parser.add_argument("--remote-host", default="192.168.202.4")
+    parser.add_argument("--m00-container", default="llin-verl-rollout-m00-20260817")
+    parser.add_argument("--m00-host", default="10.10.2.2")
     parser.add_argument("--training-run", type=Path, required=True)
     parser.add_argument("--training-supervisor", type=Path, required=True)
     parser.add_argument("--export-model", type=Path, required=True)

@@ -197,6 +197,9 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
+    stale_exit = args.queue_dir / "exit_code"
+    if stale_exit.is_file():
+        stale_exit.unlink()
     try:
         result = run(args)
     except BaseException as exc:

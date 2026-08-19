@@ -17,7 +17,7 @@ def test_training_success_requires_exact_step70_checkpoint() -> None:
         assert fragment in source
 
 
-def test_post_train_evaluation_is_step70_leak_free_and_two_host() -> None:
+def test_post_train_evaluation_is_step70_leak_free_and_three_host() -> None:
     source = (ROOT / "scripts" / "run_qwen38_post_train_heldout_host.py").read_text(
         encoding="utf-8"
     )
@@ -25,11 +25,14 @@ def test_post_train_evaluation_is_step70_leak_free_and_two_host() -> None:
         'checkpoint_root = args.training_run / "checkpoints"',
         "if steps != [expected]",
         'manifest.get("training_overlap_tasks") != 0',
-        '"m05": 715, "m06": 715',
+        '"m00": {"v15": 162, "v20": 153, "v21": 161}',
+        '"m00": {"ssh": args.m00_host',
         '"--tensor-parallel-size", "4"',
         '"--data-parallel-size", "4"',
         '"--max-num-seqs", "16"',
-        '"copying_verified_model_to_m06"',
+        '"copying_verified_model_to_m06_and_m00"',
+        '"starting_three_independent_tp4dp4_clusters"',
+        '"env", f"PYTHONPATH={args.container_project}"',
         'f"{args.container_project}/reference/Megatron-Bridge-de93536e/src"',
         'f"PYTHONPATH={export_pythonpath}"',
         '"adaptive_sampling": "strict_2_plus_2_plus_2_max_6"',
@@ -58,3 +61,9 @@ def test_qwen38_formal_training_saves_dist_checkpoint_for_exact_export() -> None
         encoding="utf-8"
     )
     assert "actor_rollout_ref.actor.megatron.use_dist_checkpointing=True" in source
+
+
+def test_qwen38_host_queue_clears_only_its_stale_exit_code() -> None:
+    source = (ROOT / "scripts" / "run_qwen38_host_rerun_queue.py").read_text(encoding="utf-8")
+    assert 'stale_exit = args.queue_dir / "exit_code"' in source
+    assert "stale_exit.unlink()" in source
