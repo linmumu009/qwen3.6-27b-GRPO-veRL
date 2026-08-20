@@ -21,7 +21,7 @@ def test_fresh_acquisition_supervisor_uses_three_full_hosts_and_strict_confirmat
         '"queue_wait_counts_toward_timeout": False',
         '"trajectory_timeout_seconds": 1800',
         '"minimum_robust_candidates_for_canary": 24',
-        '"/pi_sandbox"',
+        'runtime_projection',
         'scripts/prepare_qwen38_fresh_v22_v26.py',
     ):
         assert fragment in text

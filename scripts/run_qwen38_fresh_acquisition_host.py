@@ -24,6 +24,7 @@ import pyarrow.parquet as pq
 CONTRACT = "llin-qwen38-fresh-v23-v26-threehost-acquisition-v1"
 MODEL_LABEL = "qwen38-27b-native-hf"
 ARMS = ("v23_pilot100", "v23_rest400", "v24", "v25", "v26")
+PREPARED_VERSIONS = ("v22", "v23", "v24", "v25", "v26")
 RUNTIME_VERSIONS = ("v23", "v24", "v25", "v26")
 RUNTIME_FILES = (
     "adaptive_dwh_wave_earlystop.py",
@@ -162,7 +163,7 @@ def prepare_data(args: argparse.Namespace) -> dict[str, Any]:
                 "--source-root",
                 container_source,
                 "--runtime-root",
-                "/pi_sandbox",
+                f"{container_output}/runtime_projection",
                 "--output-root",
                 container_output,
                 "--seed",
@@ -175,6 +176,25 @@ def prepare_data(args: argparse.Namespace) -> dict[str, Any]:
         raise ValueError("existing freeze contract mismatch")
     if not all((freeze.get("checks") or {}).values()):
         raise ValueError("existing freeze checks are not all true")
+    staged_runtime = args.data_root / "runtime_projection" / "sft"
+    for version in PREPARED_VERSIONS:
+        name = f"20260815_llin_dwh_open_api_v3_{version}_runtime"
+        source = staged_runtime / name
+        destination = args.runtime_root / "sft" / name
+        destination.mkdir(parents=True, exist_ok=True)
+        run(["rsync", "--archive", "--partial", str(source) + "/", str(destination) + "/"])
+        expected_runtime = {
+            path.relative_to(source).as_posix(): sha256(path)
+            for path in sorted(source.rglob("*"))
+            if path.is_file()
+        }
+        observed_runtime = {
+            path.relative_to(destination).as_posix(): sha256(path)
+            for path in sorted(destination.rglob("*"))
+            if path.is_file()
+        }
+        if observed_runtime != expected_runtime:
+            raise RuntimeError(f"m05 {version} runtime projection hash mismatch")
     for host in specs(args):
         for arm in ARMS:
             path = args.data_root / "partitions" / f"{arm}_{host}.sensitive.parquet"
