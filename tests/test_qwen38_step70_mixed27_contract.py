@@ -9,6 +9,7 @@ import pyarrow.parquet as pq
 import pytest
 
 from scripts.assemble_qwen38_step70_mixed27 import assemble, identity, validate
+from scripts.check_qwen38_export_origin import check as check_export_origin
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -143,3 +144,25 @@ def test_host_wrapper_requires_step70_export_and_step54_gate() -> None:
     assert "EXPECTED_CHECKPOINT_STEP=54" in script
     assert "assemble_qwen38_step70_mixed27.py" in script
     assert "run_pi_qwen38_step70_mixed27_4x_banded_v2.sh" in script
+
+
+def test_export_origin_gate_requires_verified_expected_step(tmp_path: Path) -> None:
+    model = tmp_path / "model"
+    model.mkdir()
+    (model / "config.json").write_text("{}", encoding="utf-8")
+    (model / "model.safetensors.index.json").write_text("{}", encoding="utf-8")
+    manifest = {
+        "actor_checkpoint": "/private/checkpoints/global_step_70/actor",
+        "verification": {"valid": True},
+    }
+    (model / "llin_export_manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+    assert check_export_origin(model, 70)["valid"] is True
+    with pytest.raises(ValueError, match="actor_checkpoint_step_exact"):
+        check_export_origin(model, 54)
+
+
+def test_host_launcher_records_preflight_failure_status() -> None:
+    script = (ROOT / "scripts" / "launch_qwen38_train70_host.sh").read_text(encoding="utf-8")
+    assert "check_qwen38_export_origin.py" in script
+    assert '[[ ! -f "${SUPERVISOR_DIR}/exit_code" ]]' in script
+    assert "local exit_status=$?" in script

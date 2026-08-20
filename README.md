@@ -249,6 +249,11 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 已验证状态
 
+### v1.12.2 — 2026-08-20
+
+- 将Step70 HF来源门从多层SSH下容易丢失引号的内联Python改为独立失败关闭程序，明确验证导出manifest、`verification.valid`、期望policy step、config与权重索引；双机55.56GB/1,199张量兼容扫描已通过，旧入口在Ray与NPU启动前失败。
+- 双机监督器清理钩子现在会为任意数据、模型、资源、Ray或HCCL预检失败统一写入`failed`、真实`exit_code`和结束时间，不再让失败运行的状态停留在旧阶段。
+
 ### v1.12.1 — 2026-08-20
 
 - 修复Step70 mixed27宿主包装器误用容器内项目路径的问题：包装器现在从`HOST_PROJECT_ROOT`执行双机监督器，同时继续把`CONTAINER_PROJECT_ROOT`传给容器内数据、模型和训练入口。首次启动在NPU、Ray、模型加载和rollout之前失败，未产生训练状态或残缺checkpoint。

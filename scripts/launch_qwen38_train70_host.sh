@@ -31,6 +31,7 @@ date --iso-8601=seconds > "${SUPERVISOR_DIR}/started_at"
 
 ray_started=false
 cleanup() {
+  local exit_status=$?
   if [[ "${ray_started}" == "true" ]]; then
     set +e
     docker exec "${TRAINER_CONTAINER}" bash -lc 'ray stop --force' >> "${SUPERVISOR_DIR}/ray_cleanup.log" 2>&1
@@ -38,6 +39,11 @@ cleanup() {
       "docker exec '${ROLLOUT_CONTAINER}' bash -lc 'ray stop --force'" >> "${SUPERVISOR_DIR}/ray_cleanup.log" 2>&1
     date --iso-8601=seconds > "${SUPERVISOR_DIR}/ray_cleanup_finished_at"
     set -e
+  fi
+  if (( exit_status != 0 )) && [[ ! -f "${SUPERVISOR_DIR}/exit_code" ]]; then
+    printf '%s\n' "${exit_status}" > "${SUPERVISOR_DIR}/exit_code"
+    printf 'failed\n' > "${SUPERVISOR_DIR}/state"
+    date --iso-8601=seconds > "${SUPERVISOR_DIR}/finished_at"
   fi
 }
 trap cleanup EXIT
@@ -86,7 +92,7 @@ docker exec "${TRAINER_CONTAINER}" bash -lc \
 ssh -o BatchMode=yes "root@${ROLLOUT_HOST}" \
   "docker exec '${ROLLOUT_CONTAINER}' bash -lc \"python3 '${CONTAINER_PROJECT_ROOT}/scripts/check_qwen38_model_compat.py' --reference-model /models/Qwen3.6-27B --candidate-model '${MODEL_PATH}' --output '${POOL_DIR}/rollout_model_compat.safe.json'\""
 if [[ -n "${MODEL_EXPORT_POLICY_STEP}" ]]; then
-  export_gate="python3 -c 'import json,pathlib; p=json.loads((pathlib.Path(\"${MODEL_PATH}\")/\"llin_export_manifest.json\").read_text()); assert (p.get(\"verification\") or {}).get(\"valid\") is True; assert \"global_step_${MODEL_EXPORT_POLICY_STEP}\" in str(p.get(\"actor_checkpoint\") or \"\")'"
+  export_gate="python3 '${CONTAINER_PROJECT_ROOT}/scripts/check_qwen38_export_origin.py' --model '${MODEL_PATH}' --expected-policy-step '${MODEL_EXPORT_POLICY_STEP}'"
   docker exec "${TRAINER_CONTAINER}" bash -lc "${export_gate}"
   ssh -o BatchMode=yes "root@${ROLLOUT_HOST}" \
     "docker exec '${ROLLOUT_CONTAINER}' bash -lc \"${export_gate}\""
