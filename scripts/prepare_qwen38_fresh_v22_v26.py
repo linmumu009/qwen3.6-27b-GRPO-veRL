@@ -20,6 +20,7 @@ from scripts.prepare_plan_first_dwh_model_comparison import file_sha256
 
 CONTRACT = "llin-qwen38-fresh-v22-v26-acquisition-freeze-v1"
 HOSTS = ("m05", "m06", "m00")
+HOST_CAPACITY_WEIGHTS = {"m05": 4, "m06": 4, "m00": 3}
 VERSIONS = ("v22", "v23", "v24", "v25", "v26")
 SOURCE_TEMPLATE = "20260815_llin_dwh_open_api_v3_{version}"
 PILOT_TASKS = 100
@@ -60,6 +61,20 @@ def _balanced_assign(
     assigned = {host: {arm: [] for arm in arms} for host in HOSTS}
     host_totals: Counter[str] = Counter()
     difficulty_totals: dict[str, Counter[int]] = defaultdict(Counter)
+    total_rows = sum(len(rows) for rows in arms.values())
+    total_weight = sum(HOST_CAPACITY_WEIGHTS.values())
+    raw_targets = {
+        host: total_rows * HOST_CAPACITY_WEIGHTS[host] / total_weight for host in HOSTS
+    }
+    target_counts = {host: int(raw_targets[host]) for host in HOSTS}
+    for host in sorted(
+        HOSTS,
+        key=lambda item: (
+            -(raw_targets[item] - target_counts[item]),
+            _stable(item, f"{seed}:capacity-remainder"),
+        ),
+    )[: total_rows - sum(target_counts.values())]:
+        target_counts[host] += 1
     for arm, rows in arms.items():
         by_level: dict[int, list[dict[str, Any]]] = defaultdict(list)
         for row in rows:
@@ -71,20 +86,24 @@ def _balanced_assign(
             tie_order = sorted(HOSTS, key=lambda host: _stable(host, f"{seed}:{arm}:L{level}:hosts"))
             tie_rank = {host: index for index, host in enumerate(tie_order)}
             for row in ordered:
+                available = [host for host in HOSTS if host_totals[host] < target_counts[host]]
                 host = min(
-                    HOSTS,
+                    available,
                     key=lambda item: (
-                        difficulty_totals[item][level],
-                        host_totals[item],
-                        len(assigned[item][arm]),
+                        difficulty_totals[item][level] / HOST_CAPACITY_WEIGHTS[item],
+                        host_totals[item] / HOST_CAPACITY_WEIGHTS[item],
+                        len(assigned[item][arm]) / HOST_CAPACITY_WEIGHTS[item],
                         tie_rank[item],
                     ),
                 )
                 assigned[host][arm].append(row)
                 host_totals[host] += 1
                 difficulty_totals[host][level] += 1
-    if max(host_totals.values()) - min(host_totals.values()) > 1:
-        raise ValueError("three-host acquisition totals are not balanced")
+    normalized = {
+        host: host_totals[host] / HOST_CAPACITY_WEIGHTS[host] for host in HOSTS
+    }
+    if max(normalized.values()) - min(normalized.values()) > 1:
+        raise ValueError("three-host acquisition totals are not capacity balanced")
     return assigned
 
 
@@ -187,7 +206,8 @@ def build(
         "pilot_has_100": len(pilot_ids) == 100,
         "pilot_levels_20_each": _counts(pilot, "difficulty_level")
         == {str(level): 20 for level in range(1, 6)},
-        "host_totals_balanced": sorted(host_totals.values()) == [666, 667, 667],
+        "host_totals_capacity_balanced": host_totals
+        == {"m05": 727, "m06": 727, "m00": 546},
         "all_source_training_disabled": all(
             not bool((row.get("extra_info") or {}).get("training_allowed"))
             for version in VERSIONS
@@ -215,6 +235,7 @@ def build(
             "pilot_tasks": 100,
             "pilot_difficulty_counts": _counts(pilot, "difficulty_level"),
             "host_task_counts": host_totals,
+            "host_capacity_weights": HOST_CAPACITY_WEIGHTS,
             "host_difficulty_counts": host_difficulties,
             "host_arm_task_counts": host_arms,
             "partition_sha256": partition_hashes,

@@ -92,11 +92,11 @@ def remote(host: str, parts: list[str], *, capture: bool = False, log: Path | No
     )
 
 
-def specs(args: argparse.Namespace) -> dict[str, dict[str, str | None]]:
+def specs(args: argparse.Namespace) -> dict[str, dict[str, str | int | None]]:
     return {
-        "m05": {"ssh": None, "container": args.container, "node_ip": "192.168.202.5", "ifname": "eno0"},
-        "m06": {"ssh": args.remote_host, "container": args.remote_container, "node_ip": "192.168.202.4", "ifname": "eno0"},
-        "m00": {"ssh": args.m00_host, "container": args.m00_container, "node_ip": "10.10.2.2", "ifname": "enp196s0f0"},
+        "m05": {"ssh": None, "container": args.container, "node_ip": "192.168.202.5", "ifname": "eno0", "npus": 16, "dp": 4, "task_batch": 32, "window": 80},
+        "m06": {"ssh": args.remote_host, "container": args.remote_container, "node_ip": "192.168.202.4", "ifname": "eno0", "npus": 16, "dp": 4, "task_batch": 32, "window": 80},
+        "m00": {"ssh": args.m00_host, "container": args.m00_container, "node_ip": "10.10.2.2", "ifname": "enp196s0f0", "npus": 12, "dp": 3, "task_batch": 24, "window": 60},
     }
 
 
@@ -122,8 +122,9 @@ def status(args: argparse.Namespace, stage: str, **fields: Any) -> None:
             "model_label": MODEL_LABEL,
             "policy_step": 0,
             "reasoning_effort": "medium",
-            "topology": "three_independent_tp4_dp4_clusters",
-            "physical_npus": 48,
+            "topology": "two_tp4_dp4_plus_one_tp4_dp3_independent_clusters",
+            "physical_npus": 44,
+            "physical_sequence_capacity": 176,
             "sampling": "strict_2_plus_2_plus_2_max_6_then_candidate_plus_2",
             "reward_contract": "banded-v2-strict-table-v1",
             "trajectory_timeout_seconds": 1800,
@@ -288,7 +289,7 @@ def start_ray(args: argparse.Namespace) -> None:
         port = base_ports[host]
         environment = " ".join(
             [
-                f"NODE_IP={spec['node_ip']}", "RAY_PORT=46379", f"RAY_RESOURCE=q38_{host}", "EXPECTED_NPUS=16",
+                f"NODE_IP={spec['node_ip']}", "RAY_PORT=46379", f"RAY_RESOURCE=q38_{host}", f"EXPECTED_NPUS={spec['npus']}",
                 "RAY_MIN_WORKER_PORT=48000", "RAY_MAX_WORKER_PORT=48999", f"RAY_TEMP_DIR=/tmp/q38-fresh-acq-{host}",
                 f"HCCL_IF_IP={spec['node_ip']}", f"HCCL_SOCKET_IFNAME={spec['ifname']}", f"HCCL_IF_BASE_PORT={port}",
                 f"HCCL_HOST_SOCKET_PORT_RANGE={port + 100}-{port + 163}",
@@ -314,9 +315,9 @@ def queue_command(args: argparse.Namespace, host: str, freeze: dict[str, Any]) -
             parts.extend(["--arm", f"{arm}={root}/data/partitions/{arm}_{host}.sensitive.parquet"])
     parts.extend(
         [
-            "--rollout-resource", f"q38_{host}", "--tensor-parallel-size", "4", "--data-parallel-size", "4",
-            "--rollout-npus", "16", "--max-num-seqs", "16", "--task-batch-size", "32",
-            "--rolling-window-trajectories", "80", "--monitor-first-card", "0", "--monitor-num-cards", "16",
+            "--rollout-resource", f"q38_{host}", "--tensor-parallel-size", "4", "--data-parallel-size", str(specs(args)[host]["dp"]),
+            "--rollout-npus", str(specs(args)[host]["npus"]), "--max-num-seqs", "16", "--task-batch-size", str(specs(args)[host]["task_batch"]),
+            "--rolling-window-trajectories", str(specs(args)[host]["window"]), "--monitor-first-card", "0", "--monitor-num-cards", str(specs(args)[host]["npus"]),
             "--runs-dir", f"{root}/{host}/waves", "--run-prefix", f"{args.run_name}-{host}",
             "--state-root", f"{root}/{host}/state", "--final-root", f"{root}/{host}/final",
             "--queue-dir", f"{root}/{host}/queue", "--ray-address", f"{specs(args)[host]['node_ip']}:46379",
@@ -516,7 +517,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--container", default="llin-verl-qwen38-smoke-m05-20260817")
     parser.add_argument("--remote-container", default="llin-verl-qwen38-smoke-m06-20260817")
     parser.add_argument("--remote-host", default="192.168.202.4")
-    parser.add_argument("--m00-container", default="llin-verl-rollout-m00-20260817")
+    parser.add_argument("--m00-container", default="llin-verl-qwen38-bench-m00-20260817")
     parser.add_argument("--m00-host", default="10.10.2.2")
     parser.add_argument("--source-root", type=Path, required=True)
     parser.add_argument("--runtime-root", type=Path, default=Path("/data/renjunxiang/pi/sandbox"))

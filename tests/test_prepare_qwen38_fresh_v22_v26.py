@@ -35,7 +35,7 @@ def test_balanced_assignment_uses_all_three_hosts_without_overlap() -> None:
         for rows in assigned[host].values()
         for row in rows
     ]
-    assert sorted(totals.values()) == [666, 667, 667]
+    assert totals == {"m05": 727, "m06": 727, "m00": 546}
     assert len(identities) == len(set(identities)) == 2000
     for arm, size in sizes.items():
         assert sum(len(assigned[host][arm]) for host in HOSTS) == size
