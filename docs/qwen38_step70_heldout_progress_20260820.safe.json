@@ -1,0 +1,99 @@
+{
+  "contract": "llin-qwen38-step70-heldout-progress-v1",
+  "observed_at": "2026-08-20T09:39:48+08:00",
+  "run_label": "attempt_05_three_host",
+  "model_label": "qwen38-27b-grpo-step70",
+  "policy_step": 70,
+  "supervisor_stage": "evaluating",
+  "host_exit_codes": {
+    "m05": null,
+    "m06": null,
+    "m00": null
+  },
+  "topology_per_host": {
+    "tensor_parallel_size": 4,
+    "data_parallel_size": 4,
+    "rollout_npus": 16,
+    "max_num_seqs_per_replica": 16,
+    "physical_sequence_capacity": 64,
+    "logical_window_trajectories": 80
+  },
+  "completed_versions": {
+    "v15": {
+      "initial_tasks": 488,
+      "mixed_after_two_tasks": 2,
+      "mixed_after_four_tasks": 2,
+      "mixed_after_six_tasks": 1,
+      "variance_candidate_tasks": 5,
+      "unresolved_after_six_tasks": 483,
+      "actual_sampling_trajectories": 2916,
+      "avoided_trajectories_vs_full_six": 12,
+      "per_host": {
+        "m05": {
+          "initial_tasks": 163,
+          "variance_candidate_tasks": 1,
+          "actual_sampling_trajectories": 974
+        },
+        "m06": {
+          "initial_tasks": 163,
+          "variance_candidate_tasks": 0,
+          "actual_sampling_trajectories": 978
+        },
+        "m00": {
+          "initial_tasks": 162,
+          "variance_candidate_tasks": 4,
+          "actual_sampling_trajectories": 964
+        }
+      }
+    },
+    "v20": {
+      "initial_tasks": 461,
+      "mixed_after_two_tasks": 1,
+      "mixed_after_four_tasks": 3,
+      "mixed_after_six_tasks": 7,
+      "variance_candidate_tasks": 11,
+      "unresolved_after_six_tasks": 450,
+      "actual_sampling_trajectories": 2756,
+      "avoided_trajectories_vs_full_six": 10,
+      "per_host": {
+        "m05": {
+          "initial_tasks": 154,
+          "variance_candidate_tasks": 2,
+          "actual_sampling_trajectories": 920
+        },
+        "m06": {
+          "initial_tasks": 154,
+          "variance_candidate_tasks": 0,
+          "actual_sampling_trajectories": 924
+        },
+        "m00": {
+          "initial_tasks": 153,
+          "variance_candidate_tasks": 9,
+          "actual_sampling_trajectories": 912
+        }
+      }
+    }
+  },
+  "completed_aggregate": {
+    "versions": [
+      "v15",
+      "v20"
+    ],
+    "initial_tasks": 949,
+    "variance_candidate_tasks": 16,
+    "unresolved_after_six_tasks": 933,
+    "actual_sampling_trajectories": 5672,
+    "avoided_trajectories_vs_full_six": 22
+  },
+  "active_version": {
+    "version": "v21",
+    "stage_on_all_hosts": "running_wave_to_2",
+    "tasks": 481,
+    "samples_per_task_in_current_wave": 2
+  },
+  "adaptive_sampling": "strict_2_plus_2_plus_2_max_6",
+  "reasoning_effort": "medium",
+  "training_allowed": false,
+  "promotion_allowed": false,
+  "contains_prompts_gold_sql_task_ids_tool_outputs_or_server_paths": false
+}
