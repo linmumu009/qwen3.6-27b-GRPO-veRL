@@ -50,6 +50,8 @@ RUNTIME_FILES = (
     "start_ray_qwen38_topology_benchmark.sh",
 )
 
+VLLM_ORPHAN_PATTERN = "^VLLM::"
+
 
 def utc_now() -> str:
     return datetime.now(timezone.utc).isoformat()
@@ -472,9 +474,26 @@ def aggregate(args: argparse.Namespace, freeze: dict[str, Any]) -> dict[str, Any
 def stop(args: argparse.Namespace) -> None:
     pattern = f"[{args.run_name[0]}]{args.run_name[1:]}"
     shell = command_text(["pkill", "-TERM", "-f", "--", pattern]) + "; sleep 2; " + command_text(["pkill", "-KILL", "-f", "--", pattern]) + " || true"
+    vllm_shell = (
+        command_text(["pkill", "-TERM", "-f", "--", VLLM_ORPHAN_PATTERN])
+        + " || true; sleep 5; "
+        + command_text(["pkill", "-KILL", "-f", "--", VLLM_ORPHAN_PATTERN])
+        + " || true"
+    )
+    errors: list[str] = []
     for host, spec in specs(args).items():
-        on_host(args, host, ["docker", "exec", str(spec["container"]), "bash", "-lc", shell])
-        on_host(args, host, ["docker", "exec", str(spec["container"]), "bash", "-lc", "ray stop --force"])
+        commands = (
+            ["docker", "exec", str(spec["container"]), "bash", "-lc", shell],
+            ["docker", "exec", str(spec["container"]), "bash", "-lc", "ray stop --force"],
+            ["docker", "exec", str(spec["container"]), "bash", "-lc", vllm_shell],
+        )
+        for parts in commands:
+            try:
+                on_host(args, host, parts)
+            except BaseException as exc:
+                errors.append(f"{host}:{type(exc).__name__}:{str(exc)[:200]}")
+    if errors:
+        raise RuntimeError("cleanup failed: " + "; ".join(errors))
 
 
 def execute(args: argparse.Namespace) -> None:

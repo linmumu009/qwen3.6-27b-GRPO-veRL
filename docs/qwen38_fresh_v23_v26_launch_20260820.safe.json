@@ -1,0 +1,97 @@
+{
+  "contract": "llin-qwen38-fresh-v23-v26-launch-evidence-v1",
+  "run_label": "qwen38-fresh-v22-v26-step0-20260820-06",
+  "stage": "sampling_verified",
+  "observed_at_utc": "2026-08-20T11:07:28+00:00",
+  "model_label": "qwen38-27b-native-hf",
+  "policy_step": 0,
+  "reasoning_effort": "medium",
+  "evaluation_freeze": {
+    "version": "v22",
+    "tasks": 500,
+    "sampled_in_this_run": false
+  },
+  "acquisition": {
+    "versions": [
+      "v23",
+      "v24",
+      "v25",
+      "v26"
+    ],
+    "tasks": 2000,
+    "host_task_counts": {
+      "m05": 727,
+      "m06": 727,
+      "m00": 546
+    },
+    "pilot_task_counts": {
+      "m05": 35,
+      "m06": 35,
+      "m00": 30
+    },
+    "pilot_difficulty_counts_per_host": {
+      "m05": {
+        "1": 7,
+        "2": 7,
+        "3": 7,
+        "4": 7,
+        "5": 7
+      },
+      "m06": {
+        "1": 7,
+        "2": 7,
+        "3": 7,
+        "4": 7,
+        "5": 7
+      },
+      "m00": {
+        "1": 6,
+        "2": 6,
+        "3": 6,
+        "4": 6,
+        "5": 6
+      }
+    }
+  },
+  "topology": {
+    "m05": "TP4xDP4,16 NPU,64 physical sequences",
+    "m06": "TP4xDP4,16 NPU,64 physical sequences",
+    "m00": "TP4xDP3,12 NPU,48 physical sequences",
+    "total_npus": 44,
+    "total_physical_sequence_capacity": 176
+  },
+  "sampling_contract": {
+    "adaptive_sampling": "2+2+2,max6,provisional+2 confirmation",
+    "reward": "banded-v2-strict-table-v1",
+    "trajectory_timeout_seconds": 1800,
+    "queue_wait_counts_toward_timeout": false
+  },
+  "launch_checks": {
+    "three_ray_clusters_started": true,
+    "vllm_worker_counts": {
+      "m05": 16,
+      "m06": 16,
+      "m00": 12
+    },
+    "all_eleven_dp_engines_generated_tokens": true,
+    "representative_generation_tokens_per_second_per_engine": {
+      "m05": "50.2-101.6",
+      "m06": "49.0-121.3",
+      "m00": "74.5-113.2"
+    },
+    "placement_group_race_observed": false,
+    "oom_observed": false,
+    "traceback_observed": false
+  },
+  "cleanup": {
+    "prelaunch_stale_vllm_workers_detected_and_removed": {
+      "m05": 16,
+      "m06": 16,
+      "m00": 0
+    },
+    "independent_post_run_cleanup_guardian_required": true
+  },
+  "training_allowed": false,
+  "promotion_allowed": false,
+  "contains_prompts_gold_sql_task_ids_hashes_tool_outputs_or_server_paths": false
+}

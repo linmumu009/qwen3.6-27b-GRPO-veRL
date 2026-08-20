@@ -37,3 +37,25 @@ def test_fresh_acquisition_freezes_v22_and_samples_only_v23_v26() -> None:
     assert '"v23_pilot100": pilot' in text
     assert '"v23_rest400"' in text
     assert '"queue_wait_counts_toward_timeout": False' in text
+
+
+def test_fresh_acquisition_cleanup_reaps_detached_vllm_workers() -> None:
+    text = (ROOT / "scripts" / "run_qwen38_fresh_acquisition_host.py").read_text(
+        encoding="utf-8"
+    )
+    assert 'VLLM_ORPHAN_PATTERN = "^VLLM::"' in text
+    assert '["pkill", "-TERM", "-f", "--", VLLM_ORPHAN_PATTERN]' in text
+    assert '["pkill", "-KILL", "-f", "--", VLLM_ORPHAN_PATTERN]' in text
+    stop_body = text[text.index("def stop") : text.index("def execute")]
+    assert stop_body.index('"ray stop --force"') < stop_body.rindex("vllm_shell")
+
+
+def test_cleanup_guardian_waits_for_finished_marker_and_checks_all_hosts() -> None:
+    text = (ROOT / "scripts" / "guard_qwen38_fresh_cleanup_host.py").read_text(
+        encoding="utf-8"
+    )
+    assert 'finished = args.supervisor_dir / "finished_at"' in text
+    assert "acquisition.stop(args)" in text
+    assert "for host in acquisition.specs(args)" in text
+    assert "wait_until_idle(args, host)" in text
+    assert "time.monotonic() + timeout_seconds" in text
