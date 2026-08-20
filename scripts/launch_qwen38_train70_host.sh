@@ -7,7 +7,16 @@ TRAINER_CONTAINER="${TRAINER_CONTAINER:-llin-verl-qwen38-smoke-m05-20260817}"
 ROLLOUT_HOST="${ROLLOUT_HOST:-192.168.202.4}"
 ROLLOUT_CONTAINER="${ROLLOUT_CONTAINER:-llin-verl-qwen38-smoke-m06-20260817}"
 RUN_NAME="${RUN_NAME:-llin-qwen38-grpo-train70-2x-banded-v2-20260818-01}"
-POOL_DIR="${CONTAINER_PROJECT_ROOT}/runs/llin-qwen38-grpo-train70-2x-20260818-01/data"
+POOL_DIR="${POOL_DIR:-${CONTAINER_PROJECT_ROOT}/runs/llin-qwen38-grpo-train70-2x-20260818-01/data}"
+CANONICAL_FILE="${CANONICAL_FILE:-${POOL_DIR}/train70.sensitive.parquet}"
+TRAIN_FILE="${TRAIN_FILE:-${POOL_DIR}/train70x2.sensitive.parquet}"
+SEALED_FILE="${SEALED_FILE:-}"
+SAFE_SUMMARY="${SAFE_SUMMARY:-${POOL_DIR}/train70x2.safe.json}"
+ASSEMBLER_SCRIPT="${ASSEMBLER_SCRIPT:-assemble_qwen38_train70.py}"
+TRAINING_SCRIPT="${TRAINING_SCRIPT:-run_pi_qwen38_train70_2x_banded_v2.sh}"
+MODEL_PATH="${MODEL_PATH:-/models/Qwen3.8-27B}"
+MODEL_EXPORT_POLICY_STEP="${MODEL_EXPORT_POLICY_STEP:-}"
+EXPECTED_CHECKPOINT_STEP="${EXPECTED_CHECKPOINT_STEP:-70}"
 SUPERVISOR_DIR="${HOST_PROJECT_ROOT}/runs/${RUN_NAME}-supervisor"
 RAY_ADDRESS="192.168.202.5:36379"
 
@@ -53,15 +62,18 @@ assert_idle() {
 }
 
 printf 'validating_assets\n' > "${SUPERVISOR_DIR}/state"
-validate="python3 '${CONTAINER_PROJECT_ROOT}/scripts/assemble_qwen38_train70.py' validate \
-  --canonical '${POOL_DIR}/train70.sensitive.parquet' \
-  --schedule '${POOL_DIR}/train70x2.sensitive.parquet' \
-  --safe-summary '${POOL_DIR}/train70x2.safe.json'"
+validate="python3 '${CONTAINER_PROJECT_ROOT}/scripts/${ASSEMBLER_SCRIPT}' validate \
+  --canonical '${CANONICAL_FILE}' \
+  --schedule '${TRAIN_FILE}' \
+  --safe-summary '${SAFE_SUMMARY}'"
+if [[ -n "${SEALED_FILE}" ]]; then
+  validate+=" --sealed '${SEALED_FILE}'"
+fi
 docker exec "${TRAINER_CONTAINER}" bash -lc "${validate}" > "${SUPERVISOR_DIR}/trainer_data_validation.json"
 ssh -o BatchMode=yes "root@${ROLLOUT_HOST}" \
   "docker exec '${ROLLOUT_CONTAINER}' bash -lc \"${validate}\"" > "${SUPERVISOR_DIR}/rollout_data_validation.json"
 runtime_preflight="python3 '${CONTAINER_PROJECT_ROOT}/scripts/pi_runtime_preflight.py' \
-  --dataset '${POOL_DIR}/train70x2.sensitive.parquet' --sandbox-root /pi_sandbox \
+  --dataset '${TRAIN_FILE}' --sandbox-root /pi_sandbox \
   --reward-path '${CONTAINER_PROJECT_ROOT}/llin_verl/pi_reward.py' \
   --reward-function compute_score_banded_v2"
 docker exec "${TRAINER_CONTAINER}" bash -lc "${runtime_preflight}" \
@@ -70,9 +82,15 @@ ssh -o BatchMode=yes "root@${ROLLOUT_HOST}" \
   "docker exec '${ROLLOUT_CONTAINER}' bash -lc \"${runtime_preflight}\"" \
   > "${SUPERVISOR_DIR}/rollout_runtime_preflight.json"
 docker exec "${TRAINER_CONTAINER}" bash -lc \
-  "python3 '${CONTAINER_PROJECT_ROOT}/scripts/check_qwen38_model_compat.py' --reference-model /models/Qwen3.6-27B --candidate-model /models/Qwen3.8-27B --output '${POOL_DIR}/trainer_model_compat.safe.json'"
+  "python3 '${CONTAINER_PROJECT_ROOT}/scripts/check_qwen38_model_compat.py' --reference-model /models/Qwen3.6-27B --candidate-model '${MODEL_PATH}' --output '${POOL_DIR}/trainer_model_compat.safe.json'"
 ssh -o BatchMode=yes "root@${ROLLOUT_HOST}" \
-  "docker exec '${ROLLOUT_CONTAINER}' bash -lc \"python3 '${CONTAINER_PROJECT_ROOT}/scripts/check_qwen38_model_compat.py' --reference-model /models/Qwen3.6-27B --candidate-model /models/Qwen3.8-27B --output '${POOL_DIR}/rollout_model_compat.safe.json'\""
+  "docker exec '${ROLLOUT_CONTAINER}' bash -lc \"python3 '${CONTAINER_PROJECT_ROOT}/scripts/check_qwen38_model_compat.py' --reference-model /models/Qwen3.6-27B --candidate-model '${MODEL_PATH}' --output '${POOL_DIR}/rollout_model_compat.safe.json'\""
+if [[ -n "${MODEL_EXPORT_POLICY_STEP}" ]]; then
+  export_gate="python3 -c 'import json,pathlib; p=json.loads((pathlib.Path(\"${MODEL_PATH}\")/\"llin_export_manifest.json\").read_text()); assert (p.get(\"verification\") or {}).get(\"valid\") is True; assert \"global_step_${MODEL_EXPORT_POLICY_STEP}\" in str(p.get(\"actor_checkpoint\") or \"\")'"
+  docker exec "${TRAINER_CONTAINER}" bash -lc "${export_gate}"
+  ssh -o BatchMode=yes "root@${ROLLOUT_HOST}" \
+    "docker exec '${ROLLOUT_CONTAINER}' bash -lc \"${export_gate}\""
+fi
 
 printf 'checking_resources\n' > "${SUPERVISOR_DIR}/state"
 for attempt in 1 2 3; do
@@ -106,23 +124,24 @@ docker exec "${TRAINER_CONTAINER}" bash -lc \
 printf 'training\n' > "${SUPERVISOR_DIR}/state"
 set +e
 docker exec "${TRAINER_CONTAINER}" bash -lc \
-  "RAY_ADDRESS='${RAY_ADDRESS}' RUN_NAME='${RUN_NAME}' bash '${CONTAINER_PROJECT_ROOT}/scripts/run_pi_qwen38_train70_2x_banded_v2.sh'" \
+  "RAY_ADDRESS='${RAY_ADDRESS}' RUN_NAME='${RUN_NAME}' MODEL_PATH='${MODEL_PATH}' POOL_DIR='${POOL_DIR}' CANONICAL_FILE='${CANONICAL_FILE}' TRAIN_FILE='${TRAIN_FILE}' SEALED_FILE='${SEALED_FILE}' SAFE_SUMMARY='${SAFE_SUMMARY}' bash '${CONTAINER_PROJECT_ROOT}/scripts/${TRAINING_SCRIPT}'" \
   > "${SUPERVISOR_DIR}/training_launcher.log" 2>&1
 training_exit=$?
 set -e
 if [[ "${training_exit}" == "0" ]]; then
-  printf 'verifying_step70_checkpoint\n' > "${SUPERVISOR_DIR}/state"
+  printf 'verifying_final_checkpoint\n' > "${SUPERVISOR_DIR}/state"
   set +e
-  docker exec -i "${TRAINER_CONTAINER}" python3 - "${CONTAINER_PROJECT_ROOT}/runs/${RUN_NAME}" <<'PY' \
-    > "${SUPERVISOR_DIR}/step70_checkpoint_gate.json" 2>&1
+  docker exec -i "${TRAINER_CONTAINER}" python3 - "${CONTAINER_PROJECT_ROOT}/runs/${RUN_NAME}" "${EXPECTED_CHECKPOINT_STEP}" <<'PY' \
+    > "${SUPERVISOR_DIR}/final_checkpoint_gate.json" 2>&1
 import json
 from pathlib import Path
 import sys
 
 run = Path(sys.argv[1])
+expected_step = int(sys.argv[2])
 root = run / "checkpoints"
 steps = sorted(path for path in root.glob("global_step_*") if path.is_dir())
-expected = root / "global_step_70"
+expected = root / f"global_step_{expected_step}"
 actor = expected / "actor"
 manifest_path = actor / "ckpt_contents.json"
 model_format = None
@@ -144,10 +163,10 @@ valid = (
     and model_shards > 0
 )
 print(json.dumps({
-    "contract": "llin-qwen38-train70-step70-completion-gate-v1",
+    "contract": "llin-qwen38-final-checkpoint-completion-gate-v1",
     "valid": valid,
     "observed_checkpoint_steps": [path.name for path in steps],
-    "expected_step": 70,
+    "expected_step": expected_step,
     "model_format": model_format,
     "model_shards": model_shards,
     "metadata_exists": metadata_exists,
