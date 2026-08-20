@@ -20,8 +20,6 @@ from typing import Any
 import pyarrow as pa
 import pyarrow.parquet as pq
 
-from scripts.prepare_qwen38_fresh_v22_v26 import build
-
 
 CONTRACT = "llin-qwen38-fresh-v23-v26-threehost-acquisition-v1"
 MODEL_LABEL = "qwen38-27b-native-hf"
@@ -145,15 +143,38 @@ def assert_idle(output: str, host: str) -> None:
 
 def prepare_data(args: argparse.Namespace) -> dict[str, Any]:
     safe = args.data_root / "freeze.safe.json"
-    if safe.is_file():
-        payload = json.loads(safe.read_text(encoding="utf-8"))
-        if payload.get("contract") != "llin-qwen38-fresh-v22-v26-acquisition-freeze-v1":
-            raise ValueError("existing freeze contract mismatch")
-        if not all((payload.get("checks") or {}).values()):
-            raise ValueError("existing freeze checks are not all true")
-        freeze = payload
-    else:
-        freeze = build(args.source_root, args.runtime_root, args.data_root, seed=args.seed)
+    if not safe.is_file():
+        container_source = str(args.source_root).replace(
+            str(args.host_project), args.container_project, 1
+        )
+        container_output = str(args.data_root).replace(
+            str(args.host_project), args.container_project, 1
+        )
+        run(
+            [
+                "docker",
+                "exec",
+                "-e",
+                f"PYTHONPATH={args.container_project}",
+                args.container,
+                "python3",
+                f"{args.container_project}/scripts/prepare_qwen38_fresh_v22_v26.py",
+                "--source-root",
+                container_source,
+                "--runtime-root",
+                "/pi_sandbox",
+                "--output-root",
+                container_output,
+                "--seed",
+                args.seed,
+            ],
+            log=args.supervisor_dir / "prepare_data.log",
+        )
+    freeze = json.loads(safe.read_text(encoding="utf-8"))
+    if freeze.get("contract") != "llin-qwen38-fresh-v22-v26-acquisition-freeze-v1":
+        raise ValueError("existing freeze contract mismatch")
+    if not all((freeze.get("checks") or {}).values()):
+        raise ValueError("existing freeze checks are not all true")
     for host in specs(args):
         for arm in ARMS:
             path = args.data_root / "partitions" / f"{arm}_{host}.sensitive.parquet"
