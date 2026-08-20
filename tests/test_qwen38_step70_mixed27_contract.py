@@ -136,6 +136,8 @@ def test_runner_uses_step70_27x4_n8_and_final_only_checkpoint() -> None:
 
 def test_host_wrapper_requires_step70_export_and_step54_gate() -> None:
     script = (ROOT / "scripts" / "launch_qwen38_step70_mixed27_host.sh").read_text(encoding="utf-8")
+    assert "HOST_PROJECT_ROOT" in script
+    assert 'exec bash "${HOST_PROJECT_ROOT}/scripts/launch_qwen38_train70_host.sh"' in script
     assert "llin-qwen38-grpo-step70-hf-20260819-02" in script
     assert "MODEL_EXPORT_POLICY_STEP=70" in script
     assert "EXPECTED_CHECKPOINT_STEP=54" in script
