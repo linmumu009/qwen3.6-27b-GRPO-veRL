@@ -1,0 +1,126 @@
+{
+  "contract": "llin-qwen38-native-step70-strict-train70-comparison-v1",
+  "stage": "complete",
+  "date": "2026-08-20",
+  "native_model_label": "qwen38-27b-native-hf",
+  "native_policy_step": 0,
+  "step70_model_label": "qwen38-27b-grpo-step70",
+  "step70_policy_step": 70,
+  "reward_contract": "banded-v2-strict-table-v1",
+  "approved_tasks": 70,
+  "native_strict_mixed_tasks": 20,
+  "step70_strict_mixed_tasks": 15,
+  "retained_tasks": 10,
+  "lost_tasks": 10,
+  "gained_tasks": 5,
+  "neither_tasks": 45,
+  "native_to_step70_retention_rate": 0.5,
+  "step70_strict_mixed_change": -5,
+  "trajectory_evidence": {
+    "native": {
+      "observed_trajectories": 286,
+      "completed_trajectories": 234,
+      "strict_correct_trajectories": 22,
+      "strict_correct_rate_over_completed": 0.09401709401709402
+    },
+    "step70": {
+      "observed_trajectories": 390,
+      "completed_trajectories": 366,
+      "strict_correct_trajectories": 15,
+      "strict_correct_rate_over_completed": 0.040983606557377046
+    },
+    "strict_correct_rate_absolute_change": -0.053033487459716975,
+    "strict_correct_rate_relative_change": -0.5640909090909091,
+    "step70_has_fewer_correct_trajectories_despite_more_completed_trials": true
+  },
+  "transition_by_source_version": {
+    "retained": {
+      "20260628_v15": 4,
+      "20260628_v20": 4,
+      "20260628_v21": 2
+    },
+    "lost": {
+      "20260628_v15": 1,
+      "20260628_v20": 7,
+      "20260628_v21": 2
+    },
+    "gained": {
+      "20260628_v20": 5
+    },
+    "neither": {
+      "20260628_v15": 7,
+      "20260628_v20": 23,
+      "20260628_v21": 15
+    }
+  },
+  "transition_by_difficulty": {
+    "retained": {
+      "3": 5,
+      "4": 3,
+      "5": 2
+    },
+    "lost": {
+      "2": 2,
+      "3": 2,
+      "4": 3,
+      "5": 3
+    },
+    "gained": {
+      "2": 2,
+      "3": 3
+    },
+    "neither": {
+      "1": 2,
+      "2": 21,
+      "3": 7,
+      "4": 10,
+      "5": 5
+    }
+  },
+  "per_host": {
+    "m00": {
+      "approved_tasks": 21,
+      "native_strict_mixed_tasks": 6,
+      "step70_strict_mixed_tasks": 3,
+      "retained_tasks": 3,
+      "lost_tasks": 3,
+      "gained_tasks": 0,
+      "neither_tasks": 15
+    },
+    "m05": {
+      "approved_tasks": 20,
+      "native_strict_mixed_tasks": 4,
+      "step70_strict_mixed_tasks": 7,
+      "retained_tasks": 4,
+      "lost_tasks": 0,
+      "gained_tasks": 3,
+      "neither_tasks": 13
+    },
+    "m06": {
+      "approved_tasks": 29,
+      "native_strict_mixed_tasks": 10,
+      "step70_strict_mixed_tasks": 5,
+      "retained_tasks": 3,
+      "lost_tasks": 7,
+      "gained_tasks": 2,
+      "neither_tasks": 17
+    }
+  },
+  "checks": {
+    "task_count_exact": true,
+    "native_partition_exact": true,
+    "step70_partition_exact": true,
+    "transition_partition_exact": true,
+    "all_host_checks_pass": true
+  },
+  "interpretation": {
+    "legacy_all_70_mixed_was_not_preserved_by_strict_reward": true,
+    "native_strict_baseline_was_20_not_70": true,
+    "step70_point_estimate_is_worse_on_the_same_70_tasks": true,
+    "paired_task_sets_are_not_seed_matched": true,
+    "do_not_continue_training_without_a_new_decision_gate": true
+  },
+  "training_allowed": false,
+  "promotion_allowed": false,
+  "contains_prompts_gold_sql_task_ids_hashes_final_answers_tool_outputs_or_server_paths": false
+}
