@@ -1,0 +1,125 @@
+{
+  "contract": "qwen38-native-vs-step70-heldout-v15-v20-safe-comparison-v1",
+  "observed_at": "2026-08-20T10:03:51+08:00",
+  "models": {
+    "baseline": {
+      "label": "Qwen3.8-27B native HF",
+      "policy_step": 0
+    },
+    "candidate": {
+      "label": "Qwen3.8-27B GRPO Step70",
+      "policy_step": 70
+    }
+  },
+  "comparability": {
+    "same_v15_488_task_identity_set": true,
+    "same_v20_461_task_identity_set": true,
+    "identity_set_check": "three independent order-insensitive 256-bit aggregate fingerprints matched for each version",
+    "same_sampling_contract": true,
+    "sampling_contract": "strict adaptive 2+2+2, maximum 6 trajectories per task",
+    "same_reasoning_effort": "medium",
+    "same_context_tokens": 94208,
+    "same_trajectory_timeout_seconds": 1800,
+    "same_temperature": 1.0,
+    "same_top_p": 0.95,
+    "same_top_k": 20,
+    "runtime_error_trajectories_both_models": 0,
+    "selection_boundary": "The 488/461 heldout tasks are the native run's unresolved tasks after excluding all 12 v15 and 39 v20 native mixed candidates. This is an exact hard-set generalization comparison, not an unbiased estimate over each full 500-task sandbox."
+  },
+  "primary_metric_definition": "task pass rate: fraction of tasks with at least one correct trajectory under the adaptive maximum-six protocol",
+  "secondary_metric_definition": "fixed-first-two trajectory accuracy: correct trajectories divided by exactly two trajectories per task",
+  "results": {
+    "v15": {
+      "tasks": 488,
+      "fixed_first_two": {
+        "trajectories_per_model": 976,
+        "native_correct_trajectories": 0,
+        "native_correct_trajectory_rate": 0.0,
+        "step70_correct_trajectories": 2,
+        "step70_correct_trajectory_rate": 0.002049180327869,
+        "native_tasks_with_at_least_one_correct": 0,
+        "step70_tasks_with_at_least_one_correct": 2
+      },
+      "adaptive_up_to_six": {
+        "native_trajectories": 2928,
+        "native_correct_trajectories": 0,
+        "native_correct_trajectory_rate": 0.0,
+        "native_tasks_with_at_least_one_correct": 0,
+        "native_task_pass_rate": 0.0,
+        "step70_trajectories": 2916,
+        "step70_correct_trajectories": 5,
+        "step70_correct_trajectory_rate": 0.001714677640604,
+        "step70_tasks_with_at_least_one_correct": 5,
+        "step70_task_pass_rate": 0.010245901639344,
+        "task_pass_rate_delta_percentage_points": 1.0245901639344,
+        "native_task_pass_rate_wilson_95_percent": [0.0, 0.00781],
+        "step70_task_pass_rate_wilson_95_percent": [0.004384, 0.023758]
+      }
+    },
+    "v20": {
+      "tasks": 461,
+      "fixed_first_two": {
+        "trajectories_per_model": 922,
+        "native_correct_trajectories": 2,
+        "native_correct_trajectory_rate": 0.002169197396963,
+        "step70_correct_trajectories": 1,
+        "step70_correct_trajectory_rate": 0.001084598698482,
+        "native_tasks_with_at_least_one_correct": 2,
+        "step70_tasks_with_at_least_one_correct": 1
+      },
+      "adaptive_up_to_six": {
+        "native_trajectories": 2766,
+        "native_correct_trajectories": 2,
+        "native_correct_trajectory_rate": 0.000723065798988,
+        "native_tasks_with_at_least_one_correct": 2,
+        "native_task_pass_rate": 0.004338394793926,
+        "step70_trajectories": 2756,
+        "step70_correct_trajectories": 11,
+        "step70_correct_trajectory_rate": 0.003991291727141,
+        "step70_tasks_with_at_least_one_correct": 11,
+        "step70_task_pass_rate": 0.023861171366594,
+        "task_pass_rate_delta_percentage_points": 1.9522776572668,
+        "task_pass_rate_relative_multiplier": 5.5,
+        "native_task_pass_rate_wilson_95_percent": [0.001191, 0.015679],
+        "step70_task_pass_rate_wilson_95_percent": [0.013375, 0.042217]
+      }
+    },
+    "combined": {
+      "tasks": 949,
+      "fixed_first_two": {
+        "trajectories_per_model": 1898,
+        "native_correct_trajectories": 2,
+        "native_correct_trajectory_rate": 0.001053740779768,
+        "step70_correct_trajectories": 3,
+        "step70_correct_trajectory_rate": 0.001580611169652,
+        "native_tasks_with_at_least_one_correct": 2,
+        "step70_tasks_with_at_least_one_correct": 3
+      },
+      "adaptive_up_to_six": {
+        "native_trajectories": 5694,
+        "native_correct_trajectories": 2,
+        "native_correct_trajectory_rate": 0.000351246926589,
+        "native_tasks_with_at_least_one_correct": 2,
+        "native_task_pass_rate": 0.002107481559536,
+        "step70_trajectories": 5672,
+        "step70_correct_trajectories": 16,
+        "step70_correct_trajectory_rate": 0.002820874471086,
+        "step70_tasks_with_at_least_one_correct": 16,
+        "step70_task_pass_rate": 0.016859852476291,
+        "task_pass_rate_delta_percentage_points": 1.4752370916755,
+        "task_pass_rate_relative_multiplier": 8.0,
+        "native_task_pass_rate_wilson_95_percent": [0.000578, 0.007651],
+        "step70_task_pass_rate_wilson_95_percent": [0.010404, 0.027211]
+      }
+    }
+  },
+  "interpretation": {
+    "direction": "Step70 improves maximum-six task coverage on both v15 and v20, with 16 passed tasks versus 2 for native across the exact 949-task heldout set.",
+    "first_two_note": "The fixed-first-two comparison changes only from 2 to 3 correct trajectories overall; most of the observed Step70 gain appears in trajectories three through six.",
+    "absolute_level": "Absolute accuracy remains low, so this is evidence of directional recovery on a deliberately hard set rather than evidence that the model has solved the sandboxes.",
+    "adaptive_denominator_note": "All-sampled trajectory accuracy is descriptive because adaptive early stopping produces slightly different trajectory denominators. Task pass within at most six and fixed-first-two accuracy are the preferred comparisons."
+  },
+  "contains_prompts_gold_sql_task_ids_tool_outputs_or_server_paths": false,
+  "training_allowed": false,
+  "promotion_allowed": false
+}
