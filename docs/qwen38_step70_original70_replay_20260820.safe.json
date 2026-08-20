@@ -1,0 +1,76 @@
+{
+  "contract": "llin-qwen38-step70-original70-replay-safe-result-v1",
+  "stage": "complete",
+  "date": "2026-08-20",
+  "model_label": "qwen38-27b-grpo-step70",
+  "policy_step": 70,
+  "tasks": 70,
+  "sampling": {
+    "adaptive_sampling": "strict_2_plus_2_plus_2_max_6",
+    "reasoning_effort": "medium",
+    "tensor_parallel_size_per_host": 4,
+    "data_parallel_size_per_host": 4,
+    "hosts": 3,
+    "observed_trajectories": 390,
+    "online_variance_candidate_tasks": 21,
+    "online_mixed_after_two_tasks": 4,
+    "online_mixed_after_four_tasks": 7,
+    "online_mixed_after_six_tasks": 10,
+    "online_unresolved_after_six_tasks": 49,
+    "online_candidate_difficulty_counts": {
+      "1": 1,
+      "2": 6,
+      "3": 9,
+      "4": 3,
+      "5": 2
+    },
+    "avoided_trajectories_vs_full_six": 30,
+    "runtime_error_count": 0
+  },
+  "strict_reward_replay": {
+    "reward_contract": "banded-v2-strict-table-v1",
+    "covered_tasks": 70,
+    "observed_trajectories": 390,
+    "completed_trajectories": 366,
+    "legacy_correct_trajectories": 60,
+    "strict_correct_trajectories": 15,
+    "broad_legacy_mixed_tasks": 37,
+    "strict_mixed_tasks": 15,
+    "tasks_lost_from_broad_legacy_to_strict": 22,
+    "qualified_private_rows": 15,
+    "strict_mixed_by_source_version": {
+      "20260628_v15": 4,
+      "20260628_v20": 9,
+      "20260628_v21": 2
+    },
+    "strict_mixed_by_difficulty": {
+      "2": 2,
+      "3": 8,
+      "4": 3,
+      "5": 2
+    },
+    "per_host": {
+      "m05": {
+        "approved_tasks": 20,
+        "observed_trajectories": 114,
+        "broad_legacy_mixed_tasks": 15,
+        "strict_mixed_tasks": 7
+      },
+      "m06": {
+        "approved_tasks": 29,
+        "observed_trajectories": 164,
+        "broad_legacy_mixed_tasks": 13,
+        "strict_mixed_tasks": 5
+      },
+      "m00": {
+        "approved_tasks": 21,
+        "observed_trajectories": 112,
+        "broad_legacy_mixed_tasks": 9,
+        "strict_mixed_tasks": 3
+      }
+    }
+  },
+  "training_allowed": false,
+  "promotion_allowed": false,
+  "contains_prompts_gold_sql_task_ids_hashes_final_answers_tool_outputs_or_server_paths": false
+}

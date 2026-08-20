@@ -103,6 +103,8 @@ def replay_command(args: argparse.Namespace, host: str) -> list[str]:
     )
     output = f"{root}/strict_reward"
     command = [
+        "env",
+        f"PYTHONPATH={project}",
         "python3",
         f"{project}/scripts/replay_strict_table_reward_gate.py",
         "--approved",
