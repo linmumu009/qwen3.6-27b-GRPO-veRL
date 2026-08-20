@@ -1,0 +1,234 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "Qwen3.8 下一轮：回到原生基座做小步金丝雀",
+    "description": "基于严格奖励回放、Step70训练题复测与1,430题留出评测形成的下一轮数据、训练、评测和机器分工方案。",
+    "generatedAt": "2026-08-20T17:40:00+08:00",
+    "charts": [
+      {
+        "id": "strict_correct_rate_chart",
+        "title": "原70题严格正确轨迹率",
+        "subtitle": "分母为各模型完成的轨迹；原生234条，Step70为366条。",
+        "type": "bar",
+        "dataset": "strict_correct_rate",
+        "sourceId": "next_plan",
+        "source": {
+          "id": "strict_correct_rate_source",
+          "label": "原70题严格奖励复测聚合",
+          "path": "docs/qwen38_next_iteration_plan_20260820.safe.json",
+          "query": {
+            "engine": "duckdb",
+            "language": "sql",
+            "sql": "SELECT * FROM (VALUES ('Qwen3.8 原生',9.40,22,234),('Qwen3.8 Step70',4.10,15,366)) AS t(model,strict_correct_rate_pct,strict_correct_trajectories,completed_trajectories)",
+            "description": "从安全决策聚合中提取原生模型与Step70在原70题上的严格正确轨迹率、分子与分母。"
+          }
+        },
+        "encodings": {
+          "x": {"field": "模型", "type": "nominal", "label": "模型"},
+          "y": {"field": "严格正确率百分点", "type": "quantitative", "label": "严格正确率（%）"}
+        },
+        "valueFormat": "number",
+        "layout": "full",
+        "maxRows": 2
+      }
+    ],
+    "tables": [
+      {
+        "id": "model_evidence",
+        "title": "原生模型与 Step70 的两类证据",
+        "subtitle": "原70题使用严格奖励；留出集为未参与训练的1,430题、每题最多6次。",
+        "dataset": "model_evidence",
+        "sourceId": "next_plan",
+        "source": {
+          "id": "model_evidence_source",
+          "label": "原生模型与Step70证据表",
+          "path": "docs/qwen38_next_iteration_plan_20260820.safe.json",
+          "query": {
+            "engine": "duckdb",
+            "language": "sql",
+            "sql": "SELECT * FROM (VALUES (1,'Qwen3.8 原生',20,'22/234（9.40%）',234,'2/1,430（0.14%）'),(2,'Qwen3.8 Step70',15,'15/366（4.10%）',366,'18/1,430（1.26%）')) AS t(order_id,model,strict_mixed_train70,strict_correct_rate,completed_trajectories,heldout_pass_at_6)",
+            "description": "合并原70题严格奖励复测和1,430题留出pass@6结果。"
+          }
+        },
+        "defaultSort": {"field": "模型", "direction": "asc"},
+        "columns": [
+          {"field": "模型", "label": "模型"},
+          {"field": "原70题严格mixed", "label": "原70题严格mixed"},
+          {"field": "严格正确率", "label": "严格正确率"},
+          {"field": "完整轨迹", "label": "完整轨迹"},
+          {"field": "留出集pass@6", "label": "留出集pass@6"}
+        ],
+        "layout": "full"
+      },
+      {
+        "id": "execution_phases",
+        "title": "下一轮执行阶段与停止门",
+        "subtitle": "任何阶段未通过门禁即停止，不把失败结果自动滚入下一轮。",
+        "dataset": "execution_phases",
+        "sourceId": "next_plan",
+        "source": {
+          "id": "execution_phases_source",
+          "label": "下一轮执行门禁",
+          "path": "docs/qwen38_next_iteration_plan_20260820.safe.json",
+          "query": {
+            "engine": "duckdb",
+            "language": "sql",
+            "sql": "SELECT * FROM (VALUES (1,'A 冻结合同','冻结v22评测身份；banded-v2、同seed和双时钟超时合同','身份无交集；奖励重放100%一致；排队不计入30分钟','无需占满NPU'),(2,'B 重建数据','v23-v26严格2+2+2；候选补2条确认','至少24题满足≥2正、≥2完整错；运行错误0','0/5/6三机TP4并行'),(3,'C 12步金丝雀','从原生基座训练24题×1次，每组8条','非零奖励方差组≥50%；低于30%或有运行错误即停','5训练、6推理、0继续采样'),(4,'D 同seed评测','先v22 100题×2，再全500题最多6条','pass@K净胜为正；严格正确率不降；完成/超时守门','三机并行评测'),(5,'E 扩量','只在D通过后扩大到32题以上','重复同样门禁；不从Step70续训','5训练、6推理；0按探针决定采样或rollout')) AS t(order_id,phase,action,gate,machine_plan) ORDER BY order_id",
+            "description": "从安全计划记录中按阶段读取执行内容、通过条件与机器分工。"
+          }
+        },
+        "defaultSort": {"field": "阶段", "direction": "asc"},
+        "columns": [
+          {"field": "阶段", "label": "阶段"},
+          {"field": "执行内容", "label": "执行内容"},
+          {"field": "通过条件", "label": "通过条件"},
+          {"field": "机器分工", "label": "机器分工"}
+        ],
+        "layout": "full"
+      }
+    ],
+    "sources": [
+      {
+        "id": "next_plan",
+        "label": "Qwen3.8 下一轮决策聚合",
+        "path": "docs/qwen38_next_iteration_plan_20260820.safe.json",
+        "query": {
+          "engine": "python",
+          "language": "python",
+          "description": "对严格奖励回放、原生与Step70同题对照、1,430题留出结果和4,000题新生成合同做确定性汇总。"
+        }
+      }
+    ],
+    "blocks": [
+      {
+        "id": "title",
+        "type": "markdown",
+        "body": "# Qwen3.8 下一轮：回到原生基座做小步金丝雀",
+        "layout": "full"
+      },
+      {
+        "id": "executive_summary",
+        "type": "markdown",
+        "body": "## Executive Summary\n\n- **不从Step70继续训练，也不把70+18拿去滚雪球。** Step70在原70题上的严格正确率由原生模型的9.40%降到4.10%；虽然它在极难留出集上把pass@6从2/1,430提高到18/1,430，但绝对通过率仍只有1.26%，不足以抵消训练题上的退化风险。\n- **banded-v2保留，重做的是它周围的数据门和评测门。** 70题里只有20题在训练前真正具有严格奖励方差；下一轮候选必须自动确认至少2条严格正确和2条完整严格错误，排队时间不得计入30分钟轨迹超时。\n- **从未训练的v23-v26重新采数据，v22整版冻结做新评测。** 历史严格候选产率为20/1,500=1.33%；2,000道新题点估计约得到27道严格候选，但更严格的2正2错门会降低实际数量，因此先以24道金丝雀为最低目标。\n- **先跑12步金丝雀，通过同题同seed评测后再扩到32题以上。** 5号机训练、6号机推理，0号机并行采新数据和做评测；只有严格pass@K、正确轨迹率、完成率和超时率同时过门，才进入下一轮扩大训练。",
+        "sourceId": "next_plan",
+        "layout": "full"
+      },
+      {
+        "id": "why_not_resume",
+        "type": "markdown",
+        "body": "## Step70有局部恢复，但现在不适合作为下一轮起点\n\n原生模型在原70题上有22/234条完整轨迹严格正确，Step70只有15/366条；后者试次更多，严格正确条数反而更少。与此同时，Step70在未训练的1,430道极难题上从2道至少答对一次提高到18道。这说明它不是‘完全没学到’，而是出现了**局部泛化恢复与训练域退化并存**。\n\n两轮采样并非逐请求同seed配对，因此不能把差异写成确定因果；但对于是否继续追加训练这一高风险决策，当前证据足以支持冻结Step70、从原生基座重新做更干净的小步实验。",
+        "sourceId": "next_plan",
+        "layout": "full"
+      },
+      {
+        "id": "model_evidence_block",
+        "type": "chart",
+        "chartId": "strict_correct_rate_chart",
+        "layout": "full"
+      },
+      {
+        "id": "model_evidence_table_block",
+        "type": "table",
+        "tableId": "model_evidence",
+        "layout": "full"
+      },
+      {
+        "id": "metric_boundary",
+        "type": "markdown",
+        "body": "## mixed题数只负责选数据，不能负责判断模型好坏\n\n训练前，mixed意味着同一道题既有严格正确也有严格错误，能够给GRPO提供组内奖励方差；这是**数据选择指标**。训练后，如果模型真正学会，一道题完全可能从mixed变成全对，mixed数量反而下降。因此后续不再用‘还剩多少mixed’判断模型是否提升。\n\n模型质量的主指标改为冻结题集上的严格task pass@K；同时统计‘严格正确轨迹/全部请求轨迹’，让超时和未完成请求无法从分母中消失。完成率、超时率、运行错误、token吞吐和轨迹时延作为守门指标。",
+        "sourceId": "next_plan",
+        "layout": "full"
+      },
+      {
+        "id": "data_rebuild",
+        "type": "markdown",
+        "body": "## 新数据先经过2+2+2筛选，再给候选补2条确认\n\n下一轮完全自动进行，不需要人工参与。v22的500题在任何采样和训练选择前冻结为新评测集；v23-v26共2,000题用于Qwen3.8原生模型采样。普通题仍按2+2+2、最多6条早停；只有初步严格mixed的题额外补2条，最终必须至少有2条严格正确和2条完整严格错误。\n\n超时要分成两个时钟：排队等待单独记录，30分钟只从worker真正开始执行请求时计时。超时不冒充严格错误来制造训练方差，但在模型评测时计入全部请求分母。任何运行错误、解析歧义或答案绑定失败都自动隔离。",
+        "sourceId": "next_plan",
+        "layout": "full"
+      },
+      {
+        "id": "execution_intro",
+        "type": "markdown",
+        "body": "## 四段执行，每段都能尽早失败并停止\n\n先锁定评测身份和奖励合同，再用三机并行采样；获得至少24道强候选后，从原生模型训练12步；先过100题廉价同seed门，再跑v22全500题。若v23-v26不足24道，不借用v22，而是新生成v27+继续筛选。",
+        "sourceId": "next_plan",
+        "layout": "full"
+      },
+      {
+        "id": "execution_phases_block",
+        "type": "table",
+        "tableId": "execution_phases",
+        "layout": "full"
+      },
+      {
+        "id": "machine_strategy",
+        "type": "markdown",
+        "body": "## 一台机器训练仍是当前更快的分工\n\n27B训练侧需要模型、梯度和优化器状态，当前已验证的5号机16卡TP4×PP2×CP2能完整运行；把训练拆到两台机器会增加跨机通信和故障面。更有效的做法是让6号机16卡专职rollout，让0号机在训练期间继续筛新数据，训练完成后立即切到同seed评测。\n\n采数据阶段三机全部投入：5、6号机各TP4×DP4，0号机12张空卡TP4×DP3。只有两步探针同时显示rollout利用率超过85%、训练器空等超过15%，才把0号机加入训练rollout；否则它并行做数据和评测更省总迭代时间。",
+        "sourceId": "next_plan",
+        "layout": "full"
+      },
+      {
+        "id": "go_no_go",
+        "type": "markdown",
+        "body": "## 金丝雀通过条件\n\n1. **训练信号有效。** 4个预热组至少一半存在非零严格奖励方差；正式金丝雀期间低于30%立即停止，运行错误必须为0。\n2. **廉价评测不退化。** v22分层100题、每题2条，原生与候选使用同题、同seed、同采样参数；候选严格正确总数不得下降，完成率下降和超时率上升都不得超过2个百分点。\n3. **完整评测净胜。** 廉价门通过后才跑v22全部500题、最多6条；严格task pass@K的同题净胜必须为正，严格正确/全部请求不得下降。\n4. **通过后才扩量。** 第一轮只训练24题×1次、每组8条、2组/步，共12步；通过后再扩到32题以上。原70题只做遗忘诊断，1,430题和其中18道永不进入训练。",
+        "sourceId": "next_plan",
+        "layout": "full"
+      },
+      {
+        "id": "timing",
+        "type": "markdown",
+        "body": "## 最快闭环预计1.5到2.5天\n\n奖励与数据冻结约1–2小时；v23-v26筛选约1天；12步金丝雀与两级评测约半天到1天。最大不确定性不是训练速度，而是严格2正2错候选的真实产率。首个100题波次结束后立即用实测token吞吐和候选率替换这个区间。若2,000题不足24道，新增v27+会增加一个采样周期。",
+        "sourceId": "next_plan",
+        "layout": "full"
+      },
+      {
+        "id": "further_questions",
+        "type": "markdown",
+        "body": "## 后续只需要用数据回答三个问题\n\n- 2正2错门下，v23-v26的真实候选产率是否足够支撑24道金丝雀？\n- 金丝雀中有多少group真正产生非零严格奖励方差，训练时间有多少花在无效group上？\n- 同题同seed后，Step70观察到的留出改善能否被新的干净金丝雀重复，同时避免原70题上的严格正确率退化？",
+        "layout": "full"
+      },
+      {
+        "id": "caveats",
+        "type": "markdown",
+        "body": "## 读计划时要注意\n\n- 2,000题约27道严格候选是按历史20/1,500外推，不是保证；新门更严格，实际可能更少。\n- 原70题与Step70的复测不是逐请求同seed，当前只支持方向性止损决策。下一轮已把同seed写成硬合同。\n- v22-v26的4,000题已经通过SQL/gold重放和语义锚点门，但仍保持禁训；只有本计划的Qwen3.8采样、严格方差确认和金丝雀门通过后才能改变状态。\n- banded-v2本身速度约为亚毫秒级，当前主要问题是旧候选入口与评测口径，不是奖励计算吞吐。",
+        "sourceId": "next_plan",
+        "layout": "full"
+      }
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "generatedAt": "2026-08-20T17:40:00+08:00",
+    "status": "ready",
+    "datasets": {
+      "strict_correct_rate": [
+        {"模型": "Qwen3.8 原生", "严格正确率百分点": 9.40, "严格正确轨迹": 22, "完整轨迹": 234},
+        {"模型": "Qwen3.8 Step70", "严格正确率百分点": 4.10, "严格正确轨迹": 15, "完整轨迹": 366}
+      ],
+      "model_evidence": [
+        {"顺序": 1, "模型": "Qwen3.8 原生", "原70题严格mixed": 20, "严格正确率": "22/234（9.40%）", "完整轨迹": 234, "留出集pass@6": "2/1,430（0.14%）"},
+        {"顺序": 2, "模型": "Qwen3.8 Step70", "原70题严格mixed": 15, "严格正确率": "15/366（4.10%）", "完整轨迹": 366, "留出集pass@6": "18/1,430（1.26%）"}
+      ],
+      "execution_phases": [
+        {"顺序": 1, "阶段": "A 冻结合同", "执行内容": "冻结v22评测身份；banded-v2、同seed和双时钟超时合同", "通过条件": "身份无交集；奖励重放100%一致；排队不计入30分钟", "机器分工": "无需占满NPU"},
+        {"顺序": 2, "阶段": "B 重建数据", "执行内容": "v23-v26严格2+2+2；候选补2条确认", "通过条件": "至少24题满足≥2正、≥2完整错；运行错误0", "机器分工": "0/5/6三机TP4并行"},
+        {"顺序": 3, "阶段": "C 12步金丝雀", "执行内容": "从原生基座训练24题×1次，每组8条", "通过条件": "非零奖励方差组≥50%；低于30%或有运行错误即停", "机器分工": "5训练、6推理、0继续采样"},
+        {"顺序": 4, "阶段": "D 同seed评测", "执行内容": "先v22 100题×2，再全500题最多6条", "通过条件": "pass@K净胜为正；严格正确率不降；完成/超时守门", "机器分工": "三机并行评测"},
+        {"顺序": 5, "阶段": "E 扩量", "执行内容": "只在D通过后扩大到32题以上", "通过条件": "重复同样门禁；不从Step70续训", "机器分工": "5训练、6推理；0按探针决定采样或rollout"}
+      ]
+    }
+  },
+  "sources": [
+    {
+      "id": "next_plan",
+      "label": "Qwen3.8下一轮决策聚合",
+      "path": "docs/qwen38_next_iteration_plan_20260820.safe.json",
+      "query": {
+        "engine": "python",
+        "language": "python",
+        "description": "聚合严格奖励回放、训练题对照、留出评测和新生成数据合同。"
+      }
+    }
+  ]
+}
