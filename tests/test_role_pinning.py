@@ -22,7 +22,7 @@ def test_accelerator_mapping(monkeypatch):
     assert module.accelerator_for_pool("rollout_pool_reward_0") is None
 
 
-def test_role_pinning_checks_capacity_before_eager_pool_reservation(monkeypatch):
+def test_role_pinning_lets_concurrent_standalone_pools_reserve_atomically(monkeypatch):
     module = load_sitecustomize_without_pythonpath()
     events = []
 
@@ -52,4 +52,4 @@ def test_role_pinning_checks_capacity_before_eager_pool_reservation(monkeypatch)
     manager = DummyResourcePoolManager()
     manager.create_resource_pool()
 
-    assert events == [("check", None), ("reserve", "rollout_pool_0")]
+    assert events == [("reserve", "rollout_pool_0")]

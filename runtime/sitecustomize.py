@@ -24,11 +24,13 @@ def apply_role_pinning() -> None:
         return
 
     def create_resource_pool(self: ResourcePoolManager) -> None:
-        # RayResourcePool creates placement groups eagerly. Checking available
-        # accelerators afterwards races with those reservations and can report
-        # zero free NPUs even though this call reserved them itself. Validate
-        # capacity first; Ray scheduling remains the final allocation gate.
-        self._check_resource_available()
+        # Standalone DP replicas call this method concurrently, one manager per
+        # replica.  An available-resource check in each manager races with the
+        # other replicas' eager placement groups: the first TP4 reservation can
+        # make a later manager observe fewer free NPUs even though the complete
+        # DP topology exactly matches the cluster.  The launcher already gates
+        # visible NPU count and TP*DP==rollout_npus; let Ray placement-group
+        # scheduling be the atomic aggregate-capacity gate here.
         for pool_name, process_on_nodes in self.resource_pool_spec.items():
             resource_pool = RayResourcePool(
                 process_on_nodes=process_on_nodes,
