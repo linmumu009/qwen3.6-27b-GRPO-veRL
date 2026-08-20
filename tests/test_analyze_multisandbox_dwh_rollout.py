@@ -148,3 +148,71 @@ def test_partial_analysis_uses_only_complete_shards_and_fails_closed_on_runtime_
     assert summary["runtime_error_or_timeout_fail_closed"] is True
     selected = pq.read_table(tmp_path / "analysis" / "mixed_groups.sensitive.parquet").to_pylist()
     assert [row["extra_info"]["verifier_id"] for row in selected] == ["v:1"]
+
+
+def test_strict_table_analysis_rejects_number_dump_and_keeps_timeout_out_of_wrong_count(
+    tmp_path: Path,
+):
+    dataset = tmp_path / "dataset.parquet"
+    task = {
+        "prompt": [{"role": "user", "content": "q"}],
+        "reward_model": {
+            "ground_truth": {
+                "answer_type": "table",
+                "expected_value_json": json.dumps(
+                    [{"category": "A", "value": 10}, {"category": "B", "value": 20}]
+                ),
+                "verification_sql": "select category, value from t",
+                "abs_tol": 1e-3,
+                "rel_tol": 1e-5,
+            }
+        },
+        "extra_info": {
+            "verifier_id": "v:strict",
+            "instruction_sha256": "strict-hash",
+            "source_version": "v23",
+            "difficulty_level": 3,
+            "training_allowed": False,
+        },
+    }
+    pq.write_table(pa.Table.from_pylist([task]), dataset)
+    shards = tmp_path / "shards"
+    shards.mkdir()
+    outputs = [
+        {
+            "source_task_index": 0,
+            "sample_index": 0,
+            "output": "assistant\n|类别|数值|\n|---|---:|\n|A|10|\n|B|20|",
+            "response_tokens": 20,
+            "runtime_error": False,
+        },
+        {
+            "source_task_index": 0,
+            "sample_index": 1,
+            "output": "assistant\n10, 20",
+            "response_tokens": 2,
+            "runtime_error": False,
+        },
+    ]
+    (shards / "tasks_00000_00001.jsonl").write_text(
+        "".join(json.dumps(row, ensure_ascii=False) + "\n" for row in outputs),
+        encoding="utf-8",
+    )
+
+    summary = analyze(
+        dataset,
+        shards,
+        tmp_path / "analysis",
+        expected_tasks=1,
+        samples_per_task=2,
+        strict_table=True,
+    )
+
+    assert summary["outcome_contract"] == "banded-v2-strict-table-v1"
+    assert summary["bucket_counts"] == {"mixed": 1}
+    result = json.loads(
+        (tmp_path / "analysis" / "per_task.sensitive.jsonl").read_text(encoding="utf-8")
+    )
+    assert result["correct_count"] == 1
+    assert result["completed_count"] == 2
+    assert result["outcome_contract"] == "banded-v2-strict-table-v1"

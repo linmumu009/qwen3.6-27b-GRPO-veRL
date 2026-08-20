@@ -29,6 +29,7 @@ ROLLING_WINDOW_MAX_MULTIPLIER="${ROLLING_WINDOW_MAX_MULTIPLIER:-1.0}"
 RAY_ADDRESS="${RAY_ADDRESS:-192.168.202.5:26379}"
 ROLLOUT_RESOURCE="${ROLLOUT_RESOURCE:?ROLLOUT_RESOURCE is required}"
 ANALYZE_ON_SUCCESS="${ANALYZE_ON_SUCCESS:-1}"
+STRICT_TABLE_OUTCOME="${STRICT_TABLE_OUTCOME:-0}"
 MONITOR_NPU="${MONITOR_NPU:-1}"
 MONITOR_ROLE="${MONITOR_ROLE:-standalone_rollout}"
 MONITOR_INTERVAL="${MONITOR_INTERVAL:-5}"
@@ -46,6 +47,7 @@ export TRAJECTORY_TIMEOUT_SECONDS MAX_ATTEMPTS RETRY_DELAY_SECONDS
 export ROLLING_ADMISSION ROLLING_WINDOW_TRAJECTORIES ROLLING_WINDOW_MAX_MULTIPLIER
 export RAY_ADDRESS ROLLOUT_RESOURCE
 export ANALYZE_ON_SUCCESS MONITOR_NPU MONITOR_ROLE MONITOR_INTERVAL MONITOR_FIRST_CARD MONITOR_NUM_CARDS
+export STRICT_TABLE_OUTCOME
 export LLIN_PIN_RAY_ROLES=1
 export LLIN_ROLLOUT_RESOURCE="${ROLLOUT_RESOURCE}"
 export PYTHONPATH="/vllm:${PROJECT_ROOT}/runtime:${PROJECT_ROOT}:${PYTHONPATH:-}"
@@ -104,12 +106,17 @@ nohup bash -c '
     (( attempt <= MAX_ATTEMPTS )) && sleep "${RETRY_DELAY_SECONDS}"
   done
   if [[ "${code}" == "0" && "${ANALYZE_ON_SUCCESS}" == "1" ]]; then
+    analysis_args=()
+    if [[ "${STRICT_TABLE_OUTCOME}" == "1" ]]; then
+      analysis_args+=(--strict-table)
+    fi
     python3 "${PROJECT_ROOT}/scripts/analyze_multisandbox_dwh_rollout.py" \
       --dataset "${DATASET}" \
       --shards-dir "${OUTPUT_DIR}/shards" \
       --output-dir "${OUTPUT_DIR}/outcomes" \
       --expected-tasks "${EXPECTED_TASKS}" \
       --samples-per-task "${SAMPLES_PER_TASK}" \
+      "${analysis_args[@]}" \
       >> "${OUTPUT_DIR}/driver.log" 2>&1
     code=$?
   fi

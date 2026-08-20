@@ -70,8 +70,19 @@ def _identity(record: dict[str, Any]) -> str:
     return str(record["extra_info"]["instruction_sha256"])
 
 
-def _results_by_identity(path: Path) -> dict[str, dict[str, Any]]:
+def _results_by_identity(
+    path: Path,
+    *,
+    required_outcome_contract: str | None = None,
+) -> dict[str, dict[str, Any]]:
     rows = read_jsonl(path)
+    if required_outcome_contract is not None:
+        contracts = {str(row.get("outcome_contract") or "") for row in rows}
+        if contracts != {required_outcome_contract}:
+            raise ValueError(
+                "wave outcomes do not match the required reward contract: "
+                f"expected={required_outcome_contract!r}, observed={sorted(contracts)!r}"
+            )
     result = {str(row["instruction_sha256"]): row for row in rows}
     if len(result) != len(rows):
         raise ValueError("per-task result identities are not unique")
@@ -239,13 +250,17 @@ def select_after_wave(
     *,
     expected_prior_samples: int,
     max_samples: int = MAX_SAMPLES,
+    required_outcome_contract: str | None = None,
 ) -> dict[str, Any]:
     if max_samples not in (6, 8):
         raise ValueError("maximum samples must be 6 or 8")
     if expected_prior_samples not in (0, 2, 4, 6) or expected_prior_samples >= max_samples:
         raise ValueError("expected prior samples must be a valid earlier two-sample wave")
     dataset = pq.read_table(input_dataset_path).to_pylist()
-    results = _results_by_identity(wave_per_task_path)
+    results = _results_by_identity(
+        wave_per_task_path,
+        required_outcome_contract=required_outcome_contract,
+    )
     identities = [_identity(row) for row in dataset]
     if len(set(identities)) != len(identities) or set(results) != set(identities):
         raise ValueError("wave results do not exactly cover the wave dataset")
@@ -318,6 +333,7 @@ def select_after_wave(
         "mixed_dataset_sha256": file_sha256(mixed_dataset_path),
         "unresolved_dataset_sha256": file_sha256(unresolved_dataset_path),
         "explicit_mixed_requires_correct_and_completed_wrong": True,
+        "required_outcome_contract": required_outcome_contract,
         "timeouts_do_not_prevent_explicit_mixed": True,
         "contains_prompts_gold_sql_task_ids_outputs_or_server_paths": False,
         "training_allowed": False,

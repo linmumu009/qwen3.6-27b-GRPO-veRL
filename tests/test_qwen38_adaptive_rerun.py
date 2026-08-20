@@ -116,6 +116,7 @@ def test_qwen38_wave_launcher_passes_medium_and_configurable_topology(
     assert environment["ROLLOUT_NPUS"] == "16"
     assert environment["MAX_NUM_SEQS"] == "16"
     assert environment["ROLLING_WINDOW_TRAJECTORIES"] == "80"
+    assert environment["STRICT_TABLE_OUTCOME"] == "1"
     assert environment["MONITOR_FIRST_CARD"] == "2"
     assert captured["check"] is True
 

@@ -50,7 +50,7 @@ def write_status(queue_dir: Path, *, stage: str, host_label: str, **fields: obje
 
 
 def arm_command(args: argparse.Namespace, version: str, dataset: Path, tasks: int) -> list[str]:
-    return [
+    command = [
         sys.executable,
         str(args.project_root / "scripts" / "run_qwen38_adaptive_dwh_three_wave_queue.py"),
         "--project-root",
@@ -65,6 +65,8 @@ def arm_command(args: argparse.Namespace, version: str, dataset: Path, tasks: in
         "medium",
         "--arm-label",
         version,
+        "--host-label",
+        args.host_label,
         "--rollout-resource",
         args.rollout_resource,
         "--tensor-parallel-size",
@@ -106,6 +108,9 @@ def arm_command(args: argparse.Namespace, version: str, dataset: Path, tasks: in
         "--stage-timeout-seconds",
         str(args.stage_timeout_seconds),
     ]
+    if args.confirm_candidates:
+        command.append("--confirm-candidates")
+    return command
 
 
 def run(args: argparse.Namespace) -> dict:
@@ -174,6 +179,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--model-label", default="qwen38-27b-native-hf")
     parser.add_argument("--policy-step", type=int, default=0)
     parser.add_argument("--host-label", required=True)
+    parser.add_argument("--confirm-candidates", action="store_true")
     parser.add_argument("--arm", type=parse_arm, action="append", required=True)
     parser.add_argument("--rollout-resource", required=True)
     parser.add_argument("--tensor-parallel-size", type=int, required=True)

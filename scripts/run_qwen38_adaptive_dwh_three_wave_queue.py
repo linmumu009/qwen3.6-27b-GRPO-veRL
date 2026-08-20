@@ -20,12 +20,14 @@ from scripts.adaptive_dwh_wave_earlystop import (
     write_json,
     write_private_parquet,
 )
+from scripts.confirm_qwen38_strict_candidates import confirm
 from scripts.run_adaptive_dwh_wave_earlystop_queue import wait_for_exit
 from scripts.standalone_rollout_shards import trajectory_admission_contract
 
 
 QUEUE_CONTRACT = "llin-qwen38-adaptive-dwh-2plus2plus2-queue-v1"
 WAVE_TARGETS = (2, 4, 6)
+STRICT_REWARD_CONTRACT = "banded-v2-strict-table-v1"
 
 
 def model_identity(model: Path, policy_step: int) -> dict[str, object]:
@@ -146,6 +148,7 @@ def launch_wave(args: argparse.Namespace, dataset: Path, run_dir: Path, tasks: i
             "RAY_ADDRESS": args.ray_address,
             "ROLLOUT_RESOURCE": args.rollout_resource,
             "ANALYZE_ON_SUCCESS": "1",
+            "STRICT_TABLE_OUTCOME": "1",
             "MONITOR_NPU": "1",
             "MONITOR_ROLE": "qwen38_rollout",
             "MONITOR_INTERVAL": "5",
@@ -236,6 +239,7 @@ def run(args: argparse.Namespace) -> dict:
                 manifest_path,
                 expected_prior_samples=prior_samples,
                 max_samples=6,
+                required_outcome_contract=STRICT_REWARD_CONTRACT,
             )
             current_tasks = int(wave["unresolved_tasks"])
         else:
@@ -264,6 +268,43 @@ def run(args: argparse.Namespace) -> dict:
         current_dataset,
         args.final_output_dir,
     )
+    confirmation = None
+    if args.confirm_candidates:
+        candidate_path = args.final_output_dir / "grpo_variance_candidates.sensitive.parquet"
+        candidate_count = int(summary["variance_candidate_tasks"])
+        confirmation_run = args.runs_dir / f"{args.run_prefix}-confirm2"
+        confirmation_root = args.final_output_dir / "robust_confirmation"
+        confirmation_outcomes = confirmation_run / "outcomes" / "per_task.sensitive.jsonl"
+        write_status(
+            args.queue_dir,
+            stage="confirming_provisional_candidates_with_two_fresh_samples",
+            arm_label=args.arm_label,
+            provisional_candidates=candidate_count,
+            topology=topology,
+            model_label=args.model_label,
+            policy_step=args.policy_step,
+        )
+        if candidate_count:
+            launch_wave(args, candidate_path, confirmation_run, candidate_count)
+            code = wait_for_exit(
+                confirmation_run,
+                poll_seconds=args.poll_seconds,
+                timeout_seconds=args.stage_timeout_seconds,
+            )
+            if code != 0:
+                raise RuntimeError(f"Qwen3.8 strict confirmation exited with {code}")
+        else:
+            confirmation_outcomes.parent.mkdir(parents=True, exist_ok=True)
+            confirmation_outcomes.write_text("", encoding="utf-8")
+        confirmation = confirm(
+            candidate_path,
+            confirmation_outcomes,
+            confirmation_root / "robust_candidates.sensitive.parquet",
+            confirmation_root / "rejected_candidates.sensitive.parquet",
+            confirmation_root / "confirmation.safe.json",
+            expected_candidates=candidate_count,
+            host_label=args.host_label,
+        )
     write_status(
         args.queue_dir,
         stage="complete",
@@ -279,8 +320,11 @@ def run(args: argparse.Namespace) -> dict:
         unresolved_after_six_tasks=int(summary["unresolved_after_six_tasks"]),
         actual_sampling_trajectories=int(summary["actual_sampling_trajectories"]),
         avoided_trajectories_vs_full_six=int(summary["avoided_trajectories_vs_full_six"]),
+        robust_candidates=(
+            int(confirmation["robust_candidates"]) if confirmation is not None else None
+        ),
     )
-    return summary
+    return {**summary, **({"robust_confirmation": confirmation} if confirmation is not None else {})}
 
 
 def parse_args() -> argparse.Namespace:
@@ -291,6 +335,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--policy-step", type=int, default=0)
     parser.add_argument("--reasoning-effort", choices=("medium",), default="medium")
     parser.add_argument("--arm-label", required=True)
+    parser.add_argument("--host-label", required=True)
+    parser.add_argument("--confirm-candidates", action="store_true")
     parser.add_argument("--rollout-resource", required=True)
     parser.add_argument("--tensor-parallel-size", type=int, required=True)
     parser.add_argument("--data-parallel-size", type=int, required=True)

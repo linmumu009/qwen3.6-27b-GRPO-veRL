@@ -16,11 +16,34 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 
 from llin_verl.outcome_shadow import score_final_outcome
-from llin_verl.pi_reward import extract_final_assistant_answer
+from llin_verl.pi_reward import extract_final_assistant_answer, strict_table_answer_match
 from scripts.standalone_rollout_shards import completed_shard_rows
 
 
 _SHARD_RE = re.compile(r"^tasks_(\d+)_(\d+)\.jsonl$")
+STRICT_TABLE_CONTRACT = "banded-v2-strict-table-v1"
+
+
+def strict_table_outcome(output: str, truth: dict) -> dict:
+    if str(truth.get("answer_type") or "") != "table":
+        raise ValueError("strict table outcome received a non-table task")
+    expected = json.loads(str(truth.get("expected_value_json") or "null"))
+    if not isinstance(expected, list) or not expected:
+        raise ValueError("strict table outcome received invalid expected_value_json")
+    answer = extract_final_assistant_answer(output)
+    matched, mode, parsed_rows = strict_table_answer_match(
+        answer,
+        expected,
+        float(truth.get("abs_tol", 1e-3)),
+        float(truth.get("rel_tol", 1e-5)),
+    )
+    return {
+        "final_answer_correct": bool(matched),
+        "dense_final_answer_correctness": float(matched),
+        "has_final_answer": bool(answer),
+        "strict_parse_mode": mode,
+        "strict_parsed_rows": parsed_rows,
+    }
 
 
 def write_private_jsonl(path: Path, rows: list[dict]) -> None:
@@ -87,6 +110,7 @@ def analyze(
     expected_tasks: int,
     samples_per_task: int,
     allow_partial: bool = False,
+    strict_table: bool = False,
 ) -> dict:
     dataset = pq.read_table(dataset_path).to_pylist()
     if len(dataset) != expected_tasks:
@@ -150,10 +174,26 @@ def analyze(
         dataset_row = dataset[task_index]
         truth = dataset_row["reward_model"]["ground_truth"]
         task_observations = [observations[(task_index, sample)] for sample in range(samples_per_task)]
-        scores = [
-            score_final_outcome(str(row.get("output") or ""), truth)
-            for row in task_observations
-        ]
+        if strict_table:
+            scores = [
+                (
+                    {
+                        "final_answer_correct": False,
+                        "dense_final_answer_correctness": 0.0,
+                        "has_final_answer": False,
+                        "strict_parse_mode": "not_evaluable",
+                        "strict_parsed_rows": 0,
+                    }
+                    if bool(row.get("runtime_error")) or bool(row.get("trajectory_timeout"))
+                    else strict_table_outcome(str(row.get("output") or ""), truth)
+                )
+                for row in task_observations
+            ]
+        else:
+            scores = [
+                score_final_outcome(str(row.get("output") or ""), truth)
+                for row in task_observations
+            ]
         correct = sum(int(score["final_answer_correct"]) for score in scores)
         completed = sum(int(score["has_final_answer"]) for score in scores)
         runtime_errors = sum(bool(row.get("runtime_error")) for row in task_observations)
@@ -170,12 +210,15 @@ def analyze(
             int(row.get("trajectory_abort_error_count", 0) or 0)
             for row in task_observations
         )
-        classification = bucket(
-            correct,
-            samples_per_task,
-            timeout_count=timeouts,
-            runtime_error_count=runtime_errors,
-        )
+        if strict_table and not runtime_errors and correct > 0 and completed - correct > 0:
+            classification = "mixed"
+        else:
+            classification = bucket(
+                correct,
+                completed if strict_table else samples_per_task,
+                timeout_count=timeouts,
+                runtime_error_count=runtime_errors,
+            )
         extra = dataset_row["extra_info"]
         answer_type = str(truth["answer_type"])
         version = str(extra["source_version"])
@@ -202,6 +245,9 @@ def analyze(
                 "response_tokens_mean": statistics.fmean(response_lengths),
                 "response_tokens_max": max(response_lengths),
                 "bucket": classification,
+                "outcome_contract": (
+                    STRICT_TABLE_CONTRACT if strict_table else "legacy_final_outcome_v2"
+                ),
                 "training_allowed": False,
             }
         )
@@ -270,6 +316,9 @@ def analyze(
     analyzed_trajectories = analyzed_tasks * samples_per_task
     summary = {
         "contract": "boss-multisandbox-dwh-rollout-outcomes-v2",
+        "outcome_contract": (
+            STRICT_TABLE_CONTRACT if strict_table else "legacy_final_outcome_v2"
+        ),
         "expected_tasks": expected_tasks,
         "tasks": analyzed_tasks,
         "partial": analyzed_tasks != expected_tasks,
@@ -326,7 +375,9 @@ def analyze(
         "mixed_screening_rows": len(selected_rows),
         "mixed_review_queue_rows": len(review_rows),
         "selection_rule": (
-            "exactly_8_complete_usable_trajectories_and_1_to_7_final_outcome_correct"
+            "completed_strict_table_answers_contain_at_least_one_correct_and_one_wrong"
+            if strict_table
+            else "exactly_8_complete_usable_trajectories_and_1_to_7_final_outcome_correct"
         ),
         "runtime_error_or_timeout_fail_closed": True,
         "explicit_semantic_review_completed": False,
@@ -352,6 +403,11 @@ def main() -> None:
         action="store_true",
         help="analyze every fully written shard without waiting for the full dataset",
     )
+    parser.add_argument(
+        "--strict-table",
+        action="store_true",
+        help="score table answers with banded-v2 row/value binding",
+    )
     args = parser.parse_args()
     print(
         json.dumps(
@@ -362,6 +418,7 @@ def main() -> None:
                 expected_tasks=args.expected_tasks,
                 samples_per_task=args.samples_per_task,
                 allow_partial=args.allow_partial,
+                strict_table=args.strict_table,
             ),
             ensure_ascii=False,
             indent=2,
