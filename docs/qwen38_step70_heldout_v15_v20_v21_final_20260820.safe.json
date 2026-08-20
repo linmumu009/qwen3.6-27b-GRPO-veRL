@@ -1,0 +1,126 @@
+{
+  "contract": "llin-qwen38-step70-heldout-v15-v20-v21-final-safe-v1",
+  "observed_at": "2026-08-20T14:56:50+08:00",
+  "run_label": "attempt_05_three_host",
+  "model_label": "qwen38-27b-grpo-step70",
+  "policy_step": 70,
+  "stage": "complete",
+  "supervisor_exit_code": 0,
+  "host_exit_codes": {
+    "m05": 0,
+    "m06": 0,
+    "m00": 0
+  },
+  "topology_per_host": {
+    "tensor_parallel_size": 4,
+    "data_parallel_size": 4,
+    "rollout_npus": 16,
+    "max_num_seqs_per_replica": 16,
+    "physical_sequence_capacity": 64,
+    "logical_window_trajectories": 80
+  },
+  "sampling_contract": {
+    "adaptive_sampling": "strict_2_plus_2_plus_2_max_6",
+    "reasoning_effort": "medium",
+    "max_context_tokens": 94208,
+    "trajectory_timeout_seconds": 1800,
+    "temperature": 1.0,
+    "top_p": 0.95,
+    "top_k": 20
+  },
+  "versions": {
+    "v15": {
+      "initial_tasks": 488,
+      "mixed_after_two_tasks": 2,
+      "mixed_after_four_tasks": 2,
+      "mixed_after_six_tasks": 1,
+      "variance_candidate_tasks": 5,
+      "unresolved_after_six_tasks": 483,
+      "actual_sampling_trajectories": 2916,
+      "avoided_trajectories_vs_full_six": 12
+    },
+    "v20": {
+      "initial_tasks": 461,
+      "mixed_after_two_tasks": 1,
+      "mixed_after_four_tasks": 3,
+      "mixed_after_six_tasks": 7,
+      "variance_candidate_tasks": 11,
+      "unresolved_after_six_tasks": 450,
+      "actual_sampling_trajectories": 2756,
+      "avoided_trajectories_vs_full_six": 10
+    },
+    "v21": {
+      "initial_tasks": 481,
+      "mixed_after_two_tasks": 0,
+      "mixed_after_four_tasks": 1,
+      "mixed_after_six_tasks": 1,
+      "variance_candidate_tasks": 2,
+      "unresolved_after_six_tasks": 479,
+      "actual_sampling_trajectories": 2884,
+      "avoided_trajectories_vs_full_six": 2,
+      "candidate_difficulty_counts": {
+        "1": 0,
+        "2": 1,
+        "3": 0,
+        "4": 1,
+        "5": 0
+      },
+      "runtime_error_trajectories": 0
+    }
+  },
+  "aggregate": {
+    "tasks": 1430,
+    "variance_candidate_tasks": 18,
+    "variance_candidate_rate": 0.012587412587413,
+    "unresolved_after_six_tasks": 1412,
+    "actual_sampling_trajectories": 8556,
+    "avoided_trajectories_vs_full_six": 24,
+    "candidate_difficulty_counts": {
+      "1": 1,
+      "2": 5,
+      "3": 2,
+      "4": 5,
+      "5": 5
+    }
+  },
+  "native_vs_step70_exact_heldout": {
+    "identity_set_check": "three independent order-insensitive 256-bit aggregate fingerprints matched for every version across the union of all hosts",
+    "runtime_error_trajectories_both_models": 0,
+    "v21": {
+      "tasks": 481,
+      "native_tasks_with_at_least_one_correct": 0,
+      "native_task_pass_rate": 0.0,
+      "step70_tasks_with_at_least_one_correct": 2,
+      "step70_task_pass_rate": 0.004158004158004,
+      "step70_task_pass_rate_delta_percentage_points": 0.4158004158004,
+      "fixed_first_two_correct_trajectories_native": 0,
+      "fixed_first_two_correct_trajectories_step70": 0
+    },
+    "all_versions": {
+      "tasks": 1430,
+      "native_tasks_with_at_least_one_correct": 2,
+      "native_task_pass_rate": 0.001398601398601,
+      "step70_tasks_with_at_least_one_correct": 18,
+      "step70_task_pass_rate": 0.012587412587413,
+      "task_pass_rate_delta_percentage_points": 1.1188811188812,
+      "task_pass_rate_relative_multiplier": 9.0,
+      "fixed_first_two_correct_trajectories_native": 2,
+      "fixed_first_two_correct_trajectories_step70": 3,
+      "native_adaptive_trajectories": 8580,
+      "step70_adaptive_trajectories": 8556
+    }
+  },
+  "cleanup": {
+    "supervisor_stopped": true,
+    "vllm_workers_remaining_per_host": 0,
+    "ray_cleanup_completed": true
+  },
+  "interpretation": {
+    "direction": "Step70 improves exact heldout maximum-six task coverage from 2/1430 to 18/1430.",
+    "absolute_level": "The 9x relative increase is directional recovery on a deliberately hard set; the absolute Step70 pass rate remains 1.26%.",
+    "selection_boundary": "The heldout set excludes all 70 native mixed training candidates, so this is a hard-set generalization comparison rather than an unbiased full-sandbox accuracy estimate."
+  },
+  "training_allowed": false,
+  "promotion_allowed": false,
+  "contains_prompts_gold_sql_task_ids_tool_outputs_or_server_paths": false
+}
