@@ -1,0 +1,121 @@
+{
+  "contract": "llin-qwen38-mixed27-training-collapse-diagnosis-safe-v1",
+  "generated_at": "2026-08-21T13:56:54+08:00",
+  "model": {
+    "family": "Qwen3.8-27B",
+    "initial_checkpoint_label": "Step70",
+    "evaluated_checkpoint_label": "Step54-after-mixed27"
+  },
+  "training_data": {
+    "unique_tasks": 27,
+    "exposures_per_task": 4,
+    "groups": 108,
+    "trajectories_per_group": 8,
+    "trajectories": 864,
+    "correct_trajectories": 42,
+    "correct_trajectory_rate": 0.04861111111111111,
+    "mixed_groups": 30,
+    "all_wrong_groups": 78,
+    "all_correct_groups": 0,
+    "all_wrong_groups_with_nonzero_reward_variance": 78,
+    "optimizer_steps_with_any_correct": 28,
+    "optimizer_steps_with_no_correct": 26
+  },
+  "exposure_diagnostics": [
+    {"exposure": 1, "correct_trajectories": 9, "mixed_groups": 7, "all_wrong_groups": 20, "mean_score": 0.20084305555555557},
+    {"exposure": 2, "correct_trajectories": 10, "mixed_groups": 6, "all_wrong_groups": 21, "mean_score": 0.20175416666666665},
+    {"exposure": 3, "correct_trajectories": 12, "mixed_groups": 10, "all_wrong_groups": 17, "mean_score": 0.2061185185185185},
+    {"exposure": 4, "correct_trajectories": 11, "mixed_groups": 7, "all_wrong_groups": 20, "mean_score": 0.1992925925925926}
+  ],
+  "reward_diagnostics": {
+    "mean_group_score_standard_deviation": 0.08316780475901553,
+    "correct_row_mean_score": 0.7130285714285713,
+    "wrong_row_mean_score": 0.17589124087591243,
+    "correct_row_mean_base_score": 0.7850476190476191,
+    "wrong_row_mean_base_score": 0.42747323600973236,
+    "sql_evidence_correct_trajectories": 0,
+    "mean_sql_candidates_checked_per_trajectory": 16.724537037037038,
+    "gold_sql_verified_rate": 1.0,
+    "verifier_error_trajectories": 0,
+    "wrong_row_score_correlation_with_base_score": 0.9439943165858042,
+    "wrong_row_score_correlation_with_boss_reward": 0.9297164562560568,
+    "wrong_row_score_correlation_with_boss_result_score": 0.7866248130486706,
+    "wrong_row_score_correlation_with_bash_command_count": -0.5144882097846295
+  },
+  "optimizer_diagnostics": {
+    "logged_update_records": 53,
+    "first_update_record_not_emitted": true,
+    "logged_no_correct_steps": 25,
+    "logged_no_correct_steps_with_nonzero_gradient_norm": 25,
+    "mean_gradient_norm_any_correct_steps": 1.5089876966926887,
+    "mean_gradient_norm_no_correct_steps": 1.721155996024224,
+    "mean_local_ppo_kl": 0.0005829378818090527,
+    "mean_local_ppo_kl_any_correct_steps": 0.0005804033516665998,
+    "mean_local_ppo_kl_no_correct_steps": 0.0005857765555686001,
+    "mean_policy_clip_fraction": 0.001411810351628618,
+    "final_cumulative_stale_trajectories_processed": 566,
+    "dropped_stale_samples": 0,
+    "fixed_reference_kl_in_reward": false,
+    "fixed_reference_kl_loss": false,
+    "entropy_coefficient": 0.0
+  },
+  "sealed_same_task_comparison": {
+    "tasks": 6,
+    "baseline_tasks_with_any_correct": 6,
+    "post_training_tasks_with_any_correct": 1,
+    "baseline_correct_completed_trajectories": 6,
+    "post_training_correct_completed_trajectories": 1,
+    "baseline_completed_trajectories": 31,
+    "post_training_completed_trajectories": 31,
+    "baseline_timeouts": 1,
+    "post_training_timeouts": 1,
+    "runtime_errors_each_side": 0,
+    "unchanged_ability_probability_of_at_most_one_task_success_sensitivity_range": [0.0036, 0.0117]
+  },
+  "hypotheses": [
+    {
+      "rank": 1,
+      "name": "proxy_only_updates_in_all_wrong_groups_plus_unanchored_cumulative_policy_drift",
+      "confidence": "high",
+      "status": "best_supported_mechanism"
+    },
+    {
+      "rank": 2,
+      "name": "narrow_four_exposure_pool_and_full_parameter_overfitting_or_interference",
+      "confidence": "high",
+      "status": "contributing_condition"
+    },
+    {
+      "rank": 3,
+      "name": "fully_async_policy_staleness_without_rollout_correction",
+      "confidence": "medium",
+      "status": "plausible_amplifier_not_isolated_cause"
+    },
+    {
+      "rank": 4,
+      "name": "engineering_failure_timeout_or_runtime_error",
+      "confidence": "high",
+      "status": "rejected"
+    },
+    {
+      "rank": 5,
+      "name": "sealed6_sampling_noise_alone",
+      "confidence": "medium_high",
+      "status": "unlikely_as_complete_explanation"
+    }
+  ],
+  "decision": {
+    "promote_checkpoint": false,
+    "continue_same_recipe": false,
+    "use_sealed6_for_training": false,
+    "recommended_next_action": "Return to the verified Step70 checkpoint and run a short gated canary using only mixed-correct groups, a fixed-reference KL anchor, synchronous or freshness-zero rollouts, and checkpoint-plus-sealed evaluation every one to five steps."
+  },
+  "privacy": {
+    "contains_prompts": false,
+    "contains_gold_sql": false,
+    "contains_task_identities": false,
+    "contains_prompt_hashes": false,
+    "contains_tool_outputs": false,
+    "contains_server_paths": false
+  }
+}
