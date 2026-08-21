@@ -249,6 +249,12 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 已验证状态
 
+### v1.12.3 — 2026-08-21
+
+- Qwen3.8 Step70 mixed27 四次曝光正式训练完成：108 个 GRPO 组、864 条新鲜轨迹和 54/54 次更新全部完成，监督退出码为 0，总墙钟为 9 小时 31 分 58 秒；训练端与 rollout 端结束后均已释放。
+- 唯一 `global_step_54` 通过最终 checkpoint 门禁：Megatron distributed checkpoint 含 32 个模型分片且元数据完整；未保存 optimizer，6 道 sealed 数据既未进入训练也未在本次运行中评测，因此继续禁止自动晋级。
+- 新增安全完成报告与机器可读结果，仅记录聚合配置、时长、末步观测和 checkpoint 完整性，不包含题面、gold SQL、任务身份、工具输出或服务器路径。
+
 ### v1.12.2 — 2026-08-20
 
 - 将Step70 HF来源门从多层SSH下容易丢失引号的内联Python改为独立失败关闭程序，明确验证导出manifest、`verification.valid`、期望policy step、config与权重索引；双机55.56GB/1,199张量兼容扫描已通过，旧入口在Ray与NPU启动前失败。

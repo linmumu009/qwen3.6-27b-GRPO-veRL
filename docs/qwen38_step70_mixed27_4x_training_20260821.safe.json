@@ -1,0 +1,87 @@
+{
+  "contract": "llin-qwen38-step70-mixed27-four-exposure-training-completion-v1",
+  "generated_at": "2026-08-21T09:33:47+08:00",
+  "privacy": {
+    "contains_prompts": false,
+    "contains_gold_sql": false,
+    "contains_task_identities": false,
+    "contains_tool_outputs": false,
+    "contains_server_paths": false
+  },
+  "model": {
+    "family": "Qwen3.8-27B",
+    "initial_checkpoint_label": "Step70"
+  },
+  "data": {
+    "train_tasks": 27,
+    "sealed_tasks": 6,
+    "exposures_per_task": 4,
+    "rollout_groups": 108,
+    "responses_per_group": 8,
+    "generated_trajectories": 864,
+    "groups_per_optimizer_step": 2
+  },
+  "training": {
+    "optimizer_steps_expected": 54,
+    "optimizer_steps_completed": 54,
+    "learning_rate": 1e-7,
+    "reasoning_effort": "medium",
+    "reward": "banded-v2-strict-table-v1",
+    "max_prompt_tokens": 4096,
+    "max_response_tokens": 49152,
+    "max_context_tokens": 53248,
+    "trajectory_timeout_seconds": 1800,
+    "trajectory_timeout_scope": "vllm_admission_generation_and_tools",
+    "trainer_topology": "16 NPU, TP4xPP2xCP2",
+    "rollout_topology": "16 NPU, TP4xDP4",
+    "rollout_max_num_seqs_per_replica": 16,
+    "dropped_stale_samples": 0
+  },
+  "timing": {
+    "started_at": "2026-08-20T21:33:16+08:00",
+    "finished_at": "2026-08-21T07:05:14+08:00",
+    "wall_seconds": 34318,
+    "wall_hms": "09:31:58",
+    "training_progress_seconds": 33120,
+    "training_progress_hms": "09:12:00",
+    "ray_cleanup_finished_at": "2026-08-21T07:06:27+08:00"
+  },
+  "final_checkpoint": {
+    "gate_valid": true,
+    "step": 54,
+    "only_checkpoint_step": true,
+    "model_format": "megatron_dist_checkpoint",
+    "model_shards": 32,
+    "metadata_exists": true,
+    "actor_files": 48,
+    "actor_bytes": 54721433582,
+    "optimizer_checkpoint_saved": false
+  },
+  "final_step_observation": {
+    "actor_pg_clipfrac": 0.00168556,
+    "ppo_kl": 0.00078613,
+    "policy_gradient_loss": 0.03132084,
+    "gradient_norm": 1.526887,
+    "reward_mean": 0.1860133,
+    "reward_min": 0.1646,
+    "reward_max": 0.2168,
+    "response_tokens_mean": 12555.5,
+    "response_tokens_max": 31125,
+    "aborted_ratio": 0.0625,
+    "prompt_tokens_mean": 1268.5,
+    "max_memory_allocated_gib": 47.081,
+    "max_memory_reserved_gib": 51.434,
+    "update_actor_seconds": 206.173,
+    "parameter_sync_seconds": 8.012,
+    "step_seconds": 1378.85,
+    "total_tokens": 221184
+  },
+  "status": {
+    "supervisor_state": "complete",
+    "exit_code": 0,
+    "resources_released": true,
+    "sealed_evaluation_run": false,
+    "promotion_allowed": false,
+    "interpretation": "Engineering training completion only; no held-out quality claim until sealed evaluation."
+  }
+}
