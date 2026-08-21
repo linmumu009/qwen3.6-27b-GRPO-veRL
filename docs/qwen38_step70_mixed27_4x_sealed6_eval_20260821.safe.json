@@ -1,0 +1,115 @@
+{
+  "contract": "llin-qwen38-step70-mixed27-sealed6-eval-result-v1",
+  "completed_at": "2026-08-21T11:25:08+08:00",
+  "resources_released_at": "2026-08-21T11:26:07+08:00",
+  "model": {
+    "family": "Qwen3.8-27B",
+    "initial_checkpoint_label": "Step70",
+    "optimizer_steps_completed": 54,
+    "training_pool": "mixed27_four_exposures"
+  },
+  "sealed": {
+    "tasks": 6,
+    "source_version_counts": {
+      "v15": 2,
+      "v20": 3,
+      "v21": 1
+    },
+    "difficulty_counts": {
+      "1": 1,
+      "2": 3,
+      "3": 1,
+      "4": 1
+    }
+  },
+  "sampling": {
+    "adaptive": "strict_2_plus_2_plus_2_max_6",
+    "reasoning_effort": "medium",
+    "max_prompt_tokens": 4096,
+    "max_response_tokens": 90112,
+    "max_context_tokens": 94208,
+    "trajectory_timeout_seconds": 1800,
+    "timeout_scope": "admission_generation_and_tools",
+    "temperature": 1.0,
+    "top_p": 0.95,
+    "top_k": 20,
+    "topology": "16 NPU, TP4xDP4",
+    "max_num_seqs_per_replica": 16,
+    "actual_trajectories": 32,
+    "avoided_trajectories_vs_full_six": 4
+  },
+  "baseline_before_mixed27_training": {
+    "tasks_with_any_correct": 6,
+    "mixed_tasks": 6,
+    "correct_trajectories": 6,
+    "completed_trajectories": 31,
+    "timeout_trajectories": 1,
+    "runtime_error_trajectories": 0,
+    "sample_count_distribution": {
+      "4": 2,
+      "6": 4
+    }
+  },
+  "post_training": {
+    "tasks_with_any_correct": 1,
+    "mixed_tasks": 1,
+    "all_correct_tasks": 0,
+    "zero_correct_tasks": 5,
+    "correct_trajectories": 1,
+    "completed_trajectories": 31,
+    "timeout_trajectories": 1,
+    "runtime_error_trajectories": 0,
+    "sample_count_distribution": {
+      "2": 1,
+      "6": 5
+    },
+    "any_correct_by_version": {
+      "v15": 1
+    },
+    "zero_correct_by_version": {
+      "v15": 1,
+      "v20": 3,
+      "v21": 1
+    },
+    "any_correct_by_difficulty": {
+      "2": 1
+    },
+    "zero_correct_by_difficulty": {
+      "1": 1,
+      "2": 2,
+      "3": 1,
+      "4": 1
+    }
+  },
+  "adaptive_final": {
+    "mixed_after_two_tasks": 1,
+    "mixed_after_four_tasks": 0,
+    "mixed_after_six_tasks": 0,
+    "variance_candidate_tasks": 1,
+    "unresolved_after_six_tasks": 5
+  },
+  "comparison": {
+    "tasks_with_any_correct_delta": -5,
+    "mixed_tasks_delta": -5,
+    "correct_trajectories_delta": -5,
+    "completed_trajectories_delta": 0
+  },
+  "execution": {
+    "queue_exit_code": 0,
+    "supervisor_exit_code": 0,
+    "resources_released": true
+  },
+  "decision": {
+    "training_allowed": false,
+    "promotion_allowed": false,
+    "reuse_sealed_as_training_data": false,
+    "interpretation": "Strong negative same-task sealed signal; reject promotion and pause further training under the current mixed27 four-exposure recipe pending diagnosis."
+  },
+  "privacy": {
+    "contains_prompts": false,
+    "contains_gold_sql": false,
+    "contains_task_identities": false,
+    "contains_tool_outputs": false,
+    "contains_server_paths": false
+  }
+}
