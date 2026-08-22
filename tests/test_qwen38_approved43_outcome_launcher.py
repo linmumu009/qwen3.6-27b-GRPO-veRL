@@ -108,6 +108,7 @@ def test_tiered_formal_launcher_freezes_full_contract() -> None:
         "actor_rollout_ref.actor.use_kl_loss=True",
         "actor_rollout_ref.actor.kl_loss_coef=0.001",
         "actor_rollout_ref.actor.kl_loss_type=low_var_kl",
+        "+actor_rollout_ref.ref.megatron.override_transformer_config.use_flash_attn=True",
         "STALENESS_THRESHOLD=0",
         "trainer.val_before_train=true",
         "prepare_qwen38_approved43_outcome_training.py",

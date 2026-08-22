@@ -2,6 +2,11 @@
 
 Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
+## v1.12.20（2026-08-23）
+
+- 补齐 Qwen3.8 正式 fully-async 训练的冻结参考模型 Attention 合同：actor 已启用的 MindSpeed Flash Attention 现在同样显式应用到 ref，避免首个训练批次计算参考 log-prob 时因 ref 配置缺少 `use_flash_attn`/`micro_batch_size` 而在参数更新前退出。
+- 正式43题启动器回归现强制检查 ref Flash Attention override；学习率、独立 KL loss、tiered-v1 奖励、组门与数据范围均未改变。
+
 ## v1.12.19（2026-08-23）
 
 - 进一步固定 fully-async 奖励元数据顺序：所有 PASS/FAIL/UNKNOWN 结果现在都以 `score` 开头、其余字段按键名排序返回，避免不同 rollout chunk 虽字段集合一致却因插入顺序不同而触发 `reward_extra_keys` 元信息冲突。

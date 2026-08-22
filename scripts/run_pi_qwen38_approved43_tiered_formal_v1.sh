@@ -155,6 +155,7 @@ bash "${PROJECT_ROOT}/scripts/run_pi_grpo_fully_async_tp4_pp2_cp2.sh" \
   actor_rollout_ref.actor.use_kl_loss=True \
   actor_rollout_ref.actor.kl_loss_coef=0.001 \
   actor_rollout_ref.actor.kl_loss_type=low_var_kl \
+  +actor_rollout_ref.ref.megatron.override_transformer_config.use_flash_attn=True \
   algorithm.use_kl_in_reward=False \
   algorithm.rollout_correction.bypass_mode=True \
   reward.custom_reward_function.path="${PROJECT_ROOT}/llin_verl/pi_reward.py" \
