@@ -2,6 +2,10 @@
 
 Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
+## v1.12.23（2026-08-23）
+
+- 将无遗留 `acc` 的三态 strict-group 容器门禁收敛为独立、最小依赖的运行时回归，避免隔离金丝雀 runtime 因未打包无关历史人工审计模块而在测试收集阶段失败；门禁仍直接执行真实 `apply_strict_correctness_group_gate` 并验证 mixed 组保持 active。
+
 ## v1.12.22（2026-08-23）
 
 - 将 run-07 失败后的恢复入口收敛为 5 个实际 optimizer 更新的 Qwen3.8 tiered-v1 金丝雀：金丝雀现在显式为冻结 ref 启用 MindSpeed Flash Attention，并在启动 Ray 前确定性生成、以 `0600` 同步 canary20/sealed8 到两机且校验同哈希。

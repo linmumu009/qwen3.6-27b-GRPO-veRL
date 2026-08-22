@@ -21,6 +21,7 @@ from scripts.patch_verl_grpo_strict_variance_gate import (
 from scripts import prepare_qwen38_tiered_canary_data as tiered_canary
 from scripts import prepare_qwen38_tiered_canary_sealed8 as tiered_sealed
 from scripts.attest_verified_process_structural_audit import attest
+from llin_verl.grpo_group_gate import apply_strict_correctness_group_gate
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -103,10 +104,34 @@ def test_tiered_canary_launcher_freezes_actual_update_contract() -> None:
         "sealed_sha_local",
         "sealed_sha_remote",
         "cross_host_identical",
-        "test_tristate_group_gate_does_not_require_legacy_acc_field",
+        "test_runtime_gate_consumes_success_without_legacy_acc",
     ):
         assert required in host_text
     assert host_text.index("staging_rollout_data") < host_text.index("starting_isolated_ray")
+
+
+def test_runtime_gate_consumes_success_without_legacy_acc() -> None:
+    import torch
+
+    batch = SimpleNamespace(
+        non_tensor_batch={
+            "uid": np.asarray(["mixed"] * 8, dtype=object),
+            "success": np.asarray([0, 1] * 4),
+            "train_mask": np.ones(8, dtype=np.int64),
+        },
+        batch={
+            "advantages": torch.ones(8, 2),
+            "returns": torch.ones(8, 2),
+            "response_mask": torch.ones(8, 2),
+        },
+        meta_info={},
+    )
+
+    gated, metrics = apply_strict_correctness_group_gate(batch)
+
+    assert gated.meta_info["strict_group_should_update_actor"] is True
+    assert metrics["grpo/strict_mixed_groups"] == 1.0
+    assert torch.count_nonzero(gated.batch["response_mask"]) == 16
 
 
 def test_tiered_formal_launcher_freezes_full_contract() -> None:
