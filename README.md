@@ -2,6 +2,11 @@
 
 Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
+## v1.12.19（2026-08-23）
+
+- 进一步固定 fully-async 奖励元数据顺序：所有 PASS/FAIL/UNKNOWN 结果现在都以 `score` 开头、其余字段按键名排序返回，避免不同 rollout chunk 虽字段集合一致却因插入顺序不同而触发 `reward_extra_keys` 元信息冲突。
+- UNKNOWN-first/正常样本回归现在同时验证键集合、完整键顺序与 `score` 首位约束，直接覆盖实际 `DataProto.concat` 对元信息值完全一致的要求；tiered-v1 奖励公式仍未改变。
+
 ## v1.12.18（2026-08-23）
 
 - 修复 fully-async step0 在同批轨迹混有数据库基础设施 UNKNOWN 与正常样本时的可选字段不齐：veRL 奖励入口现在始终提供 `infrastructure_error_type`，正常样本使用空字符串，避免 agent-loop 按首条样本键集合索引后续样本时触发 `KeyError`；tiered-v1 奖励公式、三态判定和训练 mask 均未改变。

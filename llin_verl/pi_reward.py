@@ -1759,4 +1759,12 @@ def compute_score_tiered_query_cost_v1(
                 default=str,
             )
         )
-    return result
+    # Fully-async rollout chunks also store this ordered key list in
+    # ``meta_info['reward_extra_keys']``.  DataProto.concat requires the
+    # metadata values to be identical, so equal key sets with different
+    # insertion order are still incompatible.  Rebuild one canonical order
+    # for every PASS/FAIL/UNKNOWN path (keeping score first for readability).
+    return {
+        key: result[key]
+        for key in ("score", *sorted(value for value in result if value != "score"))
+    }

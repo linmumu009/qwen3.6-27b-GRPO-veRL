@@ -301,6 +301,8 @@ def test_verl_entrypoint_has_stable_schema_when_first_sample_is_infrastructure_u
     assert unknown["infrastructure_error_type"]
     assert observable["infrastructure_error_type"] == ""
     assert unknown.keys() == observable.keys()
+    assert list(unknown) == list(observable)
+    assert list(unknown)[0] == "score"
     # Mirror agent_loop.py::_postprocess: keys come from the first sample and
     # every later sample must be indexable without conditional logic.
     extras = [unknown, observable]
