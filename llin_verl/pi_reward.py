@@ -1719,10 +1719,19 @@ def compute_score_tiered_query_cost_v1(
 
     from llin_verl.tiered_query_cost_reward import compute_tiered_query_cost_reward
 
-    return compute_tiered_query_cost_reward(
+    result = compute_tiered_query_cost_reward(
         data_source,
         solution_str,
         ground_truth,
         extra_info,
         **kwargs,
     )
+    # veRL's validation loop creates its own ``reward`` column from the
+    # token-level score and then appends every custom extra field.  Returning
+    # another extra named ``reward`` therefore doubles that one column
+    # (2 * samples) and fails the validation length assertion.  Keep the
+    # frozen scalar in ``score`` and retain an explicit, non-colliding audit
+    # alias for per-trajectory dumps; the reward formula itself is unchanged.
+    result = dict(result)
+    result["tiered_reward"] = result.pop("reward")
+    return result

@@ -2,6 +2,11 @@
 
 Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
+## v1.12.16（2026-08-23）
+
+- 修复 Qwen3.8 tiered-v1 正式训练在 step0 sealed 评测汇总时的字段冲突：veRL 入口不再返回会与框架内建列重名的 `reward` 附加字段，改用等值的 `tiered_reward` 审计字段；冻结奖励公式、训练标量、三态 mask 和严格组门均不变。
+- 新增回归测试，确保正式 veRL 入口保留逐轨迹 reward 审计值且不会把 32 条验证样本扩成 64 个 reward 附加值。
+
 ## 当前方案
 
 - 5 号机负责 Megatron 全参训练，拓扑为 TP=4、PP=2、CP=2，Ray 自定义资源名为 `llin_trainer`。

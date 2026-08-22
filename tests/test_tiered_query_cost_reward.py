@@ -7,6 +7,7 @@ from pathlib import Path
 import pytest
 
 from llin_verl.outcome_gated_contract import evidence_binding_hash
+from llin_verl.pi_reward import compute_score_tiered_query_cost_v1
 from llin_verl.tiered_query_cost_reward import (
     compute_tiered_query_cost_reward,
     efficiency_terms,
@@ -222,3 +223,36 @@ def test_unsafe_and_full_database_scan_are_zero(tmp_path: Path) -> None:
         result = score(database, truth, "Final result: 30", [value])
         assert result["unsafe"] is True
         assert result["reward"] == 0.0
+
+
+def test_verl_entrypoint_avoids_validation_reward_column_collision(tmp_path: Path) -> None:
+    database, truth = fixture(tmp_path)
+    extra = {
+        "pi_tool_events": [event("SELECT SUM(value) FROM fact_metric")],
+        "tool_log_present": True,
+        "tool_protocol_complete": True,
+        "pi_reward_database_path": str(database),
+        "pi_reward_database_root": str(database.parent.parent),
+        "trajectory_timeout": False,
+        "runtime_error": False,
+        "api_error": False,
+    }
+
+    result = compute_score_tiered_query_cost_v1(
+        "dwh", "Final result: 30", truth, extra
+    )
+
+    assert "reward" not in result
+    assert result["tiered_reward"] == result["score"]
+    assert result["tiered_reward"] >= 0.8
+
+    # Mirror veRL's validation merge: the framework owns ``reward`` while
+    # custom scalar extras are appended once per sample.
+    merged: dict[str, list] = {"reward": []}
+    for _ in range(32):
+        merged["reward"].append(result["score"])
+        for key, value in result.items():
+            if key != "score":
+                merged.setdefault(key, []).append(value)
+    assert len(merged["reward"]) == 32
+    assert len(merged["tiered_reward"]) == 32
