@@ -21,7 +21,9 @@ def _binary(value: Any) -> int:
 
 
 def strict_correctness_group_stats(
-    uids: Iterable[Any], correctness: Iterable[Any]
+    uids: Iterable[Any],
+    correctness: Iterable[Any],
+    eligibility: Iterable[Any] | None = None,
 ) -> tuple[list[bool], dict[str, float]]:
     """Return the active-sample mask and aggregate gate metrics.
 
@@ -34,14 +36,34 @@ def strict_correctness_group_stats(
     labels = [_binary(value) for value in correctness]
     if not uid_list or len(uid_list) != len(labels):
         raise ValueError("uids and strict correctness must have the same non-zero length")
+    eligible = (
+        [_binary(value) for value in eligibility]
+        if eligibility is not None
+        else [1] * len(uid_list)
+    )
+    if len(eligible) != len(uid_list):
+        raise ValueError("eligibility must have the same length as uids")
 
-    grouped: dict[Any, list[int]] = defaultdict(list)
-    for uid, label in zip(uid_list, labels, strict=True):
-        grouped[uid].append(label)
+    grouped: dict[Any, list[tuple[int, int]]] = defaultdict(list)
+    for uid, label, allowed in zip(uid_list, labels, eligible, strict=True):
+        grouped[uid].append((label, allowed))
 
-    active_uids = {uid for uid, values in grouped.items() if set(values) == {0, 1}}
-    all_wrong = sum(set(values) == {0} for values in grouped.values())
-    all_correct = sum(set(values) == {1} for values in grouped.values())
+    invalid_uids = {
+        uid for uid, values in grouped.items() if not all(allowed for _, allowed in values)
+    }
+    active_uids = {
+        uid
+        for uid, values in grouped.items()
+        if uid not in invalid_uids and {label for label, _ in values} == {0, 1}
+    }
+    all_wrong = sum(
+        uid not in invalid_uids and {label for label, _ in values} == {0}
+        for uid, values in grouped.items()
+    )
+    all_correct = sum(
+        uid not in invalid_uids and {label for label, _ in values} == {1}
+        for uid, values in grouped.items()
+    )
     mixed = len(active_uids)
     mask = [uid in active_uids for uid in uid_list]
     metrics = {
@@ -49,6 +71,7 @@ def strict_correctness_group_stats(
         "grpo/skipped_uniform_groups": float(all_wrong + all_correct),
         "grpo/skipped_all_wrong_groups": float(all_wrong),
         "grpo/skipped_all_correct_groups": float(all_correct),
+        "grpo/skipped_hard_gate_groups": float(len(invalid_uids)),
         "grpo/effective_samples": float(sum(mask)),
         "grpo/skipped_samples": float(len(mask) - sum(mask)),
         "grpo/total_groups": float(len(grouped)),
@@ -68,14 +91,20 @@ def apply_strict_correctness_group_gate(batch: Any) -> tuple[Any, dict[str, floa
         raise KeyError("strict GRPO gate requires non_tensor_batch['uid']")
     if "acc" not in batch.non_tensor_batch:
         raise KeyError("strict GRPO gate requires reward extra field 'acc'")
-    if "advantages" not in batch.batch or "returns" not in batch.batch:
-        raise KeyError("strict GRPO gate must run after advantage computation")
+    if not {"advantages", "returns", "response_mask"}.issubset(batch.batch):
+        raise KeyError(
+            "strict GRPO gate requires advantages, returns, and response_mask "
+            "after reward/KL assembly"
+        )
 
     mask, metrics = strict_correctness_group_stats(
-        batch.non_tensor_batch["uid"], batch.non_tensor_batch["acc"]
+        batch.non_tensor_batch["uid"],
+        batch.non_tensor_batch["acc"],
+        batch.non_tensor_batch.get("online_eligible"),
     )
     advantages = batch.batch["advantages"]
     returns = batch.batch["returns"]
+    response_mask = batch.batch["response_mask"]
     try:
         import torch
 
@@ -84,6 +113,12 @@ def apply_strict_correctness_group_gate(batch: Any) -> tuple[Any, dict[str, floa
             sample_mask = sample_mask.unsqueeze(-1)
         batch.batch["advantages"] = advantages * sample_mask
         batch.batch["returns"] = returns * sample_mask.to(dtype=returns.dtype)
+        response_sample_mask = torch.as_tensor(
+            mask, device=response_mask.device, dtype=response_mask.dtype
+        )
+        while response_sample_mask.ndim < response_mask.ndim:
+            response_sample_mask = response_sample_mask.unsqueeze(-1)
+        batch.batch["response_mask"] = response_mask * response_sample_mask
     except ImportError as exc:  # pragma: no cover - veRL always provides torch
         raise RuntimeError("torch is required to apply the runtime GRPO gate") from exc
 

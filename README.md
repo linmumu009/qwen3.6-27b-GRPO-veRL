@@ -249,6 +249,12 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 已验证状态
 
+### v1.12.10 — 2026-08-22
+
+- 新增“最终正确性约束下的多轮轨迹过程奖励”：硬门通过后使用`R=C+0.20P`，其中`P`只来自配对的真实工具事件与同库只读SQL重放；老板原`reward_total`、答案长度、数值接近、报告长度、LLM judge和答案文字自报证据均不进入训练奖励。本轮仍是完整轨迹结束后的单个scalar，不实现逐turn/token credit assignment。
+- 完成既有100×8轨迹的CPU shadow replay：43/43批准mixed组在公式层面均保持正确奖励严格高于错误，最小间隔0.82；22/22表格修复题逐题正确数与既有审计一致且仍为mixed。历史轨迹中有26/800条触发协议或只读工具硬门，导致43组中8组必须整体跳过/重采，正式训练继续`formal_training_allowed=false`。
+- 全错/全对/硬门失败组同时清零`advantages`、`returns`、`response_mask`，无有效mixed批次不调用optimizer；合成测试证明Adam参数/状态哈希不变及`mixed+uniform`梯度等价。新增800条安全分布报告、16条分层人工结构审计、未来standalone私有`pi_tool_events`持久化和可复现图表，敏感逐轨迹证据仍只留5号机0600目录。
+
 ### v1.12.9 — 2026-08-22
 
 - 将21道原mixed与22道经全行全列表格奖励修复后恢复为mixed的题合并为独立43行私有训练批准包；只读门禁确认43个唯一题面、43个唯一题面+gold身份、43/43题面/verification SQL/gold完整、43/43 SQL/gold重放通过，且派生Parquet中的`training_allowed`仍全部为false。

@@ -1,0 +1,162 @@
+{
+  "contract": "qwen38-approved43-trajectory-process-shadow-v1",
+  "date": "2026-08-22",
+  "training_status": "paused_shadow_only_no_model_or_npu",
+  "reward_contract": "correctness-gated-trajectory-process-v5",
+  "reward_scope": "one_scalar_after_complete_multiturn_trajectory",
+  "turn_or_token_credit_assignment_implemented": false,
+  "input_gate": {
+    "dataset_rows": 100,
+    "trajectory_rows": 800,
+    "groups": 100,
+    "samples_per_group": 8,
+    "approved43_rows": 43,
+    "approved43_unique_source_tasks": 43,
+    "approved43_source_training_allowed_all_false": true,
+    "approved43_parquet_sha256": "d86b53d906806b150d43a508dce9b0dd6d05105c07e03961e8e7bf9439ccd944",
+    "approved43_manifest_sha256": "1426bc09a3dbaf4709fd89227790603afb7a2bf11beeba80946057d490e0f424",
+    "task_audit_sha256": "32edc0a8196935faaa956e39a12421c79e709fb85f3e72d4c4ace465d6e03d3d",
+    "database_sha256": "6d9c90cb5869dca751ba4865d4e682578105f984b52837a7f75adfdc8d9ef5f8",
+    "shard_files": 17,
+    "shards_set_sha256": "2c9f75cd10810a6f44c369a546bffc6d9351398b01ea03a4efdc439909ad68ce"
+  },
+  "corrected_outcomes": {
+    "correct_trajectories": 483,
+    "incorrect_trajectories": 317,
+    "approved43_all_mixed": true,
+    "task_bucket_counts": {
+      "all_correct": 35,
+      "mixed": 44,
+      "all_wrong": 21
+    }
+  },
+  "hard_gates": {
+    "eligible_trajectories": 774,
+    "ineligible_trajectories": 26,
+    "failure_reason_counts": {
+      "safe_readonly_tools": 26,
+      "valid_tool_protocol": 17
+    },
+    "approved43_all_trajectories_eligible": false,
+    "approved43_fully_eligible_groups": 35,
+    "approved43_hard_gate_excluded_groups": 8
+  },
+  "correctness_dominance": {
+    "approved43_groups_checked": 43,
+    "formula_groups_strictly_separated": 43,
+    "formula_groups_failing_strict_separation": 0,
+    "minimum_formula_group_margin": 0.82,
+    "correct_reward_floor_by_formula": 1.0,
+    "incorrect_reward_ceiling_by_formula": 0.2,
+    "fully_eligible_groups_strictly_separated": 35,
+    "actual_gated_groups_strictly_separated": 40,
+    "actual_gated_groups_failing_strict_separation": 3,
+    "actual_gated_minimum_group_margin": -0.1,
+    "interpretation": "The three actual-score failures contain a corrected-C=1 trajectory hard-zeroed by a mandatory protocol/read-only gate. All eight groups containing any hard-gate failure are nontrainable and must be skipped or resampled."
+  },
+  "table_false_negative_repair": {
+    "repaired_table_tasks": 22,
+    "correct_count_matches_prior_audit": 22,
+    "remain_mixed": 22,
+    "all_22_pass": true,
+    "comparison": "complete rows and columns; ordered only for explicit ORDER BY/TopN/ranking/trend semantics; verified 1..N presentation rank column may be removed on ordered tasks"
+  },
+  "reward_distributions": {
+    "new": {
+      "all": {"count": 800, "mean": 0.69694256, "std": 0.49654453, "min": 0.0, "p25": 0.1, "median": 1.07, "p75": 1.1, "max": 1.2},
+      "correct": {"count": 483, "mean": 1.09414502, "std": 0.0955528, "min": 0.0, "p25": 1.07, "median": 1.1, "p75": 1.1, "max": 1.2},
+      "incorrect": {"count": 317, "mean": 0.09174132, "std": 0.04070688, "min": 0.0, "p25": 0.098, "median": 0.1, "p75": 0.1, "max": 0.2},
+      "approved43": {"count": 344, "mean": 0.67642326, "std": 0.50306234, "min": 0.0, "p25": 0.1, "median": 1.07, "p75": 1.1, "max": 1.2}
+    },
+    "old_boss_shadow": {
+      "all": {"count": 800, "mean": 0.8234375, "std": 0.17585589, "min": 0.0, "p25": 0.75, "median": 0.75, "p75": 1.0, "max": 1.0},
+      "correct": {"count": 483, "mean": 0.90139752, "std": 0.10917706, "min": 0.75, "p25": 0.8125, "median": 1.0, "p75": 1.0, "max": 1.0},
+      "incorrect": {"count": 317, "mean": 0.704653, "std": 0.1910844, "min": 0.0, "p25": 0.75, "median": 0.75, "p75": 0.75, "max": 1.0},
+      "approved43": {"count": 344, "mean": 0.80505087, "std": 0.16903082, "min": 0.0, "p25": 0.75, "median": 0.75, "p75": 1.0, "max": 1.0}
+    }
+  },
+  "process_component_distributions": {
+    "process_sql": {
+      "all": {"mean": 0.1075, "median": 0.0, "min": 0.0, "max": 1.0},
+      "correct": {"mean": 0.126294, "median": 0.0, "min": 0.0, "max": 1.0},
+      "incorrect": {"mean": 0.07886435, "median": 0.0, "min": 0.0, "max": 1.0},
+      "approved43": {"mean": 0.11046512, "median": 0.0, "min": 0.0, "max": 1.0}
+    },
+    "process_table": {
+      "all": {"mean": 0.94375, "median": 1.0, "min": 0.0, "max": 1.0},
+      "correct": {"mean": 0.96480331, "median": 1.0, "min": 0.0, "max": 1.0},
+      "incorrect": {"mean": 0.91167192, "median": 1.0, "min": 0.0, "max": 1.0},
+      "approved43": {"mean": 0.95930233, "median": 1.0, "min": 0.0, "max": 1.0}
+    },
+    "process_field": {
+      "all": {"mean": 0.72625, "median": 1.0, "min": 0.0, "max": 1.0},
+      "correct": {"mean": 0.68530021, "median": 1.0, "min": 0.0, "max": 1.0},
+      "incorrect": {"mean": 0.78864353, "median": 1.0, "min": 0.0, "max": 1.0},
+      "approved43": {"mean": 0.73158915, "median": 1.0, "min": 0.0, "max": 1.0}
+    },
+    "process_fit": {
+      "all": {"mean": 0.95875, "median": 1.0, "min": 0.0, "max": 1.0},
+      "correct": {"mean": 0.9689441, "median": 1.0, "min": 0.0, "max": 1.0},
+      "incorrect": {"mean": 0.94321767, "median": 1.0, "min": 0.0, "max": 1.0},
+      "approved43": {"mean": 0.96511628, "median": 1.0, "min": 0.0, "max": 1.0}
+    },
+    "process_efficiency": {
+      "all": {"mean": 0.9974, "median": 1.0, "min": 0.43, "max": 1.0},
+      "correct": {"mean": 0.99921325, "median": 1.0, "min": 0.9, "max": 1.0},
+      "incorrect": {"mean": 0.99463722, "median": 1.0, "min": 0.43, "max": 1.0},
+      "approved43": {"mean": 0.9977907, "median": 1.0, "min": 0.8, "max": 1.0}
+    },
+    "process_score": {
+      "all": {"mean": 0.49810029, "median": 0.5, "min": 0.08, "max": 1.0},
+      "correct": {"mean": 0.50455535, "median": 0.5, "min": 0.1, "max": 1.0},
+      "incorrect": {"mean": 0.48826498, "median": 0.5, "min": 0.08, "max": 1.0},
+      "approved43": {"mean": 0.50515698, "median": 0.5, "min": 0.08, "max": 1.0}
+    }
+  },
+  "group_variance": {
+    "approved43_new_positive_variance_groups": 43,
+    "approved43_old_positive_variance_groups": 34,
+    "new_variance": {"count": 43, "mean": 0.19356834, "std": 0.05884492, "min": 0.09270011, "median": 0.19484375, "max": 0.30609375},
+    "old_variance": {"count": 43, "mean": 0.02084989, "std": 0.04276376, "min": 0.0, "median": 0.01171875, "max": 0.234375}
+  },
+  "tool_event_anti_forgery": {
+    "tool_call_blocks": 5093,
+    "tool_response_blocks": 5081,
+    "protocol_complete_trajectories": 783,
+    "process_components_read_solution_text": false,
+    "final_answer_only_affects_corrected_C": true,
+    "process_components_source": "paired runtime/shadow tool events plus same-database read-only SQL replay",
+    "formula_recomputed_for_all_800": true
+  },
+  "zero_update_proof": {
+    "uniform_groups_clear": ["advantages", "returns", "response_mask"],
+    "empty_mixed_batch_skips_optimizer_step": true,
+    "adam_parameter_and_state_hash_unchanged_test": true,
+    "mixed_plus_uniform_gradient_equals_mixed_only_test": true
+  },
+  "manual_sample_audit": {
+    "status": "pass",
+    "reviewer": "codex_structural_review",
+    "reviewed_at": "2026-08-22T13:45:47+08:00",
+    "sample_count": 16,
+    "stratum_counts": {
+      "numeric|0": 4,
+      "numeric|1": 4,
+      "table|0": 4,
+      "table|1": 4
+    },
+    "checklist_failure_count": 0,
+    "sensitive_trajectory_content_exported": false
+  },
+  "old_reward_caveat": "Old boss reward_total is deterministically reconstructed from decoded paired tool events because the original boss JSONL event stream was not persisted in shards.",
+  "server_private_outputs": {
+    "trajectory_reward_rows": 800,
+    "approved43_group_check_rows": 43,
+    "manual_audit_sample_rows": 16,
+    "private_file_mode": "0600",
+    "server_safe_summary_sha256": "84a041578f64a10e610906eae42fa10834cfc81da568fd1b168b732fde5a6caa",
+    "server_manual_attestation_sha256": "5e15e798ef1241e565493848c18112c37f97e3820deda4368c98fc178c5cf416"
+  },
+  "promotion_allowed": false,
+  "formal_training_allowed": false
+}

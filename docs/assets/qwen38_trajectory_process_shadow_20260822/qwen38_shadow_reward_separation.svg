@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="420" viewBox="0 0 760 420" role="img">
+<rect width="760" height="420" fill="#FFFFFF"/>
+<style>text{font-family:Arial,"Noto Sans",sans-serif;fill:#1F2937}.title{font-size:18px;font-weight:700}.label{font-size:13px}.small{font-size:12px;fill:#6B7280}.value{font-size:12px;font-weight:700}</style>
+<text class="title" x="24" y="32">New reward restores outcome separation</text>
+<line x1="86" y1="344" x2="732" y2="344" stroke="#1F2937"/>
+<line x1="86" y1="344.0" x2="732" y2="344.0" stroke="#D1D5DB" stroke-width="1"/>
+<text class="small" x="74" y="348.0" text-anchor="end">0.0</text>
+<line x1="86" y1="281.8" x2="732" y2="281.8" stroke="#D1D5DB" stroke-width="1"/>
+<text class="small" x="74" y="285.8" text-anchor="end">0.3</text>
+<line x1="86" y1="219.6" x2="732" y2="219.6" stroke="#D1D5DB" stroke-width="1"/>
+<text class="small" x="74" y="223.6" text-anchor="end">0.6</text>
+<line x1="86" y1="157.3" x2="732" y2="157.3" stroke="#D1D5DB" stroke-width="1"/>
+<text class="small" x="74" y="161.3" text-anchor="end">0.9</text>
+<line x1="86" y1="95.1" x2="732" y2="95.1" stroke="#D1D5DB" stroke-width="1"/>
+<text class="small" x="74" y="99.1" text-anchor="end">1.2</text>
+<rect x="179.9" y="157.0" width="82" height="187.0" rx="2" fill="#E69F00"/>
+<text class="value" x="220.9" y="149.0" text-anchor="middle">0.901</text>
+<rect x="271.9" y="117.1" width="82" height="226.9" rx="2" fill="#0072B2"/>
+<text class="value" x="312.9" y="109.1" text-anchor="middle">1.094</text>
+<text class="label" x="266.9" y="372" text-anchor="middle">Correct</text>
+<rect x="464.1" y="197.8" width="82" height="146.2" rx="2" fill="#E69F00"/>
+<text class="value" x="505.1" y="189.8" text-anchor="middle">0.705</text>
+<rect x="556.1" y="325.0" width="82" height="19.0" rx="2" fill="#0072B2"/>
+<text class="value" x="597.1" y="317.0" text-anchor="middle">0.092</text>
+<text class="label" x="551.1" y="372" text-anchor="middle">Incorrect</text>
+<rect x="102" y="392" width="13" height="13" fill="#E69F00"/><text class="small" x="121" y="403">Boss reward_total shadow</text>
+<rect x="326" y="392" width="13" height="13" fill="#0072B2"/><text class="small" x="345" y="403">New gated reward</text>
+</svg>

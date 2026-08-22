@@ -124,13 +124,18 @@ def test_group_gate_masks_all_uniform_groups_and_skips_empty_optimizer_batch() -
 
     batch = SimpleNamespace(
         non_tensor_batch={"uid": ["all-wrong"] * 8, "acc": [0] * 8},
-        batch={"advantages": torch.ones(8, 3), "returns": torch.ones(8, 3)},
+        batch={
+            "advantages": torch.ones(8, 3),
+            "returns": torch.ones(8, 3),
+            "response_mask": torch.ones(8, 3),
+        },
         meta_info={},
     )
     gated, empty_metrics = apply_strict_correctness_group_gate(batch)
 
     assert torch.count_nonzero(gated.batch["advantages"]).item() == 0
     assert torch.count_nonzero(gated.batch["returns"]).item() == 0
+    assert torch.count_nonzero(gated.batch["response_mask"]).item() == 0
     assert gated.meta_info["strict_group_should_update_actor"] is False
     assert empty_metrics["grpo/skipped_all_wrong_groups"] == 1.0
 

@@ -335,6 +335,29 @@ def trajectory_telemetry_row(output: DataProto, index: int) -> dict:
     return row
 
 
+def trajectory_tool_evidence_row(output: DataProto, index: int) -> dict:
+    """Persist runtime-captured tool evidence in the private shard.
+
+    Decoded response text is not a substitute for the structured event list:
+    it cannot reliably preserve execution success, protocol completion, or
+    auto-retry metadata.  Standalone shards are private mode-0600 artifacts, so
+    keeping the event list here enables exact future shadow replay without
+    exposing it in safe summaries.
+    """
+
+    events = _non_tensor_scalar(output, "pi_tool_events", index, [])
+    if not isinstance(events, list):
+        events = []
+    return {
+        "pi_tool_events": events,
+        "pi_tool_event_contract": "runtime-captured-pi-tool-events-v1",
+        "auto_retry_count": int(_non_tensor_scalar(output, "auto_retry_count", index, 0)),
+        "force_final_retry_count": int(
+            _non_tensor_scalar(output, "force_final_retry_count", index, 0)
+        ),
+    }
+
+
 def decode_single_trajectory(
     output: DataProto,
     tokenizer,
@@ -385,6 +408,7 @@ def decode_single_trajectory(
         "runtime_error": False,
     }
     row.update(trajectory_telemetry_row(output, 0))
+    row.update(trajectory_tool_evidence_row(output, 0))
     return row
 
 
@@ -659,6 +683,7 @@ def run(args: argparse.Namespace) -> dict:
                     "runtime_error": False,
                 }
                 row.update(trajectory_telemetry_row(output, offset))
+                row.update(trajectory_tool_evidence_row(output, offset))
                 rows.append(row)
             written = write_jsonl_atomic(result_path, rows)
             if written != expected:

@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="490" viewBox="0 0 820 490" role="img">
+<rect width="820" height="490" fill="#FFFFFF"/>
+<style>text{font-family:Arial,"Noto Sans",sans-serif;fill:#1F2937}.title{font-size:18px;font-weight:700}.label{font-size:13px}.small{font-size:12px;fill:#6B7280}.value{font-size:12px;font-weight:700}</style>
+<text class="title" x="24" y="32">Process evidence is informative but not outcome-defining</text>
+<line x1="166.0" y1="60" x2="166.0" y2="416" stroke="#D1D5DB"/>
+<text class="small" x="166.0" y="438" text-anchor="middle">0.00</text>
+<line x1="319.5" y1="60" x2="319.5" y2="416" stroke="#D1D5DB"/>
+<text class="small" x="319.5" y="438" text-anchor="middle">0.25</text>
+<line x1="473.0" y1="60" x2="473.0" y2="416" stroke="#D1D5DB"/>
+<text class="small" x="473.0" y="438" text-anchor="middle">0.50</text>
+<line x1="626.5" y1="60" x2="626.5" y2="416" stroke="#D1D5DB"/>
+<text class="small" x="626.5" y="438" text-anchor="middle">0.75</text>
+<line x1="780.0" y1="60" x2="780.0" y2="416" stroke="#D1D5DB"/>
+<text class="small" x="780.0" y="438" text-anchor="middle">1.00</text>
+<text class="label" x="152" y="97" text-anchor="end">SQL result</text>
+<rect x="166" y="72" width="77.5" height="18" rx="2" fill="#0072B2"/>
+<rect x="166" y="94" width="48.4" height="18" rx="2" fill="#E69F00"/>
+<text class="label" x="152" y="155" text-anchor="end">Required tables</text>
+<rect x="166" y="130" width="592.4" height="18" rx="2" fill="#0072B2"/>
+<rect x="166" y="152" width="559.8" height="18" rx="2" fill="#E69F00"/>
+<text class="label" x="152" y="213" text-anchor="end">Required fields</text>
+<rect x="166" y="188" width="420.8" height="18" rx="2" fill="#0072B2"/>
+<rect x="166" y="210" width="484.2" height="18" rx="2" fill="#E69F00"/>
+<text class="label" x="152" y="271" text-anchor="end">DWH execution</text>
+<rect x="166" y="246" width="594.9" height="18" rx="2" fill="#0072B2"/>
+<rect x="166" y="268" width="579.1" height="18" rx="2" fill="#E69F00"/>
+<text class="label" x="152" y="329" text-anchor="end">Efficiency</text>
+<rect x="166" y="304" width="613.5" height="18" rx="2" fill="#0072B2"/>
+<rect x="166" y="326" width="610.7" height="18" rx="2" fill="#E69F00"/>
+<text class="label" x="152" y="387" text-anchor="end">Weighted P</text>
+<rect x="166" y="362" width="309.8" height="18" rx="2" fill="#0072B2"/>
+<rect x="166" y="384" width="299.8" height="18" rx="2" fill="#E69F00"/>
+<rect x="166" y="464" width="13" height="13" fill="#0072B2"/><text class="small" x="185" y="475">Correct</text>
+<rect x="266" y="464" width="13" height="13" fill="#E69F00"/><text class="small" x="285" y="475">Incorrect</text>
+</svg>

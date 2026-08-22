@@ -670,6 +670,72 @@ def _full_table_rows_equal(
     )
 
 
+def _full_table_row_equal(
+    candidate: list[Any],
+    expected: list[Any],
+    abs_tol: float,
+    rel_tol: float,
+) -> bool:
+    if len(candidate) != len(expected):
+        return False
+    return all(
+        _full_table_value_equal(left, right, abs_tol, rel_tol)
+        for left, right in zip(candidate, expected, strict=True)
+    )
+
+
+def _full_table_row_multisets_equal(
+    candidate: list[list[Any]],
+    expected: list[list[Any]],
+    abs_tol: float,
+    rel_tol: float,
+) -> bool:
+    """Compare complete rows as a duplicate-preserving unordered multiset.
+
+    Numeric tolerance makes a plain ``Counter`` insufficient.  A small
+    bipartite match preserves duplicate multiplicity without imposing an
+    arbitrary row order.  DWH answer tables are bounded by the verifier's row
+    limit, so the augmenting-path implementation is both deterministic and
+    cheap for the approved training pool.
+    """
+
+    if len(candidate) != len(expected):
+        return False
+    if not candidate:
+        return False
+    expected_width = len(expected[0])
+    if expected_width <= 0:
+        return False
+    if any(len(row) != expected_width for row in candidate + expected):
+        return False
+
+    edges = [
+        [
+            expected_index
+            for expected_index, expected_row in enumerate(expected)
+            if _full_table_row_equal(candidate_row, expected_row, abs_tol, rel_tol)
+        ]
+        for candidate_row in candidate
+    ]
+    if any(not options for options in edges):
+        return False
+
+    matched_candidate_for_expected = [-1] * len(expected)
+
+    def augment(candidate_index: int, visited: set[int]) -> bool:
+        for expected_index in edges[candidate_index]:
+            if expected_index in visited:
+                continue
+            visited.add(expected_index)
+            previous = matched_candidate_for_expected[expected_index]
+            if previous == -1 or augment(previous, visited):
+                matched_candidate_for_expected[expected_index] = candidate_index
+                return True
+        return False
+
+    return all(augment(index, set()) for index in range(len(candidate)))
+
+
 def _json_full_table_candidates(answer: str) -> list[list[list[Any]]]:
     decoder = json.JSONDecoder()
     output: list[list[list[Any]]] = []
@@ -874,6 +940,98 @@ def strict_table_answer_match_complete(
     if is_category_value_gold:
         return strict_table_answer_match(answer, expected, abs_tol, rel_tol)
     return _strict_full_table_answer_match(answer, expected, abs_tol, rel_tol)
+
+
+_ORDER_SQL_RE = re.compile(
+    r"\border\s+by\b|\b(?:row_number|rank|dense_rank)\s*\(",
+    re.IGNORECASE,
+)
+_ORDER_PLAN_RE = re.compile(
+    r"\b(?:ordered|sorted|top\s*[-_ ]?n|ranking|ranked|trend)\b|"
+    r"排序|排名|排行|趋势|前\s*\d+|最高|最低",
+    re.IGNORECASE,
+)
+
+
+def table_order_semantics(
+    ground_truth: dict[str, Any],
+) -> tuple[bool, str]:
+    """Return whether full-table row order is part of the gold semantics.
+
+    The training contract intentionally does not infer order from the physical
+    SQL result alone.  Order is binding only when the verification SQL or an
+    attached EvidencePlan explicitly states an ordering, Top-N, ranking, or
+    trend requirement.
+    """
+
+    verification_sql = str(ground_truth.get("verification_sql") or "")
+    if _ORDER_SQL_RE.search(verification_sql):
+        return True, "verification_sql"
+    evidence_plan = ground_truth.get("evidence_plan")
+    if isinstance(evidence_plan, dict):
+        # Audit plans contain an ``order_by`` key even when it is empty.  The
+        # key name alone is not an ordering requirement; only a populated
+        # declaration, a positive Top-N limit, or an explicit semantic value
+        # makes row order binding.
+        if evidence_plan.get("order_by"):
+            return True, "evidence_plan.order_by"
+        limit = evidence_plan.get("limit")
+        if isinstance(limit, (int, float)) and not isinstance(limit, bool) and limit > 0:
+            return True, "evidence_plan.limit"
+        semantic_values = {
+            key: value
+            for key, value in evidence_plan.items()
+            if key not in {"order_by", "limit"}
+        }
+        plan_text = json.dumps(semantic_values, ensure_ascii=False, sort_keys=True)
+        if _ORDER_PLAN_RE.search(plan_text):
+            return True, "evidence_plan.semantic_value"
+    elif evidence_plan is not None and _ORDER_PLAN_RE.search(str(evidence_plan)):
+        return True, "evidence_plan.semantic_value"
+    return False, "no_explicit_order_semantics"
+
+
+def strict_table_answer_match_semantic(
+    answer: str,
+    expected_value: Any,
+    abs_tol: float,
+    rel_tol: float,
+    *,
+    ordered: bool,
+) -> tuple[bool, str, int]:
+    """Compare every table row/column using the declared order semantics.
+
+    Ordered tasks require exact row order.  Tasks without order semantics use
+    a complete duplicate-preserving row multiset.  Both modes reject missing
+    or extra rows and columns; unlike the historical comparator, this route
+    never silently drops an undeclared rank column.
+    """
+
+    expected = _normalize_full_expected_table(expected_value)
+    if expected is None:
+        return False, "invalid_gold", 0
+    candidates = [
+        *(("markdown_full", rows) for rows in _markdown_full_table_candidates(answer)),
+        *(("json_full", rows) for rows in _json_full_table_candidates(answer)),
+        *(("delimited_full", rows) for rows in _delimited_full_table_candidates(answer)),
+    ]
+    largest = max((len(rows) for _, rows in candidates), default=0)
+    for mode, rows in candidates:
+        # A presentation-only 1..N rank column is semantically redundant only
+        # when row order is itself binding (ORDER BY/TopN/ranking/trend).  It is
+        # removed after verifying the exact sequence; arbitrary extra columns
+        # and rank columns on unordered tasks remain invalid.
+        if ordered:
+            rows = _drop_full_table_rank_column(rows, len(expected[0]))
+        matched = (
+            _full_table_rows_equal(rows, expected, abs_tol, rel_tol)
+            if ordered
+            else _full_table_row_multisets_equal(rows, expected, abs_tol, rel_tol)
+        )
+        if matched:
+            suffix = "ordered" if ordered else "row_multiset"
+            return True, f"{mode}_{suffix}", len(rows)
+    return False, "none", largest
 
 
 def _table_answer_correct(
@@ -1474,3 +1632,23 @@ def compute_score_strict_correctness_v3(
     result["score"] = strict_correct
     result["reward_contract"] = "strict-correctness-gated-v3"
     return result
+
+
+def compute_score_correctness_gated_process_v5(
+    data_source: str,
+    solution_str: str,
+    ground_truth: dict[str, Any],
+    extra_info: dict[str, Any],
+    **kwargs: Any,
+) -> dict[str, Any]:
+    """Lazy wrapper for the audited trajectory-level process reward."""
+
+    from llin_verl.trajectory_process_reward import compute_trajectory_process_reward
+
+    return compute_trajectory_process_reward(
+        data_source,
+        solution_str,
+        ground_truth,
+        extra_info,
+        **kwargs,
+    )
