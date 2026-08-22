@@ -9,12 +9,16 @@ import pytest
 import torch
 
 from llin_verl.grpo_group_gate import apply_strict_correctness_group_gate
+from llin_verl.outcome_gated_contract import evidence_binding_hash
 from llin_verl.pi_reward import strict_table_answer_match_semantic, table_order_semantics
 from llin_verl.trajectory_process_reward import (
+    command_executes_sql,
     command_is_safe_readonly,
     compute_trajectory_process_reward,
+    corrected_final_verifier,
     efficiency_score,
     legacy_boss_reward_total_shadow,
+    parse_unique_numeric_final,
     parse_qwen_tool_events,
 )
 from scripts.attest_shadow_manual_audit import attest
@@ -47,7 +51,7 @@ def event(sql: str, *, ok: bool = True) -> dict:
 
 
 def numeric_truth(*, expected: float = 30.0, fields=None) -> dict:
-    return {
+    truth = {
         "environment_id": "sft/v1",
         "answer_type": "numeric",
         "expected_value": expected,
@@ -57,6 +61,8 @@ def numeric_truth(*, expected: float = 30.0, fields=None) -> dict:
         "abs_tol": 1e-3,
         "rel_tol": 1e-5,
     }
+    truth["process_evidence_binding_sha256"] = evidence_binding_hash(truth)
+    return truth
 
 
 def extra(database: Path, events: list[dict], *, protocol: bool = True) -> dict:
@@ -65,6 +71,7 @@ def extra(database: Path, events: list[dict], *, protocol: bool = True) -> dict:
         "pi_tool_protocol_complete": protocol,
         "pi_reward_database_path": str(database),
         "pi_reward_database_root": str(database.parent.parent),
+        "pi_process_bonus_alpha": 0.10,
     }
 
 
@@ -89,7 +96,7 @@ def test_qwen_shadow_parser_requires_paired_call_and_response() -> None:
     assert incomplete["events"][0]["observed_tool_response"] is False
 
 
-def test_reward_is_correctness_dominant_and_process_is_trajectory_level(tmp_path: Path) -> None:
+def test_reward_is_outcome_gated_and_process_is_trajectory_level(tmp_path: Path) -> None:
     database = make_database(tmp_path)
     evidence = extra(
         database,
@@ -102,13 +109,74 @@ def test_reward_is_correctness_dominant_and_process_is_trajectory_level(tmp_path
         "dwh", "最终答案是 30。", numeric_truth(), evidence
     )
 
-    assert wrong["process_score"] == 1.0
-    assert wrong["score"] == 0.2
-    assert correct["score"] == 1.2
+    assert wrong["process_score"] == 1.0  # observed only
+    assert wrong["process_verified"] == 0.0
+    assert wrong["score"] == 0.0
+    assert correct["process_verified"] == 1.0
+    assert correct["score"] == 1.1
     assert correct["score"] > wrong["score"]
     assert correct["reward_scope"] == "trajectory_level_after_full_multiturn"
     assert correct["turn_level_credit_assignment"] == 0.0
     assert correct["kl_in_reward"] == 0.0
+    assert correct["observed_components_in_reward"] == 0.0
+
+
+def test_numeric_final_parser_uses_one_explicit_or_last_line_and_fails_closed() -> None:
+    assert parse_unique_numeric_final("分析提到30。\n最终答案是 31。\n")["value"] == 31.0
+    assert corrected_final_verifier("分析提到30。\n最终答案是 31。", numeric_truth())["correct"] is False
+    assert corrected_final_verifier("分析提到31。\n最终答案是 30。", numeric_truth())["correct"] is True
+    ambiguous = parse_unique_numeric_final("最终答案是 30 或 31。")
+    assert ambiguous["value"] is None
+    assert ambiguous["ambiguity_reason"] == "multiple_numeric_candidates"
+    conflicting = parse_unique_numeric_final("最终答案是 30。\nFinal answer is 31.")
+    assert conflicting["value"] is None
+    assert conflicting["ambiguity_reason"] == "multiple_final_result_fields"
+    assert parse_unique_numeric_final("分析有 31。\n30")["value"] == 30.0
+
+
+def test_sql_evidence_requires_real_executor_and_extracts_python_sqlite(tmp_path: Path) -> None:
+    database = make_database(tmp_path)
+    fake = event("SELECT SUM(value) FROM fact_metric")
+    fake["arguments"]["command"] = 'echo "SELECT SUM(value) FROM fact_metric"'
+    fake_result = compute_trajectory_process_reward(
+        "dwh", "最终答案是 30。", numeric_truth(), extra(database, [fake])
+    )
+    assert command_executes_sql(fake["arguments"]["command"]) is False
+    assert fake_result["successful_sql_count"] == 0
+    assert fake_result["process_verified"] == 0.0
+
+    python_event = event("SELECT SUM(value) FROM fact_metric")
+    python_event["arguments"]["command"] = """python3 - <<'PY'
+import sqlite3
+con=sqlite3.connect('/workspace/logistics.sqlite')
+print(con.execute('SELECT SUM(value) FROM fact_metric').fetchone())
+PY"""
+    python_result = compute_trajectory_process_reward(
+        "dwh", "最终答案是 30。", numeric_truth(), extra(database, [python_event])
+    )
+    assert command_executes_sql(python_event["arguments"]["command"]) is True
+    assert python_result["successful_sql_count"] == 1
+    assert python_result["process_verified"] == 1.0
+
+
+def test_last_answer_bearing_query_controls_verified_process(tmp_path: Path) -> None:
+    database = make_database(tmp_path)
+    result = compute_trajectory_process_reward(
+        "dwh",
+        "最终答案是 30。",
+        numeric_truth(),
+        extra(
+            database,
+            [
+                event("SELECT SUM(value) FROM fact_metric"),
+                event("SELECT SUM(units) FROM fact_metric"),
+            ],
+        ),
+    )
+    assert result["answer_bearing_sql_count"] == 2
+    assert result["last_answer_bearing_consistent"] == 0.0
+    assert result["process_verified"] == 0.0
+    assert result["score"] == 1.0
 
 
 def test_final_answer_cannot_forge_process_evidence(tmp_path: Path) -> None:
@@ -333,7 +401,10 @@ def test_mixed_plus_uniform_gradient_equals_mixed_only_even_with_kl_term() -> No
     kl = 0.001 * (output.square() * mixed.batch["response_mask"]).sum()
     (policy + kl).backward()
 
-    assert torch.equal(full_gradient, model.weight.grad)
+    # CPU kernels in the Ascend container can change reduction order when the
+    # leading batch dimension differs; masked rows must remain numerically
+    # equivalent, not necessarily bit-identical.
+    torch.testing.assert_close(full_gradient, model.weight.grad, rtol=0.0, atol=1e-5)
 
 
 def test_hard_gate_failure_skips_entire_group() -> None:
@@ -341,6 +412,19 @@ def test_hard_gate_failure_skips_entire_group() -> None:
     gated, metrics = apply_strict_correctness_group_gate(batch)
 
     assert metrics["grpo/skipped_hard_gate_groups"] == 1.0
+    assert gated.meta_info["strict_group_should_update_actor"] is False
+    assert torch.count_nonzero(gated.batch["response_mask"]) == 0
+
+
+def test_staleness_zero_requires_exact_single_policy_version() -> None:
+    batch = _make_batch(["mixed"] * 8, [0, 1] * 4, [1] * 8)
+    batch.non_tensor_batch["min_global_steps"] = [7] * 8
+    batch.non_tensor_batch["max_global_steps"] = [7] * 7 + [8]
+    batch.meta_info["strict_expected_policy_version"] = 7
+
+    gated, metrics = apply_strict_correctness_group_gate(batch)
+
+    assert metrics["grpo/skipped_stale_policy_groups"] == 1.0
     assert gated.meta_info["strict_group_should_update_actor"] is False
     assert torch.count_nonzero(gated.batch["response_mask"]) == 0
 

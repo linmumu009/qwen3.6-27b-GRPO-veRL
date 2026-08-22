@@ -1,0 +1,102 @@
+{
+  "contract": "qwen38-approved43-outcome-gated-process-shadow-v2",
+  "date": "2026-08-22",
+  "training_status": "paused_no_model_load_no_rollout_no_optimizer",
+  "reward_contract": "R=H*C*(1+alpha*P_verified)",
+  "shadow_alpha": 0.1,
+  "recommended_formal_alpha": 0.0,
+  "reward_scope": "one_scalar_after_complete_multiturn_trajectory",
+  "turn_or_token_credit_assignment_implemented": false,
+  "input_gate": {
+    "trajectory_rows": 800,
+    "groups": 100,
+    "approved43_rows": 43,
+    "approved43_parquet_sha256": "d86b53d906806b150d43a508dce9b0dd6d05105c07e03961e8e7bf9439ccd944",
+    "approved43_manifest_sha256": "1426bc09a3dbaf4709fd89227790603afb7a2bf11beeba80946057d490e0f424",
+    "task_audit_sha256": "32edc0a8196935faaa956e39a12421c79e709fb85f3e72d4c4ace465d6e03d3d",
+    "database_sha256": "6d9c90cb5869dca751ba4865d4e682578105f984b52837a7f75adfdc8d9ef5f8",
+    "shards_set_sha256": "2c9f75cd10810a6f44c369a546bffc6d9351398b01ea03a4efdc439909ad68ce"
+  },
+  "strict_final_parser": {
+    "legacy_permissive_correct": 483,
+    "strict_correct": 289,
+    "labels_changed": 194,
+    "numeric_ambiguities": 118,
+    "all_task_buckets": {"all_correct": 12, "mixed": 54, "all_wrong": 34},
+    "approved43_mixed_groups": 36,
+    "approved43_uniform_groups": 7,
+    "approved43_correct_counts_anonymous": [0, 6, 2, 2, 2, 1, 3, 6, 1, 0, 0, 1, 0, 1, 1, 1, 2, 0, 1, 0, 0, 3, 6, 2, 3, 6, 6, 1, 3, 7, 6, 3, 7, 3, 6, 7, 2, 3, 5, 7, 5, 5, 2]
+  },
+  "outcome_gated_advantage": {
+    "mixed_groups_checked": 36,
+    "incorrect_positive_advantage_count": 0,
+    "incorrect_nonnegative_advantage_count": 0,
+    "all_incorrect_advantages_strictly_negative": true,
+    "incorrect_reward_ceiling": 0.0,
+    "minimum_mixed_group_reward_margin": 1.0
+  },
+  "verified_process": {
+    "eligible_correct_trajectories": 287,
+    "eligible_correct_with_answer_bearing_sql": 34,
+    "eligible_correct_with_verified_process": 31,
+    "coverage": 0.1184669,
+    "private_structural_samples": 20,
+    "private_structural_passes": 20,
+    "structural_precision_proxy": 1.0,
+    "human_precision_established": false,
+    "process_bonus_promotion_allowed": false,
+    "observed_table_field_fit_efficiency_enter_reward": false
+  },
+  "reward_distribution": {
+    "new_correct_mean": 1.00380623,
+    "new_incorrect_mean": 0.0,
+    "new_incorrect_max": 0.0,
+    "old_boss_shadow_correct_mean": 0.88278547,
+    "old_boss_shadow_incorrect_mean": 0.7898728,
+    "old_boss_shadow_incorrect_max": 1.0
+  },
+  "hard_gate": {
+    "eligible_trajectories": 774,
+    "ineligible_trajectories": 26,
+    "approved43_H_counts_anonymous": [8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 7, 7, 8, 8, 8, 6, 8, 5, 8, 8, 8, 8, 7, 8, 8, 8, 7, 8, 8, 8, 7, 8, 8, 8, 8, 8, 8, 8, 7, 8],
+    "resample_attempt_cap": 16,
+    "expected_groups_filled_of_43": 42.89237,
+    "minimum_group_fill_probability": 0.90006252
+  },
+  "table_false_negative_repair": {
+    "repaired_table_tasks": 22,
+    "correct_count_matches_audit": 22,
+    "remain_mixed": 22,
+    "all_22_pass": true
+  },
+  "formal_schedule_contract_test": {
+    "approved_members": 43,
+    "exposures_per_task": 4,
+    "nominal_groups": 172,
+    "accepted_online_trajectories": 1376,
+    "unique_evidence_binding_hashes": 43,
+    "schedule_sha256": "c0ad4fa8e2d049bf049c9de9dc2861e171cc29cd778a7b1981223bceb9fbafb5"
+  },
+  "actual_verl_container_contract": {
+    "cpu_tests_passed": 24,
+    "hard_gate_resample_to_8_or_skip_at_16": true,
+    "hard_staleness_zero_exact_policy_version": true,
+    "uniform_and_hard_gate_groups_skip_optimizer": true,
+    "kl_outside_reward": true,
+    "kl_uses_active_response_mask": true,
+    "source_files_modified": false
+  },
+  "model_contract": {
+    "actor_and_reference": "/models/Qwen3.8-27B",
+    "config_sha256_m05_m06": "191e0af232104ed8b65258cf3fb2b842e288008baca7633c11b82a1ac7203aab",
+    "frozen_18shard_compound_sha256": "e94e58ab1b25c6bbbff809b8af9f57a5d42eeff7db7b077a8248d359a20b7325",
+    "qwen36_or_historical_checkpoint_reused": false
+  },
+  "server_safe_artifacts": {
+    "safe_summary_sha256": "1e8a9cb48975bbabc0ce938872de97c2c3ec8b03824b0bf8f8d73e72b30628b0",
+    "structural_audit_sha256": "d4182f7b49736ff91167b1aa32f470eb94874300c33719cc3f4f56c8fecf07b8",
+    "container_contract_sha256": "8932f38017c995bb251c392ba3e29f10548fcecc7c7a81223ba4a89b9bb03feb"
+  },
+  "promotion_allowed": false,
+  "formal_training_allowed": false
+}

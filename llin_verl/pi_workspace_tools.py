@@ -151,6 +151,7 @@ class WorkspaceRegistry:
             "pi_workspace_request_id": request_id,
             "pi_environment_id": state.environment_id,
             "pi_tool_events": events,
+            "pi_tool_event_contract": "runtime-captured-structured-tool-events-v2",
             "pi_tool_call_count": len(events),
             "pi_tool_success_count": sum(bool(event.get("ok")) for event in events),
             "pi_workspace_elapsed_seconds": round(time.monotonic() - state.created_at, 6),
@@ -230,6 +231,9 @@ class PiWorkspaceTool(BaseTool):
             "elapsed_seconds": round(elapsed, 6),
             "tables": extract_table_names(command),
             "response_preview": response[:4000],
+            "observed_tool_response": True,
+            "call_parse_valid": True,
+            "assistant_turn_index": int(getattr(agent_data, "assistant_turns", 0) or 0),
         }
         WORKSPACES.record(state.request_id, event)
         agent_data.extra_fields["pi_tool_events"] = list(WORKSPACES._states[state.request_id].events)

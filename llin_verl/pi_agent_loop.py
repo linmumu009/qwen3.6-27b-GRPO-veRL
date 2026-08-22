@@ -97,6 +97,8 @@ class PiAgentLoop(ToolAgentLoop):
             "trajectory_abort_acknowledged_count": 0,
             "trajectory_abort_physical_request_count": 0,
             "trajectory_abort_error_count": 0,
+            "pi_tool_protocol_complete": False,
+            "pi_tool_event_contract": "runtime-captured-structured-tool-events-v2",
         }
         for key, value in defaults.items():
             output.extra_fields.setdefault(key, value)
@@ -106,6 +108,11 @@ class PiAgentLoop(ToolAgentLoop):
             await WORKSPACES.release(str(request_id))
             output.extra_fields["pi_workspace_released"] = True
         timed_out = bool(output.extra_fields.get("trajectory_timeout"))
+        output.extra_fields["pi_tool_protocol_complete"] = bool(
+            request_id
+            and not timed_out
+            and output.extra_fields.get("pi_tool_events")
+        )
         if not timed_out:
             telemetry.snapshot(
                 response_tokens=len(output.response_ids),
@@ -178,6 +185,7 @@ class PiAgentLoop(ToolAgentLoop):
                     or 0
                 ),
                 "pi_workspace_released": True,
+                "pi_tool_protocol_complete": False,
             }
         )
         return output

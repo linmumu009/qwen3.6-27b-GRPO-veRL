@@ -20,6 +20,11 @@ from typing import Any, Iterable
 
 import pyarrow.parquet as pq
 
+from llin_verl.outcome_gated_contract import (
+    audit_mixed_group_advantages,
+    evidence_binding_hash,
+)
+from llin_verl.pi_reward import extract_answer_numbers, strict_table_answer_match_semantic, table_order_semantics
 from llin_verl.trajectory_process_reward import (
     REWARD_CONTRACT,
     compute_trajectory_process_reward,
@@ -31,7 +36,9 @@ from llin_verl.trajectory_process_reward import (
 )
 
 
-CONTRACT = "qwen38-approved43-trajectory-process-shadow-v1"
+CONTRACT = "qwen38-approved43-outcome-gated-process-shadow-v2"
+PROCESS_BONUS_ALPHA = 0.10
+RESAMPLE_ATTEMPT_CAP = 16
 EXPECTED_PARQUET_SHA256 = "d86b53d906806b150d43a508dce9b0dd6d05105c07e03961e8e7bf9439ccd944"
 EXPECTED_MANIFEST_SHA256 = "1426bc09a3dbaf4709fd89227790603afb7a2bf11beeba80946057d490e0f424"
 
@@ -122,13 +129,53 @@ def _task_ground_truth(dataset_row: dict[str, Any], task: dict[str, Any]) -> dic
     truth["required_tables"] = task.get("expected_tables") or truth.get(
         "required_tables", []
     )
+    truth["process_evidence_binding_sha256"] = evidence_binding_hash(truth)
     return truth
 
 
-def _manual_sample_rows(rows: list[dict[str, Any]], limit: int = 16) -> list[dict[str, Any]]:
+def _legacy_permissive_correctness(solution: str, truth: dict[str, Any]) -> int:
+    from llin_verl.trajectory_process_reward import _expected_value
+    from llin_verl.pi_reward import extract_final_assistant_answer
+
+    answer = extract_final_assistant_answer(solution)
+    expected = _expected_value(truth)
+    answer_type = str(truth.get("answer_type") or "")
+    abs_tol = float(truth.get("abs_tol", 1e-3))
+    rel_tol = float(truth.get("rel_tol", 1e-5))
+    if answer_type == "numeric" and isinstance(expected, (int, float)):
+        return int(any(math.isclose(value, float(expected), abs_tol=abs_tol, rel_tol=rel_tol) for value in extract_answer_numbers(answer)))
+    if answer_type == "table" and isinstance(expected, list):
+        ordered, _ = table_order_semantics(truth)
+        return int(strict_table_answer_match_semantic(answer, expected, abs_tol, rel_tol, ordered=ordered)[0])
+    return 0
+
+
+def _probability_fill_eight(pass_count: int, *, cap: int = RESAMPLE_ATTEMPT_CAP) -> float:
+    p = pass_count / 8.0
+    return sum(
+        math.comb(cap, successes) * p**successes * (1.0 - p) ** (cap - successes)
+        for successes in range(8, cap + 1)
+    )
+
+
+def _manual_sample_rows(rows: list[dict[str, Any]], limit: int = 24) -> list[dict[str, Any]]:
     approved = [row for row in rows if row["approved43"]]
     selected: list[dict[str, Any]] = []
     seen: set[tuple[int, int]] = set()
+    # Precision audit: prefer verified positives, then covered negatives and
+    # parser ambiguities.  The remaining slots preserve the earlier outcome /
+    # answer-type stratification.
+    priority_pools = (
+        [row for row in approved if row["process_verified"] == 1],
+        [row for row in approved if row["process_verified_applicable"] == 1 and row["process_verified"] == 0],
+        [row for row in approved if row["numeric_final_parse_ambiguous"] == 1],
+    )
+    for pool, quota in zip(priority_pools, (20, 2, 2), strict=True):
+        for row in sorted(pool, key=lambda item: (item["source_task_index"], item["sample_index"]))[:quota]:
+            identity = (row["source_task_index"], row["sample_index"])
+            if identity not in seen:
+                selected.append(row)
+                seen.add(identity)
     for answer_type in ("numeric", "table"):
         typed = [row for row in approved if row["answer_type"] == answer_type]
         pools = (
@@ -160,6 +207,8 @@ def _safe_manual_projection(row: dict[str, Any]) -> dict[str, Any]:
         "correctness": row["correctness"],
         "reward": row["reward"],
         "process_score": row["process_score"],
+        "process_verified": row["process_verified"],
+        "process_verified_applicable": row["process_verified_applicable"],
         "process_sql": row["process_sql"],
         "process_table": row["process_table"],
         "process_field": row["process_field"],
@@ -177,6 +226,7 @@ def _safe_manual_projection(row: dict[str, Any]) -> dict[str, Any]:
         "valid_tool_protocol": row["valid_tool_protocol"],
         "safe_readonly_tools": row["safe_readonly_tools"],
         "formula_recomputed": row["formula_recomputed"],
+        "numeric_final_parse_ambiguous": row["numeric_final_parse_ambiguous"],
     }
 
 
@@ -286,6 +336,7 @@ def replay(
                 "force_final_retry_count": int(
                     source.get("force_final_retry_count", 0) or 0
                 ),
+                "pi_process_bonus_alpha": PROCESS_BONUS_ALPHA,
             }
             result = compute_trajectory_process_reward(
                 str(dataset_row.get("data_source") or ""),
@@ -302,10 +353,12 @@ def replay(
                 executable_answer_ok=bool(result["process_sql"]),
             )
             expected_reward = (
-                float(result["acc"]) + 0.20 * float(result["process_score"])
+                float(result["acc"])
+                * (1.0 + PROCESS_BONUS_ALPHA * float(result["process_verified"]))
                 if result["hard_gate_passed"]
                 else 0.0
             )
+            old_correctness = _legacy_permissive_correctness(output, truth)
             identity = stable_hash(
                 {"instruction_sha256": instruction_hash, "sample_index": sample_index}
             )
@@ -320,11 +373,15 @@ def replay(
                 "approved43": task_index in approved_indices,
                 "approval_source": manifest_row.get("approval_source") if manifest_row else None,
                 "correctness": int(result["acc"]),
+                "legacy_permissive_correctness": old_correctness,
+                "correctness_label_changed": old_correctness != int(result["acc"]),
                 "reward": float(result["score"]),
                 "ungated_formula_reward": float(result["acc"])
-                + 0.20 * float(result["process_score"]),
+                * (1.0 + PROCESS_BONUS_ALPHA * float(result["process_verified"])),
                 "old_boss_reward_total_shadow": float(legacy["reward_total"]),
                 "process_score": float(result["process_score"]),
+                "process_verified": float(result["process_verified"]),
+                "process_verified_applicable": float(result["process_verified_applicable"]),
                 "process_sql": float(result["process_sql"]),
                 "process_table": float(result["process_table"]),
                 "process_field": float(result["process_field"]),
@@ -339,6 +396,8 @@ def replay(
                 "tool_event_count": int(result["tool_event_count"]),
                 "successful_sql_count": int(result["successful_sql_count"]),
                 "matching_sql_count": int(result["matching_sql_count"]),
+                "answer_bearing_sql_count": int(result["answer_bearing_sql_count"]),
+                "last_answer_bearing_consistent": float(result["last_answer_bearing_consistent"]),
                 "required_table_count": int(result["required_table_count"]),
                 "queried_required_table_count": int(result["queried_required_table_count"]),
                 "must_use_field_count": int(result["must_use_field_count"]),
@@ -352,6 +411,8 @@ def replay(
                 "tool_call_count": int(parsed["tool_call_count"]),
                 "tool_response_count": int(parsed["tool_response_count"]),
                 "malformed_tool_call_count": int(parsed["malformed_tool_call_count"]),
+                "numeric_final_parse_ambiguous": float(result["numeric_final_parse_ambiguous"]),
+                "numeric_final_parse_ambiguity_reason": result["numeric_final_parse_ambiguity_reason"],
                 "trajectory_timeout": bool(source.get("trajectory_timeout")),
                 "runtime_error": bool(source.get("runtime_error")),
                 "formula_recomputed": math.isclose(
@@ -371,13 +432,21 @@ def replay(
         rows = grouped[task_index]
         correct = [row for row in rows if row["correctness"] == 1]
         wrong = [row for row in rows if row["correctness"] == 0]
-        if not correct or not wrong:
-            raise ValueError("approved43 no longer forms a corrected mixed group")
-        min_correct = min(row["reward"] for row in correct)
-        max_wrong = max(row["reward"] for row in wrong)
-        min_correct_formula = min(row["ungated_formula_reward"] for row in correct)
-        max_wrong_formula = max(row["ungated_formula_reward"] for row in wrong)
+        mixed = bool(correct and wrong)
+        min_correct = min((row["reward"] for row in correct), default=None)
+        max_wrong = max((row["reward"] for row in wrong), default=None)
+        min_correct_formula = min((row["ungated_formula_reward"] for row in correct), default=None)
+        max_wrong_formula = max((row["ungated_formula_reward"] for row in wrong), default=None)
         all_hard_gates_passed = all(row["hard_gate_passed"] for row in rows)
+        advantage_audit = (
+            audit_mixed_group_advantages(
+                [row["correctness"] for row in rows],
+                [row["ungated_formula_reward"] for row in rows],
+            )
+            if mixed
+            else None
+        )
+        hard_gate_pass_count = sum(int(row["hard_gate_passed"]) for row in rows)
         approved_group_checks.append(
             {
                 "task_identity_sha256": stable_hash(
@@ -385,15 +454,27 @@ def replay(
                 ),
                 "correct_count": len(correct),
                 "incorrect_count": len(wrong),
+                "mixed_under_strict_final_parser": mixed,
                 "all_hard_gates_passed": all_hard_gates_passed,
+                "hard_gate_pass_count": hard_gate_pass_count,
+                "resample_fill_probability_at_16": _probability_fill_eight(hard_gate_pass_count),
                 "min_correct_reward": min_correct,
                 "max_incorrect_reward": max_wrong,
-                "strict_separation": min_correct > max_wrong,
-                "separation_margin": min_correct - max_wrong,
+                "strict_separation": bool(mixed and min_correct > max_wrong),
+                "separation_margin": min_correct - max_wrong if mixed else None,
                 "min_correct_formula_reward": min_correct_formula,
                 "max_incorrect_formula_reward": max_wrong_formula,
-                "formula_strict_separation": min_correct_formula > max_wrong_formula,
-                "formula_separation_margin": min_correct_formula - max_wrong_formula,
+                "formula_strict_separation": bool(mixed and min_correct_formula > max_wrong_formula),
+                "formula_separation_margin": min_correct_formula - max_wrong_formula if mixed else None,
+                "incorrect_positive_advantage_count": (
+                    advantage_audit["incorrect_positive_advantage_count"] if advantage_audit else 0
+                ),
+                "incorrect_nonnegative_advantage_count": (
+                    advantage_audit["incorrect_nonnegative_advantage_count"] if advantage_audit else 0
+                ),
+                "all_incorrect_advantages_strictly_negative": (
+                    advantage_audit["all_incorrect_strictly_negative"] if advantage_audit else None
+                ),
                 "new_reward_variance": population_variance([row["reward"] for row in rows]),
                 "old_reward_variance": population_variance(
                     [row["old_boss_reward_total_shadow"] for row in rows]
@@ -422,6 +503,8 @@ def replay(
         )
 
     component_names = (
+        "process_verified",
+        "process_verified_applicable",
         "process_score",
         "process_sql",
         "process_table",
@@ -498,6 +581,14 @@ def replay(
                     "matching_sql_requires_successful_sql": (
                         row["matching_sql_count"] == 0 or row["successful_sql_count"] > 0
                     ),
+                    "verified_process_requires_answer_bearing_successful_sql": (
+                        row["process_verified"] == 0
+                        or (
+                            row["successful_sql_count"] > 0
+                            and row["answer_bearing_sql_count"] > 0
+                            and row["last_answer_bearing_consistent"] == 1
+                        )
+                    ),
                     "table_credit_requires_all_required_tables": (
                         row["process_table"] == 0
                         or row["required_table_count"]
@@ -550,6 +641,15 @@ def replay(
         "corrected_outcomes": {
             "correct_trajectories": sum(row["correctness"] for row in scored_rows),
             "incorrect_trajectories": sum(1 - row["correctness"] for row in scored_rows),
+            "legacy_permissive_correct_trajectories": sum(
+                row["legacy_permissive_correctness"] for row in scored_rows
+            ),
+            "labels_changed_by_strict_final_parser": sum(
+                row["correctness_label_changed"] for row in scored_rows
+            ),
+            "numeric_final_parse_ambiguities": sum(
+                row["numeric_final_parse_ambiguous"] for row in scored_rows
+            ),
             "task_bucket_counts": dict(sorted(corrected_bucket_counts.items())),
             "approved43_all_mixed": all(
                 0 < sum(row["correctness"] for row in grouped[index]) < samples_per_task
@@ -563,9 +663,32 @@ def replay(
             "approved43_all_trajectories_eligible": all(
                 row["hard_gate_passed"] for row in scored_rows if row["approved43"]
             ),
+            "resample_simulation": {
+                "method": "per-group_binomial_bootstrap_from_historical_8-sample_H_rate",
+                "target_H1_trajectories": 8,
+                "attempt_cap": RESAMPLE_ATTEMPT_CAP,
+                "expected_groups_filled_of_43": round(sum(
+                    row["resample_fill_probability_at_16"] for row in approved_group_checks
+                ), 6),
+                "minimum_group_fill_probability": round(min(
+                    row["resample_fill_probability_at_16"] for row in approved_group_checks
+                ), 8),
+            },
         },
-        "correctness_dominance": {
+        "outcome_gated_advantage": {
             "approved43_groups_checked": len(approved_group_checks),
+            "strict_mixed_groups": sum(row["mixed_under_strict_final_parser"] for row in approved_group_checks),
+            "uniform_groups_skipped": sum(not row["mixed_under_strict_final_parser"] for row in approved_group_checks),
+            "incorrect_positive_advantage_count": sum(
+                row["incorrect_positive_advantage_count"] for row in approved_group_checks
+            ),
+            "incorrect_nonnegative_advantage_count": sum(
+                row["incorrect_nonnegative_advantage_count"] for row in approved_group_checks
+            ),
+            "mixed_groups_all_incorrect_advantages_strictly_negative": sum(
+                row["all_incorrect_advantages_strictly_negative"] is True
+                for row in approved_group_checks
+            ),
             "formula_groups_strictly_separated": sum(
                 bool(row["formula_strict_separation"]) for row in approved_group_checks
             ),
@@ -574,6 +697,7 @@ def replay(
             ),
             "minimum_formula_group_margin": min(
                 row["formula_separation_margin"] for row in approved_group_checks
+                if row["formula_separation_margin"] is not None
             ),
             "groups_strictly_separated": sum(
                 bool(row["strict_separation"]) for row in approved_group_checks
@@ -583,6 +707,7 @@ def replay(
             ),
             "minimum_group_margin": min(
                 row["separation_margin"] for row in approved_group_checks
+                if row["separation_margin"] is not None
             ),
             "fully_hard_gate_eligible_groups": sum(
                 bool(row["all_hard_gates_passed"]) for row in approved_group_checks
@@ -595,7 +720,8 @@ def replay(
                 for row in approved_group_checks
             ),
             "correct_reward_floor_by_formula": 1.0,
-            "incorrect_reward_ceiling_by_formula": 0.2,
+            "incorrect_reward_ceiling_by_formula": 0.0,
+            "process_bonus_alpha_shadowed": PROCESS_BONUS_ALPHA,
         },
         "table_false_negative_repair": {
             "repaired_table_tasks": len(table_replay_checks),
@@ -608,6 +734,26 @@ def replay(
         },
         "reward_distributions": reward_distributions,
         "process_component_distributions": distributions,
+        "verified_process_gate": {
+            "eligible_correct_trajectories": sum(
+                row["hard_gate_passed"] and row["correctness"] for row in scored_rows
+            ),
+            "eligible_correct_with_answer_bearing_sql": sum(
+                row["hard_gate_passed"] and row["correctness"] and row["process_verified_applicable"]
+                for row in scored_rows
+            ),
+            "eligible_correct_with_verified_process": sum(
+                row["hard_gate_passed"] and row["correctness"] and row["process_verified"]
+                for row in scored_rows
+            ),
+            "coverage": round(
+                sum(row["hard_gate_passed"] and row["correctness"] and row["process_verified_applicable"] for row in scored_rows)
+                / max(1, sum(row["hard_gate_passed"] and row["correctness"] for row in scored_rows)),
+                8,
+            ),
+            "manual_precision_status": "pending_private_human_audit",
+            "observed_table_field_fit_efficiency_enter_reward": False,
+        },
         "group_variance": {
             "approved43_new_positive_variance_groups": sum(
                 row["new_reward_variance"] > 0 for row in approved_group_checks
@@ -681,8 +827,8 @@ def main() -> None:
     print(json.dumps({
         "contract": summary["contract"],
         "trajectory_rows": summary["input_gate"]["trajectory_rows"],
-        "approved43_groups_checked": summary["correctness_dominance"]["approved43_groups_checked"],
-        "groups_strictly_separated": summary["correctness_dominance"]["groups_strictly_separated"],
+        "approved43_groups_checked": summary["outcome_gated_advantage"]["approved43_groups_checked"],
+        "incorrect_positive_advantage_count": summary["outcome_gated_advantage"]["incorrect_positive_advantage_count"],
         "table_22_pass": summary["table_false_negative_repair"]["all_22_pass"],
         "training_status": summary["training_status"],
     }, sort_keys=True))

@@ -24,6 +24,8 @@ def strict_correctness_group_stats(
     uids: Iterable[Any],
     correctness: Iterable[Any],
     eligibility: Iterable[Any] | None = None,
+    policy_versions: Iterable[Any] | None = None,
+    expected_policy_version: int | None = None,
 ) -> tuple[list[bool], dict[str, float]]:
     """Return the active-sample mask and aggregate gate metrics.
 
@@ -43,25 +45,36 @@ def strict_correctness_group_stats(
     )
     if len(eligible) != len(uid_list):
         raise ValueError("eligibility must have the same length as uids")
+    versions = list(policy_versions) if policy_versions is not None else [None] * len(uid_list)
+    if len(versions) != len(uid_list):
+        raise ValueError("policy_versions must have the same length as uids")
 
-    grouped: dict[Any, list[tuple[int, int]]] = defaultdict(list)
-    for uid, label, allowed in zip(uid_list, labels, eligible, strict=True):
-        grouped[uid].append((label, allowed))
+    grouped: dict[Any, list[tuple[int, int, Any]]] = defaultdict(list)
+    for uid, label, allowed, version in zip(uid_list, labels, eligible, versions, strict=True):
+        grouped[uid].append((label, allowed, version))
 
     invalid_uids = {
-        uid for uid, values in grouped.items() if not all(allowed for _, allowed in values)
+        uid for uid, values in grouped.items() if not all(allowed for _, allowed, _ in values)
     }
+    stale_uids: set[Any] = set()
+    if expected_policy_version is not None:
+        stale_uids = {
+            uid
+            for uid, values in grouped.items()
+            if any(version is None or int(version) != int(expected_policy_version) for _, _, version in values)
+        }
+        invalid_uids |= stale_uids
     active_uids = {
         uid
         for uid, values in grouped.items()
-        if uid not in invalid_uids and {label for label, _ in values} == {0, 1}
+        if uid not in invalid_uids and {label for label, _, _ in values} == {0, 1}
     }
     all_wrong = sum(
-        uid not in invalid_uids and {label for label, _ in values} == {0}
+        uid not in invalid_uids and {label for label, _, _ in values} == {0}
         for uid, values in grouped.items()
     )
     all_correct = sum(
-        uid not in invalid_uids and {label for label, _ in values} == {1}
+        uid not in invalid_uids and {label for label, _, _ in values} == {1}
         for uid, values in grouped.items()
     )
     mixed = len(active_uids)
@@ -72,6 +85,7 @@ def strict_correctness_group_stats(
         "grpo/skipped_all_wrong_groups": float(all_wrong),
         "grpo/skipped_all_correct_groups": float(all_correct),
         "grpo/skipped_hard_gate_groups": float(len(invalid_uids)),
+        "grpo/skipped_stale_policy_groups": float(len(stale_uids)),
         "grpo/effective_samples": float(sum(mask)),
         "grpo/skipped_samples": float(len(mask) - sum(mask)),
         "grpo/total_groups": float(len(grouped)),
@@ -97,10 +111,24 @@ def apply_strict_correctness_group_gate(batch: Any) -> tuple[Any, dict[str, floa
             "after reward/KL assembly"
         )
 
+    expected_policy_version = batch.meta_info.get("strict_expected_policy_version")
+    version_values = None
+    if expected_policy_version is not None:
+        minimum = batch.non_tensor_batch.get("min_global_steps")
+        maximum = batch.non_tensor_batch.get("max_global_steps")
+        if minimum is None or maximum is None:
+            version_values = [None] * len(batch.non_tensor_batch["uid"])
+        else:
+            version_values = [
+                int(left) if left is not None and right is not None and int(left) == int(right) else None
+                for left, right in zip(minimum, maximum, strict=True)
+            ]
     mask, metrics = strict_correctness_group_stats(
         batch.non_tensor_batch["uid"],
         batch.non_tensor_batch["acc"],
         batch.non_tensor_batch.get("online_eligible"),
+        version_values,
+        expected_policy_version,
     )
     advantages = batch.batch["advantages"]
     returns = batch.batch["returns"]

@@ -31,10 +31,14 @@ from llin_verl.pi_reward import (
     table_order_semantics,
 )
 from llin_verl.pi_tool_contract import command_unsafe_reasons, extract_table_names
+from llin_verl.outcome_gated_contract import evidence_binding_hash
 
 
-REWARD_CONTRACT = "correctness-gated-trajectory-process-v5"
-PROCESS_WEIGHTS = {
+REWARD_CONTRACT = "outcome-gated-verified-trajectory-process-v5"
+MAX_PROCESS_BONUS_ALPHA = 0.10
+# These components are retained as diagnostics only.  They are deliberately
+# excluded from the training scalar until they demonstrate useful precision.
+OBSERVED_PROCESS_WEIGHTS = {
     "sql": 0.50,
     "table": 0.15,
     "field": 0.15,
@@ -68,6 +72,19 @@ _MUTATING_SQL_STATEMENT_RE = re.compile(
 _FULL_SCAN_RE = re.compile(r"\bselect\s+\*\s+from\b", re.IGNORECASE | re.DOTALL)
 _WHERE_RE = re.compile(r"\bwhere\b", re.IGNORECASE)
 _LIMIT_RE = re.compile(r"\blimit\b", re.IGNORECASE)
+_FINAL_RESULT_RE = re.compile(
+    r"(?:^|\n|[。.!?]\s*)(?:the\s+)?(?:final\s+(?:answer|result)|"
+    r"最终(?:答案|结果)|答案)\s*(?:is|equals?|为|是|[:：=])\s*([^\n]+)",
+    re.IGNORECASE,
+)
+_PYTHON_SQL_EXECUTOR_RE = re.compile(
+    r"(?:sqlite3\.connect|\.execute\s*\(|\.executemany\s*\(|"
+    r"read_sql(?:_query)?\s*\()",
+    re.IGNORECASE,
+)
+_ACTUAL_SQL_EXECUTOR_RE = re.compile(
+    r"(?:^|[;&|()]\s*)(?:python(?:3)?\b|sqlite3\b)", re.IGNORECASE
+)
 
 
 def stable_hash(value: Any) -> str:
@@ -156,6 +173,51 @@ def semantic_rows_equal(
     return _full_table_row_multisets_equal(left, right, abs_tol, rel_tol)
 
 
+def parse_unique_numeric_final(answer: str) -> dict[str, Any]:
+    """Parse one unambiguous numeric conclusion from the final assistant turn.
+
+    An explicit final-result field is preferred.  If it is absent, only the
+    final non-empty line is considered.  Multiple explicit fields, multiple
+    numbers in the selected field, or conflicting candidates fail closed.
+    Numbers mentioned earlier in the reasoning can therefore never make a
+    later wrong conclusion pass.
+    """
+
+    from llin_verl.pi_reward import extract_answer_numbers
+
+    explicit = [match.group(1).strip() for match in _FINAL_RESULT_RE.finditer(answer or "")]
+    mode = "explicit_final_result" if explicit else "last_nonempty_line"
+    if explicit:
+        candidates = explicit
+    else:
+        lines = [line.strip() for line in (answer or "").splitlines() if line.strip()]
+        candidates = lines[-1:] if lines else []
+    if len(candidates) != 1:
+        return {
+            "value": None,
+            "mode": mode,
+            "ambiguous": bool(candidates),
+            "ambiguity_reason": "multiple_final_result_fields" if candidates else "missing_final_result",
+            "candidate_count": len(candidates),
+        }
+    numbers = extract_answer_numbers(candidates[0])
+    if len(numbers) != 1:
+        return {
+            "value": None,
+            "mode": mode,
+            "ambiguous": bool(numbers),
+            "ambiguity_reason": "multiple_numeric_candidates" if numbers else "no_numeric_candidate",
+            "candidate_count": len(numbers),
+        }
+    return {
+        "value": float(numbers[0]),
+        "mode": mode,
+        "ambiguous": False,
+        "ambiguity_reason": "",
+        "candidate_count": 1,
+    }
+
+
 def corrected_final_verifier(
     solution_str: str,
     ground_truth: dict[str, Any],
@@ -177,16 +239,31 @@ def corrected_final_verifier(
     ):
         number = float(expected)
         if math.isfinite(number):
-            from llin_verl.pi_reward import extract_answer_numbers
-
-            correct = any(
-                math.isclose(value, number, abs_tol=abs_tol, rel_tol=rel_tol)
-                for value in extract_answer_numbers(answer)
+            numeric_final = parse_unique_numeric_final(answer)
+            parsed_value = numeric_final["value"]
+            correct = parsed_value is not None and math.isclose(
+                parsed_value, number, abs_tol=abs_tol, rel_tol=rel_tol
             )
-            match_mode = "numeric_tolerance" if correct else "none"
+            match_mode = numeric_final["mode"] if correct else "none"
+            if numeric_final["ambiguity_reason"]:
+                error = str(numeric_final["ambiguity_reason"])
         else:
+            numeric_final = {
+                "value": None,
+                "mode": "none",
+                "ambiguous": False,
+                "ambiguity_reason": "non_finite_numeric_gold",
+                "candidate_count": 0,
+            }
             error = "non_finite_numeric_gold"
     elif answer_type == "table" and isinstance(expected, list):
+        numeric_final = {
+            "value": None,
+            "mode": "not_numeric",
+            "ambiguous": False,
+            "ambiguity_reason": "",
+            "candidate_count": 0,
+        }
         correct, match_mode, parsed_rows = strict_table_answer_match_semantic(
             answer,
             expected,
@@ -195,6 +272,13 @@ def corrected_final_verifier(
             ordered=ordered,
         )
     else:
+        numeric_final = {
+            "value": None,
+            "mode": "none",
+            "ambiguous": False,
+            "ambiguity_reason": "unsupported_or_incomplete_gold",
+            "candidate_count": 0,
+        }
         error = "unsupported_or_incomplete_gold"
     return {
         "correct": bool(correct and not error),
@@ -204,6 +288,11 @@ def corrected_final_verifier(
         "parsed_rows": parsed_rows,
         "table_ordered": ordered if answer_type == "table" else None,
         "table_order_source": order_source if answer_type == "table" else "not_table",
+        "numeric_value": numeric_final["value"],
+        "numeric_parse_mode": numeric_final["mode"],
+        "numeric_parse_ambiguous": bool(numeric_final["ambiguous"]),
+        "numeric_parse_ambiguity_reason": numeric_final["ambiguity_reason"],
+        "numeric_parse_candidate_count": int(numeric_final["candidate_count"]),
         "error": error,
     }
 
@@ -287,6 +376,17 @@ def command_is_safe_readonly(command: str) -> bool:
     )
 
 
+def command_executes_sql(command: str) -> bool:
+    """Conservatively identify commands that can have executed extracted SQL."""
+
+    if not _ACTUAL_SQL_EXECUTOR_RE.search(command or ""):
+        return False
+    lowered = (command or "").casefold()
+    if re.search(r"(?:^|[;&|()]\s*)sqlite3\b", lowered):
+        return True
+    return bool(_PYTHON_SQL_EXECUTOR_RE.search(command or ""))
+
+
 def _successful_sql(events: list[dict[str, Any]]) -> tuple[list[str], list[str], list[str]]:
     attempted: list[str] = []
     successful: list[str] = []
@@ -296,11 +396,47 @@ def _successful_sql(events: list[dict[str, Any]]) -> tuple[list[str], list[str],
             continue
         command = str((event.get("arguments") or {}).get("command") or "")
         commands.append(command)
-        event_selects = extract_selects([command])
+        event_selects = extract_selects([command]) if command_executes_sql(command) else []
         attempted.extend(event_selects)
         if event.get("ok"):
             successful.extend(event_selects)
     return attempted, successful, commands
+
+
+def _answer_bearing_and_consistent(
+    rows: list[tuple[Any, ...]],
+    final: dict[str, Any],
+    ground_truth: dict[str, Any],
+) -> tuple[bool, bool]:
+    """Return (answer-bearing, consistent-with-final) for one query result."""
+
+    answer_type = str(final.get("answer_type") or "")
+    abs_tol = float(ground_truth.get("abs_tol", 1e-3))
+    rel_tol = float(ground_truth.get("rel_tol", 1e-5))
+    if answer_type == "numeric":
+        value = final.get("numeric_value")
+        bearing = len(rows) == 1 and len(rows[0]) == 1 and value is not None
+        return bearing, bool(
+            bearing and _full_table_value_equal(rows[0][0], value, abs_tol, rel_tol)
+        )
+    if answer_type == "table" and final.get("correct"):
+        expected = _normalize_full_expected_table(_expected_value(ground_truth))
+        if expected is None:
+            return False, False
+        width = len(expected[0]) if expected else 0
+        bearing = len(rows) == len(expected) and all(len(row) == width for row in rows)
+        ordered, _ = table_order_semantics(ground_truth)
+        return bearing, bool(
+            bearing
+            and semantic_rows_equal(
+                rows,
+                expected,
+                ordered=ordered,
+                abs_tol=abs_tol,
+                rel_tol=rel_tol,
+            )
+        )
+    return False, False
 
 
 def _field_used(sql_text: str, field: str) -> bool:
@@ -350,10 +486,10 @@ def efficiency_score(
     }
 
 
-def _normalized_process_score(components: dict[str, float | None]) -> tuple[float, float]:
+def _normalized_observed_process_score(components: dict[str, float | None]) -> tuple[float, float]:
     applicable = [
         (float(components[name]), weight)
-        for name, weight in PROCESS_WEIGHTS.items()
+        for name, weight in OBSERVED_PROCESS_WEIGHTS.items()
         if components.get(name) is not None
     ]
     weight_sum = sum(weight for _, weight in applicable)
@@ -369,7 +505,7 @@ def compute_trajectory_process_reward(
     extra_info: dict[str, Any],
     **_: Any,
 ) -> dict[str, Any]:
-    """Compute ``R = C + 0.20 * P`` behind fail-closed hard gates."""
+    """Compute ``R = H*C*(1 + alpha*P_verified)`` for a full trajectory."""
 
     del data_source
     final = corrected_final_verifier(solution_str, ground_truth)
@@ -409,8 +545,11 @@ def compute_trajectory_process_reward(
     ordered, _ = table_order_semantics(ground_truth)
     matching_sql = 0
     sql_errors = 0
+    answer_bearing_sql = 0
+    last_answer_bearing_consistent = False
+    last_answer_bearing_index = -1
     if database is not None and gold_ok:
-        for sql in successful_sql:
+        for sql_index, sql in enumerate(successful_sql):
             try:
                 candidate_rows = execute_readonly_sql(
                     database,
@@ -425,6 +564,13 @@ def compute_trajectory_process_reward(
                     rel_tol=rel_tol,
                 ):
                     matching_sql += 1
+                answer_bearing, consistent = _answer_bearing_and_consistent(
+                    candidate_rows, final, ground_truth
+                )
+                if answer_bearing:
+                    answer_bearing_sql += 1
+                    last_answer_bearing_index = sql_index
+                    last_answer_bearing_consistent = consistent
             except (ValueError, OSError, sqlite3.Error):
                 sql_errors += 1
 
@@ -462,9 +608,39 @@ def compute_trajectory_process_reward(
         "fit": float(bool(successful_sql)),
         "efficiency": float(efficiency["score"]),
     }
-    process_score, applicable_weight = _normalized_process_score(process_components)
-    hard_gate = bool(database_available and gold_ok and valid_protocol and readonly_tools)
-    reward = correctness + 0.20 * process_score if hard_gate else 0.0
+    observed_process_score, applicable_weight = _normalized_observed_process_score(
+        process_components
+    )
+    process_verified_applicable = bool(answer_bearing_sql)
+    process_verified = float(
+        process_verified_applicable and last_answer_bearing_consistent
+    )
+    expected_binding = str(ground_truth.get("process_evidence_binding_sha256") or "")
+    actual_binding = evidence_binding_hash(ground_truth)
+    evidence_binding_valid = bool(expected_binding and expected_binding == actual_binding)
+    hard_gate = bool(
+        database_available
+        and gold_ok
+        and valid_protocol
+        and readonly_tools
+        and evidence_binding_valid
+    )
+    try:
+        alpha = float(
+            extra_info.get(
+                "pi_process_bonus_alpha",
+                os.environ.get("PI_PROCESS_BONUS_ALPHA", "0"),
+            )
+        )
+    except (TypeError, ValueError) as exc:
+        raise ValueError("pi_process_bonus_alpha must be numeric") from exc
+    if not 0.0 <= alpha <= MAX_PROCESS_BONUS_ALPHA:
+        raise ValueError(
+            f"pi_process_bonus_alpha must be in [0, {MAX_PROCESS_BONUS_ALPHA}]"
+        )
+    reward = (
+        correctness * (1.0 + alpha * process_verified) if hard_gate else 0.0
+    )
 
     return {
         "score": round(reward, 8),
@@ -476,7 +652,15 @@ def compute_trajectory_process_reward(
         "database_available": float(database_available),
         "safe_readonly_tools": float(readonly_tools),
         "valid_tool_protocol": float(valid_protocol),
-        "process_score": round(process_score, 8),
+        "process_evidence_binding_valid": float(evidence_binding_valid),
+        "process_evidence_binding_sha256": actual_binding,
+        "process_verified": process_verified,
+        "process_verified_applicable": float(process_verified_applicable),
+        "process_bonus_alpha": alpha,
+        "process_bonus_applied": round(alpha * process_verified * correctness, 8),
+        "process_score": round(observed_process_score, 8),
+        "process_score_observed_only": round(observed_process_score, 8),
+        "observed_components_in_reward": 0.0,
         "process_sql": float(process_components["sql"] or 0.0),
         "process_table": float(process_components["table"] or 0.0),
         "process_field": (
@@ -490,6 +674,9 @@ def compute_trajectory_process_reward(
         "attempted_sql_count": float(len(attempted_sql)),
         "successful_sql_count": float(len(successful_sql)),
         "matching_sql_count": float(matching_sql),
+        "answer_bearing_sql_count": float(answer_bearing_sql),
+        "last_answer_bearing_sql_index": float(last_answer_bearing_index),
+        "last_answer_bearing_consistent": float(last_answer_bearing_consistent),
         "sql_replay_error_count": float(sql_errors),
         "required_table_count": float(len(required_tables)),
         "queried_required_table_count": float(len(required_tables & queried_tables)),
@@ -503,6 +690,10 @@ def compute_trajectory_process_reward(
         "efficiency_auto_retry_count": float(efficiency["auto_retry_count"]),
         "has_final_answer": float(bool(final["answer"])),
         "final_answer_match_mode": final["match_mode"],
+        "numeric_final_parse_mode": final["numeric_parse_mode"],
+        "numeric_final_parse_ambiguous": float(final["numeric_parse_ambiguous"]),
+        "numeric_final_parse_ambiguity_reason": final["numeric_parse_ambiguity_reason"],
+        "numeric_final_parse_candidate_count": float(final["numeric_parse_candidate_count"]),
         "table_comparison_mode": (
             "ordered" if final["table_ordered"] else "row_multiset"
         )
@@ -596,6 +787,7 @@ def hard_gate_reason_counts(result: dict[str, Any]) -> Counter[str]:
         "database_available",
         "safe_readonly_tools",
         "valid_tool_protocol",
+        "process_evidence_binding_valid",
     ):
         if not bool(result.get(key)):
             reasons[key] += 1

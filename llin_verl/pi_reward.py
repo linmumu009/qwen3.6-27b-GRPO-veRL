@@ -121,7 +121,16 @@ def extract_selects(commands: Iterable[str]) -> list[str]:
     selects: list[str] = []
     for command in commands:
         for match in re.finditer(
-            r"execute\s*\(\s*([\"']{1,3})((?:SELECT|WITH).*?)\1",
+            r"(?:execute|executemany|read_sql(?:_query)?)\s*\(\s*([\"']{1,3})"
+            r"((?:SELECT|WITH).*?)\1",
+            command,
+            re.IGNORECASE | re.DOTALL,
+        ):
+            selects.append(match.group(2).strip().rstrip(";").strip())
+        # SQLAlchemy is commonly used as ``connection.execute(text("SELECT ..."))``.
+        for match in re.finditer(
+            r"(?:execute|read_sql(?:_query)?)\s*\(\s*(?:text\s*\(\s*)?"
+            r"([\"']{1,3})((?:SELECT|WITH).*?)\1",
             command,
             re.IGNORECASE | re.DOTALL,
         ):
@@ -134,6 +143,11 @@ def extract_selects(commands: Iterable[str]) -> list[str]:
                     selects.append(part)
         for match in re.finditer(r"<<'?([A-Za-z_][A-Za-z0-9_]*)'?\s*\n(.*?)\n\1", command, re.DOTALL):
             body = match.group(2)
+            # Python heredocs are already handled by the execute/read_sql
+            # extractors above. Treating the entire Python suffix as SQL would
+            # manufacture a second malformed statement.
+            if re.search(r"(?:sqlite3\.connect|\.execute\s*\(|read_sql(?:_query)?\s*\()", body, re.IGNORECASE):
+                continue
             for statement in re.finditer(r"\b(?:SELECT|WITH)\b.*?(?=;|$)", body, re.IGNORECASE | re.DOTALL):
                 selects.append(statement.group(0).strip().rstrip(";").strip())
     output: list[str] = []
