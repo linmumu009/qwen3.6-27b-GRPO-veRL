@@ -2,6 +2,11 @@
 
 Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
+## v1.12.18（2026-08-23）
+
+- 修复 fully-async step0 在同批轨迹混有数据库基础设施 UNKNOWN 与正常样本时的可选字段不齐：veRL 奖励入口现在始终提供 `infrastructure_error_type`，正常样本使用空字符串，避免 agent-loop 按首条样本键集合索引后续样本时触发 `KeyError`；tiered-v1 奖励公式、三态判定和训练 mask 均未改变。
+- 新增跨状态 schema 回归：将基础设施 UNKNOWN 放在首条、正常可观测轨迹放在后条，逐键模拟实际 `_postprocess` 聚合并验证所有样本可索引、字段类型仍适合验证指标归约。
+
 ## v1.12.17（2026-08-23）
 
 - 继续收紧 Qwen3.8 tiered-v1 的 veRL 适配：把字典、列表和空值类审计附件规范化为稳定 JSON/`null` 字符串，避免 step0 sealed 指标归约对非数值附件执行 NumPy 均值；`success`、`train_mask`、查询成本、效率项和训练标量仍保持数值类型。

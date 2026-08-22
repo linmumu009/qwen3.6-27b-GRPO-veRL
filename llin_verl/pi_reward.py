@@ -1734,6 +1734,13 @@ def compute_score_tiered_query_cost_v1(
     # alias for per-trajectory dumps; the reward formula itself is unchanged.
     result = dict(result)
     result["tiered_reward"] = result.pop("reward")
+    # The fully-async agent-loop postprocessor takes the keys from the first
+    # trajectory and then indexes every other trajectory with that exact key
+    # set.  ``infrastructure_error_type`` is intentionally emitted only when
+    # task/database validation fails, so a batch whose first sample is UNKNOWN
+    # used to raise KeyError on otherwise-observable samples.  Keep the reward
+    # decision unchanged and make this optional audit field schema-stable.
+    result.setdefault("infrastructure_error_type", "")
     # Validation metrics apply NumPy reductions to every non-string extra.
     # Preserve structured/absent audit values as canonical strings so dicts
     # and None never enter those numeric reductions.  Numeric gate fields

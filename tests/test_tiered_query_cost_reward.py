@@ -248,6 +248,7 @@ def test_verl_entrypoint_avoids_validation_reward_column_collision(tmp_path: Pat
     assert result["hard_unsafe_reason_counts"] == "{}"
     assert result["sampling_policy_version_min"] == "null"
     assert result["sampling_policy_version_max"] == "null"
+    assert result["infrastructure_error_type"] == ""
     assert all(
         isinstance(value, (str, bool, int, float))
         for key, value in result.items()
@@ -270,3 +271,42 @@ def test_verl_entrypoint_avoids_validation_reward_column_collision(tmp_path: Pat
         or all(isinstance(value, (bool, int, float)) for value in values)
         for values in merged.values()
     )
+
+
+def test_verl_entrypoint_has_stable_schema_when_first_sample_is_infrastructure_unknown(
+    tmp_path: Path,
+) -> None:
+    database, truth = fixture(tmp_path)
+    valid_extra = {
+        "pi_tool_events": [event("SELECT SUM(value) FROM fact_metric")],
+        "tool_log_present": True,
+        "tool_protocol_complete": True,
+        "pi_reward_database_path": str(database),
+        "pi_reward_database_root": str(database.parent.parent),
+        "trajectory_timeout": False,
+        "runtime_error": False,
+        "api_error": False,
+    }
+    unknown_extra = dict(valid_extra)
+    unknown_extra["pi_reward_database_path"] = str(tmp_path / "missing.sqlite")
+
+    unknown = compute_score_tiered_query_cost_v1(
+        "dwh", "Final result: 30", truth, unknown_extra
+    )
+    observable = compute_score_tiered_query_cost_v1(
+        "dwh", "Final result: 30", truth, valid_extra
+    )
+
+    assert unknown["judge_state"] == "UNKNOWN"
+    assert unknown["infrastructure_error_type"]
+    assert observable["infrastructure_error_type"] == ""
+    assert unknown.keys() == observable.keys()
+    # Mirror agent_loop.py::_postprocess: keys come from the first sample and
+    # every later sample must be indexable without conditional logic.
+    extras = [unknown, observable]
+    postprocessed = {
+        key: [info[key] for info in extras]
+        for key in extras[0]
+        if key != "score"
+    }
+    assert postprocessed["infrastructure_error_type"][1] == ""
