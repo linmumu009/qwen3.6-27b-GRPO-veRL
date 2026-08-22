@@ -1,0 +1,31 @@
+{
+  "contract": "v15-mixed21-four-exposure-strict-gated-v1",
+  "date": "2026-08-22",
+  "status": "launch_ready",
+  "approved_unique_tasks": 21,
+  "answer_type_counts": {
+    "numeric": 21
+  },
+  "exposures_per_task": 4,
+  "rollout_groups": 84,
+  "responses_per_group": 8,
+  "online_trajectories": 672,
+  "groups_per_optimizer_step": 2,
+  "optimizer_steps": 42,
+  "canary_steps": 5,
+  "conditional_reward_repaired_candidates_included": 0,
+  "reward_contract": "strict-correctness-gated-v3",
+  "scalar_reward": "strict_acc_binary",
+  "process_reward_applied": 0,
+  "uniform_group_advantage": "zero",
+  "uniform_only_optimizer_batch": "skipped",
+  "reference_model": "frozen_same_step120_hf_export",
+  "kl_mode": "fixed_in_reward",
+  "kl_coefficient": 0.001,
+  "staleness_threshold": 0,
+  "trainer_topology": "m05_tp4_pp2_cp2_16npu",
+  "rollout_topology": "m06_tp4_dp4_16npu",
+  "sealed_training_overlap": 0,
+  "promotion_allowed": false,
+  "contains_sensitive_data_or_server_paths": false
+}

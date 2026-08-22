@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from collections import Counter
+import csv
 from functools import lru_cache
 import json
 import math
@@ -622,6 +623,184 @@ def _plain_table_candidates(answer: str) -> list[tuple[str, list[tuple[str, floa
     return [("plain", rows) for rows in blocks if rows]
 
 
+def _full_table_value_equal(left: Any, right: Any, abs_tol: float, rel_tol: float) -> bool:
+    if isinstance(right, (int, float)) and not isinstance(right, bool):
+        number = _single_finite_number(left)
+        if number is None:
+            return False
+        expected = float(right)
+        if math.isclose(number, expected, abs_tol=abs_tol, rel_tol=rel_tol):
+            return True
+        text = str(left)
+        return ("%" in text or "％" in text) and math.isclose(
+            number / 100.0, expected, abs_tol=abs_tol, rel_tol=rel_tol
+        )
+    if right is None:
+        return left is None or _normalize_table_text(left) in {"", "none", "null", "n/a", "na"}
+    return _normalize_table_text(left) == _normalize_table_text(right)
+
+
+def _normalize_full_expected_table(value: Any) -> list[list[Any]] | None:
+    if not isinstance(value, list) or not value:
+        return None
+    if all(isinstance(item, (list, tuple)) for item in value):
+        rows = [list(item) for item in value]
+        return rows if rows and all(len(row) == len(rows[0]) for row in rows) else None
+    if all(isinstance(item, dict) for item in value):
+        keys = list(value[0])
+        if keys and all(list(item) == keys for item in value):
+            return [[item[key] for key in keys] for item in value]
+    return None
+
+
+def _full_table_rows_equal(
+    candidate: list[list[Any]],
+    expected: list[list[Any]],
+    abs_tol: float,
+    rel_tol: float,
+) -> bool:
+    if len(candidate) != len(expected):
+        return False
+    if any(len(left) != len(right) for left, right in zip(candidate, expected, strict=True)):
+        return False
+    return all(
+        _full_table_value_equal(left, right, abs_tol, rel_tol)
+        for left_row, right_row in zip(candidate, expected, strict=True)
+        for left, right in zip(left_row, right_row, strict=True)
+    )
+
+
+def _json_full_table_candidates(answer: str) -> list[list[list[Any]]]:
+    decoder = json.JSONDecoder()
+    output: list[list[list[Any]]] = []
+    seen_spans: set[tuple[int, int]] = set()
+    for start, character in enumerate(answer):
+        if character not in "[{":
+            continue
+        try:
+            payload, length = decoder.raw_decode(answer[start:])
+        except json.JSONDecodeError:
+            continue
+        span = (start, start + length)
+        if span in seen_spans:
+            continue
+        seen_spans.add(span)
+        if isinstance(payload, dict):
+            payload = next(
+                (
+                    payload.get(key)
+                    for key in ("rows", "data", "result", "results")
+                    if isinstance(payload.get(key), list)
+                ),
+                None,
+            )
+        if not isinstance(payload, list) or not payload:
+            continue
+        if all(isinstance(item, list) for item in payload):
+            output.append([list(item) for item in payload])
+        elif all(isinstance(item, dict) for item in payload):
+            keys = list(payload[0])
+            if keys and all(list(item) == keys for item in payload):
+                output.append([[item[key] for key in keys] for item in payload])
+        if len(output) >= 32:
+            break
+    return output
+
+
+def _markdown_full_table_candidates(answer: str) -> list[list[list[Any]]]:
+    lines = answer.splitlines()
+    output: list[list[list[Any]]] = []
+    for index in range(1, len(lines)):
+        separators = _markdown_cells(lines[index]) if "|" in lines[index] else []
+        if not separators or not all(
+            _MARKDOWN_SEPARATOR_RE.fullmatch(cell.replace(" ", "")) for cell in separators
+        ):
+            continue
+        header = _markdown_cells(lines[index - 1])
+        if len(header) != len(separators):
+            continue
+        rows: list[list[Any]] = []
+        for line in lines[index + 1 :]:
+            if "|" not in line:
+                break
+            cells = _markdown_cells(line)
+            if len(cells) != len(header):
+                break
+            rows.append(cells)
+        if rows:
+            output.append(rows)
+
+    block: list[list[Any]] = []
+    for line in lines + [""]:
+        cells = _markdown_cells(line) if "|" in line else []
+        if len(cells) >= 2 and (not block or len(cells) == len(block[0])):
+            block.append(cells)
+        else:
+            if len(block) >= 2:
+                output.extend([block, block[1:]])
+            block = []
+    return output
+
+
+def _delimited_full_table_candidates(answer: str) -> list[list[list[Any]]]:
+    output: list[list[list[Any]]] = []
+    for delimiter in ("\t", ","):
+        block: list[list[Any]] = []
+        for line in answer.splitlines() + [""]:
+            if delimiter not in line:
+                if len(block) >= 2:
+                    output.extend([block, block[1:]])
+                block = []
+                continue
+            try:
+                cells = next(csv.reader([line], delimiter=delimiter))
+            except csv.Error:
+                cells = []
+            cells = [cell.strip() for cell in cells]
+            if len(cells) >= 2 and (not block or len(cells) == len(block[0])):
+                block.append(cells)
+            else:
+                if len(block) >= 2:
+                    output.extend([block, block[1:]])
+                block = []
+    return output
+
+
+def _drop_full_table_rank_column(rows: list[list[Any]], expected_width: int) -> list[list[Any]]:
+    if not rows or len(rows[0]) != expected_width + 1:
+        return rows
+    for column in range(len(rows[0])):
+        ranks = [_integer_rank(row[column]) for row in rows]
+        if ranks == list(range(1, len(rows) + 1)):
+            return [row[:column] + row[column + 1 :] for row in rows]
+    return rows
+
+
+def _strict_full_table_answer_match(
+    answer: str,
+    expected_value: Any,
+    abs_tol: float,
+    rel_tol: float,
+) -> tuple[bool, str, int]:
+    """Compare every ordered row and column of a general two-dimensional gold."""
+
+    expected = _normalize_full_expected_table(expected_value)
+    if expected is None:
+        return False, "invalid_gold", 0
+    candidates = [
+        *(("markdown_full", rows) for rows in _markdown_full_table_candidates(answer)),
+        *(("json_full", rows) for rows in _json_full_table_candidates(answer)),
+        *(("delimited_full", rows) for rows in _delimited_full_table_candidates(answer)),
+    ]
+    largest = max((len(rows) for _, rows in candidates), default=0)
+    expected_width = len(expected[0])
+    for mode, rows in candidates:
+        rows = _drop_full_table_rank_column(rows, expected_width)
+        if _full_table_rows_equal(rows, expected, abs_tol, rel_tol):
+            return True, mode, len(rows)
+    return False, "none", largest
+
+
 def strict_table_answer_match(
     answer: str,
     expected: list[Any],
@@ -670,6 +849,31 @@ def strict_table_answer_match(
         ):
             return True, mode, len(rows)
     return False, "none", largest
+
+
+def strict_table_answer_match_complete(
+    answer: str,
+    expected: list[Any],
+    abs_tol: float,
+    rel_tol: float,
+) -> tuple[bool, str, int]:
+    """Use the legacy category/value route or exact general full-table route.
+
+    Keeping this as a new entry point preserves historical banded-v2 label
+    reproducibility while strict-correctness-v3 opts into the repaired all-row,
+    all-column comparator.
+    """
+
+    is_category_value_gold = all(
+        isinstance(item, dict)
+        and set(item).issubset({"category", "date", "value"})
+        and "value" in item
+        and ("category" in item or "date" in item)
+        for item in expected
+    )
+    if is_category_value_gold:
+        return strict_table_answer_match(answer, expected, abs_tol, rel_tol)
+    return _strict_full_table_answer_match(answer, expected, abs_tol, rel_tol)
 
 
 def _table_answer_correct(
@@ -924,6 +1128,7 @@ def compute_score(
     _dense_weight_override: float | None = None,
     _banded_reward_override: bool | None = None,
     _reward_contract_override: str | None = None,
+    _strict_full_table_override: bool = False,
     **_: Any,
 ) -> dict[str, Any]:
     """Return the boss-primary online reward and strict guardrail metrics.
@@ -964,7 +1169,12 @@ def compute_score(
     final_answer_match_mode = "numeric" if answer_type == "numeric" else "none"
     strict_table_rows_parsed = 0
     if answer_type == "table" and isinstance(expected_value, list):
-        answer_ok, final_answer_match_mode, strict_table_rows_parsed = strict_table_answer_match(
+        table_matcher = (
+            strict_table_answer_match_complete
+            if _strict_full_table_override
+            else strict_table_answer_match
+        )
+        answer_ok, final_answer_match_mode, strict_table_rows_parsed = table_matcher(
             answer,
             expected_value,
             abs_tol,
@@ -1120,6 +1330,7 @@ def compute_score(
         "final_answer_correct": float(answer_ok),
         "final_answer_match_mode": final_answer_match_mode,
         "strict_table_rows_parsed": float(strict_table_rows_parsed),
+        "strict_full_table_verifier_enabled": float(_strict_full_table_override),
         "sql_evidence_correct": float(sql_evidence),
         "sql_evidence_mode": evidence_mode,
         "sql_evidence_queries_checked": float(sql_evidence_queries_checked),
@@ -1231,3 +1442,35 @@ def compute_score_banded_v2(
         _reward_contract_override="banded-v2-strict-table-v1",
         **kwargs,
     )
+
+
+def compute_score_strict_correctness_v3(
+    data_source: str,
+    solution_str: str,
+    ground_truth: dict[str, Any],
+    extra_info: dict[str, Any],
+    **kwargs: Any,
+) -> dict[str, Any]:
+    """Binary strict-outcome reward for collapse-safe GRPO.
+
+    The full banded-v2 verifier still computes and records safety, SQL evidence,
+    table completeness, boss/process and efficiency metrics.  Only the strict
+    ``acc`` bit enters the scalar reward.  Process quality therefore cannot
+    compensate for a wrong final outcome; the group-level variance patch then
+    masks both all-wrong and all-correct prompt groups after KL assembly.
+    """
+
+    result = compute_score_banded_v2(
+        data_source,
+        solution_str,
+        ground_truth,
+        extra_info,
+        _strict_full_table_override=True,
+        **kwargs,
+    )
+    strict_correct = float(result["acc"])
+    result["process_reward_observed"] = float(result["base_score"])
+    result["process_reward_applied"] = 0.0
+    result["score"] = strict_correct
+    result["reward_contract"] = "strict-correctness-gated-v3"
+    return result
