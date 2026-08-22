@@ -28,7 +28,7 @@ from llin_verl.outcome_shadow import score_final_outcome
 from llin_verl.pi_reward import extract_answer_numbers, extract_final_assistant_answer
 
 
-CONTRACT = "dwh-grpo-readiness-audit-v2"
+CONTRACT = "dwh-grpo-readiness-audit-v3"
 SCOPE_BUCKETS = {"mixed", "all_wrong"}
 SAFE_REVIEW_VALUES = {"strict_checker_pass", "manual_pair_review_pass"}
 _TABLE_RE = re.compile(r"\b(?:from|join)\s+[`\"\[]?([A-Za-z_][A-Za-z0-9_]*)", re.I)
@@ -412,6 +412,37 @@ def source_semantic_checks(task: dict[str, Any]) -> dict[str, bool]:
     }
 
 
+def approved_candidate_completeness_checks(row: dict[str, Any]) -> dict[str, bool]:
+    prompt = row.get("prompt") or []
+    ground_truth = (row.get("reward_model") or {}).get("ground_truth") or {}
+    extra = row.get("extra_info") or {}
+    expected_json = ground_truth.get("expected_value_json")
+    expected_json_valid = False
+    if isinstance(expected_json, str) and expected_json.strip():
+        try:
+            json.loads(expected_json)
+            expected_json_valid = True
+        except json.JSONDecodeError:
+            expected_json_valid = False
+    return {
+        "prompt_complete": bool(prompt)
+        and all(
+            isinstance(message, dict)
+            and str(message.get("role") or "").strip()
+            and str(message.get("content") or "").strip()
+            for message in prompt
+        ),
+        "verification_sql_complete": bool(
+            str(ground_truth.get("verification_sql") or "").strip()
+        ),
+        "gold_complete": expected_json_valid,
+        "instruction_hash_complete": bool(
+            str(extra.get("instruction_sha256") or "").strip()
+        ),
+        "gold_hash_complete": bool(str(extra.get("gold_sha256") or "").strip()),
+    }
+
+
 def replay_gold(
     connection: sqlite3.Connection,
     task: dict[str, Any],
@@ -467,6 +498,7 @@ def audit(
     *,
     expected_tasks: int = 100,
     samples_per_task: int = 8,
+    expected_approved_total: int | None = None,
 ) -> dict[str, Any]:
     dataset_table = pq.read_table(dataset_path)
     dataset = dataset_table.to_pylist()
@@ -501,6 +533,8 @@ def audit(
     all_wrong_rows: list[dict[str, Any]] = []
     approved_dataset_rows: list[dict[str, Any]] = []
     reward_repaired_mixed_dataset_rows: list[dict[str, Any]] = []
+    approved43_dataset_rows: list[dict[str, Any]] = []
+    approved43_manifest_rows: list[dict[str, Any]] = []
     mixed_dispositions: Counter[str] = Counter()
     all_wrong_causes: Counter[str] = Counter()
     all_wrong_secondary: Counter[str] = Counter()
@@ -517,6 +551,7 @@ def audit(
     trajectory_signals: Counter[str] = Counter()
     gold_replay_passes = semantic_passes = reward_route_passes = 0
     scope_counts: Counter[str] = Counter()
+    original_bucket_counts = Counter(str(row["bucket"]) for row in per_task)
 
     connection = sqlite3.connect(f"file:{database_path.as_posix()}?mode=ro", uri=True)
     connection.execute("PRAGMA query_only=ON")
@@ -763,6 +798,53 @@ def audit(
                     approved_dataset_rows.append(approved)
             else:
                 all_wrong_rows.append(evidence)
+            if disposition == "可训练" or (
+                original_bucket == "all_wrong"
+                and audited_bucket == "mixed"
+                and root_cause == "奖励器假阴性"
+            ):
+                requires_corrected_table_verifier = original_bucket == "all_wrong"
+                approved43 = json.loads(json.dumps(dataset_row, ensure_ascii=False))
+                approved43["extra_info"]["explicit_semantic_reviewed"] = True
+                approved43["extra_info"]["training_allowed"] = False
+                approved43["extra_info"]["promotion_allowed"] = False
+                approved43_dataset_rows.append(approved43)
+                approved43_manifest_rows.append(
+                    {
+                        "candidate_key_sha256": canonical_hash(
+                            {
+                                "instruction_sha256": dataset_row["extra_info"][
+                                    "instruction_sha256"
+                                ],
+                                "gold_sha256": dataset_row["extra_info"]["gold_sha256"],
+                            }
+                        ),
+                        "instruction_sha256": dataset_row["extra_info"][
+                            "instruction_sha256"
+                        ],
+                        "gold_sha256": dataset_row["extra_info"]["gold_sha256"],
+                        "approval_source": (
+                            "original_mixed_audit"
+                            if not requires_corrected_table_verifier
+                            else "reward_false_negative_repair"
+                        ),
+                        "answer_type": truth.get("answer_type"),
+                        "audited_correct_count": audited_correct_count,
+                        "gold_replay_passed": gold_replay_pass,
+                        "semantic_and_plan_passed": semantic_pass,
+                        "dataset_binding_passed": binding_pass,
+                        "requires_corrected_table_verifier": (
+                            requires_corrected_table_verifier
+                        ),
+                        "reward_route_contract": (
+                            "verified_numeric_final_result_v1"
+                            if not requires_corrected_table_verifier
+                            else "corrected_full_table_ordered_v1"
+                        ),
+                        "training_allowed": False,
+                        "promotion_allowed": False,
+                    }
+                )
     finally:
         connection.close()
 
@@ -779,6 +861,54 @@ def audit(
         reward_repaired_mixed_dataset_rows,
         dataset_table.schema,
     )
+    approved43_path = private_dir / "grpo_approved43.sensitive.parquet"
+    approved43_manifest_path = private_dir / "grpo_approved43_manifest.sensitive.jsonl"
+    if len(approved43_dataset_rows) != len(approved43_manifest_rows):
+        raise ValueError("approved dataset and manifest row counts differ")
+    if expected_approved_total is not None and len(approved43_dataset_rows) != int(
+        expected_approved_total
+    ):
+        raise ValueError("approved candidate count does not match expected total")
+    instruction_hashes = [
+        str(row["extra_info"]["instruction_sha256"]) for row in approved43_dataset_rows
+    ]
+    candidate_keys = [row["candidate_key_sha256"] for row in approved43_manifest_rows]
+    if len(set(instruction_hashes)) != len(instruction_hashes):
+        raise ValueError("approved candidates do not have unique instructions")
+    if len(set(candidate_keys)) != len(candidate_keys):
+        raise ValueError("approved candidates do not have unique instruction/gold identities")
+    completeness = [
+        approved_candidate_completeness_checks(row) for row in approved43_dataset_rows
+    ]
+    if not all(all(checks.values()) for checks in completeness):
+        raise ValueError("approved candidate prompt, SQL, gold, or hashes are incomplete")
+    if not all(
+        row["gold_replay_passed"]
+        and row["semantic_and_plan_passed"]
+        and row["dataset_binding_passed"]
+        and 1 <= int(row["audited_correct_count"]) < samples_per_task
+        for row in approved43_manifest_rows
+    ):
+        raise ValueError("approved manifest contains a candidate that failed audit gates")
+    if not all(
+        not bool(row["extra_info"].get("training_allowed"))
+        for row in approved43_dataset_rows
+    ):
+        raise ValueError("approved derived copy changed training_allowed")
+    write_private_parquet(approved43_path, approved43_dataset_rows, dataset_table.schema)
+    write_private_jsonl(approved43_manifest_path, approved43_manifest_rows)
+
+    approved_source_counts = Counter(
+        row["approval_source"] for row in approved43_manifest_rows
+    )
+    approved_answer_type_counts = Counter(
+        str(row["answer_type"]) for row in approved43_manifest_rows
+    )
+    corrected_table_rows = [
+        row
+        for row in approved43_manifest_rows
+        if row["requires_corrected_table_verifier"]
+    ]
 
     summary: dict[str, Any] = {
         "contract": CONTRACT,
@@ -847,6 +977,8 @@ def audit(
             "reward_repaired_mixed_candidate_rows": len(
                 reward_repaired_mixed_dataset_rows
             ),
+            "approved43_candidate_rows": len(approved43_dataset_rows),
+            "approved43_manifest_rows": len(approved43_manifest_rows),
             "private_files_emitted": True,
             "private_paths_emitted": False,
         },
@@ -872,6 +1004,45 @@ def audit(
             + len(reward_repaired_mixed_dataset_rows),
             "conditional_candidates_blocked_until_reward_route_fixed": len(
                 reward_repaired_mixed_dataset_rows
+            ),
+        },
+        "approved43_package": {
+            "rows": len(approved43_dataset_rows),
+            "unique_instruction_hashes": len(set(instruction_hashes)),
+            "unique_instruction_gold_identities": len(set(candidate_keys)),
+            "source_counts": dict(sorted(approved_source_counts.items())),
+            "answer_type_counts": dict(sorted(approved_answer_type_counts.items())),
+            "complete_prompt_sql_gold_rows": sum(
+                all(checks.values()) for checks in completeness
+            ),
+            "gold_replay_passed_rows": sum(
+                bool(row["gold_replay_passed"]) for row in approved43_manifest_rows
+            ),
+            "corrected_table_verifier_rows": len(corrected_table_rows),
+            "corrected_table_verifier_replay_passed_rows": sum(
+                row["reward_route_contract"] == "corrected_full_table_ordered_v1"
+                and bool(row["gold_replay_passed"])
+                and 1 <= int(row["audited_correct_count"]) < samples_per_task
+                for row in corrected_table_rows
+            ),
+            "training_allowed_false_rows": sum(
+                not bool(row["extra_info"].get("training_allowed"))
+                for row in approved43_dataset_rows
+            ),
+            "parquet_sha256": file_sha256(approved43_path),
+            "manifest_sha256": file_sha256(approved43_manifest_path),
+            "private_paths_emitted": False,
+            "promotion_allowed": False,
+        },
+        "approved43_exclusions": {
+            "reward_repair_all_correct": all_wrong_audited_buckets.get(
+                "all_correct", 0
+            ),
+            "true_high_difficulty": all_wrong_causes.get("真实高难", 0),
+            "model_tool_or_sql_error": all_wrong_causes.get("模型工具/SQL错误", 0),
+            "timed_out_original_bucket": original_bucket_counts.get("timed_out", 0),
+            "original_all_correct_outside_scope": original_bucket_counts.get(
+                "all_correct", 0
             ),
         },
         "training_allowed": False,
@@ -900,6 +1071,7 @@ def main() -> None:
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--expected-tasks", type=int, default=100)
     parser.add_argument("--samples-per-task", type=int, default=8)
+    parser.add_argument("--expected-approved-total", type=int)
     args = parser.parse_args()
     audit(
         args.dataset,
@@ -910,6 +1082,7 @@ def main() -> None:
         args.output_dir,
         expected_tasks=args.expected_tasks,
         samples_per_task=args.samples_per_task,
+        expected_approved_total=args.expected_approved_total,
     )
 
 

@@ -29,8 +29,37 @@
       "模型最终答案格式错误": 2
     }
   },
+  "approved43_exclusions": {
+    "model_tool_or_sql_error": 5,
+    "original_all_correct_outside_scope": 30,
+    "reward_repair_all_correct": 5,
+    "timed_out_original_bucket": 2,
+    "true_high_difficulty": 15
+  },
+  "approved43_package": {
+    "answer_type_counts": {
+      "numeric": 21,
+      "table": 22
+    },
+    "complete_prompt_sql_gold_rows": 43,
+    "corrected_table_verifier_replay_passed_rows": 22,
+    "corrected_table_verifier_rows": 22,
+    "gold_replay_passed_rows": 43,
+    "manifest_sha256": "1426bc09a3dbaf4709fd89227790603afb7a2bf11beeba80946057d490e0f424",
+    "parquet_sha256": "d86b53d906806b150d43a508dce9b0dd6d05105c07e03961e8e7bf9439ccd944",
+    "private_paths_emitted": false,
+    "promotion_allowed": false,
+    "rows": 43,
+    "source_counts": {
+      "original_mixed_audit": 21,
+      "reward_false_negative_repair": 22
+    },
+    "training_allowed_false_rows": 43,
+    "unique_instruction_gold_identities": 43,
+    "unique_instruction_hashes": 43
+  },
   "contains_prompts_sql_gold_values_task_ids_final_answers_or_tool_outputs": false,
-  "contract": "dwh-grpo-readiness-audit-v2",
+  "contract": "dwh-grpo-readiness-audit-v3",
   "evidence_chain": {
     "audited_correct_count_histogram": {
       "0": 20,
@@ -125,6 +154,8 @@
   },
   "private_outputs": {
     "all_wrong_root_cause_rows": 47,
+    "approved43_candidate_rows": 43,
+    "approved43_manifest_rows": 43,
     "approved_candidate_rows": 21,
     "mixed_decision_rows": 21,
     "private_files_emitted": true,

@@ -207,6 +207,7 @@ def test_audit_routes_mixed_and_all_wrong_without_leaking_sensitive_rows(tmp_pat
         output,
         expected_tasks=3,
         samples_per_task=8,
+        expected_approved_total=2,
     )
 
     assert summary["mixed_review"]["disposition_counts"] == {"可训练": 1}
@@ -223,6 +224,26 @@ def test_audit_routes_mixed_and_all_wrong_without_leaking_sensitive_rows(tmp_pat
         "directly_audited_mixed_candidates": 1,
         "reward_repair_conditional_mixed_candidates": 1,
         "total_nonzero_variance_candidates_after_reward_repair": 2,
+    }
+    assert summary["approved43_package"]["rows"] == 2
+    assert summary["approved43_package"]["unique_instruction_hashes"] == 2
+    assert summary["approved43_package"]["unique_instruction_gold_identities"] == 2
+    assert summary["approved43_package"]["complete_prompt_sql_gold_rows"] == 2
+    assert summary["approved43_package"]["gold_replay_passed_rows"] == 2
+    assert summary["approved43_package"]["corrected_table_verifier_rows"] == 1
+    assert (
+        summary["approved43_package"][
+            "corrected_table_verifier_replay_passed_rows"
+        ]
+        == 1
+    )
+    assert summary["approved43_package"]["training_allowed_false_rows"] == 2
+    assert summary["approved43_exclusions"] == {
+        "model_tool_or_sql_error": 0,
+        "original_all_correct_outside_scope": 0,
+        "reward_repair_all_correct": 0,
+        "timed_out_original_bucket": 0,
+        "true_high_difficulty": 1,
     }
     assert summary["evidence_chain"]["legacy_to_audited_correct_count"] == {
         "0->0": 1,
@@ -249,6 +270,21 @@ def test_audit_routes_mixed_and_all_wrong_without_leaking_sensitive_rows(tmp_pat
     ).to_pylist()
     assert len(repaired) == 1
     assert repaired[0]["extra_info"]["training_allowed"] is False
+    approved43 = pq.read_table(
+        output / "private/grpo_approved43.sensitive.parquet"
+    ).to_pylist()
+    assert len(approved43) == 2
+    manifest = [
+        json.loads(line)
+        for line in (
+            output / "private/grpo_approved43_manifest.sensitive.jsonl"
+        ).read_text(encoding="utf-8").splitlines()
+    ]
+    assert len(manifest) == 2
+    assert {row["reward_route_contract"] for row in manifest} == {
+        "corrected_full_table_ordered_v1",
+        "verified_numeric_final_result_v1",
+    }
 
     safe_text = (output / "safe_summary.json").read_text(encoding="utf-8")
     assert "private-mixed-secret" not in safe_text
