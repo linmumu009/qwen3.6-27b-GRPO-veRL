@@ -1,9 +1,10 @@
 """Fail-closed GRPO group gating for strict outcome supervision.
 
-The reward function emits a binary ``acc`` value for every trajectory.  This
-module keeps only prompt groups containing both a strict failure and a strict
-success.  Uniform groups are masked out after all reward/KL processing so they
-cannot acquire an advantage from process proxies or the KL penalty.
+Current three-state reward functions emit a binary ``success`` value plus a
+``train_mask``; legacy rewards emit ``acc``.  This module keeps only prompt
+groups containing both a strict failure and a strict success.  Uniform groups
+are masked out after all reward/KL processing so they cannot acquire an
+advantage from process proxies or the KL penalty.
 """
 
 from __future__ import annotations
@@ -110,8 +111,6 @@ def apply_strict_correctness_group_gate(batch: Any) -> tuple[Any, dict[str, floa
 
     if "uid" not in batch.non_tensor_batch:
         raise KeyError("strict GRPO gate requires non_tensor_batch['uid']")
-    if "acc" not in batch.non_tensor_batch:
-        raise KeyError("strict GRPO gate requires reward extra field 'acc'")
     if not {"advantages", "returns", "response_mask"}.issubset(batch.batch):
         raise KeyError(
             "strict GRPO gate requires advantages, returns, and response_mask "
@@ -133,7 +132,9 @@ def apply_strict_correctness_group_gate(batch: Any) -> tuple[Any, dict[str, floa
             ]
     success_values = batch.non_tensor_batch.get("success")
     if success_values is None:
-        success_values = batch.non_tensor_batch["acc"]
+        success_values = batch.non_tensor_batch.get("acc")
+    if success_values is None:
+        raise KeyError("strict GRPO gate requires reward extra field 'success' or 'acc'")
     train_mask_values = batch.non_tensor_batch.get("train_mask")
     if train_mask_values is None:
         train_mask_values = batch.non_tensor_batch.get("online_eligible")

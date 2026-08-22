@@ -2,6 +2,11 @@
 
 Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
+## v1.12.21（2026-08-23）
+
+- 修复 Qwen3.8 tiered-v1 正式训练首个严格组门的遗留字段断言：三态奖励现在可直接以 `success`/`train_mask` 完成 mixed 与 UNKNOWN 门控，不再错误要求旧奖励专用的 `acc`；旧奖励仍可回退使用 `acc`。
+- 新增无 `acc` 的三态 mixed-group 回归，验证优势、returns 和 response mask 均保持有效；冻结 tiered-v1 奖励公式、UNKNOWN fail-closed 行为和 optimizer 跳过合同均未改变。
+
 ## v1.12.20（2026-08-23）
 
 - 补齐 Qwen3.8 正式 fully-async 训练的冻结参考模型 Attention 合同：actor 已启用的 MindSpeed Flash Attention 现在同样显式应用到 ref，避免首个训练批次计算参考 log-prob 时因 ref 配置缺少 `use_flash_attn`/`micro_batch_size` 而在参数更新前退出。
