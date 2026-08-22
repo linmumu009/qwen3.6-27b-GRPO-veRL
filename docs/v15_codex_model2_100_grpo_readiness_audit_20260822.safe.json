@@ -1,0 +1,158 @@
+{
+  "all_wrong_review": {
+    "answer_type_by_primary_root_cause": {
+      "numeric": {
+        "模型工具/SQL错误": 2,
+        "真实高难": 1
+      },
+      "table": {
+        "奖励器假阴性": 27,
+        "模型工具/SQL错误": 3,
+        "真实高难": 14
+      }
+    },
+    "audited_bucket_counts": {
+      "all_correct": 5,
+      "all_wrong": 20,
+      "mixed": 22
+    },
+    "primary_root_cause_counts": {
+      "奖励器假阴性": 27,
+      "模型工具/SQL错误": 5,
+      "真实高难": 15
+    },
+    "reviewed": 47,
+    "reward_repair_conditional_mixed_candidates": 22,
+    "secondary_signal_counts": {
+      "奖励器假阴性": 27,
+      "模型工具/SQL错误": 10,
+      "模型最终答案格式错误": 2
+    }
+  },
+  "contains_prompts_sql_gold_values_task_ids_final_answers_or_tool_outputs": false,
+  "contract": "dwh-grpo-readiness-audit-v2",
+  "evidence_chain": {
+    "audited_correct_count_histogram": {
+      "0": 20,
+      "1": 2,
+      "2": 3,
+      "3": 11,
+      "4": 3,
+      "5": 6,
+      "6": 7,
+      "7": 11,
+      "8": 5
+    },
+    "audited_correct_histogram_by_scope_and_answer_type": {
+      "all_wrong|numeric|0": 3,
+      "all_wrong|table|0": 17,
+      "all_wrong|table|1": 1,
+      "all_wrong|table|2": 3,
+      "all_wrong|table|3": 6,
+      "all_wrong|table|5": 3,
+      "all_wrong|table|6": 5,
+      "all_wrong|table|7": 4,
+      "all_wrong|table|8": 5,
+      "mixed|numeric|1": 1,
+      "mixed|numeric|3": 5,
+      "mixed|numeric|4": 3,
+      "mixed|numeric|5": 3,
+      "mixed|numeric|6": 2,
+      "mixed|numeric|7": 7
+    },
+    "dataset_binding_failure_counts": {},
+    "format_valid_count_histogram_by_scope_and_answer_type": {
+      "all_wrong|numeric|8": 3,
+      "all_wrong|table|7": 2,
+      "all_wrong|table|8": 42,
+      "mixed|numeric|5": 1,
+      "mixed|numeric|6": 1,
+      "mixed|numeric|8": 19
+    },
+    "gold_replay_passed": 68,
+    "legacy_to_audited_correct_count": {
+      "0->0": 20,
+      "0->1": 1,
+      "0->2": 3,
+      "0->3": 6,
+      "0->5": 3,
+      "0->6": 5,
+      "0->7": 4,
+      "0->8": 5,
+      "1->1": 1,
+      "3->3": 5,
+      "4->4": 3,
+      "5->5": 3,
+      "6->6": 2,
+      "7->7": 7
+    },
+    "plan_check_failure_counts": {},
+    "reward_route_passed": 41,
+    "semantic_plan_and_binding_passed": 68,
+    "source_check_failure_counts": {},
+    "trajectory_signal_counts": {
+      "environment_error_marker": 5,
+      "format_valid": 537,
+      "reviewed": 544,
+      "runtime_error": 0,
+      "sql_error_marker": 13,
+      "timeout": 0
+    }
+  },
+  "explicit_semantic_review_completed": true,
+  "grpo_readiness": {
+    "conditional_candidates_blocked_until_reward_route_fixed": 22,
+    "directly_audited_mixed_candidates": 21,
+    "reward_repair_conditional_mixed_candidates": 22,
+    "total_nonzero_variance_candidates_after_reward_repair": 43
+  },
+  "input_hashes": {
+    "database_sha256": "6d9c90cb5869dca751ba4865d4e682578105f984b52837a7f75adfdc8d9ef5f8",
+    "dataset_sha256": "c0befda32166340bf68e6b948a1e8fcc6f8f0887d7a5f38a4e6b1051b8f9f7af",
+    "per_task_sha256": "77f1daf627cdd170212504c34490d3724db0fae243e35f789dcb4028b8b99d57",
+    "shards_set_sha256": "2c9f75cd10810a6f44c369a546bffc6d9351398b01ea03a4efdc439909ad68ce",
+    "tasks_sha256": "096e6be41c10c4b4c340e941d34533a76d181eb3879dfd2c4ea72639b3ae1e7f"
+  },
+  "mixed_review": {
+    "all_eight_labels_reviewed_per_task": true,
+    "approved_candidates": 21,
+    "disposition_counts": {
+      "可训练": 21
+    },
+    "nonapproval_signal_counts": {},
+    "original_training_allowed_modified": false,
+    "reviewed": 21
+  },
+  "private_outputs": {
+    "all_wrong_root_cause_rows": 47,
+    "approved_candidate_rows": 21,
+    "mixed_decision_rows": 21,
+    "private_files_emitted": true,
+    "private_paths_emitted": false,
+    "reward_repaired_mixed_candidate_rows": 22,
+    "task_audit_rows": 68
+  },
+  "promotion_allowed": false,
+  "review_dimensions": [
+    "instruction_evidence_plan_sql_alignment",
+    "full_gold_sql_replay",
+    "full_column_table_comparison",
+    "numeric_tolerance",
+    "date_group_aggregate_order_topn_percentage",
+    "final_answer_format",
+    "all_eight_trajectory_labels",
+    "runtime_timeout_and_tool_sql_errors"
+  ],
+  "source": {
+    "complete_shards": 17,
+    "expected_tasks": 100,
+    "original_scope_buckets": {
+      "all_wrong": 47,
+      "mixed": 21
+    },
+    "samples_per_task": 8,
+    "scope_tasks": 68,
+    "trajectory_slots": 800
+  },
+  "training_allowed": false
+}
