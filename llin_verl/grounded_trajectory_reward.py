@@ -18,6 +18,7 @@ import math
 import re
 import sqlite3
 from pathlib import Path
+from pathlib import PurePosixPath
 from typing import Any, Iterable
 
 from llin_verl.outcome_gated_contract import evidence_binding_hash
@@ -29,7 +30,7 @@ from llin_verl.pi_reward import (
     extract_selects,
     table_order_semantics,
 )
-from llin_verl.pi_tool_contract import extract_table_names
+from llin_verl.pi_tool_contract import command_unsafe_reasons, extract_table_names
 from llin_verl.trajectory_process_reward import (
     PROTOCOL_TOOLS,
     _event_schema_valid,
@@ -38,7 +39,6 @@ from llin_verl.trajectory_process_reward import (
     _gold_sql_self_consistent,
     _resolve_database,
     command_executes_sql,
-    command_is_safe_readonly,
     corrected_final_verifier,
     semantic_rows_equal,
 )
@@ -350,8 +350,32 @@ def _task_validity(
         return StateDecision(JudgeState.UNKNOWN, "database_or_gold_unavailable"), None, [], details
 
 
+def _model_workspace_path_state(raw_value: Any) -> str:
+    """Classify one model-authored file target without touching the filesystem."""
+
+    if not isinstance(raw_value, str) or not raw_value.strip() or "\x00" in raw_value:
+        return "unknown"
+    raw = raw_value.strip().replace("\\", "/")
+    if raw.startswith("/") and raw != "/workspace" and not raw.startswith("/workspace/"):
+        return "outside"
+    relative = raw[len("/workspace/") :] if raw.startswith("/workspace/") else "" if raw == "/workspace" else raw
+    depth = 0
+    for part in PurePosixPath(relative).parts:
+        if part in {"", "."}:
+            continue
+        if part == "..":
+            if depth == 0:
+                return "outside"
+            depth -= 1
+        else:
+            depth += 1
+    return "inside"
+
+
 def _observability_and_safety(
-    events: Any, extra_info: dict[str, Any]
+    events: Any,
+    extra_info: dict[str, Any],
+    ground_truth: dict[str, Any],
 ) -> tuple[StateDecision, list[dict[str, Any]], dict[str, Any]]:
     values = events if isinstance(events, list) else []
     log_present = bool(extra_info.get("pi_tool_log_present", "pi_tool_events" in extra_info))
@@ -369,6 +393,10 @@ def _observability_and_safety(
         "malformed_model_attributed_count": 0,
         "malformed_source_unattributed_count": 0,
         "unsafe_tool_event_count": 0,
+        "hard_unsafe_reason_counts": {},
+        "workspace_binding_complete": False,
+        "runtime_wrapper_event_count": 0,
+        "runtime_wrapper_events_excluded_from_reward": True,
     }
     if not log_present or timed_out or runtime_error:
         return StateDecision(JudgeState.UNKNOWN, "trajectory_log_or_runtime_incomplete"), values, details
@@ -401,19 +429,88 @@ def _observability_and_safety(
             JudgeState.UNKNOWN, "shadow_or_unattributed_tool_parse_failure"
         ), values, details
 
+    wrapper_events = extra_info.get("pi_runtime_wrapper_events")
+    wrapper_events = wrapper_events if isinstance(wrapper_events, list) else []
+    details["runtime_wrapper_event_count"] = len(wrapper_events)
+    if values:
+        event_contract = str(extra_info.get("pi_tool_event_contract") or "")
+        request_id = str(extra_info.get("pi_workspace_request_id") or "")
+        environment_id = str(extra_info.get("pi_environment_id") or "")
+        expected_environment_id = str(ground_truth.get("environment_id") or "")
+        released = bool(extra_info.get("pi_workspace_released"))
+        runtime_source = str(extra_info.get("pi_tool_event_source") or "").startswith(
+            "runtime_structured"
+        )
+        model_bindings = all(
+            str(event.get("source") or "").startswith("runtime_structured")
+            and event.get("command_origin") == "model"
+            and event.get("workspace_request_id") == request_id
+            and event.get("environment_id") == environment_id
+            for event in values
+        )
+        wrapper_bindings = (
+            len(wrapper_events) == len(values)
+            and {int(event.get("model_event_index", -1)) for event in wrapper_events}
+            == set(range(len(values)))
+            and all(
+                event.get("source") == "runtime_wrapper"
+                and event.get("workspace_request_id") == request_id
+                and event.get("environment_id") == environment_id
+                and bool(event.get("assigned_workspace_root"))
+                and bool(event.get("target_path_classification"))
+                for event in wrapper_events
+            )
+        )
+        binding_complete = (
+            runtime_source
+            and event_contract == "runtime-captured-structured-tool-events-v3"
+            and bool(request_id)
+            and bool(environment_id)
+            and environment_id == expected_environment_id
+            and released
+            and model_bindings
+            and wrapper_bindings
+        )
+        details["workspace_binding_complete"] = binding_complete
+        if not binding_complete:
+            return StateDecision(
+                JudgeState.UNKNOWN, "workspace_or_event_provenance_incomplete"
+            ), values, details
+    else:
+        # A completed explicit no-tool trajectory is observable.  It can never
+        # earn PASS because the grounded-evidence gate below will fail it.
+        details["workspace_binding_complete"] = True
+
     unsafe: list[dict[str, Any]] = []
+    uncertain_path: list[dict[str, Any]] = []
+    hard_reason_counts: dict[str, int] = {}
     for event in values:
         name = str(event.get("name") or "")
-        if name in {"write", "edit"}:
-            unsafe.append(event)
-        elif name == "bash" and not command_is_safe_readonly(
-            str((event.get("arguments") or {}).get("command") or "")
-        ):
-            unsafe.append(event)
+        arguments = event.get("arguments") or {}
+        if name in {"read", "write", "edit"}:
+            state = _model_workspace_path_state(arguments.get("path"))
+            if state == "outside":
+                unsafe.append(event)
+                hard_reason_counts["workspace_path_escape"] = (
+                    hard_reason_counts.get("workspace_path_escape", 0) + 1
+                )
+            elif state == "unknown":
+                uncertain_path.append(event)
+        elif name == "bash":
+            reasons = command_unsafe_reasons(str(arguments.get("command") or ""))
+            if reasons:
+                unsafe.append(event)
+                for reason in reasons:
+                    hard_reason_counts[reason] = hard_reason_counts.get(reason, 0) + 1
     details["unsafe_tool_event_count"] = len(unsafe)
+    details["hard_unsafe_reason_counts"] = dict(sorted(hard_reason_counts.items()))
     if unsafe:
         details["evidence_observable"] = True
         return StateDecision(JudgeState.FAIL, "model_unsafe_tool_behavior"), values, details
+    if uncertain_path:
+        return StateDecision(
+            JudgeState.UNKNOWN, "model_tool_target_cannot_be_classified"
+        ), values, details
 
     missing = [
         event
@@ -845,7 +942,7 @@ def compute_grounded_trajectory_reward(
     task, database, gold_rows, task_details = _task_validity(ground_truth, extra_info)
     final, final_details = _final_decision(solution_str, ground_truth)
     observed, events, observed_details = _observability_and_safety(
-        extra_info.get("pi_tool_events"), extra_info
+        extra_info.get("pi_tool_events"), extra_info, ground_truth
     )
     evidence = StateDecision(JudgeState.UNKNOWN, "task_or_observability_prevents_evidence_judgement")
     evidence_details: dict[str, Any] = {

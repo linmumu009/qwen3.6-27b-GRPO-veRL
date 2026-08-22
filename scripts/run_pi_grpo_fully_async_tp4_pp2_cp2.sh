@@ -16,6 +16,8 @@ TRAIN_CP="${TRAIN_CP:-2}"
 TRAIN_NPUS="${TRAIN_NPUS:-16}"
 ROLLOUT_TP="${ROLLOUT_TP:-8}"
 ROLLOUT_NPUS="${ROLLOUT_NPUS:-16}"
+ROLLOUT_NNODES="${ROLLOUT_NNODES:-1}"
+TOTAL_ROLLOUT_NPUS="$((ROLLOUT_NNODES * ROLLOUT_NPUS))"
 TOTAL_TRAINING_STEPS="${TOTAL_TRAINING_STEPS:-20}"
 GROUPS_PER_STEP="${GROUPS_PER_STEP:-4}"
 RESPONSES_PER_GROUP="${RESPONSES_PER_GROUP:-4}"
@@ -63,9 +65,9 @@ if (( TRAIN_TP * TRAIN_PP * TRAIN_CP != TRAIN_NPUS )); then
     "${TRAIN_TP}" "${TRAIN_PP}" "${TRAIN_CP}" "${TRAIN_NPUS}" >&2
   exit 2
 fi
-if (( ROLLOUT_NPUS % ROLLOUT_TP != 0 )); then
-  printf 'Invalid rollout topology: NPUs(%s) is not divisible by TP(%s)\n' \
-    "${ROLLOUT_NPUS}" "${ROLLOUT_TP}" >&2
+if (( ROLLOUT_NNODES <= 0 || ROLLOUT_NPUS <= 0 || TOTAL_ROLLOUT_NPUS % ROLLOUT_TP != 0 )); then
+  printf 'Invalid rollout topology: nodes(%s) * NPUs/node(%s) is not positive and divisible by TP(%s)\n' \
+    "${ROLLOUT_NNODES}" "${ROLLOUT_NPUS}" "${ROLLOUT_TP}" >&2
   exit 2
 fi
 if (( MAX_PROMPT_TOKENS + MAX_RESPONSE_TOKENS != MAX_CONTEXT_TOKENS )); then
@@ -110,6 +112,7 @@ export HCCL_EXEC_TIMEOUT=60000
 export HCCL_CONNECT_TIMEOUT=7200
 export HCCL_ALGO="${HCCL_ALGO:-broadcast=level0:NA;level1:NHR}"
 export TOKENIZERS_PARALLELISM=true
+export PI_AGENT_TOKENIZER_PATH="${PI_AGENT_TOKENIZER_PATH:-${MODEL_PATH}}"
 export CUDA_DEVICE_MAX_CONNECTIONS=1
 export PI_DENSE_CORRECTNESS_WEIGHT
 
@@ -223,7 +226,7 @@ python3 -m verl.experimental.fully_async_policy.fully_async_main \
   actor_rollout_ref.rollout.name=vllm \
   actor_rollout_ref.rollout.mode=async \
   actor_rollout_ref.rollout.tensor_model_parallel_size="${ROLLOUT_TP}" \
-  actor_rollout_ref.rollout.data_parallel_size="$((ROLLOUT_NPUS / ROLLOUT_TP))" \
+  actor_rollout_ref.rollout.data_parallel_size="$((TOTAL_ROLLOUT_NPUS / ROLLOUT_TP))" \
   actor_rollout_ref.rollout.gpu_memory_utilization="${ROLLOUT_GPU_MEMORY_UTILIZATION}" \
   actor_rollout_ref.rollout.max_num_batched_tokens="${ROLLOUT_MAX_BATCHED_TOKENS}" \
   actor_rollout_ref.rollout.max_model_len="${MAX_CONTEXT_TOKENS}" \
@@ -266,7 +269,7 @@ python3 -m verl.experimental.fully_async_policy.fully_async_main \
   trainer.resume_mode=disable \
   trainer.nnodes=1 \
   trainer.n_gpus_per_node="${TRAIN_NPUS}" \
-  rollout.nnodes=1 \
+  rollout.nnodes="${ROLLOUT_NNODES}" \
   rollout.n_gpus_per_node="${ROLLOUT_NPUS}" \
   rollout.n="${RESPONSES_PER_GROUP}" \
   rollout.total_rollout_steps="${TOTAL_ROLLOUT_GROUPS}" \

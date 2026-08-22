@@ -140,6 +140,17 @@ def test_group_gate_masks_all_uniform_groups_and_skips_empty_optimizer_batch() -
     assert empty_metrics["grpo/skipped_all_wrong_groups"] == 1.0
 
 
+def test_group_gate_rejects_incomplete_eight_sample_group() -> None:
+    mask, metrics = strict_correctness_group_stats(
+        ["prompt"] * 7,
+        [0, 1, 0, 1, 0, 1, 0],
+        expected_group_size=8,
+    )
+    assert mask == [False] * 7
+    assert metrics["grpo/strict_mixed_groups"] == 0.0
+    assert metrics["grpo/skipped_bad_group_size_groups"] == 1.0
+
+
 def test_runtime_patch_masks_after_kl_and_skips_adam_update(tmp_path: Path) -> None:
     target = tmp_path / "ray_trainer.py"
     target.write_text(

@@ -6,25 +6,42 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
+import numpy as np
+
 
 MARKER = "LLIN_TRISTATE_UNKNOWN_RESAMPLE_V2"
 OLD_MARKER = "LLIN_HARD_GATE_RESAMPLE_QUORUM"
+CONCAT_MARKER = "LLIN_NON_TENSOR_CONCAT_SCHEMA_V1"
+
+
+def normalize_non_tensor_chunks(outputs: list) -> list:
+    """Fill absent optional columns without changing rows, values, or order."""
+    if not outputs:
+        return outputs
+    all_non_tensor_keys = set().union(*(item.non_tensor_batch for item in outputs))
+    for item in outputs:
+        for key in all_non_tensor_keys - set(item.non_tensor_batch):
+            missing = np.empty(len(item), dtype=object)
+            missing[:] = None
+            item.non_tensor_batch[key] = missing
+    return outputs
 
 
 def patch(path: Path) -> str:
     text = path.read_text(encoding="utf-8")
+    changed = False
     if MARKER in text:
-        return "already-patched"
-    if OLD_MARKER in text:
+        pass
+    elif OLD_MARKER in text:
         text = text.replace(OLD_MARKER, MARKER)
         text = text.replace('reward_info.get("online_eligible", 0)', 'reward_info.get("train_mask", 0)')
         text = text.replace("hard_gate_eligible", "tristate_trainable")
         text = text.replace("hard_gate_rejected", "tristate_unknown")
         text = text.replace("hard_gate_cap_exhausted", "tristate_cap_exhausted")
         text = text.replace("hard-gate attempt cap", "tristate UNKNOWN attempt cap")
-        path.write_text(text, encoding="utf-8")
-        return "upgraded"
-    old = """\
+        changed = True
+    else:
+        old = """\
                     for task in done:
                         if len(outputs) < fastest_k:
                             outputs.append(await task)
@@ -35,7 +52,7 @@ def patch(path: Path) -> str:
 
                 pending_indices = [task_to_index[task] for task in pending]
 """
-    new = """\
+        new = """\
                     # LLIN_TRISTATE_UNKNOWN_RESAMPLE_V2: PASS and FAIL have
                     # train_mask=1; UNKNOWN has train_mask=0 and is resampled.
                     # UNKNOWN candidates are retained only as fail-closed
@@ -55,14 +72,14 @@ def patch(path: Path) -> str:
 
                 pending_indices = [task_to_index[task] for task in pending]
 """
-    if old not in text:
-        raise RuntimeError("fastest-K selection anchor not found; apply fastest-K patch first")
-    text = text.replace(old, new, 1)
-    old = '''\
+        if old not in text:
+            raise RuntimeError("fastest-K selection anchor not found; apply fastest-K patch first")
+        text = text.replace(old, new, 1)
+        old = '''\
             print(
                 "[LLIN_FASTEST_K] "
 '''
-    new = '''\
+        new = '''\
             eligible_selected = len(outputs)
             tristate_cap_exhausted = eligible_selected < fastest_k
             if tristate_cap_exhausted:
@@ -78,16 +95,44 @@ def patch(path: Path) -> str:
             print(
                 "[LLIN_FASTEST_K] "
 '''
-    if old not in text:
-        raise RuntimeError("fastest-K observability anchor not found")
-    text = text.replace(old, new, 1)
-    text = text.replace(
-        'f"physical_aborts={physically_aborted} "',
-        'f"physical_aborts={physically_aborted} "\n                f"tristate_trainable={eligible_selected} "\n                f"tristate_unknown={len(tristate_unknown)} "\n                f"tristate_cap_exhausted={tristate_cap_exhausted} "',
-        1,
-    )
-    path.write_text(text, encoding="utf-8")
-    return "patched"
+        if old not in text:
+            raise RuntimeError("fastest-K observability anchor not found")
+        text = text.replace(old, new, 1)
+        text = text.replace(
+            'f"physical_aborts={physically_aborted} "',
+            'f"physical_aborts={physically_aborted} "\n                f"tristate_trainable={eligible_selected} "\n                f"tristate_unknown={len(tristate_unknown)} "\n                f"tristate_cap_exhausted={tristate_cap_exhausted} "',
+            1,
+        )
+        changed = True
+
+    if CONCAT_MARKER not in text:
+        old = """\
+        output = DataProto.concat(outputs)
+"""
+        new = """\
+        # LLIN_NON_TENSOR_CONCAT_SCHEMA_V1: different agent chunks can
+        # legitimately observe different optional evidence fields (for
+        # example, a no-tool guess beside a tool-using trajectory).  Preserve
+        # those samples and fill only the missing column with None; the
+        # tri-state judge will treat absent evidence as FAIL or UNKNOWN rather
+        # than crashing the whole atomic shard.
+        all_non_tensor_keys = set().union(*(item.non_tensor_batch for item in outputs))
+        for item in outputs:
+            for key in all_non_tensor_keys - set(item.non_tensor_batch):
+                missing = np.empty(len(item), dtype=object)
+                missing[:] = None
+                item.non_tensor_batch[key] = missing
+        output = DataProto.concat(outputs)
+"""
+        if old not in text:
+            raise RuntimeError("AgentLoopManager concat anchor not found")
+        text = text.replace(old, new, 1)
+        changed = True
+
+    if changed:
+        path.write_text(text, encoding="utf-8")
+        return "patched"
+    return "already-patched"
 
 
 def main() -> None:

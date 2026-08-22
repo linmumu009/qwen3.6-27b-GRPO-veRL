@@ -2,13 +2,24 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from types import SimpleNamespace
 
+import numpy as np
 import pyarrow as pa
 import pyarrow.parquet as pq
 
 from scripts import prepare_qwen38_approved43_outcome_training as prep
 from scripts.patch_verl_fastest_k_oversampling import patch_agent_loop
-from scripts.patch_verl_hard_gate_resampling import patch as patch_hard_gate
+from scripts.patch_verl_hard_gate_resampling import (
+    normalize_non_tensor_chunks,
+    patch as patch_hard_gate,
+)
+from scripts.patch_verl_grpo_strict_variance_gate import (
+    patch_fully_async_trainer,
+    patch_trainer,
+)
+from scripts import prepare_qwen38_tiered_canary_data as tiered_canary
+from scripts import prepare_qwen38_tiered_canary_sealed8 as tiered_sealed
 from scripts.attest_verified_process_structural_audit import attest
 
 
@@ -48,6 +59,129 @@ def test_launcher_freezes_qwen38_tristate_reward_kl_staleness_and_final_only_sav
     retired = (ROOT / "scripts" / "run_pi_qwen38_approved43_4x_outcome_gated_v5.sh").read_text(encoding="utf-8")
     assert "superseded: v5 H*C can reward an ungrounded guessed answer" in retired
     assert retired.index("exit 3") < retired.index("PROJECT_ROOT=")
+
+
+def test_tiered_canary_launcher_freezes_actual_update_contract() -> None:
+    text = (ROOT / "scripts" / "run_pi_qwen38_approved43_tiered_canary_v1.sh").read_text(encoding="utf-8")
+
+    for required in (
+        "MODEL_PATH:-/models/Qwen3.8-27B",
+        "TARGET_ACTUAL_OPTIMIZER_STEPS=5",
+        "MAX_NOMINAL_GROUPS=20",
+        "GROUPS_PER_STEP=2",
+        "RESPONSES_PER_GROUP=8",
+        "OVERSAMPLE_CANDIDATES=16",
+        "compute_score_tiered_query_cost_v1",
+        "algorithm.use_kl_in_reward=False",
+        "actor_rollout_ref.actor.use_kl_loss=True",
+        "actor_rollout_ref.actor.kl_loss_coef=0.001",
+        "actor_rollout_ref.actor.kl_loss_type=low_var_kl",
+        "STALENESS_THRESHOLD=0",
+        "trainer.val_before_train=true",
+        "trainer.test_freq=\"${TARGET_ACTUAL_OPTIMIZER_STEPS}\"",
+        "actor_rollout_ref.rollout.val_kwargs.n=4",
+        "prepare_qwen38_tiered_canary_sealed8.py",
+        'export PYTHONPATH="${PROJECT_ROOT}/runtime:${PROJECT_ROOT}:${PYTHONPATH:-}"',
+        "trainer.max_actor_ckpt_to_keep=1",
+        "full_training_allowed=false_pending_main_thread_review",
+        "e2c3b44e4e198e94fcd74903983fc8997f8e504a21575e397f9d59db1cc2fc8f",
+        "LC_ALL=C sha256sum \"${model_shards[@]}\" | sha256sum",
+        "LC_ALL=C_sha256sum_absolute_sorted_glob_lines_then_sha256",
+    ):
+        assert required in text
+    assert "Qwen3.6/Step120" not in text
+    assert "compute_score_grounded_tristate_v6" not in text
+
+
+def test_tiered_formal_launcher_freezes_full_contract() -> None:
+    text = (ROOT / "scripts" / "run_pi_qwen38_approved43_tiered_formal_v1.sh").read_text(encoding="utf-8")
+
+    for required in (
+        "MODEL_PATH:-/models/Qwen3.8-27B",
+        "TOTAL_NOMINAL_GROUPS=172",
+        "TOTAL_NOMINAL_BATCHES=86",
+        "GROUPS_PER_STEP=2",
+        "RESPONSES_PER_GROUP=8",
+        "OVERSAMPLE_CANDIDATES=16",
+        "compute_score_tiered_query_cost_v1",
+        "algorithm.use_kl_in_reward=False",
+        "actor_rollout_ref.actor.use_kl_loss=True",
+        "actor_rollout_ref.actor.kl_loss_coef=0.001",
+        "actor_rollout_ref.actor.kl_loss_type=low_var_kl",
+        "STALENESS_THRESHOLD=0",
+        "trainer.val_before_train=true",
+        "prepare_qwen38_approved43_outcome_training.py",
+        "prepare_qwen38_tiered_canary_sealed8.py",
+        "unset LLIN_CANARY_TARGET_OPTIMIZER_STEPS",
+        "checkpoint.save_contents=[model,extra]",
+        "formal_training_allowed=true",
+        "d86b53d906806b150d43a508dce9b0dd6d05105c07e03961e8e7bf9439ccd944",
+        "1426bc09a3dbaf4709fd89227790603afb7a2bf11beeba80946057d490e0f424",
+        "e2c3b44e4e198e94fcd74903983fc8997f8e504a21575e397f9d59db1cc2fc8f",
+    ):
+        assert required in text
+    assert "TARGET_ACTUAL_OPTIMIZER_STEPS" not in text
+    assert "compute_score_grounded_tristate_v6" not in text
+
+
+def test_prepare_tiered_sealed8_is_disjoint_and_balanced(tmp_path: Path, monkeypatch) -> None:
+    approved_rows = []
+    raw_rows = []
+    for index in range(100):
+        instruction = f"{index:064x}"
+        answer_type = "numeric" if index % 2 == 0 else "table"
+        row = {
+            "extra_info": {"instruction_sha256": instruction, "training_allowed": False},
+            "reward_model": {"ground_truth": {"answer_type": answer_type}},
+        }
+        raw_rows.append(row)
+        if index < 43:
+            approved_rows.append(row)
+    approved = tmp_path / "approved.parquet"
+    raw = tmp_path / "raw.parquet"
+    output = tmp_path / "sealed.parquet"
+    summary_path = tmp_path / "safe.json"
+    pq.write_table(pa.Table.from_pylist(approved_rows), approved)
+    pq.write_table(pa.Table.from_pylist(raw_rows), raw)
+    monkeypatch.setattr(tiered_sealed, "APPROVED43_SHA256", tiered_sealed.file_sha256(approved))
+    monkeypatch.setattr(tiered_sealed, "RAW100_SHA256", tiered_sealed.file_sha256(raw))
+
+    summary = tiered_sealed.prepare(approved, raw, output, summary_path)
+    rows = pq.read_table(output).to_pylist()
+    identity = lambda row: str((row.get("extra_info") or {}).get("instruction_sha256") or "")
+    approved_ids = {identity(row) for row in approved_rows}
+    sealed_ids = {identity(row) for row in rows}
+    assert summary["answer_type_counts"] == {"numeric": 4, "table": 4}
+    assert len(rows) == len(sealed_ids) == 8
+    assert approved_ids.isdisjoint(sealed_ids)
+    assert all(row["extra_info"]["training_allowed"] is False for row in rows)
+    assert all(row["extra_info"]["sealed_evaluation_only"] is True for row in rows)
+
+
+def test_actual_optimizer_patch_covers_parent_and_fully_async_versioning(tmp_path: Path) -> None:
+    parent = tmp_path / "ray_trainer.py"
+    async_trainer = tmp_path / "fully_async_trainer.py"
+    parent.write_text(
+        (ROOT / "reference" / "verl" / "verl" / "experimental" / "separation" / "ray_trainer.py").read_text(encoding="utf-8"),
+        encoding="utf-8",
+    )
+    async_trainer.write_text(
+        (ROOT / "reference" / "verl" / "verl" / "experimental" / "fully_async_policy" / "fully_async_trainer.py").read_text(encoding="utf-8"),
+        encoding="utf-8",
+    )
+
+    assert patch_trainer(parent) == "patched"
+    assert patch_fully_async_trainer(async_trainer) == "patched"
+    parent_text = parent.read_text(encoding="utf-8")
+    async_text = async_trainer.read_text(encoding="utf-8")
+    assert 'getattr(self, "current_param_version", self.global_steps - 1)' in parent_text
+    assert 'strict_expected_group_size' in parent_text
+    assert 'self.strict_optimizer_steps += 1' in parent_text
+    assert 'actor/update_skipped_no_strict_mixed' in async_text
+    assert 'training/weight_sync_skipped_no_optimizer_step' in async_text
+    assert 'LLIN_CANARY_TARGET_OPTIMIZER_STEPS' in async_text
+    assert patch_trainer(parent) == "already-patched"
+    assert patch_fully_async_trainer(async_trainer) == "already-patched"
 
 
 def test_prepare_schedule_hash_binds_evidence_and_repeats_exact_members(tmp_path: Path, monkeypatch) -> None:
@@ -92,6 +226,63 @@ def test_prepare_schedule_hash_binds_evidence_and_repeats_exact_members(tmp_path
     assert all(row["extra_info"]["approved43_authorization"] for row in rows)
 
 
+def test_prepare_tiered_canary_alternates_ten_numeric_ten_table(tmp_path: Path, monkeypatch) -> None:
+    approved_rows = []
+    manifest_rows = []
+    tasks = []
+    for index in range(43):
+        instruction = f"{index:064x}"
+        answer_type = "numeric" if index < 21 else "table"
+        approved_rows.append(
+            {
+                "extra_info": {
+                    "instruction_sha256": instruction,
+                    "global_index": index,
+                    "training_allowed": False,
+                },
+                "reward_model": {
+                    "ground_truth": {
+                        "environment_id": f"sft/v{index}",
+                        "answer_type": answer_type,
+                        "verification_sql": "SELECT value FROM fact",
+                    }
+                },
+            }
+        )
+        manifest_rows.append({"instruction_sha256": instruction})
+        tasks.append(
+            {
+                "evidence_plan": {"aggregation": "sum"},
+                "expected_tables": ["fact"],
+                "verification_criteria": {"must_use_fields": ["value"]},
+            }
+        )
+    approved = tmp_path / "approved.parquet"
+    manifest = tmp_path / "manifest.jsonl"
+    tasks_path = tmp_path / "tasks.jsonl"
+    pq.write_table(pa.Table.from_pylist(approved_rows), approved)
+    manifest.write_text("".join(json.dumps(row) + "\n" for row in manifest_rows), encoding="utf-8")
+    tasks_path.write_text("".join(json.dumps(row) + "\n" for row in tasks), encoding="utf-8")
+    monkeypatch.setattr(prep, "PARQUET_SHA256", prep.file_sha256(approved))
+    monkeypatch.setattr(prep, "MANIFEST_SHA256", prep.file_sha256(manifest))
+
+    output = tmp_path / "canary.parquet"
+    summary = tiered_canary.build(
+        approved,
+        manifest,
+        tasks_path,
+        output,
+        tmp_path / "canary.safe.json",
+    )
+    rows = pq.read_table(output).to_pylist()
+    kinds = [row["reward_model"]["ground_truth"]["answer_type"] for row in rows]
+    assert len(rows) == 20
+    assert kinds == ["numeric", "table"] * 10
+    assert summary["nominal_groups"] == 20
+    assert summary["target_actual_optimizer_steps"] == 5
+    assert all(row["extra_info"]["canary_training_authorized"] for row in rows)
+
+
 def test_tristate_patch_selects_pass_fail_and_resamples_unknown(tmp_path: Path) -> None:
     source = ROOT / "reference" / "verl" / "verl" / "experimental" / "agent_loop" / "agent_loop.py"
     target = tmp_path / "agent_loop.py"
@@ -100,8 +291,64 @@ def test_tristate_patch_selects_pass_fail_and_resamples_unknown(tmp_path: Path) 
     assert patch_hard_gate(target) == "patched"
     text = target.read_text(encoding="utf-8")
     assert "LLIN_TRISTATE_UNKNOWN_RESAMPLE_V2" in text
+    assert "LLIN_NON_TENSOR_CONCAT_SCHEMA_V1" in text
+    assert "all_non_tensor_keys" in text
+    assert "missing[:] = None" in text
     assert 'reward_info.get("train_mask", 0)' in text
     assert "tristate_cap_exhausted" in text
+    assert patch_hard_gate(target) == "already-patched"
+
+
+def test_pi_agent_loop_keeps_optional_workspace_evidence_schema_stable() -> None:
+    text = (ROOT / "llin_verl" / "pi_agent_loop.py").read_text(encoding="utf-8")
+
+    for required_default in (
+        '"pi_workspace_request_id": ""',
+        '"pi_environment_id": ""',
+        '"pi_tool_call_count": 0',
+        '"pi_tool_success_count": 0',
+        '"pi_workspace_elapsed_seconds": 0.0',
+        '"pi_workspace_released": False',
+    ):
+        assert required_default in text
+
+
+def test_mixed_tool_no_tool_timeout_chunk_union_preserves_64_identities_and_order() -> None:
+    class Chunk(SimpleNamespace):
+        def __len__(self) -> int:
+            return len(self.non_tensor_batch["identity"])
+
+    identities = [f"task-{index // 8}:sample-{index % 8}" for index in range(64)]
+    chunks = [
+        Chunk(
+            non_tensor_batch={
+                "identity": np.array(identities[:21], dtype=object),
+                "pi_tool_events": np.array([[{"ok": True}]] * 21, dtype=object),
+                "pi_workspace_request_id": np.array([f"req-{i}" for i in range(21)], dtype=object),
+            }
+        ),
+        Chunk(
+            non_tensor_batch={
+                "identity": np.array(identities[21:43], dtype=object),
+                "trajectory_timeout": np.array([False] * 22, dtype=object),
+            }
+        ),
+        Chunk(
+            non_tensor_batch={
+                "identity": np.array(identities[43:], dtype=object),
+                "trajectory_timeout": np.array([True] * 21, dtype=object),
+            }
+        ),
+    ]
+
+    normalized = normalize_non_tensor_chunks(chunks)
+
+    assert normalized is chunks
+    assert [value for chunk in chunks for value in chunk.non_tensor_batch["identity"]] == identities
+    assert len(set(identities)) == 64
+    assert all(set(chunk.non_tensor_batch) == set(chunks[0].non_tensor_batch) for chunk in chunks)
+    assert all(value is None for value in chunks[1].non_tensor_batch["pi_tool_events"])
+    assert all(value is None for value in chunks[2].non_tensor_batch["pi_workspace_request_id"])
 
 
 def test_structural_audit_does_not_claim_human_precision(tmp_path: Path) -> None:

@@ -99,10 +99,21 @@ class PiAgentLoop(ToolAgentLoop):
             "trajectory_abort_error_count": 0,
             "runtime_error": False,
             "pi_tool_events": [],
+            "pi_runtime_wrapper_events": [],
             "pi_tool_log_present": False,
             "pi_tool_protocol_complete": False,
             "pi_tool_event_source": "runtime_structured_pi_workspace",
-            "pi_tool_event_contract": "runtime-captured-structured-tool-events-v2",
+            "pi_tool_event_contract": "runtime-captured-structured-tool-events-v3",
+            # Tool-using trajectories receive these fields from the workspace
+            # snapshot.  Keep the same non-tensor schema for observed no-tool
+            # trajectories and timeout placeholders so AgentLoopManager can
+            # concatenate chunks without losing the three-state distinction.
+            "pi_workspace_request_id": "",
+            "pi_environment_id": "",
+            "pi_tool_call_count": 0,
+            "pi_tool_success_count": 0,
+            "pi_workspace_elapsed_seconds": 0.0,
+            "pi_workspace_released": False,
         }
         for key, value in defaults.items():
             output.extra_fields.setdefault(key, value)

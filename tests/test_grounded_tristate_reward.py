@@ -58,10 +58,42 @@ def event(sql: str, *, ok: bool = True, response: str = "30.0") -> dict:
 
 
 def extra(database: Path, events: list[dict], *, protocol: bool = True) -> dict:
+    request_id = "req-unit"
+    environment_id = "sft/v1"
+    bound_events = []
+    wrapper_events = []
+    for index, source_event in enumerate(events):
+        value = dict(source_event)
+        value.setdefault("source", "runtime_structured_pi_workspace")
+        value.setdefault("command_origin", "model")
+        value.setdefault("workspace_alias", "/workspace")
+        value.setdefault("workspace_request_id", request_id)
+        value.setdefault("environment_id", environment_id)
+        bound_events.append(value)
+        wrapper_events.append(
+            {
+                "name": value.get("name"),
+                "source": "runtime_wrapper",
+                "model_event_index": index,
+                "workspace_request_id": request_id,
+                "environment_id": environment_id,
+                "assigned_workspace_root": "/private/run/req-unit",
+                "canonical_target": "",
+                "target_path_classification": (
+                    "runtime_mapped_from_model_workspace_alias"
+                ),
+                "ok": bool(value.get("ok")),
+            }
+        )
     return {
-        "pi_tool_events": events,
+        "pi_tool_events": bound_events,
+        "pi_runtime_wrapper_events": wrapper_events,
         "pi_tool_log_present": True,
         "pi_tool_protocol_complete": protocol,
+        "pi_tool_event_contract": "runtime-captured-structured-tool-events-v3",
+        "pi_workspace_request_id": request_id,
+        "pi_environment_id": environment_id,
+        "pi_workspace_released": True,
         "pi_reward_database_path": str(database),
         "pi_reward_database_root": str(database.parent.parent),
         "trajectory_timeout": False,
@@ -198,13 +230,63 @@ def test_missing_response_and_ambiguous_final_are_unknown(tmp_path: Path) -> Non
 def test_unsafe_and_malformed_model_behavior_are_fail(tmp_path: Path) -> None:
     database = make_database(tmp_path)
     unsafe = event("SELECT SUM(value) FROM fact_metric")
-    unsafe["arguments"]["command"] = "rm /workspace/logistics.sqlite"
+    unsafe["arguments"]["command"] = "rm -rf /"
     malformed = event("SELECT SUM(value) FROM fact_metric")
     malformed["call_parse_valid"] = False
     for candidate in (unsafe, malformed):
         result = score(database, "最终答案是 30。", [candidate])
         assert result["judge_state"] == "FAIL"
         assert result["train_mask"] == 1.0
+
+
+def test_workspace_local_write_is_not_hard_unsafe_and_wrapper_never_supports_reward(
+    tmp_path: Path,
+) -> None:
+    database = make_database(tmp_path)
+    write_event = {
+        "name": "write",
+        "arguments": {"path": "/workspace/tmp/result.txt", "content": "30"},
+        "ok": True,
+        "response_preview": "Wrote 2 bytes",
+        "response_truncated": False,
+        "observed_tool_response": True,
+        "call_parse_valid": True,
+        "source": "runtime_structured_pi_workspace",
+    }
+    result = score(
+        database,
+        "最终答案是 30。",
+        [event("SELECT SUM(value) FROM fact_metric"), write_event],
+    )
+    assert result["judge_state"] == "PASS"
+    assert result["unsafe_tool_event_count"] == 0
+    assert result["runtime_wrapper_events_excluded_from_reward"] is True
+    assert result["supporting_event_indices"] == [0]
+
+
+def test_host_escape_is_fail_but_missing_runtime_binding_is_unknown(tmp_path: Path) -> None:
+    database = make_database(tmp_path)
+    escaped = {
+        "name": "read",
+        "arguments": {"path": "/etc/passwd"},
+        "ok": False,
+        "response_preview": "PermissionError",
+        "response_truncated": False,
+        "observed_tool_response": True,
+        "call_parse_valid": True,
+        "source": "runtime_structured_pi_workspace",
+    }
+    escaped_result = score(database, "最终答案是 30。", [escaped])
+    assert escaped_result["judge_state"] == "FAIL"
+    assert escaped_result["hard_unsafe_reason_counts"] == {"workspace_path_escape": 1}
+
+    metadata = extra(database, [event("SELECT SUM(value) FROM fact_metric")])
+    metadata["pi_workspace_request_id"] = ""
+    missing_binding = compute_grounded_trajectory_reward(
+        "dwh", "最终答案是 30。", truth(), metadata
+    )
+    assert missing_binding["judge_state"] == "UNKNOWN"
+    assert missing_binding["judge_reason"] == "workspace_or_event_provenance_incomplete"
 
 
 def test_shadow_parse_failure_is_unknown_not_model_fail(tmp_path: Path) -> None:

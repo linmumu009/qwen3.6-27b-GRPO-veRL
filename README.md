@@ -5,9 +5,9 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 ## 当前方案
 
 - 5 号机负责 Megatron 全参训练，拓扑为 TP=4、PP=2、CP=2，Ray 自定义资源名为 `llin_trainer`。
-- 6 号机负责 vLLM 异步轨迹推理，拓扑为 TP=8、DP=2，Ray 自定义资源名为 `llin_rollout`。
-- 两台机器通过内网 Ray 集群通信；训练权重使用 veRL 的 `nccl` 检查点后端，在昇腾环境中实际注册为 HCCL 广播。
-- HCCL 固定使用 `eno0` 和 `192.168.202.0/24` 内网，并为 host/NPU socket 分配互不重叠的端口范围，避免自动选中不可达的管理网卡。
+- 6 号机负责常规 vLLM 异步轨迹推理，拓扑为 TP=8、DP=2；161题课程续训额外启用0号机16张NPU，使 rollout 扩展为两节点、TP=8、DP=4。两台推理节点均使用 Ray 自定义资源名 `llin_rollout`，每个16卡 placement group 严格落在单机。
+- 三台机器通过内网 Ray 集群通信；训练权重使用 veRL 的 `nccl` 检查点后端，在昇腾环境中实际注册为 HCCL 广播。正式启动前必须通过1个trainer rank向32个rollout rank的ProcessGroupHCCL与stateless PyHCCL联合门禁。
+- 5/6号机 HCCL 使用 `eno0` 和 `192.168.202.0/24` 内网；0号机使用 `enp196s0f0` 和 `10.10.2.2`，经低延迟内网路由互通。各机为 host/NPU socket 分配固定端口范围，避免自动选中不可达的管理网卡。
 - actor 模型参数常驻 NPU，不做参数卸载；Adam 优化器与梯度卸载到 5 号机内存，并开启全量激活重计算。LoRA 已关闭（`lora_rank=0`）。
 - rollout 开启 Continuous Token、prefix caching 和两路 vLLM cache 计数；新的正式 100-step/12-group 入口在第 1–99 步均不验证、不保存，只在第 100 步验证一次并保存完整 `model,optimizer,extra`，确保后续可恢复 Adam 动量、方差和学习率调度器状态。
 - 长上下文配置将最大上下文设为 `49,152` tokens（默认初始 prompt `4,096` + 多轮 response `45,056`）；正式 PI 配置将允许最多 25 次工具反馈和随后 1 次最终回答，单轮最多 4 个并行工具调用，单次工具返回放宽到 `32,768` 字符；100-step/12-group 入口将 vLLM cache 预算设为 `0.80`、chunked prefill batch 设为 `16,384` tokens、每个 TP8 副本最多 24 个活跃序列，并用可容纳最大 embedding 张量的 `2560 MiB` 权重同步 bucket。
@@ -49,14 +49,14 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 当前服务器部署：
 
-| 项目 | 5 号机 | 6 号机 |
-| --- | --- | --- |
-| 角色 | 训练 | rollout 推理 |
-| 工作目录 | `/data3/llin/qwen3.6-27b-verl-grpo` | `/data3/llin/qwen3.6-27b-verl-grpo` |
-| 容器 | `llin-verl-trainer-m05-20260730` | `llin-verl-rollout-m06-20260730` |
-| 镜像 | `llin-verl-a3:20260730` | `llin-verl-a3:20260730` |
-| 容器权限 | 特权模式（仅重建上述 `llin` 容器） | 特权模式（仅重建上述 `llin` 容器） |
-| 当前实验 NPU | Ray trainer 服务在线；teacher-forced 纯前向诊断已完成，无活动训练 | Ray rollout 服务在线；当前无活动回放 |
+| 项目 | 5 号机 | 6 号机 | 0 号机 |
+| --- | --- | --- | --- |
+| 角色 | 训练 | rollout 推理 | 161题续训的额外 rollout 推理 |
+| 工作目录 | `/data3/llin/qwen3.6-27b-verl-grpo` | `/data3/llin/qwen3.6-27b-verl-grpo` | `/data3/llin/qwen3.6-27b-verl-grpo` |
+| 容器 | `llin-verl-trainer-m05-20260730` | `llin-verl-rollout-m06-20260730` | `llin-verl-rollout-m00-20260817` |
+| 镜像 | `llin-verl-a3:20260730` | `llin-verl-a3:20260730` | `llin-verl-a3:20260730` |
+| 容器权限 | 特权模式（仅重建上述 `llin` 容器） | 特权模式（仅重建上述 `llin` 容器） | 特权模式（新建隔离的 `llin` 容器） |
+| 当前实验 NPU | 无活动训练 | 无活动回放 | 无活动回放；待三机HCCL门禁 |
 
 ## 数据结论
 
@@ -249,6 +249,18 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 已验证状态
 
+### v1.12.14 — 2026-08-22
+
+- 新增Qwen3.8正式全量训练入口：严格从原始`Qwen3.8-27B` actor/ref基座和冻结43题批准包启动，固定4次曝光、172个题组、每组8条在线轨迹及最多86个名义批次；显式取消5步金丝雀停止条件。
+- 固化分层查询成本奖励v1、严格8条mixed/UNKNOWN组门、零陈旧度与actor侧`0.001 low_var_kl`；KL不并入reward，uniform或不可判组不会触发optimizer或策略版本变化。
+- 增加两机资产/NPU/Ray硬门、训练前后原始模型哈希复核、固定sealed8评测、单一最终model+extra检查点及包含实际optimizer步数的最终manifest；正式监督器全程记录安全状态并在硬故障时自动清理隔离Ray集群。
+
+### v1.12.13 — 2026-08-22
+
+- 冻结Qwen3.8原始基座的5个“实际optimizer更新步”金丝雀合同：5号机actor/ref训练、6号机rollout，每个名义批次2题×8条，最多20个题组；全0、全1、UNKNOWN或陈旧组同时清空advantage/return/response mask并跳过更新，跳组不递增策略版本也不同步空权重。
+- 接入分层查询成本奖励v1：最终正确性、相关只读SQL尝试/成功和不安全/预算门共同决定trajectory级scalar；工具返回token使用Qwen3.8同源tokenizer精确计数，计数不可用时fail-closed为UNKNOWN，KL保持在actor loss而不混入reward。
+- 新增逐轨迹rollout审计、20题确定性approved43金丝雀调度、原始模型/批准包复合哈希硬门与固定sealed8前后评测入口；完整训练仍锁定，只有5个实际更新步及奖励边界、参数变化、KL/梯度和sealed方向性门全部通过后，才交由主审核任务决定是否继续。
+
 ### v1.12.12 — 2026-08-22
 
 - 将奖励升级为 `PASS/FAIL/UNKNOWN` 三态trajectory级合同：只有“final正确 + 可重放EvidencePlan语义证据 + 安全过程”才得1分；UNKNOWN必须mask并重采，明确错误/无工具猜测/unsafe才得0，首轮不加入任何过程bonus，也不宣称逐turn/token credit assignment。
@@ -375,7 +387,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ### v1.11.92 — 2026-08-19
 
-- `-04`失败清理进一步暴露生命周期缺口：队列由`docker exec -d`独立启动，不属于Ray进程树；旧监督器只执行`ray stop`，队列内置重试仍可重新创延actor，导致监督器退出后三机残留vLLM并占用约54GiB/卡。三个专用`llin`容器已重启，主机挂载的模型、数据和失败审计目录均保留。
+- `-04`失败清理进一步暴露生命周期缺口：队列由`docker exec -d`独立启动，不属于Ray进程树；旧监督器只执行`ray stop`，队列内置重试仍可重新创建actor，导致监督器退出后三机残留vLLM并占用约54GiB/卡。三个专用`llin`容器已重启，主机挂载的模型、数据和失败审计目录均保留。
 - 监督器最终清理改为先按精确评测名终止三机队列及其子进程，再停止Ray；匹配模式不会命中清理命令自身。无论模型校验、运行包同步、启动、队列或聚合在哪一阶段失败都会执行队列清理，避免重试与Ray回收竞态。
 
 ### v1.11.91 — 2026-08-19
@@ -505,6 +517,12 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - 新增隔离双机Qwen3.8工程冒烟入口和精确Ray物理资源门禁；实机采用5号机16卡Megatron `TP4×PP2×CP2`训练、6号机16卡vLLM `TP8×DP2`推理，从Qwen3.8原始HF权重完成16条多轮工具轨迹、权重同步和1个优化步，退出码为0且不保存检查点。
 - 首次运行复现Ascend host-pinned optimizer offload `207001`启动故障；主训练入口加入默认值不变的offload开关，Qwen3.8冒烟改用device-side optimizer后通过。单步生成816.20秒、actor更新296.09秒，训练最大已分配显存38.57GiB，确认当前两机效率优先分配仍应保持训练16卡、推理16卡。
 - 明确禁止把Qwen3.6 Step120权重当作Qwen3.8恢复点；正式切换必须从Qwen3.8基座重新建立基线、金丝雀和训练链路。测试完成后隔离Ray与容器已停止，模型副本和审计日志保留。
+
+### v1.11.69 — 2026-08-17
+
+- 161题课程续训改为三机解耦拓扑：5号机继续16卡Megatron训练，6号机与0号机各提供16卡rollout；总rollout从TP8×DP2扩展为TP8×DP4，训练步数、学习率、奖励、每题5轮、2×8组形状、Step120起点和每40步保存均不变。
+- 新增通用rollout Ray启动器及0/6号机网卡包装器；veRL资源池使用两个`[16,16]`严格单机placement group。角色与数据门禁会逐节点定位并核对两台rollout，启动训练前另执行1→32的ProcessGroupHCCL及stateless PyHCCL广播测试，任一节点、驱动或跨网段通信异常即失败关闭。
+- 监督器扩展为三机连续空闲门禁、两台rollout逐机资产/课程/resume-view验证、逐机Ray启动和逐机清理。0号机使用与5/6号机相同镜像和模型的独立容器，只复制私有清单指定的11个环境，不修改其已有容器与任务。
 
 ### v1.11.68 — 2026-08-17
 

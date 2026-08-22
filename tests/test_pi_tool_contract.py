@@ -50,3 +50,16 @@ def test_runtime_tools_allow_a_server_scoped_sandbox_root_override():
 
     assert 'os.environ.get("PI_AGENT_SANDBOX_LOWER")' in workspace_source
     assert 'os.environ.get("PI_AGENT_SANDBOX_LOWER")' in sqlite_source
+
+
+def test_runtime_persists_exact_tool_response_token_cost_or_fails_closed():
+    root = Path(__file__).resolve().parents[1]
+    workspace_source = (root / "llin_verl" / "pi_workspace_tools.py").read_text(encoding="utf-8")
+    launcher_source = (root / "scripts" / "run_pi_grpo_fully_async_tp4_pp2_cp2.sh").read_text(encoding="utf-8")
+
+    assert 'Tokenizer.from_file(str(tokenizer_json))' in workspace_source
+    assert '.encode(value, add_special_tokens=False).ids' in workspace_source
+    assert '"response_token_count": response_token_count' in workspace_source
+    assert 'response_token_count = None' in workspace_source
+    assert 'PI_AGENT_TOKENIZER_PATH="${PI_AGENT_TOKENIZER_PATH:-${MODEL_PATH}}"' in launcher_source
+    assert "len(response.encode" not in workspace_source

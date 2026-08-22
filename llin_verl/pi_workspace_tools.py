@@ -15,6 +15,7 @@ import shutil
 import subprocess
 import time
 from dataclasses import dataclass, field
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -37,6 +38,32 @@ def cap_text(value: str, limit: int) -> str:
     if len(value) <= limit:
         return value
     return value[:limit] + f"\n[truncated {len(value) - limit} characters]"
+
+
+@lru_cache(maxsize=4)
+def _load_response_tokenizer(model_path: str):
+    """Load the exact local fast tokenizer without loading model weights."""
+
+    tokenizer_json = Path(model_path).resolve(strict=True) / "tokenizer.json"
+    if not tokenizer_json.is_file():
+        raise FileNotFoundError(f"tokenizer.json is missing under {model_path}")
+    from tokenizers import Tokenizer
+
+    return Tokenizer.from_file(str(tokenizer_json))
+
+
+def count_tool_response_tokens(value: str, model_path: str) -> int:
+    """Count tool-response content tokens with the rollout model tokenizer.
+
+    The frozen query-cost contract charges only the text returned by tools. It
+    deliberately excludes assistant reasoning/final tokens and chat-template
+    wrapper tokens. A missing tokenizer fails closed later as UNKNOWN rather
+    than silently substituting bytes, characters, or a different tokenizer.
+    """
+
+    if not model_path:
+        raise ValueError("PI_AGENT_TOKENIZER_PATH is required for tool-token accounting")
+    return len(_load_response_tokenizer(model_path).encode(value, add_special_tokens=False).ids)
 
 
 def truncate_tool_text(
@@ -82,6 +109,7 @@ class WorkspaceState:
     path: Path
     created_at: float = field(default_factory=time.monotonic)
     events: list[dict[str, Any]] = field(default_factory=list)
+    wrapper_events: list[dict[str, Any]] = field(default_factory=list)
 
 
 class WorkspaceRegistry:
@@ -143,17 +171,22 @@ class WorkspaceRegistry:
     def record(self, request_id: str, event: dict[str, Any]) -> None:
         self._states[request_id].events.append(event)
 
+    def record_wrapper(self, request_id: str, event: dict[str, Any]) -> None:
+        self._states[request_id].wrapper_events.append(event)
+
     def snapshot(self, request_id: str) -> dict[str, Any]:
         state = self._states.get(request_id)
         if state is None:
             return {}
         events = list(state.events)
+        wrapper_events = list(state.wrapper_events)
         return {
             "pi_workspace_request_id": request_id,
             "pi_environment_id": state.environment_id,
             "pi_tool_events": events,
+            "pi_runtime_wrapper_events": wrapper_events,
             "pi_tool_log_present": True,
-            "pi_tool_event_contract": "runtime-captured-structured-tool-events-v2",
+            "pi_tool_event_contract": "runtime-captured-structured-tool-events-v3",
             "pi_tool_call_count": len(events),
             "pi_tool_success_count": sum(bool(event.get("ok")) for event in events),
             "pi_workspace_elapsed_seconds": round(time.monotonic() - state.created_at, 6),
@@ -186,6 +219,11 @@ class PiWorkspaceTool(BaseTool):
         self.max_tool_timeout = int(config.get("max_tool_timeout", 60))
         self.max_tool_output = int(config.get("max_tool_output", 50 * 1024))
         self.max_tool_lines = int(config.get("max_tool_lines", 2000))
+        self.response_tokenizer_path = str(
+            config.get("response_tokenizer_path")
+            or os.environ.get("PI_AGENT_TOKENIZER_PATH")
+            or ""
+        )
 
     @staticmethod
     def _create_kwargs(agent_data: Any, name: str) -> dict[str, Any]:
@@ -227,6 +265,19 @@ class PiWorkspaceTool(BaseTool):
         elapsed = time.monotonic() - started
         command = str(parameters.get("command") or "") if self.operation == "bash" else ""
         response_truncated = response.startswith("[output truncated; full output saved")
+        response_token_count: int | None
+        response_token_count_error = ""
+        try:
+            response_token_count = count_tool_response_tokens(
+                response,
+                self.response_tokenizer_path,
+            )
+        except Exception as exc:
+            # Reward accounting must not guess a cost if the exact tokenizer
+            # is unavailable. Persist only the exception type (not a path or
+            # message that could disclose private runtime layout).
+            response_token_count = None
+            response_token_count_error = type(exc).__name__
         event = {
             "name": self.operation,
             "arguments": parameters,
@@ -239,9 +290,20 @@ class PiWorkspaceTool(BaseTool):
             "response_preview": response,
             "response_sha256": hashlib.sha256(response.encode("utf-8")).hexdigest(),
             "response_truncated": response_truncated,
+            "response_token_count": response_token_count,
+            "response_token_count_method": "tokenizer_json_content_tokens_v1",
+            "response_token_count_error": response_token_count_error,
             "observed_tool_response": True,
             "call_parse_valid": True,
             "source": "runtime_structured_pi_workspace",
+            # ``arguments`` are the model-authored values before the wrapper
+            # maps the /workspace alias to the private request directory.
+            # Persisting that provenance prevents a canonical wrapper path
+            # from being misattributed to the model during reward auditing.
+            "command_origin": "model",
+            "workspace_alias": "/workspace",
+            "workspace_request_id": state.request_id,
+            "environment_id": state.environment_id,
             "assistant_turn_index": int(getattr(agent_data, "assistant_turns", 0) or 0),
         }
         if self.operation == "bash":
@@ -251,7 +313,42 @@ class PiWorkspaceTool(BaseTool):
             if composition is not None:
                 event["composition_trace"] = composition
         WORKSPACES.record(state.request_id, event)
+        canonical_target = ""
+        if self.operation in {"read", "write", "edit"}:
+            try:
+                canonical_target = str(
+                    resolve_workspace_path(state.path, parameters.get("path"))
+                )
+                target_classification = "assigned_workspace"
+            except (TypeError, ValueError, OSError):
+                target_classification = "rejected_or_unresolved_target"
+        else:
+            raw_command = str(parameters.get("command") or "")
+            mapped_command = route_sqlite_cli(raw_command).replace(
+                "/workspace", str(state.path)
+            )
+            target_classification = "runtime_mapped_from_model_workspace_alias"
+            canonical_target = ""
+        wrapper_event = {
+            "name": self.operation,
+            "source": "runtime_wrapper",
+            "model_event_index": len(WORKSPACES._states[state.request_id].events) - 1,
+            "workspace_request_id": state.request_id,
+            "environment_id": state.environment_id,
+            "assigned_workspace_root": str(state.path.resolve()),
+            "canonical_target": canonical_target,
+            "target_path_classification": target_classification,
+            "ok": ok,
+        }
+        if self.operation == "bash":
+            wrapper_event["mapped_command_sha256"] = hashlib.sha256(
+                mapped_command.encode("utf-8")
+            ).hexdigest()
+        WORKSPACES.record_wrapper(state.request_id, wrapper_event)
         agent_data.extra_fields["pi_tool_events"] = list(WORKSPACES._states[state.request_id].events)
+        agent_data.extra_fields["pi_runtime_wrapper_events"] = list(
+            WORKSPACES._states[state.request_id].wrapper_events
+        )
         agent_data.extra_fields["pi_tool_log_present"] = True
         agent_data.extra_fields["pi_tool_event_source"] = "runtime_structured_pi_workspace"
         metrics = {"pi_tool_ok": float(ok), "pi_tool_elapsed_seconds": elapsed}

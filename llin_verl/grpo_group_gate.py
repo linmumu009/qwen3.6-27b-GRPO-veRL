@@ -26,6 +26,7 @@ def strict_correctness_group_stats(
     eligibility: Iterable[Any] | None = None,
     policy_versions: Iterable[Any] | None = None,
     expected_policy_version: int | None = None,
+    expected_group_size: int | None = None,
 ) -> tuple[list[bool], dict[str, float]]:
     """Return the active-sample mask and aggregate gate metrics.
 
@@ -53,7 +54,12 @@ def strict_correctness_group_stats(
     for uid, label, allowed, version in zip(uid_list, labels, eligible, versions, strict=True):
         grouped[uid].append((label, allowed, version))
 
-    invalid_uids = {
+    bad_size_uids = {
+        uid
+        for uid, values in grouped.items()
+        if expected_group_size is not None and len(values) != int(expected_group_size)
+    }
+    invalid_uids = bad_size_uids | {
         uid for uid, values in grouped.items() if not all(allowed for _, allowed, _ in values)
     }
     stale_uids: set[Any] = set()
@@ -86,6 +92,7 @@ def strict_correctness_group_stats(
         "grpo/skipped_all_correct_groups": float(all_correct),
         "grpo/skipped_hard_gate_groups": float(len(invalid_uids)),
         "grpo/skipped_stale_policy_groups": float(len(stale_uids)),
+        "grpo/skipped_bad_group_size_groups": float(len(bad_size_uids)),
         "grpo/effective_samples": float(sum(mask)),
         "grpo/skipped_samples": float(len(mask) - sum(mask)),
         "grpo/total_groups": float(len(grouped)),
@@ -112,6 +119,7 @@ def apply_strict_correctness_group_gate(batch: Any) -> tuple[Any, dict[str, floa
         )
 
     expected_policy_version = batch.meta_info.get("strict_expected_policy_version")
+    expected_group_size = batch.meta_info.get("strict_expected_group_size")
     version_values = None
     if expected_policy_version is not None:
         minimum = batch.non_tensor_batch.get("min_global_steps")
@@ -135,6 +143,7 @@ def apply_strict_correctness_group_gate(batch: Any) -> tuple[Any, dict[str, floa
         train_mask_values,
         version_values,
         expected_policy_version,
+        expected_group_size,
     )
     advantages = batch.batch["advantages"]
     returns = batch.batch["returns"]

@@ -1686,3 +1686,43 @@ def compute_score_grounded_tristate_v6(
         extra_info,
         **kwargs,
     )
+
+
+def compute_score_minimal_grounded_v1(
+    data_source: str,
+    solution_str: str,
+    ground_truth: dict[str, Any],
+    extra_info: dict[str, Any],
+    **kwargs: Any,
+) -> dict[str, Any]:
+    """Minimal binary reward with UNKNOWN masking for infrastructure gaps."""
+
+    from llin_verl.minimal_grounded_reward import compute_minimal_grounded_reward
+
+    return compute_minimal_grounded_reward(
+        data_source,
+        solution_str,
+        ground_truth,
+        extra_info,
+        **kwargs,
+    )
+
+
+def compute_score_tiered_query_cost_v1(
+    data_source: str,
+    solution_str: str,
+    ground_truth: dict[str, Any],
+    extra_info: dict[str, Any],
+    **kwargs: Any,
+) -> dict[str, Any]:
+    """Lazy veRL-compatible entrypoint for query-cost shadow reward v1."""
+
+    from llin_verl.tiered_query_cost_reward import compute_tiered_query_cost_reward
+
+    return compute_tiered_query_cost_reward(
+        data_source,
+        solution_str,
+        ground_truth,
+        extra_info,
+        **kwargs,
+    )

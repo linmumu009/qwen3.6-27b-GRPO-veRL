@@ -1,0 +1,181 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+HOST_PROJECT_ROOT="${HOST_PROJECT_ROOT:-/data3/llin/qwen3.6-27b-verl-grpo}"
+CONTAINER_PROJECT_ROOT="${CONTAINER_PROJECT_ROOT:-/workspace/llin-verl-grpo}"
+RUN_NAME="${RUN_NAME:-llin-qwen38-approved43-tiered-v1-formal-20260822-01}"
+RUN_HOST="${HOST_PROJECT_ROOT}/runs/${RUN_NAME}"
+RUN_CONTAINER="${CONTAINER_PROJECT_ROOT}/runs/${RUN_NAME}"
+RUNTIME_CONTAINER="${RUN_CONTAINER}/runtime"
+TRAINER_CONTAINER="${TRAINER_CONTAINER:-llin-verl-qwen38-canary-m05-20260822}"
+ROLLOUT_CONTAINER="${ROLLOUT_CONTAINER:-llin-verl-qwen38-canary-m06-20260822}"
+ROLLOUT_HOST="${ROLLOUT_HOST:-192.168.202.4}"
+RAY_ADDRESS="${RAY_ADDRESS:-192.168.202.5:36379}"
+MODEL_PATH="/models/Qwen3.8-27B"
+SOURCE_RUN_CONTAINER="${CONTAINER_PROJECT_ROOT}/runs/llin-v15-codex-model2-100-step120-8x-20260821-01"
+PACKAGE_HOST="${HOST_PROJECT_ROOT}/runs/llin-v15-codex-model2-100-step120-8x-20260821-01/grpo_readiness_audit_20260822-05"
+PACKAGE_CONTAINER="${SOURCE_RUN_CONTAINER}/grpo_readiness_audit_20260822-05"
+TASKS_CONTAINER="${SOURCE_RUN_CONTAINER}/data/tasks.jsonl"
+RAW100_CONTAINER="${SOURCE_RUN_CONTAINER}/data/rollout_100.sensitive.parquet"
+EXPECTED_CONFIG_SHA256="191e0af232104ed8b65258cf3fb2b842e288008baca7633c11b82a1ac7203aab"
+EXPECTED_MODEL_COMPOUND_SHA256="e2c3b44e4e198e94fcd74903983fc8997f8e504a21575e397f9d59db1cc2fc8f"
+EXPECTED_APPROVED_SHA256="d86b53d906806b150d43a508dce9b0dd6d05105c07e03961e8e7bf9439ccd944"
+EXPECTED_MANIFEST_SHA256="1426bc09a3dbaf4709fd89227790603afb7a2bf11beeba80946057d490e0f424"
+EXPECTED_RAW100_SHA256="c0befda32166340bf68e6b948a1e8fcc6f8f0887d7a5f38a4e6b1051b8f9f7af"
+
+mkdir -p "${RUN_HOST}/audit" "${RUN_HOST}/live_patch_backup" "${RUN_HOST}/private"
+chmod 700 "${RUN_HOST}" "${RUN_HOST}/audit" "${RUN_HOST}/live_patch_backup" "${RUN_HOST}/private"
+exec 9>"${HOST_PROJECT_ROOT}/runs/.qwen38-tiered-formal.lock"
+flock -n 9 || { printf 'another Qwen3.8 tiered formal run holds the lock\n' >&2; exit 9; }
+printf '%s\n' "$$" > "${RUN_HOST}/supervisor.pid"
+date -Iseconds > "${RUN_HOST}/started_at"
+printf 'initializing\n' > "${RUN_HOST}/state"
+
+ray_started=false
+cleanup() {
+  local code=$?
+  set +e
+  if [[ "${ray_started}" == "true" ]]; then
+    docker exec "${TRAINER_CONTAINER}" ray stop --grace-period=30 >> "${RUN_HOST}/ray_cleanup.log" 2>&1
+    ssh -o BatchMode=yes "root@${ROLLOUT_HOST}" \
+      "docker exec '${ROLLOUT_CONTAINER}' ray stop --grace-period=30" >> "${RUN_HOST}/ray_cleanup.log" 2>&1
+  fi
+  printf '%s\n' "${code}" > "${RUN_HOST}/exit_code"
+  date -Iseconds > "${RUN_HOST}/finished_at"
+  if (( code != 0 )); then
+    printf 'hard_failure_training_stopped\n' > "${RUN_HOST}/state"
+  fi
+  set -e
+}
+trap cleanup EXIT
+
+npu_process_pattern='^\|[[:space:]]*[0-9]+[[:space:]]+[0-9]+[[:space:]]+\|[[:space:]]*[0-9]+[[:space:]]+\|[[:space:]]*[[:alnum:]_]'
+assert_idle() {
+  local local_info remote_info
+  local_info="$(npu-smi info)"
+  remote_info="$(ssh -o BatchMode=yes "root@${ROLLOUT_HOST}" npu-smi info)"
+  [[ -n "${local_info}" && -n "${remote_info}" ]]
+  ! grep -Eq "${npu_process_pattern}" <<< "${local_info}"
+  ! grep -Eq "${npu_process_pattern}" <<< "${remote_info}"
+}
+
+compound_hash_local() {
+  docker exec "${TRAINER_CONTAINER}" bash -lc \
+    "LC_ALL=C sha256sum '${MODEL_PATH}'/model-*-of-00018.safetensors | sha256sum | cut -d' ' -f1"
+}
+
+compound_hash_remote() {
+  ssh -o BatchMode=yes "root@${ROLLOUT_HOST}" \
+    "docker exec '${ROLLOUT_CONTAINER}' bash -lc \"LC_ALL=C sha256sum '${MODEL_PATH}'/model-*-of-00018.safetensors | sha256sum | cut -d' ' -f1\""
+}
+
+printf 'asset_gates\n' > "${RUN_HOST}/state"
+assert_idle
+docker inspect "${TRAINER_CONTAINER}" >/dev/null
+ssh -o BatchMode=yes "root@${ROLLOUT_HOST}" "docker inspect '${ROLLOUT_CONTAINER}'" >/dev/null
+[[ "$(sha256sum "${PACKAGE_HOST}/private/grpo_approved43.sensitive.parquet" | cut -d' ' -f1)" == "${EXPECTED_APPROVED_SHA256}" ]]
+[[ "$(sha256sum "${PACKAGE_HOST}/private/grpo_approved43_manifest.sensitive.jsonl" | cut -d' ' -f1)" == "${EXPECTED_MANIFEST_SHA256}" ]]
+[[ "$(sha256sum "${HOST_PROJECT_ROOT}/runs/llin-v15-codex-model2-100-step120-8x-20260821-01/data/rollout_100.sensitive.parquet" | cut -d' ' -f1)" == "${EXPECTED_RAW100_SHA256}" ]]
+local_config="$(docker exec "${TRAINER_CONTAINER}" sha256sum "${MODEL_PATH}/config.json" | cut -d' ' -f1)"
+remote_config="$(ssh -o BatchMode=yes "root@${ROLLOUT_HOST}" "docker exec '${ROLLOUT_CONTAINER}' sha256sum '${MODEL_PATH}/config.json'" | cut -d' ' -f1)"
+[[ "${local_config}" == "${EXPECTED_CONFIG_SHA256}" && "${remote_config}" == "${EXPECTED_CONFIG_SHA256}" ]]
+model_hash_local_before="$(compound_hash_local)"
+model_hash_remote_before="$(compound_hash_remote)"
+[[ "${model_hash_local_before}" == "${EXPECTED_MODEL_COMPOUND_SHA256}" ]]
+[[ "${model_hash_remote_before}" == "${EXPECTED_MODEL_COMPOUND_SHA256}" ]]
+cat > "${RUN_HOST}/audit/asset_gate.safe.json" <<EOF
+{
+  "approved43_parquet_sha256": "${EXPECTED_APPROVED_SHA256}",
+  "approved43_manifest_sha256": "${EXPECTED_MANIFEST_SHA256}",
+  "raw100_sha256": "${EXPECTED_RAW100_SHA256}",
+  "model_config_sha256_m05": "${local_config}",
+  "model_config_sha256_m06": "${remote_config}",
+  "model_compound_sha256_m05_before": "${model_hash_local_before}",
+  "model_compound_sha256_m06_before": "${model_hash_remote_before}",
+  "model_compound_method": "LC_ALL=C sha256sum absolute sorted glob lines then sha256",
+  "npu_idle_before": true,
+  "qwen36_or_historical_checkpoint_reused": false,
+  "formal_training_allowed": true
+}
+EOF
+
+printf 'container_cpu_gates\n' > "${RUN_HOST}/state"
+docker exec "${TRAINER_CONTAINER}" env PYTHONPATH="${RUNTIME_CONTAINER}" python3 -m pytest \
+  "${RUNTIME_CONTAINER}/tests/test_tiered_query_cost_reward.py" \
+  "${RUNTIME_CONTAINER}/tests/test_pi_tool_contract.py" \
+  "${RUNTIME_CONTAINER}/tests/test_qwen38_approved43_outcome_launcher.py::test_tiered_formal_launcher_freezes_full_contract" \
+  "${RUNTIME_CONTAINER}/tests/test_qwen38_approved43_outcome_launcher.py::test_prepare_schedule_hash_binds_evidence_and_repeats_exact_members" \
+  "${RUNTIME_CONTAINER}/tests/test_qwen38_approved43_outcome_launcher.py::test_prepare_tiered_sealed8_is_disjoint_and_balanced" \
+  "${RUNTIME_CONTAINER}/tests/test_v15_mixed21_strict_training.py::test_group_gate_masks_all_uniform_groups_and_skips_empty_optimizer_batch" \
+  "${RUNTIME_CONTAINER}/tests/test_v15_mixed21_strict_training.py::test_group_gate_rejects_incomplete_eight_sample_group" \
+  -q --basetemp=/tmp/llin-formal-host-gate > "${RUN_HOST}/audit/container_cpu_gate.log" 2>&1
+
+printf 'backing_up_live_verl\n' > "${RUN_HOST}/state"
+docker cp "${TRAINER_CONTAINER}:/verl/verl/experimental/separation/ray_trainer.py" "${RUN_HOST}/live_patch_backup/m05.ray_trainer.py"
+docker cp "${TRAINER_CONTAINER}:/verl/verl/experimental/fully_async_policy/fully_async_trainer.py" "${RUN_HOST}/live_patch_backup/m05.fully_async_trainer.py"
+ssh -o BatchMode=yes "root@${ROLLOUT_HOST}" \
+  "docker exec '${ROLLOUT_CONTAINER}' cat /verl/verl/experimental/agent_loop/agent_loop.py" \
+  > "${RUN_HOST}/live_patch_backup/m06.agent_loop.py"
+chmod 600 "${RUN_HOST}/live_patch_backup/"*.py
+sha256sum "${RUN_HOST}/live_patch_backup/"*.py > "${RUN_HOST}/live_patch_backup/pre_patch.sha256"
+
+printf 'starting_isolated_ray\n' > "${RUN_HOST}/state"
+docker exec "${TRAINER_CONTAINER}" env \
+  PROJECT_ROOT="${RUNTIME_CONTAINER}" RAY_HEAD_PORT=36379 \
+  RAY_TEMP_DIR=/tmp/q38-tiered-formal-ray-m05 \
+  bash "${RUNTIME_CONTAINER}/scripts/start_ray_qwen38_smoke_m05.sh" \
+  > "${RUN_HOST}/ray_m05.log" 2>&1
+ray_started=true
+ssh -o BatchMode=yes "root@${ROLLOUT_HOST}" \
+  "docker exec '${ROLLOUT_CONTAINER}' env PROJECT_ROOT='${RUNTIME_CONTAINER}' RAY_HEAD_ADDRESS='${RAY_ADDRESS}' bash '${RUNTIME_CONTAINER}/scripts/start_ray_qwen38_smoke_m06.sh'" \
+  > "${RUN_HOST}/ray_m06.log" 2>&1
+docker exec "${TRAINER_CONTAINER}" ray status --address="${RAY_ADDRESS}" > "${RUN_HOST}/audit/ray_status_before.safe.txt"
+
+printf 'formal_training_active\n' > "${RUN_HOST}/state"
+docker exec "${TRAINER_CONTAINER}" env \
+  PROJECT_ROOT="${RUNTIME_CONTAINER}" \
+  PACKAGE_ROOT="${PACKAGE_CONTAINER}" \
+  TASKS_FILE="${TASKS_CONTAINER}" \
+  RAW100_FILE="${RAW100_CONTAINER}" \
+  RUN_NAME="${RUN_NAME}" \
+  OUTPUT_DIR="${RUN_CONTAINER}" \
+  MODEL_PATH="${MODEL_PATH}" \
+  RAY_ADDRESS="${RAY_ADDRESS}" \
+  MEGATRON_BRIDGE_ROOT="${CONTAINER_PROJECT_ROOT}/reference/Megatron-Bridge-de93536e/src" \
+  LLIN_CANARY_AUDIT_DIR="${RUN_CONTAINER}/private/parameter_audit" \
+  bash "${RUNTIME_CONTAINER}/scripts/run_pi_qwen38_approved43_tiered_formal_v1.sh" \
+  > "${RUN_HOST}/training.log" 2>&1
+
+printf 'finalizing_model\n' > "${RUN_HOST}/state"
+model_hash_local_after="$(compound_hash_local)"
+model_hash_remote_after="$(compound_hash_remote)"
+[[ "${model_hash_local_after}" == "${model_hash_local_before}" ]]
+[[ "${model_hash_remote_after}" == "${model_hash_remote_before}" ]]
+mapfile -t checkpoint_dirs < <(find "${RUN_HOST}/private_recovery/checkpoints" -mindepth 1 -maxdepth 1 -type d -name 'global_step_*' | LC_ALL=C sort -V)
+[[ "${#checkpoint_dirs[@]}" == 1 ]]
+final_checkpoint="${checkpoint_dirs[0]}"
+actual_optimizer_steps="${final_checkpoint##*_}"
+[[ "${actual_optimizer_steps}" =~ ^[1-9][0-9]*$ ]]
+find "${final_checkpoint}" -type f -printf '%P\n' | LC_ALL=C sort > "${RUN_HOST}/audit/final_model_files.safe.txt"
+find "${final_checkpoint}" -type f -print0 | LC_ALL=C sort -z | xargs -0 sha256sum > "${RUN_HOST}/private/final_model_files.sha256"
+chmod 600 "${RUN_HOST}/private/final_model_files.sha256"
+final_tree_sha256="$(sha256sum "${RUN_HOST}/private/final_model_files.sha256" | cut -d' ' -f1)"
+cat > "${RUN_HOST}/audit/final_model_manifest.safe.json" <<EOF
+{
+  "run_name": "${RUN_NAME}",
+  "model_family": "Qwen3.8-27B",
+  "training_members": 43,
+  "exposures_per_member": 4,
+  "nominal_groups": 172,
+  "nominal_batches": 86,
+  "actual_optimizer_steps": ${actual_optimizer_steps},
+  "reward_contract": "tiered_query_cost_v1",
+  "source_model_compound_sha256": "${EXPECTED_MODEL_COMPOUND_SHA256}",
+  "approved43_parquet_sha256": "${EXPECTED_APPROVED_SHA256}",
+  "approved43_manifest_sha256": "${EXPECTED_MANIFEST_SHA256}",
+  "final_checkpoint": "${final_checkpoint}",
+  "final_tree_manifest_sha256": "${final_tree_sha256}",
+  "periodic_checkpoints_retained": 0
+}
+EOF
+printf 'formal_training_complete_final_model_only\n' > "${RUN_HOST}/state"
