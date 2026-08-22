@@ -123,6 +123,20 @@ def test_tiered_formal_launcher_freezes_full_contract() -> None:
     assert "TARGET_ACTUAL_OPTIMIZER_STEPS" not in text
     assert "compute_score_grounded_tristate_v6" not in text
 
+    host_text = (ROOT / "scripts" / "launch_qwen38_tiered_formal_host.sh").read_text(encoding="utf-8")
+    for required in (
+        "staging_rollout_data",
+        "approved43x4.sensitive.parquet",
+        "sealed8.sensitive.parquet",
+        "train_sha_local",
+        "train_sha_remote",
+        "sealed_sha_local",
+        "sealed_sha_remote",
+        "cross_host_identical",
+    ):
+        assert required in host_text
+    assert host_text.index("staging_rollout_data") < host_text.index("starting_isolated_ray")
+
 
 def test_prepare_tiered_sealed8_is_disjoint_and_balanced(tmp_path: Path, monkeypatch) -> None:
     approved_rows = []

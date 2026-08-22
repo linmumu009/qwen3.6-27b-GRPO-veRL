@@ -119,6 +119,47 @@ ssh -o BatchMode=yes "root@${ROLLOUT_HOST}" \
 chmod 600 "${RUN_HOST}/live_patch_backup/"*.py
 sha256sum "${RUN_HOST}/live_patch_backup/"*.py > "${RUN_HOST}/live_patch_backup/pre_patch.sha256"
 
+printf 'staging_rollout_data\n' > "${RUN_HOST}/state"
+docker exec "${TRAINER_CONTAINER}" env PYTHONPATH="${RUNTIME_CONTAINER}" python3 \
+  "${RUNTIME_CONTAINER}/scripts/prepare_qwen38_approved43_outcome_training.py" \
+  --approved43 "${PACKAGE_CONTAINER}/private/grpo_approved43.sensitive.parquet" \
+  --manifest "${PACKAGE_CONTAINER}/private/grpo_approved43_manifest.sensitive.jsonl" \
+  --tasks "${TASKS_CONTAINER}" \
+  --output "${RUN_CONTAINER}/private/approved43x4.sensitive.parquet" \
+  --safe-summary "${RUN_CONTAINER}/approved43x4.safe.json" \
+  > "${RUN_HOST}/audit/prestage_approved43x4.log"
+docker exec "${TRAINER_CONTAINER}" env PYTHONPATH="${RUNTIME_CONTAINER}" python3 \
+  "${RUNTIME_CONTAINER}/scripts/prepare_qwen38_tiered_canary_sealed8.py" \
+  --approved43 "${PACKAGE_CONTAINER}/private/grpo_approved43.sensitive.parquet" \
+  --raw100 "${RAW100_CONTAINER}" \
+  --output "${RUN_CONTAINER}/private/sealed8.sensitive.parquet" \
+  --safe-summary "${RUN_CONTAINER}/sealed8.safe.json" \
+  > "${RUN_HOST}/audit/prestage_sealed8.log"
+chmod 600 "${RUN_HOST}/private/approved43x4.sensitive.parquet" "${RUN_HOST}/private/sealed8.sensitive.parquet"
+ssh -o BatchMode=yes "root@${ROLLOUT_HOST}" \
+  "mkdir -p '${RUN_HOST}/private' && chmod 700 '${RUN_HOST}' '${RUN_HOST}/private'"
+scp -p \
+  "${RUN_HOST}/private/approved43x4.sensitive.parquet" \
+  "${RUN_HOST}/private/sealed8.sensitive.parquet" \
+  "root@${ROLLOUT_HOST}:${RUN_HOST}/private/"
+ssh -o BatchMode=yes "root@${ROLLOUT_HOST}" \
+  "chmod 600 '${RUN_HOST}/private/approved43x4.sensitive.parquet' '${RUN_HOST}/private/sealed8.sensitive.parquet'"
+train_sha_local="$(sha256sum "${RUN_HOST}/private/approved43x4.sensitive.parquet" | cut -d' ' -f1)"
+sealed_sha_local="$(sha256sum "${RUN_HOST}/private/sealed8.sensitive.parquet" | cut -d' ' -f1)"
+train_sha_remote="$(ssh -o BatchMode=yes "root@${ROLLOUT_HOST}" "sha256sum '${RUN_HOST}/private/approved43x4.sensitive.parquet'" | cut -d' ' -f1)"
+sealed_sha_remote="$(ssh -o BatchMode=yes "root@${ROLLOUT_HOST}" "sha256sum '${RUN_HOST}/private/sealed8.sensitive.parquet'" | cut -d' ' -f1)"
+[[ "${train_sha_local}" == "${train_sha_remote}" && "${sealed_sha_local}" == "${sealed_sha_remote}" ]]
+cat > "${RUN_HOST}/audit/rollout_data_staging.safe.json" <<EOF
+{
+  "approved43x4_sha256_m05": "${train_sha_local}",
+  "approved43x4_sha256_m06": "${train_sha_remote}",
+  "sealed8_sha256_m05": "${sealed_sha_local}",
+  "sealed8_sha256_m06": "${sealed_sha_remote}",
+  "private_mode": "0600",
+  "cross_host_identical": true
+}
+EOF
+
 printf 'starting_isolated_ray\n' > "${RUN_HOST}/state"
 docker exec "${TRAINER_CONTAINER}" env \
   PROJECT_ROOT="${RUNTIME_CONTAINER}" RAY_HEAD_PORT=36379 \
