@@ -1734,4 +1734,22 @@ def compute_score_tiered_query_cost_v1(
     # alias for per-trajectory dumps; the reward formula itself is unchanged.
     result = dict(result)
     result["tiered_reward"] = result.pop("reward")
+    # Validation metrics apply NumPy reductions to every non-string extra.
+    # Preserve structured/absent audit values as canonical strings so dicts
+    # and None never enter those numeric reductions.  Numeric gate fields
+    # (success, train_mask, q/t/E, and reward) remain numeric.
+    for key, value in tuple(result.items()):
+        if key == "score" or isinstance(value, (str, bool, int, float)):
+            continue
+        result[key] = (
+            "null"
+            if value is None
+            else json.dumps(
+                value,
+                ensure_ascii=False,
+                sort_keys=True,
+                separators=(",", ":"),
+                default=str,
+            )
+        )
     return result

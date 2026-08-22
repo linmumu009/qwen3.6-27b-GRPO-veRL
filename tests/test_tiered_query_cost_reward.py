@@ -245,6 +245,14 @@ def test_verl_entrypoint_avoids_validation_reward_column_collision(tmp_path: Pat
     assert "reward" not in result
     assert result["tiered_reward"] == result["score"]
     assert result["tiered_reward"] >= 0.8
+    assert result["hard_unsafe_reason_counts"] == "{}"
+    assert result["sampling_policy_version_min"] == "null"
+    assert result["sampling_policy_version_max"] == "null"
+    assert all(
+        isinstance(value, (str, bool, int, float))
+        for key, value in result.items()
+        if key != "score"
+    )
 
     # Mirror veRL's validation merge: the framework owns ``reward`` while
     # custom scalar extras are appended once per sample.
@@ -256,3 +264,9 @@ def test_verl_entrypoint_avoids_validation_reward_column_collision(tmp_path: Pat
                 merged.setdefault(key, []).append(value)
     assert len(merged["reward"]) == 32
     assert len(merged["tiered_reward"]) == 32
+    # veRL skips strings and computes NumPy means for every other extra.
+    assert all(
+        isinstance(values[0], str)
+        or all(isinstance(value, (bool, int, float)) for value in values)
+        for values in merged.values()
+    )
