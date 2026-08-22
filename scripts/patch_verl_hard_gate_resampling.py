@@ -7,13 +7,23 @@ import argparse
 from pathlib import Path
 
 
-MARKER = "LLIN_HARD_GATE_RESAMPLE_QUORUM"
+MARKER = "LLIN_TRISTATE_UNKNOWN_RESAMPLE_V2"
+OLD_MARKER = "LLIN_HARD_GATE_RESAMPLE_QUORUM"
 
 
 def patch(path: Path) -> str:
     text = path.read_text(encoding="utf-8")
     if MARKER in text:
         return "already-patched"
+    if OLD_MARKER in text:
+        text = text.replace(OLD_MARKER, MARKER)
+        text = text.replace('reward_info.get("online_eligible", 0)', 'reward_info.get("train_mask", 0)')
+        text = text.replace("hard_gate_eligible", "tristate_trainable")
+        text = text.replace("hard_gate_rejected", "tristate_unknown")
+        text = text.replace("hard_gate_cap_exhausted", "tristate_cap_exhausted")
+        text = text.replace("hard-gate attempt cap", "tristate UNKNOWN attempt cap")
+        path.write_text(text, encoding="utf-8")
+        return "upgraded"
     old = """\
                     for task in done:
                         if len(outputs) < fastest_k:
@@ -26,22 +36,21 @@ def patch(path: Path) -> str:
                 pending_indices = [task_to_index[task] for task in pending]
 """
     new = """\
-                    # LLIN_HARD_GATE_RESAMPLE_QUORUM: reward is computed inside
-                    # each completed agent loop. Only H=1 candidates can fill
-                    # the GRPO group. H=0 candidates are retained only as
-                    # fail-closed placeholders if the physical attempt cap is
-                    # exhausted before eight eligible trajectories arrive.
-                    if 'hard_gate_rejected' not in locals():
-                        hard_gate_rejected = []
+                    # LLIN_TRISTATE_UNKNOWN_RESAMPLE_V2: PASS and FAIL have
+                    # train_mask=1; UNKNOWN has train_mask=0 and is resampled.
+                    # UNKNOWN candidates are retained only as fail-closed
+                    # placeholders if the attempt cap is exhausted.
+                    if 'tristate_unknown' not in locals():
+                        tristate_unknown = []
                     for task in done:
                         candidate = await task
                         reward_info = candidate.extra_fields.get("reward_extra_info", {})
-                        eligible = bool(reward_info.get("online_eligible", 0))
+                        eligible = bool(reward_info.get("train_mask", 0))
                         if eligible and len(outputs) < fastest_k:
                             outputs.append(candidate)
                             selected_indices.append(task_to_index[task])
                         else:
-                            hard_gate_rejected.append((task_to_index[task], candidate))
+                            tristate_unknown.append((task_to_index[task], candidate))
                             completed_but_discarded += 1
 
                 pending_indices = [task_to_index[task] for task in pending]
@@ -55,16 +64,16 @@ def patch(path: Path) -> str:
 '''
     new = '''\
             eligible_selected = len(outputs)
-            hard_gate_cap_exhausted = eligible_selected < fastest_k
-            if hard_gate_cap_exhausted:
-                for rejected_index, rejected_output in hard_gate_rejected:
+            tristate_cap_exhausted = eligible_selected < fastest_k
+            if tristate_cap_exhausted:
+                for rejected_index, rejected_output in tristate_unknown:
                     if len(outputs) >= fastest_k:
                         break
                     outputs.append(rejected_output)
                     selected_indices.append(rejected_index)
             if len(outputs) != fastest_k:
                 raise RuntimeError(
-                    f"hard-gate attempt cap returned {len(outputs)} of {fastest_k} required placeholders"
+                    f"tristate UNKNOWN attempt cap returned {len(outputs)} of {fastest_k} required placeholders"
                 )
             print(
                 "[LLIN_FASTEST_K] "
@@ -74,7 +83,7 @@ def patch(path: Path) -> str:
     text = text.replace(old, new, 1)
     text = text.replace(
         'f"physical_aborts={physically_aborted} "',
-        'f"physical_aborts={physically_aborted} "\n                f"hard_gate_eligible={eligible_selected} "\n                f"hard_gate_rejected={len(hard_gate_rejected)} "\n                f"hard_gate_cap_exhausted={hard_gate_cap_exhausted} "',
+        'f"physical_aborts={physically_aborted} "\n                f"tristate_trainable={eligible_selected} "\n                f"tristate_unknown={len(tristate_unknown)} "\n                f"tristate_cap_exhausted={tristate_cap_exhausted} "',
         1,
     )
     path.write_text(text, encoding="utf-8")

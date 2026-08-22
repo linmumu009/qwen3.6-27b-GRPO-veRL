@@ -8,6 +8,7 @@ evidence has been attached to the rollout output.
 from __future__ import annotations
 
 import asyncio
+import hashlib
 import json
 import os
 import shutil
@@ -151,6 +152,7 @@ class WorkspaceRegistry:
             "pi_workspace_request_id": request_id,
             "pi_environment_id": state.environment_id,
             "pi_tool_events": events,
+            "pi_tool_log_present": True,
             "pi_tool_event_contract": "runtime-captured-structured-tool-events-v2",
             "pi_tool_call_count": len(events),
             "pi_tool_success_count": sum(bool(event.get("ok")) for event in events),
@@ -224,19 +226,34 @@ class PiWorkspaceTool(BaseTool):
             ok = False
         elapsed = time.monotonic() - started
         command = str(parameters.get("command") or "") if self.operation == "bash" else ""
+        response_truncated = response.startswith("[output truncated; full output saved")
         event = {
             "name": self.operation,
             "arguments": parameters,
             "ok": ok,
             "elapsed_seconds": round(elapsed, 6),
             "tables": extract_table_names(command),
-            "response_preview": response[:4000],
+            # The reward judge may replay direct SQL without this text, but a
+            # deterministic composed route needs the complete bounded tool
+            # response.  ``response`` is already capped by the tool contract.
+            "response_preview": response,
+            "response_sha256": hashlib.sha256(response.encode("utf-8")).hexdigest(),
+            "response_truncated": response_truncated,
             "observed_tool_response": True,
             "call_parse_valid": True,
+            "source": "runtime_structured_pi_workspace",
             "assistant_turn_index": int(getattr(agent_data, "assistant_turns", 0) or 0),
         }
+        if self.operation == "bash":
+            from llin_verl.grounded_trajectory_reward import capture_deterministic_composition
+
+            composition = capture_deterministic_composition(command, response)
+            if composition is not None:
+                event["composition_trace"] = composition
         WORKSPACES.record(state.request_id, event)
         agent_data.extra_fields["pi_tool_events"] = list(WORKSPACES._states[state.request_id].events)
+        agent_data.extra_fields["pi_tool_log_present"] = True
+        agent_data.extra_fields["pi_tool_event_source"] = "runtime_structured_pi_workspace"
         metrics = {"pi_tool_ok": float(ok), "pi_tool_elapsed_seconds": elapsed}
         return ToolResponse(text=response), 0.0, metrics
 

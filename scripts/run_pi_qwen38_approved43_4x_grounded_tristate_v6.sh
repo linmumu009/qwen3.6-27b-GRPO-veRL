@@ -1,11 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-printf 'superseded: v5 H*C can reward an ungrounded guessed answer; use the paused v6 tristate contract\n' >&2
-exit 3
-
-# Frozen formal contract.  This file is intentionally inert until the shadow
-# audit owner supplies the explicit approval token below.
+# Frozen future formal contract. It is intentionally inert until all 344 human
+# labels, every disagreement, and all 43 task-bound mutation packs are approved.
 PROJECT_ROOT="${PROJECT_ROOT:-/workspace/llin-verl-grpo}"
 VERL_ROOT="${VERL_ROOT:-/verl}"
 MODEL_PATH="${MODEL_PATH:-/models/Qwen3.8-27B}"
@@ -13,7 +10,9 @@ PACKAGE_ROOT="${PACKAGE_ROOT:-${PROJECT_ROOT}/runs/llin-v15-codex-model2-100-ste
 APPROVED43="${APPROVED43:-${PACKAGE_ROOT}/private/grpo_approved43.sensitive.parquet}"
 APPROVED43_MANIFEST="${APPROVED43_MANIFEST:-${PACKAGE_ROOT}/private/grpo_approved43_manifest.sensitive.jsonl}"
 TASKS_FILE="${TASKS_FILE:?TASKS_FILE must point to the frozen private 100-task JSONL used only by manifest index}"
-RUN_NAME="${RUN_NAME:-llin-qwen38-approved43-4x-v5-nominal172-optpending}"
+CALIBRATION_SAFE_SUMMARY="${CALIBRATION_SAFE_SUMMARY:?three-state calibration safe summary is required}"
+CASEPACK_SAFE_SUMMARY="${CASEPACK_SAFE_SUMMARY:?approved43 verifier casepack safe summary is required}"
+RUN_NAME="${RUN_NAME:-llin-qwen38-approved43-4x-v6-nominal172-optpending}"
 OUTPUT_DIR="${OUTPUT_DIR:-${PROJECT_ROOT}/runs/${RUN_NAME}}"
 TRAIN_FILE="${TRAIN_FILE:-${OUTPUT_DIR}/private/approved43x4.sensitive.parquet}"
 TRAIN_SUMMARY="${TRAIN_SUMMARY:-${OUTPUT_DIR}/approved43x4.safe.json}"
@@ -27,24 +26,41 @@ RESPONSES_PER_GROUP=8
 OVERSAMPLE_CANDIDATES=16
 GROUPS_PER_STEP=2
 TOTAL_NOMINAL_STEPS=86
-PI_PROCESS_BONUS_ALPHA="${PI_PROCESS_BONUS_ALPHA:-0}"
 
-if [[ "${FORMAL_TRAINING_APPROVED:-}" != "approved-after-shadow-v2" ]]; then
-  printf 'formal training remains paused: missing post-shadow approval token\n' >&2
+if [[ "${FORMAL_TRAINING_APPROVED:-}" != "approved-after-tristate-calibration-v1" ]]; then
+  printf 'formal training remains paused: missing post-calibration approval token\n' >&2
   exit 3
 fi
-if [[ "${PI_PROCESS_BONUS_ALPHA}" != "0" && "${PI_PROCESS_BONUS_ALPHA}" != "0.10" ]]; then
-  printf 'PI_PROCESS_BONUS_ALPHA must be 0 or 0.10\n' >&2
-  exit 2
+if [[ "${HUMAN_344_CALIBRATION_APPROVED:-}" != "complete-zero-unresolved" ]]; then
+  printf 'formal training remains paused: 344 human labels are not approved\n' >&2
+  exit 3
 fi
-if [[ "${PI_PROCESS_BONUS_ALPHA}" == "0.10" && "${VERIFIED_PROCESS_AUDIT_APPROVED:-}" != "coverage-and-precision-pass" ]]; then
-  printf 'verified process bonus is not approved; use binary H*C fallback\n' >&2
+if [[ "${VERIFIER_CASEPACK_APPROVED:-}" != "approved43-all-pass" ]]; then
+  printf 'formal training remains paused: approved43 verifier casepack is not approved\n' >&2
   exit 3
 fi
 if (( TRAIN_TASKS * EXPOSURES_PER_TASK != TOTAL_ROLLOUT_GROUPS || TOTAL_ROLLOUT_GROUPS / GROUPS_PER_STEP != TOTAL_NOMINAL_STEPS )); then
   printf 'frozen group geometry changed\n' >&2
   exit 2
 fi
+
+python3 - "${CALIBRATION_SAFE_SUMMARY}" "${CASEPACK_SAFE_SUMMARY}" <<'PY'
+import json, sys
+calibration=json.load(open(sys.argv[1], encoding='utf-8'))
+casepack=json.load(open(sys.argv[2], encoding='utf-8'))
+human=calibration.get('human_calibration') or {}
+matrix=human.get('confusion_matrix') or {}
+if human.get('status') != 'complete' or int(human.get('completed_rows', 0)) != 344:
+    raise SystemExit('344 human calibration is incomplete')
+if int(matrix.get('unresolved_disagreements', -1)) != 0:
+    raise SystemExit('human/auto disagreements remain unresolved')
+if int(matrix.get('guess_correct_auto_pass', -1)) != 0:
+    raise SystemExit('guess-correct false positives are not zero')
+if casepack.get('status') != 'pass' or int(casepack.get('tasks_all_pass', 0)) != 43:
+    raise SystemExit('approved43 verifier casepack did not pass all tasks')
+if calibration.get('formal_training_allowed') is not False or casepack.get('formal_training_allowed') is not False:
+    raise SystemExit('pre-approval summaries must remain fail-closed')
+PY
 
 observed_config_sha256="$(sha256sum "${MODEL_PATH}/config.json" | awk '{print $1}')"
 if [[ "${observed_config_sha256}" != "${EXPECTED_CONFIG_SHA256}" ]]; then
@@ -65,8 +81,6 @@ python3 "${PROJECT_ROOT}/scripts/prepare_qwen38_approved43_outcome_training.py" 
   --output "${TRAIN_FILE}" \
   --safe-summary "${TRAIN_SUMMARY}"
 
-# Patch a CPU-visible veRL source tree before any model is loaded.  Re-running
-# these patches is idempotent.
 python3 "${PROJECT_ROOT}/scripts/patch_verl_fastest_k_oversampling.py" \
   --rollouter "${VERL_ROOT}/verl/experimental/fully_async_policy/fully_async_rollouter.py" \
   --agent-loop "${VERL_ROOT}/verl/experimental/agent_loop/agent_loop.py" \
@@ -78,23 +92,27 @@ python3 "${PROJECT_ROOT}/scripts/patch_verl_grpo_strict_variance_gate.py" \
   --trainer "${VERL_ROOT}/verl/experimental/separation/ray_trainer.py"
 
 cat > "${OUTPUT_DIR}/training_contract.txt" <<EOF
-contract=qwen38-approved43-outcome-gated-trajectory-v5
-training_status=authorized_only_after_shadow_v2
+contract=qwen38-approved43-grounded-tristate-trajectory-v6
+training_status=authorized_only_after_human344_and_casepack_approval
 actor_initialization=${MODEL_PATH}
 reference_initialization=${MODEL_PATH}
 qwen36_or_historical_checkpoint_reused=false
 model_config_sha256=${EXPECTED_CONFIG_SHA256}
 model_18shard_compound_sha256=${EXPECTED_MODEL_COMPOUND_SHA256}
-reward=H*C*(1+${PI_PROCESS_BONUS_ALPHA}*P_verified)
-incorrect_reward=0
-observed_table_field_fit_efficiency_in_reward=false
+judge_states=PASS,FAIL,UNKNOWN
+train_mask=task_valid_and_evidence_observable_and_judge_confident
+success=final_correct_and_grounded_and_safe
+reward=train_mask*success
+unknown_behavior=mask_and_resample
+guess_correct_reward=0
+quality_bonus=disabled
 reward_scope=trajectory_scalar_after_complete_multiturn
 turn_or_token_credit_assignment=false
 nominal_groups=${TOTAL_ROLLOUT_GROUPS}
 accepted_responses_per_group=${RESPONSES_PER_GROUP}
 physical_attempt_cap_per_group=${OVERSAMPLE_CANDIDATES}
 nominal_steps=${TOTAL_NOMINAL_STEPS}
-optimizer_steps=dynamic_strict_mixed_only
+optimizer_steps=dynamic_PASS_FAIL_mixed_only
 algorithm_use_kl_in_reward=false
 actor_use_kl_loss=true
 actor_kl_loss_coef=0.001
@@ -105,7 +123,6 @@ entropy=0
 save_policy=final_only_model_and_extra
 EOF
 
-export PI_PROCESS_BONUS_ALPHA
 MODEL_PATH="${MODEL_PATH}" \
 DATA_FILE="${TRAIN_FILE}" \
 RUN_NAME="${RUN_NAME}" \
@@ -139,7 +156,7 @@ bash "${PROJECT_ROOT}/scripts/run_pi_grpo_fully_async_tp4_pp2_cp2.sh" \
   algorithm.use_kl_in_reward=False \
   algorithm.rollout_correction.bypass_mode=True \
   reward.custom_reward_function.path="${PROJECT_ROOT}/llin_verl/pi_reward.py" \
-  reward.custom_reward_function.name=compute_score_correctness_gated_process_v5 \
+  reward.custom_reward_function.name=compute_score_grounded_tristate_v6 \
   trainer.val_before_train=false \
   trainer.test_freq=-1 \
   trainer.save_freq="${TOTAL_NOMINAL_STEPS}" \

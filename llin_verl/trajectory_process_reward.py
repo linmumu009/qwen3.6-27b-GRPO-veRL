@@ -126,20 +126,19 @@ def parse_qwen_tool_events(transcript: str) -> dict[str, Any]:
             "arguments": arguments,
             "ok": bool(response) and not bool(_TOOL_ERROR_RE.search(response)),
             "response_preview": response,
+            "response_sha256": hashlib.sha256(response.encode("utf-8")).hexdigest(),
+            "response_truncated": "[output truncated; full output saved" in response,
             "observed_tool_response": index < len(responses),
             "source": "qwen_xml_shadow_adapter",
             "call_parse_valid": valid,
         }
         events.append(event)
 
-    complete = (
-        bool(call_blocks)
-        and len(call_blocks) == len(responses)
-        and malformed_calls == 0
-    )
+    complete = len(call_blocks) == len(responses) and malformed_calls == 0
     return {
         "events": events,
         "protocol_complete": complete,
+        "tool_log_present": True,
         "tool_call_count": len(call_blocks),
         "tool_response_count": len(responses),
         "malformed_tool_call_count": malformed_calls,

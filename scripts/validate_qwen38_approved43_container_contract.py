@@ -14,7 +14,14 @@ def require(text: str, values: tuple[str, ...], label: str) -> None:
         raise RuntimeError(f"{label} is missing required contract strings: {missing}")
 
 
-def validate(agent_loop: Path, trainer: Path, losses: Path, launcher: Path) -> dict[str, object]:
+def validate(
+    agent_loop: Path,
+    trainer: Path,
+    losses: Path,
+    launcher: Path,
+    *,
+    source_mode: str = "live",
+) -> dict[str, object]:
     agent_text = agent_loop.read_text(encoding="utf-8")
     trainer_text = trainer.read_text(encoding="utf-8")
     loss_text = losses.read_text(encoding="utf-8")
@@ -22,10 +29,10 @@ def validate(agent_loop: Path, trainer: Path, losses: Path, launcher: Path) -> d
     require(
         agent_text,
         (
-            "LLIN_HARD_GATE_RESAMPLE_QUORUM",
-            'reward_info.get("online_eligible", 0)',
-            "hard_gate_cap_exhausted",
-            "hard-gate attempt cap returned",
+            "LLIN_TRISTATE_UNKNOWN_RESAMPLE_V2",
+            'reward_info.get("train_mask", 0)',
+            "tristate_cap_exhausted",
+            "tristate UNKNOWN attempt cap returned",
         ),
         "agent loop",
     )
@@ -62,20 +69,29 @@ def validate(agent_loop: Path, trainer: Path, losses: Path, launcher: Path) -> d
             "OVERSAMPLE_CANDIDATES=16",
             "trainer.max_actor_ckpt_to_keep=1",
             "FORMAL_TRAINING_APPROVED",
+            "HUMAN_344_CALIBRATION_APPROVED",
+            "VERIFIER_CASEPACK_APPROVED",
+            "compute_score_grounded_tristate_v6",
+            "reward=train_mask*success",
+            "guess_correct_reward=0",
         ),
         "launcher",
     )
     return {
-        "contract": "qwen38-approved43-actual-verl-container-static-v1",
+        "contract": "qwen38-approved43-grounded-tristate-actual-verl-container-static-v2",
         "status": "pass",
         "training_status": "paused_no_model_load_no_rollout_no_optimizer",
-        "hard_gate_resample_to_8_or_skip_at_16": True,
+        "unknown_resample_to_8_or_skip_at_16": True,
+        "pass_and_fail_are_trainable_states": True,
+        "guess_correct_requires_grounding": True,
         "uniform_and_hard_gate_groups_skip_optimizer": True,
         "hard_staleness_zero_exact_policy_version": True,
         "kl_outside_reward": True,
         "kl_uses_active_response_mask": True,
         "launcher_requires_post_shadow_approval": True,
-        "source_files_modified": False,
+        "validated_source_mode": source_mode,
+        "live_container_patch_installed": source_mode == "live",
+        "source_files_modified_by_validator": False,
     }
 
 
@@ -86,8 +102,15 @@ def main() -> None:
     parser.add_argument("--losses", type=Path, required=True)
     parser.add_argument("--launcher", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--source-mode", choices=("live", "staged_copy"), default="live")
     args = parser.parse_args()
-    result = validate(args.agent_loop, args.trainer, args.losses, args.launcher)
+    result = validate(
+        args.agent_loop,
+        args.trainer,
+        args.losses,
+        args.launcher,
+        source_mode=args.source_mode,
+    )
     args.output.write_text(json.dumps(result, sort_keys=True, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(result, sort_keys=True))
 

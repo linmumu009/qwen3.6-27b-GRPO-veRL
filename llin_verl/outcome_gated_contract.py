@@ -71,8 +71,8 @@ class HardGateGroup:
     closed: bool = False
 
 
-class HardGateResampleBuffer:
-    """Accept exactly N H=1 trajectories or close a group at its attempt cap.
+class TristateResampleBuffer:
+    """Accept exactly N PASS/FAIL trajectories; resample UNKNOWN.
 
     This is deliberately independent of veRL tensor types so the rollout
     scheduler can invoke it before constructing a train batch.
@@ -85,12 +85,12 @@ class HardGateResampleBuffer:
         self.max_attempts = max_attempts
         self._groups: dict[str, HardGateGroup] = defaultdict(HardGateGroup)
 
-    def observe(self, group_id: str, trajectory: Any, *, hard_gate_passed: bool) -> str:
+    def observe(self, group_id: str, trajectory: Any, *, train_mask: bool) -> str:
         group = self._groups[str(group_id)]
         if group.closed:
             raise RuntimeError("group already closed")
         group.attempts += 1
-        if hard_gate_passed:
+        if train_mask:
             group.accepted.append(trajectory)
         if len(group.accepted) == self.target_size:
             group.closed = True
@@ -110,3 +110,10 @@ class HardGateResampleBuffer:
             "ready": group.closed and len(group.accepted) == self.target_size,
             "skipped": group.closed and len(group.accepted) < self.target_size,
         }
+
+
+class HardGateResampleBuffer(TristateResampleBuffer):
+    """Compatibility adapter for pre-v6 callers; new code uses ``train_mask``."""
+
+    def observe(self, group_id: str, trajectory: Any, *, hard_gate_passed: bool) -> str:
+        return super().observe(group_id, trajectory, train_mask=hard_gate_passed)

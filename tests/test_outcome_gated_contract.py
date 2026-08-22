@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from llin_verl.outcome_gated_contract import (
     HardGateResampleBuffer,
+    TristateResampleBuffer,
     audit_mixed_group_advantages,
     evidence_binding_hash,
 )
@@ -30,6 +31,15 @@ def test_hard_gate_resampler_accepts_eight_or_skips_at_cap() -> None:
         status = buffer.observe("skip", index, hard_gate_passed=index < 7)
     assert status == "skip"
     assert buffer.result("skip")["skipped"] is True
+
+
+def test_tristate_resampler_accepts_pass_and_fail_but_not_unknown() -> None:
+    buffer = TristateResampleBuffer(target_size=3, max_attempts=5)
+    assert buffer.observe("group", "pass", train_mask=True) == "resample"
+    assert buffer.observe("group", "unknown", train_mask=False) == "resample"
+    assert buffer.observe("group", "fail", train_mask=True) == "resample"
+    assert buffer.observe("group", "pass-2", train_mask=True) == "ready"
+    assert buffer.result("group")["accepted"] == ["pass", "fail", "pass-2"]
 
 
 def test_evidence_binding_hash_changes_on_plan_or_fields() -> None:

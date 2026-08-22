@@ -1666,3 +1666,23 @@ def compute_score_correctness_gated_process_v5(
         extra_info,
         **kwargs,
     )
+
+
+def compute_score_grounded_tristate_v6(
+    data_source: str,
+    solution_str: str,
+    ground_truth: dict[str, Any],
+    extra_info: dict[str, Any],
+    **kwargs: Any,
+) -> dict[str, Any]:
+    """PASS/FAIL/UNKNOWN reward that requires replayable grounding."""
+
+    from llin_verl.grounded_trajectory_reward import compute_grounded_trajectory_reward
+
+    return compute_grounded_trajectory_reward(
+        data_source,
+        solution_str,
+        ground_truth,
+        extra_info,
+        **kwargs,
+    )

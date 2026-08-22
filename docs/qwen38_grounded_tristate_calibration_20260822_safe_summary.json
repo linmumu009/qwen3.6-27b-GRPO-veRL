@@ -1,0 +1,59 @@
+{
+  "approved43_manifest_sha256": "1426bc09a3dbaf4709fd89227790603afb7a2bf11beeba80946057d490e0f424",
+  "approved43_parquet_sha256": "d86b53d906806b150d43a508dce9b0dd6d05105c07e03961e8e7bf9439ccd944",
+  "automatic_shadow": {
+    "FAIL": 253,
+    "PASS": 0,
+    "UNKNOWN": 91,
+    "evidence_contract_unresolved_rows": 0,
+    "final_correct_rows": 128,
+    "grounded_success_coverage_of_final_correct": 0.0,
+    "guess_block_rate": 1.0,
+    "guess_correct_blocked": 126,
+    "guess_correct_candidates": 126,
+    "mixed_trainable_groups": 0,
+    "unknown_rate": 0.26453488
+  },
+  "casepack": {
+    "adversarial_wrong_sql_applicable_rows": 164,
+    "adversarial_wrong_sql_pass_count": 0,
+    "applicable_cases": 725,
+    "failed_cases": 0,
+    "passed_cases": 725,
+    "safe_summary_sha256": "d7349d0edc4ef105da8ca5f2f13dbc4d8257a0bd56b27c565aac561360acba0b",
+    "tasks": 43,
+    "tasks_all_pass": 43
+  },
+  "container_contract": {
+    "live_container_patch_installed": false,
+    "staged_copy_status": "pass",
+    "staged_safe_summary_sha256": "dfb2f5a9f634af513512df8adb555a43d045f155e5d4d144f04dcd95b4da37b8",
+    "validated_source_mode": "staged_copy"
+  },
+  "contract": "qwen38-approved43-grounded-tristate-calibration-safe-v1",
+  "database_sha256": "6d9c90cb5869dca751ba4865d4e682578105f984b52837a7f75adfdc8d9ef5f8",
+  "dataset_sha256": "c0befda32166340bf68e6b948a1e8fcc6f8f0887d7a5f38a4e6b1051b8f9f7af",
+  "formal_training_allowed": false,
+  "human_calibration": {
+    "completed_rows": 0,
+    "confusion_matrix": null,
+    "required_rows": 344,
+    "status": "pending"
+  },
+  "previous_v2": {
+    "identity_rows": 344,
+    "old_reward_mean": 0.37209302,
+    "old_reward_positive": 126,
+    "process_efficiency_mean": 0.9980814,
+    "process_field_mean": 0.72868217,
+    "process_fit_mean": 0.9622093,
+    "process_sql_mean": 0.11046512,
+    "process_table_mean": 0.95639535
+  },
+  "reward_contract": "grounded-tristate-trajectory-v6",
+  "safe_summary_sha256": "ce420579faf5a54a11e55392d289bae58672c061e36bf86278099d35011fca3a",
+  "tasks_sha256": "096e6be41c10c4b4c340e941d34533a76d181eb3879dfd2c4ea72639b3ae1e7f",
+  "training_status": "paused_cpu_only_no_model_no_rollout_no_optimizer_no_npu",
+  "trajectory_rows": 344,
+  "unique_trajectory_identities": 344
+}

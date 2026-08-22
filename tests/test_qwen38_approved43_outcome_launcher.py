@@ -15,8 +15,8 @@ from scripts.attest_verified_process_structural_audit import attest
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def test_launcher_freezes_qwen38_reward_kl_staleness_and_final_only_save() -> None:
-    text = (ROOT / "scripts" / "run_pi_qwen38_approved43_4x_outcome_gated_v5.sh").read_text(encoding="utf-8")
+def test_launcher_freezes_qwen38_tristate_reward_kl_staleness_and_final_only_save() -> None:
+    text = (ROOT / "scripts" / "run_pi_qwen38_approved43_4x_grounded_tristate_v6.sh").read_text(encoding="utf-8")
 
     for required in (
         "MODEL_PATH:-/models/Qwen3.8-27B",
@@ -29,7 +29,12 @@ def test_launcher_freezes_qwen38_reward_kl_staleness_and_final_only_save() -> No
         "algorithm.use_kl_in_reward=False",
         "STALENESS_THRESHOLD=0",
         "actor_rollout_ref.actor.optim.lr=5e-8",
-        "compute_score_correctness_gated_process_v5",
+        "compute_score_grounded_tristate_v6",
+        "reward=train_mask*success",
+        "unknown_behavior=mask_and_resample",
+        "guess_correct_reward=0",
+        "HUMAN_344_CALIBRATION_APPROVED",
+        "VERIFIER_CASEPACK_APPROVED",
         "trainer.save_freq=\"${TOTAL_NOMINAL_STEPS}\"",
         "trainer.max_actor_ckpt_to_keep=1",
         "checkpoint.save_contents=[model,extra]",
@@ -38,6 +43,11 @@ def test_launcher_freezes_qwen38_reward_kl_staleness_and_final_only_save() -> No
     assert "Qwen3.6" not in text
     assert "Step120" not in text
     assert "compute_score_strict_correctness_v3" not in text
+    assert "PI_PROCESS_BONUS_ALPHA" not in text
+
+    retired = (ROOT / "scripts" / "run_pi_qwen38_approved43_4x_outcome_gated_v5.sh").read_text(encoding="utf-8")
+    assert "superseded: v5 H*C can reward an ungrounded guessed answer" in retired
+    assert retired.index("exit 3") < retired.index("PROJECT_ROOT=")
 
 
 def test_prepare_schedule_hash_binds_evidence_and_repeats_exact_members(tmp_path: Path, monkeypatch) -> None:
@@ -82,16 +92,16 @@ def test_prepare_schedule_hash_binds_evidence_and_repeats_exact_members(tmp_path
     assert all(row["extra_info"]["approved43_authorization"] for row in rows)
 
 
-def test_hard_gate_patch_selects_only_eligible_and_fills_fail_closed_placeholders(tmp_path: Path) -> None:
+def test_tristate_patch_selects_pass_fail_and_resamples_unknown(tmp_path: Path) -> None:
     source = ROOT / "reference" / "verl" / "verl" / "experimental" / "agent_loop" / "agent_loop.py"
     target = tmp_path / "agent_loop.py"
     target.write_text(source.read_text(encoding="utf-8"), encoding="utf-8")
     patch_agent_loop(target)
     assert patch_hard_gate(target) == "patched"
     text = target.read_text(encoding="utf-8")
-    assert "LLIN_HARD_GATE_RESAMPLE_QUORUM" in text
-    assert 'reward_info.get("online_eligible", 0)' in text
-    assert "hard_gate_cap_exhausted" in text
+    assert "LLIN_TRISTATE_UNKNOWN_RESAMPLE_V2" in text
+    assert 'reward_info.get("train_mask", 0)' in text
+    assert "tristate_cap_exhausted" in text
 
 
 def test_structural_audit_does_not_claim_human_precision(tmp_path: Path) -> None:

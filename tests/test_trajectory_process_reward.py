@@ -416,6 +416,22 @@ def test_hard_gate_failure_skips_entire_group() -> None:
     assert torch.count_nonzero(gated.batch["response_mask"]) == 0
 
 
+def test_tristate_group_gate_prefers_success_and_train_mask_fields() -> None:
+    batch = _make_batch(["mixed"] * 8, [0] * 8, [1] * 8)
+    batch.non_tensor_batch["success"] = [0, 1] * 4
+    batch.non_tensor_batch["train_mask"] = [1] * 8
+    # Legacy aliases deliberately disagree; v6 must consume the three-state
+    # fields and preserve the genuinely mixed group.
+    batch.non_tensor_batch["acc"] = [0] * 8
+    batch.non_tensor_batch["online_eligible"] = [0] * 8
+
+    gated, metrics = apply_strict_correctness_group_gate(batch)
+
+    assert gated.meta_info["strict_group_should_update_actor"] is True
+    assert metrics["grpo/strict_mixed_groups"] == 1.0
+    assert torch.count_nonzero(gated.batch["response_mask"]) == 16
+
+
 def test_staleness_zero_requires_exact_single_policy_version() -> None:
     batch = _make_batch(["mixed"] * 8, [0, 1] * 4, [1] * 8)
     batch.non_tensor_batch["min_global_steps"] = [7] * 8

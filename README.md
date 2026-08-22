@@ -249,6 +249,12 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 已验证状态
 
+### v1.12.12 — 2026-08-22
+
+- 将奖励升级为 `PASS/FAIL/UNKNOWN` 三态trajectory级合同：只有“final正确 + 可重放EvidencePlan语义证据 + 安全过程”才得1分；UNKNOWN必须mask并重采，明确错误/无工具猜测/unsafe才得0，首轮不加入任何过程bonus，也不宣称逐turn/token credit assignment。
+- 完成批准43题的344/344条CPU shadow与43/43逐题casepack：自动结果为PASS/FAIL/UNKNOWN=`0/253/91`，126/126个guess-correct被阻断；725/725个适用case通过，164个漏过滤、改过滤、漏JOIN、错粒度/排序/TopN/单位的对抗SQL中0个被判PASS。
+- 人工344条私有审核包和模板已冻结为0600，但有效人工标签仍为`0/344`，混淆矩阵未建立，live veRL三态补丁也尚未安装；因此正式训练、模型加载、rollout、optimizer与NPU继续关闭，`formal_training_allowed=false`。
+
 ### v1.12.11 — 2026-08-22
 
 - 将多轮轨迹奖励修订为结果门控的trajectory级标量：`R=H*C*(1+alpha*P_verified)`。错误最终答案恒为0；表、字段、工具适配和效率仅保留观测，不参与奖励。由于既有轨迹的`P_verified`正确覆盖率仅11.85%且人工语义精度尚未建立，正式合同自动锁定`alpha=0`，即首轮只允许`H*C`，不宣称逐turn/token credit assignment。

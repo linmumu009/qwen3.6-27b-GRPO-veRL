@@ -97,22 +97,25 @@ class PiAgentLoop(ToolAgentLoop):
             "trajectory_abort_acknowledged_count": 0,
             "trajectory_abort_physical_request_count": 0,
             "trajectory_abort_error_count": 0,
+            "runtime_error": False,
+            "pi_tool_events": [],
+            "pi_tool_log_present": False,
             "pi_tool_protocol_complete": False,
+            "pi_tool_event_source": "runtime_structured_pi_workspace",
             "pi_tool_event_contract": "runtime-captured-structured-tool-events-v2",
         }
         for key, value in defaults.items():
             output.extra_fields.setdefault(key, value)
-        request_id = output.extra_fields.get("pi_workspace_request_id")
-        if request_id:
-            output.extra_fields.update(WORKSPACES.snapshot(str(request_id)))
-            await WORKSPACES.release(str(request_id))
+        workspace_request_id = output.extra_fields.get("pi_workspace_request_id")
+        if workspace_request_id:
+            output.extra_fields.update(WORKSPACES.snapshot(str(workspace_request_id)))
+            await WORKSPACES.release(str(workspace_request_id))
             output.extra_fields["pi_workspace_released"] = True
         timed_out = bool(output.extra_fields.get("trajectory_timeout"))
-        output.extra_fields["pi_tool_protocol_complete"] = bool(
-            request_id
-            and not timed_out
-            and output.extra_fields.get("pi_tool_events")
-        )
+        # A completed no-tool trajectory is an observed model choice, not a
+        # missing log.  It must be eligible for an explicit no-tool-guess FAIL.
+        output.extra_fields["pi_tool_log_present"] = not timed_out
+        output.extra_fields["pi_tool_protocol_complete"] = not timed_out
         if not timed_out:
             telemetry.snapshot(
                 response_tokens=len(output.response_ids),
@@ -185,6 +188,7 @@ class PiAgentLoop(ToolAgentLoop):
                     or 0
                 ),
                 "pi_workspace_released": True,
+                "pi_tool_log_present": False,
                 "pi_tool_protocol_complete": False,
             }
         )

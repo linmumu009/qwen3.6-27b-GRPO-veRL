@@ -123,10 +123,16 @@ def apply_strict_correctness_group_gate(batch: Any) -> tuple[Any, dict[str, floa
                 int(left) if left is not None and right is not None and int(left) == int(right) else None
                 for left, right in zip(minimum, maximum, strict=True)
             ]
+    success_values = batch.non_tensor_batch.get("success")
+    if success_values is None:
+        success_values = batch.non_tensor_batch["acc"]
+    train_mask_values = batch.non_tensor_batch.get("train_mask")
+    if train_mask_values is None:
+        train_mask_values = batch.non_tensor_batch.get("online_eligible")
     mask, metrics = strict_correctness_group_stats(
         batch.non_tensor_batch["uid"],
-        batch.non_tensor_batch["acc"],
-        batch.non_tensor_batch.get("online_eligible"),
+        success_values,
+        train_mask_values,
         version_values,
         expected_policy_version,
     )
