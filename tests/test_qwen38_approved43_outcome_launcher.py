@@ -76,6 +76,7 @@ def test_tiered_canary_launcher_freezes_actual_update_contract() -> None:
         "actor_rollout_ref.actor.use_kl_loss=True",
         "actor_rollout_ref.actor.kl_loss_coef=0.001",
         "actor_rollout_ref.actor.kl_loss_type=low_var_kl",
+        "+actor_rollout_ref.ref.megatron.override_transformer_config.use_flash_attn=True",
         "STALENESS_THRESHOLD=0",
         "trainer.val_before_train=true",
         "trainer.test_freq=\"${TARGET_ACTUAL_OPTIMIZER_STEPS}\"",
@@ -91,6 +92,21 @@ def test_tiered_canary_launcher_freezes_actual_update_contract() -> None:
         assert required in text
     assert "Qwen3.6/Step120" not in text
     assert "compute_score_grounded_tristate_v6" not in text
+
+    host_text = (ROOT / "scripts" / "launch_qwen38_tiered_canary5_host.sh").read_text(encoding="utf-8")
+    for required in (
+        "staging_rollout_data",
+        "canary20.sensitive.parquet",
+        "sealed8.sensitive.parquet",
+        "train_sha_local",
+        "train_sha_remote",
+        "sealed_sha_local",
+        "sealed_sha_remote",
+        "cross_host_identical",
+        "test_tristate_group_gate_does_not_require_legacy_acc_field",
+    ):
+        assert required in host_text
+    assert host_text.index("staging_rollout_data") < host_text.index("starting_isolated_ray")
 
 
 def test_tiered_formal_launcher_freezes_full_contract() -> None:

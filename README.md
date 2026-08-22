@@ -2,6 +2,11 @@
 
 Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
+## v1.12.22（2026-08-23）
+
+- 将 run-07 失败后的恢复入口收敛为 5 个实际 optimizer 更新的 Qwen3.8 tiered-v1 金丝雀：金丝雀现在显式为冻结 ref 启用 MindSpeed Flash Attention，并在启动 Ray 前确定性生成、以 `0600` 同步 canary20/sealed8 到两机且校验同哈希。
+- 容器门禁新增无遗留 `acc` 字段的三态严格组门回归；奖励公式、原始基座、approved43 成员、LR/KL/staleness 与最多20题组合同不变，完成5次实际更新后仍必须停止等待结果审核。
+
 ## v1.12.21（2026-08-23）
 
 - 修复 Qwen3.8 tiered-v1 正式训练首个严格组门的遗留字段断言：三态奖励现在可直接以 `success`/`train_mask` 完成 mixed 与 UNKNOWN 门控，不再错误要求旧奖励专用的 `acc`；旧奖励仍可回退使用 `acc`。
