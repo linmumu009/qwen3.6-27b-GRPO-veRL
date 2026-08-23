@@ -2,6 +2,11 @@
 
 Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
+## v1.12.29（2026-08-23）
+
+- 修复原始Qwen3.8金丝雀在actor/ref初始化期的确定性NPU OOM：失败证据显示单卡仅余约5 MiB、在加载ref MLP时再申请172 MiB失败，且当时尚无rollout、optimizer step或参数更新。金丝雀现在恢复项目既定的MindSpeed Adam状态CPU offload，同时保持veRL engine二次optimizer搬运关闭；模型、训练拓扑、tiered-v1奖励、LR/KL、strict-mixed与UNKNOWN门禁均未改变。
+- 新增启动合同回归，强制`OPTIMIZER_CPU_OFFLOAD=true / ENGINE_OPTIMIZER_OFFLOAD=false`，避免后续入口误把Adam状态重新常驻NPU；失败run证据保留，后续仍只允许从原始Qwen3.8基座重跑最多5个实际optimizer步，完成后禁止自动转全量。
+
 ## v1.12.28（2026-08-23）
 
 - 修复Qwen3.8 tiered-v1金丝雀的在线观测接线：轨迹、workspace与工具事件现在携带并核验同一request/environment identity；批准任务绑定的`logistics.sqlite`按精确环境集合只读装入run私有目录；工具返回token数由运行时按冻结Qwen3.8 tokenizer真实计数并持久化，缺失时继续判为UNKNOWN，禁止伪填0。

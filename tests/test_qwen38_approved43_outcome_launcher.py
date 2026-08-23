@@ -162,6 +162,7 @@ def test_tiered_canary_launcher_freezes_actual_update_contract() -> None:
         "actor_rollout_ref.actor.kl_loss_coef=0.001",
         "actor_rollout_ref.actor.kl_loss_type=low_var_kl",
         "+actor_rollout_ref.ref.megatron.override_transformer_config.use_flash_attn=True",
+        "OPTIMIZER_CPU_OFFLOAD=true ENGINE_OPTIMIZER_OFFLOAD=false",
         "STALENESS_THRESHOLD=0",
         "trainer.val_before_train=true",
         "trainer.test_freq=\"${TARGET_ACTUAL_OPTIMIZER_STEPS}\"",
