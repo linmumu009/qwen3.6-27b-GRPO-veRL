@@ -113,17 +113,36 @@ def test_tiered_canary_launcher_freezes_actual_update_contract() -> None:
 def test_runtime_gate_consumes_success_without_legacy_acc() -> None:
     import torch
 
+    class TensorDictLike:
+        """Exercise key membership without relying on mapping iteration."""
+
+        def __init__(self, values):
+            self.values = values
+
+        def __contains__(self, key):
+            return key in self.values
+
+        def __iter__(self):
+            # TensorDict iteration is not a plain iterable of hashable keys.
+            return iter([self.values])
+
+        def __getitem__(self, key):
+            return self.values[key]
+
+        def __setitem__(self, key, value):
+            self.values[key] = value
+
     batch = SimpleNamespace(
         non_tensor_batch={
             "uid": np.asarray(["mixed"] * 8, dtype=object),
             "success": np.asarray([0, 1] * 4),
             "train_mask": np.ones(8, dtype=np.int64),
         },
-        batch={
+        batch=TensorDictLike({
             "advantages": torch.ones(8, 2),
             "returns": torch.ones(8, 2),
             "response_mask": torch.ones(8, 2),
-        },
+        }),
         meta_info={},
     )
 

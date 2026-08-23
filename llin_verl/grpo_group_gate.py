@@ -111,7 +111,8 @@ def apply_strict_correctness_group_gate(batch: Any) -> tuple[Any, dict[str, floa
 
     if "uid" not in batch.non_tensor_batch:
         raise KeyError("strict GRPO gate requires non_tensor_batch['uid']")
-    if not {"advantages", "returns", "response_mask"}.issubset(batch.batch):
+    required_tensor_fields = ("advantages", "returns", "response_mask")
+    if not all(field in batch.batch for field in required_tensor_fields):
         raise KeyError(
             "strict GRPO gate requires advantages, returns, and response_mask "
             "after reward/KL assembly"

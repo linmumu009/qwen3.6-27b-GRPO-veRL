@@ -2,6 +2,11 @@
 
 Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
+## v1.12.24（2026-08-23）
+
+- 修复严格组门与 veRL 真实 `TensorDict` 的兼容性：必需张量字段现在逐键做 membership 检查，不再把 `TensorDict` 当普通可哈希键迭代器传给 `set.issubset`；run-01 在任何 optimizer 更新、参数审计或 checkpoint 之前触发的 `unhashable type: TensorDict` 因此被消除。
+- 容器运行时回归改用会在普通迭代时返回不可哈希对象、但支持真实逐键访问的 TensorDict-like 对象，直接覆盖该生产失败；tiered-v1 奖励和严格 mixed/UNKNOWN 门不变。
+
 ## v1.12.23（2026-08-23）
 
 - 将无遗留 `acc` 的三态 strict-group 容器门禁收敛为独立、最小依赖的运行时回归，避免隔离金丝雀 runtime 因未打包无关历史人工审计模块而在测试收集阶段失败；门禁仍直接执行真实 `apply_strict_correctness_group_gate` 并验证 mixed 组保持 active。
