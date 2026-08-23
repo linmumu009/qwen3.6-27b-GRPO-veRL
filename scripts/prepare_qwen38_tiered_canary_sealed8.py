@@ -10,6 +10,8 @@ from typing import Any
 import pyarrow as pa
 import pyarrow.parquet as pq
 
+from llin_verl.outcome_gated_contract import evidence_binding_hash
+
 
 APPROVED43_SHA256 = "d86b53d906806b150d43a508dce9b0dd6d05105c07e03961e8e7bf9439ccd944"
 RAW100_SHA256 = "c0befda32166340bf68e6b948a1e8fcc6f8f0887d7a5f38a4e6b1051b8f9f7af"
@@ -31,7 +33,19 @@ def _answer_type(row: dict[str, Any]) -> str:
     return str(((row.get("reward_model") or {}).get("ground_truth") or {}).get("answer_type") or "").casefold()
 
 
-def prepare(approved43: Path, raw100: Path, output: Path, safe_summary: Path) -> dict[str, Any]:
+def _read_jsonl(path: Path) -> list[dict[str, Any]]:
+    with path.open(encoding="utf-8") as handle:
+        return [json.loads(line) for line in handle if line.strip()]
+
+
+def prepare(
+    approved43: Path,
+    raw100: Path,
+    output: Path,
+    safe_summary: Path,
+    tasks: Path | None = None,
+    database_root: str = "/pi_sandbox",
+) -> dict[str, Any]:
     if file_sha256(approved43) != APPROVED43_SHA256:
         raise ValueError("approved43 parquet hash mismatch")
     if file_sha256(raw100) != RAW100_SHA256:
@@ -39,6 +53,7 @@ def prepare(approved43: Path, raw100: Path, output: Path, safe_summary: Path) ->
 
     approved_rows = pq.read_table(approved43).to_pylist()
     raw_rows = pq.read_table(raw100).to_pylist()
+    task_rows = _read_jsonl(tasks) if tasks is not None else []
     approved_ids = {_instruction_id(row) for row in approved_rows}
     raw_ids = [_instruction_id(row) for row in raw_rows]
     if len(approved_rows) != 43 or len(approved_ids) != 43 or "" in approved_ids:
@@ -57,16 +72,34 @@ def prepare(approved43: Path, raw100: Path, output: Path, safe_summary: Path) ->
         if len(candidates) < 4:
             raise ValueError(f"not enough disjoint {kind} sealed candidates")
         for row in candidates[:4]:
-            copied = dict(row)
+            copied = json.loads(json.dumps(row, ensure_ascii=False))
             extra = dict(copied.get("extra_info") or {})
             extra.update(
                 {
                     "training_allowed": False,
                     "sealed_evaluation_only": True,
                     "approved43_authorization": False,
+                    "pi_reward_database_root": str(database_root),
                 }
             )
             copied["extra_info"] = extra
+            if task_rows:
+                source_index = int(extra.get("global_index", -1))
+                if not 0 <= source_index < len(task_rows):
+                    raise ValueError("sealed task global_index is outside frozen tasks file")
+                task = task_rows[source_index]
+                truth = (copied.get("reward_model") or {}).get("ground_truth") or {}
+                criteria = task.get("verification_criteria") or {}
+                truth["evidence_plan"] = task.get("evidence_plan") or {}
+                truth["required_tables"] = task.get("expected_tables") or truth.get(
+                    "required_tables", []
+                )
+                truth["must_use_fields"] = criteria.get("must_use_fields") or truth.get(
+                    "must_use_fields", []
+                )
+                binding = evidence_binding_hash(truth)
+                truth["process_evidence_binding_sha256"] = binding
+                extra["process_evidence_binding_sha256"] = binding
             selected.append(copied)
 
     selected.sort(key=lambda row: (_answer_type(row), _instruction_id(row)))
@@ -91,6 +124,8 @@ def prepare(approved43: Path, raw100: Path, output: Path, safe_summary: Path) ->
         "identity_set_sha256": identity_set_sha256,
         "sealed_parquet_sha256": file_sha256(output),
         "training_use_allowed": False,
+        "process_binding_enriched": bool(task_rows),
+        "run_local_database_root_configured": bool(database_root),
     }
     safe_summary.write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     os.chmod(safe_summary, 0o600)
@@ -103,8 +138,22 @@ def main() -> None:
     parser.add_argument("--raw100", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--safe-summary", type=Path, required=True)
+    parser.add_argument("--tasks", type=Path)
+    parser.add_argument("--database-root", default="/pi_sandbox")
     args = parser.parse_args()
-    print(json.dumps(prepare(args.approved43, args.raw100, args.output, args.safe_summary), sort_keys=True))
+    print(
+        json.dumps(
+            prepare(
+                args.approved43,
+                args.raw100,
+                args.output,
+                args.safe_summary,
+                args.tasks,
+                args.database_root,
+            ),
+            sort_keys=True,
+        )
+    )
 
 
 if __name__ == "__main__":

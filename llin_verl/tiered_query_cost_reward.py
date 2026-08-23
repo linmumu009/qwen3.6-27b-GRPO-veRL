@@ -140,7 +140,53 @@ def _observe_process(
         "unsafe": False,
         "budget_exceeded": False,
         "hard_unsafe_reason_counts": {},
+        "runtime_identity_complete": False,
+        "request_identity_consistent": False,
+        "environment_identity_consistent": False,
+        "workspace_identity_consistent": False,
+        "tool_response_cost_observable": False,
+        "tool_response_token_observed_event_count": 0,
     }
+
+    trajectory_request_id = str(
+        extra_info.get("pi_trajectory_request_id")
+        or extra_info.get("request_id")
+        or ""
+    )
+    trajectory_environment_id = str(
+        extra_info.get("pi_trajectory_environment_id")
+        or extra_info.get("pi_environment_id")
+        or ""
+    )
+    expected_environment_id = str(ground_truth.get("environment_id") or "")
+    workspace_request_id = str(extra_info.get("pi_workspace_request_id") or "")
+    details["request_identity_consistent"] = bool(trajectory_request_id)
+    details["environment_identity_consistent"] = bool(
+        trajectory_environment_id
+        and expected_environment_id
+        and trajectory_environment_id == expected_environment_id
+        and str(extra_info.get("pi_environment_id") or trajectory_environment_id)
+        == expected_environment_id
+    )
+    details["workspace_identity_consistent"] = (
+        not events
+        or bool(
+            workspace_request_id
+            and workspace_request_id == trajectory_request_id
+            and bool(extra_info.get("pi_workspace_released"))
+            and all(
+                isinstance(event, dict)
+                and str(event.get("workspace_request_id") or "") == trajectory_request_id
+                and str(event.get("environment_id") or "") == expected_environment_id
+                for event in events
+            )
+        )
+    )
+    details["runtime_identity_complete"] = bool(
+        details["request_identity_consistent"]
+        and details["environment_identity_consistent"]
+        and details["workspace_identity_consistent"]
+    )
 
     malformed = [
         event
@@ -181,6 +227,7 @@ def _observe_process(
             response_observable = False
         else:
             response_tokens += token_count
+            details["tool_response_token_observed_event_count"] += 1
 
         for sql in _event_sql(event):
             if _MUTATING_SQL_STATEMENT_RE.search(sql):
@@ -221,6 +268,9 @@ def _observe_process(
     if details["budget_exceeded"]:
         return JudgeState.FAIL, "hard_budget_exceeded", details
 
+    if not details["runtime_identity_complete"]:
+        return JudgeState.UNKNOWN, "runtime_identity_incomplete", details
+
     timeout = bool(extra_info.get("trajectory_timeout"))
     infrastructure_error = bool(extra_info.get("runtime_error") or extra_info.get("api_error"))
     log_present = bool(
@@ -239,6 +289,7 @@ def _observe_process(
         return JudgeState.UNKNOWN, "trajectory_or_infrastructure_incomplete", details
     if not response_observable:
         return JudgeState.UNKNOWN, "tool_response_cost_unobservable", details
+    details["tool_response_cost_observable"] = True
     return JudgeState.PASS, "observable_safe_process", details
 
 
@@ -296,7 +347,8 @@ def compute_tiered_query_cost_reward(
         or ""
     )
     request_identity = str(
-        extra_info.get("request_id")
+        extra_info.get("pi_trajectory_request_id")
+        or extra_info.get("request_id")
         or extra_info.get("pi_workspace_request_id")
         or ""
     )

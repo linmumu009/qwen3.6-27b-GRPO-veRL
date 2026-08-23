@@ -45,12 +45,17 @@ class PiAgentLoop(ToolAgentLoop):
     async def run(self, sampling_params: dict[str, Any], **kwargs: Any):
         request_id = str(kwargs.get("__llin_request_id") or uuid4().hex)
         kwargs["__llin_request_id"] = request_id
-        telemetry = TrajectoryTelemetry.start(kwargs.get("extra_info", {}) or {})
+        input_extra = kwargs.get("extra_info", {}) or {}
+        if not isinstance(input_extra, dict):
+            raise TypeError("trajectory extra_info must be a mapping")
+        environment_id = str(input_extra.get("environment_id") or "")
+        telemetry = TrajectoryTelemetry.start(input_extra)
         context_token: Token = _TRAJECTORY_TELEMETRY.set(telemetry)
         try:
             return await self._run_with_telemetry(
                 sampling_params,
                 request_id=request_id,
+                environment_id=environment_id,
                 telemetry=telemetry,
                 **kwargs,
             )
@@ -62,6 +67,7 @@ class PiAgentLoop(ToolAgentLoop):
         sampling_params: dict[str, Any],
         *,
         request_id: str,
+        environment_id: str,
         telemetry: TrajectoryTelemetry,
         **kwargs: Any,
     ) -> AgentLoopOutput:
@@ -104,12 +110,18 @@ class PiAgentLoop(ToolAgentLoop):
             "pi_tool_protocol_complete": False,
             "pi_tool_event_source": "runtime_structured_pi_workspace",
             "pi_tool_event_contract": "runtime-captured-structured-tool-events-v3",
+            # Persist the logical trajectory identity even when the model does
+            # not call a tool.  Tool-using trajectories must bind their copied
+            # workspace and every event to this exact request/environment.
+            "request_id": request_id,
+            "pi_trajectory_request_id": request_id,
+            "pi_trajectory_environment_id": environment_id,
             # Tool-using trajectories receive these fields from the workspace
             # snapshot.  Keep the same non-tensor schema for observed no-tool
             # trajectories and timeout placeholders so AgentLoopManager can
             # concatenate chunks without losing the three-state distinction.
             "pi_workspace_request_id": "",
-            "pi_environment_id": "",
+            "pi_environment_id": environment_id,
             "pi_tool_call_count": 0,
             "pi_tool_success_count": 0,
             "pi_workspace_elapsed_seconds": 0.0,
@@ -119,7 +131,12 @@ class PiAgentLoop(ToolAgentLoop):
             output.extra_fields.setdefault(key, value)
         workspace_request_id = output.extra_fields.get("pi_workspace_request_id")
         if workspace_request_id:
-            output.extra_fields.update(WORKSPACES.snapshot(str(workspace_request_id)))
+            snapshot = WORKSPACES.snapshot(str(workspace_request_id))
+            if str(snapshot.get("pi_workspace_request_id") or "") != request_id:
+                raise RuntimeError("workspace request identity changed before reward")
+            if str(snapshot.get("pi_environment_id") or "") != environment_id:
+                raise RuntimeError("workspace environment identity changed before reward")
+            output.extra_fields.update(snapshot)
             await WORKSPACES.release(str(workspace_request_id))
             output.extra_fields["pi_workspace_released"] = True
         timed_out = bool(output.extra_fields.get("trajectory_timeout"))

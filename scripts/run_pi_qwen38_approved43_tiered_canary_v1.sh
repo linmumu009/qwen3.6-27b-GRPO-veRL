@@ -54,12 +54,15 @@ python3 "${PROJECT_ROOT}/scripts/prepare_qwen38_tiered_canary_data.py" \
   --manifest "${APPROVED43_MANIFEST}" \
   --tasks "${TASKS_FILE}" \
   --output "${TRAIN_FILE}" \
-  --safe-summary "${TRAIN_SUMMARY}"
+  --safe-summary "${TRAIN_SUMMARY}" \
+  --database-root "${OUTPUT_DIR}/private/pi_sandbox"
 python3 "${PROJECT_ROOT}/scripts/prepare_qwen38_tiered_canary_sealed8.py" \
   --approved43 "${APPROVED43}" \
   --raw100 "${RAW100_FILE}" \
   --output "${SEALED_FILE}" \
-  --safe-summary "${SEALED_SUMMARY}"
+  --safe-summary "${SEALED_SUMMARY}" \
+  --tasks "${TASKS_FILE}" \
+  --database-root "${OUTPUT_DIR}/private/pi_sandbox"
 
 python3 - "${APPROVED43}" "${TRAIN_FILE}" "${SEALED_FILE}" <<'PY'
 import sys
@@ -127,6 +130,7 @@ EOF
 export LLIN_CANARY_TARGET_OPTIMIZER_STEPS="${TARGET_ACTUAL_OPTIMIZER_STEPS}"
 export PI_AGENT_TOKENIZER_PATH="${MODEL_PATH}"
 export PI_AGENT_RUN_TAG="${RUN_NAME}"
+export PI_AGENT_SANDBOX_LOWER="${OUTPUT_DIR}/private/pi_sandbox"
 
 MODEL_PATH="${MODEL_PATH}" \
 DATA_FILE="${TRAIN_FILE}" \

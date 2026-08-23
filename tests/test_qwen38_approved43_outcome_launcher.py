@@ -189,9 +189,15 @@ def test_tiered_canary_launcher_freezes_actual_update_contract() -> None:
         "sealed_sha_remote",
         "cross_host_identical",
         "test_runtime_gate_consumes_success_without_legacy_acc",
+        "staging_bound_pi_sandbox",
+        "stage_bound_pi_sandbox.py",
+        "bound_pi_sandbox_cross_host.safe.json",
+        "PI_AGENT_SANDBOX_LOWER",
+        "PI_AGENT_TOKENIZER_PATH",
     ):
         assert required in host_text
     assert host_text.index("staging_rollout_data") < host_text.index("starting_isolated_ray")
+    assert host_text.index("staging_bound_pi_sandbox") < host_text.index("starting_isolated_ray")
 
 
 def test_runtime_gate_consumes_success_without_legacy_acc() -> None:
@@ -330,7 +336,11 @@ def test_actual_optimizer_patch_covers_parent_and_fully_async_versioning(tmp_pat
     )
 
     assert patch_trainer(parent) in {"patched", "already-patched"}
-    assert patch_fully_async_trainer(async_trainer) in {"patched", "upgraded-v5"}
+    assert patch_fully_async_trainer(async_trainer) in {
+        "patched",
+        "upgraded-v5",
+        "already-patched",
+    }
     parent_text = parent.read_text(encoding="utf-8")
     async_text = async_trainer.read_text(encoding="utf-8")
     assert 'getattr(self, "current_param_version", self.global_steps - 1)' in parent_text
@@ -598,6 +608,7 @@ def test_prepare_tiered_canary_alternates_ten_numeric_ten_table(tmp_path: Path, 
     assert summary["nominal_groups"] == 20
     assert summary["target_actual_optimizer_steps"] == 5
     assert all(row["extra_info"]["canary_training_authorized"] for row in rows)
+    assert all(row["extra_info"]["pi_reward_database_root"] == "/pi_sandbox" for row in rows)
 
 
 def test_tristate_patch_selects_pass_fail_and_resamples_unknown(tmp_path: Path) -> None:
@@ -621,7 +632,9 @@ def test_pi_agent_loop_keeps_optional_workspace_evidence_schema_stable() -> None
 
     for required_default in (
         '"pi_workspace_request_id": ""',
-        '"pi_environment_id": ""',
+        '"pi_environment_id": environment_id',
+        '"pi_trajectory_request_id": request_id',
+        '"pi_trajectory_environment_id": environment_id',
         '"pi_tool_call_count": 0',
         '"pi_tool_success_count": 0',
         '"pi_workspace_elapsed_seconds": 0.0',

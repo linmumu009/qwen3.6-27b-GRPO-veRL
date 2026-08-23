@@ -2,6 +2,12 @@
 
 Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
+## v1.12.28（2026-08-23）
+
+- 修复Qwen3.8 tiered-v1金丝雀的在线观测接线：轨迹、workspace与工具事件现在携带并核验同一request/environment identity；批准任务绑定的`logistics.sqlite`按精确环境集合只读装入run私有目录；工具返回token数由运行时按冻结Qwen3.8 tokenizer真实计数并持久化，缺失时继续判为UNKNOWN，禁止伪填0。
+- 扩展保守table最终结果解析，仅接受可明确还原完整行列与原顺序的单一`Final result`结构或连续显式排名行；漏行、漏列、错序、额外叙述及多final候选继续fail closed。冻结96条只读重放未把任何缺历史证据轨迹伪升为PASS，原因由旧数据库不可用迁移为可审计的历史runtime/token不可观测；两机真实容器CPU门禁在canary20与sealed8上均实现数据库、identity、token观测全覆盖，缺token样本100%保持UNKNOWN。
+- 新增精确数据绑定sandbox staging、冻结重放与在线观测CPU门禁脚本及回归；tiered-v1奖励公式、阈值、strict-mixed/UNKNOWN mask、LR/KL和“最多5个实际optimizer步、完成后强制停止”的金丝雀合同均未改变，正式全量训练仍禁止。
+
 ## v1.12.27（2026-08-23）
 
 - 完成活性修复后的原始Qwen3.8 tiered-v1五步实际更新金丝雀：真实运行已在前两批连续skip后成功产生第三批，证明同policy采样窗口可恢复；但6个名义批次、12组、96条轨迹最终为`PASS=0 / FAIL=14 / UNKNOWN=82`、strict-mixed组0、实际optimizer 0，剩余4批已不可能达到5步目标，故按合同安全停机且不启动全量。

@@ -56,10 +56,41 @@ def test_runtime_persists_exact_tool_response_token_cost_or_fails_closed():
     root = Path(__file__).resolve().parents[1]
     workspace_source = (root / "llin_verl" / "pi_workspace_tools.py").read_text(encoding="utf-8")
     launcher_source = (root / "scripts" / "run_pi_grpo_fully_async_tp4_pp2_cp2.sh").read_text(encoding="utf-8")
+    canary_config = yaml.safe_load(
+        (root / "configs" / "pi_workspace_tools_relaxed1800.yaml").read_text(encoding="utf-8")
+    )
 
     assert 'Tokenizer.from_file(str(tokenizer_json))' in workspace_source
     assert '.encode(value, add_special_tokens=False).ids' in workspace_source
     assert '"response_token_count": response_token_count' in workspace_source
     assert 'response_token_count = None' in workspace_source
     assert 'PI_AGENT_TOKENIZER_PATH="${PI_AGENT_TOKENIZER_PATH:-${MODEL_PATH}}"' in launcher_source
+    assert all(
+        item["config"]["response_tokenizer_path"] == "/models/Qwen3.8-27B"
+        for item in canary_config["tools"]
+    )
     assert "len(response.encode" not in workspace_source
+
+
+def test_agent_loop_persists_one_request_and_environment_identity_through_reward():
+    root = Path(__file__).resolve().parents[1]
+    source = (root / "llin_verl" / "pi_agent_loop.py").read_text(encoding="utf-8")
+    reward = (root / "llin_verl" / "tiered_query_cost_reward.py").read_text(encoding="utf-8")
+
+    for required in (
+        '"request_id": request_id',
+        '"pi_trajectory_request_id": request_id',
+        '"pi_trajectory_environment_id": environment_id',
+        '"pi_environment_id": environment_id',
+        "workspace request identity changed before reward",
+        "workspace environment identity changed before reward",
+    ):
+        assert required in source
+    for required in (
+        'extra_info.get("pi_trajectory_request_id")',
+        'extra_info.get("pi_trajectory_environment_id")',
+        'event.get("workspace_request_id")',
+        'event.get("environment_id")',
+        '"runtime_identity_incomplete"',
+    ):
+        assert required in reward

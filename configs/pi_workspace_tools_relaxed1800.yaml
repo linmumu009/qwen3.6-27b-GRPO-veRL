@@ -4,6 +4,9 @@ tools:
       type: "native"
       operation: "bash"
       sandbox_root: "/pi_sandbox"
+      # Pin exact tool-response token accounting on every Ray node. Missing
+      # tokenizer access remains UNKNOWN; the reward never substitutes zero.
+      response_tokenizer_path: "/models/Qwen3.8-27B"
       run_root: "/workspace/grpo_run/pi_workspaces"
       max_tool_timeout: 1800
       max_tool_output: 51200

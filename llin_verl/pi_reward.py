@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import ast
 from collections import Counter
 import csv
 from functools import lru_cache
@@ -76,6 +77,10 @@ _PLAIN_TABLE_ROW_RE = re.compile(
 _PLAIN_RANKED_ROW_RE = re.compile(
     r"^\s*(?P<rank>\d+)\s*[.)、]\s*(?P<label>.+?)\s+"
     r"(?P<value>[-+]?(?:\d+(?:,\d{3})*(?:\.\d+)?|\.\d+)(?:[eE][-+]?\d+)?(?:\s*[%％])?)\s*$"
+)
+_EXPLICIT_TABLE_FINAL_RE = re.compile(
+    r"(?:^|\n)\s*(?:final\s+(?:result|answer)|最终(?:结果|答案))\s*[:：]\s*",
+    re.IGNORECASE,
 )
 
 
@@ -846,6 +851,95 @@ def _delimited_full_table_candidates(answer: str) -> list[list[list[Any]]]:
     return output
 
 
+def _explicit_table_final_section(answer: str) -> str:
+    """Return one unambiguous explicit final-table section, else empty."""
+
+    matches = list(_EXPLICIT_TABLE_FINAL_RE.finditer(answer or ""))
+    if len(matches) != 1:
+        return ""
+    return answer[matches[0].end() :].strip()
+
+
+def _python_literal_full_table_candidates(answer: str) -> list[list[list[Any]]]:
+    """Parse exact final Python literals without executing model text."""
+
+    section = _explicit_table_final_section(answer)
+    if not section:
+        return []
+    values = [section]
+    fenced = re.fullmatch(r"```(?:json|python|py)?\s*\n(.*?)\n```", section, re.DOTALL | re.IGNORECASE)
+    if fenced:
+        values.append(fenced.group(1).strip())
+    output: list[list[list[Any]]] = []
+    for value in values:
+        try:
+            payload = ast.literal_eval(value)
+        except (SyntaxError, ValueError, TypeError, MemoryError, RecursionError):
+            continue
+        if isinstance(payload, dict):
+            payload = next(
+                (
+                    payload.get(key)
+                    for key in ("rows", "data", "result", "results")
+                    if isinstance(payload.get(key), list)
+                ),
+                None,
+            )
+        if not isinstance(payload, list) or not payload:
+            continue
+        if all(isinstance(item, (list, tuple)) for item in payload):
+            rows = [list(item) for item in payload]
+        elif all(isinstance(item, dict) for item in payload):
+            keys = list(payload[0])
+            if not keys or not all(list(item) == keys for item in payload):
+                continue
+            rows = [[item[key] for key in keys] for item in payload]
+        else:
+            continue
+        if rows and all(len(row) == len(rows[0]) for row in rows):
+            output.append(rows)
+    return output
+
+
+def _ranked_final_full_table_candidates(
+    answer: str,
+    expected_width: int,
+) -> list[list[list[Any]]]:
+    """Parse an explicitly marked, complete 1..N row list conservatively."""
+
+    section = _explicit_table_final_section(answer)
+    if not section:
+        return []
+    block: list[list[Any]] = []
+    expected_rank = 1
+    for raw in section.splitlines():
+        line = raw.strip()
+        if not line:
+            continue
+        match = re.fullmatch(r"(\d+)\s*[.)、]\s*(.+)", line)
+        if match is None or int(match.group(1)) != expected_rank:
+            return []
+        payload = match.group(2).strip()
+        if "|" in payload:
+            cells = _markdown_cells(payload)
+        elif "\t" in payload:
+            cells = [cell.strip() for cell in next(csv.reader([payload], delimiter="\t"))]
+        elif expected_width == 2 and re.fullmatch(r".+?\s*[:：=]\s*.+", payload):
+            cells = [cell.strip() for cell in re.split(r"\s*[:：=]\s*", payload, maxsplit=1)]
+        elif "," in payload:
+            try:
+                cells = [cell.strip() for cell in next(csv.reader([payload]))]
+            except csv.Error:
+                return []
+        else:
+            return []
+        if len(cells) != expected_width or any(not str(cell).strip() for cell in cells):
+            return []
+        block.append(cells)
+        expected_rank += 1
+    return [block] if block else []
+
+
 def _drop_full_table_rank_column(rows: list[list[Any]], expected_width: int) -> list[list[Any]]:
     if not rows or len(rows[0]) != expected_width + 1:
         return rows
@@ -1029,6 +1123,10 @@ def strict_table_answer_match_semantic(
         *(("json_full", rows) for rows in _json_full_table_candidates(answer)),
         *(("delimited_full", rows) for rows in _delimited_full_table_candidates(answer)),
     ]
+    explicit_ordered_candidates = [
+        *(("python_literal_final", rows) for rows in _python_literal_full_table_candidates(answer)),
+        *(("ranked_final", rows) for rows in _ranked_final_full_table_candidates(answer, len(expected[0]))),
+    ]
     largest = max((len(rows) for _, rows in candidates), default=0)
     for mode, rows in candidates:
         # A presentation-only 1..N rank column is semantically redundant only
@@ -1045,6 +1143,10 @@ def strict_table_answer_match_semantic(
         if matched:
             suffix = "ordered" if ordered else "row_multiset"
             return True, f"{mode}_{suffix}", len(rows)
+    for mode, rows in explicit_ordered_candidates:
+        largest = max(largest, len(rows))
+        if _full_table_rows_equal(rows, expected, abs_tol, rel_tol):
+            return True, f"{mode}_ordered", len(rows)
     return False, "none", largest
 
 

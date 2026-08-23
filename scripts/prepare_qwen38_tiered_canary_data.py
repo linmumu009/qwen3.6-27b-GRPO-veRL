@@ -31,6 +31,7 @@ def build(
     tasks: Path,
     output: Path,
     summary: Path,
+    database_root: str = "/pi_sandbox",
 ) -> dict:
     output.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
     if approved_prep.file_sha256(approved) != approved_prep.PARQUET_SHA256:
@@ -71,6 +72,7 @@ def build(
         item["extra_info"]["approved43_manifest_identity_sha256"] = stable_json_hash(
             manifest_by_instruction[instruction]
         )
+        item["extra_info"]["pi_reward_database_root"] = str(database_root)
         canonical.append(item)
 
     by_type = {"numeric": [], "table": []}
@@ -118,6 +120,7 @@ def build(
             (row.get("extra_info") or {}).get("training_allowed") is False for row in selected
         ),
         "formal_full_training_allowed": False,
+        "run_local_database_root_configured": bool(database_root),
     }
     summary.write_text(json.dumps(result, sort_keys=True, indent=2) + "\n", encoding="utf-8")
     return result
@@ -130,8 +133,21 @@ def main() -> None:
     parser.add_argument("--tasks", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--safe-summary", type=Path, required=True)
+    parser.add_argument("--database-root", default="/pi_sandbox")
     args = parser.parse_args()
-    print(json.dumps(build(args.approved43, args.manifest, args.tasks, args.output, args.safe_summary), sort_keys=True))
+    print(
+        json.dumps(
+            build(
+                args.approved43,
+                args.manifest,
+                args.tasks,
+                args.output,
+                args.safe_summary,
+                args.database_root,
+            ),
+            sort_keys=True,
+        )
+    )
 
 
 if __name__ == "__main__":

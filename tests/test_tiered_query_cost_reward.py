@@ -8,6 +8,7 @@ import pytest
 
 from llin_verl.outcome_gated_contract import evidence_binding_hash
 from llin_verl.pi_reward import compute_score_tiered_query_cost_v1
+from llin_verl.pi_reward import strict_table_answer_match_semantic
 from llin_verl.tiered_query_cost_reward import (
     compute_tiered_query_cost_reward,
     efficiency_terms,
@@ -48,13 +49,23 @@ def event(sql: str, *, ok: bool = True, tokens: int = 100) -> dict:
         "response_token_count": tokens,
         "observed_tool_response": True,
         "call_parse_valid": True,
-        "source": "api_multiturn_dwh_sandbox",
+        "source": "runtime_structured_pi_workspace",
+        "command_origin": "model",
     }
 
 
-def score(database: Path, truth: dict, answer: str, events: list[dict], **overrides):
+def online_extra(database: Path, truth: dict, events: list[dict], **overrides) -> dict:
+    request_id = "runtime-request-1"
+    bound_events = [
+        {
+            **value,
+            "workspace_request_id": request_id,
+            "environment_id": truth["environment_id"],
+        }
+        for value in events
+    ]
     extra = {
-        "pi_tool_events": events,
+        "pi_tool_events": bound_events,
         "tool_log_present": True,
         "tool_protocol_complete": True,
         "pi_reward_database_path": str(database),
@@ -62,9 +73,21 @@ def score(database: Path, truth: dict, answer: str, events: list[dict], **overri
         "trajectory_timeout": False,
         "runtime_error": False,
         "api_error": False,
+        "request_id": request_id,
+        "pi_trajectory_request_id": request_id,
+        "pi_trajectory_environment_id": truth["environment_id"],
+        "pi_environment_id": truth["environment_id"],
+        "pi_workspace_request_id": request_id if events else "",
+        "pi_workspace_released": bool(events),
     }
     extra.update(overrides)
-    return compute_tiered_query_cost_reward("dwh", answer, truth, extra)
+    return extra
+
+
+def score(database: Path, truth: dict, answer: str, events: list[dict], **overrides):
+    return compute_tiered_query_cost_reward(
+        "dwh", answer, truth, online_extra(database, truth, events, **overrides)
+    )
 
 
 def test_exact_log1p_and_clip_boundaries() -> None:
@@ -92,6 +115,57 @@ def test_exact_log1p_and_clip_boundaries() -> None:
     assert middle["Et"] == pytest.approx(math.log1p(1) / math.log1p(3))
     assert middle["Eb"] == pytest.approx(0.375)
     assert 0 < middle["E"] < 1
+
+
+def test_conservative_explicit_table_parser_accepts_complete_ordered_presentations() -> None:
+    expected = [
+        ["2026-08-01", "East", 0.25],
+        ["2026-08-02", "West", 0.20],
+    ]
+    literal = "Final result:\n```python\n[('2026-08-01', 'East', '25%'), ('2026-08-02', 'West', '20%')]\n```"
+    ranked = (
+        "最终结果：\n"
+        "1. 2026-08-01 | East | 25%\n"
+        "2. 2026-08-02 | West | 20%"
+    )
+    for answer in (literal, ranked):
+        matched, mode, rows = strict_table_answer_match_semantic(
+            answer, expected, 1e-3, 1e-5, ordered=True
+        )
+        assert matched is True
+        assert mode.endswith("_ordered")
+        assert rows == 2
+
+
+@pytest.mark.parametrize(
+    "answer",
+    [
+        # Missing row and missing column.
+        "最终结果：\n1. 2026-08-01 | East | 25%",
+        "最终结果：\n1. 2026-08-01 | 25%\n2. 2026-08-02 | 20%",
+        # Wrong order / Top-N membership.
+        "最终结果：\n1. 2026-08-02 | West | 20%\n2. 2026-08-01 | East | 25%",
+        "最终结果：\n1. 2026-08-01 | East | 25%\n2. 2026-08-03 | North | 20%",
+        # Date, unit and value semantics cannot be normalized away.
+        "最终结果：\n1. 2026-08-03 | East | 25%\n2. 2026-08-02 | West | 20%",
+        "最终结果：\n1. 2026-08-01 | East | 25 kg\n2. 2026-08-02 | West | 20 kg",
+        # Vague narrative and multiple explicit finals fail closed.
+        "最终结果：东部较高，西部较低。",
+        "Final result:\n1. 2026-08-01 | East | 25%\nFinal result:\n2. 2026-08-02 | West | 20%",
+        "最终结果：\n1. 2026-08-01 | East | 25%\n2. 2026-08-02 | West | 20%\n以上仅供参考。",
+    ],
+)
+def test_conservative_explicit_table_parser_rejects_incomplete_or_semantically_wrong(
+    answer: str,
+) -> None:
+    expected = [
+        ["2026-08-01", "East", 0.25],
+        ["2026-08-02", "West", 0.20],
+    ]
+    matched, _, _ = strict_table_answer_match_semantic(
+        answer, expected, 1e-3, 1e-5, ordered=True
+    )
+    assert matched is False
 
 
 def test_sqlite_cli_select_extraction_supports_single_and_double_quotes() -> None:
@@ -213,6 +287,39 @@ def test_online_pi_protocol_aliases_are_consumed(tmp_path: Path) -> None:
     assert result["success"] == 1.0
 
 
+def test_runtime_request_workspace_and_environment_identity_fail_closed(tmp_path: Path) -> None:
+    database, truth = fixture(tmp_path)
+    valid = event("SELECT SUM(value) FROM fact_metric")
+    for overrides in (
+        {"pi_trajectory_request_id": "", "request_id": ""},
+        {"pi_trajectory_environment_id": "other/environment"},
+        {"pi_workspace_request_id": "different-request"},
+        {"pi_workspace_released": False},
+    ):
+        result = score(database, truth, "Final result: 30", [valid], **overrides)
+        assert result["judge_state"] == "UNKNOWN"
+        assert result["judge_reason"] == "runtime_identity_incomplete"
+        assert result["train_mask"] == 0.0
+        assert result["reward"] == 0.0
+
+
+def test_runtime_identity_and_token_cost_are_complete_for_online_event(tmp_path: Path) -> None:
+    database, truth = fixture(tmp_path)
+    result = score(
+        database,
+        truth,
+        "Final result: 30",
+        [event("SELECT SUM(value) FROM fact_metric", tokens=37)],
+    )
+    assert result["runtime_identity_complete"] is True
+    assert result["request_identity_consistent"] is True
+    assert result["environment_identity_consistent"] is True
+    assert result["workspace_identity_consistent"] is True
+    assert result["tool_response_cost_observable"] is True
+    assert result["tool_response_token_observed_event_count"] == 1
+    assert result["tool_response_tokens"] == 37
+
+
 def test_unsafe_and_full_database_scan_are_zero(tmp_path: Path) -> None:
     database, truth = fixture(tmp_path)
     for command in ("rm -rf /", "sqlite3 /workspace/logistics.sqlite '.dump'"):
@@ -227,16 +334,9 @@ def test_unsafe_and_full_database_scan_are_zero(tmp_path: Path) -> None:
 
 def test_verl_entrypoint_avoids_validation_reward_column_collision(tmp_path: Path) -> None:
     database, truth = fixture(tmp_path)
-    extra = {
-        "pi_tool_events": [event("SELECT SUM(value) FROM fact_metric")],
-        "tool_log_present": True,
-        "tool_protocol_complete": True,
-        "pi_reward_database_path": str(database),
-        "pi_reward_database_root": str(database.parent.parent),
-        "trajectory_timeout": False,
-        "runtime_error": False,
-        "api_error": False,
-    }
+    extra = online_extra(
+        database, truth, [event("SELECT SUM(value) FROM fact_metric")]
+    )
 
     result = compute_score_tiered_query_cost_v1(
         "dwh", "Final result: 30", truth, extra
@@ -277,16 +377,9 @@ def test_verl_entrypoint_has_stable_schema_when_first_sample_is_infrastructure_u
     tmp_path: Path,
 ) -> None:
     database, truth = fixture(tmp_path)
-    valid_extra = {
-        "pi_tool_events": [event("SELECT SUM(value) FROM fact_metric")],
-        "tool_log_present": True,
-        "tool_protocol_complete": True,
-        "pi_reward_database_path": str(database),
-        "pi_reward_database_root": str(database.parent.parent),
-        "trajectory_timeout": False,
-        "runtime_error": False,
-        "api_error": False,
-    }
+    valid_extra = online_extra(
+        database, truth, [event("SELECT SUM(value) FROM fact_metric")]
+    )
     unknown_extra = dict(valid_extra)
     unknown_extra["pi_reward_database_path"] = str(tmp_path / "missing.sqlite")
 

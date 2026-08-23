@@ -17,6 +17,7 @@ PACKAGE_HOST="${HOST_PROJECT_ROOT}/runs/llin-v15-codex-model2-100-step120-8x-202
 PACKAGE_CONTAINER="${SOURCE_RUN_CONTAINER}/grpo_readiness_audit_20260822-05"
 TASKS_CONTAINER="${SOURCE_RUN_CONTAINER}/data/tasks.jsonl"
 RAW100_CONTAINER="${SOURCE_RUN_CONTAINER}/data/rollout_100.sensitive.parquet"
+FROZEN96_RUN_CONTAINER="${CONTAINER_PROJECT_ROOT}/runs/llin-qwen38-approved43-tiered-v1-canary5-20260823-03"
 EXPECTED_CONFIG_SHA256="191e0af232104ed8b65258cf3fb2b842e288008baca7633c11b82a1ac7203aab"
 EXPECTED_MODEL_COMPOUND_SHA256="e2c3b44e4e198e94fcd74903983fc8997f8e504a21575e397f9d59db1cc2fc8f"
 EXPECTED_APPROVED_SHA256="d86b53d906806b150d43a508dce9b0dd6d05105c07e03961e8e7bf9439ccd944"
@@ -133,6 +134,7 @@ docker exec "${TRAINER_CONTAINER}" env PYTHONPATH="${RUNTIME_CONTAINER}" python3
   --tasks "${TASKS_CONTAINER}" \
   --output "${RUN_CONTAINER}/private/canary20.sensitive.parquet" \
   --safe-summary "${RUN_CONTAINER}/canary20.safe.json" \
+  --database-root "${RUN_CONTAINER}/private/pi_sandbox" \
   > "${RUN_HOST}/audit/prestage_canary20.log"
 docker exec "${TRAINER_CONTAINER}" env PYTHONPATH="${RUNTIME_CONTAINER}" python3 \
   "${RUNTIME_CONTAINER}/scripts/prepare_qwen38_tiered_canary_sealed8.py" \
@@ -140,10 +142,12 @@ docker exec "${TRAINER_CONTAINER}" env PYTHONPATH="${RUNTIME_CONTAINER}" python3
   --raw100 "${RAW100_CONTAINER}" \
   --output "${RUN_CONTAINER}/private/sealed8.sensitive.parquet" \
   --safe-summary "${RUN_CONTAINER}/sealed8.safe.json" \
+  --tasks "${TASKS_CONTAINER}" \
+  --database-root "${RUN_CONTAINER}/private/pi_sandbox" \
   > "${RUN_HOST}/audit/prestage_sealed8.log"
 chmod 600 "${RUN_HOST}/private/canary20.sensitive.parquet" "${RUN_HOST}/private/sealed8.sensitive.parquet"
 ssh -o BatchMode=yes "root@${ROLLOUT_HOST}" \
-  "mkdir -p '${RUN_HOST}/private' && chmod 700 '${RUN_HOST}' '${RUN_HOST}/private'"
+  "mkdir -p '${RUN_HOST}/private' '${RUN_HOST}/audit' && chmod 700 '${RUN_HOST}' '${RUN_HOST}/private' '${RUN_HOST}/audit'"
 scp -p \
   "${RUN_HOST}/private/canary20.sensitive.parquet" \
   "${RUN_HOST}/private/sealed8.sensitive.parquet" \
@@ -166,15 +170,93 @@ cat > "${RUN_HOST}/audit/rollout_data_staging.safe.json" <<EOF
 }
 EOF
 
+printf 'staging_bound_pi_sandbox\n' > "${RUN_HOST}/state"
+docker exec "${TRAINER_CONTAINER}" env PYTHONPATH="${RUNTIME_CONTAINER}" python3 \
+  "${RUNTIME_CONTAINER}/scripts/stage_bound_pi_sandbox.py" \
+  --dataset "${PACKAGE_CONTAINER}/private/grpo_approved43.sensitive.parquet" \
+  --dataset "${RUN_CONTAINER}/private/sealed8.sensitive.parquet" \
+  --source-root /pi_sandbox \
+  --output-root "${RUN_CONTAINER}/private/pi_sandbox" \
+  --safe-summary "${RUN_CONTAINER}/audit/bound_pi_sandbox.safe.json" \
+  > "${RUN_HOST}/audit/stage_bound_pi_sandbox.log"
+scp -pr "${RUN_HOST}/private/pi_sandbox" "root@${ROLLOUT_HOST}:${RUN_HOST}/private/"
+scp -p "${RUN_HOST}/audit/bound_pi_sandbox.safe.json" \
+  "root@${ROLLOUT_HOST}:${RUN_HOST}/audit/bound_pi_sandbox.safe.json"
+local_database_compound="$({
+  cd "${RUN_HOST}/private/pi_sandbox"
+  find . -name logistics.sqlite -type f -print0 | LC_ALL=C sort -z | xargs -0 sha256sum
+} | sha256sum | cut -d' ' -f1)"
+remote_database_compound="$(ssh -o BatchMode=yes "root@${ROLLOUT_HOST}" \
+  "cd '${RUN_HOST}/private/pi_sandbox' && find . -name logistics.sqlite -type f -print0 | LC_ALL=C sort -z | xargs -0 sha256sum | sha256sum | cut -d' ' -f1")"
+[[ "${local_database_compound}" == "${remote_database_compound}" ]]
+local_database_count="$(find "${RUN_HOST}/private/pi_sandbox" -name logistics.sqlite -type f | wc -l)"
+remote_database_count="$(ssh -o BatchMode=yes "root@${ROLLOUT_HOST}" \
+  "find '${RUN_HOST}/private/pi_sandbox' -name logistics.sqlite -type f | wc -l")"
+expected_database_count="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["database_files"])' \
+  "${RUN_HOST}/audit/bound_pi_sandbox.safe.json")"
+[[ "${local_database_count}" == "${remote_database_count}" \
+  && "${local_database_count}" == "${expected_database_count}" \
+  && "${local_database_count}" -ge 1 ]]
+cat > "${RUN_HOST}/audit/bound_pi_sandbox_cross_host.safe.json" <<EOF
+{
+  "database_count_m05": ${local_database_count},
+  "database_count_m06": ${remote_database_count},
+  "database_compound_sha256_m05": "${local_database_compound}",
+  "database_compound_sha256_m06": "${remote_database_compound}",
+  "cross_host_identical": true,
+  "source_scope": "approved43_union_sealed8_only"
+}
+EOF
+
+printf 'online_observability_cpu_gate\n' > "${RUN_HOST}/state"
+docker exec "${TRAINER_CONTAINER}" env PYTHONPATH="${RUNTIME_CONTAINER}" python3 \
+  "${RUNTIME_CONTAINER}/scripts/replay_qwen38_tiered_observability.py" \
+  --rollout-dir "${FROZEN96_RUN_CONTAINER}/private/rollouts" \
+  --dataset "${FROZEN96_RUN_CONTAINER}/private/canary20.sensitive.parquet" \
+  --database-root "${RUN_CONTAINER}/private/pi_sandbox" \
+  --output "${RUN_CONTAINER}/audit/offline96_observability_replay.safe.json" \
+  > "${RUN_HOST}/audit/offline96_observability_replay.log"
+docker exec -i "${TRAINER_CONTAINER}" python3 - "${RUN_CONTAINER}/audit/offline96_observability_replay.safe.json" <<'PY'
+import json, sys
+
+value = json.load(open(sys.argv[1], encoding="utf-8"))
+finals = value["final_component_counts"]
+if value["rows"] != 96 or value["task_join_missing"] != 0:
+    raise SystemExit("offline96 identity/row gate failed")
+if value["task_component_counts"] != {"PASS:task_and_database_available": 96}:
+    raise SystemExit("offline96 database repair gate failed")
+if not any(key.startswith("PASS:") for key in finals) or not any(key.startswith("FAIL:") for key in finals):
+    raise SystemExit("offline96 final component lacks credible PASS/FAIL")
+if value["after"]["judge_state_counts"].get("PASS", 0) != 0:
+    raise SystemExit("offline96 missing tool evidence was promoted to PASS")
+PY
+for dataset_name in canary20 sealed8; do
+  docker exec "${TRAINER_CONTAINER}" env PYTHONPATH="${RUNTIME_CONTAINER}" python3 \
+    "${RUNTIME_CONTAINER}/scripts/validate_qwen38_tiered_online_observability.py" \
+    --dataset "${RUN_CONTAINER}/private/${dataset_name}.sensitive.parquet" \
+    --database-root "${RUN_CONTAINER}/private/pi_sandbox" \
+    --tokenizer-path "${MODEL_PATH}" \
+    --output "${RUN_CONTAINER}/audit/${dataset_name}.m05.observability.safe.json" \
+    > "${RUN_HOST}/audit/${dataset_name}.m05.observability.log"
+  ssh -o BatchMode=yes "root@${ROLLOUT_HOST}" \
+    "docker exec '${ROLLOUT_CONTAINER}' env PYTHONPATH='${RUNTIME_CONTAINER}' python3 '${RUNTIME_CONTAINER}/scripts/validate_qwen38_tiered_online_observability.py' --dataset '${RUN_CONTAINER}/private/${dataset_name}.sensitive.parquet' --database-root '${RUN_CONTAINER}/private/pi_sandbox' --tokenizer-path '${MODEL_PATH}' --output '${RUN_CONTAINER}/audit/${dataset_name}.m06.observability.safe.json'" \
+    > "${RUN_HOST}/audit/${dataset_name}.m06.observability.log"
+  scp -p \
+    "root@${ROLLOUT_HOST}:${RUN_HOST}/audit/${dataset_name}.m06.observability.safe.json" \
+    "${RUN_HOST}/audit/${dataset_name}.m06.observability.safe.json"
+done
+
 printf 'starting_isolated_ray\n' > "${RUN_HOST}/state"
 docker exec "${TRAINER_CONTAINER}" env \
   PROJECT_ROOT="${RUNTIME_CONTAINER}" RAY_HEAD_PORT=36379 \
+  PI_AGENT_SANDBOX_LOWER="${RUN_CONTAINER}/private/pi_sandbox" \
+  PI_AGENT_TOKENIZER_PATH="${MODEL_PATH}" \
   RAY_TEMP_DIR=/tmp/q38-tiered-canary-ray-m05 \
   bash "${RUNTIME_CONTAINER}/scripts/start_ray_qwen38_smoke_m05.sh" \
   > "${RUN_HOST}/ray_m05.log" 2>&1
 ray_started=true
 ssh -o BatchMode=yes "root@${ROLLOUT_HOST}" \
-  "docker exec '${ROLLOUT_CONTAINER}' env PROJECT_ROOT='${RUNTIME_CONTAINER}' RAY_HEAD_ADDRESS='${RAY_ADDRESS}' bash '${RUNTIME_CONTAINER}/scripts/start_ray_qwen38_smoke_m06.sh'" \
+  "docker exec '${ROLLOUT_CONTAINER}' env PROJECT_ROOT='${RUNTIME_CONTAINER}' RAY_HEAD_ADDRESS='${RAY_ADDRESS}' PI_AGENT_SANDBOX_LOWER='${RUN_CONTAINER}/private/pi_sandbox' PI_AGENT_TOKENIZER_PATH='${MODEL_PATH}' bash '${RUNTIME_CONTAINER}/scripts/start_ray_qwen38_smoke_m06.sh'" \
   > "${RUN_HOST}/ray_m06.log" 2>&1
 docker exec "${TRAINER_CONTAINER}" ray status --address="${RAY_ADDRESS}" > "${RUN_HOST}/audit/ray_status_before.safe.txt"
 
@@ -190,6 +272,8 @@ docker exec "${TRAINER_CONTAINER}" env \
   RAY_ADDRESS="${RAY_ADDRESS}" \
   MEGATRON_BRIDGE_ROOT="${CONTAINER_PROJECT_ROOT}/reference/Megatron-Bridge-de93536e/src" \
   LLIN_CANARY_AUDIT_DIR="${RUN_CONTAINER}/private/parameter_audit" \
+  PI_AGENT_SANDBOX_LOWER="${RUN_CONTAINER}/private/pi_sandbox" \
+  PI_AGENT_TOKENIZER_PATH="${MODEL_PATH}" \
   bash "${RUNTIME_CONTAINER}/scripts/run_pi_qwen38_approved43_tiered_canary_v1.sh" \
   > "${RUN_HOST}/training.log" 2>&1
 
