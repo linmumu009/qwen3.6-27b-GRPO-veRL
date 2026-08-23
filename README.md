@@ -2,6 +2,11 @@
 
 Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
+## v1.12.30（2026-08-23）
+
+- 修正Qwen3.8五步金丝雀的optimizer放置：在5号机16颗NPU已全部释放后，actor/ref模型可正常装入且每卡约占30 GiB；真实失败点是16个worker并行初始化`HybridDeviceOptimizer`时的主机可锁页内存耗尽，而非NPU HBM不足。因此恢复`OPTIMIZER_CPU_OFFLOAD=false / ENGINE_OPTIMIZER_OFFLOAD=false`，避免Adam状态在初始化期克隆到pinned host memory。
+- 同步更新启动合同回归；本修复不改变tiered-v1奖励、LR/KL、strict-mixed、UNKNOWN mask、Qwen3.8原始基座、43题批准包或最多5个实际optimizer步的金丝雀上限。
+
 ## v1.12.29（2026-08-23）
 
 - 修复原始Qwen3.8金丝雀在actor/ref初始化期的确定性NPU OOM：失败证据显示单卡仅余约5 MiB、在加载ref MLP时再申请172 MiB失败，且当时尚无rollout、optimizer step或参数更新。金丝雀现在恢复项目既定的MindSpeed Adam状态CPU offload，同时保持veRL engine二次optimizer搬运关闭；模型、训练拓扑、tiered-v1奖励、LR/KL、strict-mixed与UNKNOWN门禁均未改变。
