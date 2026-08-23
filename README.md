@@ -2,6 +2,11 @@
 
 Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
+## v1.12.27（2026-08-23）
+
+- 完成活性修复后的原始Qwen3.8 tiered-v1五步实际更新金丝雀：真实运行已在前两批连续skip后成功产生第三批，证明同policy采样窗口可恢复；但6个名义批次、12组、96条轨迹最终为`PASS=0 / FAIL=14 / UNKNOWN=82`、strict-mixed组0、实际optimizer 0，剩余4批已不可能达到5步目标，故按合同安全停机且不启动全量。
+- 新增不读取或输出题面、gold、SQL、工具参数/返回的安全汇总器和4项回归；96条奖励/优势全0且所有奖励边界违规为0，唯一final-correct guess被阻断为0，unsafe/hard-budget无正奖励。但`database_unavailable=43`、`unsupported_table_presentation=22`、`tool_response_cost_unobservable=17`导致训练信号不可用；两机基座分片哈希前后不变、optimizer/参数/checkpoint为0、Ray/NPU/36379已清空，当前明确不建议全量训练。
+
 ## v1.12.26（2026-08-23）
 
 - 修复Qwen3.8 fully-async金丝雀在首个uniform/UNKNOWN批次后的活性死锁：严格组门继续保持optimizer、actor参数、Adam state、policy version与权重广播全部不变，但skip分支现在仍调用`rollouter.reset_staleness()`，在同一policy version下重新开放`staleness=0`采样窗口。

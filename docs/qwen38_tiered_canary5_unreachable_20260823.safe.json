@@ -1,0 +1,111 @@
+{
+  "schema_version": "qwen38-tiered-canary5-unreachable-safe-v1",
+  "date": "2026-08-23",
+  "run": {
+    "name": "llin-qwen38-approved43-tiered-v1-canary5-20260823-03",
+    "started_at": "2026-08-23T13:40:40+08:00",
+    "stopped_at": "2026-08-23T15:50:01+08:00",
+    "finished_at": "2026-08-23T15:50:43+08:00",
+    "state": "canary_stopped_target_unreachable",
+    "completed_nominal_batches": 6,
+    "completed_groups": 12,
+    "completed_trajectories": 96,
+    "target_actual_optimizer_steps": 5,
+    "actual_optimizer_steps": 0,
+    "remaining_nominal_batches_at_stop": 4,
+    "maximum_remaining_actual_optimizer_steps": 4,
+    "full_training_allowed": false
+  },
+  "provenance": {
+    "liveness_fix_commit": "46526370564744fe78e6138aac6759c09b4a24f1",
+    "prior_deadlock_diagnosis_commit": "72309b9",
+    "model_config_sha256": "191e0af232104ed8b65258cf3fb2b842e288008baca7633c11b82a1ac7203aab",
+    "model_18shard_compound_sha256_before": "e2c3b44e4e198e94fcd74903983fc8997f8e504a21575e397f9d59db1cc2fc8f",
+    "model_18shard_compound_sha256_after_m05": "e2c3b44e4e198e94fcd74903983fc8997f8e504a21575e397f9d59db1cc2fc8f",
+    "model_18shard_compound_sha256_after_m06": "e2c3b44e4e198e94fcd74903983fc8997f8e504a21575e397f9d59db1cc2fc8f",
+    "approved43_parquet_sha256": "d86b53d906806b150d43a508dce9b0dd6d05105c07e03961e8e7bf9439ccd944",
+    "approved43_manifest_sha256": "1426bc09a3dbaf4709fd89227790603afb7a2bf11beeba80946057d490e0f424",
+    "canary20_cross_host_sha256": "d07b0394d707ff2231918d018fd0a5ebdd7ccff4ec7eb50b7e144e88408186f3",
+    "sealed8_cross_host_sha256": "5fad9c1fc6d2646f64b47bea0a252b11158d8d9cebda27dde4b116e39a01c698",
+    "server_full_safe_summary_sha256": "5cebe04d5350deb06d5234f47a7ab1195233b837575e4bc5f950f6d1f27c6564",
+    "server_stop_evidence_sha256": "5194b6b52811ab9895f162b66c2c2ccd48b54c4f551fd2865032b1162fe039f2"
+  },
+  "runtime_validation": {
+    "local_existing_contract_tests": 43,
+    "m05_container_tests": 29,
+    "m06_container_tests": 29,
+    "safe_summary_tests": 4,
+    "runtime_sha_cross_host": true,
+    "third_batch_produced_after_two_consecutive_skipped_batches": true
+  },
+  "reward": {
+    "contract": "tiered-query-cost-v1",
+    "judge_state_counts": {
+      "PASS": 0,
+      "FAIL": 14,
+      "UNKNOWN": 82
+    },
+    "reward_layer_counts": {
+      "no_attempt": 3,
+      "unsafe_or_budget": 11,
+      "unknown": 82
+    },
+    "judge_reason_counts": {
+      "budget_exceeded": 6,
+      "database_unavailable": 43,
+      "no_relevant_readonly_attempt": 3,
+      "tool_response_cost_unobservable": 17,
+      "unsafe": 5,
+      "unsupported_table_presentation": 22
+    },
+    "final_correct": 1,
+    "guess_correct_blocked": 1,
+    "relevant_readonly_attempt": 22,
+    "successful_relevant_query": 20,
+    "strict_mixed_groups": 0,
+    "strict_skipped_groups": 12,
+    "all_reward_vectors_zero": true,
+    "all_advantage_vectors_zero": true,
+    "task_identity_complete_rows": 96,
+    "trajectory_identity_sha256_observable_rows": 48,
+    "trajectory_identity_sha256_missing_rows": 48
+  },
+  "boundary_violations": {
+    "wrong_reward_gt_0_2": 0,
+    "correct_grounded_reward_lt_0_8": 0,
+    "guess_correct_nonzero_reward": 0,
+    "unsafe_or_budget_nonzero_reward": 0,
+    "unknown_nonzero_advantage": 0,
+    "uniform_group_nonzero_advantage": 0,
+    "wrong_above_correct_pairs": 0,
+    "stale_policy_trained": 0
+  },
+  "per_nominal_batch": [
+    {"step": 1, "fail": 2, "unknown": 14, "q_mean": 0.1875, "q_max": 1, "E_mean": 0.00625, "output_tokens_mean": 4882.6875, "queue_wait_s": 524.468993, "ref_log_prob_s": 111.942354, "update_actor_s": 0.0, "step_s": 636.706945},
+    {"step": 2, "fail": 0, "unknown": 16, "q_mean": 0.875, "q_max": 6, "E_mean": 0.023958333333333328, "output_tokens_mean": 4903.0, "queue_wait_s": 846.880166, "ref_log_prob_s": 81.95726, "update_actor_s": 0.0, "step_s": 929.103171},
+    {"step": 3, "fail": 8, "unknown": 8, "q_mean": 12.875, "q_max": 39, "E_mean": 0.25644031294427966, "output_tokens_mean": 14389.125, "queue_wait_s": 1367.324218, "ref_log_prob_s": 107.73982, "update_actor_s": 0.0, "step_s": 1475.374617},
+    {"step": 4, "fail": 0, "unknown": 16, "q_mean": 0.3125, "q_max": 1, "E_mean": 0.0, "output_tokens_mean": 4459.9375, "queue_wait_s": 477.939037, "ref_log_prob_s": 77.930628, "update_actor_s": 0.0, "step_s": 556.161017},
+    {"step": 5, "fail": 3, "unknown": 13, "q_mean": 0.0625, "q_max": 1, "E_mean": 0.0, "output_tokens_mean": 4723.625, "queue_wait_s": 644.319482, "ref_log_prob_s": 77.564234, "update_actor_s": 0.0, "step_s": 722.154949},
+    {"step": 6, "fail": 1, "unknown": 15, "q_mean": 0.1875, "q_max": 2, "E_mean": 0.0, "output_tokens_mean": 4554.75, "queue_wait_s": 1168.272735, "ref_log_prob_s": 83.252067, "update_actor_s": 0.0, "step_s": 1251.875536}
+  ],
+  "optimizer_and_artifacts": {
+    "actor_update_calls": 0,
+    "parameter_audit_files": 0,
+    "optimizer_state_changes": 0,
+    "checkpoint_files": 0,
+    "sealed_validation_files": 0,
+    "post_stop_m05_dedicated_ray_processes": 0,
+    "post_stop_m06_dedicated_ray_processes": 0,
+    "post_stop_m05_npu_process_rows": 0,
+    "post_stop_m06_npu_process_rows": 0,
+    "port_36379_listeners": 0
+  },
+  "conclusion": {
+    "reward_boundary_safety": "passed_on_observed_96",
+    "reward_training_effectiveness": "not_demonstrated_no_pass_or_mixed_signal",
+    "reward_hacking_observed": false,
+    "sealed_directional_evaluation": "not_available_no_validation_artifact_and_no_parameter_update",
+    "recommend_full_training": false,
+    "blocking_issue": "runtime_evidence_observability_and_database_availability"
+  }
+}
