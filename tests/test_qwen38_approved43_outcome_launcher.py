@@ -1,5 +1,10 @@
 from __future__ import annotations
 
+import ast
+import asyncio
+from concurrent.futures import Future
+from contextlib import contextmanager
+from datetime import datetime
 import json
 from pathlib import Path
 from types import SimpleNamespace
@@ -7,6 +12,8 @@ from types import SimpleNamespace
 import numpy as np
 import pyarrow as pa
 import pyarrow.parquet as pq
+import pytest
+import torch
 
 from scripts import prepare_qwen38_approved43_outcome_training as prep
 from scripts.patch_verl_fastest_k_oversampling import patch_agent_loop
@@ -21,10 +28,87 @@ from scripts.patch_verl_grpo_strict_variance_gate import (
 from scripts import prepare_qwen38_tiered_canary_data as tiered_canary
 from scripts import prepare_qwen38_tiered_canary_sealed8 as tiered_sealed
 from scripts.attest_verified_process_structural_audit import attest
-from llin_verl.grpo_group_gate import apply_strict_correctness_group_gate
+from llin_verl.grpo_group_gate import (
+    apply_strict_correctness_group_gate,
+    strict_correctness_group_stats,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def _verl_source(*relative: str) -> Path:
+    candidates = (
+        ROOT / "reference" / "verl" / "verl" / Path(*relative),
+        Path("/verl/verl") / Path(*relative),
+    )
+    return next(path for path in candidates if path.is_file())
+
+
+def _patched_method(source: str, name: str):
+    tree = ast.parse(source)
+    method = next(
+        node
+        for node in ast.walk(tree)
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name == name
+    )
+    method.decorator_list = []
+    method.returns = None
+    for argument in (*method.args.posonlyargs, *method.args.args, *method.args.kwonlyargs):
+        argument.annotation = None
+    namespace = {
+        "asyncio": asyncio,
+        "datetime": datetime,
+        "marked_timer": _marked_timer,
+        "reduce_metrics": lambda values: {
+            key: float(item[0] if isinstance(item, list) else item)
+            for key, item in values.items()
+        },
+    }
+    exec(compile(ast.fix_missing_locations(ast.Module(body=[method], type_ignores=[])), "<patched-method>", "exec"), namespace)
+    return namespace[name]
+
+
+@contextmanager
+def _marked_timer(*_args, **_kwargs):
+    yield
+
+
+class _RemoteResult:
+    def __init__(self, value):
+        self._future = Future()
+        self._future.set_result(value)
+
+    def future(self):
+        return self._future
+
+
+class _RemoteMethod:
+    def __init__(self, function):
+        self._function = function
+
+    def remote(self):
+        return _RemoteResult(self._function())
+
+
+class _WindowedRollouter:
+    def __init__(self):
+        self.produced_groups = 2
+        self.allowance = 0
+        self.reset_calls = 0
+        self.reset_staleness = _RemoteMethod(self._reset_staleness)
+
+    def _reset_staleness(self):
+        self.reset_calls += 1
+        self.allowance = 2
+        return {"fully_async/rollouter/step_generated_samples": 2}
+
+    def produce_group(self) -> int | None:
+        if self.allowance <= 0:
+            return None
+        self.allowance -= 1
+        self.produced_groups += 1
+        return self.produced_groups
 
 
 def test_launcher_freezes_qwen38_tristate_reward_kl_staleness_and_final_only_save() -> None:
@@ -237,16 +321,16 @@ def test_actual_optimizer_patch_covers_parent_and_fully_async_versioning(tmp_pat
     parent = tmp_path / "ray_trainer.py"
     async_trainer = tmp_path / "fully_async_trainer.py"
     parent.write_text(
-        (ROOT / "reference" / "verl" / "verl" / "experimental" / "separation" / "ray_trainer.py").read_text(encoding="utf-8"),
+        _verl_source("experimental", "separation", "ray_trainer.py").read_text(encoding="utf-8"),
         encoding="utf-8",
     )
     async_trainer.write_text(
-        (ROOT / "reference" / "verl" / "verl" / "experimental" / "fully_async_policy" / "fully_async_trainer.py").read_text(encoding="utf-8"),
+        _verl_source("experimental", "fully_async_policy", "fully_async_trainer.py").read_text(encoding="utf-8"),
         encoding="utf-8",
     )
 
-    assert patch_trainer(parent) == "patched"
-    assert patch_fully_async_trainer(async_trainer) == "patched"
+    assert patch_trainer(parent) in {"patched", "already-patched"}
+    assert patch_fully_async_trainer(async_trainer) in {"patched", "upgraded-v5"}
     parent_text = parent.read_text(encoding="utf-8")
     async_text = async_trainer.read_text(encoding="utf-8")
     assert 'getattr(self, "current_param_version", self.global_steps - 1)' in parent_text
@@ -254,9 +338,167 @@ def test_actual_optimizer_patch_covers_parent_and_fully_async_versioning(tmp_pat
     assert 'self.strict_optimizer_steps += 1' in parent_text
     assert 'actor/update_skipped_no_strict_mixed' in async_text
     assert 'training/weight_sync_skipped_no_optimizer_step' in async_text
+    assert 'LLIN_SKIP_ROLLOUT_WINDOW_RESET_V5' in async_text
+    assert 'training/rollout_window_reset_without_optimizer_step' in async_text
+    assert 'return await asyncio.wrap_future(self.rollouter.reset_staleness.remote().future())' in async_text
     assert 'LLIN_CANARY_TARGET_OPTIMIZER_STEPS' in async_text
     assert patch_trainer(parent) == "already-patched"
     assert patch_fully_async_trainer(async_trainer) == "already-patched"
+
+
+@pytest.mark.parametrize("skip_kind", ["uniform", "unknown"])
+def test_skipped_batch_keeps_optimizer_policy_and_adam_but_reopens_rollout_window(
+    tmp_path: Path,
+    skip_kind: str,
+) -> None:
+    parent = tmp_path / "ray_trainer.py"
+    async_trainer = tmp_path / "fully_async_trainer.py"
+    parent.write_text(
+        _verl_source("experimental", "separation", "ray_trainer.py").read_text(encoding="utf-8"),
+        encoding="utf-8",
+    )
+    async_trainer.write_text(
+        _verl_source("experimental", "fully_async_policy", "fully_async_trainer.py").read_text(encoding="utf-8"),
+        encoding="utf-8",
+    )
+    patch_trainer(parent)
+    patch_fully_async_trainer(async_trainer)
+
+    train_mask = [1] * 8 if skip_kind == "uniform" else [1] * 7 + [0]
+    gated, metrics = apply_strict_correctness_group_gate(
+        SimpleNamespace(
+            non_tensor_batch={
+                "uid": [skip_kind] * 8,
+                "success": [0] * 8,
+                "train_mask": train_mask,
+            },
+            batch={
+                "advantages": torch.ones(8, 2),
+                "returns": torch.ones(8, 2),
+                "response_mask": torch.ones(8, 2),
+            },
+            meta_info={"strict_expected_group_size": 8},
+        )
+    )
+    assert gated.meta_info["strict_group_should_update_actor"] is False
+    assert torch.count_nonzero(gated.batch["advantages"]) == 0
+    if skip_kind == "uniform":
+        assert metrics["grpo/skipped_uniform_groups"] == 1.0
+    else:
+        assert metrics["grpo/skipped_hard_gate_groups"] == 1.0
+
+    parent_source = parent.read_text(encoding="utf-8")
+    async_source = async_trainer.read_text(encoding="utf-8")
+    update_actor = _patched_method(parent_source, "_fit_update_actor")
+    update_local_step = _patched_method(async_source, "_fit_update_local_step")
+    update_weights = _patched_method(async_source, "_fit_update_weights")
+    rollouter = _WindowedRollouter()
+    trainer = SimpleNamespace(
+        metrics={},
+        timing_raw={},
+        strict_optimizer_steps=0,
+        current_param_version=0,
+        local_trigger_step=1,
+        trigger_parameter_sync_step=1,
+        global_steps=1,
+        config=SimpleNamespace(trainer=SimpleNamespace(critic_warmup=0)),
+        rollouter=rollouter,
+        actor_parameter_state="actor-base-hash",
+        adam_state="adam-empty-hash",
+        optimizer_calls=0,
+    )
+
+    def forbidden_update(_batch):
+        trainer.optimizer_calls += 1
+        trainer.actor_parameter_state = "changed"
+        trainer.adam_state = "changed"
+        raise AssertionError("skipped group must not call actor optimizer")
+
+    trainer._update_actor = forbidden_update
+    before = (
+        trainer.actor_parameter_state,
+        trainer.adam_state,
+        trainer.strict_optimizer_steps,
+        trainer.current_param_version,
+    )
+    update_actor(trainer, gated)
+    update_local_step(trainer)
+    assert rollouter.produce_group() is None
+    reset_metrics = asyncio.run(update_weights(trainer))
+    after = (
+        trainer.actor_parameter_state,
+        trainer.adam_state,
+        trainer.strict_optimizer_steps,
+        trainer.current_param_version,
+    )
+
+    assert after == before
+    assert trainer.optimizer_calls == 0
+    assert trainer.metrics["training/policy_version_advanced"] == 0.0
+    assert trainer.metrics["training/weight_sync_skipped_no_optimizer_step"] == 1.0
+    assert trainer.metrics["training/rollout_window_reset_without_optimizer_step"] == 1.0
+    assert reset_metrics["fully_async/rollouter/step_generated_samples"] == 2
+    assert rollouter.reset_calls == 1
+    assert rollouter.produce_group() == 3
+
+
+def test_mixed_group_updates_and_advances_policy_while_stale_group_fails_closed(tmp_path: Path) -> None:
+    parent = tmp_path / "ray_trainer.py"
+    async_trainer = tmp_path / "fully_async_trainer.py"
+    parent.write_text(
+        _verl_source("experimental", "separation", "ray_trainer.py").read_text(encoding="utf-8"),
+        encoding="utf-8",
+    )
+    async_trainer.write_text(
+        _verl_source("experimental", "fully_async_policy", "fully_async_trainer.py").read_text(encoding="utf-8"),
+        encoding="utf-8",
+    )
+    patch_trainer(parent)
+    patch_fully_async_trainer(async_trainer)
+    update_actor = _patched_method(parent.read_text(encoding="utf-8"), "_fit_update_actor")
+    update_local_step = _patched_method(async_trainer.read_text(encoding="utf-8"), "_fit_update_local_step")
+
+    mixed_batch = SimpleNamespace(meta_info={"strict_group_should_update_actor": True})
+    trainer = SimpleNamespace(
+        metrics={},
+        timing_raw={},
+        strict_optimizer_steps=0,
+        current_param_version=0,
+        local_trigger_step=1,
+        trigger_parameter_sync_step=1,
+        global_steps=1,
+        config=SimpleNamespace(trainer=SimpleNamespace(critic_warmup=0)),
+        actor_parameter_state="actor-base-hash",
+        adam_state="adam-empty-hash",
+        optimizer_calls=0,
+    )
+
+    def real_update(_batch):
+        trainer.optimizer_calls += 1
+        trainer.actor_parameter_state = "actor-updated-hash"
+        trainer.adam_state = "adam-updated-hash"
+        return SimpleNamespace(meta_info={"metrics": {"actor/loss": [0.25]}})
+
+    trainer._update_actor = real_update
+    update_actor(trainer, mixed_batch)
+    update_local_step(trainer)
+    assert trainer.optimizer_calls == 1
+    assert trainer.strict_optimizer_steps == 1
+    assert trainer.actor_parameter_state == "actor-updated-hash"
+    assert trainer.adam_state == "adam-updated-hash"
+    assert trainer.current_param_version == 1
+    assert trainer.metrics["training/policy_version_advanced"] == 1.0
+
+    stale_mask, stale_metrics = strict_correctness_group_stats(
+        ["stale"] * 8,
+        [0, 1] * 4,
+        eligibility=[1] * 8,
+        policy_versions=[0] * 8,
+        expected_policy_version=1,
+        expected_group_size=8,
+    )
+    assert stale_mask == [False] * 8
+    assert stale_metrics["grpo/skipped_stale_policy_groups"] == 1.0
 
 
 def test_prepare_schedule_hash_binds_evidence_and_repeats_exact_members(tmp_path: Path, monkeypatch) -> None:

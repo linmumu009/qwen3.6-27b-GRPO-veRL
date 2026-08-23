@@ -2,6 +2,11 @@
 
 Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
+## v1.12.26（2026-08-23）
+
+- 修复Qwen3.8 fully-async金丝雀在首个uniform/UNKNOWN批次后的活性死锁：严格组门继续保持optimizer、actor参数、Adam state、policy version与权重广播全部不变，但skip分支现在仍调用`rollouter.reset_staleness()`，在同一policy version下重新开放`staleness=0`采样窗口。
+- 新增真实补丁方法级回归，分别覆盖uniform与UNKNOWN跳过后零更新、两组许可耗尽后第三组恢复、mixed组才更新并推进版本、陈旧policy组fail-closed；本地相关套件43项通过。死锁run已在optimizer/参数审计/checkpoint均为0时安全停止，专用Ray、36379端口和两机NPU已释放；后续仍只允许从原始Qwen3.8基座运行5个实际更新步金丝雀。
+
 ## v1.12.25（2026-08-23）
 
 - 完成Qwen3.8 tiered-v1五步金丝雀首批耗时异常的只读诊断：首个名义step实际在28.85分钟内结束，但因无eligible strict-mixed组跳过optimizer后，fully-async补丁同时跳过了`rollouter.reset_staleness()`；在`staleness=0`下两组许可耗尽，形成确定性空等。

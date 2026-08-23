@@ -111,6 +111,9 @@ docker exec "${TRAINER_CONTAINER}" env PYTHONPATH="${RUNTIME_CONTAINER}" python3
   "${RUNTIME_CONTAINER}/tests/test_v15_mixed21_strict_training.py::test_group_gate_masks_all_uniform_groups_and_skips_empty_optimizer_batch" \
   "${RUNTIME_CONTAINER}/tests/test_v15_mixed21_strict_training.py::test_group_gate_rejects_incomplete_eight_sample_group" \
   "${RUNTIME_CONTAINER}/tests/test_qwen38_approved43_outcome_launcher.py::test_runtime_gate_consumes_success_without_legacy_acc" \
+  "${RUNTIME_CONTAINER}/tests/test_qwen38_approved43_outcome_launcher.py::test_actual_optimizer_patch_covers_parent_and_fully_async_versioning" \
+  "${RUNTIME_CONTAINER}/tests/test_qwen38_approved43_outcome_launcher.py::test_skipped_batch_keeps_optimizer_policy_and_adam_but_reopens_rollout_window" \
+  "${RUNTIME_CONTAINER}/tests/test_qwen38_approved43_outcome_launcher.py::test_mixed_group_updates_and_advances_policy_while_stale_group_fails_closed" \
   -q --basetemp=/tmp/llin-canary-host-gate > "${RUN_HOST}/audit/container_cpu_gate.log" 2>&1
 
 printf 'backing_up_live_verl\n' > "${RUN_HOST}/state"

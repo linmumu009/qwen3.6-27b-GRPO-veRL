@@ -11,6 +11,7 @@ MARKER = "LLIN_STRICT_CORRECTNESS_GROUP_GATE"
 V2_MARKER = "LLIN_STRICT_STALENESS_ZERO_V2"
 V3_MARKER = "LLIN_ACTUAL_OPTIMIZER_VERSION_V3"
 V4_MARKER = "LLIN_EXACT_GROUP_SIZE_V4"
+V5_MARKER = "LLIN_SKIP_ROLLOUT_WINDOW_RESET_V5"
 
 
 def _upgrade_v2(text: str, path: Path) -> str:
@@ -233,7 +234,31 @@ def patch_fully_async_trainer(path: Path) -> str:
 
     text = path.read_text(encoding="utf-8")
     if V3_MARKER in text:
-        return "already-patched"
+        if V5_MARKER in text:
+            return "already-patched"
+        old_skip = '''\
+        if self.metrics.get("actor/update_skipped_no_strict_mixed") == 1.0:
+            self.metrics["training/weight_sync_skipped_no_optimizer_step"] = 1.0
+            return None
+        self.metrics["training/weight_sync_skipped_no_optimizer_step"] = 0.0
+'''
+        new_skip = '''\
+        if self.metrics.get("actor/update_skipped_no_strict_mixed") == 1.0:
+            # LLIN_SKIP_ROLLOUT_WINDOW_RESET_V5: skipping the optimizer also
+            # skips weight broadcast and policy-version advancement, but it
+            # must reopen the same-policy rollout allowance. With staleness=0,
+            # returning before reset_staleness() exhausts the two-group window
+            # and deadlocks the trainer and rollouter after the first skip.
+            self.metrics["training/weight_sync_skipped_no_optimizer_step"] = 1.0
+            self.metrics["training/rollout_window_reset_without_optimizer_step"] = 1.0
+            return await asyncio.wrap_future(self.rollouter.reset_staleness.remote().future())
+        self.metrics["training/weight_sync_skipped_no_optimizer_step"] = 0.0
+        self.metrics["training/rollout_window_reset_without_optimizer_step"] = 0.0
+'''
+        if text.count(old_skip) != 1:
+            raise RuntimeError(f"expected one fully-async skipped-sync branch in {path}")
+        path.write_text(text.replace(old_skip, new_skip, 1), encoding="utf-8")
+        return "upgraded-v5"
 
     local_step_anchor = '''\
     def _fit_update_local_step(self):
@@ -271,9 +296,16 @@ def patch_fully_async_trainer(path: Path) -> str:
 '''
     sync_body_replacement = '''\
         if self.metrics.get("actor/update_skipped_no_strict_mixed") == 1.0:
+            # LLIN_SKIP_ROLLOUT_WINDOW_RESET_V5: skipping the optimizer also
+            # skips weight broadcast and policy-version advancement, but it
+            # must reopen the same-policy rollout allowance. With staleness=0,
+            # returning before reset_staleness() exhausts the two-group window
+            # and deadlocks the trainer and rollouter after the first skip.
             self.metrics["training/weight_sync_skipped_no_optimizer_step"] = 1.0
-            return None
+            self.metrics["training/rollout_window_reset_without_optimizer_step"] = 1.0
+            return await asyncio.wrap_future(self.rollouter.reset_staleness.remote().future())
         self.metrics["training/weight_sync_skipped_no_optimizer_step"] = 0.0
+        self.metrics["training/rollout_window_reset_without_optimizer_step"] = 0.0
         if self.local_trigger_step != 1:
             return None
 '''
