@@ -1,0 +1,231 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "Qwen3.8 金丝雀首批耗时异常诊断",
+    "description": "首个名义批次跳过 optimizer 后，fully-async staleness 窗口未重置导致的确定性停滞。",
+    "generatedAt": "2026-08-23T13:09:45+08:00",
+    "charts": [
+      {
+        "id": "elapsed_stage_chart",
+        "title": "截至诊断快照的累计耗时构成",
+        "subtitle": "2026年8月23日 13:09；单位为分钟，停滞时间为持续增长的下界。",
+        "type": "bar",
+        "dataset": "elapsed_stages",
+        "sourceId": "elapsed_stage_source",
+        "encodings": {
+          "x": {"field": "stage", "type": "nominal", "label": "阶段"},
+          "y": {"field": "minutes", "type": "quantitative", "label": "耗时", "unit": "min"}
+        },
+        "valueFormat": "number",
+        "unit": "min",
+        "layout": "full",
+        "maxRows": 4
+      }
+    ],
+    "tables": [],
+    "sources": [
+      {
+        "id": "safe_diagnostic_evidence",
+        "label": "Qwen3.8 canary5 首批停滞安全诊断证据",
+        "path": "docs/qwen38_canary5_first_batch_stall_diagnosis_20260823.source-notes.md"
+      },
+      {
+        "id": "elapsed_stage_source",
+        "label": "当前run累计耗时构成",
+        "path": "docs/qwen38_canary5_first_batch_stall_diagnosis_20260823.source-notes.md"
+      },
+      {
+        "id": "timing_comparison_source",
+        "label": "当前与历史Qwen3.8耗时对照",
+        "path": "docs/qwen38_canary5_first_batch_stall_diagnosis_20260823.source-notes.md"
+      },
+      {
+        "id": "causal_chain_source",
+        "label": "skip后停滞控制流证据链",
+        "path": "docs/qwen38_canary5_first_batch_stall_diagnosis_20260823.source-notes.md"
+      }
+    ],
+    "blocks": [
+      {
+        "id": "title",
+        "type": "markdown",
+        "body": "# Qwen3.8 金丝雀首批耗时异常诊断",
+        "layout": "full"
+      },
+      {
+        "id": "technical_summary",
+        "type": "markdown",
+        "body": "## 技术摘要\n\n- **这不是正常的长上下文慢，而是确定性控制流停滞。** 首个名义训练步已在10:06结束；采样等待为26.98分钟、ref计算为1.86分钟，actor更新为0。此后约3小时没有产生第三个group或第一个optimizer更新。\n- **触发条件是首批没有可更新的strict-mixed组。** 跳过optimizer本身符合合同，但补丁同时从`_fit_update_weights()`提前返回，漏掉了与权重广播相互独立的`rollouter.reset_staleness()`。\n- **`staleness=0`把缺陷变成死锁。** rollouter生产两组后耗尽当前许可；消息队列已被trainer取空，但窗口没有重置，所以19个待处理项无法继续。\n- **硬件证据否定了“模型仍在计算”。** 两机32张NPU的AICore均为0%，模型只驻留HBM；训练与rollout进程都在事件循环、futex或poll等待。",
+        "sourceId": "safe_diagnostic_evidence",
+        "layout": "full"
+      },
+      {
+        "id": "dominant_driver",
+        "type": "markdown",
+        "body": "## 73.8%的累计时间来自批次结束后的空等\n\n截至13:09，作业总耗时约248.47分钟。其中首批真正的queue/ref处理只有28.85分钟；首批因无可更新mixed组跳过actor后，系统至少空等183.40分钟。首批采样本身确实比历史Qwen3.8工程冒烟慢约2倍，但它只解释十几分钟增量，不能解释数小时。",
+        "sourceId": "safe_diagnostic_evidence",
+        "layout": "full"
+      },
+      {
+        "id": "elapsed_chart_block",
+        "type": "chart",
+        "chartId": "elapsed_stage_chart",
+        "layout": "full"
+      },
+      {
+        "id": "baseline_interpretation",
+        "type": "markdown",
+        "body": "## 历史基线证明异常不在27B训练算力\n\n历史Qwen3.8冒烟的16条生成加actor约18.54分钟，mixed27历史完整step约22.98分钟。当前首个名义step为28.85分钟，虽偏慢但仍是同一量级；真正异常的是step结束后超过183分钟且仍在增长的等待。不同历史任务并非严格A/B，因此这些基线只用于排除数量级解释。",
+        "sourceId": "safe_diagnostic_evidence",
+        "layout": "full"
+      },
+      {
+        "id": "causal_result",
+        "type": "markdown",
+        "body": "## 早返回把“无权重更新”和“无需恢复采样”错误地绑定在一起\n\n正确语义应当是：uniform、UNKNOWN或其他不可训练batch不调用optimizer、不推进policy version、也不广播权重；但rollouter仍需获得同一policy version下的新采样许可。当前实现把这两件事合并成一个`return None`，因此`reset_staleness()`永远到不了。这个缺陷由commit `4e9591e`引入，现有测试只检查补丁字符串存在，没有覆盖跳过后的活性。",
+        "sourceId": "safe_diagnostic_evidence",
+        "layout": "full"
+      },
+      {
+        "id": "scope_definitions",
+        "type": "markdown",
+        "body": "## 口径、范围与数据定义\n\n`queue wait`是trainer等待两个完整八轨迹group的墙钟；`nominal step`包含取批、ref、门禁和可选actor更新；`actual optimizer step`只在真实actor optimizer返回后增加；`stall`从首个`LLIN_TRAIN_STAGE`落盘到13:09快照。当前运行只完成1个名义step、0个实际optimizer step、2个group-sample。所有判断仅使用安全计数、阶段耗时、资源指标、调用栈和部署代码。",
+        "sourceId": "safe_diagnostic_evidence",
+        "layout": "full"
+      },
+      {
+        "id": "methodology",
+        "type": "markdown",
+        "body": "## 诊断方法从墙钟分解到调用栈闭环\n\n先重建run启动、step结束和日志快照时间；再用`LLIN_TRAIN_STAGE`分解首步；随后交叉核对消息队列、generated sample、NPU AICore/HBM、Ray资源和进程等待通道；最后把只读Python栈定位到`ray.wait()`，并逐行核对部署中的skip分支与`reset_staleness()`相对位置。历史Qwen3.8运行仅作量级对照，不承担因果识别。",
+        "sourceId": "safe_diagnostic_evidence",
+        "layout": "full"
+      },
+      {
+        "id": "limitations",
+        "type": "markdown",
+        "body": "## 不确定性不改变死锁结论\n\n首批为何没有eligible mixed组尚未从私有batch中拆分为uniform、UNKNOWN或其他硬门原因；这影响数据供给判断，但不影响活性根因。历史基线的任务长度和batch形状不同，不能精确归因首批采样为何慢约2倍。Ray心跳持续写日志会让主日志mtime显得健康，因此仅靠监督器、state或日志增长不能作为训练进度证据。",
+        "sourceId": "safe_diagnostic_evidence",
+        "layout": "full"
+      },
+      {
+        "id": "next_steps",
+        "type": "markdown",
+        "body": "## 建议先停止空转，再以活性回归约束最小修复\n\n1. 安全停止当前run并保留现场；它没有optimizer更新，继续等待不会自行恢复。\n2. 将“跳过权重广播”与“重置rollout许可”拆开：同一policy version下仍调用安全的staleness/供给窗口重置，不推进版本、不改参数。\n3. 新增真实异步活性测试：首批uniform或UNKNOWN、optimizer和参数哈希不变、随后第三个group能够产生并进入下一名义批次。\n4. 从原始Qwen3.8基座重启5实际步金丝雀；先证明连续跳过不会死锁，再观察首个mixed更新。",
+        "sourceId": "safe_diagnostic_evidence",
+        "layout": "full"
+      },
+      {
+        "id": "further_questions",
+        "type": "markdown",
+        "body": "## 后续仍需回答的两个问题\n\n- 首批两组被跳过的具体构成是什么：全错、全对、UNKNOWN、组大小不符还是policy版本不符？\n- 26.98分钟queue wait比历史Qwen3.8 16轨迹冒烟的13.60分钟慢约2倍，主要由真实轨迹长度、8-of-16过采样长尾，还是工具超时造成？\n\n这两个问题应在活性修复后通过安全聚合指标回答，不能继续用当前停滞run估计。",
+        "sourceId": "safe_diagnostic_evidence",
+        "layout": "full"
+      }
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "generatedAt": "2026-08-23T13:09:45+08:00",
+    "status": "ready",
+    "datasets": {
+      "elapsed_stages": [
+        {"order": 1, "stage": "启动/模型/sealed", "minutes": 36.22},
+        {"order": 2, "stage": "首批queue/rollout", "minutes": 26.98},
+        {"order": 3, "stage": "首批ref与组装", "minutes": 1.87},
+        {"order": 4, "stage": "skip后停滞", "minutes": 183.40}
+      ],
+      "timing_comparison": [
+        {"order": 1, "measurement": "历史Qwen3.8工程冒烟：16轨迹生成", "minutes": 13.60, "interpretation": "真实完成，历史量级参考"},
+        {"order": 2, "measurement": "历史Qwen3.8工程冒烟：actor更新", "minutes": 4.93, "interpretation": "包含实际参数更新"},
+        {"order": 3, "measurement": "历史Qwen3.8 mixed27：完整step", "minutes": 22.98, "interpretation": "不同任务，仅作量级参考"},
+        {"order": 4, "measurement": "当前首个名义step", "minutes": 28.85, "interpretation": "actor=0，因无eligible mixed跳过"},
+        {"order": 5, "measurement": "当前step后停滞下界", "minutes": 183.40, "interpretation": "非计算，仍持续增长"}
+      ],
+      "causal_chain": [
+        {"order": 1, "stage": "首批门禁", "observed": "actor update耗时为0，实际optimizer仍为0", "effect": "policy version保持不变"},
+        {"order": 2, "stage": "skip分支", "observed": "_fit_update_weights提前return", "effect": "正确跳过权重广播"},
+        {"order": 3, "stage": "staleness重置", "observed": "reset_staleness位于提前return之后", "effect": "同policy的新采样许可未恢复"},
+        {"order": 4, "stage": "队列", "observed": "produced=2、mq=0、pending=19", "effect": "trainer无批次，rollouter不再生产"},
+        {"order": 5, "stage": "硬件/栈", "observed": "32卡AICore=0%，核心进程均在wait/poll", "effect": "形成稳定空等而非慢计算"}
+      ]
+    }
+  },
+  "sources": [
+    {
+      "id": "safe_diagnostic_evidence",
+      "label": "Qwen3.8 canary5 首批停滞安全诊断证据",
+      "path": "docs/qwen38_canary5_first_batch_stall_diagnosis_20260823.source-notes.md",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT 'llin-qwen38-approved43-tiered-v1-canary5-20260823-02' AS run_name, 2 AS produced_groups, 0 AS actual_optimizer_steps, 183.40 AS stall_minutes_lower_bound, 0 AS active_aicore_cards",
+        "description": "聚合当前run的阶段耗时、队列计数、NPU利用率、Ray调用栈、部署控制流和历史安全耗时。",
+        "executed_at": "2026-08-23T13:09:45+08:00",
+        "filters": [
+          "仅回传聚合计数、阶段耗时、资源指标、代码标识与调用栈",
+          "排除题面、gold、SQL、工具返回、轨迹身份、凭据和模型参数",
+          "历史基线仅用于量级比较，不作严格A/B"
+        ],
+        "metric_definitions": [
+          "queue_wait_s = trainer等待两个完整八轨迹group的墙钟",
+          "actual optimizer step = actor optimizer真实返回后才增加",
+          "stall minutes = 首个名义step结束到诊断快照的墙钟下界",
+          "AICore utilization = npu-smi快照中每张卡的计算核心利用率"
+        ],
+        "tables_used": [
+          "current run safe stage log",
+          "current Ray process stack snapshot",
+          "deployed fully_async_trainer control flow",
+          "README historical Qwen3.8 timings"
+        ]
+      }
+    },
+    {
+      "id": "elapsed_stage_source",
+      "label": "当前run累计耗时构成",
+      "path": "docs/qwen38_canary5_first_batch_stall_diagnosis_20260823.source-notes.md",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM (VALUES (1, '启动/模型/sealed', 36.22), (2, '首批queue/rollout', 26.98), (3, '首批ref与组装', 1.87), (4, 'skip后停滞', 183.40)) AS t(stage_order, stage, minutes) ORDER BY stage_order",
+        "description": "按run启动、首个LLIN_TRAIN_STAGE和诊断快照时间分解累计墙钟。",
+        "executed_at": "2026-08-23T13:09:45+08:00",
+        "filters": ["停滞时间按快照时刻计算，为持续增长的下界"],
+        "metric_definitions": ["minutes = 对应阶段墙钟秒数除以60"],
+        "tables_used": ["docs/qwen38_canary5_first_batch_stall_diagnosis_20260823.source-notes.md"]
+      }
+    },
+    {
+      "id": "timing_comparison_source",
+      "label": "当前与历史Qwen3.8耗时对照",
+      "path": "docs/qwen38_canary5_first_batch_stall_diagnosis_20260823.source-notes.md",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM (VALUES (1, '历史Qwen3.8工程冒烟：16轨迹生成', 13.60, '真实完成，历史量级参考'), (2, '历史Qwen3.8工程冒烟：actor更新', 4.93, '包含实际参数更新'), (3, '历史Qwen3.8 mixed27：完整step', 22.98, '不同任务，仅作量级参考'), (4, '当前首个名义step', 28.85, 'actor=0，因无eligible mixed跳过'), (5, '当前step后停滞下界', 183.40, '非计算，仍持续增长')) AS t(item_order, measurement, minutes, interpretation) ORDER BY item_order",
+        "description": "对照当前首个名义step、停滞下界和已发布的历史Qwen3.8安全耗时。",
+        "executed_at": "2026-08-23T13:09:45+08:00",
+        "filters": ["历史运行仅用于数量级判断，不视为严格A/B"],
+        "metric_definitions": ["minutes = 已记录秒数除以60"],
+        "tables_used": ["README.md", "docs/qwen38_step70_mixed27_4x_training_20260821.safe.json", "docs/qwen38_canary5_first_batch_stall_diagnosis_20260823.source-notes.md"]
+      }
+    },
+    {
+      "id": "causal_chain_source",
+      "label": "skip后停滞控制流证据链",
+      "path": "docs/qwen38_canary5_first_batch_stall_diagnosis_20260823.source-notes.md",
+      "query": {
+        "engine": "duckdb",
+        "language": "sql",
+        "sql": "SELECT * FROM (VALUES (1, '首批门禁', 'actor update耗时为0，实际optimizer仍为0', 'policy version保持不变'), (2, 'skip分支', '_fit_update_weights提前return', '正确跳过权重广播'), (3, 'staleness重置', 'reset_staleness位于提前return之后', '同policy的新采样许可未恢复'), (4, '队列', 'produced=2、mq=0、pending=19', 'trainer无批次，rollouter不再生产'), (5, '硬件/栈', '32卡AICore=0%，核心进程均在wait/poll', '形成稳定空等而非慢计算')) AS t(item_order, stage, observed, effect) ORDER BY item_order",
+        "description": "把运行时计数、资源快照、调用栈和部署代码连接为停滞因果链。",
+        "executed_at": "2026-08-23T13:09:45+08:00",
+        "filters": ["仅包含安全聚合和代码标识"],
+        "metric_definitions": ["produced = rollouter已完成的逻辑group-sample数"],
+        "tables_used": ["scripts/patch_verl_grpo_strict_variance_gate.py", "docs/qwen38_canary5_first_batch_stall_diagnosis_20260823.source-notes.md"]
+      }
+    }
+  ]
+}

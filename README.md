@@ -2,6 +2,11 @@
 
 Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
+## v1.12.25（2026-08-23）
+
+- 完成Qwen3.8 tiered-v1五步金丝雀首批耗时异常的只读诊断：首个名义step实际在28.85分钟内结束，但因无eligible strict-mixed组跳过optimizer后，fully-async补丁同时跳过了`rollouter.reset_staleness()`；在`staleness=0`下两组许可耗尽，形成确定性空等。
+- 运行时证据显示`produced=2`、训练消息队列为0、待处理19，两机32张NPU的AICore均为0%，核心进程全部处于wait/poll；截至13:09，skip后停滞已达183.40分钟并占总墙钟73.8%。新增不含题面、gold、SQL、工具返回或轨迹身份的自包含技术报告与安全源注记，明确当前run不会自行恢复，后续需把“跳过权重广播”和“恢复同policy采样许可”拆开并补活性回归。
+
 ## v1.12.24（2026-08-23）
 
 - 修复严格组门与 veRL 真实 `TensorDict` 的兼容性：必需张量字段现在逐键做 membership 检查，不再把 `TensorDict` 当普通可哈希键迭代器传给 `set.issubset`；run-01 在任何 optimizer 更新、参数审计或 checkpoint 之前触发的 `unhashable type: TensorDict` 因此被消除。
