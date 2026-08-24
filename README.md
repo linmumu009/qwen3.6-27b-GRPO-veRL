@@ -2,6 +2,11 @@
 
 Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
+## v1.12.31（2026-08-24）
+
+- 新增Qwen3.8-27B Ascend veRL/GRPO完整交接手册，实机核对5/6/0号机模型、容器挂载、软件版本、私有approved43数据和现有run状态；集中说明runtime冻结、资产/观测门、5实际更新步金丝雀、监控、清理、正式训练待放行流程，以及换数据、模型、卡数和TP/PP/CP/DP时的最小改动范围。
+- 按生产时间线整理宿主/容器路径、非共享磁盘、Parquet版本、sandbox/identity/token观测、表格奖励、veRL字段、Flash Attention、TensorDict、skip后活性、超时口径、孤儿worker、checkpoint导出、权重bucket、NPU与pinned host memory OOM、全错组奖励黑客等错误的现象、根因、修复和预防门；明确底层Qwen3.8双机1-step闭环已通过，但当前approved43 tiered-v1五步金丝雀和正式全量仍未放行。
+
 ## v1.12.30（2026-08-23）
 
 - 修正Qwen3.8五步金丝雀的optimizer放置：在5号机16颗NPU已全部释放后，actor/ref模型可正常装入且每卡约占30 GiB；真实失败点是16个worker并行初始化`HybridDeviceOptimizer`时的主机可锁页内存耗尽，而非NPU HBM不足。因此恢复`OPTIMIZER_CPU_OFFLOAD=false / ENGINE_OPTIMIZER_OFFLOAD=false`，避免Adam状态在初始化期克隆到pinned host memory。
