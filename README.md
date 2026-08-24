@@ -2,6 +2,12 @@
 
 Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
+## v1.12.32（2026-08-24）
+
+- 新增从正式 Step 100 独立续训 20 步的 `step120-opensource` 合同：沿用已跑通的5号机 TP4/PP2/CP2 全参训练、6号机 TP8/DP2 rollout、每步4组×每组4响应、49,152上下文、`1e-7`学习率、bounded fully-async 与最终完整 `model,optimizer,extra` checkpoint，只按开源单轮题型关闭PI多轮工具。
+- 固化80题唯一课程为 MATH 48（Level 5/4 为32/16）、PHYBench 16、C-EVAL-DEV数理计算机类8、GSM8K较难半区8；MATH 12.5K 经实机核验为7.5K训练前缀+5K测试尾部，训练只取前缀并用标点不敏感指纹隔离AIME24/25、OlymMATH、MATH-500、AMO-Bench、Omni-MATH与ATLAS等封存集。PHYBench原始1,000行仅500个唯一ID、其中100个唯一题具备非空可判分答案，课程只从这100题抽样。
+- 新增严格二元最终答案奖励：选择题按选项，GSM8K按数值，MATH/PHYBench按受限数值或符号等价；错误答案无格式或过程分，避免全错组产生格式奖励黑客。数据构建会逐条gold自校验并输出质量报告/清单/稳定哈希；两机空闲三次后才恢复原容器、重建独立Step100 resume view、执行Ray/HCCL门禁并启动，不抢占现有任务。
+
 ## v1.12.31（2026-08-24）
 
 - 新增Qwen3.8-27B Ascend veRL/GRPO完整交接手册，实机核对5/6/0号机模型、容器挂载、软件版本、私有approved43数据和现有run状态；集中说明runtime冻结、资产/观测门、5实际更新步金丝雀、监控、清理、正式训练待放行流程，以及换数据、模型、卡数和TP/PP/CP/DP时的最小改动范围。
