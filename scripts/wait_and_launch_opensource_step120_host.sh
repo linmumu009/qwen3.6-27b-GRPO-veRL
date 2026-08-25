@@ -88,8 +88,10 @@ docker exec "${TRAINER_CONTAINER}" bash -lc \
 ssh -o BatchMode=yes "root@${ROLLOUT_HOST}" \
   "docker exec '${ROLLOUT_CONTAINER}' bash -lc \"RESUME_CHECKPOINT='${CONTAINER_PROJECT_ROOT}/runs/resume-views/llin-step100-opensource/global_step_100' bash '${CONTAINER_PROJECT_ROOT}/scripts/prepare_pi_step100_resume_view.sh' rollout\"" \
   > "${SUPERVISOR_DIR}/rollout_resume_view.log"
-docker exec "${TRAINER_CONTAINER}" python3 \
-  "${CONTAINER_PROJECT_ROOT}/scripts/prepare_opensource_step120_data.py" convert \
+docker exec -w "${CONTAINER_PROJECT_ROOT}" \
+  -e "PYTHONPATH=${CONTAINER_PROJECT_ROOT}" \
+  "${TRAINER_CONTAINER}" python3 \
+  "scripts/prepare_opensource_step120_data.py" convert \
   --input "${CONTAINER_DATA_DIR}/opensource_step120_train.jsonl" \
   --output "${CONTAINER_DATA_DIR}/opensource_step120_train.parquet" \
   > "${SUPERVISOR_DIR}/data_convert.log"

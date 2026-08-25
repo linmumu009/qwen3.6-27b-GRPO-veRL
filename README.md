@@ -2,6 +2,10 @@
 
 Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
+## v1.12.33（2026-08-25）
+
+- 修复 `step120-opensource` 空闲等待器在恢复原训练容器后的数据转换环境：显式把容器工作目录和 `PYTHONPATH` 绑定到项目根，使转换器可加载同仓库的严格开源奖励模块。首个等待器已在5/6号机连续三次空闲后通过容器恢复与双端Step100 resume-view门禁，但因该导入路径问题在任何Ray启动、rollout或optimizer更新前退出；失败证据保留，后续使用新run名称重启。
+
 ## v1.12.32（2026-08-24）
 
 - 新增从正式 Step 100 独立续训 20 步的 `step120-opensource` 合同：沿用已跑通的5号机 TP4/PP2/CP2 全参训练、6号机 TP8/DP2 rollout、每步4组×每组4响应、49,152上下文、`1e-7`学习率、bounded fully-async 与最终完整 `model,optimizer,extra` checkpoint，只按开源单轮题型关闭PI多轮工具。

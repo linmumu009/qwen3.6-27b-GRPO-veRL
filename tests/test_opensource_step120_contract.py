@@ -103,6 +103,8 @@ def test_launcher_reuses_step100_contract_and_names_step120_opensource() -> None
     assert "REQUIRED_IDLE_CHECKS=\"${REQUIRED_IDLE_CHECKS:-3}\"" in waiter
     assert "prepare_pi_step100_resume_view.sh' trainer" in waiter
     assert "prepare_pi_step100_resume_view.sh' rollout" in waiter
+    assert '-e "PYTHONPATH=${CONTAINER_PROJECT_ROOT}"' in waiter
+    assert '"scripts/prepare_opensource_step120_data.py" convert' in waiter
     assert "AMO-Bench" not in runner
     assert "Omni-MATH" not in runner
     assert "ATLAS" not in runner
