@@ -2,6 +2,10 @@
 
 Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
+## v1.12.34（2026-08-25）
+
+- 修正 `step120-opensource` 的优化器放置合同：首个完整双机启动已通过数据转换、Ray角色和1×16 HCCL门禁，但在任何rollout或optimizer更新前，16个训练worker因继承通用入口的CPU optimizer offload而并发申请pinned host memory失败。续训入口现在显式固定 `OPTIMIZER_CPU_OFFLOAD=false / ENGINE_OPTIMIZER_OFFLOAD=false`，与原Qwen3.6 Step100已跑通配置一致；失败run及错误日志保留，Step100源权重未被修改。
+
 ## v1.12.33（2026-08-25）
 
 - 修复 `step120-opensource` 空闲等待器在恢复原训练容器后的数据转换环境：显式把容器工作目录和 `PYTHONPATH` 绑定到项目根，使转换器可加载同仓库的严格开源奖励模块。首个等待器已在5/6号机连续三次空闲后通过容器恢复与双端Step100 resume-view门禁，但因该导入路径问题在任何Ray启动、rollout或optimizer更新前退出；失败证据保留，后续使用新run名称重启。

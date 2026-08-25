@@ -98,6 +98,8 @@ def test_launcher_reuses_step100_contract_and_names_step120_opensource() -> None
     assert "resume-views/llin-step100-opensource/global_step_100" in runner
     assert "actor_rollout_ref.rollout.multi_turn.enable=False" in runner
     assert "opensource_reward.py" in runner
+    assert "OPTIMIZER_CPU_OFFLOAD=false" in runner
+    assert "ENGINE_OPTIMIZER_OFFLOAD=false" in runner
     assert "save_contents=[model,optimizer,extra]" in runner
     assert "expected_global_step_120" in launcher
     assert "REQUIRED_IDLE_CHECKS=\"${REQUIRED_IDLE_CHECKS:-3}\"" in waiter
