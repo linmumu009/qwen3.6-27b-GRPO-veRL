@@ -2,8 +2,8 @@
 """Render the source-backed sandbox generation animation.
 
 The page is self-contained so it can be reviewed from Git or opened directly
-without a web service.  Its stage order and artifact labels are derived from
-the runtime snapshot audited on machine 5 on 2026-08-27.
+without a web service.  Its stage graph and artifact labels follow the newer
+GitHub main implementation, with the machine-5 snapshot kept as a baseline.
 """
 
 from __future__ import annotations
@@ -17,10 +17,12 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_OUTPUT = ROOT / "docs" / "sandbox_generation_animation_20260827.html"
-REMOTE_SNAPSHOT = (
+MACHINE5_SNAPSHOT = (
     "/data3/llin/qwen3.6-27b-verl-grpo/source_snapshots/"
     "rjx_sandbox_pipeline_20260814/generator_source"
 )
+GITHUB_REVISION = "758917009d0ebb0fb36561197171f6abdd279d96"
+GITHUB_BASE = f"https://github.com/renjunxiang/sf_my_sandbox/blob/{GITHUB_REVISION}"
 
 
 @dataclass(frozen=True)
@@ -34,7 +36,15 @@ class Stage:
     path_hint: str
     x: int
     y: int
+    phase: str
     boundary: str = "generation"
+
+
+@dataclass(frozen=True)
+class Connection:
+    from_key: str
+    to_key: str
+    route: str = "auto"
 
 
 STAGES = (
@@ -48,6 +58,7 @@ STAGES = (
         path_hint="runtime/document_registry.json",
         x=24,
         y=78,
+        phase="common",
     ),
     Stage(
         key="scene",
@@ -59,6 +70,7 @@ STAGES = (
         path_hint="scenes/<scene_id>/runtime/",
         x=250,
         y=78,
+        phase="common",
     ),
     Stage(
         key="prd",
@@ -70,25 +82,29 @@ STAGES = (
         path_hint="step0_prd/",
         x=476,
         y=78,
+        phase="common",
     ),
     Stage(
         key="factor",
         step="Step 1",
         title="因子解耦",
-        subtitle="实体 · 状态 · 动作",
-        detail="把业务规格拆成可组合的实体、状态机与工具动作，并拦截截断或规模异常的 JSON 产物。",
-        artifacts=("entities.json", "states.json", "tools_actions.json"),
+        subtitle="小规格分写 → 脚本展开",
+        detail="模型只分写 3 份约 12 KB 的紧凑因子规格，脚本合并并展开完整实体、状态与工具动作，再统一验证；相较旧版大 JSON，输出量约降 95%。",
+        artifacts=("factor_spec_*.json", "merged_factor_spec.json", "entities.json", "states.json", "tools_actions.json"),
         path_hint="step1_factor/",
         x=702,
         y=78,
+        phase="common",
     ),
     Stage(
         key="taxonomy",
         step="Step 2",
         title="任务分类体系",
-        subtitle="采样单元与覆盖约束",
-        detail="把因子组织为可采样的层次结构，定义组合约束和覆盖计划，驱动后续环境与任务生成。",
+        subtitle="小规格分写 → 分类展开",
+        detail="模型分写 3 份约 5 KB 的 taxonomy 规格，脚本合并后生成完整分类、采样单元、组合约束和覆盖计划；相较旧版大 JSON，输出量约降 93%。",
         artifacts=(
+            "taxonomy_spec_*.json",
+            "merged_taxonomy_spec.json",
             "factor_taxonomies.json",
             "sampling_units.json",
             "combination_constraints.json",
@@ -97,6 +113,7 @@ STAGES = (
         path_hint="step2_taxonomy/",
         x=928,
         y=78,
+        phase="common",
     ),
     Stage(
         key="schema",
@@ -107,7 +124,8 @@ STAGES = (
         artifacts=("schema_overview.json", "tables/*.json", "enum_dictionary.json", "validation_rules.json"),
         path_hint="step3.1_schema/",
         x=928,
-        y=354,
+        y=294,
+        phase="dwh",
     ),
     Stage(
         key="data",
@@ -118,68 +136,135 @@ STAGES = (
         artifacts=("jsonl/*.jsonl", "database/*.sqlite", "reports/generation_summary.json"),
         path_hint="step4.1_data/",
         x=702,
-        y=354,
+        y=294,
+        phase="dwh",
     ),
     Stage(
         key="tasks",
         step="Step 5.1",
         title="评测任务",
-        subtitle="题面 · hidden gold · verifier",
-        detail="基于分类体系和真实 SQLite 结果生成任务；任务文件属于评测资产，不直接暴露给模型工作区。",
-        artifacts=("tasks/tasks.jsonl", "runtime_configs/task_gen_config.json"),
+        subtitle="EvidencePlan 同源生成",
+        detail="先冻结 EvidencePlan，再由同一证据计划生成 SQL 与题面、执行得到 hidden gold；改写后重新验 SQL、日期和字段语义，不一致则回退。",
+        artifacts=("tasks/tasks.jsonl", "task_generation_summary.json", "task_validation_report.json"),
         path_hint="step5.1_tasks/",
         x=476,
-        y=354,
+        y=294,
+        phase="dwh",
+    ),
+    Stage(
+        key="knowledge_schema",
+        step="Step 3.2",
+        title="知识库 Schema",
+        subtitle="文档目录与知识结构",
+        detail="由分类体系生成可验证的 document catalog，定义文档类型、主题、引用关系与覆盖目标。",
+        artifacts=("knowledge_catalog/document_catalog.json", "catalog_generation_summary.json", "catalog_validation_report.json"),
+        path_hint="step3.2_knowledge_schema/",
+        x=928,
+        y=466,
+        phase="knowledge",
+    ),
+    Stage(
+        key="documents",
+        step="Step 4.2",
+        title="合成知识文档",
+        subtitle="目录驱动的 Markdown 语料",
+        detail="按照 document catalog 生成文档集与索引，检查覆盖、引用和内容完整性后才能进入知识任务生成。",
+        artifacts=("documents/*.md", "documents/document_index.json", "documents_validation_report.json"),
+        path_hint="step4.2_documents/",
+        x=702,
+        y=466,
+        phase="knowledge",
+    ),
+    Stage(
+        key="knowledge_tasks",
+        step="Step 5.2",
+        title="知识库任务",
+        subtitle="可追溯证据的问答任务",
+        detail="针对真实生成文档创建知识任务，并以独立生成摘要和验证报告确保答案可由沙箱内证据支持。",
+        artifacts=("knowledge_tasks/tasks.jsonl", "task_generation_summary.json", "knowledge_tasks_validation_report.json"),
+        path_hint="step5.2_kb_tasks/",
+        x=476,
+        y=466,
+        phase="knowledge",
+    ),
+    Stage(
+        key="hybrid",
+        step="Step 5.3",
+        title="Hybrid 任务",
+        subtitle="数据库 × 文档联合证据",
+        detail="当 branch=both 时，数据仓库任务和知识库任务在这里汇合，生成必须联合 SQLite 与文档证据才能回答的混合任务。",
+        artifacts=("hybrid_tasks/tasks.jsonl", "generation_summary.json"),
+        path_hint="step5.3_hybrid_tasks/",
+        x=250,
+        y=380,
+        phase="hybrid",
     ),
     Stage(
         key="freeze",
         step="冻结",
-        title="校验和与登记",
-        subtitle="完整环境才可冻结",
-        detail="Step 0–5 全部完成后，为 DB、Docs、Tasks 计算 SHA256，生成不可变 sandbox_id 并写入 registry。",
-        artifacts=("db_sha256", "docs_sha256", "tasks_sha256", "sandbox_registry.jsonl"),
-        path_hint="trajectory_store/sandbox_registry.jsonl",
-        x=250,
-        y=354,
+        title="三层防泄露冻结",
+        subtitle="raw → runner → registry",
+        detail="raw 保留评测任务和 hidden gold；runner 仅复制运行所需 DB、文档、schema dictionary 与 manifest；registry 再登记 sandbox_id、资产校验和及 manifest_checksum。",
+        artifacts=("raw/*_tasks.jsonl", "runner/*.sqlite", "runner/documents/", "runner/schema_dictionary.md", "runner/sandbox_manifest.json", "manifest_checksum", "sandbox_registry.jsonl"),
+        path_hint="trajectory_store/{raw,runner}/ + sandbox_registry.jsonl",
+        x=24,
+        y=380,
+        phase="freeze",
     ),
     Stage(
         key="rollout",
         step="边界外",
         title="Rollout Engine",
-        subtitle="独立消费冻结沙箱",
-        detail="轨迹采集不再属于环境生成器。独立引擎只消费已登记资产，并在运行前复核校验和与可见文件边界。",
-        artifacts=("logistics.sqlite", "schema_dictionary.md", "documents/", "tasks hidden"),
-        path_hint="独立系统：不计入 Step 0–5",
+        subtitle="只消费 runner 层",
+        detail="独立引擎从 registry 定位 runner，运行前复核 DB、Docs、Tasks 与 manifest 校验和；模型工作区看不到 *_tasks.jsonl 和 hidden gold。",
+        artifacts=("*.sqlite", "documents/", "schema_dictionary.md", "sandbox_manifest.json", "*_tasks.jsonl hidden"),
+        path_hint="rollout_engine/sandbox_registry.py（生成边界外）",
         x=24,
-        y=354,
+        y=590,
+        phase="external",
         boundary="external",
     ),
 )
 
 
-CONNECTIONS = tuple((STAGES[index].key, STAGES[index + 1].key) for index in range(len(STAGES) - 1))
+CONNECTIONS = (
+    Connection("brief", "scene"),
+    Connection("scene", "prd"),
+    Connection("prd", "factor"),
+    Connection("factor", "taxonomy"),
+    Connection("taxonomy", "schema"),
+    Connection("schema", "data"),
+    Connection("data", "tasks"),
+    Connection("taxonomy", "knowledge_schema", "right-rail"),
+    Connection("knowledge_schema", "documents"),
+    Connection("documents", "knowledge_tasks"),
+    Connection("tasks", "hybrid", "merge-left"),
+    Connection("knowledge_tasks", "hybrid", "merge-left"),
+    Connection("hybrid", "freeze"),
+    Connection("freeze", "rollout"),
+)
 
 
 SOURCE_NOTES = (
     {
-        "label": "阶段顺序与扁平目录映射",
-        "path": f"{REMOTE_SNAPSHOT}/autonomous_pipeline_runtime/core/constants.py",
+        "label": "新版阶段图与双分支定义",
+        "path": f"{GITHUB_BASE}/web/js/app.js",
     },
     {
-        "label": "场景生命周期、状态事件与完成后冻结",
-        "path": f"{REMOTE_SNAPSHOT}/autonomous_pipeline_runtime/execution/manager.py",
+        "label": "Step 1/2 小规格分写与脚本展开",
+        "path": f"{GITHUB_BASE}/autonomous_pipeline_runtime/execution/stage_registry.py",
     },
     {
-        "label": "各阶段关键产物门禁",
-        "path": f"{REMOTE_SNAPSHOT}/autonomous_pipeline_runtime/execution/stage_registry.py",
+        "label": "EvidencePlan 同源任务生成与改写后验证",
+        "path": f"{GITHUB_BASE}/autonomous_pipeline_runtime/skills/dwh_task_generation",
     },
     {
-        "label": "DB / Docs / Tasks 校验和与 registry",
-        "path": f"{REMOTE_SNAPSHOT}/autonomous_pipeline_runtime/execution/sandbox_freezer.py",
+        "label": "raw / runner / registry 三层冻结",
+        "path": f"{GITHUB_BASE}/autonomous_pipeline_runtime/execution/sandbox_freezer.py",
     },
     {
-        "label": "生成链路与历史语义错位审计",
-        "path": "docs/boss_sandbox_generation_root_cause_audit_20260814.md",
+        "label": "5 号机旧版快照（历史对照）",
+        "path": MACHINE5_SNAPSHOT,
     },
 )
 
@@ -380,7 +465,7 @@ HTML_TEMPLATE = r'''<!doctype html>
 
     .visual-region {
       position: relative;
-      min-height: 610px;
+      min-height: 760px;
       padding: 16px 18px 0;
       background-image:
         linear-gradient(rgba(120, 169, 207, .045) 1px, transparent 1px),
@@ -416,7 +501,7 @@ HTML_TEMPLATE = r'''<!doctype html>
       display: block;
       width: 100%;
       height: auto;
-      min-height: 570px;
+      min-height: 720px;
       overflow: visible;
     }
 
@@ -488,6 +573,11 @@ HTML_TEMPLATE = r'''<!doctype html>
 
     .stage-card.external.active .node-bg { stroke: var(--pink); }
 
+    .stage-card.dwh .node-bg { stroke: rgba(110, 146, 255, .5); }
+    .stage-card.knowledge .node-bg { stroke: rgba(255, 202, 106, .5); }
+    .stage-card.hybrid .node-bg { stroke: rgba(255, 141, 180, .58); }
+    .stage-card.freeze .node-bg { stroke: rgba(84, 226, 183, .58); }
+
     .node-step {
       fill: var(--cyan);
       font-size: 11px;
@@ -496,6 +586,10 @@ HTML_TEMPLATE = r'''<!doctype html>
     }
 
     .external .node-step { fill: var(--pink); }
+    .dwh .node-step { fill: var(--blue); }
+    .knowledge .node-step { fill: var(--amber); }
+    .hybrid .node-step { fill: var(--pink); }
+    .freeze .node-step { fill: var(--mint); }
 
     .node-title {
       fill: var(--text);
@@ -731,7 +825,7 @@ HTML_TEMPLATE = r'''<!doctype html>
 
     .timeline {
       display: grid;
-      grid-template-columns: repeat(10, minmax(72px, 1fr));
+      grid-template-columns: repeat(7, minmax(72px, 1fr));
       gap: 8px;
       padding: 15px 18px 18px;
       background: rgba(7, 20, 35, .74);
@@ -814,7 +908,7 @@ HTML_TEMPLATE = r'''<!doctype html>
       .controls { grid-template-columns: 1fr; }
       .progress-wrap { order: 3; }
       .detail-grid { grid-template-columns: 1fr; }
-      .timeline { grid-template-columns: repeat(5, minmax(74px, 1fr)); }
+      .timeline { grid-template-columns: repeat(7, minmax(64px, 1fr)); }
       .notes { grid-template-columns: 1fr; }
     }
 
@@ -848,11 +942,11 @@ HTML_TEMPLATE = r'''<!doctype html>
   <main class="page" id="sandboxAnimation">
     <header class="hero">
       <div>
-        <div class="eyebrow">Sandbox Factory · Source-backed</div>
+        <div class="eyebrow">sf_my_sandbox · GitHub main 7589170</div>
         <h1>沙箱是怎样生成的？</h1>
-        <p class="subtitle">从一份业务场景说明开始，逐阶段构建可验证的数据库环境与评测任务；只有完整产物通过门禁后，才会冻结为可供后续轨迹采集使用的沙箱。</p>
+        <p class="subtitle">公共主干把场景规格化，再分流生成数据仓库与知识库，两路证据汇入 Hybrid 任务；最后通过 raw、runner、registry 三层冻结，把评测秘密隔离在模型工作区之外。</p>
       </div>
-      <div class="scope"><span class="scope-dot" aria-hidden="true"></span><span><strong>生成边界：Step 0–5</strong><br>Rollout Engine 已独立解耦</span></div>
+      <div class="scope"><span class="scope-dot" aria-hidden="true"></span><span><strong>权威源：GitHub main</strong><br>5 号机 20260814 快照作为历史对照</span></div>
     </header>
 
     <section class="shell" aria-labelledby="animationTitle">
@@ -869,8 +963,8 @@ HTML_TEMPLATE = r'''<!doctype html>
         </div>
         <label class="progress-wrap" for="progressRange">
           <span id="progressStep">01</span>
-          <input id="progressRange" type="range" min="0" max="9" value="0" step="1" aria-label="沙箱生成阶段">
-          <span id="progressTotal">/ 10</span>
+          <input id="progressRange" type="range" min="0" max="13" value="0" step="1" aria-label="沙箱生成阶段">
+          <span id="progressTotal">/ 14</span>
         </label>
         <label>
           <span class="sr-only">播放速度</span>
@@ -886,9 +980,9 @@ HTML_TEMPLATE = r'''<!doctype html>
       <div class="visual-region">
         <div class="flow-label">environment generation</div>
         <div class="desktop-flow">
-          <svg id="pipelineSvg" viewBox="0 0 1140 560" role="img" aria-labelledby="svgTitle svgDesc">
+          <svg id="pipelineSvg" viewBox="0 0 1140 720" role="img" aria-labelledby="svgTitle svgDesc">
             <title id="svgTitle">沙箱生成流水线</title>
-            <desc id="svgDesc">业务场景依次经过隔离、PRD、因子、分类体系、DWH Schema、合成数据、评测任务和冻结登记，之后由独立 Rollout Engine 消费。</desc>
+            <desc id="svgDesc">业务场景经过公共规格化主干，再分成数据仓库和知识库两路生成任务，汇入 Hybrid，经过三层冻结后由独立 Rollout Engine 消费 runner 层。</desc>
             <g id="laneLayer"></g>
             <g id="connectorLayer"></g>
             <g id="nodeLayer"></g>
@@ -917,7 +1011,7 @@ HTML_TEMPLATE = r'''<!doctype html>
     <footer class="notes">
       <div>
         <h2>图示依据</h2>
-        <p>2026-08-27 只读核对 5 号机快照；图中不展示任务内容、数据库行、轨迹或凭据。</p>
+        <p>2026-08-27 对照 GitHub main@7589170 与 5 号机 20260814 快照后采用新版；图中不展示任务正文、hidden gold、数据库行、轨迹或凭据。</p>
       </div>
       <ul class="source-list" id="sourceList"></ul>
     </footer>
@@ -939,8 +1033,7 @@ HTML_TEMPLATE = r'''<!doctype html>
       const nodeHeight = 108;
       const stageIndex = new Map(stages.map((stage, index) => [stage.key, index]));
       const nodes = new Map();
-      const paths = new Map();
-      const particles = new Map();
+      const connectionRecords = [];
       const mobileNodes = new Map();
       const timelineNodes = new Map();
       const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -953,6 +1046,7 @@ HTML_TEMPLATE = r'''<!doctype html>
       const restartButton = document.getElementById("restartButton");
       const progressRange = document.getElementById("progressRange");
       const progressStep = document.getElementById("progressStep");
+      const progressTotal = document.getElementById("progressTotal");
       const speedSelect = document.getElementById("speedSelect");
       const detailPanel = document.getElementById("detailPanel");
       const detailStep = document.getElementById("detailStep");
@@ -982,9 +1076,21 @@ HTML_TEMPLATE = r'''<!doctype html>
         return element;
       }
 
-      function connectorPath(from, to) {
+      function connectorPath(from, to, route) {
         const fromCenter = { x: from.x + nodeWidth / 2, y: from.y + nodeHeight / 2 };
         const toCenter = { x: to.x + nodeWidth / 2, y: to.y + nodeHeight / 2 };
+        if (route === "right-rail") {
+          const railX = 1130;
+          const startX = from.x + nodeWidth;
+          const endX = to.x + nodeWidth;
+          return `M ${startX} ${fromCenter.y} C ${railX} ${fromCenter.y}, ${railX} ${toCenter.y}, ${endX} ${toCenter.y}`;
+        }
+        if (route === "merge-left") {
+          const startX = from.x;
+          const endX = to.x + nodeWidth;
+          const bendX = (startX + endX) / 2;
+          return `M ${startX} ${fromCenter.y} C ${bendX} ${fromCenter.y}, ${bendX} ${toCenter.y}, ${endX} ${toCenter.y}`;
+        }
         if (Math.abs(from.y - to.y) < 10) {
           const forward = to.x > from.x;
           const startX = forward ? from.x + nodeWidth : from.x;
@@ -997,21 +1103,25 @@ HTML_TEMPLATE = r'''<!doctype html>
       }
 
       function buildLanes() {
-        const topTitle = addText(laneLayer, "阶段产物逐级落盘", "lane-title", 24, 48);
+        const topTitle = addText(laneLayer, "公共主干 · 规格逐级落盘", "lane-title", 24, 48);
         topTitle.setAttribute("aria-hidden", "true");
-        laneLayer.appendChild(svgElement("line", { x1: 24, y1: 255, x2: 1116, y2: 255, class: "lane-line" }));
-        const bottomTitle = addText(laneLayer, "环境资产校验与冻结", "lane-title", 24, 328);
-        bottomTitle.setAttribute("aria-hidden", "true");
-        laneLayer.appendChild(svgElement("line", { x1: 223, y1: 326, x2: 223, y2: 520, class: "boundary-line" }));
-        const boundary = addText(laneLayer, "生成边界", "boundary-label", 213, 540);
-        boundary.setAttribute("text-anchor", "end");
+        laneLayer.appendChild(svgElement("line", { x1: 24, y1: 258, x2: 1116, y2: 258, class: "lane-line" }));
+        const dwhTitle = addText(laneLayer, "DWH 分支", "lane-title", 24, 283);
+        dwhTitle.setAttribute("aria-hidden", "true");
+        const knowledgeTitle = addText(laneLayer, "Knowledge 分支", "lane-title", 24, 455);
+        knowledgeTitle.setAttribute("aria-hidden", "true");
+        laneLayer.appendChild(svgElement("line", { x1: 24, y1: 564, x2: 212, y2: 564, class: "boundary-line" }));
+        const boundary = addText(laneLayer, "生成边界", "boundary-label", 222, 568);
+        boundary.setAttribute("text-anchor", "start");
       }
 
       function buildConnectors() {
-        connections.forEach(([fromKey, toKey]) => {
+        connections.forEach(connection => {
+          const fromKey = connection.from_key;
+          const toKey = connection.to_key;
           const from = stages[stageIndex.get(fromKey)];
           const to = stages[stageIndex.get(toKey)];
-          const d = connectorPath(from, to);
+          const d = connectorPath(from, to, connection.route);
           const path = svgElement("path", {
             d,
             class: `flow-path${to.boundary === "external" ? " external-link" : ""}`,
@@ -1019,17 +1129,16 @@ HTML_TEMPLATE = r'''<!doctype html>
             "data-to": toKey,
           });
           connectorLayer.appendChild(path);
-          paths.set(toKey, path);
           const particle = svgElement("circle", { r: 4.5, class: "flow-particle" });
           connectorLayer.appendChild(particle);
-          particles.set(toKey, particle);
+          connectionRecords.push({ fromKey, toKey, path, particle });
         });
       }
 
       function buildNodes() {
         stages.forEach((stage, index) => {
           const group = svgElement("g", {
-            class: `stage-card${stage.boundary === "external" ? " external" : ""}`,
+            class: `stage-card ${stage.phase}${stage.boundary === "external" ? " external" : ""}`,
             transform: `translate(${stage.x} ${stage.y})`,
             role: "button",
             tabindex: "0",
@@ -1061,7 +1170,7 @@ HTML_TEMPLATE = r'''<!doctype html>
         stages.forEach((stage, index) => {
           const button = document.createElement("button");
           button.type = "button";
-          button.className = `mobile-stage${stage.boundary === "external" ? " external" : ""}`;
+          button.className = `mobile-stage ${stage.phase}${stage.boundary === "external" ? " external" : ""}`;
           button.setAttribute("aria-label", `${stage.step}：${stage.title}`);
           button.innerHTML = `<span class="mobile-index">${String(index + 1).padStart(2, "0")}</span><span class="mobile-copy"><span class="mobile-step">${stage.step}</span><span class="mobile-title">${stage.title}</span><span class="mobile-subtitle">${stage.subtitle}</span></span>`;
           button.addEventListener("click", () => selectStage(index, false));
@@ -1074,7 +1183,7 @@ HTML_TEMPLATE = r'''<!doctype html>
         stages.forEach((stage, index) => {
           const button = document.createElement("button");
           button.type = "button";
-          button.className = `timeline-button${stage.boundary === "external" ? " external" : ""}`;
+          button.className = `timeline-button ${stage.phase}${stage.boundary === "external" ? " external" : ""}`;
           button.textContent = stage.step;
           button.title = stage.title;
           button.setAttribute("aria-label", `跳转到 ${stage.step} ${stage.title}`);
@@ -1132,10 +1241,8 @@ HTML_TEMPLATE = r'''<!doctype html>
           });
         });
 
-        connections.forEach(([, toKey]) => {
+        connectionRecords.forEach(({ toKey, path, particle }) => {
           const index = stageIndex.get(toKey);
-          const path = paths.get(toKey);
-          const particle = particles.get(toKey);
           path.classList.remove("done", "active");
           particle.classList.remove("active");
           if (index < state.index) path.classList.add("done");
@@ -1172,9 +1279,9 @@ HTML_TEMPLATE = r'''<!doctype html>
         if (state.playing) {
           state.elapsed += delta * state.speed;
           const currentStage = stages[state.index];
-          const path = paths.get(currentStage.key);
-          const particle = particles.get(currentStage.key);
-          if (path && particle) updateParticle(path, particle, Math.min(1, state.elapsed / stepDuration));
+          connectionRecords
+            .filter(record => record.toKey === currentStage.key)
+            .forEach(({ path, particle }) => updateParticle(path, particle, Math.min(1, state.elapsed / stepDuration)));
           if (state.elapsed >= stepDuration) {
             state.elapsed = 0;
             if (state.index < stages.length - 1) {
@@ -1209,6 +1316,8 @@ HTML_TEMPLATE = r'''<!doctype html>
       buildMobileFlow();
       buildTimeline();
       buildSources();
+      progressRange.max = String(stages.length - 1);
+      progressTotal.textContent = `/ ${stages.length}`;
       render();
       if (!reducedMotion) setPlayState(true);
       window.requestAnimationFrame(animate);
@@ -1226,7 +1335,7 @@ def _safe_json(value: object) -> str:
 def render_html() -> str:
     html = HTML_TEMPLATE
     html = html.replace("__STAGE_DATA__", _safe_json([asdict(stage) for stage in STAGES]))
-    html = html.replace("__CONNECTION_DATA__", _safe_json(CONNECTIONS))
+    html = html.replace("__CONNECTION_DATA__", _safe_json([asdict(connection) for connection in CONNECTIONS]))
     html = html.replace("__SOURCE_DATA__", _safe_json(SOURCE_NOTES))
     return html
 

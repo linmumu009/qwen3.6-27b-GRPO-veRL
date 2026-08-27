@@ -2,6 +2,11 @@
 
 Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
+## v1.12.36（2026-08-27）
+
+- 只读对照私有 GitHub `sf_my_sandbox` 的 `main@7589170` 与 5 号机 `20260814` 源码快照，确认 GitHub 版更新并将其作为动画权威源；动态图升级为公共主干、DWH/Knowledge 双分支、Hybrid 汇合和独立 Rollout 的完整 14 阶段图。
+- 动画补充新版四项实质能力：Step 1/2“小规格分写→脚本展开”、Step 5.1 EvidencePlan 同源生成与改写后验证、Knowledge/Hybrid 任务支路，以及 raw/runner/registry 三层防泄露冻结；生成器、嵌入数据和回归合同同步更新。
+
 ## v1.12.35（2026-08-27）
 
 - 新增沙箱生成过程自包含动态图与可复现渲染器；依据 5 号机只读源码快照，准确展示业务说明、场景隔离、Step 0–5 阶段产物、DB/Docs/Tasks SHA256 冻结及 `sandbox_registry.jsonl` 登记，并明确把已解耦的 Rollout Engine 画在环境生成边界之外。
@@ -175,7 +180,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 目录
 
-- [`docs/sandbox_generation_animation_20260827.html`](docs/sandbox_generation_animation_20260827.html)：依据 5 号机 runtime、stage registry 与 freezer 源码绘制的沙箱生成动态图；可播放/拖动查看 Step 0–5 的真实阶段产物、冻结校验和以及独立 Rollout 边界，源文件由 [`scripts/render_sandbox_generation_animation.py`](scripts/render_sandbox_generation_animation.py) 确定性生成。
+- [`docs/sandbox_generation_animation_20260827.html`](docs/sandbox_generation_animation_20260827.html)：依据 GitHub `sf_my_sandbox main@7589170` 绘制、以 5 号机快照作历史对照的沙箱生成动态图；可播放/拖动查看公共主干、DWH/Knowledge 双分支、Hybrid 汇合、三层冻结和独立 Rollout 边界，源文件由 [`scripts/render_sandbox_generation_animation.py`](scripts/render_sandbox_generation_animation.py) 确定性生成。
 - [`docs/training_experiment_report_20260731.md`](docs/training_experiment_report_20260731.md)：从初始环境、数据改造、十余次关键尝试到最终 One-Step 与 bounded fully-async 跑通的完整复盘报告。
 - [`docs/trajectory_rollout_investigation_20260731.html`](docs/trajectory_rollout_investigation_20260731.html)：同 prompt 轨迹长度对比、长尾 rollout 超时、完整 GRPO group 队列与 vLLM 真取消方案的可交互调查报告。
 - [`docs/context_48k_tool_turn_validation_20260731.md`](docs/context_48k_tool_turn_validation_20260731.md)：8K/16K/32K/48K 阶梯实跑、显存峰值、system prompt 血缘和工具调用轮次对齐报告。
