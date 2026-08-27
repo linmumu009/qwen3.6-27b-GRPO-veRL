@@ -2,6 +2,13 @@
 
 Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
+## v1.12.39（2026-08-27）
+
+- 将物流示例从“文件生成文件”的三列流水线彻底重做为持续生长的可执行世界：画面以 `W = (Entities, States, Actions, Rules, Observations)` 为主线，依次建立世界边界、观察角色、57 类实体、76 个状态、80 个动作、情境变化轴与组合约束，再把语义世界投影到 Schema、实例化为 36,101 条事实，并加入政策/制度记忆和智能体可见性边界；文件名降级为右侧“落盘凭证”，不再充当视觉主角。
+- 明确三类任务在世界模型中的含义与编号：`Step 5.1 数仓任务`观察“世界实际发生了什么”，`Step 5.2 知识任务`观察“世界应该怎样运行”，`Step 5.3 混合任务`比较 `State(W)` 与 `Rules(W)`、判断现实是否符合规则；Factor 的非法状态跃迁、修复后世界重新闭合也直接画在世界中。
+- 升级桌面动效为物流网络生长、状态环、动作能量束、Taxonomy 轨道、Schema 空间投影、运单流动、事实/规则双探针、Hybrid 汇合核心、世界冻结壳和阶段交付粒子；最终进入静止的 `WORLD MODEL SEALED / 沙箱生成完成` 终态，进度固定 100%、播放与下一步禁用、所有持续动效暂停，可主动重新建模。
+- 相关通用/物流动画合计 `7 passed`；1280px 桌面实测无横向溢出，17 个世界语义层按阶段累积，Step 5.1/5.3 标签、终态停止与重新播放正常，控制台无警告或错误。
+
 ## v1.12.38（2026-08-27）
 
 - 按“实际生成过程”重做物流沙箱动态图，彻底移除上一版复用通用节点流程图的表达：桌面画面一次只聚焦一个阶段，固定展示“上一步交付的真实文件 → 本步逐条执行的动作 → 随动作逐个落盘的新文件”，阶段结束时产物卡会实际移动到下一步输入区。
@@ -192,7 +199,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 目录
 
-- [`docs/logistics_sandbox_generation_example_animation_20260827.html`](docs/logistics_sandbox_generation_example_animation_20260827.html)：桌面端真实生成剧场；逐阶段展示上游文件、本步生成动作、新产物落盘及产物向下一步移动，并重放 Factor 报错修复、数仓/知识双支路缓冲、Hybrid 汇合与冻结交付；由 [`scripts/render_logistics_sandbox_example_animation.py`](scripts/render_logistics_sandbox_example_animation.py) 确定性生成。
+- [`docs/logistics_sandbox_generation_example_animation_20260827.html`](docs/logistics_sandbox_generation_example_animation_20260827.html)：桌面端物流世界建模实录；持续展示世界边界、角色、实体、状态、动作、约束、事实、制度规则与三类观察任务怎样进入同一个可执行世界，重放 Factor 一致性修复、`State(W) × Rules(W)` Hybrid 汇合、冻结交付和明确完成终态；文件仅作为落盘凭证。由 [`scripts/render_logistics_sandbox_example_animation.py`](scripts/render_logistics_sandbox_example_animation.py) 确定性生成。
 - [`docs/sandbox_generation_animation_20260827.html`](docs/sandbox_generation_animation_20260827.html)：依据 GitHub `sf_my_sandbox main@7589170` 绘制、以 5 号机快照作历史对照的沙箱生成动态图；可播放/拖动查看公共主干、DWH/Knowledge 双分支、Hybrid 汇合、三层冻结和独立 Rollout 边界，源文件由 [`scripts/render_sandbox_generation_animation.py`](scripts/render_sandbox_generation_animation.py) 确定性生成。
 - [`docs/training_experiment_report_20260731.md`](docs/training_experiment_report_20260731.md)：从初始环境、数据改造、十余次关键尝试到最终 One-Step 与 bounded fully-async 跑通的完整复盘报告。
 - [`docs/trajectory_rollout_investigation_20260731.html`](docs/trajectory_rollout_investigation_20260731.html)：同 prompt 轨迹长度对比、长尾 rollout 超时、完整 GRPO group 队列与 vLLM 真取消方案的可交互调查报告。

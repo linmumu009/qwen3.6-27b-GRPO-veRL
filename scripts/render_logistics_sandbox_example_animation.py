@@ -56,6 +56,17 @@ class Stage:
     replay_ms: int = 900
 
 
+@dataclass(frozen=True)
+class WorldPhase:
+    key: str
+    principle: str
+    formula: str
+    inherited: tuple[str, ...]
+    gains: tuple[str, ...]
+    capability: str
+    layers: tuple[str, ...]
+
+
 def artifact(
     name: str,
     kind: str,
@@ -242,7 +253,7 @@ STAGES = (
     Stage(
         key="dwh_tasks",
         step="Step 5.1",
-        title="用物流数据库生成数仓评测任务",
+        title="数仓任务：用物流数据库生成评测任务",
         clock="14:24:52 → 14:26:21",
         duration="01:29",
         branch="数仓支路",
@@ -342,7 +353,7 @@ STAGES = (
     Stage(
         key="hybrid",
         step="Step 5.3",
-        title="把数据库证据与政策证据合成双源任务",
+        title="混合任务：合并数据库证据与政策证据",
         clock="14:33:25 → 14:35:51",
         duration="02:26",
         branch="双支路汇合",
@@ -413,6 +424,127 @@ STAGES = (
         handoff="完整重放结束。点击“重新播放”可再次观察每个产物怎样成为下一步的输入。",
         handoff_type="end",
         replay_ms=850,
+    ),
+)
+
+
+WORLD_PHASES = (
+    WorldPhase(
+        "intake",
+        "先定义世界边界，再谈世界内容",
+        "W₀ = Boundary(scene_id, source_hash)",
+        ("一段物流业务叙述", "尚未区分角色、对象与规则"),
+        ("唯一输入指纹", "独立世界边界", "可追溯的初始状态"),
+        "从这一刻起，所有生成物属于同一个物流世界，不能与其他场景串线。",
+        ("boundary", "", ""),
+    ),
+    WorldPhase(
+        "prd",
+        "把人的意图变成世界必须支持的观察",
+        "Intent → Actors + Goals + Observations",
+        ("已经隔离的物流世界", "业务叙述中的角色与目标"),
+        ("5 类世界观察者", "角色所关心的业务目标", "可观察问题与覆盖账本", "14/14 需求闭环"),
+        "世界知道谁在观察它、为什么观察，以及哪些现实问题必须能够回答。",
+        ("roles", "", "", ""),
+    ),
+    WorldPhase(
+        "factor",
+        "世界不是名词表，而是会变化、可行动的系统",
+        "W = (Entities, States, Actions, Invariants)",
+        ("角色、目标与观察需求", "尚未形式化的物流业务概念"),
+        ("57 类实体进入世界", "76 个状态 + 80 个动作", "发现状态引用断裂", "修复世界中的非法跃迁", "9/9 一致性通过"),
+        "运单、仓库、线路和承运商不再只是文字：它们拥有状态、可执行动作与合法变化边界。",
+        ("entities", "states", "repair", "actions", ""),
+    ),
+    WorldPhase(
+        "taxonomy",
+        "在同一个世界模型上系统地产生不同情境",
+        "Situations = Sample(W, Dimensions, Constraints)",
+        ("实体、状态、动作与不变量", "一个已经可执行但尚未展开的世界"),
+        ("15 条变化轴", "115 个情境采样单元", "27 条组合约束", "覆盖分布归一化"),
+        "世界获得情境生成器：可以改变区域、时间、产品和状态，但不会组合出业务上不存在的世界。",
+        ("taxonomy", "", "constraints", ""),
+    ),
+    WorldPhase(
+        "schema",
+        "Schema 是世界状态的投影，不是世界本身",
+        "Persist: World State → 64 Tables",
+        ("业务对象、关系与状态机", "受约束的情境空间"),
+        ("规划世界状态分层", "把实体关系映射到 64 张表", "把状态边界固化为枚举", "存储投影一致性通过"),
+        "世界中每一种状态和关系都有稳定的存储地址，之后产生的事实都能回指语义对象。",
+        ("schema", "", "", ""),
+    ),
+    WorldPhase(
+        "data",
+        "让世界从类型系统变成有当前状态与历史的实例",
+        "Instantiate(W) → 36,101 Facts",
+        ("64 张表承载的世界结构", "状态枚举与引用约束"),
+        ("实例化仓、线、网点与运单", "36,101 条事实写入世界", "验证状态与关系闭合"),
+        "物流世界开始运转：运单沿线路移动，仓库和承运商拥有真实可查询的当前状态。",
+        ("data", "", ""),
+    ),
+    WorldPhase(
+        "dwh_tasks",
+        "数仓任务是对世界状态的受控观察",
+        "DWH Task = Observe(State(W), EvidencePlan)",
+        ("已经实例化的物流世界", "可查询的状态、关系与历史"),
+        ("从世界状态生成 6,000 个观察", "按覆盖选择 1,000 个", "加入多跳关系观察", "收敛为 555 个数仓任务"),
+        "Step 5.1 数仓任务询问“世界里实际发生了什么”，每个问题都必须落到真实世界状态。",
+        ("dwh", "", "", ""),
+    ),
+    WorldPhase(
+        "catalog",
+        "现实状态之外，世界还需要规范它的规则层",
+        "Rules(W) = Policies + Manuals + Procedures",
+        ("同源的实体、动作与情境", "数仓世界中的真实对象"),
+        ("规划政策、手册、FAQ 与培训", "65 条知识定义绑定世界对象", "检查规则与对象双向引用"),
+        "世界获得规范层：不仅知道发生了什么，也开始知道价格、SLA、理赔和异常处理应该怎样。",
+        ("rules", "", ""),
+    ),
+    WorldPhase(
+        "documents",
+        "把抽象规则变成世界中可检索、可引用的制度记忆",
+        "Memory(W) = Express(Rules(W))",
+        ("65 条规则与知识定义", "规则关联的实体、动作与数据表"),
+        ("写出 65 份制度记忆", "切分为 1,587 个可检索证据块", "确认规则记忆无缺失"),
+        "政策不再是标签，而是能够被世界中的角色读取、引用和用于判断的制度记忆。",
+        ("docs", "", ""),
+    ),
+    WorldPhase(
+        "kb_tasks",
+        "知识任务是对世界规则与制度记忆的观察",
+        "KB Task = Observe(Rules(W), SourceDocs)",
+        ("可检索的政策与流程记忆", "每个规则的来源关系"),
+        ("从规则层生成知识观察", "去重后保留 465 个唯一任务", "8/8 来源与可答性通过"),
+        "Step 5.2 知识任务询问“这个世界应该怎样运行”，每个回答都必须回到具体制度来源。",
+        ("kb", "", ""),
+    ),
+    WorldPhase(
+        "hybrid",
+        "混合任务把事实世界与规则世界放在同一个判断里",
+        "Hybrid = Compare(State(W), Rules(W))",
+        ("555 个世界状态观察", "465 个规则观察", "同源 DB + Docs"),
+        ("现实 → 规则：171 个", "规则 → 现实：156 个", "合规判断：173 个", "500/500 双源闭环"),
+        "Step 5.3 混合任务不再只是查询：它判断现实中的物流运行是否符合世界的规则。",
+        ("hybrid", "", "", ""),
+    ),
+    WorldPhase(
+        "freeze",
+        "冻结的是完整世界和观察边界，而不是一个文件目录",
+        "Sandbox = Seal(W, Observations, Visibility)",
+        ("实体 + 状态 + 动作 + 约束", "事实状态 + 制度规则 + 三类观察"),
+        ("固定世界版本与校验和", "隔离可见世界和评测秘密", "登记唯一 sandbox_id"),
+        "世界模型被封装成可重复进入的环境；模型只能看到世界，不能看到评测者预先设计的观察答案。",
+        ("freeze", "", ""),
+    ),
+    WorldPhase(
+        "runner",
+        "智能体进入世界，以有限观察和合法动作与世界交互",
+        "Agent ↔ Observe(W) / Act(W)",
+        ("已经冻结的可执行物流世界", "明确的可见性与动作边界"),
+        ("验证世界身份", "挂载可观察状态与制度记忆", "确认秘密处于世界之外"),
+        "世界建模完成：智能体面对的是会变化、有规则、可行动、可验证的物流世界，而不是一堆文件。",
+        ("runner", "", ""),
     ),
 )
 
@@ -837,8 +969,246 @@ h1 { margin: 0; font-size: 30px; font-weight: 600; letter-spacing: -.02em; }
 '''
 
 
+WORLD_HTML_TEMPLATE = r'''<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>物流世界建模实录 · 从业务意图到可执行沙箱</title>
+<style>
+:root {
+  color-scheme: dark;
+  --void:#030812; --deep:#07111f; --panel:#0b1728; --panel2:#101f34;
+  --line:#263c59; --text:#edf6ff; --muted:#91a7c1; --cyan:#4de1ff;
+  --blue:#5b9dff; --violet:#ae7cff; --green:#4fe0a0; --amber:#ffc562; --red:#ff657d;
+}
+* { box-sizing:border-box; }
+html { background:var(--void); }
+body { margin:0; min-width:1180px; color:var(--text); background:var(--void); font-family:Inter,"PingFang SC","Microsoft YaHei",system-ui,sans-serif; }
+button,select { font:inherit; }
+button:focus-visible,select:focus-visible { outline:3px solid rgba(77,225,255,.55); outline-offset:2px; }
+.sr-only { position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0; }
+.app { position:relative; min-height:100vh; padding:22px 28px 18px; overflow:hidden; isolation:isolate; background:
+  radial-gradient(circle at 13% 6%,rgba(55,128,255,.18),transparent 28%),
+  radial-gradient(circle at 86% 8%,rgba(174,124,255,.15),transparent 28%),
+  linear-gradient(180deg,#06101e 0%,#030812 100%); }
+.app::before { content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;opacity:.16;background-image:
+  linear-gradient(rgba(77,225,255,.14) 1px,transparent 1px),linear-gradient(90deg,rgba(77,225,255,.14) 1px,transparent 1px);
+  background-size:54px 54px;transform:perspective(600px) rotateX(58deg) scale(1.6) translateY(14%);transform-origin:center bottom;animation:gridDrift 14s linear infinite; }
+.app::after { content:"";position:fixed;inset:-35%;z-index:-1;pointer-events:none;background:conic-gradient(from 0deg,transparent,rgba(77,225,255,.04),transparent,rgba(174,124,255,.05),transparent);animation:auroraSpin 24s linear infinite; }
+@keyframes gridDrift { to { background-position:0 54px,54px 0; } }
+@keyframes auroraSpin { to { transform:rotate(360deg); } }
+.topbar { display:flex;justify-content:space-between;align-items:flex-start;gap:28px; }
+.eyebrow { color:var(--cyan);font-size:11px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:7px;text-shadow:0 0 16px rgba(77,225,255,.55); }
+h1 { margin:0;font-size:29px;letter-spacing:-.025em;font-weight:650; }
+.lede { margin:7px 0 0;max-width:860px;color:var(--muted);font-size:13px;line-height:1.65; }
+.world-equation { min-width:310px;padding:12px 15px;border:1px solid rgba(77,225,255,.28);border-radius:12px;background:linear-gradient(135deg,rgba(77,225,255,.08),rgba(174,124,255,.07));box-shadow:inset 0 0 24px rgba(77,225,255,.035),0 10px 38px rgba(0,0,0,.2); }
+.world-equation strong { display:block;color:#dffbff;font:13px ui-monospace,SFMono-Regular,Consolas,monospace;margin-bottom:4px; }
+.world-equation span { color:var(--muted);font-size:11px; }
+.controls { margin-top:15px;display:flex;align-items:center;gap:7px; }
+.control-btn,.speed-select { min-height:34px;padding:6px 11px;border:1px solid var(--line);border-radius:8px;background:rgba(13,27,46,.88);color:var(--text);cursor:pointer; }
+.control-btn.primary { min-width:90px;color:#05101b;background:linear-gradient(135deg,#bdf6ff,#d8caff);border-color:transparent;box-shadow:0 0 24px rgba(77,225,255,.16); }
+.control-btn:disabled { opacity:.42;cursor:default;box-shadow:none; }
+.progress-wrap { flex:1;margin-left:9px; }
+.progress-meta { display:flex;justify-content:space-between;color:var(--muted);font-size:10px;margin-bottom:5px; }
+.live-status { color:var(--cyan);text-shadow:0 0 12px rgba(77,225,255,.35); }
+.progress-track { height:4px;background:#15263c;border-radius:10px;overflow:hidden; }
+.progress-fill { height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--blue),var(--violet));box-shadow:0 0 14px var(--cyan);transition:width .35s ease; }
+.stage-rail { margin-top:13px;display:grid;grid-template-columns:repeat(13,1fr);gap:4px; }
+.stage-tab { border:0;border-top:2px solid #1f334d;background:transparent;color:#667d98;padding:7px 2px 6px;cursor:pointer;font-size:9px;white-space:nowrap; }
+.stage-tab small { display:block;margin-top:3px;font-size:8px;opacity:.72; }
+.stage-tab.done { color:#9bb1c9;border-color:#42688c; }
+.stage-tab.current { color:var(--text);border-color:var(--cyan);background:linear-gradient(180deg,rgba(77,225,255,.12),transparent);text-shadow:0 0 10px rgba(77,225,255,.3); }
+.theatre { position:relative;margin-top:11px;border:1px solid rgba(60,91,128,.75);border-radius:15px;overflow:hidden;background:rgba(4,11,21,.68);box-shadow:0 24px 80px rgba(0,0,0,.34),inset 0 1px rgba(255,255,255,.025); }
+.stage-banner { position:relative;overflow:hidden;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:20px;min-height:58px;padding:11px 16px;border-bottom:1px solid var(--line);background:linear-gradient(90deg,rgba(13,28,48,.94),rgba(8,18,32,.88)); }
+.stage-banner::after { content:"";position:absolute;inset:0;width:32%;background:linear-gradient(90deg,transparent,rgba(77,225,255,.10),transparent);transform:skewX(-20deg);animation:bannerScan 3.8s ease-in-out infinite; }
+@keyframes bannerScan { 0%,20% { transform:translateX(-160%) skewX(-20deg); } 75%,100% { transform:translateX(430%) skewX(-20deg); } }
+.stage-id { position:relative;z-index:1; }
+.step-badge { color:var(--cyan);font-size:11px;letter-spacing:.09em;font-weight:700; }
+.stage-title { display:block;margin-top:3px;font-size:18px;font-weight:650; }
+.principle { position:relative;z-index:1;text-align:center;color:#bed2e8;font-size:12px; }
+.principle::before { content:"世界建模原则";display:block;color:#64809f;font-size:8px;letter-spacing:.18em;margin-bottom:3px; }
+.stage-time { position:relative;z-index:1;text-align:right;color:var(--muted);font-size:10px; }
+.stage-time strong { display:block;color:var(--text);font-size:12px;margin-top:4px; }
+.world-layout { position:relative;display:grid;grid-template-columns:225px minmax(600px,1fr) 310px;min-height:590px; }
+.inherit-panel,.build-panel { padding:15px 14px;background:rgba(8,18,32,.64); }
+.inherit-panel { border-right:1px solid rgba(38,60,89,.7); }
+.build-panel { border-left:1px solid rgba(38,60,89,.7); }
+.panel-label { color:#7087a3;font-size:9px;letter-spacing:.16em;text-transform:uppercase;margin-bottom:10px; }
+.inherit-list { display:grid;gap:8px; }
+.concept-chip { position:relative;padding:10px 10px 10px 28px;border:1px solid #263f5f;border-radius:9px;background:linear-gradient(135deg,rgba(22,43,69,.72),rgba(9,22,39,.72));color:#c3d5e8;font-size:11px;line-height:1.4;animation:conceptIn .45s ease both; }
+.concept-chip::before { content:"";position:absolute;left:11px;top:15px;width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 12px var(--cyan); }
+@keyframes conceptIn { from { opacity:0;transform:translateX(-12px); } to { opacity:1;transform:none; } }
+.formula-box { margin-top:13px;padding:11px;border-left:2px solid var(--violet);background:rgba(174,124,255,.06);color:#d6c9f7;font:10px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace;overflow-wrap:anywhere; }
+.inherit-note { margin-top:12px;color:#6f86a1;font-size:10px;line-height:1.55; }
+.world-main { position:relative;padding:14px 15px 15px;min-width:0; }
+.world-head { display:flex;align-items:center;justify-content:space-between;margin-bottom:9px; }
+.world-head span:first-child { color:var(--cyan);font-size:10px;letter-spacing:.18em;text-shadow:0 0 12px rgba(77,225,255,.4); }
+.world-head span:last-child { color:#647d99;font-size:9px; }
+.world-canvas { position:relative;height:500px;overflow:hidden;border:1px solid #294363;border-radius:14px;background:
+  radial-gradient(circle at 50% 48%,rgba(40,114,182,.18),transparent 29%),
+  linear-gradient(rgba(54,100,145,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(54,100,145,.08) 1px,transparent 1px),
+  linear-gradient(180deg,#071525,#040c17);background-size:auto,35px 35px,35px 35px,auto;box-shadow:inset 0 0 80px rgba(0,0,0,.48),0 14px 44px rgba(0,0,0,.25); }
+.world-canvas::before { content:"";position:absolute;inset:-45%;background:conic-gradient(from 0deg,transparent,rgba(77,225,255,.055),transparent,rgba(174,124,255,.06),transparent);animation:worldAura 13s linear infinite; }
+@keyframes worldAura { to { transform:rotate(360deg); } }
+.world-caption { position:absolute;left:14px;bottom:12px;right:14px;z-index:30;display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid rgba(77,225,255,.2);border-radius:9px;background:rgba(3,10,19,.84);backdrop-filter:blur(8px); }
+.change-pulse { width:8px;height:8px;border-radius:50%;background:var(--cyan);box-shadow:0 0 14px var(--cyan);animation:changePulse 1.1s ease-in-out infinite; }
+@keyframes changePulse { 50% { transform:scale(1.7);opacity:.45; } }
+.world-caption strong { color:#e6faff;font-size:11px; }
+.world-caption span { color:#91a9c4;font-size:10px; }
+.world-layer { position:absolute;inset:0;z-index:3;opacity:0;transform:scale(.96);transition:opacity .55s ease,transform .55s cubic-bezier(.2,.8,.2,1);pointer-events:none; }
+.world-layer.visible { opacity:1;transform:scale(1); }
+.world-layer.current { filter:drop-shadow(0 0 12px rgba(77,225,255,.28)); }
+.world-boundary-ring { position:absolute;left:8%;top:8%;width:84%;height:78%;border:1px solid rgba(77,225,255,.48);border-radius:47% 42% 45% 43%;box-shadow:inset 0 0 35px rgba(77,225,255,.05),0 0 32px rgba(77,225,255,.08); }
+.world-boundary-ring::before { content:"WORLD BOUNDARY · 运营分析-8767b626";position:absolute;left:9%;top:-8px;padding:2px 7px;background:#071525;color:var(--cyan);font-size:8px;letter-spacing:.12em; }
+.role { position:absolute;z-index:8;width:78px;text-align:center;color:#b9cce0;font-size:9px; }
+.role::before { content:"";display:block;width:25px;height:25px;margin:0 auto 5px;border:1px solid var(--blue);border-radius:50% 50% 42% 42%;background:radial-gradient(circle at 50% 36%,var(--blue) 0 4px,transparent 5px),linear-gradient(135deg,rgba(91,157,255,.3),transparent);box-shadow:0 0 18px rgba(91,157,255,.25); }
+.role.r1 { left:4%;top:35%; }.role.r2 { right:3%;top:37%; }.role.r3 { left:44%;top:3%; }
+.network-svg { position:absolute;inset:0;width:100%;height:100%;overflow:visible; }
+.route-path { fill:none;stroke:rgba(91,157,255,.48);stroke-width:2;stroke-dasharray:7 8;animation:routeFlow 2.6s linear infinite; }
+.route-path.knowledge { stroke:rgba(174,124,255,.42); }
+@keyframes routeFlow { to { stroke-dashoffset:-30; } }
+.entity-node { position:absolute;z-index:12;transform:translate(-50%,-50%);min-width:78px;padding:8px 9px;border:1px solid #3b6086;border-radius:10px;background:rgba(9,25,43,.94);text-align:center;color:#dcecff;font-size:10px;box-shadow:0 8px 24px rgba(0,0,0,.35),inset 0 0 18px rgba(91,157,255,.06); }
+.entity-node b { display:block;color:var(--cyan);font-size:8px;letter-spacing:.08em;margin-bottom:3px; }
+.entity-node.hub { left:50%;top:48%; }.entity-node.warehouse { left:22%;top:30%; }.entity-node.outlet { left:78%;top:29%; }.entity-node.carrier { left:22%;top:70%; }.entity-node.customer { left:78%;top:70%; }
+.state-ring { position:absolute;left:50%;top:48%;width:178px;height:178px;transform:translate(-50%,-50%);border:1px dashed rgba(79,224,160,.7);border-radius:50%;animation:stateSpin 12s linear infinite; }
+.state-ring::before,.state-ring::after { content:"运输中";position:absolute;padding:3px 6px;border-radius:8px;background:#0c2b27;color:var(--green);font-size:8px; }
+.state-ring::before { left:3px;top:22px; }.state-ring::after { content:"已签收";right:-4px;bottom:27px; }
+.state-label { position:absolute;left:50%;top:calc(48% + 103px);transform:translateX(-50%);color:var(--green);font-size:8px;letter-spacing:.12em; }
+@keyframes stateSpin { to { transform:translate(-50%,-50%) rotate(360deg); } }
+.action-beam { position:absolute;height:1px;background:linear-gradient(90deg,transparent,var(--amber),transparent);transform-origin:left center;box-shadow:0 0 8px var(--amber);animation:beamPulse 1.7s ease-in-out infinite; }
+.action-beam.a1 { left:27%;top:34%;width:175px;transform:rotate(16deg); }.action-beam.a2 { left:51%;top:49%;width:170px;transform:rotate(-27deg); }.action-beam.a3 { left:25%;top:69%;width:190px;transform:rotate(-17deg); }
+.action-name { position:absolute;color:var(--amber);font:8px ui-monospace,monospace; }.action-name.n1 { left:35%;top:31%; }.action-name.n2 { left:64%;top:43%; }.action-name.n3 { left:34%;top:67%; }
+@keyframes beamPulse { 50% { opacity:.28;filter:blur(1px); } }
+.taxonomy-orbit { position:absolute;left:50%;top:48%;width:480px;height:365px;transform:translate(-50%,-50%);border:1px dashed rgba(174,124,255,.55);border-radius:50%;animation:orbitBreath 3.2s ease-in-out infinite; }
+.axis { position:absolute;padding:3px 6px;border:1px solid rgba(174,124,255,.38);border-radius:8px;background:rgba(32,19,57,.88);color:#cfb7ff;font-size:8px; }.axis.x1{left:12%;top:14%}.axis.x2{right:9%;top:15%}.axis.x3{left:5%;bottom:15%}.axis.x4{right:7%;bottom:13%}.axis.x5{left:45%;top:5%}
+@keyframes orbitBreath { 50% { box-shadow:0 0 38px rgba(174,124,255,.14);transform:translate(-50%,-50%) scale(1.025); } }
+.constraint-stack { position:absolute;right:9%;top:51%;display:grid;gap:5px; }.constraint { padding:4px 7px;border-left:2px solid var(--red);background:rgba(70,16,30,.72);color:#ff9aaa;font-size:8px; }.constraint.ok { border-color:var(--green);background:rgba(15,61,48,.72);color:#85efbd; }
+.schema-deck { position:absolute;left:9%;bottom:12%;width:210px;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;transform:perspective(300px) rotateX(50deg);transform-origin:center bottom; }
+.table-tile { height:29px;border:1px solid rgba(91,157,255,.5);background:linear-gradient(180deg,rgba(31,72,111,.9),rgba(10,28,48,.9));box-shadow:0 5px 0 rgba(13,36,61,.9);color:#9cc8ff;font-size:6px;display:grid;place-items:center;text-align:center; }
+.schema-count { position:absolute;left:12%;bottom:5%;color:var(--blue);font-size:9px;letter-spacing:.12em; }
+.shipment { position:absolute;z-index:18;width:8px;height:8px;border-radius:50%;background:var(--cyan);box-shadow:0 0 15px var(--cyan),0 0 3px #fff;animation:shipmentMove 3.2s ease-in-out infinite; }.shipment.s2{animation-delay:-1.1s}.shipment.s3{animation-delay:-2.2s}
+@keyframes shipmentMove { 0%{left:22%;top:30%;opacity:0}12%{opacity:1}50%{left:50%;top:48%}88%{opacity:1}100%{left:78%;top:70%;opacity:0} }
+.fact-counter { position:absolute;left:43%;bottom:8%;padding:6px 9px;border:1px solid rgba(77,225,255,.35);background:rgba(4,19,31,.86);color:var(--cyan);font:9px ui-monospace,monospace;box-shadow:0 0 18px rgba(77,225,255,.1); }
+.probe { position:absolute;z-index:20;width:95px;height:95px;border:1px solid;border-radius:50%;display:grid;place-items:center;text-align:center;font-size:8px;line-height:1.4;animation:probeScan 2.4s ease-in-out infinite; }.probe.dwh{left:7%;top:43%;border-color:var(--blue);color:#9cc8ff;background:radial-gradient(circle,rgba(91,157,255,.14),transparent 66%)}.probe.kb{right:6%;top:43%;border-color:var(--violet);color:#d1baff;background:radial-gradient(circle,rgba(174,124,255,.14),transparent 66%)}
+@keyframes probeScan { 50%{box-shadow:0 0 0 16px transparent,0 0 28px currentColor;transform:scale(1.06)} }
+.policy-cloud { position:absolute;right:7%;top:9%;width:190px;display:grid;gap:5px; }.policy { padding:6px 8px;border:1px solid rgba(174,124,255,.38);border-radius:7px;background:rgba(29,18,50,.88);color:#d4c1f5;font-size:8px;box-shadow:5px 5px 0 rgba(25,15,43,.55); }.policy b{color:var(--violet);margin-right:5px}
+.doc-stack { position:absolute;right:12%;top:21%;width:128px;height:100px; }.doc-page { position:absolute;inset:0;border:1px solid #765cb0;border-radius:6px;background:linear-gradient(135deg,#251a3d,#0e1728);box-shadow:0 8px 22px rgba(0,0,0,.3); }.doc-page:nth-child(1){transform:translate(-12px,12px) rotate(-5deg)}.doc-page:nth-child(2){transform:translate(-6px,6px) rotate(-2deg)}.doc-page:nth-child(3){padding:13px 10px;color:#cfbaff;font-size:8px}.doc-page i{display:block;height:2px;margin:6px 0;background:#5b477f}
+.hybrid-core { position:absolute;left:50%;top:48%;z-index:25;width:130px;height:130px;transform:translate(-50%,-50%);border-radius:50%;display:grid;place-items:center;text-align:center;color:#f0eaff;font-size:9px;background:radial-gradient(circle,rgba(174,124,255,.46),rgba(77,225,255,.12) 38%,transparent 68%);border:1px solid rgba(211,191,255,.7);box-shadow:0 0 38px rgba(174,124,255,.33),inset 0 0 25px rgba(77,225,255,.2);animation:hybridPulse 1.8s ease-in-out infinite; }
+.hybrid-core strong { display:block;font-size:17px;margin-bottom:2px; }.hybrid-core::before,.hybrid-core::after { content:"";position:absolute;inset:-24px;border:1px solid rgba(77,225,255,.22);border-radius:50%;animation:hybridOrbit 4s linear infinite; }.hybrid-core::after{inset:-42px;border-color:rgba(174,124,255,.18);animation-direction:reverse;animation-duration:6s}
+@keyframes hybridPulse{50%{transform:translate(-50%,-50%) scale(1.06)}}@keyframes hybridOrbit{to{transform:rotate(360deg)}}
+.repair-alert { position:absolute;left:50%;top:11%;z-index:26;transform:translateX(-50%);padding:7px 11px;border:1px solid var(--red);border-radius:8px;background:rgba(62,13,26,.94);color:#ff9aac;font-size:8px;box-shadow:0 0 22px rgba(255,101,125,.24);animation:alertShake .35s ease 2; }.repair-alert.resolved { border-color:var(--green);background:rgba(11,55,42,.94);color:#83efbb; }
+@keyframes alertShake{25%{transform:translateX(calc(-50% - 4px))}75%{transform:translateX(calc(-50% + 4px))}}
+.freeze-shell { position:absolute;left:50%;top:48%;z-index:28;width:570px;height:410px;transform:translate(-50%,-50%);border:2px solid rgba(79,224,160,.72);border-radius:48% 43% 46% 42%;box-shadow:inset 0 0 58px rgba(79,224,160,.08),0 0 50px rgba(79,224,160,.14); }.freeze-shell::before { content:"SEALED WORLD · CHECKSUM VERIFIED";position:absolute;left:50%;top:-10px;transform:translateX(-50%);padding:3px 10px;background:#061421;color:var(--green);font-size:8px;letter-spacing:.14em;white-space:nowrap; }
+.agent-node { position:absolute;z-index:29;right:1%;top:42%;width:67px;height:67px;border:1px solid var(--amber);border-radius:16px;display:grid;place-items:center;text-align:center;color:var(--amber);font-size:8px;background:rgba(47,33,10,.9);box-shadow:0 0 24px rgba(255,197,98,.18); }.agent-beam { position:absolute;z-index:27;right:8%;top:49%;width:165px;height:2px;background:linear-gradient(90deg,var(--amber),transparent);box-shadow:0 0 10px var(--amber); }
+.gain-list { display:grid;gap:6px; }
+.gain-step { display:grid;grid-template-columns:25px 1fr;gap:8px;padding:8px;border:1px solid transparent;border-radius:8px;color:#617995;transition:.3s ease; }
+.gain-step.active { color:var(--text);border-color:rgba(77,225,255,.35);background:rgba(77,225,255,.065);transform:translateX(-3px); }
+.gain-step.done { color:#a8bdd3; }
+.gain-marker { width:23px;height:23px;border:1px solid #314b68;border-radius:50%;display:grid;place-items:center;font-size:8px; }
+.gain-step.active .gain-marker { color:var(--cyan);border-color:var(--cyan);box-shadow:0 0 14px rgba(77,225,255,.3); }.gain-step.done .gain-marker{color:var(--green);border-color:var(--green)}
+.gain-title { font-size:10px;font-weight:650; }.gain-op { color:#7087a1;font-size:8px;margin-top:3px;line-height:1.4; }.gain-result { color:#94abc3;font-size:8px;margin-top:3px; }
+.capability { margin-top:12px;padding:11px;border:1px solid #29425f;border-radius:10px;background:linear-gradient(135deg,rgba(20,40,65,.75),rgba(9,22,38,.75)); }
+.capability::before { content:"WORLD CAPABILITY";display:block;color:#617b99;font-size:8px;letter-spacing:.15em;margin-bottom:6px; }
+.capability p { margin:0;color:#8ca3bd;font-size:10px;line-height:1.55; }
+.capability.ready { border-color:rgba(79,224,160,.4);box-shadow:inset 0 0 25px rgba(79,224,160,.045); }.capability.ready p{color:#c3e8d7}
+.evidence-label { margin-top:12px;color:#607995;font-size:8px;letter-spacing:.14em; }
+.evidence-list { margin-top:7px;display:flex;flex-wrap:wrap;gap:5px; }
+.evidence-chip { max-width:100%;padding:4px 6px;border:1px solid #253c58;border-radius:6px;background:rgba(7,17,30,.74);color:#7991ab;font:7px ui-monospace,SFMono-Regular,Consolas,monospace;overflow-wrap:anywhere;animation:evidenceIn .35s ease both; }
+@keyframes evidenceIn{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+.handoff { min-height:44px;display:flex;align-items:center;gap:10px;padding:8px 14px;border-top:1px solid var(--line);background:rgba(9,20,34,.88);color:#a8bfd7;font-size:10px; }
+.handoff-symbol { color:var(--cyan);font-size:18px;text-shadow:0 0 14px var(--cyan); }.handoff strong{color:var(--text)}
+.transition-curtain { position:absolute;inset:58px 0 44px;z-index:60;display:grid;place-items:center;pointer-events:none;background:rgba(2,8,15,.7);backdrop-filter:blur(4px);opacity:0;transition:opacity .2s; }.transition-curtain.show{opacity:1}.transition-message{max-width:680px;padding:13px 20px;border:1px solid rgba(77,225,255,.42);border-radius:12px;background:#081829;color:#d8f4ff;font-size:11px;text-align:center;box-shadow:0 0 45px rgba(77,225,255,.12)}
+.transfer-orb,.transfer-spark { position:fixed;z-index:99;pointer-events:none;border-radius:50%;background:var(--cyan);box-shadow:0 0 18px var(--cyan),0 0 42px rgba(77,225,255,.4); }.transfer-orb{width:18px;height:18px}.transfer-spark{width:4px;height:4px}
+.end-overlay { position:absolute;inset:0;z-index:80;display:grid;place-items:center;text-align:center;background:radial-gradient(circle at 50% 45%,rgba(30,99,92,.32),rgba(3,9,17,.94) 55%);opacity:0;visibility:hidden;transition:opacity .6s ease; }.end-overlay.show{opacity:1;visibility:visible}
+.end-seal { position:relative;width:430px;padding:28px 28px 24px;border:1px solid rgba(79,224,160,.52);border-radius:18px;background:linear-gradient(145deg,rgba(10,36,38,.94),rgba(8,18,31,.96));box-shadow:0 0 80px rgba(79,224,160,.17),inset 0 0 42px rgba(79,224,160,.04); }
+.end-check { width:76px;height:76px;margin:0 auto 16px;border:2px solid var(--green);border-radius:50%;display:grid;place-items:center;color:var(--green);font-size:37px;box-shadow:0 0 0 12px rgba(79,224,160,.05),0 0 34px rgba(79,224,160,.3);animation:sealIn .75s cubic-bezier(.2,.85,.2,1) both; }
+@keyframes sealIn{from{transform:scale(.2) rotate(-90deg);opacity:0}to{transform:none;opacity:1}}
+.end-kicker { color:var(--green);font-size:9px;letter-spacing:.2em; }.end-title { margin:7px 0 5px;font-size:24px;font-weight:650; }.end-id { color:#92b5ad;font:9px ui-monospace,monospace; }.end-metrics { display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:18px 0; }.end-metric { padding:9px 5px;border-top:1px solid rgba(79,224,160,.25);color:#8eaaa7;font-size:8px; }.end-metric strong{display:block;color:#ddfff4;font-size:14px;margin-bottom:3px}.end-restart{padding:7px 14px;border:1px solid rgba(79,224,160,.5);border-radius:8px;background:rgba(79,224,160,.09);color:#cffff0;cursor:pointer}
+.completion-particle{position:absolute;left:50%;top:45%;width:5px;height:5px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);pointer-events:none}
+.footer { margin-top:10px;display:flex;justify-content:space-between;color:#5f7690;font-size:9px; }.footer a{color:#7f9ab6;text-decoration:none}
+body.is-finished .app::before,body.is-finished .app::after,body.is-finished .stage-banner::after,body.is-finished .world-canvas::before,body.is-finished .route-path,body.is-finished .state-ring,body.is-finished .taxonomy-orbit,body.is-finished .shipment,body.is-finished .probe,body.is-finished .hybrid-core,body.is-finished .hybrid-core::before,body.is-finished .hybrid-core::after,body.is-finished .change-pulse { animation-play-state:paused!important; }
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<main class="app">
+  <header class="topbar">
+    <div><div class="eyebrow">World modeling replay · v20 logistics scene</div><h1>从业务意图到可执行物流世界</h1><p class="lede">主角不是文件，而是一个逐步获得边界、角色、实体、状态、动作、约束、事实与规则的物流世界。文件只在右侧作为世界模型已经落盘的技术凭证。</p></div>
+    <div class="world-equation"><strong>W = (Entities, States, Actions, Rules, Observations)</strong><span>运营分析-8767b626 · 80 分 31 秒后封装为可运行沙箱</span></div>
+  </header>
+  <section class="controls" aria-label="播放控制">
+    <button id="prevBtn" class="control-btn" type="button">← 上一阶段</button><button id="playBtn" class="control-btn primary" type="button">暂停</button><button id="nextBtn" class="control-btn" type="button">下一动作 →</button><button id="restartBtn" class="control-btn" type="button">重新建模</button>
+    <label class="sr-only" for="speedSelect">播放速度</label><select id="speedSelect" class="speed-select" aria-label="播放速度"><option value=".75">0.75×</option><option value="1" selected>1×</option><option value="1.5">1.5×</option><option value="2">2×</option></select>
+    <div class="progress-wrap"><div class="progress-meta"><span id="progressLabel">准备</span><span id="liveStatus" class="live-status" aria-live="polite">正在建立世界边界</span></div><div class="progress-track"><div id="progressFill" class="progress-fill"></div></div></div>
+  </section>
+  <nav id="stageRail" class="stage-rail" aria-label="世界建模阶段"></nav>
+  <section class="theatre" aria-label="物流世界建模过程">
+    <div class="stage-banner"><div class="stage-id"><span id="stepBadge" class="step-badge"></span><span id="stageTitle" class="stage-title"></span></div><div id="principle" class="principle"></div><div id="stageTime" class="stage-time"></div></div>
+    <div class="world-layout">
+      <aside class="inherit-panel"><div class="panel-label">Inherited world · 继承的世界</div><div id="inheritList" class="inherit-list"></div><div id="formulaBox" class="formula-box"></div><div class="inherit-note">这些是上一阶段已经赋予世界的语义能力，不是待加工文件列表。</div></aside>
+      <section class="world-main"><div class="world-head"><span>LIVE WORLD MODEL</span><span>scene · 运营分析-8767b626</span></div>
+        <div id="worldCanvas" class="world-canvas" role="img" aria-label="持续生长的物流世界模型">
+          <div class="world-layer" data-layer="boundary"><div class="world-boundary-ring"></div></div>
+          <div class="world-layer" data-layer="roles"><div class="role r1">仓库经理</div><div class="role r2">区域运营</div><div class="role r3">运营分析师</div></div>
+          <div class="world-layer" data-layer="entities"><svg class="network-svg" viewBox="0 0 700 500" preserveAspectRatio="none"><path class="route-path" d="M155 150 C260 130 300 210 350 240"/><path class="route-path" d="M350 240 C445 180 505 150 545 145"/><path class="route-path" d="M155 350 C250 330 300 270 350 240"/><path class="route-path" d="M350 240 C440 270 485 335 545 350"/></svg><div class="entity-node warehouse"><b>ENTITY</b>仓库</div><div class="entity-node outlet"><b>ENTITY</b>网点</div><div class="entity-node carrier"><b>ENTITY</b>承运商</div><div class="entity-node customer"><b>ENTITY</b>客户</div><div class="entity-node hub"><b>ENTITY</b>运单 / 线路</div></div>
+          <div class="world-layer" data-layer="states"><div class="state-ring"></div><div class="state-label">76 STATES · 运单 20 态</div></div>
+          <div class="world-layer" data-layer="actions"><div class="action-beam a1"></div><div class="action-beam a2"></div><div class="action-beam a3"></div><span class="action-name n1">dispatch()</span><span class="action-name n2">trace()</span><span class="action-name n3">claim()</span></div>
+          <div class="world-layer" data-layer="repair"><div id="repairAlert" class="repair-alert">⚠ 非法状态跃迁：incident_closed 不存在</div></div>
+          <div class="world-layer" data-layer="taxonomy"><div class="taxonomy-orbit"></div><span class="axis x1">区域</span><span class="axis x2">时间</span><span class="axis x3">产品</span><span class="axis x4">状态</span><span class="axis x5">指标 · …15维</span></div>
+          <div class="world-layer" data-layer="constraints"><div class="constraint-stack"><span class="constraint">× 9 illegal</span><span class="constraint ok">✓ 6 required</span><span class="constraint">↔ 8 mutex</span></div></div>
+          <div class="world-layer" data-layer="schema"><div class="schema-deck">''' + ''.join(f'<span class="table-tile">{name}</span>' for name in ("waybill","route","warehouse","carrier","delivery","temperature","quality","cost","SLA","claim","event","… +53")) + r'''</div><div class="schema-count">WORLD STATE → 64 TABLES</div></div>
+          <div class="world-layer" data-layer="data"><i class="shipment s1"></i><i class="shipment s2"></i><i class="shipment s3"></i><div class="fact-counter">36,101 instantiated facts</div></div>
+          <div class="world-layer" data-layer="dwh"><div class="probe dwh">STEP 5.1<br><strong>数仓任务</strong><br>观察世界状态<br>555</div></div>
+          <div class="world-layer" data-layer="rules"><div class="policy-cloud"><div class="policy"><b>RULE</b>线路 SLA</div><div class="policy"><b>RULE</b>价格政策</div><div class="policy"><b>RULE</b>理赔规范</div></div></div>
+          <div class="world-layer" data-layer="docs"><div class="doc-stack"><div class="doc-page"></div><div class="doc-page"></div><div class="doc-page">制度记忆<i></i><i></i><i></i>65 docs</div></div></div>
+          <div class="world-layer" data-layer="kb"><div class="probe kb">STEP 5.2<br><strong>知识任务</strong><br>观察世界规则<br>465</div></div>
+          <div class="world-layer" data-layer="hybrid"><div class="hybrid-core"><div><strong>500</strong>STEP 5.3<br>混合任务<br>STATE × RULES</div></div></div>
+          <div class="world-layer" data-layer="freeze"><div class="freeze-shell"></div></div>
+          <div class="world-layer" data-layer="runner"><div class="agent-beam"></div><div class="agent-node">AGENT<br>Observe / Act</div></div>
+          <div class="world-caption"><i class="change-pulse"></i><strong id="worldChangeTitle">世界尚未变化</strong><span id="worldChangeDetail">等待第一项建模动作</span></div>
+          <div id="endOverlay" class="end-overlay" role="status" aria-live="polite"><div id="completionParticles"></div><div class="end-seal"><div class="end-check">✓</div><div class="end-kicker">WORLD MODEL SEALED</div><div class="end-title">沙箱生成完成</div><div class="end-id">sandbox_id · 57a3cf55-3bb7-4241-b314-8d6ace6d6c6c</div><div class="end-metrics"><div class="end-metric"><strong>36,101</strong>世界事实</div><div class="end-metric"><strong>65</strong>制度文档</div><div class="end-metric"><strong>3 类</strong>观察任务</div></div><button id="endRestartBtn" class="end-restart" type="button">重新观察建模过程</button></div></div>
+        </div>
+      </section>
+      <aside class="build-panel"><div class="panel-label">World gains · 本步让世界获得</div><div id="gainList" class="gain-list"></div><div id="capability" class="capability"><p></p></div><div class="evidence-label">落盘凭证 · 技术实现（非世界本体）</div><div id="evidenceList" class="evidence-list"></div></aside>
+      <div id="transitionCurtain" class="transition-curtain"><div id="transitionMessage" class="transition-message"></div></div>
+    </div>
+    <div class="handoff"><span class="handoff-symbol">⟶</span><span id="handoffText"></span></div>
+  </section>
+  <footer class="footer"><span>世界建模视角：任务是对世界状态或规则的观察；文件只是模型持久化的载体。</span><span><a href="https://github.com/renjunxiang/sf_my_sandbox/tree/758917009d0ebb0fb36561197171f6abdd279d96/.runtime_state/v20/scenes/运营分析-8767b626">v20 真实场景证据</a> · 不展示任务正文、hidden gold、SQL 或数据库行</span></footer>
+</main>
+<script id="stageData" type="application/json">__STAGE_DATA__</script><script id="worldData" type="application/json">__WORLD_DATA__</script>
+<script>
+(()=>{'use strict';
+const stages=JSON.parse(document.getElementById('stageData').textContent),phases=JSON.parse(document.getElementById('worldData').textContent);
+const navLabels={intake:'准备',prd:'0 · PRD',factor:'1 · Factor',taxonomy:'2 · 情境',schema:'3.1 · Schema',data:'4.1 · 数据',dwh_tasks:'5.1 · 数仓任务',catalog:'3.2 · 规则',documents:'4.2 · 文档',kb_tasks:'5.2 · 知识任务',hybrid:'5.3 · 混合任务',freeze:'冻结',runner:'交付'};
+const els={rail:document.getElementById('stageRail'),step:document.getElementById('stepBadge'),title:document.getElementById('stageTitle'),principle:document.getElementById('principle'),time:document.getElementById('stageTime'),inherit:document.getElementById('inheritList'),formula:document.getElementById('formulaBox'),gains:document.getElementById('gainList'),capability:document.getElementById('capability'),evidence:document.getElementById('evidenceList'),handoff:document.getElementById('handoffText'),progress:document.getElementById('progressFill'),progressLabel:document.getElementById('progressLabel'),live:document.getElementById('liveStatus'),play:document.getElementById('playBtn'),prev:document.getElementById('prevBtn'),next:document.getElementById('nextBtn'),restart:document.getElementById('restartBtn'),endRestart:document.getElementById('endRestartBtn'),speed:document.getElementById('speedSelect'),curtain:document.getElementById('transitionCurtain'),transitionMessage:document.getElementById('transitionMessage'),world:document.getElementById('worldCanvas'),changeTitle:document.getElementById('worldChangeTitle'),changeDetail:document.getElementById('worldChangeDetail'),end:document.getElementById('endOverlay'),particles:document.getElementById('completionParticles')};
+const state={stage:0,op:-1,playing:true,speed:1,timer:null,transitioning:false,finished:false};
+const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+function renderRail(){els.rail.innerHTML=stages.map((s,i)=>`<button type="button" class="stage-tab ${i<state.stage?'done':i===state.stage?'current':''}" data-index="${i}" aria-current="${i===state.stage?'step':'false'}">${esc(navLabels[s.key]||s.step)}<small>${esc(s.duration)}</small></button>`).join('');els.rail.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>jumpTo(Number(b.dataset.index))));}
+function visibleLayers(){const set=new Set();for(let i=0;i<state.stage;i++)phases[i].layers.forEach(x=>{if(x&&x!=='repair')set.add(x)});for(let i=0;i<=state.op;i++){const x=phases[state.stage].layers[i];if(x)set.add(x)}return set;}
+function renderWorld(){const active=phases[state.stage].layers[state.op]||'';const visible=visibleLayers();els.world.querySelectorAll('.world-layer').forEach(layer=>{const key=layer.dataset.layer;layer.classList.toggle('visible',visible.has(key));layer.classList.toggle('current',key===active)});const repair=els.world.querySelector('[data-layer="repair"]');if(state.stage===2&&state.op>=2&&state.op<=3){repair.classList.add('visible');document.getElementById('repairAlert').classList.toggle('resolved',state.op===3);document.getElementById('repairAlert').textContent=state.op===3?'✓ 非法跃迁已修复，世界重新闭合':'⚠ 非法状态跃迁：incident_closed 不存在'}else repair.classList.remove('visible');}
+function renderStage(){const s=stages[state.stage],p=phases[state.stage],complete=state.op>=s.operations.length-1;els.step.textContent=s.key==='dwh_tasks'?'Step 5.1 · 数仓任务':s.key==='hybrid'?'Step 5.3 · 混合任务':`${s.step} · ${s.branch}`;els.title.textContent=s.title;els.principle.textContent=p.principle;els.time.innerHTML=`${esc(s.clock)}<strong>${esc(s.duration)}</strong>`;els.inherit.innerHTML=p.inherited.map((x,i)=>`<div class="concept-chip" style="animation-delay:${i*.08}s">${esc(x)}</div>`).join('');els.formula.textContent=p.formula;els.gains.innerHTML=p.gains.map((gain,i)=>{const phase=i<state.op?'done':i===state.op?'active':'';const marker=i<state.op?'✓':i===state.op?'●':i+1;const op=s.operations[i];return `<div class="gain-step ${phase}"><span class="gain-marker">${marker}</span><div><div class="gain-title">${esc(gain)}</div><div class="gain-op">${esc(op.label)}</div><div class="gain-result">${esc(op.outcome)}</div></div></div>`}).join('');els.capability.classList.toggle('ready',complete);els.capability.querySelector('p').textContent=complete?p.capability:'世界能力正在形成；右侧动作完成后才会成为下一阶段可继承的能力。';const outputs=s.outputs.filter(x=>x.produced_by<=state.op);els.evidence.innerHTML=outputs.map(x=>`<span class="evidence-chip">${esc(x.name)}</span>`).join('')||'<span class="evidence-chip">尚未落盘</span>';els.handoff.innerHTML=complete?`<strong>世界能力交付：</strong>${esc(s.handoff)}`:'<strong>建模中：</strong>主画布正在改变世界的语义结构；文件只记录变化结果。';if(state.op<0){els.changeTitle.textContent='继承上一阶段的世界';els.changeDetail.textContent='等待本阶段第一项建模动作'}else{els.changeTitle.textContent=p.gains[state.op];els.changeDetail.textContent=s.operations[state.op].detail}const frac=(state.op+1)/Math.max(s.operations.length,1),total=((state.stage+Math.max(0,frac))/stages.length)*100;els.progress.style.width=`${state.finished?100:Math.min(100,total)}%`;els.progressLabel.textContent=state.finished?'完成 · 13/13':`${navLabels[s.key]||s.step} · ${state.stage+1}/${stages.length}`;els.live.textContent=state.finished?'✓ 沙箱生成完成':complete?'本阶段世界能力已形成，准备交付':state.op<0?'正在继承世界状态':`正在建模：${p.gains[state.op]}`;els.prev.disabled=state.finished||(state.stage===0&&state.op<0);els.next.disabled=state.finished||state.transitioning;els.play.disabled=state.finished;els.play.textContent=state.finished?'已结束':state.playing?'暂停':'继续播放';renderWorld();renderRail();}
+function clearTimer(){if(state.timer!==null){clearTimeout(state.timer);state.timer=null}}
+function schedule(){clearTimer();if(!state.playing||state.transitioning||state.finished)return;const s=stages[state.stage],delay=(state.op<0?500:s.replay_ms)/state.speed;state.timer=setTimeout(tick,delay)}
+function tick(){const s=stages[state.stage];if(state.op<s.operations.length-1){state.op++;renderStage();schedule();return}if(state.stage===stages.length-1){finishReplay();return}animateHandoff(state.stage+1)}
+function animateHandoff(nextIndex){if(state.transitioning||state.finished)return;state.transitioning=true;clearTimer();const current=stages[state.stage];els.transitionMessage.textContent=current.handoff;els.curtain.classList.add('show');const source=els.capability.getBoundingClientRect(),target=els.inherit.getBoundingClientRect(),sx=source.left+source.width/2,sy=source.top+source.height/2,tx=target.left+target.width/2,ty=target.top+60;const animations=[];if(!reduced){const orb=document.createElement('i');orb.className='transfer-orb';orb.style.left=`${sx}px`;orb.style.top=`${sy}px`;document.body.appendChild(orb);const a=orb.animate([{transform:'translate(0,0) scale(.5)',opacity:0},{transform:`translate(${(tx-sx)*.45}px,${(ty-sy)*.15-45}px) scale(1.5)`,opacity:1,offset:.45},{transform:`translate(${tx-sx}px,${ty-sy}px) scale(.25)`,opacity:.1}],{duration:900/state.speed,easing:'cubic-bezier(.28,.1,.2,1)',fill:'forwards'});animations.push(a.finished.catch(()=>{}).finally(()=>orb.remove()));for(let i=0;i<12;i++){const spark=document.createElement('i');spark.className='transfer-spark';spark.style.left=`${sx}px`;spark.style.top=`${sy}px`;document.body.appendChild(spark);const spread=(i-5.5)*5,sa=spark.animate([{transform:'translate(0,0)',opacity:0},{opacity:1,offset:.2},{transform:`translate(${tx-sx+spread}px,${ty-sy+Math.sin(i)*28}px) scale(.2)`,opacity:0}],{duration:(700+i*22)/state.speed,delay:i*24/state.speed,easing:'ease-out',fill:'forwards'});animations.push(sa.finished.catch(()=>{}).finally(()=>spark.remove()))}}Promise.all(animations).then(()=>setTimeout(()=>{state.stage=nextIndex;state.op=-1;state.transitioning=false;els.curtain.classList.remove('show');renderStage();schedule()},reduced?60:170/state.speed))}
+function completionBurst(){if(reduced)return;els.particles.innerHTML='';for(let i=0;i<30;i++){const dot=document.createElement('i');dot.className='completion-particle';els.particles.appendChild(dot);const angle=(Math.PI*2*i)/30,distance=110+(i%6)*18;dot.animate([{transform:'translate(-50%,-50%) scale(.2)',opacity:0},{opacity:1,offset:.15},{transform:`translate(calc(-50% + ${Math.cos(angle)*distance}px),calc(-50% + ${Math.sin(angle)*distance}px)) scale(.1)`,opacity:0}],{duration:900+(i%5)*90,delay:(i%6)*28,easing:'cubic-bezier(.2,.7,.2,1)',fill:'forwards'})}}
+function finishReplay(){clearTimer();state.finished=true;state.playing=false;state.transitioning=false;document.body.classList.add('is-finished');els.curtain.classList.remove('show');els.end.classList.add('show');completionBurst();renderStage()}
+function jumpTo(index){clearTimer();state.stage=Math.max(0,Math.min(stages.length-1,index));state.op=-1;state.transitioning=false;state.finished=false;document.body.classList.remove('is-finished');els.end.classList.remove('show');els.particles.innerHTML='';renderStage();schedule()}
+function restart(){state.playing=true;jumpTo(0)}
+els.play.addEventListener('click',()=>{if(state.finished)return;state.playing=!state.playing;renderStage();schedule()});els.prev.addEventListener('click',()=>jumpTo(state.stage-1));els.next.addEventListener('click',()=>{const s=stages[state.stage];if(state.op<s.operations.length-1){state.op++;renderStage();schedule()}else if(state.stage<stages.length-1)animateHandoff(state.stage+1);else finishReplay()});els.restart.addEventListener('click',restart);els.endRestart.addEventListener('click',restart);els.speed.addEventListener('change',()=>{state.speed=Number(els.speed.value);schedule()});document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')els.next.click();if(e.key==='ArrowLeft')els.prev.click();if(e.key===' '&&!state.finished){e.preventDefault();els.play.click()}});renderStage();requestAnimationFrame(schedule);
+})();
+</script></body></html>
+'''
+
+
 def render_html() -> str:
-    return HTML_TEMPLATE.replace("__STAGE_DATA__", _safe_json([asdict(stage) for stage in STAGES]))
+    return (
+        WORLD_HTML_TEMPLATE.replace("__STAGE_DATA__", _safe_json([asdict(stage) for stage in STAGES]))
+        .replace("__WORLD_DATA__", _safe_json([asdict(phase) for phase in WORLD_PHASES]))
+    )
 
 
 def build_parser() -> argparse.ArgumentParser:

@@ -3,392 +3,230 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>物流沙箱生成实录 · 产物如何逐步长出来</title>
+<title>物流世界建模实录 · 从业务意图到可执行沙箱</title>
 <style>
 :root {
   color-scheme: dark;
-  --bg: #07101f;
-  --panel: #0d192b;
-  --panel-2: #111f34;
-  --line: #263a56;
-  --text: #eef5ff;
-  --muted: #9eb0c8;
-  --blue: #60a5fa;
-  --purple: #b18cff;
-  --green: #51d69a;
-  --amber: #f4bf5f;
-  --red: #ff7185;
-  --cyan: #54d4e8;
+  --void:#030812; --deep:#07111f; --panel:#0b1728; --panel2:#101f34;
+  --line:#263c59; --text:#edf6ff; --muted:#91a7c1; --cyan:#4de1ff;
+  --blue:#5b9dff; --violet:#ae7cff; --green:#4fe0a0; --amber:#ffc562; --red:#ff657d;
 }
-* { box-sizing: border-box; }
-html { background: var(--bg); }
-body {
-  margin: 0;
-  min-width: 1180px;
-  color: var(--text);
-  background:
-    radial-gradient(circle at 15% 0%, rgba(96,165,250,.12), transparent 32%),
-    radial-gradient(circle at 85% 8%, rgba(177,140,255,.10), transparent 30%),
-    var(--bg);
-  font-family: Inter, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
-}
-button, select { font: inherit; }
-button:focus-visible, select:focus-visible { outline: 3px solid rgba(96,165,250,.55); outline-offset: 2px; }
-.app { width: 100%; min-height: 100vh; padding: 24px 30px 22px; }
-.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
-.topbar { display: flex; align-items: flex-start; justify-content: space-between; gap: 30px; }
-.eyebrow { color: var(--cyan); font-size: 12px; letter-spacing: .16em; text-transform: uppercase; margin-bottom: 7px; }
-h1 { margin: 0; font-size: 30px; font-weight: 600; letter-spacing: -.02em; }
-.lede { margin: 8px 0 0; color: var(--muted); max-width: 820px; font-size: 14px; line-height: 1.65; }
-.run-fact { min-width: 280px; padding: 12px 15px; background: rgba(17,31,52,.8); border: 1px solid var(--line); border-radius: 12px; }
-.run-fact strong { display: block; font-size: 14px; margin-bottom: 4px; }
-.run-fact span { color: var(--muted); font-size: 12px; }
-.controls { margin-top: 18px; display: flex; align-items: center; gap: 8px; }
-.control-btn, .speed-select {
-  border: 1px solid var(--line); color: var(--text); background: var(--panel-2);
-  border-radius: 8px; min-height: 36px; padding: 7px 12px; cursor: pointer;
-}
-.control-btn.primary { background: #eaf3ff; color: #091321; border-color: #eaf3ff; min-width: 92px; }
-.control-btn:hover, .speed-select:hover { border-color: #4d6b90; }
-.control-btn:disabled { opacity: .38; cursor: default; }
-.progress-wrap { flex: 1; margin-left: 10px; }
-.progress-meta { display: flex; justify-content: space-between; color: var(--muted); font-size: 11px; margin-bottom: 6px; }
-.progress-track { height: 4px; background: #1c2b42; border-radius: 99px; overflow: hidden; }
-.progress-fill { height: 100%; width: 0; background: linear-gradient(90deg, var(--blue), var(--purple)); transition: width .35s ease; }
-.stage-rail { margin-top: 16px; display: grid; grid-template-columns: repeat(13, 1fr); gap: 5px; }
-.stage-tab { border: 0; background: transparent; color: #70839d; padding: 8px 3px 6px; cursor: pointer; border-top: 2px solid #24364e; font-size: 10px; white-space: nowrap; }
-.stage-tab.done { color: #a9bad0; border-color: #446488; }
-.stage-tab.current { color: var(--text); border-color: var(--blue); background: linear-gradient(180deg, rgba(96,165,250,.10), transparent); }
-.stage-tab small { display: block; color: inherit; opacity: .8; margin-top: 3px; font-size: 9px; }
-.buffer-bar { margin: 10px 0; min-height: 44px; display: flex; align-items: center; gap: 9px; color: var(--muted); font-size: 11px; }
-.buffer-label { letter-spacing: .08em; text-transform: uppercase; margin-right: 3px; }
-.memory-chip, .buffer-slot { padding: 7px 10px; border-radius: 8px; border: 1px dashed #35506f; background: rgba(11,24,41,.75); transition: .3s ease; }
-.memory-chip.ready { color: #c8d9ec; border-style: solid; border-color: #456b91; }
-.buffer-slot.ready { color: var(--text); border-style: solid; border-color: #6176a4; background: rgba(177,140,255,.09); }
-.buffer-slot.empty::after { content: "等待产物"; color: #5f728c; margin-left: 6px; }
-.theatre { position: relative; }
-.stage-banner { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 13px 16px; background: rgba(13,25,43,.76); border: 1px solid var(--line); border-bottom: 0; border-radius: 14px 14px 0 0; }
-.stage-identity { display: flex; align-items: baseline; gap: 13px; }
-.step-badge { color: var(--cyan); font-size: 12px; font-weight: 700; letter-spacing: .08em; }
-.stage-title { font-size: 19px; font-weight: 600; }
-.stage-time { color: var(--muted); font-size: 12px; text-align: right; }
-.stage-time strong { color: var(--text); font-weight: 600; margin-left: 8px; }
-.theatre-grid {
-  position: relative; display: grid; grid-template-columns: minmax(285px, .9fr) 58px minmax(390px, 1.2fr) 58px minmax(300px, .95fr);
-  min-height: 480px; background: rgba(7,16,31,.55); border: 1px solid var(--line); border-radius: 0 0 14px 14px; overflow: hidden;
-}
-.zone { padding: 17px 15px 16px; min-width: 0; }
-.zone-head { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(38,58,86,.75); padding-bottom: 10px; margin-bottom: 12px; }
-.zone-label { font-size: 11px; letter-spacing: .14em; color: var(--muted); }
-.zone-count { font-size: 11px; color: #6f829b; }
-.arrow-lane { position: relative; display: flex; align-items: center; justify-content: center; }
-.arrow-lane::before { content: ""; width: 38px; height: 2px; background: #31506f; }
-.arrow-lane::after { content: ""; border-left: 8px solid #49759d; border-top: 5px solid transparent; border-bottom: 5px solid transparent; }
-.arrow-pulse { position: absolute; width: 8px; height: 8px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 13px var(--cyan); animation: pulseAcross 1.45s linear infinite; }
-@keyframes pulseAcross { from { transform: translateX(-20px); opacity: 0; } 20%,80% { opacity: 1; } to { transform: translateX(20px); opacity: 0; } }
-.artifact-list { display: grid; gap: 9px; align-content: start; }
-.artifact-card { position: relative; background: var(--panel); border: 1px solid var(--line); border-left: 3px solid var(--blue); border-radius: 10px; padding: 10px 11px; overflow: hidden; }
-.artifact-card.tone-purple { border-left-color: var(--purple); }
-.artifact-card.tone-green { border-left-color: var(--green); }
-.artifact-card.tone-amber { border-left-color: var(--amber); }
-.artifact-card.entering { animation: artifactBirth .42s cubic-bezier(.2,.8,.2,1) both; }
-@keyframes artifactBirth { from { opacity: 0; transform: translateY(14px) scale(.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
-.artifact-top { display: flex; justify-content: space-between; align-items: start; gap: 9px; }
-.artifact-name { font-size: 12px; font-weight: 650; overflow-wrap: anywhere; }
-.artifact-kind { color: var(--muted); font-size: 9px; border: 1px solid #2a405d; border-radius: 99px; padding: 2px 6px; white-space: nowrap; }
-.artifact-meta { color: #bed0e6; font-size: 11px; margin-top: 4px; }
-.artifact-preview { margin-top: 8px; padding: 7px 8px; background: #091525; border-radius: 6px; color: #849bb7; font: 10px/1.55 ui-monospace, SFMono-Regular, Consolas, monospace; }
-.artifact-preview div::before { content: "› "; color: #4c6c91; }
-.empty-output { display: grid; place-items: center; min-height: 245px; color: #5e718a; text-align: center; font-size: 12px; border: 1px dashed #263b57; border-radius: 10px; }
-.empty-output strong { display: block; color: #8195ad; font-size: 13px; margin-bottom: 5px; }
-.operation-list { display: grid; gap: 7px; }
-.operation { display: grid; grid-template-columns: 30px 1fr auto; gap: 9px; align-items: start; padding: 10px; border-radius: 9px; border: 1px solid transparent; color: #667a94; transition: .32s ease; }
-.operation.active { color: var(--text); background: rgba(96,165,250,.08); border-color: rgba(96,165,250,.36); transform: translateX(3px); }
-.operation.done { color: #a7b9cf; }
-.operation.error.active, .operation.error.done { background: rgba(255,113,133,.08); border-color: rgba(255,113,133,.32); }
-.operation.repair.active, .operation.repair.done { background: rgba(244,191,95,.08); border-color: rgba(244,191,95,.32); }
-.operation.success.active, .operation.success.done { background: rgba(81,214,154,.08); border-color: rgba(81,214,154,.30); }
-.op-marker { width: 26px; height: 26px; border: 1px solid #30455f; border-radius: 50%; display: grid; place-items: center; font-size: 10px; color: #6f8299; }
-.operation.active .op-marker { border-color: var(--blue); color: var(--blue); box-shadow: 0 0 0 4px rgba(96,165,250,.09); }
-.operation.done .op-marker { border-color: var(--green); color: var(--green); }
-.operation.error .op-marker { border-color: var(--red); color: var(--red); }
-.operation.repair .op-marker { border-color: var(--amber); color: var(--amber); }
-.op-label { font-size: 12px; font-weight: 650; margin-top: 1px; }
-.op-detail { font-size: 10px; line-height: 1.5; margin-top: 3px; color: #8295ad; }
-.op-outcome { align-self: center; min-width: 94px; text-align: right; color: #8095ad; font-size: 10px; }
-.operation.active .op-outcome { color: #d8e7f8; }
-.operation.error .op-outcome { color: var(--red); }
-.operation.repair .op-outcome { color: var(--amber); }
-.operation.success .op-outcome, .operation.done.success .op-outcome { color: var(--green); }
-.handoff-strip { margin-top: 10px; min-height: 52px; display: flex; align-items: center; gap: 11px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 10px; background: rgba(13,25,43,.8); }
-.handoff-icon { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: rgba(84,212,232,.1); color: var(--cyan); flex: 0 0 auto; }
-.handoff-text { font-size: 12px; color: #bed0e4; line-height: 1.45; }
-.handoff-text strong { color: var(--text); }
-.transition-curtain { position: absolute; inset: 0; z-index: 8; display: grid; place-items: center; pointer-events: none; background: rgba(7,16,31,.60); opacity: 0; transition: opacity .2s; }
-.transition-curtain.show { opacity: 1; }
-.transition-message { max-width: 680px; padding: 15px 22px; border-radius: 12px; border: 1px solid #3a5877; background: #0d1b2e; box-shadow: 0 20px 60px rgba(0,0,0,.45); color: #dceafb; font-size: 13px; text-align: center; }
-.cargo-clone { position: fixed; z-index: 99; margin: 0; pointer-events: none; box-shadow: 0 15px 45px rgba(0,0,0,.48); }
-.footer { margin-top: 12px; display: flex; justify-content: space-between; align-items: center; gap: 20px; color: #71849d; font-size: 10px; }
-.footer a { color: #8fa8c4; text-decoration: none; }
-.footer a:hover { text-decoration: underline; }
-.live-status { color: var(--cyan); }
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
-}
+* { box-sizing:border-box; }
+html { background:var(--void); }
+body { margin:0; min-width:1180px; color:var(--text); background:var(--void); font-family:Inter,"PingFang SC","Microsoft YaHei",system-ui,sans-serif; }
+button,select { font:inherit; }
+button:focus-visible,select:focus-visible { outline:3px solid rgba(77,225,255,.55); outline-offset:2px; }
+.sr-only { position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0; }
+.app { position:relative; min-height:100vh; padding:22px 28px 18px; overflow:hidden; isolation:isolate; background:
+  radial-gradient(circle at 13% 6%,rgba(55,128,255,.18),transparent 28%),
+  radial-gradient(circle at 86% 8%,rgba(174,124,255,.15),transparent 28%),
+  linear-gradient(180deg,#06101e 0%,#030812 100%); }
+.app::before { content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;opacity:.16;background-image:
+  linear-gradient(rgba(77,225,255,.14) 1px,transparent 1px),linear-gradient(90deg,rgba(77,225,255,.14) 1px,transparent 1px);
+  background-size:54px 54px;transform:perspective(600px) rotateX(58deg) scale(1.6) translateY(14%);transform-origin:center bottom;animation:gridDrift 14s linear infinite; }
+.app::after { content:"";position:fixed;inset:-35%;z-index:-1;pointer-events:none;background:conic-gradient(from 0deg,transparent,rgba(77,225,255,.04),transparent,rgba(174,124,255,.05),transparent);animation:auroraSpin 24s linear infinite; }
+@keyframes gridDrift { to { background-position:0 54px,54px 0; } }
+@keyframes auroraSpin { to { transform:rotate(360deg); } }
+.topbar { display:flex;justify-content:space-between;align-items:flex-start;gap:28px; }
+.eyebrow { color:var(--cyan);font-size:11px;letter-spacing:.2em;text-transform:uppercase;margin-bottom:7px;text-shadow:0 0 16px rgba(77,225,255,.55); }
+h1 { margin:0;font-size:29px;letter-spacing:-.025em;font-weight:650; }
+.lede { margin:7px 0 0;max-width:860px;color:var(--muted);font-size:13px;line-height:1.65; }
+.world-equation { min-width:310px;padding:12px 15px;border:1px solid rgba(77,225,255,.28);border-radius:12px;background:linear-gradient(135deg,rgba(77,225,255,.08),rgba(174,124,255,.07));box-shadow:inset 0 0 24px rgba(77,225,255,.035),0 10px 38px rgba(0,0,0,.2); }
+.world-equation strong { display:block;color:#dffbff;font:13px ui-monospace,SFMono-Regular,Consolas,monospace;margin-bottom:4px; }
+.world-equation span { color:var(--muted);font-size:11px; }
+.controls { margin-top:15px;display:flex;align-items:center;gap:7px; }
+.control-btn,.speed-select { min-height:34px;padding:6px 11px;border:1px solid var(--line);border-radius:8px;background:rgba(13,27,46,.88);color:var(--text);cursor:pointer; }
+.control-btn.primary { min-width:90px;color:#05101b;background:linear-gradient(135deg,#bdf6ff,#d8caff);border-color:transparent;box-shadow:0 0 24px rgba(77,225,255,.16); }
+.control-btn:disabled { opacity:.42;cursor:default;box-shadow:none; }
+.progress-wrap { flex:1;margin-left:9px; }
+.progress-meta { display:flex;justify-content:space-between;color:var(--muted);font-size:10px;margin-bottom:5px; }
+.live-status { color:var(--cyan);text-shadow:0 0 12px rgba(77,225,255,.35); }
+.progress-track { height:4px;background:#15263c;border-radius:10px;overflow:hidden; }
+.progress-fill { height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--blue),var(--violet));box-shadow:0 0 14px var(--cyan);transition:width .35s ease; }
+.stage-rail { margin-top:13px;display:grid;grid-template-columns:repeat(13,1fr);gap:4px; }
+.stage-tab { border:0;border-top:2px solid #1f334d;background:transparent;color:#667d98;padding:7px 2px 6px;cursor:pointer;font-size:9px;white-space:nowrap; }
+.stage-tab small { display:block;margin-top:3px;font-size:8px;opacity:.72; }
+.stage-tab.done { color:#9bb1c9;border-color:#42688c; }
+.stage-tab.current { color:var(--text);border-color:var(--cyan);background:linear-gradient(180deg,rgba(77,225,255,.12),transparent);text-shadow:0 0 10px rgba(77,225,255,.3); }
+.theatre { position:relative;margin-top:11px;border:1px solid rgba(60,91,128,.75);border-radius:15px;overflow:hidden;background:rgba(4,11,21,.68);box-shadow:0 24px 80px rgba(0,0,0,.34),inset 0 1px rgba(255,255,255,.025); }
+.stage-banner { position:relative;overflow:hidden;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:20px;min-height:58px;padding:11px 16px;border-bottom:1px solid var(--line);background:linear-gradient(90deg,rgba(13,28,48,.94),rgba(8,18,32,.88)); }
+.stage-banner::after { content:"";position:absolute;inset:0;width:32%;background:linear-gradient(90deg,transparent,rgba(77,225,255,.10),transparent);transform:skewX(-20deg);animation:bannerScan 3.8s ease-in-out infinite; }
+@keyframes bannerScan { 0%,20% { transform:translateX(-160%) skewX(-20deg); } 75%,100% { transform:translateX(430%) skewX(-20deg); } }
+.stage-id { position:relative;z-index:1; }
+.step-badge { color:var(--cyan);font-size:11px;letter-spacing:.09em;font-weight:700; }
+.stage-title { display:block;margin-top:3px;font-size:18px;font-weight:650; }
+.principle { position:relative;z-index:1;text-align:center;color:#bed2e8;font-size:12px; }
+.principle::before { content:"世界建模原则";display:block;color:#64809f;font-size:8px;letter-spacing:.18em;margin-bottom:3px; }
+.stage-time { position:relative;z-index:1;text-align:right;color:var(--muted);font-size:10px; }
+.stage-time strong { display:block;color:var(--text);font-size:12px;margin-top:4px; }
+.world-layout { position:relative;display:grid;grid-template-columns:225px minmax(600px,1fr) 310px;min-height:590px; }
+.inherit-panel,.build-panel { padding:15px 14px;background:rgba(8,18,32,.64); }
+.inherit-panel { border-right:1px solid rgba(38,60,89,.7); }
+.build-panel { border-left:1px solid rgba(38,60,89,.7); }
+.panel-label { color:#7087a3;font-size:9px;letter-spacing:.16em;text-transform:uppercase;margin-bottom:10px; }
+.inherit-list { display:grid;gap:8px; }
+.concept-chip { position:relative;padding:10px 10px 10px 28px;border:1px solid #263f5f;border-radius:9px;background:linear-gradient(135deg,rgba(22,43,69,.72),rgba(9,22,39,.72));color:#c3d5e8;font-size:11px;line-height:1.4;animation:conceptIn .45s ease both; }
+.concept-chip::before { content:"";position:absolute;left:11px;top:15px;width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 12px var(--cyan); }
+@keyframes conceptIn { from { opacity:0;transform:translateX(-12px); } to { opacity:1;transform:none; } }
+.formula-box { margin-top:13px;padding:11px;border-left:2px solid var(--violet);background:rgba(174,124,255,.06);color:#d6c9f7;font:10px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace;overflow-wrap:anywhere; }
+.inherit-note { margin-top:12px;color:#6f86a1;font-size:10px;line-height:1.55; }
+.world-main { position:relative;padding:14px 15px 15px;min-width:0; }
+.world-head { display:flex;align-items:center;justify-content:space-between;margin-bottom:9px; }
+.world-head span:first-child { color:var(--cyan);font-size:10px;letter-spacing:.18em;text-shadow:0 0 12px rgba(77,225,255,.4); }
+.world-head span:last-child { color:#647d99;font-size:9px; }
+.world-canvas { position:relative;height:500px;overflow:hidden;border:1px solid #294363;border-radius:14px;background:
+  radial-gradient(circle at 50% 48%,rgba(40,114,182,.18),transparent 29%),
+  linear-gradient(rgba(54,100,145,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(54,100,145,.08) 1px,transparent 1px),
+  linear-gradient(180deg,#071525,#040c17);background-size:auto,35px 35px,35px 35px,auto;box-shadow:inset 0 0 80px rgba(0,0,0,.48),0 14px 44px rgba(0,0,0,.25); }
+.world-canvas::before { content:"";position:absolute;inset:-45%;background:conic-gradient(from 0deg,transparent,rgba(77,225,255,.055),transparent,rgba(174,124,255,.06),transparent);animation:worldAura 13s linear infinite; }
+@keyframes worldAura { to { transform:rotate(360deg); } }
+.world-caption { position:absolute;left:14px;bottom:12px;right:14px;z-index:30;display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid rgba(77,225,255,.2);border-radius:9px;background:rgba(3,10,19,.84);backdrop-filter:blur(8px); }
+.change-pulse { width:8px;height:8px;border-radius:50%;background:var(--cyan);box-shadow:0 0 14px var(--cyan);animation:changePulse 1.1s ease-in-out infinite; }
+@keyframes changePulse { 50% { transform:scale(1.7);opacity:.45; } }
+.world-caption strong { color:#e6faff;font-size:11px; }
+.world-caption span { color:#91a9c4;font-size:10px; }
+.world-layer { position:absolute;inset:0;z-index:3;opacity:0;transform:scale(.96);transition:opacity .55s ease,transform .55s cubic-bezier(.2,.8,.2,1);pointer-events:none; }
+.world-layer.visible { opacity:1;transform:scale(1); }
+.world-layer.current { filter:drop-shadow(0 0 12px rgba(77,225,255,.28)); }
+.world-boundary-ring { position:absolute;left:8%;top:8%;width:84%;height:78%;border:1px solid rgba(77,225,255,.48);border-radius:47% 42% 45% 43%;box-shadow:inset 0 0 35px rgba(77,225,255,.05),0 0 32px rgba(77,225,255,.08); }
+.world-boundary-ring::before { content:"WORLD BOUNDARY · 运营分析-8767b626";position:absolute;left:9%;top:-8px;padding:2px 7px;background:#071525;color:var(--cyan);font-size:8px;letter-spacing:.12em; }
+.role { position:absolute;z-index:8;width:78px;text-align:center;color:#b9cce0;font-size:9px; }
+.role::before { content:"";display:block;width:25px;height:25px;margin:0 auto 5px;border:1px solid var(--blue);border-radius:50% 50% 42% 42%;background:radial-gradient(circle at 50% 36%,var(--blue) 0 4px,transparent 5px),linear-gradient(135deg,rgba(91,157,255,.3),transparent);box-shadow:0 0 18px rgba(91,157,255,.25); }
+.role.r1 { left:4%;top:35%; }.role.r2 { right:3%;top:37%; }.role.r3 { left:44%;top:3%; }
+.network-svg { position:absolute;inset:0;width:100%;height:100%;overflow:visible; }
+.route-path { fill:none;stroke:rgba(91,157,255,.48);stroke-width:2;stroke-dasharray:7 8;animation:routeFlow 2.6s linear infinite; }
+.route-path.knowledge { stroke:rgba(174,124,255,.42); }
+@keyframes routeFlow { to { stroke-dashoffset:-30; } }
+.entity-node { position:absolute;z-index:12;transform:translate(-50%,-50%);min-width:78px;padding:8px 9px;border:1px solid #3b6086;border-radius:10px;background:rgba(9,25,43,.94);text-align:center;color:#dcecff;font-size:10px;box-shadow:0 8px 24px rgba(0,0,0,.35),inset 0 0 18px rgba(91,157,255,.06); }
+.entity-node b { display:block;color:var(--cyan);font-size:8px;letter-spacing:.08em;margin-bottom:3px; }
+.entity-node.hub { left:50%;top:48%; }.entity-node.warehouse { left:22%;top:30%; }.entity-node.outlet { left:78%;top:29%; }.entity-node.carrier { left:22%;top:70%; }.entity-node.customer { left:78%;top:70%; }
+.state-ring { position:absolute;left:50%;top:48%;width:178px;height:178px;transform:translate(-50%,-50%);border:1px dashed rgba(79,224,160,.7);border-radius:50%;animation:stateSpin 12s linear infinite; }
+.state-ring::before,.state-ring::after { content:"运输中";position:absolute;padding:3px 6px;border-radius:8px;background:#0c2b27;color:var(--green);font-size:8px; }
+.state-ring::before { left:3px;top:22px; }.state-ring::after { content:"已签收";right:-4px;bottom:27px; }
+.state-label { position:absolute;left:50%;top:calc(48% + 103px);transform:translateX(-50%);color:var(--green);font-size:8px;letter-spacing:.12em; }
+@keyframes stateSpin { to { transform:translate(-50%,-50%) rotate(360deg); } }
+.action-beam { position:absolute;height:1px;background:linear-gradient(90deg,transparent,var(--amber),transparent);transform-origin:left center;box-shadow:0 0 8px var(--amber);animation:beamPulse 1.7s ease-in-out infinite; }
+.action-beam.a1 { left:27%;top:34%;width:175px;transform:rotate(16deg); }.action-beam.a2 { left:51%;top:49%;width:170px;transform:rotate(-27deg); }.action-beam.a3 { left:25%;top:69%;width:190px;transform:rotate(-17deg); }
+.action-name { position:absolute;color:var(--amber);font:8px ui-monospace,monospace; }.action-name.n1 { left:35%;top:31%; }.action-name.n2 { left:64%;top:43%; }.action-name.n3 { left:34%;top:67%; }
+@keyframes beamPulse { 50% { opacity:.28;filter:blur(1px); } }
+.taxonomy-orbit { position:absolute;left:50%;top:48%;width:480px;height:365px;transform:translate(-50%,-50%);border:1px dashed rgba(174,124,255,.55);border-radius:50%;animation:orbitBreath 3.2s ease-in-out infinite; }
+.axis { position:absolute;padding:3px 6px;border:1px solid rgba(174,124,255,.38);border-radius:8px;background:rgba(32,19,57,.88);color:#cfb7ff;font-size:8px; }.axis.x1{left:12%;top:14%}.axis.x2{right:9%;top:15%}.axis.x3{left:5%;bottom:15%}.axis.x4{right:7%;bottom:13%}.axis.x5{left:45%;top:5%}
+@keyframes orbitBreath { 50% { box-shadow:0 0 38px rgba(174,124,255,.14);transform:translate(-50%,-50%) scale(1.025); } }
+.constraint-stack { position:absolute;right:9%;top:51%;display:grid;gap:5px; }.constraint { padding:4px 7px;border-left:2px solid var(--red);background:rgba(70,16,30,.72);color:#ff9aaa;font-size:8px; }.constraint.ok { border-color:var(--green);background:rgba(15,61,48,.72);color:#85efbd; }
+.schema-deck { position:absolute;left:9%;bottom:12%;width:210px;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;transform:perspective(300px) rotateX(50deg);transform-origin:center bottom; }
+.table-tile { height:29px;border:1px solid rgba(91,157,255,.5);background:linear-gradient(180deg,rgba(31,72,111,.9),rgba(10,28,48,.9));box-shadow:0 5px 0 rgba(13,36,61,.9);color:#9cc8ff;font-size:6px;display:grid;place-items:center;text-align:center; }
+.schema-count { position:absolute;left:12%;bottom:5%;color:var(--blue);font-size:9px;letter-spacing:.12em; }
+.shipment { position:absolute;z-index:18;width:8px;height:8px;border-radius:50%;background:var(--cyan);box-shadow:0 0 15px var(--cyan),0 0 3px #fff;animation:shipmentMove 3.2s ease-in-out infinite; }.shipment.s2{animation-delay:-1.1s}.shipment.s3{animation-delay:-2.2s}
+@keyframes shipmentMove { 0%{left:22%;top:30%;opacity:0}12%{opacity:1}50%{left:50%;top:48%}88%{opacity:1}100%{left:78%;top:70%;opacity:0} }
+.fact-counter { position:absolute;left:43%;bottom:8%;padding:6px 9px;border:1px solid rgba(77,225,255,.35);background:rgba(4,19,31,.86);color:var(--cyan);font:9px ui-monospace,monospace;box-shadow:0 0 18px rgba(77,225,255,.1); }
+.probe { position:absolute;z-index:20;width:95px;height:95px;border:1px solid;border-radius:50%;display:grid;place-items:center;text-align:center;font-size:8px;line-height:1.4;animation:probeScan 2.4s ease-in-out infinite; }.probe.dwh{left:7%;top:43%;border-color:var(--blue);color:#9cc8ff;background:radial-gradient(circle,rgba(91,157,255,.14),transparent 66%)}.probe.kb{right:6%;top:43%;border-color:var(--violet);color:#d1baff;background:radial-gradient(circle,rgba(174,124,255,.14),transparent 66%)}
+@keyframes probeScan { 50%{box-shadow:0 0 0 16px transparent,0 0 28px currentColor;transform:scale(1.06)} }
+.policy-cloud { position:absolute;right:7%;top:9%;width:190px;display:grid;gap:5px; }.policy { padding:6px 8px;border:1px solid rgba(174,124,255,.38);border-radius:7px;background:rgba(29,18,50,.88);color:#d4c1f5;font-size:8px;box-shadow:5px 5px 0 rgba(25,15,43,.55); }.policy b{color:var(--violet);margin-right:5px}
+.doc-stack { position:absolute;right:12%;top:21%;width:128px;height:100px; }.doc-page { position:absolute;inset:0;border:1px solid #765cb0;border-radius:6px;background:linear-gradient(135deg,#251a3d,#0e1728);box-shadow:0 8px 22px rgba(0,0,0,.3); }.doc-page:nth-child(1){transform:translate(-12px,12px) rotate(-5deg)}.doc-page:nth-child(2){transform:translate(-6px,6px) rotate(-2deg)}.doc-page:nth-child(3){padding:13px 10px;color:#cfbaff;font-size:8px}.doc-page i{display:block;height:2px;margin:6px 0;background:#5b477f}
+.hybrid-core { position:absolute;left:50%;top:48%;z-index:25;width:130px;height:130px;transform:translate(-50%,-50%);border-radius:50%;display:grid;place-items:center;text-align:center;color:#f0eaff;font-size:9px;background:radial-gradient(circle,rgba(174,124,255,.46),rgba(77,225,255,.12) 38%,transparent 68%);border:1px solid rgba(211,191,255,.7);box-shadow:0 0 38px rgba(174,124,255,.33),inset 0 0 25px rgba(77,225,255,.2);animation:hybridPulse 1.8s ease-in-out infinite; }
+.hybrid-core strong { display:block;font-size:17px;margin-bottom:2px; }.hybrid-core::before,.hybrid-core::after { content:"";position:absolute;inset:-24px;border:1px solid rgba(77,225,255,.22);border-radius:50%;animation:hybridOrbit 4s linear infinite; }.hybrid-core::after{inset:-42px;border-color:rgba(174,124,255,.18);animation-direction:reverse;animation-duration:6s}
+@keyframes hybridPulse{50%{transform:translate(-50%,-50%) scale(1.06)}}@keyframes hybridOrbit{to{transform:rotate(360deg)}}
+.repair-alert { position:absolute;left:50%;top:11%;z-index:26;transform:translateX(-50%);padding:7px 11px;border:1px solid var(--red);border-radius:8px;background:rgba(62,13,26,.94);color:#ff9aac;font-size:8px;box-shadow:0 0 22px rgba(255,101,125,.24);animation:alertShake .35s ease 2; }.repair-alert.resolved { border-color:var(--green);background:rgba(11,55,42,.94);color:#83efbb; }
+@keyframes alertShake{25%{transform:translateX(calc(-50% - 4px))}75%{transform:translateX(calc(-50% + 4px))}}
+.freeze-shell { position:absolute;left:50%;top:48%;z-index:28;width:570px;height:410px;transform:translate(-50%,-50%);border:2px solid rgba(79,224,160,.72);border-radius:48% 43% 46% 42%;box-shadow:inset 0 0 58px rgba(79,224,160,.08),0 0 50px rgba(79,224,160,.14); }.freeze-shell::before { content:"SEALED WORLD · CHECKSUM VERIFIED";position:absolute;left:50%;top:-10px;transform:translateX(-50%);padding:3px 10px;background:#061421;color:var(--green);font-size:8px;letter-spacing:.14em;white-space:nowrap; }
+.agent-node { position:absolute;z-index:29;right:1%;top:42%;width:67px;height:67px;border:1px solid var(--amber);border-radius:16px;display:grid;place-items:center;text-align:center;color:var(--amber);font-size:8px;background:rgba(47,33,10,.9);box-shadow:0 0 24px rgba(255,197,98,.18); }.agent-beam { position:absolute;z-index:27;right:8%;top:49%;width:165px;height:2px;background:linear-gradient(90deg,var(--amber),transparent);box-shadow:0 0 10px var(--amber); }
+.gain-list { display:grid;gap:6px; }
+.gain-step { display:grid;grid-template-columns:25px 1fr;gap:8px;padding:8px;border:1px solid transparent;border-radius:8px;color:#617995;transition:.3s ease; }
+.gain-step.active { color:var(--text);border-color:rgba(77,225,255,.35);background:rgba(77,225,255,.065);transform:translateX(-3px); }
+.gain-step.done { color:#a8bdd3; }
+.gain-marker { width:23px;height:23px;border:1px solid #314b68;border-radius:50%;display:grid;place-items:center;font-size:8px; }
+.gain-step.active .gain-marker { color:var(--cyan);border-color:var(--cyan);box-shadow:0 0 14px rgba(77,225,255,.3); }.gain-step.done .gain-marker{color:var(--green);border-color:var(--green)}
+.gain-title { font-size:10px;font-weight:650; }.gain-op { color:#7087a1;font-size:8px;margin-top:3px;line-height:1.4; }.gain-result { color:#94abc3;font-size:8px;margin-top:3px; }
+.capability { margin-top:12px;padding:11px;border:1px solid #29425f;border-radius:10px;background:linear-gradient(135deg,rgba(20,40,65,.75),rgba(9,22,38,.75)); }
+.capability::before { content:"WORLD CAPABILITY";display:block;color:#617b99;font-size:8px;letter-spacing:.15em;margin-bottom:6px; }
+.capability p { margin:0;color:#8ca3bd;font-size:10px;line-height:1.55; }
+.capability.ready { border-color:rgba(79,224,160,.4);box-shadow:inset 0 0 25px rgba(79,224,160,.045); }.capability.ready p{color:#c3e8d7}
+.evidence-label { margin-top:12px;color:#607995;font-size:8px;letter-spacing:.14em; }
+.evidence-list { margin-top:7px;display:flex;flex-wrap:wrap;gap:5px; }
+.evidence-chip { max-width:100%;padding:4px 6px;border:1px solid #253c58;border-radius:6px;background:rgba(7,17,30,.74);color:#7991ab;font:7px ui-monospace,SFMono-Regular,Consolas,monospace;overflow-wrap:anywhere;animation:evidenceIn .35s ease both; }
+@keyframes evidenceIn{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+.handoff { min-height:44px;display:flex;align-items:center;gap:10px;padding:8px 14px;border-top:1px solid var(--line);background:rgba(9,20,34,.88);color:#a8bfd7;font-size:10px; }
+.handoff-symbol { color:var(--cyan);font-size:18px;text-shadow:0 0 14px var(--cyan); }.handoff strong{color:var(--text)}
+.transition-curtain { position:absolute;inset:58px 0 44px;z-index:60;display:grid;place-items:center;pointer-events:none;background:rgba(2,8,15,.7);backdrop-filter:blur(4px);opacity:0;transition:opacity .2s; }.transition-curtain.show{opacity:1}.transition-message{max-width:680px;padding:13px 20px;border:1px solid rgba(77,225,255,.42);border-radius:12px;background:#081829;color:#d8f4ff;font-size:11px;text-align:center;box-shadow:0 0 45px rgba(77,225,255,.12)}
+.transfer-orb,.transfer-spark { position:fixed;z-index:99;pointer-events:none;border-radius:50%;background:var(--cyan);box-shadow:0 0 18px var(--cyan),0 0 42px rgba(77,225,255,.4); }.transfer-orb{width:18px;height:18px}.transfer-spark{width:4px;height:4px}
+.end-overlay { position:absolute;inset:0;z-index:80;display:grid;place-items:center;text-align:center;background:radial-gradient(circle at 50% 45%,rgba(30,99,92,.32),rgba(3,9,17,.94) 55%);opacity:0;visibility:hidden;transition:opacity .6s ease; }.end-overlay.show{opacity:1;visibility:visible}
+.end-seal { position:relative;width:430px;padding:28px 28px 24px;border:1px solid rgba(79,224,160,.52);border-radius:18px;background:linear-gradient(145deg,rgba(10,36,38,.94),rgba(8,18,31,.96));box-shadow:0 0 80px rgba(79,224,160,.17),inset 0 0 42px rgba(79,224,160,.04); }
+.end-check { width:76px;height:76px;margin:0 auto 16px;border:2px solid var(--green);border-radius:50%;display:grid;place-items:center;color:var(--green);font-size:37px;box-shadow:0 0 0 12px rgba(79,224,160,.05),0 0 34px rgba(79,224,160,.3);animation:sealIn .75s cubic-bezier(.2,.85,.2,1) both; }
+@keyframes sealIn{from{transform:scale(.2) rotate(-90deg);opacity:0}to{transform:none;opacity:1}}
+.end-kicker { color:var(--green);font-size:9px;letter-spacing:.2em; }.end-title { margin:7px 0 5px;font-size:24px;font-weight:650; }.end-id { color:#92b5ad;font:9px ui-monospace,monospace; }.end-metrics { display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:18px 0; }.end-metric { padding:9px 5px;border-top:1px solid rgba(79,224,160,.25);color:#8eaaa7;font-size:8px; }.end-metric strong{display:block;color:#ddfff4;font-size:14px;margin-bottom:3px}.end-restart{padding:7px 14px;border:1px solid rgba(79,224,160,.5);border-radius:8px;background:rgba(79,224,160,.09);color:#cffff0;cursor:pointer}
+.completion-particle{position:absolute;left:50%;top:45%;width:5px;height:5px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);pointer-events:none}
+.footer { margin-top:10px;display:flex;justify-content:space-between;color:#5f7690;font-size:9px; }.footer a{color:#7f9ab6;text-decoration:none}
+body.is-finished .app::before,body.is-finished .app::after,body.is-finished .stage-banner::after,body.is-finished .world-canvas::before,body.is-finished .route-path,body.is-finished .state-ring,body.is-finished .taxonomy-orbit,body.is-finished .shipment,body.is-finished .probe,body.is-finished .hybrid-core,body.is-finished .hybrid-core::before,body.is-finished .hybrid-core::after,body.is-finished .change-pulse { animation-play-state:paused!important; }
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 </style>
 </head>
 <body>
 <main class="app">
   <header class="topbar">
-    <div>
-      <div class="eyebrow">Real build replay · v20 scene</div>
-      <h1>物流沙箱生成实录</h1>
-      <p class="lede">不是流程图：画面按真实顺序演示“上一步交付什么 → 本步实际做什么 → 新产物怎样逐个落盘 → 这些产物怎样进入下一步”。所有数量与修复事件来自真实场景 <strong>运营分析-8767b626</strong>。</p>
-    </div>
-    <div class="run-fact"><strong>13:15:20 → 14:35:51 · 80 分 31 秒</strong><span>v20 completed · sandbox_id 57a3cf55…6c6c</span></div>
+    <div><div class="eyebrow">World modeling replay · v20 logistics scene</div><h1>从业务意图到可执行物流世界</h1><p class="lede">主角不是文件，而是一个逐步获得边界、角色、实体、状态、动作、约束、事实与规则的物流世界。文件只在右侧作为世界模型已经落盘的技术凭证。</p></div>
+    <div class="world-equation"><strong>W = (Entities, States, Actions, Rules, Observations)</strong><span>运营分析-8767b626 · 80 分 31 秒后封装为可运行沙箱</span></div>
   </header>
-
   <section class="controls" aria-label="播放控制">
-    <button id="prevBtn" class="control-btn" type="button">← 上一步</button>
-    <button id="playBtn" class="control-btn primary" type="button">暂停</button>
-    <button id="nextBtn" class="control-btn" type="button">下一步 →</button>
-    <button id="restartBtn" class="control-btn" type="button">重新播放</button>
-    <label class="sr-only" for="speedSelect">播放速度</label>
-    <select id="speedSelect" class="speed-select" aria-label="播放速度">
-      <option value="0.75">0.75×</option><option value="1" selected>1×</option><option value="1.5">1.5×</option><option value="2">2×</option>
-    </select>
-    <div class="progress-wrap">
-      <div class="progress-meta"><span id="progressLabel">准备</span><span id="liveStatus" class="live-status" aria-live="polite">正在读取输入</span></div>
-      <div class="progress-track"><div id="progressFill" class="progress-fill"></div></div>
-    </div>
+    <button id="prevBtn" class="control-btn" type="button">← 上一阶段</button><button id="playBtn" class="control-btn primary" type="button">暂停</button><button id="nextBtn" class="control-btn" type="button">下一动作 →</button><button id="restartBtn" class="control-btn" type="button">重新建模</button>
+    <label class="sr-only" for="speedSelect">播放速度</label><select id="speedSelect" class="speed-select" aria-label="播放速度"><option value=".75">0.75×</option><option value="1" selected>1×</option><option value="1.5">1.5×</option><option value="2">2×</option></select>
+    <div class="progress-wrap"><div class="progress-meta"><span id="progressLabel">准备</span><span id="liveStatus" class="live-status" aria-live="polite">正在建立世界边界</span></div><div class="progress-track"><div id="progressFill" class="progress-fill"></div></div></div>
   </section>
-
-  <nav id="stageRail" class="stage-rail" aria-label="生成阶段"></nav>
-
-  <section class="buffer-bar" aria-label="跨支路上下文与汇合缓冲区">
-    <span class="buffer-label">持久交付</span>
-    <span id="factorMemory" class="memory-chip">Factor bundle</span>
-    <span id="taxonomyMemory" class="memory-chip">Taxonomy bundle</span>
-    <span class="buffer-label" style="margin-left:12px">汇合缓冲区</span>
-    <span id="dwhBuffer" class="buffer-slot empty">DWH</span>
-    <span id="kbBuffer" class="buffer-slot empty">Knowledge</span>
-  </section>
-
-  <section class="theatre" aria-label="当前生成阶段">
-    <div class="stage-banner">
-      <div class="stage-identity"><span id="stepBadge" class="step-badge"></span><span id="stageTitle" class="stage-title"></span></div>
-      <div id="stageTime" class="stage-time"></div>
-    </div>
-    <div class="theatre-grid">
-      <section id="inputZone" class="zone input-zone">
-        <div class="zone-head"><span class="zone-label">INPUT · 上一步交付</span><span id="inputCount" class="zone-count"></span></div>
-        <div id="inputList" class="artifact-list"></div>
+  <nav id="stageRail" class="stage-rail" aria-label="世界建模阶段"></nav>
+  <section class="theatre" aria-label="物流世界建模过程">
+    <div class="stage-banner"><div class="stage-id"><span id="stepBadge" class="step-badge"></span><span id="stageTitle" class="stage-title"></span></div><div id="principle" class="principle"></div><div id="stageTime" class="stage-time"></div></div>
+    <div class="world-layout">
+      <aside class="inherit-panel"><div class="panel-label">Inherited world · 继承的世界</div><div id="inheritList" class="inherit-list"></div><div id="formulaBox" class="formula-box"></div><div class="inherit-note">这些是上一阶段已经赋予世界的语义能力，不是待加工文件列表。</div></aside>
+      <section class="world-main"><div class="world-head"><span>LIVE WORLD MODEL</span><span>scene · 运营分析-8767b626</span></div>
+        <div id="worldCanvas" class="world-canvas" role="img" aria-label="持续生长的物流世界模型">
+          <div class="world-layer" data-layer="boundary"><div class="world-boundary-ring"></div></div>
+          <div class="world-layer" data-layer="roles"><div class="role r1">仓库经理</div><div class="role r2">区域运营</div><div class="role r3">运营分析师</div></div>
+          <div class="world-layer" data-layer="entities"><svg class="network-svg" viewBox="0 0 700 500" preserveAspectRatio="none"><path class="route-path" d="M155 150 C260 130 300 210 350 240"/><path class="route-path" d="M350 240 C445 180 505 150 545 145"/><path class="route-path" d="M155 350 C250 330 300 270 350 240"/><path class="route-path" d="M350 240 C440 270 485 335 545 350"/></svg><div class="entity-node warehouse"><b>ENTITY</b>仓库</div><div class="entity-node outlet"><b>ENTITY</b>网点</div><div class="entity-node carrier"><b>ENTITY</b>承运商</div><div class="entity-node customer"><b>ENTITY</b>客户</div><div class="entity-node hub"><b>ENTITY</b>运单 / 线路</div></div>
+          <div class="world-layer" data-layer="states"><div class="state-ring"></div><div class="state-label">76 STATES · 运单 20 态</div></div>
+          <div class="world-layer" data-layer="actions"><div class="action-beam a1"></div><div class="action-beam a2"></div><div class="action-beam a3"></div><span class="action-name n1">dispatch()</span><span class="action-name n2">trace()</span><span class="action-name n3">claim()</span></div>
+          <div class="world-layer" data-layer="repair"><div id="repairAlert" class="repair-alert">⚠ 非法状态跃迁：incident_closed 不存在</div></div>
+          <div class="world-layer" data-layer="taxonomy"><div class="taxonomy-orbit"></div><span class="axis x1">区域</span><span class="axis x2">时间</span><span class="axis x3">产品</span><span class="axis x4">状态</span><span class="axis x5">指标 · …15维</span></div>
+          <div class="world-layer" data-layer="constraints"><div class="constraint-stack"><span class="constraint">× 9 illegal</span><span class="constraint ok">✓ 6 required</span><span class="constraint">↔ 8 mutex</span></div></div>
+          <div class="world-layer" data-layer="schema"><div class="schema-deck"><span class="table-tile">waybill</span><span class="table-tile">route</span><span class="table-tile">warehouse</span><span class="table-tile">carrier</span><span class="table-tile">delivery</span><span class="table-tile">temperature</span><span class="table-tile">quality</span><span class="table-tile">cost</span><span class="table-tile">SLA</span><span class="table-tile">claim</span><span class="table-tile">event</span><span class="table-tile">… +53</span></div><div class="schema-count">WORLD STATE → 64 TABLES</div></div>
+          <div class="world-layer" data-layer="data"><i class="shipment s1"></i><i class="shipment s2"></i><i class="shipment s3"></i><div class="fact-counter">36,101 instantiated facts</div></div>
+          <div class="world-layer" data-layer="dwh"><div class="probe dwh">STEP 5.1<br><strong>数仓任务</strong><br>观察世界状态<br>555</div></div>
+          <div class="world-layer" data-layer="rules"><div class="policy-cloud"><div class="policy"><b>RULE</b>线路 SLA</div><div class="policy"><b>RULE</b>价格政策</div><div class="policy"><b>RULE</b>理赔规范</div></div></div>
+          <div class="world-layer" data-layer="docs"><div class="doc-stack"><div class="doc-page"></div><div class="doc-page"></div><div class="doc-page">制度记忆<i></i><i></i><i></i>65 docs</div></div></div>
+          <div class="world-layer" data-layer="kb"><div class="probe kb">STEP 5.2<br><strong>知识任务</strong><br>观察世界规则<br>465</div></div>
+          <div class="world-layer" data-layer="hybrid"><div class="hybrid-core"><div><strong>500</strong>STEP 5.3<br>混合任务<br>STATE × RULES</div></div></div>
+          <div class="world-layer" data-layer="freeze"><div class="freeze-shell"></div></div>
+          <div class="world-layer" data-layer="runner"><div class="agent-beam"></div><div class="agent-node">AGENT<br>Observe / Act</div></div>
+          <div class="world-caption"><i class="change-pulse"></i><strong id="worldChangeTitle">世界尚未变化</strong><span id="worldChangeDetail">等待第一项建模动作</span></div>
+          <div id="endOverlay" class="end-overlay" role="status" aria-live="polite"><div id="completionParticles"></div><div class="end-seal"><div class="end-check">✓</div><div class="end-kicker">WORLD MODEL SEALED</div><div class="end-title">沙箱生成完成</div><div class="end-id">sandbox_id · 57a3cf55-3bb7-4241-b314-8d6ace6d6c6c</div><div class="end-metrics"><div class="end-metric"><strong>36,101</strong>世界事实</div><div class="end-metric"><strong>65</strong>制度文档</div><div class="end-metric"><strong>3 类</strong>观察任务</div></div><button id="endRestartBtn" class="end-restart" type="button">重新观察建模过程</button></div></div>
+        </div>
       </section>
-      <div class="arrow-lane" aria-hidden="true"><span class="arrow-pulse"></span></div>
-      <section id="operationZone" class="zone operation-zone">
-        <div class="zone-head"><span class="zone-label">WORK · 本步实际生成动作</span><span id="opCount" class="zone-count"></span></div>
-        <div id="operationList" class="operation-list"></div>
-      </section>
-      <div class="arrow-lane" aria-hidden="true"><span class="arrow-pulse"></span></div>
-      <section id="outputZone" class="zone output-zone">
-        <div class="zone-head"><span class="zone-label">OUTPUT · 本步新产生</span><span id="outputCount" class="zone-count"></span></div>
-        <div id="outputList" class="artifact-list"></div>
-      </section>
+      <aside class="build-panel"><div class="panel-label">World gains · 本步让世界获得</div><div id="gainList" class="gain-list"></div><div id="capability" class="capability"><p></p></div><div class="evidence-label">落盘凭证 · 技术实现（非世界本体）</div><div id="evidenceList" class="evidence-list"></div></aside>
       <div id="transitionCurtain" class="transition-curtain"><div id="transitionMessage" class="transition-message"></div></div>
     </div>
+    <div class="handoff"><span class="handoff-symbol">⟶</span><span id="handoffText"></span></div>
   </section>
-
-  <section class="handoff-strip" aria-label="本步交付说明">
-    <div class="handoff-icon" aria-hidden="true">→</div>
-    <div id="handoffText" class="handoff-text"></div>
-  </section>
-
-  <footer class="footer">
-    <span>安全展示：只含数量、文件名与验证摘要；不含任务正文、hidden gold、SQL、数据库行或凭据。</span>
-    <span><a href="https://github.com/renjunxiang/sf_my_sandbox/tree/758917009d0ebb0fb36561197171f6abdd279d96/.runtime_state/v20/scenes/运营分析-8767b626">v20 场景证据</a> · 5 号机归档只用于结构核对</span>
-  </footer>
+  <footer class="footer"><span>世界建模视角：任务是对世界状态或规则的观察；文件只是模型持久化的载体。</span><span><a href="https://github.com/renjunxiang/sf_my_sandbox/tree/758917009d0ebb0fb36561197171f6abdd279d96/.runtime_state/v20/scenes/运营分析-8767b626">v20 真实场景证据</a> · 不展示任务正文、hidden gold、SQL 或数据库行</span></footer>
 </main>
-
-<script id="stageData" type="application/json">[{"key":"intake","step":"准备","title":"把物流说明隔离成一个场景","clock":"13:15:20","duration":"00:00","branch":"公共主干","inputs":[{"name":"运营分析.md","kind":"业务说明","meta":"7,105 B · 原始输入","preview":["德运物流全国零担快运网络","五条产品线与多级运营角色","查询 / 对比 / 趋势 / 归因 / 诊断"],"produced_by":-1,"tone":"blue"}],"operations":[{"label":"计算输入指纹","detail":"对原文件计算 SHA256，后续每一步都能追溯同一输入。","outcome":"f96fc90c…ca4db","status":"normal"},{"label":"创建独立场景","detail":"建立只属于本次生成的目录，避免和其他行业场景混写。","outcome":"运营分析-8767b626","status":"normal"},{"label":"复制输入并写状态","detail":"原始说明进入 scene/input，状态切换为 running。","outcome":"2 个场景文件落盘","status":"normal"}],"outputs":[{"name":"scenes/运营分析-8767b626/","kind":"场景目录","meta":"隔离空间","preview":["input/","runtime/","artifacts/"],"produced_by":1,"tone":"purple"},{"name":"input/运营分析.md","kind":"受控输入","meta":"SHA 已登记","preview":["source_size = 7,105 B","sha256 = f96fc90c…ca4db"],"produced_by":2,"tone":"blue"},{"name":"runtime/state.json","kind":"运行状态","meta":"status = running","preview":["created_at = 13:15:20","scene_id = 运营分析-8767b626"],"produced_by":2,"tone":"green"}],"handoff":"受控输入 input/运营分析.md 交给 Step 0；原文件不再被后续阶段直接改写。","handoff_type":"sequential","replay_ms":750},{"key":"prd","step":"Step 0","title":"把业务说明展开成可生成的 PRD","clock":"13:15:20 → 13:20:35","duration":"05:15","branch":"公共主干","inputs":[{"name":"input/运营分析.md","kind":"上一步交付","meta":"7,105 B","preview":["物流网络与产品线","运营角色与分析诉求"],"produced_by":-1,"tone":"blue"}],"operations":[{"label":"识别业务边界","detail":"提取角色、对象、目标与分析任务，不补写输入中不存在的业务。","outcome":"5 类运营角色","status":"normal"},{"label":"填充 PRD 模板","detail":"把散文说明变成可由后续程序稳定读取的结构化业务规格。","outcome":"prd_运营分析.md","status":"normal"},{"label":"生成覆盖账本","detail":"逐项记录原始要求如何落到 PRD，防止静默遗漏。","outcome":"coverage.json","status":"normal"},{"label":"执行 PRD 门禁","detail":"检查必填段、角色、任务类型与覆盖映射。","outcome":"14 / 14 通过","status":"normal"}],"outputs":[{"name":"prd_运营分析.md","kind":"业务规格","meta":"结构化 PRD","preview":["仓库经理 / 网点主管","区域运营 / 分析师 / 总部"],"produced_by":1,"tone":"purple"},{"name":"filled_template.json","kind":"结构数据","meta":"模板字段已填充","preview":["actors[]","business_goals[]","analysis_tasks[]"],"produced_by":1,"tone":"blue"},{"name":"coverage.json","kind":"覆盖账本","meta":"原始要求 → PRD","preview":["query · compare · trend","attribution · diagnosis"],"produced_by":2,"tone":"amber"},{"name":"validation.json","kind":"质量门禁","meta":"14 / 14 passed","preview":["missing = 0","blocking_error = 0"],"produced_by":3,"tone":"green"}],"handoff":"PRD、模板字段和覆盖账本一起交给 Step 1；Factor 不再猜测原始散文的结构。","handoff_type":"sequential","replay_ms":780},{"key":"factor","step":"Step 1","title":"把 PRD 拆成实体、状态与可执行动作","clock":"13:20:35 → 14:11:49","duration":"51:14","branch":"公共主干 · 本次瓶颈","inputs":[{"name":"prd_运营分析.md","kind":"上一步交付","meta":"业务规格","preview":["物流对象、角色、目标"],"produced_by":-1,"tone":"blue"},{"name":"coverage.json","kind":"上一步交付","meta":"覆盖约束","preview":["原始需求不得丢失"],"produced_by":-1,"tone":"blue"},{"name":"filled_template.json","kind":"上一步交付","meta":"结构字段","preview":["后续脚本可直接解析"],"produced_by":-1,"tone":"blue"}],"operations":[{"label":"抽取业务对象","detail":"识别运单、仓库、线路、承运商、温度记录、质量事件等对象。","outcome":"57 个实体","status":"normal"},{"label":"建立状态机与动作","detail":"为实体生成状态变化，并补齐工具动作的参数和返回结构。","outcome":"76 个状态 · 80 个动作","status":"normal"},{"label":"第一次因子校验","detail":"检查动作引用的状态是否真实存在。","outcome":"发现 1 个 hard error","status":"error"},{"label":"修复错误引用","detail":"quality_incident.triggers 引用了不存在的 incident_closed，改为实际状态 incident_closed_without_compensation。","outcome":"1 处引用已修复","status":"repair"},{"label":"重新执行校验","detail":"保留 17 个不阻塞的 soft warning，硬错误清零。","outcome":"9 / 9 通过","status":"success"}],"outputs":[{"name":"entities.json","kind":"实体定义","meta":"57 entities","preview":["waybill · warehouse · route","carrier · temperature_record"],"produced_by":0,"tone":"purple"},{"name":"states.json","kind":"状态机","meta":"76 states","preview":["运单 20 态","异常 / 理赔 / 完结状态"],"produced_by":1,"tone":"blue"},{"name":"tools_actions.json","kind":"工具动作","meta":"80 actions","preview":["typed arguments","typed returns"],"produced_by":1,"tone":"amber"},{"name":"factor_validation_report.json","kind":"修复证据","meta":"9 / 9 passed","preview":["hard errors: 1 → 0","soft warnings: 17"],"produced_by":4,"tone":"green"}],"handoff":"57 个实体、76 个状态和 80 个动作成为 Step 2 的输入；修复前版本不会向下游流动。","handoff_type":"sequential","replay_ms":1050},{"key":"taxonomy","step":"Step 2","title":"把业务因子组织成可采样的任务空间","clock":"14:11:49 → 14:20:53","duration":"09:04","branch":"公共主干","inputs":[{"name":"entities.json","kind":"上一步交付","meta":"57 个实体","preview":["任务可以围绕哪些对象变化"],"produced_by":-1,"tone":"blue"},{"name":"states.json","kind":"上一步交付","meta":"76 个状态","preview":["任务可以要求哪些状态判断"],"produced_by":-1,"tone":"blue"},{"name":"tools_actions.json","kind":"上一步交付","meta":"80 个动作","preview":["模型在环境里能做什么"],"produced_by":-1,"tone":"blue"}],"operations":[{"label":"定义变化维度","detail":"将对象、时间、区域、状态、产品、指标等组织成正交变化轴。","outcome":"15 个维度","status":"normal"},{"label":"展开采样单元","detail":"组合维度并标记任务难度，为任务生成建立抽样底座。","outcome":"56 medium + 59 high","status":"normal"},{"label":"写入组合约束","detail":"显式禁止不合法组合，并要求关键因子共同出现。","outcome":"9 illegal · 6 required · 8 mutex","status":"normal"},{"label":"归一化覆盖计划","detail":"覆盖比例合计必须等于 1，所有引用必须能回到 Factor。","outcome":"7 / 7 通过 · ratio 1.0000","status":"normal"}],"outputs":[{"name":"factor_taxonomies.json","kind":"变化维度","meta":"15 dimensions","preview":["object · region · time","state · product · metric"],"produced_by":0,"tone":"purple"},{"name":"sampling_units.json","kind":"采样单元","meta":"115 units","preview":["medium 56","high 59"],"produced_by":1,"tone":"blue"},{"name":"combination_constraints.json","kind":"组合约束","meta":"27 条核心约束","preview":["illegal 9 · required 6","mutex 8 · scene 4"],"produced_by":2,"tone":"amber"},{"name":"coverage_plan.json","kind":"覆盖计划","meta":"7 / 7 passed","preview":["coverage ratio = 1.0000"],"produced_by":3,"tone":"green"}],"handoff":"Taxonomy 在这里分叉：同一批因子一份进入数仓支路，一份保存在上下文总线，稍后进入知识支路。","handoff_type":"fork","replay_ms":820},{"key":"schema","step":"Step 3.1","title":"把任务空间变成物流数仓结构","clock":"14:20:53 → 14:22:20","duration":"01:27","branch":"数仓支路","inputs":[{"name":"Factor bundle","kind":"上下文总线","meta":"57 entities · 80 actions","preview":["业务对象决定表的主题"],"produced_by":-1,"tone":"blue"},{"name":"Taxonomy bundle","kind":"上一步交付","meta":"15 dimensions · 115 units","preview":["采样空间决定字段覆盖"],"produced_by":-1,"tone":"blue"}],"operations":[{"label":"规划数据分层","detail":"先放平台支撑表与平台事实表，再映射业务实体。","outcome":"6 support + 3 platform fact","status":"normal"},{"label":"展开业务表","detail":"逐实体生成事实表和关系表，并声明主外键。","outcome":"54 business fact + 1 relation","status":"normal"},{"label":"生成枚举与校验规则","detail":"把 Factor 状态写入枚举字典，补齐字段级检查。","outcome":"enum_dictionary + validation_rules","status":"normal"},{"label":"执行 Schema 门禁","detail":"检查表引用、字段类型、主外键与业务覆盖。","outcome":"10 / 10 通过 · 0 errors","status":"normal"}],"outputs":[{"name":"schema_overview.json","kind":"结构总览","meta":"64 tables","preview":["6 support · 3 platform","54 business · 1 relation"],"produced_by":0,"tone":"purple"},{"name":"tables/","kind":"表定义目录","meta":"64 个 JSON","preview":["fact_waybill · fact_route","fact_temperature_record · … +61"],"produced_by":1,"tone":"blue"},{"name":"enum_dictionary.json","kind":"枚举字典","meta":"状态映射已固化","preview":["waybill status","incident status"],"produced_by":2,"tone":"amber"},{"name":"schema_validation_report.json","kind":"质量门禁","meta":"10 / 10 passed","preview":["errors 0 · warnings 16"],"produced_by":3,"tone":"green"}],"handoff":"64 张表定义和枚举字典交给 Step 4.1；Data 只能按这些结构写行。","handoff_type":"sequential","replay_ms":760},{"key":"data","step":"Step 4.1","title":"按 Schema 逐表合成物流数据","clock":"14:22:20 → 14:24:51","duration":"02:31","branch":"数仓支路","inputs":[{"name":"tables/","kind":"上一步交付","meta":"64 个表定义","preview":["字段、类型、主外键"],"produced_by":-1,"tone":"blue"},{"name":"enum_dictionary.json","kind":"上一步交付","meta":"合法枚举","preview":["生成值不能越界"],"produced_by":-1,"tone":"blue"},{"name":"validation_rules.json","kind":"上一步交付","meta":"字段门禁","preview":["每批写入后立即检查"],"produced_by":-1,"tone":"blue"}],"operations":[{"label":"逐表生成 JSONL","detail":"按依赖顺序先维表、再事实表，主外键只引用已存在记录。","outcome":"65 个 JSONL","status":"normal"},{"label":"构建 SQLite","detail":"将通过行级检查的数据装载为一个可查询物流数据库。","outcome":"36,101 rows","status":"normal"},{"label":"执行数据门禁","detail":"检查行数、枚举、非空、引用完整性和数据库可读性。","outcome":"5 / 5 通过 · 0 failures","status":"normal"}],"outputs":[{"name":"generated_data/*.jsonl","kind":"逐表数据","meta":"65 files","preview":["运单 · 仓储 · 配送","温控 · 成本 · 质量"],"produced_by":0,"tone":"blue"},{"name":"database/logistics.sqlite","kind":"物流数据库","meta":"36,101 rows","preview":["64-table schema","queryable = true"],"produced_by":1,"tone":"purple"},{"name":"data_validation_report.json","kind":"质量门禁","meta":"5 / 5 passed","preview":["failures 0 · warnings 0"],"produced_by":2,"tone":"green"}],"handoff":"数据库、Schema 和 Taxonomy 一起进入 Step 5.1，任务必须能由刚生成的数据回答或明确判定不可答。","handoff_type":"sequential","replay_ms":820},{"key":"dwh_tasks","step":"Step 5.1","title":"用物流数据库生成数仓评测任务","clock":"14:24:52 → 14:26:21","duration":"01:29","branch":"数仓支路","inputs":[{"name":"database/logistics.sqlite","kind":"上一步交付","meta":"36,101 rows","preview":["任务证据来自真实已写入数据"],"produced_by":-1,"tone":"blue"},{"name":"schema_overview.json","kind":"结构字典","meta":"64 tables","preview":["任务引用必须落到实际表"],"produced_by":-1,"tone":"blue"},{"name":"sampling_units.json","kind":"覆盖计划","meta":"115 units","preview":["控制主题和难度分布"],"produced_by":-1,"tone":"blue"}],"operations":[{"label":"批量生成候选","detail":"同时构造可回答、不可回答和超范围三类候选。","outcome":"6,000 candidates","status":"normal"},{"label":"TaskSelector 筛选","detail":"按覆盖、难度与重复度选出候选子集。","outcome":"1,000 selected","status":"normal"},{"label":"补充链式任务","detail":"加入需要多步关联的物流分析任务。","outcome":"+44 chain tasks","status":"normal"},{"label":"语义去重并验证","detail":"去除同义任务，检查每条任务的证据绑定；正文与 gold 不进入本动画。","outcome":"555 final · 0 errors","status":"normal"}],"outputs":[{"name":"candidates.jsonl","kind":"候选池","meta":"6,000 tasks","preview":["answerable 3,600","unanswerable 1,500 · OOS 900"],"produced_by":0,"tone":"blue"},{"name":"selected_tasks.jsonl","kind":"筛选结果","meta":"1,000 tasks","preview":["coverage balanced","difficulty balanced"],"produced_by":1,"tone":"blue"},{"name":"tasks.jsonl","kind":"数仓任务包","meta":"555 unique","preview":["task content sealed","hidden gold sealed"],"produced_by":3,"tone":"purple"},{"name":"task_validation_report.json","kind":"质量门禁","meta":"passed","preview":["errors 0 · warnings 0"],"produced_by":3,"tone":"green"}],"handoff":"数仓任务包先进入汇合缓冲区；生成器回到 Step 2 保存的 Factor + Taxonomy，开始知识支路。","handoff_type":"branch-return","replay_ms":880},{"key":"catalog","step":"Step 3.2","title":"从同一批因子生成物流知识目录","clock":"14:26:21 → 14:28:30","duration":"02:09","branch":"知识支路","inputs":[{"name":"Factor bundle","kind":"上下文总线回放","meta":"entities · states · actions","preview":["与数仓支路同源"],"produced_by":-1,"tone":"blue"},{"name":"Taxonomy bundle","kind":"上下文总线回放","meta":"dimensions · sampling units","preview":["与数仓支路同源"],"produced_by":-1,"tone":"blue"},{"name":"schema_overview.json","kind":"数仓结构引用","meta":"64 tables","preview":["知识条目可绑定实际表"],"produced_by":-1,"tone":"blue"}],"operations":[{"label":"规划文档类型","detail":"把业务因子映射为政策、手册、FAQ、培训资料。","outcome":"4 种文档类型","status":"normal"},{"label":"展开文档定义","detail":"逐主题声明标题、章节、事实来源和关联表。","outcome":"65 document definitions","status":"normal"},{"label":"检查双向引用","detail":"保留可审计的软警告，但阻断缺源或非法表引用。","outcome":"passed · 374 soft warnings","status":"normal"}],"outputs":[{"name":"document_catalog.json","kind":"知识目录","meta":"65 definitions · 157 KB","preview":["policy · manual","FAQ · training"],"produced_by":1,"tone":"purple"},{"name":"catalog_validation_report.json","kind":"质量门禁","meta":"overall_passed = true","preview":["soft warnings 374","blocking errors 0"],"produced_by":2,"tone":"green"}],"handoff":"65 份文档定义逐项交给 Step 4.2；下一步不是复制目录，而是按每个定义真正写出正文和索引。","handoff_type":"sequential","replay_ms":780},{"key":"documents","step":"Step 4.2","title":"按目录逐份写出物流知识库","clock":"14:28:30 → 14:31:42","duration":"03:12","branch":"知识支路","inputs":[{"name":"document_catalog.json","kind":"上一步交付","meta":"65 definitions","preview":["标题、章节、事实源、关联表"],"produced_by":-1,"tone":"blue"}],"operations":[{"label":"逐定义生成 Markdown","detail":"生成价格政策、线路 SLA、理赔规范、退货流程、异常件手册等正文。","outcome":"65 Markdown","status":"normal"},{"label":"切分并构建索引","detail":"按章节边界切块，保留文档与 chunk 的可追溯关系。","outcome":"1,587 chunks · 176,139 words","status":"normal"},{"label":"核对目录完整性","detail":"逐项比对 catalog，缺失和额外文档都必须为 0。","outcome":"0 missing · 0 extra","status":"normal"}],"outputs":[{"name":"documents/*.md","kind":"物流知识库","meta":"65 documents","preview":["价格政策 · 线路 SLA","理赔 · 退货 · 异常件"],"produced_by":0,"tone":"purple"},{"name":"document_index.json","kind":"检索索引","meta":"1,587 chunks","preview":["176,139 words","source trace retained"],"produced_by":1,"tone":"blue"},{"name":"document_validation_report.json","kind":"质量门禁","meta":"overall_passed = true","preview":["missing 0 · extra 0"],"produced_by":2,"tone":"green"}],"handoff":"文档正文、chunk 索引和 catalog 一起交给 Step 5.2，知识任务必须能回到具体来源文档。","handoff_type":"sequential","replay_ms":820},{"key":"kb_tasks","step":"Step 5.2","title":"用文档事实生成知识库评测任务","clock":"14:31:42 → 14:33:25","duration":"01:43","branch":"知识支路","inputs":[{"name":"documents/*.md","kind":"上一步交付","meta":"65 documents","preview":["任务证据来自已生成正文"],"produced_by":-1,"tone":"blue"},{"name":"document_index.json","kind":"上一步交付","meta":"1,587 chunks","preview":["每条证据可追溯"],"produced_by":-1,"tone":"blue"},{"name":"document_catalog.json","kind":"目录约束","meta":"65 definitions","preview":["主题与类型覆盖"],"produced_by":-1,"tone":"blue"}],"operations":[{"label":"生成知识候选","detail":"构造单文档、跨文档、时效与多跳检索问题。","outcome":"target 500","status":"normal"},{"label":"事实对齐与去重","detail":"原材料不足时不伪造近重复项，保留真实唯一集合。","outcome":"465 unique","status":"normal"},{"label":"执行知识任务门禁","detail":"检查 source_documents、可答性标签与覆盖结构。","outcome":"8 / 8 通过","status":"normal"}],"outputs":[{"name":"knowledge_tasks.jsonl","kind":"知识任务包","meta":"465 unique","preview":["answerable 365","unanswerable 100"],"produced_by":1,"tone":"purple"},{"name":"knowledge_task_validation.json","kind":"质量门禁","meta":"8 / 8 passed","preview":["failures 0 · warnings 0"],"produced_by":2,"tone":"green"}],"handoff":"知识任务包进入第二个汇合槽；数仓任务包与知识任务包现在同时送往 Step 5.3。","handoff_type":"merge","replay_ms":820},{"key":"hybrid","step":"Step 5.3","title":"把数据库证据与政策证据合成双源任务","clock":"14:33:25 → 14:35:51","duration":"02:26","branch":"双支路汇合","inputs":[{"name":"tasks.jsonl","kind":"数仓缓冲区","meta":"555 DWH tasks","preview":["expected_tables 已绑定"],"produced_by":-1,"tone":"blue"},{"name":"knowledge_tasks.jsonl","kind":"知识缓冲区","meta":"465 KB tasks","preview":["source_documents 已绑定"],"produced_by":-1,"tone":"blue"},{"name":"logistics.sqlite + documents/","kind":"双源环境","meta":"DB + 65 docs","preview":["每条任务必须同时依赖两侧"],"produced_by":-1,"tone":"blue"}],"operations":[{"label":"组装 data → policy","detail":"先由数据库得到运营事实，再用政策判断或解释。","outcome":"171 tasks","status":"normal"},{"label":"组装 policy → data","detail":"先读政策规则，再到数据库核验实际运营数据。","outcome":"156 tasks","status":"normal"},{"label":"组装 compliance check","detail":"把数据库事实直接与政策阈值做合规对照。","outcome":"173 tasks","status":"normal"},{"label":"验证双源覆盖","detail":"每条任务都必须同时有 expected_tables 与 source_documents。","outcome":"500 / 500 passed","status":"normal"}],"outputs":[{"name":"hybrid_tasks.jsonl","kind":"混合任务包","meta":"500 unique","preview":["data→policy 171","policy→data 156 · compliance 173"],"produced_by":2,"tone":"purple"},{"name":"hybrid_validation_report.json","kind":"双源门禁","meta":"500 / 500","preview":["expected_tables nonempty","source_documents nonempty"],"produced_by":3,"tone":"green"}],"handoff":"DB、Docs 与三类任务已经齐备，最后进入冻结器：可运行资产和评测秘密将在这里分层。","handoff_type":"sequential","replay_ms":850},{"key":"freeze","step":"完成","title":"冻结资产、隔离秘密并登记沙箱","clock":"14:35:51","duration":"总计 80:31","branch":"交付边界","inputs":[{"name":"logistics.sqlite","kind":"环境资产","meta":"36,101 rows","preview":["模型运行时需要"],"produced_by":-1,"tone":"blue"},{"name":"documents/ + index","kind":"环境资产","meta":"65 docs · 1,587 chunks","preview":["模型运行时需要"],"produced_by":-1,"tone":"blue"},{"name":"DWH + KB + Hybrid tasks","kind":"评测资产","meta":"555 + 465 + 500","preview":["模型运行时不得看见"],"produced_by":-1,"tone":"blue"}],"operations":[{"label":"计算资产校验和","detail":"为数据库、文档、Schema 和任务包建立不可混淆的版本指纹。","outcome":"checksums ready","status":"normal"},{"label":"分离 raw 与 runner","detail":"raw 保存任务与 hidden gold；runner 只保留模型可见的 DB、Docs、Schema 与 manifest。","outcome":"secret boundary enforced","status":"normal"},{"label":"写入 registry","detail":"登记 sandbox_id、路径、校验和与完成状态。","outcome":"57a3cf55…6c6c","status":"normal"}],"outputs":[{"name":"raw/","kind":"评测者专用","meta":"tasks + hidden gold","preview":["not mounted to model","audit only"],"produced_by":1,"tone":"amber"},{"name":"runner/","kind":"模型可见","meta":"DB + Docs + Schema","preview":["tasks absent","gold absent"],"produced_by":1,"tone":"purple"},{"name":"sandbox_registry.jsonl","kind":"沙箱登记","meta":"status = completed","preview":["sandbox_id = 57a3cf55…6c6c","wall clock = 80:31"],"produced_by":2,"tone":"green"}],"handoff":"生成结束：Rollout Engine 只挂载 runner/ 并核验 registry；raw/ 永远留在模型工作区之外。","handoff_type":"release","replay_ms":850},{"key":"runner","step":"运行边界外","title":"模型进入已经生成好的物流沙箱","clock":"生成后","duration":"不计入 80:31","branch":"Rollout Engine","inputs":[{"name":"runner/","kind":"冻结器交付","meta":"DB + Docs + Schema","preview":["只有模型可见资产"],"produced_by":-1,"tone":"blue"},{"name":"sandbox_registry.jsonl","kind":"登记信息","meta":"sandbox_id + checksums","preview":["挂载前先验证"],"produced_by":-1,"tone":"blue"}],"operations":[{"label":"校验登记与指纹","detail":"拒绝未登记或校验和不一致的环境资产。","outcome":"registry verified","status":"normal"},{"label":"只读挂载 runner","detail":"模型可以查询物流数据库和文档库。","outcome":"sandbox mounted","status":"normal"},{"label":"确认秘密不可见","detail":"tasks、hidden gold、验证 SQL 和原始评测记录不在工作区。","outcome":"leakage surface closed","status":"normal"}],"outputs":[{"name":"live logistics sandbox","kind":"可运行环境","meta":"ready","preview":["logistics.sqlite mounted","65 documents searchable"],"produced_by":1,"tone":"purple"},{"name":"visibility check","kind":"隔离证明","meta":"passed","preview":["tasks hidden","gold hidden"],"produced_by":2,"tone":"green"}],"handoff":"完整重放结束。点击“重新播放”可再次观察每个产物怎样成为下一步的输入。","handoff_type":"end","replay_ms":850}]</script>
+<script id="stageData" type="application/json">[{"key":"intake","step":"准备","title":"把物流说明隔离成一个场景","clock":"13:15:20","duration":"00:00","branch":"公共主干","inputs":[{"name":"运营分析.md","kind":"业务说明","meta":"7,105 B · 原始输入","preview":["德运物流全国零担快运网络","五条产品线与多级运营角色","查询 / 对比 / 趋势 / 归因 / 诊断"],"produced_by":-1,"tone":"blue"}],"operations":[{"label":"计算输入指纹","detail":"对原文件计算 SHA256，后续每一步都能追溯同一输入。","outcome":"f96fc90c…ca4db","status":"normal"},{"label":"创建独立场景","detail":"建立只属于本次生成的目录，避免和其他行业场景混写。","outcome":"运营分析-8767b626","status":"normal"},{"label":"复制输入并写状态","detail":"原始说明进入 scene/input，状态切换为 running。","outcome":"2 个场景文件落盘","status":"normal"}],"outputs":[{"name":"scenes/运营分析-8767b626/","kind":"场景目录","meta":"隔离空间","preview":["input/","runtime/","artifacts/"],"produced_by":1,"tone":"purple"},{"name":"input/运营分析.md","kind":"受控输入","meta":"SHA 已登记","preview":["source_size = 7,105 B","sha256 = f96fc90c…ca4db"],"produced_by":2,"tone":"blue"},{"name":"runtime/state.json","kind":"运行状态","meta":"status = running","preview":["created_at = 13:15:20","scene_id = 运营分析-8767b626"],"produced_by":2,"tone":"green"}],"handoff":"受控输入 input/运营分析.md 交给 Step 0；原文件不再被后续阶段直接改写。","handoff_type":"sequential","replay_ms":750},{"key":"prd","step":"Step 0","title":"把业务说明展开成可生成的 PRD","clock":"13:15:20 → 13:20:35","duration":"05:15","branch":"公共主干","inputs":[{"name":"input/运营分析.md","kind":"上一步交付","meta":"7,105 B","preview":["物流网络与产品线","运营角色与分析诉求"],"produced_by":-1,"tone":"blue"}],"operations":[{"label":"识别业务边界","detail":"提取角色、对象、目标与分析任务，不补写输入中不存在的业务。","outcome":"5 类运营角色","status":"normal"},{"label":"填充 PRD 模板","detail":"把散文说明变成可由后续程序稳定读取的结构化业务规格。","outcome":"prd_运营分析.md","status":"normal"},{"label":"生成覆盖账本","detail":"逐项记录原始要求如何落到 PRD，防止静默遗漏。","outcome":"coverage.json","status":"normal"},{"label":"执行 PRD 门禁","detail":"检查必填段、角色、任务类型与覆盖映射。","outcome":"14 / 14 通过","status":"normal"}],"outputs":[{"name":"prd_运营分析.md","kind":"业务规格","meta":"结构化 PRD","preview":["仓库经理 / 网点主管","区域运营 / 分析师 / 总部"],"produced_by":1,"tone":"purple"},{"name":"filled_template.json","kind":"结构数据","meta":"模板字段已填充","preview":["actors[]","business_goals[]","analysis_tasks[]"],"produced_by":1,"tone":"blue"},{"name":"coverage.json","kind":"覆盖账本","meta":"原始要求 → PRD","preview":["query · compare · trend","attribution · diagnosis"],"produced_by":2,"tone":"amber"},{"name":"validation.json","kind":"质量门禁","meta":"14 / 14 passed","preview":["missing = 0","blocking_error = 0"],"produced_by":3,"tone":"green"}],"handoff":"PRD、模板字段和覆盖账本一起交给 Step 1；Factor 不再猜测原始散文的结构。","handoff_type":"sequential","replay_ms":780},{"key":"factor","step":"Step 1","title":"把 PRD 拆成实体、状态与可执行动作","clock":"13:20:35 → 14:11:49","duration":"51:14","branch":"公共主干 · 本次瓶颈","inputs":[{"name":"prd_运营分析.md","kind":"上一步交付","meta":"业务规格","preview":["物流对象、角色、目标"],"produced_by":-1,"tone":"blue"},{"name":"coverage.json","kind":"上一步交付","meta":"覆盖约束","preview":["原始需求不得丢失"],"produced_by":-1,"tone":"blue"},{"name":"filled_template.json","kind":"上一步交付","meta":"结构字段","preview":["后续脚本可直接解析"],"produced_by":-1,"tone":"blue"}],"operations":[{"label":"抽取业务对象","detail":"识别运单、仓库、线路、承运商、温度记录、质量事件等对象。","outcome":"57 个实体","status":"normal"},{"label":"建立状态机与动作","detail":"为实体生成状态变化，并补齐工具动作的参数和返回结构。","outcome":"76 个状态 · 80 个动作","status":"normal"},{"label":"第一次因子校验","detail":"检查动作引用的状态是否真实存在。","outcome":"发现 1 个 hard error","status":"error"},{"label":"修复错误引用","detail":"quality_incident.triggers 引用了不存在的 incident_closed，改为实际状态 incident_closed_without_compensation。","outcome":"1 处引用已修复","status":"repair"},{"label":"重新执行校验","detail":"保留 17 个不阻塞的 soft warning，硬错误清零。","outcome":"9 / 9 通过","status":"success"}],"outputs":[{"name":"entities.json","kind":"实体定义","meta":"57 entities","preview":["waybill · warehouse · route","carrier · temperature_record"],"produced_by":0,"tone":"purple"},{"name":"states.json","kind":"状态机","meta":"76 states","preview":["运单 20 态","异常 / 理赔 / 完结状态"],"produced_by":1,"tone":"blue"},{"name":"tools_actions.json","kind":"工具动作","meta":"80 actions","preview":["typed arguments","typed returns"],"produced_by":1,"tone":"amber"},{"name":"factor_validation_report.json","kind":"修复证据","meta":"9 / 9 passed","preview":["hard errors: 1 → 0","soft warnings: 17"],"produced_by":4,"tone":"green"}],"handoff":"57 个实体、76 个状态和 80 个动作成为 Step 2 的输入；修复前版本不会向下游流动。","handoff_type":"sequential","replay_ms":1050},{"key":"taxonomy","step":"Step 2","title":"把业务因子组织成可采样的任务空间","clock":"14:11:49 → 14:20:53","duration":"09:04","branch":"公共主干","inputs":[{"name":"entities.json","kind":"上一步交付","meta":"57 个实体","preview":["任务可以围绕哪些对象变化"],"produced_by":-1,"tone":"blue"},{"name":"states.json","kind":"上一步交付","meta":"76 个状态","preview":["任务可以要求哪些状态判断"],"produced_by":-1,"tone":"blue"},{"name":"tools_actions.json","kind":"上一步交付","meta":"80 个动作","preview":["模型在环境里能做什么"],"produced_by":-1,"tone":"blue"}],"operations":[{"label":"定义变化维度","detail":"将对象、时间、区域、状态、产品、指标等组织成正交变化轴。","outcome":"15 个维度","status":"normal"},{"label":"展开采样单元","detail":"组合维度并标记任务难度，为任务生成建立抽样底座。","outcome":"56 medium + 59 high","status":"normal"},{"label":"写入组合约束","detail":"显式禁止不合法组合，并要求关键因子共同出现。","outcome":"9 illegal · 6 required · 8 mutex","status":"normal"},{"label":"归一化覆盖计划","detail":"覆盖比例合计必须等于 1，所有引用必须能回到 Factor。","outcome":"7 / 7 通过 · ratio 1.0000","status":"normal"}],"outputs":[{"name":"factor_taxonomies.json","kind":"变化维度","meta":"15 dimensions","preview":["object · region · time","state · product · metric"],"produced_by":0,"tone":"purple"},{"name":"sampling_units.json","kind":"采样单元","meta":"115 units","preview":["medium 56","high 59"],"produced_by":1,"tone":"blue"},{"name":"combination_constraints.json","kind":"组合约束","meta":"27 条核心约束","preview":["illegal 9 · required 6","mutex 8 · scene 4"],"produced_by":2,"tone":"amber"},{"name":"coverage_plan.json","kind":"覆盖计划","meta":"7 / 7 passed","preview":["coverage ratio = 1.0000"],"produced_by":3,"tone":"green"}],"handoff":"Taxonomy 在这里分叉：同一批因子一份进入数仓支路，一份保存在上下文总线，稍后进入知识支路。","handoff_type":"fork","replay_ms":820},{"key":"schema","step":"Step 3.1","title":"把任务空间变成物流数仓结构","clock":"14:20:53 → 14:22:20","duration":"01:27","branch":"数仓支路","inputs":[{"name":"Factor bundle","kind":"上下文总线","meta":"57 entities · 80 actions","preview":["业务对象决定表的主题"],"produced_by":-1,"tone":"blue"},{"name":"Taxonomy bundle","kind":"上一步交付","meta":"15 dimensions · 115 units","preview":["采样空间决定字段覆盖"],"produced_by":-1,"tone":"blue"}],"operations":[{"label":"规划数据分层","detail":"先放平台支撑表与平台事实表，再映射业务实体。","outcome":"6 support + 3 platform fact","status":"normal"},{"label":"展开业务表","detail":"逐实体生成事实表和关系表，并声明主外键。","outcome":"54 business fact + 1 relation","status":"normal"},{"label":"生成枚举与校验规则","detail":"把 Factor 状态写入枚举字典，补齐字段级检查。","outcome":"enum_dictionary + validation_rules","status":"normal"},{"label":"执行 Schema 门禁","detail":"检查表引用、字段类型、主外键与业务覆盖。","outcome":"10 / 10 通过 · 0 errors","status":"normal"}],"outputs":[{"name":"schema_overview.json","kind":"结构总览","meta":"64 tables","preview":["6 support · 3 platform","54 business · 1 relation"],"produced_by":0,"tone":"purple"},{"name":"tables/","kind":"表定义目录","meta":"64 个 JSON","preview":["fact_waybill · fact_route","fact_temperature_record · … +61"],"produced_by":1,"tone":"blue"},{"name":"enum_dictionary.json","kind":"枚举字典","meta":"状态映射已固化","preview":["waybill status","incident status"],"produced_by":2,"tone":"amber"},{"name":"schema_validation_report.json","kind":"质量门禁","meta":"10 / 10 passed","preview":["errors 0 · warnings 16"],"produced_by":3,"tone":"green"}],"handoff":"64 张表定义和枚举字典交给 Step 4.1；Data 只能按这些结构写行。","handoff_type":"sequential","replay_ms":760},{"key":"data","step":"Step 4.1","title":"按 Schema 逐表合成物流数据","clock":"14:22:20 → 14:24:51","duration":"02:31","branch":"数仓支路","inputs":[{"name":"tables/","kind":"上一步交付","meta":"64 个表定义","preview":["字段、类型、主外键"],"produced_by":-1,"tone":"blue"},{"name":"enum_dictionary.json","kind":"上一步交付","meta":"合法枚举","preview":["生成值不能越界"],"produced_by":-1,"tone":"blue"},{"name":"validation_rules.json","kind":"上一步交付","meta":"字段门禁","preview":["每批写入后立即检查"],"produced_by":-1,"tone":"blue"}],"operations":[{"label":"逐表生成 JSONL","detail":"按依赖顺序先维表、再事实表，主外键只引用已存在记录。","outcome":"65 个 JSONL","status":"normal"},{"label":"构建 SQLite","detail":"将通过行级检查的数据装载为一个可查询物流数据库。","outcome":"36,101 rows","status":"normal"},{"label":"执行数据门禁","detail":"检查行数、枚举、非空、引用完整性和数据库可读性。","outcome":"5 / 5 通过 · 0 failures","status":"normal"}],"outputs":[{"name":"generated_data/*.jsonl","kind":"逐表数据","meta":"65 files","preview":["运单 · 仓储 · 配送","温控 · 成本 · 质量"],"produced_by":0,"tone":"blue"},{"name":"database/logistics.sqlite","kind":"物流数据库","meta":"36,101 rows","preview":["64-table schema","queryable = true"],"produced_by":1,"tone":"purple"},{"name":"data_validation_report.json","kind":"质量门禁","meta":"5 / 5 passed","preview":["failures 0 · warnings 0"],"produced_by":2,"tone":"green"}],"handoff":"数据库、Schema 和 Taxonomy 一起进入 Step 5.1，任务必须能由刚生成的数据回答或明确判定不可答。","handoff_type":"sequential","replay_ms":820},{"key":"dwh_tasks","step":"Step 5.1","title":"数仓任务：用物流数据库生成评测任务","clock":"14:24:52 → 14:26:21","duration":"01:29","branch":"数仓支路","inputs":[{"name":"database/logistics.sqlite","kind":"上一步交付","meta":"36,101 rows","preview":["任务证据来自真实已写入数据"],"produced_by":-1,"tone":"blue"},{"name":"schema_overview.json","kind":"结构字典","meta":"64 tables","preview":["任务引用必须落到实际表"],"produced_by":-1,"tone":"blue"},{"name":"sampling_units.json","kind":"覆盖计划","meta":"115 units","preview":["控制主题和难度分布"],"produced_by":-1,"tone":"blue"}],"operations":[{"label":"批量生成候选","detail":"同时构造可回答、不可回答和超范围三类候选。","outcome":"6,000 candidates","status":"normal"},{"label":"TaskSelector 筛选","detail":"按覆盖、难度与重复度选出候选子集。","outcome":"1,000 selected","status":"normal"},{"label":"补充链式任务","detail":"加入需要多步关联的物流分析任务。","outcome":"+44 chain tasks","status":"normal"},{"label":"语义去重并验证","detail":"去除同义任务，检查每条任务的证据绑定；正文与 gold 不进入本动画。","outcome":"555 final · 0 errors","status":"normal"}],"outputs":[{"name":"candidates.jsonl","kind":"候选池","meta":"6,000 tasks","preview":["answerable 3,600","unanswerable 1,500 · OOS 900"],"produced_by":0,"tone":"blue"},{"name":"selected_tasks.jsonl","kind":"筛选结果","meta":"1,000 tasks","preview":["coverage balanced","difficulty balanced"],"produced_by":1,"tone":"blue"},{"name":"tasks.jsonl","kind":"数仓任务包","meta":"555 unique","preview":["task content sealed","hidden gold sealed"],"produced_by":3,"tone":"purple"},{"name":"task_validation_report.json","kind":"质量门禁","meta":"passed","preview":["errors 0 · warnings 0"],"produced_by":3,"tone":"green"}],"handoff":"数仓任务包先进入汇合缓冲区；生成器回到 Step 2 保存的 Factor + Taxonomy，开始知识支路。","handoff_type":"branch-return","replay_ms":880},{"key":"catalog","step":"Step 3.2","title":"从同一批因子生成物流知识目录","clock":"14:26:21 → 14:28:30","duration":"02:09","branch":"知识支路","inputs":[{"name":"Factor bundle","kind":"上下文总线回放","meta":"entities · states · actions","preview":["与数仓支路同源"],"produced_by":-1,"tone":"blue"},{"name":"Taxonomy bundle","kind":"上下文总线回放","meta":"dimensions · sampling units","preview":["与数仓支路同源"],"produced_by":-1,"tone":"blue"},{"name":"schema_overview.json","kind":"数仓结构引用","meta":"64 tables","preview":["知识条目可绑定实际表"],"produced_by":-1,"tone":"blue"}],"operations":[{"label":"规划文档类型","detail":"把业务因子映射为政策、手册、FAQ、培训资料。","outcome":"4 种文档类型","status":"normal"},{"label":"展开文档定义","detail":"逐主题声明标题、章节、事实来源和关联表。","outcome":"65 document definitions","status":"normal"},{"label":"检查双向引用","detail":"保留可审计的软警告，但阻断缺源或非法表引用。","outcome":"passed · 374 soft warnings","status":"normal"}],"outputs":[{"name":"document_catalog.json","kind":"知识目录","meta":"65 definitions · 157 KB","preview":["policy · manual","FAQ · training"],"produced_by":1,"tone":"purple"},{"name":"catalog_validation_report.json","kind":"质量门禁","meta":"overall_passed = true","preview":["soft warnings 374","blocking errors 0"],"produced_by":2,"tone":"green"}],"handoff":"65 份文档定义逐项交给 Step 4.2；下一步不是复制目录，而是按每个定义真正写出正文和索引。","handoff_type":"sequential","replay_ms":780},{"key":"documents","step":"Step 4.2","title":"按目录逐份写出物流知识库","clock":"14:28:30 → 14:31:42","duration":"03:12","branch":"知识支路","inputs":[{"name":"document_catalog.json","kind":"上一步交付","meta":"65 definitions","preview":["标题、章节、事实源、关联表"],"produced_by":-1,"tone":"blue"}],"operations":[{"label":"逐定义生成 Markdown","detail":"生成价格政策、线路 SLA、理赔规范、退货流程、异常件手册等正文。","outcome":"65 Markdown","status":"normal"},{"label":"切分并构建索引","detail":"按章节边界切块，保留文档与 chunk 的可追溯关系。","outcome":"1,587 chunks · 176,139 words","status":"normal"},{"label":"核对目录完整性","detail":"逐项比对 catalog，缺失和额外文档都必须为 0。","outcome":"0 missing · 0 extra","status":"normal"}],"outputs":[{"name":"documents/*.md","kind":"物流知识库","meta":"65 documents","preview":["价格政策 · 线路 SLA","理赔 · 退货 · 异常件"],"produced_by":0,"tone":"purple"},{"name":"document_index.json","kind":"检索索引","meta":"1,587 chunks","preview":["176,139 words","source trace retained"],"produced_by":1,"tone":"blue"},{"name":"document_validation_report.json","kind":"质量门禁","meta":"overall_passed = true","preview":["missing 0 · extra 0"],"produced_by":2,"tone":"green"}],"handoff":"文档正文、chunk 索引和 catalog 一起交给 Step 5.2，知识任务必须能回到具体来源文档。","handoff_type":"sequential","replay_ms":820},{"key":"kb_tasks","step":"Step 5.2","title":"用文档事实生成知识库评测任务","clock":"14:31:42 → 14:33:25","duration":"01:43","branch":"知识支路","inputs":[{"name":"documents/*.md","kind":"上一步交付","meta":"65 documents","preview":["任务证据来自已生成正文"],"produced_by":-1,"tone":"blue"},{"name":"document_index.json","kind":"上一步交付","meta":"1,587 chunks","preview":["每条证据可追溯"],"produced_by":-1,"tone":"blue"},{"name":"document_catalog.json","kind":"目录约束","meta":"65 definitions","preview":["主题与类型覆盖"],"produced_by":-1,"tone":"blue"}],"operations":[{"label":"生成知识候选","detail":"构造单文档、跨文档、时效与多跳检索问题。","outcome":"target 500","status":"normal"},{"label":"事实对齐与去重","detail":"原材料不足时不伪造近重复项，保留真实唯一集合。","outcome":"465 unique","status":"normal"},{"label":"执行知识任务门禁","detail":"检查 source_documents、可答性标签与覆盖结构。","outcome":"8 / 8 通过","status":"normal"}],"outputs":[{"name":"knowledge_tasks.jsonl","kind":"知识任务包","meta":"465 unique","preview":["answerable 365","unanswerable 100"],"produced_by":1,"tone":"purple"},{"name":"knowledge_task_validation.json","kind":"质量门禁","meta":"8 / 8 passed","preview":["failures 0 · warnings 0"],"produced_by":2,"tone":"green"}],"handoff":"知识任务包进入第二个汇合槽；数仓任务包与知识任务包现在同时送往 Step 5.3。","handoff_type":"merge","replay_ms":820},{"key":"hybrid","step":"Step 5.3","title":"混合任务：合并数据库证据与政策证据","clock":"14:33:25 → 14:35:51","duration":"02:26","branch":"双支路汇合","inputs":[{"name":"tasks.jsonl","kind":"数仓缓冲区","meta":"555 DWH tasks","preview":["expected_tables 已绑定"],"produced_by":-1,"tone":"blue"},{"name":"knowledge_tasks.jsonl","kind":"知识缓冲区","meta":"465 KB tasks","preview":["source_documents 已绑定"],"produced_by":-1,"tone":"blue"},{"name":"logistics.sqlite + documents/","kind":"双源环境","meta":"DB + 65 docs","preview":["每条任务必须同时依赖两侧"],"produced_by":-1,"tone":"blue"}],"operations":[{"label":"组装 data → policy","detail":"先由数据库得到运营事实，再用政策判断或解释。","outcome":"171 tasks","status":"normal"},{"label":"组装 policy → data","detail":"先读政策规则，再到数据库核验实际运营数据。","outcome":"156 tasks","status":"normal"},{"label":"组装 compliance check","detail":"把数据库事实直接与政策阈值做合规对照。","outcome":"173 tasks","status":"normal"},{"label":"验证双源覆盖","detail":"每条任务都必须同时有 expected_tables 与 source_documents。","outcome":"500 / 500 passed","status":"normal"}],"outputs":[{"name":"hybrid_tasks.jsonl","kind":"混合任务包","meta":"500 unique","preview":["data→policy 171","policy→data 156 · compliance 173"],"produced_by":2,"tone":"purple"},{"name":"hybrid_validation_report.json","kind":"双源门禁","meta":"500 / 500","preview":["expected_tables nonempty","source_documents nonempty"],"produced_by":3,"tone":"green"}],"handoff":"DB、Docs 与三类任务已经齐备，最后进入冻结器：可运行资产和评测秘密将在这里分层。","handoff_type":"sequential","replay_ms":850},{"key":"freeze","step":"完成","title":"冻结资产、隔离秘密并登记沙箱","clock":"14:35:51","duration":"总计 80:31","branch":"交付边界","inputs":[{"name":"logistics.sqlite","kind":"环境资产","meta":"36,101 rows","preview":["模型运行时需要"],"produced_by":-1,"tone":"blue"},{"name":"documents/ + index","kind":"环境资产","meta":"65 docs · 1,587 chunks","preview":["模型运行时需要"],"produced_by":-1,"tone":"blue"},{"name":"DWH + KB + Hybrid tasks","kind":"评测资产","meta":"555 + 465 + 500","preview":["模型运行时不得看见"],"produced_by":-1,"tone":"blue"}],"operations":[{"label":"计算资产校验和","detail":"为数据库、文档、Schema 和任务包建立不可混淆的版本指纹。","outcome":"checksums ready","status":"normal"},{"label":"分离 raw 与 runner","detail":"raw 保存任务与 hidden gold；runner 只保留模型可见的 DB、Docs、Schema 与 manifest。","outcome":"secret boundary enforced","status":"normal"},{"label":"写入 registry","detail":"登记 sandbox_id、路径、校验和与完成状态。","outcome":"57a3cf55…6c6c","status":"normal"}],"outputs":[{"name":"raw/","kind":"评测者专用","meta":"tasks + hidden gold","preview":["not mounted to model","audit only"],"produced_by":1,"tone":"amber"},{"name":"runner/","kind":"模型可见","meta":"DB + Docs + Schema","preview":["tasks absent","gold absent"],"produced_by":1,"tone":"purple"},{"name":"sandbox_registry.jsonl","kind":"沙箱登记","meta":"status = completed","preview":["sandbox_id = 57a3cf55…6c6c","wall clock = 80:31"],"produced_by":2,"tone":"green"}],"handoff":"生成结束：Rollout Engine 只挂载 runner/ 并核验 registry；raw/ 永远留在模型工作区之外。","handoff_type":"release","replay_ms":850},{"key":"runner","step":"运行边界外","title":"模型进入已经生成好的物流沙箱","clock":"生成后","duration":"不计入 80:31","branch":"Rollout Engine","inputs":[{"name":"runner/","kind":"冻结器交付","meta":"DB + Docs + Schema","preview":["只有模型可见资产"],"produced_by":-1,"tone":"blue"},{"name":"sandbox_registry.jsonl","kind":"登记信息","meta":"sandbox_id + checksums","preview":["挂载前先验证"],"produced_by":-1,"tone":"blue"}],"operations":[{"label":"校验登记与指纹","detail":"拒绝未登记或校验和不一致的环境资产。","outcome":"registry verified","status":"normal"},{"label":"只读挂载 runner","detail":"模型可以查询物流数据库和文档库。","outcome":"sandbox mounted","status":"normal"},{"label":"确认秘密不可见","detail":"tasks、hidden gold、验证 SQL 和原始评测记录不在工作区。","outcome":"leakage surface closed","status":"normal"}],"outputs":[{"name":"live logistics sandbox","kind":"可运行环境","meta":"ready","preview":["logistics.sqlite mounted","65 documents searchable"],"produced_by":1,"tone":"purple"},{"name":"visibility check","kind":"隔离证明","meta":"passed","preview":["tasks hidden","gold hidden"],"produced_by":2,"tone":"green"}],"handoff":"完整重放结束。点击“重新播放”可再次观察每个产物怎样成为下一步的输入。","handoff_type":"end","replay_ms":850}]</script><script id="worldData" type="application/json">[{"key":"intake","principle":"先定义世界边界，再谈世界内容","formula":"W₀ = Boundary(scene_id, source_hash)","inherited":["一段物流业务叙述","尚未区分角色、对象与规则"],"gains":["唯一输入指纹","独立世界边界","可追溯的初始状态"],"capability":"从这一刻起，所有生成物属于同一个物流世界，不能与其他场景串线。","layers":["boundary","",""]},{"key":"prd","principle":"把人的意图变成世界必须支持的观察","formula":"Intent → Actors + Goals + Observations","inherited":["已经隔离的物流世界","业务叙述中的角色与目标"],"gains":["5 类世界观察者","角色所关心的业务目标","可观察问题与覆盖账本","14/14 需求闭环"],"capability":"世界知道谁在观察它、为什么观察，以及哪些现实问题必须能够回答。","layers":["roles","","",""]},{"key":"factor","principle":"世界不是名词表，而是会变化、可行动的系统","formula":"W = (Entities, States, Actions, Invariants)","inherited":["角色、目标与观察需求","尚未形式化的物流业务概念"],"gains":["57 类实体进入世界","76 个状态 + 80 个动作","发现状态引用断裂","修复世界中的非法跃迁","9/9 一致性通过"],"capability":"运单、仓库、线路和承运商不再只是文字：它们拥有状态、可执行动作与合法变化边界。","layers":["entities","states","repair","actions",""]},{"key":"taxonomy","principle":"在同一个世界模型上系统地产生不同情境","formula":"Situations = Sample(W, Dimensions, Constraints)","inherited":["实体、状态、动作与不变量","一个已经可执行但尚未展开的世界"],"gains":["15 条变化轴","115 个情境采样单元","27 条组合约束","覆盖分布归一化"],"capability":"世界获得情境生成器：可以改变区域、时间、产品和状态，但不会组合出业务上不存在的世界。","layers":["taxonomy","","constraints",""]},{"key":"schema","principle":"Schema 是世界状态的投影，不是世界本身","formula":"Persist: World State → 64 Tables","inherited":["业务对象、关系与状态机","受约束的情境空间"],"gains":["规划世界状态分层","把实体关系映射到 64 张表","把状态边界固化为枚举","存储投影一致性通过"],"capability":"世界中每一种状态和关系都有稳定的存储地址，之后产生的事实都能回指语义对象。","layers":["schema","","",""]},{"key":"data","principle":"让世界从类型系统变成有当前状态与历史的实例","formula":"Instantiate(W) → 36,101 Facts","inherited":["64 张表承载的世界结构","状态枚举与引用约束"],"gains":["实例化仓、线、网点与运单","36,101 条事实写入世界","验证状态与关系闭合"],"capability":"物流世界开始运转：运单沿线路移动，仓库和承运商拥有真实可查询的当前状态。","layers":["data","",""]},{"key":"dwh_tasks","principle":"数仓任务是对世界状态的受控观察","formula":"DWH Task = Observe(State(W), EvidencePlan)","inherited":["已经实例化的物流世界","可查询的状态、关系与历史"],"gains":["从世界状态生成 6,000 个观察","按覆盖选择 1,000 个","加入多跳关系观察","收敛为 555 个数仓任务"],"capability":"Step 5.1 数仓任务询问“世界里实际发生了什么”，每个问题都必须落到真实世界状态。","layers":["dwh","","",""]},{"key":"catalog","principle":"现实状态之外，世界还需要规范它的规则层","formula":"Rules(W) = Policies + Manuals + Procedures","inherited":["同源的实体、动作与情境","数仓世界中的真实对象"],"gains":["规划政策、手册、FAQ 与培训","65 条知识定义绑定世界对象","检查规则与对象双向引用"],"capability":"世界获得规范层：不仅知道发生了什么，也开始知道价格、SLA、理赔和异常处理应该怎样。","layers":["rules","",""]},{"key":"documents","principle":"把抽象规则变成世界中可检索、可引用的制度记忆","formula":"Memory(W) = Express(Rules(W))","inherited":["65 条规则与知识定义","规则关联的实体、动作与数据表"],"gains":["写出 65 份制度记忆","切分为 1,587 个可检索证据块","确认规则记忆无缺失"],"capability":"政策不再是标签，而是能够被世界中的角色读取、引用和用于判断的制度记忆。","layers":["docs","",""]},{"key":"kb_tasks","principle":"知识任务是对世界规则与制度记忆的观察","formula":"KB Task = Observe(Rules(W), SourceDocs)","inherited":["可检索的政策与流程记忆","每个规则的来源关系"],"gains":["从规则层生成知识观察","去重后保留 465 个唯一任务","8/8 来源与可答性通过"],"capability":"Step 5.2 知识任务询问“这个世界应该怎样运行”，每个回答都必须回到具体制度来源。","layers":["kb","",""]},{"key":"hybrid","principle":"混合任务把事实世界与规则世界放在同一个判断里","formula":"Hybrid = Compare(State(W), Rules(W))","inherited":["555 个世界状态观察","465 个规则观察","同源 DB + Docs"],"gains":["现实 → 规则：171 个","规则 → 现实：156 个","合规判断：173 个","500/500 双源闭环"],"capability":"Step 5.3 混合任务不再只是查询：它判断现实中的物流运行是否符合世界的规则。","layers":["hybrid","","",""]},{"key":"freeze","principle":"冻结的是完整世界和观察边界，而不是一个文件目录","formula":"Sandbox = Seal(W, Observations, Visibility)","inherited":["实体 + 状态 + 动作 + 约束","事实状态 + 制度规则 + 三类观察"],"gains":["固定世界版本与校验和","隔离可见世界和评测秘密","登记唯一 sandbox_id"],"capability":"世界模型被封装成可重复进入的环境；模型只能看到世界，不能看到评测者预先设计的观察答案。","layers":["freeze","",""]},{"key":"runner","principle":"智能体进入世界，以有限观察和合法动作与世界交互","formula":"Agent ↔ Observe(W) / Act(W)","inherited":["已经冻结的可执行物流世界","明确的可见性与动作边界"],"gains":["验证世界身份","挂载可观察状态与制度记忆","确认秘密处于世界之外"],"capability":"世界建模完成：智能体面对的是会变化、有规则、可行动、可验证的物流世界，而不是一堆文件。","layers":["runner","",""]}]</script>
 <script>
-(() => {
-  'use strict';
-  const stages = JSON.parse(document.getElementById('stageData').textContent);
-  const els = {
-    rail: document.getElementById('stageRail'), step: document.getElementById('stepBadge'),
-    title: document.getElementById('stageTitle'), time: document.getElementById('stageTime'),
-    inputs: document.getElementById('inputList'), operations: document.getElementById('operationList'),
-    outputs: document.getElementById('outputList'), inputCount: document.getElementById('inputCount'),
-    opCount: document.getElementById('opCount'), outputCount: document.getElementById('outputCount'),
-    handoff: document.getElementById('handoffText'), progress: document.getElementById('progressFill'),
-    progressLabel: document.getElementById('progressLabel'), live: document.getElementById('liveStatus'),
-    play: document.getElementById('playBtn'), prev: document.getElementById('prevBtn'),
-    next: document.getElementById('nextBtn'), restart: document.getElementById('restartBtn'),
-    speed: document.getElementById('speedSelect'), curtain: document.getElementById('transitionCurtain'),
-    transitionMessage: document.getElementById('transitionMessage'), inputZone: document.getElementById('inputZone'),
-    factorMemory: document.getElementById('factorMemory'), taxonomyMemory: document.getElementById('taxonomyMemory'),
-    dwhBuffer: document.getElementById('dwhBuffer'), kbBuffer: document.getElementById('kbBuffer')
-  };
-  const state = { stage: 0, op: -1, playing: true, speed: 1, timer: null, transitioning: false };
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  const escapeHtml = value => String(value).replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[char]));
-
-  function artifactCard(item, entering = false) {
-    const preview = item.preview.map(line => `<div>${escapeHtml(line)}</div>`).join('');
-    return `<article class="artifact-card tone-${escapeHtml(item.tone)}${entering ? ' entering output-visible' : ''}" data-artifact="${escapeHtml(item.name)}">
-      <div class="artifact-top"><span class="artifact-name">${escapeHtml(item.name)}</span><span class="artifact-kind">${escapeHtml(item.kind)}</span></div>
-      <div class="artifact-meta">${escapeHtml(item.meta)}</div><div class="artifact-preview">${preview}</div>
-    </article>`;
-  }
-
-  function renderRail() {
-    els.rail.innerHTML = stages.map((stage, index) => {
-      const stateClass = index < state.stage ? 'done' : index === state.stage ? 'current' : '';
-      return `<button type="button" class="stage-tab ${stateClass}" data-index="${index}" aria-current="${index === state.stage ? 'step' : 'false'}">${escapeHtml(stage.step)}<small>${escapeHtml(stage.duration)}</small></button>`;
-    }).join('');
-    els.rail.querySelectorAll('button').forEach(button => button.addEventListener('click', () => jumpTo(Number(button.dataset.index))));
-  }
-
-  function renderBuffers(stage, complete) {
-    const factorReady = state.stage > 2 || (state.stage === 2 && complete);
-    const taxonomyReady = state.stage > 3 || (state.stage === 3 && complete);
-    const dwhReady = state.stage > 6 || (state.stage === 6 && complete);
-    const kbReady = state.stage > 9 || (state.stage === 9 && complete);
-    els.factorMemory.classList.toggle('ready', factorReady);
-    els.taxonomyMemory.classList.toggle('ready', taxonomyReady);
-    els.dwhBuffer.className = `buffer-slot ${dwhReady ? 'ready' : 'empty'}`;
-    els.kbBuffer.className = `buffer-slot ${kbReady ? 'ready' : 'empty'}`;
-    els.dwhBuffer.textContent = dwhReady ? 'DWH · 555 tasks' : 'DWH';
-    els.kbBuffer.textContent = kbReady ? 'Knowledge · 465 tasks' : 'Knowledge';
-  }
-
-  function renderStage() {
-    const stage = stages[state.stage];
-    const complete = state.op >= stage.operations.length - 1;
-    els.step.textContent = `${stage.step} · ${stage.branch}`;
-    els.title.textContent = stage.title;
-    els.time.innerHTML = `${escapeHtml(stage.clock)} <strong>${escapeHtml(stage.duration)}</strong>`;
-    els.inputs.innerHTML = stage.inputs.map(item => artifactCard(item)).join('');
-    els.inputCount.textContent = `${stage.inputs.length} 项`;
-    els.operations.innerHTML = stage.operations.map((op, index) => {
-      const phase = index < state.op ? 'done' : index === state.op ? 'active' : '';
-      const marker = index < state.op ? '✓' : index === state.op ? (op.status === 'error' ? '!' : op.status === 'repair' ? '↻' : '●') : index + 1;
-      return `<div class="operation ${phase} ${escapeHtml(op.status)}">
-        <div class="op-marker">${marker}</div><div><div class="op-label">${escapeHtml(op.label)}</div><div class="op-detail">${escapeHtml(op.detail)}</div></div><div class="op-outcome">${escapeHtml(op.outcome)}</div>
-      </div>`;
-    }).join('');
-    els.opCount.textContent = state.op < 0 ? `0 / ${stage.operations.length}` : `${Math.min(state.op + 1, stage.operations.length)} / ${stage.operations.length}`;
-    const visibleOutputs = stage.outputs.filter(item => item.produced_by <= state.op);
-    els.outputs.innerHTML = visibleOutputs.length
-      ? visibleOutputs.map(item => artifactCard(item, true)).join('')
-      : '<div class="empty-output"><div><strong>还没有产物</strong>动作完成后，文件会在这里逐个生成</div></div>';
-    els.outputCount.textContent = `${visibleOutputs.length} / ${stage.outputs.length}`;
-    els.handoff.innerHTML = complete ? `<strong>本步完成并交付：</strong>${escapeHtml(stage.handoff)}` : '<strong>生成中：</strong>右侧只显示已经真正产生的文件，未完成产物不会提前出现。';
-    const stageFraction = (state.op + 1) / Math.max(stage.operations.length, 1);
-    const totalProgress = ((state.stage + Math.max(0, stageFraction)) / stages.length) * 100;
-    els.progress.style.width = `${Math.min(100, totalProgress)}%`;
-    els.progressLabel.textContent = `${stage.step} · ${state.stage + 1}/${stages.length}`;
-    els.live.textContent = complete ? '本步产物已齐备，准备交付' : state.op < 0 ? '正在读取上一步产物' : `正在执行：${stage.operations[state.op].label}`;
-    els.prev.disabled = state.stage === 0 && state.op <= -1;
-    els.next.disabled = state.transitioning;
-    els.play.textContent = state.playing ? '暂停' : '继续播放';
-    renderRail();
-    renderBuffers(stage, complete);
-  }
-
-  function clearTimer() {
-    if (state.timer !== null) { window.clearTimeout(state.timer); state.timer = null; }
-  }
-
-  function schedule() {
-    clearTimer();
-    if (!state.playing || state.transitioning) return;
-    const stage = stages[state.stage];
-    const delay = (state.op < 0 ? 520 : stage.replay_ms) / state.speed;
-    state.timer = window.setTimeout(tick, delay);
-  }
-
-  function tick() {
-    const stage = stages[state.stage];
-    if (state.op < stage.operations.length - 1) {
-      state.op += 1;
-      renderStage();
-      schedule();
-      return;
-    }
-    if (state.stage === stages.length - 1) {
-      state.playing = false;
-      els.live.textContent = '完整生成重放结束';
-      renderStage();
-      return;
-    }
-    animateHandoff(state.stage + 1);
-  }
-
-  function transferSources(type) {
-    if (type === 'merge') return [els.dwhBuffer, els.kbBuffer];
-    if (type === 'branch-return') return [els.factorMemory, els.taxonomyMemory];
-    return Array.from(els.outputs.querySelectorAll('.output-visible')).slice(-3);
-  }
-
-  function animateHandoff(nextIndex) {
-    if (state.transitioning) return;
-    state.transitioning = true;
-    clearTimer();
-    const current = stages[state.stage];
-    els.transitionMessage.textContent = current.handoff;
-    els.curtain.classList.add('show');
-    const sources = transferSources(current.handoff_type);
-    const target = els.inputZone.getBoundingClientRect();
-    const animations = [];
-    if (!reducedMotion && sources.length) {
-      sources.forEach((source, index) => {
-        const rect = source.getBoundingClientRect();
-        const clone = source.cloneNode(true);
-        clone.classList.add('cargo-clone');
-        clone.style.left = `${rect.left}px`; clone.style.top = `${rect.top}px`;
-        clone.style.width = `${rect.width}px`; clone.style.height = `${rect.height}px`;
-        document.body.appendChild(clone);
-        const dx = target.left + 12 - rect.left;
-        const dy = target.top + 76 + index * 48 - rect.top;
-        const animation = clone.animate([
-          { transform: 'translate(0,0) scale(1)', opacity: 1 },
-          { transform: `translate(${dx * .48}px, ${dy * .28 - 22}px) scale(.88)`, opacity: .96, offset: .45 },
-          { transform: `translate(${dx}px, ${dy}px) scale(.68)`, opacity: .12 }
-        ], { duration: 900 / state.speed, easing: 'cubic-bezier(.35,.05,.18,1)', fill: 'forwards' });
-        animations.push(animation.finished.catch(() => undefined).finally(() => clone.remove()));
-      });
-    }
-    Promise.all(animations).then(() => window.setTimeout(() => {
-      state.stage = nextIndex; state.op = -1; state.transitioning = false;
-      els.curtain.classList.remove('show'); renderStage(); schedule();
-    }, reducedMotion ? 80 : 220 / state.speed));
-  }
-
-  function jumpTo(index) {
-    clearTimer(); state.stage = Math.max(0, Math.min(stages.length - 1, index));
-    state.op = -1; state.transitioning = false; els.curtain.classList.remove('show');
-    renderStage(); schedule();
-  }
-
-  els.play.addEventListener('click', () => { state.playing = !state.playing; renderStage(); schedule(); });
-  els.prev.addEventListener('click', () => jumpTo(state.stage - 1));
-  els.next.addEventListener('click', () => {
-    if (state.op < stages[state.stage].operations.length - 1) { state.op += 1; renderStage(); schedule(); }
-    else if (state.stage < stages.length - 1) animateHandoff(state.stage + 1);
-  });
-  els.restart.addEventListener('click', () => { state.playing = true; jumpTo(0); });
-  els.speed.addEventListener('change', () => { state.speed = Number(els.speed.value); schedule(); });
-  document.addEventListener('keydown', event => {
-    if (event.key === 'ArrowRight') els.next.click();
-    if (event.key === 'ArrowLeft') els.prev.click();
-    if (event.key === ' ') { event.preventDefault(); els.play.click(); }
-  });
-
-  renderStage();
-  requestAnimationFrame(() => schedule());
+(()=>{'use strict';
+const stages=JSON.parse(document.getElementById('stageData').textContent),phases=JSON.parse(document.getElementById('worldData').textContent);
+const navLabels={intake:'准备',prd:'0 · PRD',factor:'1 · Factor',taxonomy:'2 · 情境',schema:'3.1 · Schema',data:'4.1 · 数据',dwh_tasks:'5.1 · 数仓任务',catalog:'3.2 · 规则',documents:'4.2 · 文档',kb_tasks:'5.2 · 知识任务',hybrid:'5.3 · 混合任务',freeze:'冻结',runner:'交付'};
+const els={rail:document.getElementById('stageRail'),step:document.getElementById('stepBadge'),title:document.getElementById('stageTitle'),principle:document.getElementById('principle'),time:document.getElementById('stageTime'),inherit:document.getElementById('inheritList'),formula:document.getElementById('formulaBox'),gains:document.getElementById('gainList'),capability:document.getElementById('capability'),evidence:document.getElementById('evidenceList'),handoff:document.getElementById('handoffText'),progress:document.getElementById('progressFill'),progressLabel:document.getElementById('progressLabel'),live:document.getElementById('liveStatus'),play:document.getElementById('playBtn'),prev:document.getElementById('prevBtn'),next:document.getElementById('nextBtn'),restart:document.getElementById('restartBtn'),endRestart:document.getElementById('endRestartBtn'),speed:document.getElementById('speedSelect'),curtain:document.getElementById('transitionCurtain'),transitionMessage:document.getElementById('transitionMessage'),world:document.getElementById('worldCanvas'),changeTitle:document.getElementById('worldChangeTitle'),changeDetail:document.getElementById('worldChangeDetail'),end:document.getElementById('endOverlay'),particles:document.getElementById('completionParticles')};
+const state={stage:0,op:-1,playing:true,speed:1,timer:null,transitioning:false,finished:false};
+const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+function renderRail(){els.rail.innerHTML=stages.map((s,i)=>`<button type="button" class="stage-tab ${i<state.stage?'done':i===state.stage?'current':''}" data-index="${i}" aria-current="${i===state.stage?'step':'false'}">${esc(navLabels[s.key]||s.step)}<small>${esc(s.duration)}</small></button>`).join('');els.rail.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>jumpTo(Number(b.dataset.index))));}
+function visibleLayers(){const set=new Set();for(let i=0;i<state.stage;i++)phases[i].layers.forEach(x=>{if(x&&x!=='repair')set.add(x)});for(let i=0;i<=state.op;i++){const x=phases[state.stage].layers[i];if(x)set.add(x)}return set;}
+function renderWorld(){const active=phases[state.stage].layers[state.op]||'';const visible=visibleLayers();els.world.querySelectorAll('.world-layer').forEach(layer=>{const key=layer.dataset.layer;layer.classList.toggle('visible',visible.has(key));layer.classList.toggle('current',key===active)});const repair=els.world.querySelector('[data-layer="repair"]');if(state.stage===2&&state.op>=2&&state.op<=3){repair.classList.add('visible');document.getElementById('repairAlert').classList.toggle('resolved',state.op===3);document.getElementById('repairAlert').textContent=state.op===3?'✓ 非法跃迁已修复，世界重新闭合':'⚠ 非法状态跃迁：incident_closed 不存在'}else repair.classList.remove('visible');}
+function renderStage(){const s=stages[state.stage],p=phases[state.stage],complete=state.op>=s.operations.length-1;els.step.textContent=s.key==='dwh_tasks'?'Step 5.1 · 数仓任务':s.key==='hybrid'?'Step 5.3 · 混合任务':`${s.step} · ${s.branch}`;els.title.textContent=s.title;els.principle.textContent=p.principle;els.time.innerHTML=`${esc(s.clock)}<strong>${esc(s.duration)}</strong>`;els.inherit.innerHTML=p.inherited.map((x,i)=>`<div class="concept-chip" style="animation-delay:${i*.08}s">${esc(x)}</div>`).join('');els.formula.textContent=p.formula;els.gains.innerHTML=p.gains.map((gain,i)=>{const phase=i<state.op?'done':i===state.op?'active':'';const marker=i<state.op?'✓':i===state.op?'●':i+1;const op=s.operations[i];return `<div class="gain-step ${phase}"><span class="gain-marker">${marker}</span><div><div class="gain-title">${esc(gain)}</div><div class="gain-op">${esc(op.label)}</div><div class="gain-result">${esc(op.outcome)}</div></div></div>`}).join('');els.capability.classList.toggle('ready',complete);els.capability.querySelector('p').textContent=complete?p.capability:'世界能力正在形成；右侧动作完成后才会成为下一阶段可继承的能力。';const outputs=s.outputs.filter(x=>x.produced_by<=state.op);els.evidence.innerHTML=outputs.map(x=>`<span class="evidence-chip">${esc(x.name)}</span>`).join('')||'<span class="evidence-chip">尚未落盘</span>';els.handoff.innerHTML=complete?`<strong>世界能力交付：</strong>${esc(s.handoff)}`:'<strong>建模中：</strong>主画布正在改变世界的语义结构；文件只记录变化结果。';if(state.op<0){els.changeTitle.textContent='继承上一阶段的世界';els.changeDetail.textContent='等待本阶段第一项建模动作'}else{els.changeTitle.textContent=p.gains[state.op];els.changeDetail.textContent=s.operations[state.op].detail}const frac=(state.op+1)/Math.max(s.operations.length,1),total=((state.stage+Math.max(0,frac))/stages.length)*100;els.progress.style.width=`${state.finished?100:Math.min(100,total)}%`;els.progressLabel.textContent=state.finished?'完成 · 13/13':`${navLabels[s.key]||s.step} · ${state.stage+1}/${stages.length}`;els.live.textContent=state.finished?'✓ 沙箱生成完成':complete?'本阶段世界能力已形成，准备交付':state.op<0?'正在继承世界状态':`正在建模：${p.gains[state.op]}`;els.prev.disabled=state.finished||(state.stage===0&&state.op<0);els.next.disabled=state.finished||state.transitioning;els.play.disabled=state.finished;els.play.textContent=state.finished?'已结束':state.playing?'暂停':'继续播放';renderWorld();renderRail();}
+function clearTimer(){if(state.timer!==null){clearTimeout(state.timer);state.timer=null}}
+function schedule(){clearTimer();if(!state.playing||state.transitioning||state.finished)return;const s=stages[state.stage],delay=(state.op<0?500:s.replay_ms)/state.speed;state.timer=setTimeout(tick,delay)}
+function tick(){const s=stages[state.stage];if(state.op<s.operations.length-1){state.op++;renderStage();schedule();return}if(state.stage===stages.length-1){finishReplay();return}animateHandoff(state.stage+1)}
+function animateHandoff(nextIndex){if(state.transitioning||state.finished)return;state.transitioning=true;clearTimer();const current=stages[state.stage];els.transitionMessage.textContent=current.handoff;els.curtain.classList.add('show');const source=els.capability.getBoundingClientRect(),target=els.inherit.getBoundingClientRect(),sx=source.left+source.width/2,sy=source.top+source.height/2,tx=target.left+target.width/2,ty=target.top+60;const animations=[];if(!reduced){const orb=document.createElement('i');orb.className='transfer-orb';orb.style.left=`${sx}px`;orb.style.top=`${sy}px`;document.body.appendChild(orb);const a=orb.animate([{transform:'translate(0,0) scale(.5)',opacity:0},{transform:`translate(${(tx-sx)*.45}px,${(ty-sy)*.15-45}px) scale(1.5)`,opacity:1,offset:.45},{transform:`translate(${tx-sx}px,${ty-sy}px) scale(.25)`,opacity:.1}],{duration:900/state.speed,easing:'cubic-bezier(.28,.1,.2,1)',fill:'forwards'});animations.push(a.finished.catch(()=>{}).finally(()=>orb.remove()));for(let i=0;i<12;i++){const spark=document.createElement('i');spark.className='transfer-spark';spark.style.left=`${sx}px`;spark.style.top=`${sy}px`;document.body.appendChild(spark);const spread=(i-5.5)*5,sa=spark.animate([{transform:'translate(0,0)',opacity:0},{opacity:1,offset:.2},{transform:`translate(${tx-sx+spread}px,${ty-sy+Math.sin(i)*28}px) scale(.2)`,opacity:0}],{duration:(700+i*22)/state.speed,delay:i*24/state.speed,easing:'ease-out',fill:'forwards'});animations.push(sa.finished.catch(()=>{}).finally(()=>spark.remove()))}}Promise.all(animations).then(()=>setTimeout(()=>{state.stage=nextIndex;state.op=-1;state.transitioning=false;els.curtain.classList.remove('show');renderStage();schedule()},reduced?60:170/state.speed))}
+function completionBurst(){if(reduced)return;els.particles.innerHTML='';for(let i=0;i<30;i++){const dot=document.createElement('i');dot.className='completion-particle';els.particles.appendChild(dot);const angle=(Math.PI*2*i)/30,distance=110+(i%6)*18;dot.animate([{transform:'translate(-50%,-50%) scale(.2)',opacity:0},{opacity:1,offset:.15},{transform:`translate(calc(-50% + ${Math.cos(angle)*distance}px),calc(-50% + ${Math.sin(angle)*distance}px)) scale(.1)`,opacity:0}],{duration:900+(i%5)*90,delay:(i%6)*28,easing:'cubic-bezier(.2,.7,.2,1)',fill:'forwards'})}}
+function finishReplay(){clearTimer();state.finished=true;state.playing=false;state.transitioning=false;document.body.classList.add('is-finished');els.curtain.classList.remove('show');els.end.classList.add('show');completionBurst();renderStage()}
+function jumpTo(index){clearTimer();state.stage=Math.max(0,Math.min(stages.length-1,index));state.op=-1;state.transitioning=false;state.finished=false;document.body.classList.remove('is-finished');els.end.classList.remove('show');els.particles.innerHTML='';renderStage();schedule()}
+function restart(){state.playing=true;jumpTo(0)}
+els.play.addEventListener('click',()=>{if(state.finished)return;state.playing=!state.playing;renderStage();schedule()});els.prev.addEventListener('click',()=>jumpTo(state.stage-1));els.next.addEventListener('click',()=>{const s=stages[state.stage];if(state.op<s.operations.length-1){state.op++;renderStage();schedule()}else if(state.stage<stages.length-1)animateHandoff(state.stage+1);else finishReplay()});els.restart.addEventListener('click',restart);els.endRestart.addEventListener('click',restart);els.speed.addEventListener('change',()=>{state.speed=Number(els.speed.value);schedule()});document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')els.next.click();if(e.key==='ArrowLeft')els.prev.click();if(e.key===' '&&!state.finished){e.preventDefault();els.play.click()}});renderStage();requestAnimationFrame(schedule);
 })();
-</script>
-</body>
-</html>
+</script></body></html>
