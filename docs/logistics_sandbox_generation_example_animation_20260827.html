@@ -1,0 +1,1056 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>物流运营沙箱 · 真实生成重放</title>
+  <style>
+    :root {
+      --page: #07111f;
+      --page-2: #0b1728;
+      --surface: rgba(13, 29, 49, .78);
+      --surface-strong: #10233a;
+      --surface-soft: rgba(22, 43, 68, .68);
+      --text: #eef6ff;
+      --muted: #9fb3c8;
+      --line: #2b4662;
+      --line-dim: #20374f;
+      --cyan: #59d8ff;
+      --blue: #6e92ff;
+      --mint: #54e2b7;
+      --amber: #ffca6a;
+      --pink: #ff8db4;
+      --danger: #ff7777;
+      --shadow: 0 24px 70px rgba(0, 0, 0, .32);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { min-width: 320px; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 14% 8%, rgba(89, 216, 255, .13), transparent 32rem),
+        radial-gradient(circle at 88% 0%, rgba(110, 146, 255, .14), transparent 34rem),
+        linear-gradient(160deg, var(--page), var(--page-2));
+      font-family: Inter, "SF Pro Display", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button, select, input { font: inherit; }
+
+    button, select { color: inherit; }
+
+    .page {
+      width: min(1480px, calc(100% - 36px));
+      margin: 0 auto;
+      padding: 34px 0 44px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 28px;
+      align-items: end;
+      margin-bottom: 22px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 11px;
+      color: var(--cyan);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      width: 22px;
+      height: 2px;
+      content: "";
+      background: currentColor;
+      box-shadow: 9px 0 18px currentColor;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(30px, 4.2vw, 58px);
+      font-weight: 740;
+      letter-spacing: -.045em;
+      line-height: 1.02;
+    }
+
+    .subtitle {
+      max-width: 760px;
+      margin: 13px 0 0;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.72;
+    }
+
+    .scope {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 250px;
+      padding: 13px 16px;
+      border: 1px solid rgba(84, 226, 183, .28);
+      border-radius: 14px;
+      background: rgba(14, 38, 48, .62);
+      color: #c7f7e8;
+      box-shadow: inset 0 1px rgba(255, 255, 255, .04);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .scope-dot {
+      width: 10px;
+      height: 10px;
+      flex: 0 0 auto;
+      border-radius: 999px;
+      background: var(--mint);
+      box-shadow: 0 0 18px rgba(84, 226, 183, .9);
+    }
+
+    .shell {
+      overflow: hidden;
+      border: 1px solid rgba(126, 174, 214, .18);
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(16, 35, 58, .82), rgba(8, 21, 37, .88));
+      box-shadow: var(--shadow), inset 0 1px rgba(255, 255, 255, .045);
+      backdrop-filter: blur(18px);
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: auto minmax(180px, 1fr) auto;
+      gap: 18px;
+      align-items: center;
+      padding: 16px 18px;
+      border-bottom: 1px solid rgba(126, 174, 214, .14);
+      background: rgba(7, 20, 35, .5);
+    }
+
+    .transport { display: flex; gap: 9px; }
+
+    .control-button,
+    .speed-select {
+      min-height: 40px;
+      border: 1px solid rgba(126, 174, 214, .23);
+      border-radius: 10px;
+      background: rgba(24, 48, 75, .72);
+      transition: border-color .18s ease, background .18s ease, transform .18s ease;
+    }
+
+    .control-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 0 14px;
+      cursor: pointer;
+    }
+
+    .control-button:hover {
+      border-color: rgba(89, 216, 255, .65);
+      background: rgba(31, 63, 96, .88);
+      transform: translateY(-1px);
+    }
+
+    .control-button.primary {
+      min-width: 102px;
+      border-color: rgba(89, 216, 255, .45);
+      background: linear-gradient(135deg, rgba(55, 142, 187, .9), rgba(67, 89, 179, .9));
+      font-weight: 700;
+    }
+
+    .button-icon { width: 16px; text-align: center; }
+
+    .progress-wrap {
+      display: grid;
+      grid-template-columns: auto minmax(110px, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      min-width: 0;
+      color: var(--muted);
+      font-size: 12px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--cyan);
+      cursor: pointer;
+    }
+
+    .speed-select { padding: 0 10px; cursor: pointer; }
+
+    .visual-region {
+      position: relative;
+      min-height: 760px;
+      padding: 16px 18px 0;
+      background-image:
+        linear-gradient(rgba(120, 169, 207, .045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(120, 169, 207, .045) 1px, transparent 1px);
+      background-size: 26px 26px;
+    }
+
+    .flow-label {
+      position: absolute;
+      z-index: 2;
+      top: 28px;
+      left: 34px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .flow-label::before {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--cyan);
+      content: "";
+      box-shadow: 0 0 14px rgba(89, 216, 255, .75);
+    }
+
+    #pipelineSvg {
+      display: block;
+      width: 100%;
+      height: auto;
+      min-height: 720px;
+      overflow: visible;
+    }
+
+    .lane-title {
+      fill: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .08em;
+    }
+
+    .lane-line {
+      stroke: var(--line-dim);
+      stroke-width: 1;
+      stroke-dasharray: 4 8;
+    }
+
+    .flow-path {
+      fill: none;
+      stroke: var(--line-dim);
+      stroke-width: 2;
+      stroke-linecap: round;
+      transition: stroke .35s ease, opacity .35s ease;
+    }
+
+    .flow-path.done { stroke: rgba(84, 226, 183, .56); }
+    .flow-path.active { stroke: var(--cyan); filter: drop-shadow(0 0 7px rgba(89, 216, 255, .7)); }
+    .flow-path.external-link { stroke-dasharray: 6 7; }
+
+    .flow-particle {
+      fill: var(--cyan);
+      opacity: 0;
+      filter: drop-shadow(0 0 8px rgba(89, 216, 255, .95));
+    }
+
+    .flow-particle.active { opacity: 1; }
+
+    .stage-card {
+      cursor: pointer;
+      outline: none;
+    }
+
+    .stage-card .node-bg {
+      fill: rgba(13, 31, 51, .95);
+      stroke: var(--line);
+      stroke-width: 1.5;
+      transition: fill .28s ease, stroke .28s ease, filter .28s ease;
+    }
+
+    .stage-card:hover .node-bg,
+    .stage-card:focus-visible .node-bg { stroke: rgba(89, 216, 255, .75); }
+
+    .stage-card.done .node-bg {
+      fill: rgba(22, 57, 59, .92);
+      stroke: rgba(84, 226, 183, .48);
+    }
+
+    .stage-card.active .node-bg {
+      fill: rgba(19, 54, 82, .98);
+      stroke: var(--cyan);
+      stroke-width: 2;
+      filter: drop-shadow(0 0 13px rgba(89, 216, 255, .28));
+    }
+
+    .stage-card.external .node-bg {
+      fill: rgba(31, 29, 52, .92);
+      stroke: rgba(255, 141, 180, .48);
+      stroke-dasharray: 5 5;
+    }
+
+    .stage-card.external.active .node-bg { stroke: var(--pink); }
+
+    .stage-card.dwh .node-bg { stroke: rgba(110, 146, 255, .5); }
+    .stage-card.knowledge .node-bg { stroke: rgba(255, 202, 106, .5); }
+    .stage-card.hybrid .node-bg { stroke: rgba(255, 141, 180, .58); }
+    .stage-card.freeze .node-bg { stroke: rgba(84, 226, 183, .58); }
+
+    .node-step {
+      fill: var(--cyan);
+      font-size: 11px;
+      font-weight: 750;
+      letter-spacing: .08em;
+    }
+
+    .external .node-step { fill: var(--pink); }
+    .dwh .node-step { fill: var(--blue); }
+    .knowledge .node-step { fill: var(--amber); }
+    .hybrid .node-step { fill: var(--pink); }
+    .freeze .node-step { fill: var(--mint); }
+
+    .node-title {
+      fill: var(--text);
+      font-size: 16px;
+      font-weight: 750;
+    }
+
+    .node-subtitle {
+      fill: var(--muted);
+      font-size: 11px;
+    }
+
+    .status-ring {
+      fill: rgba(7, 17, 31, .9);
+      stroke: var(--line);
+      stroke-width: 1.5;
+      transition: stroke .28s ease, fill .28s ease;
+    }
+
+    .done .status-ring { fill: var(--mint); stroke: var(--mint); }
+    .active .status-ring { fill: var(--cyan); stroke: var(--cyan); }
+    .external.active .status-ring { fill: var(--pink); stroke: var(--pink); }
+
+    .status-mark {
+      fill: none;
+      stroke: #061321;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      opacity: 0;
+      transition: opacity .2s ease;
+    }
+
+    .done .status-mark,
+    .active .status-mark { opacity: 1; }
+
+    .active-halo {
+      fill: none;
+      stroke: var(--cyan);
+      stroke-width: 1.5;
+      opacity: 0;
+      transform-box: fill-box;
+      transform-origin: center;
+    }
+
+    .active .active-halo {
+      opacity: .35;
+      animation: halo 1.6s ease-out infinite;
+    }
+
+    .external.active .active-halo { stroke: var(--pink); }
+
+    @keyframes halo {
+      0% { transform: scale(1); opacity: .46; }
+      100% { transform: scale(1.08, 1.14); opacity: 0; }
+    }
+
+    .boundary-line {
+      stroke: rgba(255, 141, 180, .42);
+      stroke-width: 1;
+      stroke-dasharray: 4 7;
+    }
+
+    .boundary-label {
+      fill: var(--pink);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .08em;
+    }
+
+    .mobile-flow { display: none; }
+
+    .mobile-stage {
+      position: relative;
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr);
+      gap: 12px;
+      padding: 0 0 16px;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .mobile-stage:not(:last-child)::after {
+      position: absolute;
+      z-index: 0;
+      top: 32px;
+      bottom: 0;
+      left: 20px;
+      width: 2px;
+      background: var(--line-dim);
+      content: "";
+    }
+
+    .mobile-stage.done:not(:last-child)::after { background: rgba(84, 226, 183, .56); }
+
+    .mobile-index {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      width: 42px;
+      height: 42px;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      background: var(--surface-strong);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .mobile-stage.done .mobile-index { border-color: var(--mint); background: var(--mint); color: #061321; }
+    .mobile-stage.active .mobile-index { border-color: var(--cyan); background: var(--cyan); color: #061321; box-shadow: 0 0 20px rgba(89, 216, 255, .35); }
+    .mobile-stage.external .mobile-index { border-style: dashed; border-color: var(--pink); }
+    .mobile-stage.external.active .mobile-index { background: var(--pink); }
+
+    .mobile-copy { padding-top: 1px; }
+    .mobile-step,
+    .mobile-title,
+    .mobile-subtitle { display: block; }
+    .mobile-step { color: var(--cyan); font-size: 10px; font-weight: 750; letter-spacing: .08em; text-transform: uppercase; }
+    .mobile-stage.external .mobile-step { color: var(--pink); }
+    .mobile-title { margin-top: 3px; font-size: 15px; font-weight: 720; }
+    .mobile-subtitle { margin-top: 3px; color: var(--muted); font-size: 12px; }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(300px, .7fr);
+      gap: 1px;
+      border-top: 1px solid rgba(126, 174, 214, .15);
+      background: rgba(126, 174, 214, .15);
+    }
+
+    .detail-panel,
+    .artifact-panel {
+      min-width: 0;
+      padding: 22px 24px 24px;
+      background: rgba(7, 20, 35, .92);
+    }
+
+    .detail-kicker {
+      color: var(--cyan);
+      font-size: 11px;
+      font-weight: 750;
+      letter-spacing: .11em;
+      text-transform: uppercase;
+    }
+
+    .external-copy .detail-kicker { color: var(--pink); }
+
+    .detail-title {
+      margin: 7px 0 6px;
+      font-size: clamp(20px, 2vw, 28px);
+      font-weight: 740;
+      letter-spacing: -.025em;
+    }
+
+    .detail-copy {
+      max-width: 780px;
+      min-height: 48px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .path-hint {
+      display: inline-flex;
+      max-width: 100%;
+      margin-top: 13px;
+      padding: 7px 9px;
+      overflow-wrap: anywhere;
+      border: 1px solid rgba(126, 174, 214, .16);
+      border-radius: 7px;
+      background: rgba(21, 43, 68, .72);
+      color: #c7d9ea;
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 11px;
+    }
+
+    .artifact-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 13px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 750;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+
+    .artifact-count {
+      color: var(--mint);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .artifacts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      min-height: 70px;
+      align-content: flex-start;
+    }
+
+    .artifact-chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 5px 9px;
+      border: 1px solid rgba(84, 226, 183, .22);
+      border-radius: 7px;
+      background: rgba(17, 52, 55, .58);
+      color: #c6f6e7;
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 11px;
+      animation: chip-in .35s both;
+    }
+
+    .artifact-chip.hidden {
+      border-color: rgba(255, 141, 180, .3);
+      background: rgba(67, 32, 52, .52);
+      color: #ffd1e1;
+    }
+
+    @keyframes chip-in {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .timeline {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(72px, 1fr));
+      gap: 8px;
+      padding: 15px 18px 18px;
+      background: rgba(7, 20, 35, .74);
+    }
+
+    .timeline-button {
+      min-width: 0;
+      padding: 9px 7px;
+      overflow: hidden;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--muted);
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      cursor: pointer;
+      font-size: 10px;
+      transition: color .2s ease, background .2s ease, border-color .2s ease;
+    }
+
+    .timeline-button:hover { color: var(--text); background: rgba(31, 57, 85, .55); }
+    .timeline-button.done { color: #bfeedd; }
+    .timeline-button.active { border-color: rgba(89, 216, 255, .45); background: rgba(32, 78, 111, .55); color: var(--text); }
+    .timeline-button.external.active { border-color: rgba(255, 141, 180, .5); background: rgba(72, 37, 58, .55); }
+
+    .notes {
+      display: grid;
+      grid-template-columns: 210px minmax(0, 1fr);
+      gap: 24px;
+      margin-top: 20px;
+      padding: 0 4px;
+    }
+
+    .notes h2 {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 720;
+    }
+
+    .notes p { margin: 6px 0 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
+
+    .source-list {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .source-list li {
+      display: grid;
+      grid-template-columns: minmax(160px, .45fr) minmax(0, 1fr);
+      gap: 12px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .source-list code {
+      overflow-wrap: anywhere;
+      color: #c6d7e7;
+      font-family: "SFMono-Regular", Consolas, monospace;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; align-items: start; }
+      .scope { width: fit-content; }
+      .controls { grid-template-columns: 1fr; }
+      .progress-wrap { order: 3; }
+      .detail-grid { grid-template-columns: 1fr; }
+      .timeline { grid-template-columns: repeat(7, minmax(64px, 1fr)); }
+      .notes { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 700px) {
+      .page { width: min(100% - 22px, 1480px); padding-top: 22px; }
+      .shell { border-radius: 18px; }
+      .desktop-flow { display: none; }
+      .mobile-flow { display: block; padding: 22px 8px 4px; }
+      .visual-region { min-height: 0; padding: 4px 16px 0; }
+      .flow-label { position: static; margin: 18px 0 0 8px; }
+      .controls { padding: 14px; gap: 13px; }
+      .transport { display: grid; grid-template-columns: 1fr auto; }
+      .control-button.primary { min-width: 0; }
+      .progress-wrap { grid-template-columns: auto minmax(90px, 1fr) auto; }
+      .detail-panel, .artifact-panel { padding: 19px 18px 21px; }
+      .timeline { display: none; }
+      .source-list li { grid-template-columns: 1fr; gap: 2px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .001ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page" id="sandboxAnimation">
+    <header class="hero">
+      <div>
+        <div class="eyebrow">真实运行重放 · v20 · 2026-06-23</div>
+        <h1>一个物流沙箱怎样真实长出来？</h1>
+        <p class="subtitle">重放真实场景 <strong>运营分析-8767b626</strong>：从 7,105 字节的物流说明开始，经历 80 分 31 秒生成实体、状态、64 张表、36,101 行数据、65 份文档和三类评测任务，最后登记为可运行沙箱。</p>
+      </div>
+      <div class="scope"><span class="scope-dot" aria-hidden="true"></span><span><strong>真实结果：completed</strong><br>墙钟 13:15:20 → 14:35:51</span></div>
+    </header>
+
+    <section class="shell" aria-labelledby="animationTitle">
+      <h2 class="sr-only" id="animationTitle">沙箱生成阶段动画</h2>
+      <div class="controls">
+        <div class="transport">
+          <button class="control-button primary" id="playButton" type="button" aria-label="播放沙箱生成动画">
+            <span class="button-icon" id="playIcon" aria-hidden="true">▶</span>
+            <span id="playLabel">播放</span>
+          </button>
+          <button class="control-button" id="restartButton" type="button" aria-label="从头播放">
+            <span aria-hidden="true">↺</span><span>重置</span>
+          </button>
+        </div>
+        <label class="progress-wrap" for="progressRange">
+          <span id="progressStep">01</span>
+          <input id="progressRange" type="range" min="0" max="13" value="0" step="1" aria-label="沙箱生成阶段">
+          <span id="progressTotal">/ 14</span>
+        </label>
+        <label>
+          <span class="sr-only">播放速度</span>
+          <select class="speed-select" id="speedSelect" aria-label="播放速度">
+            <option value="0.6">0.6×</option>
+            <option value="1" selected>1×</option>
+            <option value="1.5">1.5×</option>
+            <option value="2">2×</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="visual-region">
+        <div class="flow-label">logistics sandbox · compressed replay</div>
+        <div class="desktop-flow">
+          <svg id="pipelineSvg" viewBox="0 0 1140 720" role="img" aria-labelledby="svgTitle svgDesc">
+            <title id="svgTitle">物流运营沙箱真实生成流水线</title>
+            <desc id="svgDesc">真实物流运营场景从输入说明开始，生成 PRD、因子与分类体系，再分成数仓和知识库两路，汇合为混合任务并登记为沙箱。</desc>
+            <g id="laneLayer"></g>
+            <g id="connectorLayer"></g>
+            <g id="nodeLayer"></g>
+          </svg>
+        </div>
+        <div class="mobile-flow" id="mobileFlow" aria-label="沙箱生成垂直流程"></div>
+      </div>
+
+      <div class="detail-grid" id="detailGrid">
+        <div class="detail-panel" id="detailPanel">
+          <div class="detail-kicker" id="detailStep">输入</div>
+          <div class="detail-title" id="detailTitle">业务场景说明</div>
+          <p class="detail-copy" id="detailCopy">扫描受支持的业务说明文件，计算内容指纹，并为每个文档创建独立 scene_id。</p>
+          <div class="path-hint" id="pathHint">runtime/document_registry.json</div>
+        </div>
+        <div class="artifact-panel">
+          <div class="artifact-title"><span>本阶段落盘 / 可见资产</span><span class="artifact-count" id="artifactCount">2 files</span></div>
+          <div class="artifacts" id="artifactList"></div>
+        </div>
+      </div>
+
+      <nav class="timeline" id="timeline" aria-label="跳转到生成阶段"></nav>
+      <div class="sr-only" id="liveStatus" aria-live="polite"></div>
+    </section>
+
+    <footer class="notes">
+      <div>
+        <h2>图示依据</h2>
+        <p>按 v20 状态文件、阶段完成摘要和 5 号机归档实物重放；时间和数量均取实际记录。为防泄露，不展示任务正文、hidden gold、SQL、数据库行或凭据。</p>
+      </div>
+      <ul class="source-list" id="sourceList"></ul>
+    </footer>
+  </main>
+
+  <script id="stageData" type="application/json">[{"key":"input","step":"13:15:20","title":"物流运营说明入场","subtitle":"7,105 B · 指纹隔离","detail":"真实输入《运营分析.md》被复制到独立场景 运营分析-8767b626。场景描述德运物流的零担快运网络、五条产品线与分析角色，源文件先计算 SHA256，后续阶段只写本场景目录。","artifacts":["运营分析.md · 7,105 B","scene_id=运营分析-8767b626","sha256=f96fc90c…ca4db","status=running"],"path_hint":".runtime_state/v20/scenes/运营分析-8767b626/input/运营分析.md","x":24,"y":78,"phase":"common","duration_seconds":0,"replay_ms":900,"boundary":"generation"},{"key":"prd","step":"Step 0 · 05:15","title":"物流业务 PRD","subtitle":"5 个文件 · 14/14 通过","detail":"把原始说明展开为全国性零担快运业务规格：仓库经理、网点主管、区域运营负责人、运营分析师和总部管理者；覆盖查询、对比、趋势、归因和探索诊断。","artifacts":["prd_运营分析.md","coverage.json","filled_template.json","validation.json","5 个角色"],"path_hint":"artifacts/pipeline/output/运营分析-8767b626/prd/","x":250,"y":78,"phase":"common","duration_seconds":315,"replay_ms":1300,"boundary":"generation"},{"key":"factor","step":"Step 1 · 51:14","title":"业务因子解耦","subtitle":"本次运行的耗时瓶颈","detail":"从物流 PRD 中抽出运单、仓库、线路、承运商、温度记录等业务对象，建立运单 20 态等状态机并补齐可调用动作；首次验证发现 1 个状态引用错误，修正后 9/9 通过。","artifacts":["57 个实体","76 个状态","80 个工具动作","1 个 hard error 已修复","17 个 soft warnings"],"path_hint":"artifacts/pipeline/output/运营分析-8767b626/factor/","x":476,"y":78,"phase":"common","duration_seconds":3074,"replay_ms":3600,"boundary":"generation"},{"key":"taxonomy","step":"Step 2 · 09:04","title":"任务语义空间","subtitle":"15 维 · 115 采样单元","detail":"把实体、状态和动作组织成可采样语义空间，加入组合约束与四类场景覆盖。真实产物包含 56 个 medium 与 59 个 high 复杂度采样单元，覆盖比例归一化为 1.0000。","artifacts":["15 个变化维度","115 个采样单元","9 条非法约束","6 条必需组合","7/7 校验通过"],"path_hint":"artifacts/pipeline/output/运营分析-8767b626/taxonomy/","x":702,"y":78,"phase":"common","duration_seconds":544,"replay_ms":1800,"boundary":"generation"},{"key":"schema","step":"Step 3.1 · 01:27","title":"物流数仓 Schema","subtitle":"64 张表 · 验证通过","detail":"生成物流数据库结构：6 张平台支撑表、3 张平台事实表、54 张业务事实表和 1 张关系表。核心对象包括运单、路线、承运商、仓库、温控记录、货损与质量事件。","artifacts":["64 tables/*.json","54 张业务事实表","schema_overview.json · 23 KB","validation_rules.json · 14 KB","10/10 校验通过"],"path_hint":"artifacts/pipeline/output/运营分析-8767b626/schema/","x":928,"y":294,"phase":"dwh","duration_seconds":87,"replay_ms":1000,"boundary":"generation"},{"key":"data","step":"Step 4.1 · 02:31","title":"合成物流数据","subtitle":"36,101 行写入 SQLite","detail":"按 Schema 为运单、成本、仓储、配送、温控等表生成 JSONL，再构建 logistics.sqlite。真实 v20 运行写入 36,101 条记录、65 个 JSONL 文件，五步数据校验全部通过。","artifacts":["36,101 条记录","65 个 JSONL","logistics.sqlite","5/5 数据门禁","0 failures"],"path_hint":"artifacts/pipeline/output/运营分析-8767b626/generated_data/","x":702,"y":294,"phase":"dwh","duration_seconds":151,"replay_ms":1300,"boundary":"generation"},{"key":"dwh_tasks","step":"Step 5.1 · 01:29","title":"数仓评测任务","subtitle":"6,000 → 1,000 → 555","detail":"先生成 6,000 个候选任务，再由 TaskSelector 选出 1,000 个，加入 44 个链式任务并做语义去重；最终 tasks.jsonl 保留 555 条，验证报告为 0 error、0 warning。","artifacts":["6,000 候选","1,000 个筛选入围","+44 链式任务","555 条最终任务","hidden gold 不展示"],"path_hint":"artifacts/pipeline/output/运营分析-8767b626/tasks/","x":476,"y":294,"phase":"dwh","duration_seconds":89,"replay_ms":1100,"boundary":"generation"},{"key":"catalog","step":"Step 3.2 · 02:09","title":"物流知识目录","subtitle":"65 份文档定义","detail":"从因子与 taxonomy 派生政策、手册、FAQ、培训等知识目录，并关联实际数仓表。该次运行生成 65 份目录定义；374 个双向引用等 soft warning 被保留审计，但不阻塞下游。","artifacts":["document_catalog.json · 157 KB","65 份文档定义","4 种文档类型","374 soft warnings","overall_passed=true"],"path_hint":"artifacts/pipeline/output/运营分析-8767b626/knowledge_catalog/","x":928,"y":466,"phase":"knowledge","duration_seconds":129,"replay_ms":1100,"boundary":"generation"},{"key":"documents","step":"Step 4.2 · 03:12","title":"合成物流知识库","subtitle":"65 文档 · 1,587 chunks","detail":"按照 catalog 依次生成价格政策、线路 SLA、理赔规范、退货流程、异常件手册等 Markdown 文档，再构建索引。实际得到 176,139 字、1,587 个检索块，缺失文档和额外文档均为 0。","artifacts":["65 个 Markdown","1,587 chunks","176,139 字","document_index.json","0 missing / 0 extra"],"path_hint":"artifacts/pipeline/output/运营分析-8767b626/documents/","x":702,"y":466,"phase":"knowledge","duration_seconds":192,"replay_ms":1400,"boundary":"generation"},{"key":"kb_tasks","step":"Step 5.2 · 01:43","title":"知识库评测任务","subtitle":"500 目标 → 465 唯一任务","detail":"从文档事实生成单文档、跨文档、时效与多跳检索任务。模糊去重后因独立原材料不足保留 465 条，而不是强行补足 500；8 项验证全部通过，无失败和警告。","artifacts":["465 条任务","365 answerable","100 unanswerable","8/8 校验通过","不伪造重复任务"],"path_hint":"artifacts/pipeline/output/运营分析-8767b626/knowledge_tasks/","x":476,"y":466,"phase":"knowledge","duration_seconds":103,"replay_ms":1200,"boundary":"generation"},{"key":"hybrid","step":"Step 5.3 · 02:26","title":"数据 × 政策混合任务","subtitle":"500/500 双源覆盖","detail":"把数据库事实和物流政策文档合在同一任务中：171 条先查数据再对照政策、156 条先查政策再验证数据、173 条执行合规检查。每条都同时绑定 expected_tables 与 source_documents。","artifacts":["500 条唯一任务","data→policy 171","policy→data 156","compliance 173","双源覆盖 100%"],"path_hint":"artifacts/pipeline/output/运营分析-8767b626/hybrid_tasks/","x":250,"y":380,"phase":"hybrid","duration_seconds":146,"replay_ms":1500,"boundary":"generation"},{"key":"freeze","step":"14:35:51 · 总计 80:31","title":"场景完成并登记","subtitle":"sandbox_id 已生成","detail":"十个生成阶段全部完成后，状态文件写入 sandbox_id 57a3cf55…6c6c。新版 freezer 会把任务与 hidden gold 留在 raw 层，只向 runner 暴露数据库、文档、schema dictionary 与 manifest。","artifacts":["scene_status=completed","sandbox_id=57a3cf55…6c6c","raw: tasks + gold","runner: DB + Docs","registry: checksums"],"path_hint":".runtime_state/v20/scenes/运营分析-8767b626/runtime/state.json","x":24,"y":380,"phase":"freeze","duration_seconds":0,"replay_ms":1200,"boundary":"generation"},{"key":"rollout","step":"运行边界外","title":"模型进入物流沙箱","subtitle":"只能看到 runner 资产","detail":"Rollout Engine 校验登记信息后挂载 logistics.sqlite 与文档库。模型可以查询运单和政策，但看不到 tasks.jsonl、gold answer 或验证 SQL；本动画也只展示汇总数字。","artifacts":["logistics.sqlite","documents/","schema_dictionary.md","sandbox_manifest.json","tasks + gold hidden"],"path_hint":"rollout_engine/sandbox_registry.py","x":24,"y":590,"phase":"external","duration_seconds":0,"replay_ms":1000,"boundary":"external"}]</script>
+  <script id="connectionData" type="application/json">[{"from_key":"input","to_key":"prd","route":"auto"},{"from_key":"prd","to_key":"factor","route":"auto"},{"from_key":"factor","to_key":"taxonomy","route":"auto"},{"from_key":"taxonomy","to_key":"schema","route":"auto"},{"from_key":"schema","to_key":"data","route":"auto"},{"from_key":"data","to_key":"dwh_tasks","route":"auto"},{"from_key":"taxonomy","to_key":"catalog","route":"right-rail"},{"from_key":"catalog","to_key":"documents","route":"auto"},{"from_key":"documents","to_key":"kb_tasks","route":"auto"},{"from_key":"dwh_tasks","to_key":"hybrid","route":"merge-left"},{"from_key":"kb_tasks","to_key":"hybrid","route":"merge-left"},{"from_key":"hybrid","to_key":"freeze","route":"auto"},{"from_key":"freeze","to_key":"rollout","route":"auto"}]</script>
+  <script id="sourceData" type="application/json">[{"label":"v20 真实阶段状态、开始/完成时间与 sandbox_id","path":"https://github.com/renjunxiang/sf_my_sandbox/blob/758917009d0ebb0fb36561197171f6abdd279d96/.runtime_state/v20/scenes/运营分析-8767b626/runtime/state.json"},{"label":"v20 各阶段真实执行摘要与验证统计","path":"https://github.com/renjunxiang/sf_my_sandbox/blob/758917009d0ebb0fb36561197171f6abdd279d96/.runtime_state/v20/scenes/运营分析-8767b626/runtime/raw_responses/"},{"label":"本仓库留存的物流 Schema、数据与任务质量摘要","path":"sandbox/v15_qwen38_27b_100_20260821/"},{"label":"5 号机物流沙箱实物归档（DB / Docs / 三类任务）","path":"/data3/llin/qwen3.6-27b-verl-grpo/sandboxes/source/20260628_v15_boss"}]</script>
+  <script>
+    (() => {
+      "use strict";
+
+      const root = document.getElementById("sandboxAnimation");
+      const stages = JSON.parse(document.getElementById("stageData").textContent);
+      const connections = JSON.parse(document.getElementById("connectionData").textContent);
+      const sources = JSON.parse(document.getElementById("sourceData").textContent);
+      const svgNS = "http://www.w3.org/2000/svg";
+      const nodeWidth = 188;
+      const nodeHeight = 108;
+      const stageIndex = new Map(stages.map((stage, index) => [stage.key, index]));
+      const nodes = new Map();
+      const connectionRecords = [];
+      const mobileNodes = new Map();
+      const timelineNodes = new Map();
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const state = { index: 0, playing: false, speed: 1, lastFrame: 0, elapsed: 0 };
+      const defaultStepDuration = 1850;
+
+      const playButton = document.getElementById("playButton");
+      const playIcon = document.getElementById("playIcon");
+      const playLabel = document.getElementById("playLabel");
+      const restartButton = document.getElementById("restartButton");
+      const progressRange = document.getElementById("progressRange");
+      const progressStep = document.getElementById("progressStep");
+      const progressTotal = document.getElementById("progressTotal");
+      const speedSelect = document.getElementById("speedSelect");
+      const detailPanel = document.getElementById("detailPanel");
+      const detailStep = document.getElementById("detailStep");
+      const detailTitle = document.getElementById("detailTitle");
+      const detailCopy = document.getElementById("detailCopy");
+      const pathHint = document.getElementById("pathHint");
+      const artifactList = document.getElementById("artifactList");
+      const artifactCount = document.getElementById("artifactCount");
+      const liveStatus = document.getElementById("liveStatus");
+      const nodeLayer = document.getElementById("nodeLayer");
+      const connectorLayer = document.getElementById("connectorLayer");
+      const laneLayer = document.getElementById("laneLayer");
+      const mobileFlow = document.getElementById("mobileFlow");
+      const timeline = document.getElementById("timeline");
+      const sourceList = document.getElementById("sourceList");
+
+      function svgElement(name, attributes = {}) {
+        const element = document.createElementNS(svgNS, name);
+        Object.entries(attributes).forEach(([key, value]) => element.setAttribute(key, String(value)));
+        return element;
+      }
+
+      function addText(parent, text, className, x, y) {
+        const element = svgElement("text", { x, y, class: className });
+        element.textContent = text;
+        parent.appendChild(element);
+        return element;
+      }
+
+      function connectorPath(from, to, route) {
+        const fromCenter = { x: from.x + nodeWidth / 2, y: from.y + nodeHeight / 2 };
+        const toCenter = { x: to.x + nodeWidth / 2, y: to.y + nodeHeight / 2 };
+        if (route === "right-rail") {
+          const railX = 1130;
+          const startX = from.x + nodeWidth;
+          const endX = to.x + nodeWidth;
+          return `M ${startX} ${fromCenter.y} C ${railX} ${fromCenter.y}, ${railX} ${toCenter.y}, ${endX} ${toCenter.y}`;
+        }
+        if (route === "merge-left") {
+          const startX = from.x;
+          const endX = to.x + nodeWidth;
+          const bendX = (startX + endX) / 2;
+          return `M ${startX} ${fromCenter.y} C ${bendX} ${fromCenter.y}, ${bendX} ${toCenter.y}, ${endX} ${toCenter.y}`;
+        }
+        if (Math.abs(from.y - to.y) < 10) {
+          const forward = to.x > from.x;
+          const startX = forward ? from.x + nodeWidth : from.x;
+          const endX = forward ? to.x : to.x + nodeWidth;
+          return `M ${startX} ${fromCenter.y} L ${endX} ${toCenter.y}`;
+        }
+        const startY = from.y + nodeHeight;
+        const endY = to.y;
+        return `M ${fromCenter.x} ${startY} C ${fromCenter.x} ${startY + 64}, ${toCenter.x} ${endY - 64}, ${toCenter.x} ${endY}`;
+      }
+
+      function buildLanes() {
+        const topTitle = addText(laneLayer, "公共主干 · 规格逐级落盘", "lane-title", 24, 48);
+        topTitle.setAttribute("aria-hidden", "true");
+        laneLayer.appendChild(svgElement("line", { x1: 24, y1: 258, x2: 1116, y2: 258, class: "lane-line" }));
+        const dwhTitle = addText(laneLayer, "DWH 分支", "lane-title", 24, 283);
+        dwhTitle.setAttribute("aria-hidden", "true");
+        const knowledgeTitle = addText(laneLayer, "Knowledge 分支", "lane-title", 24, 455);
+        knowledgeTitle.setAttribute("aria-hidden", "true");
+        laneLayer.appendChild(svgElement("line", { x1: 24, y1: 564, x2: 212, y2: 564, class: "boundary-line" }));
+        const boundary = addText(laneLayer, "生成边界", "boundary-label", 222, 568);
+        boundary.setAttribute("text-anchor", "start");
+      }
+
+      function buildConnectors() {
+        connections.forEach(connection => {
+          const fromKey = connection.from_key;
+          const toKey = connection.to_key;
+          const from = stages[stageIndex.get(fromKey)];
+          const to = stages[stageIndex.get(toKey)];
+          const d = connectorPath(from, to, connection.route);
+          const path = svgElement("path", {
+            d,
+            class: `flow-path${to.boundary === "external" ? " external-link" : ""}`,
+            "data-from": fromKey,
+            "data-to": toKey,
+          });
+          connectorLayer.appendChild(path);
+          const particle = svgElement("circle", { r: 4.5, class: "flow-particle" });
+          connectorLayer.appendChild(particle);
+          connectionRecords.push({ fromKey, toKey, path, particle });
+        });
+      }
+
+      function buildNodes() {
+        stages.forEach((stage, index) => {
+          const group = svgElement("g", {
+            class: `stage-card ${stage.phase}${stage.boundary === "external" ? " external" : ""}`,
+            transform: `translate(${stage.x} ${stage.y})`,
+            role: "button",
+            tabindex: "0",
+            "aria-label": `${stage.step}：${stage.title}。${stage.subtitle}`,
+            "data-key": stage.key,
+          });
+          group.appendChild(svgElement("rect", { x: -5, y: -5, width: nodeWidth + 10, height: nodeHeight + 10, rx: 18, class: "active-halo" }));
+          group.appendChild(svgElement("rect", { width: nodeWidth, height: nodeHeight, rx: 14, class: "node-bg" }));
+          addText(group, stage.step, "node-step", 15, 23);
+          addText(group, stage.title, "node-title", 15, 54);
+          addText(group, stage.subtitle, "node-subtitle", 15, 77);
+          const fileCount = addText(group, `${stage.artifacts.length} 项资产`, "node-subtitle", 15, 96);
+          fileCount.setAttribute("opacity", ".68");
+          group.appendChild(svgElement("circle", { cx: 165, cy: 23, r: 9, class: "status-ring" }));
+          group.appendChild(svgElement("path", { d: "M160.5 23.2 l3 3.1 l5.4 -6.1", class: "status-mark" }));
+          group.addEventListener("click", () => selectStage(index, false));
+          group.addEventListener("keydown", event => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              selectStage(index, false);
+            }
+          });
+          nodeLayer.appendChild(group);
+          nodes.set(stage.key, group);
+        });
+      }
+
+      function buildMobileFlow() {
+        stages.forEach((stage, index) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = `mobile-stage ${stage.phase}${stage.boundary === "external" ? " external" : ""}`;
+          button.setAttribute("aria-label", `${stage.step}：${stage.title}`);
+          button.innerHTML = `<span class="mobile-index">${String(index + 1).padStart(2, "0")}</span><span class="mobile-copy"><span class="mobile-step">${stage.step}</span><span class="mobile-title">${stage.title}</span><span class="mobile-subtitle">${stage.subtitle}</span></span>`;
+          button.addEventListener("click", () => selectStage(index, false));
+          mobileFlow.appendChild(button);
+          mobileNodes.set(stage.key, button);
+        });
+      }
+
+      function buildTimeline() {
+        stages.forEach((stage, index) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = `timeline-button ${stage.phase}${stage.boundary === "external" ? " external" : ""}`;
+          button.textContent = stage.step;
+          button.title = stage.title;
+          button.setAttribute("aria-label", `跳转到 ${stage.step} ${stage.title}`);
+          button.addEventListener("click", () => selectStage(index, false));
+          timeline.appendChild(button);
+          timelineNodes.set(stage.key, button);
+        });
+      }
+
+      function buildSources() {
+        sources.forEach(source => {
+          const item = document.createElement("li");
+          const label = document.createElement("span");
+          const path = document.createElement("code");
+          label.textContent = source.label;
+          path.textContent = source.path;
+          item.append(label, path);
+          sourceList.appendChild(item);
+        });
+      }
+
+      function updateParticle(path, particle, progress) {
+        if (!path || !particle) return;
+        const length = path.getTotalLength();
+        const point = path.getPointAtLength(length * progress);
+        particle.setAttribute("cx", point.x);
+        particle.setAttribute("cy", point.y);
+      }
+
+      function setPlayState(playing) {
+        state.playing = playing;
+        playIcon.textContent = playing ? "Ⅱ" : state.index === stages.length - 1 ? "↺" : "▶";
+        playLabel.textContent = playing ? "暂停" : state.index === stages.length - 1 ? "重播" : "播放";
+        playButton.setAttribute("aria-label", playing ? "暂停沙箱生成动画" : state.index === stages.length - 1 ? "重新播放沙箱生成动画" : "播放沙箱生成动画");
+        if (!playing) state.elapsed = 0;
+      }
+
+      function selectStage(index, keepPlaying) {
+        state.index = Math.max(0, Math.min(stages.length - 1, Number(index)));
+        state.elapsed = 0;
+        if (!keepPlaying) setPlayState(false);
+        render();
+      }
+
+      function render() {
+        const current = stages[state.index];
+        stages.forEach((stage, index) => {
+          const status = index < state.index ? "done" : index === state.index ? "active" : "pending";
+          [nodes.get(stage.key), mobileNodes.get(stage.key), timelineNodes.get(stage.key)].forEach(element => {
+            if (!element) return;
+            element.classList.remove("done", "active", "pending");
+            element.classList.add(status);
+            if (index === state.index) element.setAttribute("aria-current", "step");
+            else element.removeAttribute("aria-current");
+          });
+        });
+
+        connectionRecords.forEach(({ toKey, path, particle }) => {
+          const index = stageIndex.get(toKey);
+          path.classList.remove("done", "active");
+          particle.classList.remove("active");
+          if (index < state.index) path.classList.add("done");
+          if (index === state.index) {
+            path.classList.add("active");
+            particle.classList.add("active");
+            updateParticle(path, particle, .72);
+          }
+        });
+
+        detailPanel.classList.toggle("external-copy", current.boundary === "external");
+        detailStep.textContent = current.step;
+        detailTitle.textContent = current.title;
+        detailCopy.textContent = current.detail;
+        pathHint.textContent = current.path_hint;
+        artifactList.replaceChildren();
+        current.artifacts.forEach((artifact, index) => {
+          const chip = document.createElement("span");
+          chip.className = `artifact-chip${artifact.includes("hidden") ? " hidden" : ""}`;
+          chip.textContent = artifact;
+          chip.style.animationDelay = `${index * 70}ms`;
+          artifactList.appendChild(chip);
+        });
+        artifactCount.textContent = `${current.artifacts.length} items`;
+        progressRange.value = String(state.index);
+        progressStep.textContent = String(state.index + 1).padStart(2, "0");
+        liveStatus.textContent = `第 ${state.index + 1} 阶段，共 ${stages.length} 阶段：${current.step}，${current.title}。${current.detail}`;
+      }
+
+      function animate(timestamp) {
+        if (!state.lastFrame) state.lastFrame = timestamp;
+        const delta = Math.min(80, timestamp - state.lastFrame);
+        state.lastFrame = timestamp;
+        if (state.playing) {
+          state.elapsed += delta * state.speed;
+          const currentStage = stages[state.index];
+          connectionRecords
+            .filter(record => record.toKey === currentStage.key)
+            .forEach(({ path, particle }) => updateParticle(path, particle, Math.min(1, state.elapsed / (currentStage.replay_ms || defaultStepDuration))));
+          if (state.elapsed >= (currentStage.replay_ms || defaultStepDuration)) {
+            state.elapsed = 0;
+            if (state.index < stages.length - 1) {
+              state.index += 1;
+              render();
+            } else {
+              setPlayState(false);
+              render();
+            }
+          }
+        }
+        window.requestAnimationFrame(animate);
+      }
+
+      playButton.addEventListener("click", () => {
+        if (!state.playing && state.index === stages.length - 1) state.index = 0;
+        setPlayState(!state.playing);
+        render();
+      });
+      restartButton.addEventListener("click", () => selectStage(0, false));
+      progressRange.addEventListener("input", event => selectStage(event.target.value, false));
+      speedSelect.addEventListener("change", event => { state.speed = Number(event.target.value); });
+      root.addEventListener("keydown", event => {
+        if (event.target.matches("input, select, button")) return;
+        if (event.key === "ArrowRight") selectStage(state.index + 1, false);
+        if (event.key === "ArrowLeft") selectStage(state.index - 1, false);
+      });
+
+      buildLanes();
+      buildConnectors();
+      buildNodes();
+      buildMobileFlow();
+      buildTimeline();
+      buildSources();
+      progressRange.max = String(stages.length - 1);
+      progressTotal.textContent = `/ ${stages.length}`;
+      render();
+      if (!reducedMotion) setPlayState(true);
+      window.requestAnimationFrame(animate);
+    })();
+  </script>
+</body>
+</html>

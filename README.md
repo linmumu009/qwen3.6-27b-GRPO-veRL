@@ -2,6 +2,12 @@
 
 Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
+## v1.12.37（2026-08-27）
+
+- 新增物流运营沙箱真实生成重放动态图：依据私有 `sf_my_sandbox` 的 v20 场景 `运营分析-8767b626` 状态、阶段执行摘要及 5 号机物流沙箱实物，按真实墙钟重放 13:15:20–14:35:51 的 80 分 31 秒生成过程。
+- 动画保留真实运行中的产量、收敛和修错信息：Factor 阶段 51 分 14 秒及 1 个 hard error 修复、64 张表与 36,101 行合成数据、65 份/1,587 chunks 文档、555 个数仓任务、465 个知识任务和 500 个双源 Hybrid 任务；任务正文、hidden gold、SQL 与数据库行继续不落图。
+- 新增确定性渲染器与 3 项回归；与通用沙箱动画合计 `6 passed`，桌面和 390px 窄屏实际渲染无横向溢出，浏览器控制台无警告或错误。
+
 ## v1.12.36（2026-08-27）
 
 - 只读对照私有 GitHub `sf_my_sandbox` 的 `main@7589170` 与 5 号机 `20260814` 源码快照，确认 GitHub 版更新并将其作为动画权威源；动态图升级为公共主干、DWH/Knowledge 双分支、Hybrid 汇合和独立 Rollout 的完整 14 阶段图。
@@ -180,6 +186,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 目录
 
+- [`docs/logistics_sandbox_generation_example_animation_20260827.html`](docs/logistics_sandbox_generation_example_animation_20260827.html)：真实重放物流运营场景从 7,105 B 输入说明到 PRD、Factor、Taxonomy、数仓/知识库双分支、Hybrid、冻结登记及 Rollout 的完整过程；由 [`scripts/render_logistics_sandbox_example_animation.py`](scripts/render_logistics_sandbox_example_animation.py) 确定性生成。
 - [`docs/sandbox_generation_animation_20260827.html`](docs/sandbox_generation_animation_20260827.html)：依据 GitHub `sf_my_sandbox main@7589170` 绘制、以 5 号机快照作历史对照的沙箱生成动态图；可播放/拖动查看公共主干、DWH/Knowledge 双分支、Hybrid 汇合、三层冻结和独立 Rollout 边界，源文件由 [`scripts/render_sandbox_generation_animation.py`](scripts/render_sandbox_generation_animation.py) 确定性生成。
 - [`docs/training_experiment_report_20260731.md`](docs/training_experiment_report_20260731.md)：从初始环境、数据改造、十余次关键尝试到最终 One-Step 与 bounded fully-async 跑通的完整复盘报告。
 - [`docs/trajectory_rollout_investigation_20260731.html`](docs/trajectory_rollout_investigation_20260731.html)：同 prompt 轨迹长度对比、长尾 rollout 超时、完整 GRPO group 队列与 vLLM 真取消方案的可交互调查报告。
