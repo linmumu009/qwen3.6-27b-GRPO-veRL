@@ -1,1056 +1,394 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="color-scheme" content="light dark">
-  <title>物流运营沙箱 · 真实生成重放</title>
-  <style>
-    :root {
-      --page: #07111f;
-      --page-2: #0b1728;
-      --surface: rgba(13, 29, 49, .78);
-      --surface-strong: #10233a;
-      --surface-soft: rgba(22, 43, 68, .68);
-      --text: #eef6ff;
-      --muted: #9fb3c8;
-      --line: #2b4662;
-      --line-dim: #20374f;
-      --cyan: #59d8ff;
-      --blue: #6e92ff;
-      --mint: #54e2b7;
-      --amber: #ffca6a;
-      --pink: #ff8db4;
-      --danger: #ff7777;
-      --shadow: 0 24px 70px rgba(0, 0, 0, .32);
-    }
-
-    * { box-sizing: border-box; }
-
-    html { min-width: 320px; }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      color: var(--text);
-      background:
-        radial-gradient(circle at 14% 8%, rgba(89, 216, 255, .13), transparent 32rem),
-        radial-gradient(circle at 88% 0%, rgba(110, 146, 255, .14), transparent 34rem),
-        linear-gradient(160deg, var(--page), var(--page-2));
-      font-family: Inter, "SF Pro Display", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    button, select, input { font: inherit; }
-
-    button, select { color: inherit; }
-
-    .page {
-      width: min(1480px, calc(100% - 36px));
-      margin: 0 auto;
-      padding: 34px 0 44px;
-    }
-
-    .hero {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      gap: 28px;
-      align-items: end;
-      margin-bottom: 22px;
-    }
-
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 9px;
-      margin-bottom: 11px;
-      color: var(--cyan);
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: .16em;
-      text-transform: uppercase;
-    }
-
-    .eyebrow::before {
-      width: 22px;
-      height: 2px;
-      content: "";
-      background: currentColor;
-      box-shadow: 9px 0 18px currentColor;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: clamp(30px, 4.2vw, 58px);
-      font-weight: 740;
-      letter-spacing: -.045em;
-      line-height: 1.02;
-    }
-
-    .subtitle {
-      max-width: 760px;
-      margin: 13px 0 0;
-      color: var(--muted);
-      font-size: 16px;
-      line-height: 1.72;
-    }
-
-    .scope {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      min-width: 250px;
-      padding: 13px 16px;
-      border: 1px solid rgba(84, 226, 183, .28);
-      border-radius: 14px;
-      background: rgba(14, 38, 48, .62);
-      color: #c7f7e8;
-      box-shadow: inset 0 1px rgba(255, 255, 255, .04);
-      font-size: 13px;
-      line-height: 1.45;
-    }
-
-    .scope-dot {
-      width: 10px;
-      height: 10px;
-      flex: 0 0 auto;
-      border-radius: 999px;
-      background: var(--mint);
-      box-shadow: 0 0 18px rgba(84, 226, 183, .9);
-    }
-
-    .shell {
-      overflow: hidden;
-      border: 1px solid rgba(126, 174, 214, .18);
-      border-radius: 24px;
-      background: linear-gradient(180deg, rgba(16, 35, 58, .82), rgba(8, 21, 37, .88));
-      box-shadow: var(--shadow), inset 0 1px rgba(255, 255, 255, .045);
-      backdrop-filter: blur(18px);
-    }
-
-    .controls {
-      display: grid;
-      grid-template-columns: auto minmax(180px, 1fr) auto;
-      gap: 18px;
-      align-items: center;
-      padding: 16px 18px;
-      border-bottom: 1px solid rgba(126, 174, 214, .14);
-      background: rgba(7, 20, 35, .5);
-    }
-
-    .transport { display: flex; gap: 9px; }
-
-    .control-button,
-    .speed-select {
-      min-height: 40px;
-      border: 1px solid rgba(126, 174, 214, .23);
-      border-radius: 10px;
-      background: rgba(24, 48, 75, .72);
-      transition: border-color .18s ease, background .18s ease, transform .18s ease;
-    }
-
-    .control-button {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 0 14px;
-      cursor: pointer;
-    }
-
-    .control-button:hover {
-      border-color: rgba(89, 216, 255, .65);
-      background: rgba(31, 63, 96, .88);
-      transform: translateY(-1px);
-    }
-
-    .control-button.primary {
-      min-width: 102px;
-      border-color: rgba(89, 216, 255, .45);
-      background: linear-gradient(135deg, rgba(55, 142, 187, .9), rgba(67, 89, 179, .9));
-      font-weight: 700;
-    }
-
-    .button-icon { width: 16px; text-align: center; }
-
-    .progress-wrap {
-      display: grid;
-      grid-template-columns: auto minmax(110px, 1fr) auto;
-      gap: 12px;
-      align-items: center;
-      min-width: 0;
-      color: var(--muted);
-      font-size: 12px;
-      font-variant-numeric: tabular-nums;
-    }
-
-    input[type="range"] {
-      width: 100%;
-      accent-color: var(--cyan);
-      cursor: pointer;
-    }
-
-    .speed-select { padding: 0 10px; cursor: pointer; }
-
-    .visual-region {
-      position: relative;
-      min-height: 760px;
-      padding: 16px 18px 0;
-      background-image:
-        linear-gradient(rgba(120, 169, 207, .045) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(120, 169, 207, .045) 1px, transparent 1px);
-      background-size: 26px 26px;
-    }
-
-    .flow-label {
-      position: absolute;
-      z-index: 2;
-      top: 28px;
-      left: 34px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: var(--muted);
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-    }
-
-    .flow-label::before {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--cyan);
-      content: "";
-      box-shadow: 0 0 14px rgba(89, 216, 255, .75);
-    }
-
-    #pipelineSvg {
-      display: block;
-      width: 100%;
-      height: auto;
-      min-height: 720px;
-      overflow: visible;
-    }
-
-    .lane-title {
-      fill: var(--muted);
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: .08em;
-    }
-
-    .lane-line {
-      stroke: var(--line-dim);
-      stroke-width: 1;
-      stroke-dasharray: 4 8;
-    }
-
-    .flow-path {
-      fill: none;
-      stroke: var(--line-dim);
-      stroke-width: 2;
-      stroke-linecap: round;
-      transition: stroke .35s ease, opacity .35s ease;
-    }
-
-    .flow-path.done { stroke: rgba(84, 226, 183, .56); }
-    .flow-path.active { stroke: var(--cyan); filter: drop-shadow(0 0 7px rgba(89, 216, 255, .7)); }
-    .flow-path.external-link { stroke-dasharray: 6 7; }
-
-    .flow-particle {
-      fill: var(--cyan);
-      opacity: 0;
-      filter: drop-shadow(0 0 8px rgba(89, 216, 255, .95));
-    }
-
-    .flow-particle.active { opacity: 1; }
-
-    .stage-card {
-      cursor: pointer;
-      outline: none;
-    }
-
-    .stage-card .node-bg {
-      fill: rgba(13, 31, 51, .95);
-      stroke: var(--line);
-      stroke-width: 1.5;
-      transition: fill .28s ease, stroke .28s ease, filter .28s ease;
-    }
-
-    .stage-card:hover .node-bg,
-    .stage-card:focus-visible .node-bg { stroke: rgba(89, 216, 255, .75); }
-
-    .stage-card.done .node-bg {
-      fill: rgba(22, 57, 59, .92);
-      stroke: rgba(84, 226, 183, .48);
-    }
-
-    .stage-card.active .node-bg {
-      fill: rgba(19, 54, 82, .98);
-      stroke: var(--cyan);
-      stroke-width: 2;
-      filter: drop-shadow(0 0 13px rgba(89, 216, 255, .28));
-    }
-
-    .stage-card.external .node-bg {
-      fill: rgba(31, 29, 52, .92);
-      stroke: rgba(255, 141, 180, .48);
-      stroke-dasharray: 5 5;
-    }
-
-    .stage-card.external.active .node-bg { stroke: var(--pink); }
-
-    .stage-card.dwh .node-bg { stroke: rgba(110, 146, 255, .5); }
-    .stage-card.knowledge .node-bg { stroke: rgba(255, 202, 106, .5); }
-    .stage-card.hybrid .node-bg { stroke: rgba(255, 141, 180, .58); }
-    .stage-card.freeze .node-bg { stroke: rgba(84, 226, 183, .58); }
-
-    .node-step {
-      fill: var(--cyan);
-      font-size: 11px;
-      font-weight: 750;
-      letter-spacing: .08em;
-    }
-
-    .external .node-step { fill: var(--pink); }
-    .dwh .node-step { fill: var(--blue); }
-    .knowledge .node-step { fill: var(--amber); }
-    .hybrid .node-step { fill: var(--pink); }
-    .freeze .node-step { fill: var(--mint); }
-
-    .node-title {
-      fill: var(--text);
-      font-size: 16px;
-      font-weight: 750;
-    }
-
-    .node-subtitle {
-      fill: var(--muted);
-      font-size: 11px;
-    }
-
-    .status-ring {
-      fill: rgba(7, 17, 31, .9);
-      stroke: var(--line);
-      stroke-width: 1.5;
-      transition: stroke .28s ease, fill .28s ease;
-    }
-
-    .done .status-ring { fill: var(--mint); stroke: var(--mint); }
-    .active .status-ring { fill: var(--cyan); stroke: var(--cyan); }
-    .external.active .status-ring { fill: var(--pink); stroke: var(--pink); }
-
-    .status-mark {
-      fill: none;
-      stroke: #061321;
-      stroke-width: 2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      opacity: 0;
-      transition: opacity .2s ease;
-    }
-
-    .done .status-mark,
-    .active .status-mark { opacity: 1; }
-
-    .active-halo {
-      fill: none;
-      stroke: var(--cyan);
-      stroke-width: 1.5;
-      opacity: 0;
-      transform-box: fill-box;
-      transform-origin: center;
-    }
-
-    .active .active-halo {
-      opacity: .35;
-      animation: halo 1.6s ease-out infinite;
-    }
-
-    .external.active .active-halo { stroke: var(--pink); }
-
-    @keyframes halo {
-      0% { transform: scale(1); opacity: .46; }
-      100% { transform: scale(1.08, 1.14); opacity: 0; }
-    }
-
-    .boundary-line {
-      stroke: rgba(255, 141, 180, .42);
-      stroke-width: 1;
-      stroke-dasharray: 4 7;
-    }
-
-    .boundary-label {
-      fill: var(--pink);
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: .08em;
-    }
-
-    .mobile-flow { display: none; }
-
-    .mobile-stage {
-      position: relative;
-      display: grid;
-      grid-template-columns: 42px minmax(0, 1fr);
-      gap: 12px;
-      padding: 0 0 16px;
-      border: 0;
-      background: transparent;
-      color: inherit;
-      text-align: left;
-      cursor: pointer;
-    }
-
-    .mobile-stage:not(:last-child)::after {
-      position: absolute;
-      z-index: 0;
-      top: 32px;
-      bottom: 0;
-      left: 20px;
-      width: 2px;
-      background: var(--line-dim);
-      content: "";
-    }
-
-    .mobile-stage.done:not(:last-child)::after { background: rgba(84, 226, 183, .56); }
-
-    .mobile-index {
-      position: relative;
-      z-index: 1;
-      display: grid;
-      width: 42px;
-      height: 42px;
-      place-items: center;
-      border: 1px solid var(--line);
-      border-radius: 50%;
-      background: var(--surface-strong);
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 700;
-    }
-
-    .mobile-stage.done .mobile-index { border-color: var(--mint); background: var(--mint); color: #061321; }
-    .mobile-stage.active .mobile-index { border-color: var(--cyan); background: var(--cyan); color: #061321; box-shadow: 0 0 20px rgba(89, 216, 255, .35); }
-    .mobile-stage.external .mobile-index { border-style: dashed; border-color: var(--pink); }
-    .mobile-stage.external.active .mobile-index { background: var(--pink); }
-
-    .mobile-copy { padding-top: 1px; }
-    .mobile-step,
-    .mobile-title,
-    .mobile-subtitle { display: block; }
-    .mobile-step { color: var(--cyan); font-size: 10px; font-weight: 750; letter-spacing: .08em; text-transform: uppercase; }
-    .mobile-stage.external .mobile-step { color: var(--pink); }
-    .mobile-title { margin-top: 3px; font-size: 15px; font-weight: 720; }
-    .mobile-subtitle { margin-top: 3px; color: var(--muted); font-size: 12px; }
-
-    .detail-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1.3fr) minmax(300px, .7fr);
-      gap: 1px;
-      border-top: 1px solid rgba(126, 174, 214, .15);
-      background: rgba(126, 174, 214, .15);
-    }
-
-    .detail-panel,
-    .artifact-panel {
-      min-width: 0;
-      padding: 22px 24px 24px;
-      background: rgba(7, 20, 35, .92);
-    }
-
-    .detail-kicker {
-      color: var(--cyan);
-      font-size: 11px;
-      font-weight: 750;
-      letter-spacing: .11em;
-      text-transform: uppercase;
-    }
-
-    .external-copy .detail-kicker { color: var(--pink); }
-
-    .detail-title {
-      margin: 7px 0 6px;
-      font-size: clamp(20px, 2vw, 28px);
-      font-weight: 740;
-      letter-spacing: -.025em;
-    }
-
-    .detail-copy {
-      max-width: 780px;
-      min-height: 48px;
-      margin: 0;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.7;
-    }
-
-    .path-hint {
-      display: inline-flex;
-      max-width: 100%;
-      margin-top: 13px;
-      padding: 7px 9px;
-      overflow-wrap: anywhere;
-      border: 1px solid rgba(126, 174, 214, .16);
-      border-radius: 7px;
-      background: rgba(21, 43, 68, .72);
-      color: #c7d9ea;
-      font-family: "SFMono-Regular", Consolas, monospace;
-      font-size: 11px;
-    }
-
-    .artifact-title {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 13px;
-      color: var(--muted);
-      font-size: 11px;
-      font-weight: 750;
-      letter-spacing: .1em;
-      text-transform: uppercase;
-    }
-
-    .artifact-count {
-      color: var(--mint);
-      font-variant-numeric: tabular-nums;
-    }
-
-    .artifacts {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      min-height: 70px;
-      align-content: flex-start;
-    }
-
-    .artifact-chip {
-      display: inline-flex;
-      align-items: center;
-      min-height: 30px;
-      padding: 5px 9px;
-      border: 1px solid rgba(84, 226, 183, .22);
-      border-radius: 7px;
-      background: rgba(17, 52, 55, .58);
-      color: #c6f6e7;
-      font-family: "SFMono-Regular", Consolas, monospace;
-      font-size: 11px;
-      animation: chip-in .35s both;
-    }
-
-    .artifact-chip.hidden {
-      border-color: rgba(255, 141, 180, .3);
-      background: rgba(67, 32, 52, .52);
-      color: #ffd1e1;
-    }
-
-    @keyframes chip-in {
-      from { opacity: 0; transform: translateY(5px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .timeline {
-      display: grid;
-      grid-template-columns: repeat(7, minmax(72px, 1fr));
-      gap: 8px;
-      padding: 15px 18px 18px;
-      background: rgba(7, 20, 35, .74);
-    }
-
-    .timeline-button {
-      min-width: 0;
-      padding: 9px 7px;
-      overflow: hidden;
-      border: 1px solid transparent;
-      border-radius: 8px;
-      background: transparent;
-      color: var(--muted);
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      cursor: pointer;
-      font-size: 10px;
-      transition: color .2s ease, background .2s ease, border-color .2s ease;
-    }
-
-    .timeline-button:hover { color: var(--text); background: rgba(31, 57, 85, .55); }
-    .timeline-button.done { color: #bfeedd; }
-    .timeline-button.active { border-color: rgba(89, 216, 255, .45); background: rgba(32, 78, 111, .55); color: var(--text); }
-    .timeline-button.external.active { border-color: rgba(255, 141, 180, .5); background: rgba(72, 37, 58, .55); }
-
-    .notes {
-      display: grid;
-      grid-template-columns: 210px minmax(0, 1fr);
-      gap: 24px;
-      margin-top: 20px;
-      padding: 0 4px;
-    }
-
-    .notes h2 {
-      margin: 0;
-      font-size: 14px;
-      font-weight: 720;
-    }
-
-    .notes p { margin: 6px 0 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
-
-    .source-list {
-      display: grid;
-      gap: 8px;
-      margin: 0;
-      padding: 0;
-      list-style: none;
-    }
-
-    .source-list li {
-      display: grid;
-      grid-template-columns: minmax(160px, .45fr) minmax(0, 1fr);
-      gap: 12px;
-      color: var(--muted);
-      font-size: 11px;
-      line-height: 1.5;
-    }
-
-    .source-list code {
-      overflow-wrap: anywhere;
-      color: #c6d7e7;
-      font-family: "SFMono-Regular", Consolas, monospace;
-    }
-
-    .sr-only {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
-      border: 0;
-    }
-
-    @media (max-width: 900px) {
-      .hero { grid-template-columns: 1fr; align-items: start; }
-      .scope { width: fit-content; }
-      .controls { grid-template-columns: 1fr; }
-      .progress-wrap { order: 3; }
-      .detail-grid { grid-template-columns: 1fr; }
-      .timeline { grid-template-columns: repeat(7, minmax(64px, 1fr)); }
-      .notes { grid-template-columns: 1fr; }
-    }
-
-    @media (max-width: 700px) {
-      .page { width: min(100% - 22px, 1480px); padding-top: 22px; }
-      .shell { border-radius: 18px; }
-      .desktop-flow { display: none; }
-      .mobile-flow { display: block; padding: 22px 8px 4px; }
-      .visual-region { min-height: 0; padding: 4px 16px 0; }
-      .flow-label { position: static; margin: 18px 0 0 8px; }
-      .controls { padding: 14px; gap: 13px; }
-      .transport { display: grid; grid-template-columns: 1fr auto; }
-      .control-button.primary { min-width: 0; }
-      .progress-wrap { grid-template-columns: auto minmax(90px, 1fr) auto; }
-      .detail-panel, .artifact-panel { padding: 19px 18px 21px; }
-      .timeline { display: none; }
-      .source-list li { grid-template-columns: 1fr; gap: 2px; }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        scroll-behavior: auto !important;
-        animation-duration: .001ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: .001ms !important;
-      }
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>物流沙箱生成实录 · 产物如何逐步长出来</title>
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #07101f;
+  --panel: #0d192b;
+  --panel-2: #111f34;
+  --line: #263a56;
+  --text: #eef5ff;
+  --muted: #9eb0c8;
+  --blue: #60a5fa;
+  --purple: #b18cff;
+  --green: #51d69a;
+  --amber: #f4bf5f;
+  --red: #ff7185;
+  --cyan: #54d4e8;
+}
+* { box-sizing: border-box; }
+html { background: var(--bg); }
+body {
+  margin: 0;
+  min-width: 1180px;
+  color: var(--text);
+  background:
+    radial-gradient(circle at 15% 0%, rgba(96,165,250,.12), transparent 32%),
+    radial-gradient(circle at 85% 8%, rgba(177,140,255,.10), transparent 30%),
+    var(--bg);
+  font-family: Inter, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+}
+button, select { font: inherit; }
+button:focus-visible, select:focus-visible { outline: 3px solid rgba(96,165,250,.55); outline-offset: 2px; }
+.app { width: 100%; min-height: 100vh; padding: 24px 30px 22px; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+.topbar { display: flex; align-items: flex-start; justify-content: space-between; gap: 30px; }
+.eyebrow { color: var(--cyan); font-size: 12px; letter-spacing: .16em; text-transform: uppercase; margin-bottom: 7px; }
+h1 { margin: 0; font-size: 30px; font-weight: 600; letter-spacing: -.02em; }
+.lede { margin: 8px 0 0; color: var(--muted); max-width: 820px; font-size: 14px; line-height: 1.65; }
+.run-fact { min-width: 280px; padding: 12px 15px; background: rgba(17,31,52,.8); border: 1px solid var(--line); border-radius: 12px; }
+.run-fact strong { display: block; font-size: 14px; margin-bottom: 4px; }
+.run-fact span { color: var(--muted); font-size: 12px; }
+.controls { margin-top: 18px; display: flex; align-items: center; gap: 8px; }
+.control-btn, .speed-select {
+  border: 1px solid var(--line); color: var(--text); background: var(--panel-2);
+  border-radius: 8px; min-height: 36px; padding: 7px 12px; cursor: pointer;
+}
+.control-btn.primary { background: #eaf3ff; color: #091321; border-color: #eaf3ff; min-width: 92px; }
+.control-btn:hover, .speed-select:hover { border-color: #4d6b90; }
+.control-btn:disabled { opacity: .38; cursor: default; }
+.progress-wrap { flex: 1; margin-left: 10px; }
+.progress-meta { display: flex; justify-content: space-between; color: var(--muted); font-size: 11px; margin-bottom: 6px; }
+.progress-track { height: 4px; background: #1c2b42; border-radius: 99px; overflow: hidden; }
+.progress-fill { height: 100%; width: 0; background: linear-gradient(90deg, var(--blue), var(--purple)); transition: width .35s ease; }
+.stage-rail { margin-top: 16px; display: grid; grid-template-columns: repeat(13, 1fr); gap: 5px; }
+.stage-tab { border: 0; background: transparent; color: #70839d; padding: 8px 3px 6px; cursor: pointer; border-top: 2px solid #24364e; font-size: 10px; white-space: nowrap; }
+.stage-tab.done { color: #a9bad0; border-color: #446488; }
+.stage-tab.current { color: var(--text); border-color: var(--blue); background: linear-gradient(180deg, rgba(96,165,250,.10), transparent); }
+.stage-tab small { display: block; color: inherit; opacity: .8; margin-top: 3px; font-size: 9px; }
+.buffer-bar { margin: 10px 0; min-height: 44px; display: flex; align-items: center; gap: 9px; color: var(--muted); font-size: 11px; }
+.buffer-label { letter-spacing: .08em; text-transform: uppercase; margin-right: 3px; }
+.memory-chip, .buffer-slot { padding: 7px 10px; border-radius: 8px; border: 1px dashed #35506f; background: rgba(11,24,41,.75); transition: .3s ease; }
+.memory-chip.ready { color: #c8d9ec; border-style: solid; border-color: #456b91; }
+.buffer-slot.ready { color: var(--text); border-style: solid; border-color: #6176a4; background: rgba(177,140,255,.09); }
+.buffer-slot.empty::after { content: "等待产物"; color: #5f728c; margin-left: 6px; }
+.theatre { position: relative; }
+.stage-banner { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 13px 16px; background: rgba(13,25,43,.76); border: 1px solid var(--line); border-bottom: 0; border-radius: 14px 14px 0 0; }
+.stage-identity { display: flex; align-items: baseline; gap: 13px; }
+.step-badge { color: var(--cyan); font-size: 12px; font-weight: 700; letter-spacing: .08em; }
+.stage-title { font-size: 19px; font-weight: 600; }
+.stage-time { color: var(--muted); font-size: 12px; text-align: right; }
+.stage-time strong { color: var(--text); font-weight: 600; margin-left: 8px; }
+.theatre-grid {
+  position: relative; display: grid; grid-template-columns: minmax(285px, .9fr) 58px minmax(390px, 1.2fr) 58px minmax(300px, .95fr);
+  min-height: 480px; background: rgba(7,16,31,.55); border: 1px solid var(--line); border-radius: 0 0 14px 14px; overflow: hidden;
+}
+.zone { padding: 17px 15px 16px; min-width: 0; }
+.zone-head { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(38,58,86,.75); padding-bottom: 10px; margin-bottom: 12px; }
+.zone-label { font-size: 11px; letter-spacing: .14em; color: var(--muted); }
+.zone-count { font-size: 11px; color: #6f829b; }
+.arrow-lane { position: relative; display: flex; align-items: center; justify-content: center; }
+.arrow-lane::before { content: ""; width: 38px; height: 2px; background: #31506f; }
+.arrow-lane::after { content: ""; border-left: 8px solid #49759d; border-top: 5px solid transparent; border-bottom: 5px solid transparent; }
+.arrow-pulse { position: absolute; width: 8px; height: 8px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 13px var(--cyan); animation: pulseAcross 1.45s linear infinite; }
+@keyframes pulseAcross { from { transform: translateX(-20px); opacity: 0; } 20%,80% { opacity: 1; } to { transform: translateX(20px); opacity: 0; } }
+.artifact-list { display: grid; gap: 9px; align-content: start; }
+.artifact-card { position: relative; background: var(--panel); border: 1px solid var(--line); border-left: 3px solid var(--blue); border-radius: 10px; padding: 10px 11px; overflow: hidden; }
+.artifact-card.tone-purple { border-left-color: var(--purple); }
+.artifact-card.tone-green { border-left-color: var(--green); }
+.artifact-card.tone-amber { border-left-color: var(--amber); }
+.artifact-card.entering { animation: artifactBirth .42s cubic-bezier(.2,.8,.2,1) both; }
+@keyframes artifactBirth { from { opacity: 0; transform: translateY(14px) scale(.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+.artifact-top { display: flex; justify-content: space-between; align-items: start; gap: 9px; }
+.artifact-name { font-size: 12px; font-weight: 650; overflow-wrap: anywhere; }
+.artifact-kind { color: var(--muted); font-size: 9px; border: 1px solid #2a405d; border-radius: 99px; padding: 2px 6px; white-space: nowrap; }
+.artifact-meta { color: #bed0e6; font-size: 11px; margin-top: 4px; }
+.artifact-preview { margin-top: 8px; padding: 7px 8px; background: #091525; border-radius: 6px; color: #849bb7; font: 10px/1.55 ui-monospace, SFMono-Regular, Consolas, monospace; }
+.artifact-preview div::before { content: "› "; color: #4c6c91; }
+.empty-output { display: grid; place-items: center; min-height: 245px; color: #5e718a; text-align: center; font-size: 12px; border: 1px dashed #263b57; border-radius: 10px; }
+.empty-output strong { display: block; color: #8195ad; font-size: 13px; margin-bottom: 5px; }
+.operation-list { display: grid; gap: 7px; }
+.operation { display: grid; grid-template-columns: 30px 1fr auto; gap: 9px; align-items: start; padding: 10px; border-radius: 9px; border: 1px solid transparent; color: #667a94; transition: .32s ease; }
+.operation.active { color: var(--text); background: rgba(96,165,250,.08); border-color: rgba(96,165,250,.36); transform: translateX(3px); }
+.operation.done { color: #a7b9cf; }
+.operation.error.active, .operation.error.done { background: rgba(255,113,133,.08); border-color: rgba(255,113,133,.32); }
+.operation.repair.active, .operation.repair.done { background: rgba(244,191,95,.08); border-color: rgba(244,191,95,.32); }
+.operation.success.active, .operation.success.done { background: rgba(81,214,154,.08); border-color: rgba(81,214,154,.30); }
+.op-marker { width: 26px; height: 26px; border: 1px solid #30455f; border-radius: 50%; display: grid; place-items: center; font-size: 10px; color: #6f8299; }
+.operation.active .op-marker { border-color: var(--blue); color: var(--blue); box-shadow: 0 0 0 4px rgba(96,165,250,.09); }
+.operation.done .op-marker { border-color: var(--green); color: var(--green); }
+.operation.error .op-marker { border-color: var(--red); color: var(--red); }
+.operation.repair .op-marker { border-color: var(--amber); color: var(--amber); }
+.op-label { font-size: 12px; font-weight: 650; margin-top: 1px; }
+.op-detail { font-size: 10px; line-height: 1.5; margin-top: 3px; color: #8295ad; }
+.op-outcome { align-self: center; min-width: 94px; text-align: right; color: #8095ad; font-size: 10px; }
+.operation.active .op-outcome { color: #d8e7f8; }
+.operation.error .op-outcome { color: var(--red); }
+.operation.repair .op-outcome { color: var(--amber); }
+.operation.success .op-outcome, .operation.done.success .op-outcome { color: var(--green); }
+.handoff-strip { margin-top: 10px; min-height: 52px; display: flex; align-items: center; gap: 11px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 10px; background: rgba(13,25,43,.8); }
+.handoff-icon { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: rgba(84,212,232,.1); color: var(--cyan); flex: 0 0 auto; }
+.handoff-text { font-size: 12px; color: #bed0e4; line-height: 1.45; }
+.handoff-text strong { color: var(--text); }
+.transition-curtain { position: absolute; inset: 0; z-index: 8; display: grid; place-items: center; pointer-events: none; background: rgba(7,16,31,.60); opacity: 0; transition: opacity .2s; }
+.transition-curtain.show { opacity: 1; }
+.transition-message { max-width: 680px; padding: 15px 22px; border-radius: 12px; border: 1px solid #3a5877; background: #0d1b2e; box-shadow: 0 20px 60px rgba(0,0,0,.45); color: #dceafb; font-size: 13px; text-align: center; }
+.cargo-clone { position: fixed; z-index: 99; margin: 0; pointer-events: none; box-shadow: 0 15px 45px rgba(0,0,0,.48); }
+.footer { margin-top: 12px; display: flex; justify-content: space-between; align-items: center; gap: 20px; color: #71849d; font-size: 10px; }
+.footer a { color: #8fa8c4; text-decoration: none; }
+.footer a:hover { text-decoration: underline; }
+.live-status { color: var(--cyan); }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+</style>
 </head>
 <body>
-  <main class="page" id="sandboxAnimation">
-    <header class="hero">
-      <div>
-        <div class="eyebrow">真实运行重放 · v20 · 2026-06-23</div>
-        <h1>一个物流沙箱怎样真实长出来？</h1>
-        <p class="subtitle">重放真实场景 <strong>运营分析-8767b626</strong>：从 7,105 字节的物流说明开始，经历 80 分 31 秒生成实体、状态、64 张表、36,101 行数据、65 份文档和三类评测任务，最后登记为可运行沙箱。</p>
-      </div>
-      <div class="scope"><span class="scope-dot" aria-hidden="true"></span><span><strong>真实结果：completed</strong><br>墙钟 13:15:20 → 14:35:51</span></div>
-    </header>
+<main class="app">
+  <header class="topbar">
+    <div>
+      <div class="eyebrow">Real build replay · v20 scene</div>
+      <h1>物流沙箱生成实录</h1>
+      <p class="lede">不是流程图：画面按真实顺序演示“上一步交付什么 → 本步实际做什么 → 新产物怎样逐个落盘 → 这些产物怎样进入下一步”。所有数量与修复事件来自真实场景 <strong>运营分析-8767b626</strong>。</p>
+    </div>
+    <div class="run-fact"><strong>13:15:20 → 14:35:51 · 80 分 31 秒</strong><span>v20 completed · sandbox_id 57a3cf55…6c6c</span></div>
+  </header>
 
-    <section class="shell" aria-labelledby="animationTitle">
-      <h2 class="sr-only" id="animationTitle">沙箱生成阶段动画</h2>
-      <div class="controls">
-        <div class="transport">
-          <button class="control-button primary" id="playButton" type="button" aria-label="播放沙箱生成动画">
-            <span class="button-icon" id="playIcon" aria-hidden="true">▶</span>
-            <span id="playLabel">播放</span>
-          </button>
-          <button class="control-button" id="restartButton" type="button" aria-label="从头播放">
-            <span aria-hidden="true">↺</span><span>重置</span>
-          </button>
-        </div>
-        <label class="progress-wrap" for="progressRange">
-          <span id="progressStep">01</span>
-          <input id="progressRange" type="range" min="0" max="13" value="0" step="1" aria-label="沙箱生成阶段">
-          <span id="progressTotal">/ 14</span>
-        </label>
-        <label>
-          <span class="sr-only">播放速度</span>
-          <select class="speed-select" id="speedSelect" aria-label="播放速度">
-            <option value="0.6">0.6×</option>
-            <option value="1" selected>1×</option>
-            <option value="1.5">1.5×</option>
-            <option value="2">2×</option>
-          </select>
-        </label>
-      </div>
+  <section class="controls" aria-label="播放控制">
+    <button id="prevBtn" class="control-btn" type="button">← 上一步</button>
+    <button id="playBtn" class="control-btn primary" type="button">暂停</button>
+    <button id="nextBtn" class="control-btn" type="button">下一步 →</button>
+    <button id="restartBtn" class="control-btn" type="button">重新播放</button>
+    <label class="sr-only" for="speedSelect">播放速度</label>
+    <select id="speedSelect" class="speed-select" aria-label="播放速度">
+      <option value="0.75">0.75×</option><option value="1" selected>1×</option><option value="1.5">1.5×</option><option value="2">2×</option>
+    </select>
+    <div class="progress-wrap">
+      <div class="progress-meta"><span id="progressLabel">准备</span><span id="liveStatus" class="live-status" aria-live="polite">正在读取输入</span></div>
+      <div class="progress-track"><div id="progressFill" class="progress-fill"></div></div>
+    </div>
+  </section>
 
-      <div class="visual-region">
-        <div class="flow-label">logistics sandbox · compressed replay</div>
-        <div class="desktop-flow">
-          <svg id="pipelineSvg" viewBox="0 0 1140 720" role="img" aria-labelledby="svgTitle svgDesc">
-            <title id="svgTitle">物流运营沙箱真实生成流水线</title>
-            <desc id="svgDesc">真实物流运营场景从输入说明开始，生成 PRD、因子与分类体系，再分成数仓和知识库两路，汇合为混合任务并登记为沙箱。</desc>
-            <g id="laneLayer"></g>
-            <g id="connectorLayer"></g>
-            <g id="nodeLayer"></g>
-          </svg>
-        </div>
-        <div class="mobile-flow" id="mobileFlow" aria-label="沙箱生成垂直流程"></div>
-      </div>
+  <nav id="stageRail" class="stage-rail" aria-label="生成阶段"></nav>
 
-      <div class="detail-grid" id="detailGrid">
-        <div class="detail-panel" id="detailPanel">
-          <div class="detail-kicker" id="detailStep">输入</div>
-          <div class="detail-title" id="detailTitle">业务场景说明</div>
-          <p class="detail-copy" id="detailCopy">扫描受支持的业务说明文件，计算内容指纹，并为每个文档创建独立 scene_id。</p>
-          <div class="path-hint" id="pathHint">runtime/document_registry.json</div>
-        </div>
-        <div class="artifact-panel">
-          <div class="artifact-title"><span>本阶段落盘 / 可见资产</span><span class="artifact-count" id="artifactCount">2 files</span></div>
-          <div class="artifacts" id="artifactList"></div>
-        </div>
-      </div>
+  <section class="buffer-bar" aria-label="跨支路上下文与汇合缓冲区">
+    <span class="buffer-label">持久交付</span>
+    <span id="factorMemory" class="memory-chip">Factor bundle</span>
+    <span id="taxonomyMemory" class="memory-chip">Taxonomy bundle</span>
+    <span class="buffer-label" style="margin-left:12px">汇合缓冲区</span>
+    <span id="dwhBuffer" class="buffer-slot empty">DWH</span>
+    <span id="kbBuffer" class="buffer-slot empty">Knowledge</span>
+  </section>
 
-      <nav class="timeline" id="timeline" aria-label="跳转到生成阶段"></nav>
-      <div class="sr-only" id="liveStatus" aria-live="polite"></div>
-    </section>
+  <section class="theatre" aria-label="当前生成阶段">
+    <div class="stage-banner">
+      <div class="stage-identity"><span id="stepBadge" class="step-badge"></span><span id="stageTitle" class="stage-title"></span></div>
+      <div id="stageTime" class="stage-time"></div>
+    </div>
+    <div class="theatre-grid">
+      <section id="inputZone" class="zone input-zone">
+        <div class="zone-head"><span class="zone-label">INPUT · 上一步交付</span><span id="inputCount" class="zone-count"></span></div>
+        <div id="inputList" class="artifact-list"></div>
+      </section>
+      <div class="arrow-lane" aria-hidden="true"><span class="arrow-pulse"></span></div>
+      <section id="operationZone" class="zone operation-zone">
+        <div class="zone-head"><span class="zone-label">WORK · 本步实际生成动作</span><span id="opCount" class="zone-count"></span></div>
+        <div id="operationList" class="operation-list"></div>
+      </section>
+      <div class="arrow-lane" aria-hidden="true"><span class="arrow-pulse"></span></div>
+      <section id="outputZone" class="zone output-zone">
+        <div class="zone-head"><span class="zone-label">OUTPUT · 本步新产生</span><span id="outputCount" class="zone-count"></span></div>
+        <div id="outputList" class="artifact-list"></div>
+      </section>
+      <div id="transitionCurtain" class="transition-curtain"><div id="transitionMessage" class="transition-message"></div></div>
+    </div>
+  </section>
 
-    <footer class="notes">
-      <div>
-        <h2>图示依据</h2>
-        <p>按 v20 状态文件、阶段完成摘要和 5 号机归档实物重放；时间和数量均取实际记录。为防泄露，不展示任务正文、hidden gold、SQL、数据库行或凭据。</p>
-      </div>
-      <ul class="source-list" id="sourceList"></ul>
-    </footer>
-  </main>
+  <section class="handoff-strip" aria-label="本步交付说明">
+    <div class="handoff-icon" aria-hidden="true">→</div>
+    <div id="handoffText" class="handoff-text"></div>
+  </section>
 
-  <script id="stageData" type="application/json">[{"key":"input","step":"13:15:20","title":"物流运营说明入场","subtitle":"7,105 B · 指纹隔离","detail":"真实输入《运营分析.md》被复制到独立场景 运营分析-8767b626。场景描述德运物流的零担快运网络、五条产品线与分析角色，源文件先计算 SHA256，后续阶段只写本场景目录。","artifacts":["运营分析.md · 7,105 B","scene_id=运营分析-8767b626","sha256=f96fc90c…ca4db","status=running"],"path_hint":".runtime_state/v20/scenes/运营分析-8767b626/input/运营分析.md","x":24,"y":78,"phase":"common","duration_seconds":0,"replay_ms":900,"boundary":"generation"},{"key":"prd","step":"Step 0 · 05:15","title":"物流业务 PRD","subtitle":"5 个文件 · 14/14 通过","detail":"把原始说明展开为全国性零担快运业务规格：仓库经理、网点主管、区域运营负责人、运营分析师和总部管理者；覆盖查询、对比、趋势、归因和探索诊断。","artifacts":["prd_运营分析.md","coverage.json","filled_template.json","validation.json","5 个角色"],"path_hint":"artifacts/pipeline/output/运营分析-8767b626/prd/","x":250,"y":78,"phase":"common","duration_seconds":315,"replay_ms":1300,"boundary":"generation"},{"key":"factor","step":"Step 1 · 51:14","title":"业务因子解耦","subtitle":"本次运行的耗时瓶颈","detail":"从物流 PRD 中抽出运单、仓库、线路、承运商、温度记录等业务对象，建立运单 20 态等状态机并补齐可调用动作；首次验证发现 1 个状态引用错误，修正后 9/9 通过。","artifacts":["57 个实体","76 个状态","80 个工具动作","1 个 hard error 已修复","17 个 soft warnings"],"path_hint":"artifacts/pipeline/output/运营分析-8767b626/factor/","x":476,"y":78,"phase":"common","duration_seconds":3074,"replay_ms":3600,"boundary":"generation"},{"key":"taxonomy","step":"Step 2 · 09:04","title":"任务语义空间","subtitle":"15 维 · 115 采样单元","detail":"把实体、状态和动作组织成可采样语义空间，加入组合约束与四类场景覆盖。真实产物包含 56 个 medium 与 59 个 high 复杂度采样单元，覆盖比例归一化为 1.0000。","artifacts":["15 个变化维度","115 个采样单元","9 条非法约束","6 条必需组合","7/7 校验通过"],"path_hint":"artifacts/pipeline/output/运营分析-8767b626/taxonomy/","x":702,"y":78,"phase":"common","duration_seconds":544,"replay_ms":1800,"boundary":"generation"},{"key":"schema","step":"Step 3.1 · 01:27","title":"物流数仓 Schema","subtitle":"64 张表 · 验证通过","detail":"生成物流数据库结构：6 张平台支撑表、3 张平台事实表、54 张业务事实表和 1 张关系表。核心对象包括运单、路线、承运商、仓库、温控记录、货损与质量事件。","artifacts":["64 tables/*.json","54 张业务事实表","schema_overview.json · 23 KB","validation_rules.json · 14 KB","10/10 校验通过"],"path_hint":"artifacts/pipeline/output/运营分析-8767b626/schema/","x":928,"y":294,"phase":"dwh","duration_seconds":87,"replay_ms":1000,"boundary":"generation"},{"key":"data","step":"Step 4.1 · 02:31","title":"合成物流数据","subtitle":"36,101 行写入 SQLite","detail":"按 Schema 为运单、成本、仓储、配送、温控等表生成 JSONL，再构建 logistics.sqlite。真实 v20 运行写入 36,101 条记录、65 个 JSONL 文件，五步数据校验全部通过。","artifacts":["36,101 条记录","65 个 JSONL","logistics.sqlite","5/5 数据门禁","0 failures"],"path_hint":"artifacts/pipeline/output/运营分析-8767b626/generated_data/","x":702,"y":294,"phase":"dwh","duration_seconds":151,"replay_ms":1300,"boundary":"generation"},{"key":"dwh_tasks","step":"Step 5.1 · 01:29","title":"数仓评测任务","subtitle":"6,000 → 1,000 → 555","detail":"先生成 6,000 个候选任务，再由 TaskSelector 选出 1,000 个，加入 44 个链式任务并做语义去重；最终 tasks.jsonl 保留 555 条，验证报告为 0 error、0 warning。","artifacts":["6,000 候选","1,000 个筛选入围","+44 链式任务","555 条最终任务","hidden gold 不展示"],"path_hint":"artifacts/pipeline/output/运营分析-8767b626/tasks/","x":476,"y":294,"phase":"dwh","duration_seconds":89,"replay_ms":1100,"boundary":"generation"},{"key":"catalog","step":"Step 3.2 · 02:09","title":"物流知识目录","subtitle":"65 份文档定义","detail":"从因子与 taxonomy 派生政策、手册、FAQ、培训等知识目录，并关联实际数仓表。该次运行生成 65 份目录定义；374 个双向引用等 soft warning 被保留审计，但不阻塞下游。","artifacts":["document_catalog.json · 157 KB","65 份文档定义","4 种文档类型","374 soft warnings","overall_passed=true"],"path_hint":"artifacts/pipeline/output/运营分析-8767b626/knowledge_catalog/","x":928,"y":466,"phase":"knowledge","duration_seconds":129,"replay_ms":1100,"boundary":"generation"},{"key":"documents","step":"Step 4.2 · 03:12","title":"合成物流知识库","subtitle":"65 文档 · 1,587 chunks","detail":"按照 catalog 依次生成价格政策、线路 SLA、理赔规范、退货流程、异常件手册等 Markdown 文档，再构建索引。实际得到 176,139 字、1,587 个检索块，缺失文档和额外文档均为 0。","artifacts":["65 个 Markdown","1,587 chunks","176,139 字","document_index.json","0 missing / 0 extra"],"path_hint":"artifacts/pipeline/output/运营分析-8767b626/documents/","x":702,"y":466,"phase":"knowledge","duration_seconds":192,"replay_ms":1400,"boundary":"generation"},{"key":"kb_tasks","step":"Step 5.2 · 01:43","title":"知识库评测任务","subtitle":"500 目标 → 465 唯一任务","detail":"从文档事实生成单文档、跨文档、时效与多跳检索任务。模糊去重后因独立原材料不足保留 465 条，而不是强行补足 500；8 项验证全部通过，无失败和警告。","artifacts":["465 条任务","365 answerable","100 unanswerable","8/8 校验通过","不伪造重复任务"],"path_hint":"artifacts/pipeline/output/运营分析-8767b626/knowledge_tasks/","x":476,"y":466,"phase":"knowledge","duration_seconds":103,"replay_ms":1200,"boundary":"generation"},{"key":"hybrid","step":"Step 5.3 · 02:26","title":"数据 × 政策混合任务","subtitle":"500/500 双源覆盖","detail":"把数据库事实和物流政策文档合在同一任务中：171 条先查数据再对照政策、156 条先查政策再验证数据、173 条执行合规检查。每条都同时绑定 expected_tables 与 source_documents。","artifacts":["500 条唯一任务","data→policy 171","policy→data 156","compliance 173","双源覆盖 100%"],"path_hint":"artifacts/pipeline/output/运营分析-8767b626/hybrid_tasks/","x":250,"y":380,"phase":"hybrid","duration_seconds":146,"replay_ms":1500,"boundary":"generation"},{"key":"freeze","step":"14:35:51 · 总计 80:31","title":"场景完成并登记","subtitle":"sandbox_id 已生成","detail":"十个生成阶段全部完成后，状态文件写入 sandbox_id 57a3cf55…6c6c。新版 freezer 会把任务与 hidden gold 留在 raw 层，只向 runner 暴露数据库、文档、schema dictionary 与 manifest。","artifacts":["scene_status=completed","sandbox_id=57a3cf55…6c6c","raw: tasks + gold","runner: DB + Docs","registry: checksums"],"path_hint":".runtime_state/v20/scenes/运营分析-8767b626/runtime/state.json","x":24,"y":380,"phase":"freeze","duration_seconds":0,"replay_ms":1200,"boundary":"generation"},{"key":"rollout","step":"运行边界外","title":"模型进入物流沙箱","subtitle":"只能看到 runner 资产","detail":"Rollout Engine 校验登记信息后挂载 logistics.sqlite 与文档库。模型可以查询运单和政策，但看不到 tasks.jsonl、gold answer 或验证 SQL；本动画也只展示汇总数字。","artifacts":["logistics.sqlite","documents/","schema_dictionary.md","sandbox_manifest.json","tasks + gold hidden"],"path_hint":"rollout_engine/sandbox_registry.py","x":24,"y":590,"phase":"external","duration_seconds":0,"replay_ms":1000,"boundary":"external"}]</script>
-  <script id="connectionData" type="application/json">[{"from_key":"input","to_key":"prd","route":"auto"},{"from_key":"prd","to_key":"factor","route":"auto"},{"from_key":"factor","to_key":"taxonomy","route":"auto"},{"from_key":"taxonomy","to_key":"schema","route":"auto"},{"from_key":"schema","to_key":"data","route":"auto"},{"from_key":"data","to_key":"dwh_tasks","route":"auto"},{"from_key":"taxonomy","to_key":"catalog","route":"right-rail"},{"from_key":"catalog","to_key":"documents","route":"auto"},{"from_key":"documents","to_key":"kb_tasks","route":"auto"},{"from_key":"dwh_tasks","to_key":"hybrid","route":"merge-left"},{"from_key":"kb_tasks","to_key":"hybrid","route":"merge-left"},{"from_key":"hybrid","to_key":"freeze","route":"auto"},{"from_key":"freeze","to_key":"rollout","route":"auto"}]</script>
-  <script id="sourceData" type="application/json">[{"label":"v20 真实阶段状态、开始/完成时间与 sandbox_id","path":"https://github.com/renjunxiang/sf_my_sandbox/blob/758917009d0ebb0fb36561197171f6abdd279d96/.runtime_state/v20/scenes/运营分析-8767b626/runtime/state.json"},{"label":"v20 各阶段真实执行摘要与验证统计","path":"https://github.com/renjunxiang/sf_my_sandbox/blob/758917009d0ebb0fb36561197171f6abdd279d96/.runtime_state/v20/scenes/运营分析-8767b626/runtime/raw_responses/"},{"label":"本仓库留存的物流 Schema、数据与任务质量摘要","path":"sandbox/v15_qwen38_27b_100_20260821/"},{"label":"5 号机物流沙箱实物归档（DB / Docs / 三类任务）","path":"/data3/llin/qwen3.6-27b-verl-grpo/sandboxes/source/20260628_v15_boss"}]</script>
-  <script>
-    (() => {
-      "use strict";
+  <footer class="footer">
+    <span>安全展示：只含数量、文件名与验证摘要；不含任务正文、hidden gold、SQL、数据库行或凭据。</span>
+    <span><a href="https://github.com/renjunxiang/sf_my_sandbox/tree/758917009d0ebb0fb36561197171f6abdd279d96/.runtime_state/v20/scenes/运营分析-8767b626">v20 场景证据</a> · 5 号机归档只用于结构核对</span>
+  </footer>
+</main>
 
-      const root = document.getElementById("sandboxAnimation");
-      const stages = JSON.parse(document.getElementById("stageData").textContent);
-      const connections = JSON.parse(document.getElementById("connectionData").textContent);
-      const sources = JSON.parse(document.getElementById("sourceData").textContent);
-      const svgNS = "http://www.w3.org/2000/svg";
-      const nodeWidth = 188;
-      const nodeHeight = 108;
-      const stageIndex = new Map(stages.map((stage, index) => [stage.key, index]));
-      const nodes = new Map();
-      const connectionRecords = [];
-      const mobileNodes = new Map();
-      const timelineNodes = new Map();
-      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const state = { index: 0, playing: false, speed: 1, lastFrame: 0, elapsed: 0 };
-      const defaultStepDuration = 1850;
+<script id="stageData" type="application/json">[{"key":"intake","step":"准备","title":"把物流说明隔离成一个场景","clock":"13:15:20","duration":"00:00","branch":"公共主干","inputs":[{"name":"运营分析.md","kind":"业务说明","meta":"7,105 B · 原始输入","preview":["德运物流全国零担快运网络","五条产品线与多级运营角色","查询 / 对比 / 趋势 / 归因 / 诊断"],"produced_by":-1,"tone":"blue"}],"operations":[{"label":"计算输入指纹","detail":"对原文件计算 SHA256，后续每一步都能追溯同一输入。","outcome":"f96fc90c…ca4db","status":"normal"},{"label":"创建独立场景","detail":"建立只属于本次生成的目录，避免和其他行业场景混写。","outcome":"运营分析-8767b626","status":"normal"},{"label":"复制输入并写状态","detail":"原始说明进入 scene/input，状态切换为 running。","outcome":"2 个场景文件落盘","status":"normal"}],"outputs":[{"name":"scenes/运营分析-8767b626/","kind":"场景目录","meta":"隔离空间","preview":["input/","runtime/","artifacts/"],"produced_by":1,"tone":"purple"},{"name":"input/运营分析.md","kind":"受控输入","meta":"SHA 已登记","preview":["source_size = 7,105 B","sha256 = f96fc90c…ca4db"],"produced_by":2,"tone":"blue"},{"name":"runtime/state.json","kind":"运行状态","meta":"status = running","preview":["created_at = 13:15:20","scene_id = 运营分析-8767b626"],"produced_by":2,"tone":"green"}],"handoff":"受控输入 input/运营分析.md 交给 Step 0；原文件不再被后续阶段直接改写。","handoff_type":"sequential","replay_ms":750},{"key":"prd","step":"Step 0","title":"把业务说明展开成可生成的 PRD","clock":"13:15:20 → 13:20:35","duration":"05:15","branch":"公共主干","inputs":[{"name":"input/运营分析.md","kind":"上一步交付","meta":"7,105 B","preview":["物流网络与产品线","运营角色与分析诉求"],"produced_by":-1,"tone":"blue"}],"operations":[{"label":"识别业务边界","detail":"提取角色、对象、目标与分析任务，不补写输入中不存在的业务。","outcome":"5 类运营角色","status":"normal"},{"label":"填充 PRD 模板","detail":"把散文说明变成可由后续程序稳定读取的结构化业务规格。","outcome":"prd_运营分析.md","status":"normal"},{"label":"生成覆盖账本","detail":"逐项记录原始要求如何落到 PRD，防止静默遗漏。","outcome":"coverage.json","status":"normal"},{"label":"执行 PRD 门禁","detail":"检查必填段、角色、任务类型与覆盖映射。","outcome":"14 / 14 通过","status":"normal"}],"outputs":[{"name":"prd_运营分析.md","kind":"业务规格","meta":"结构化 PRD","preview":["仓库经理 / 网点主管","区域运营 / 分析师 / 总部"],"produced_by":1,"tone":"purple"},{"name":"filled_template.json","kind":"结构数据","meta":"模板字段已填充","preview":["actors[]","business_goals[]","analysis_tasks[]"],"produced_by":1,"tone":"blue"},{"name":"coverage.json","kind":"覆盖账本","meta":"原始要求 → PRD","preview":["query · compare · trend","attribution · diagnosis"],"produced_by":2,"tone":"amber"},{"name":"validation.json","kind":"质量门禁","meta":"14 / 14 passed","preview":["missing = 0","blocking_error = 0"],"produced_by":3,"tone":"green"}],"handoff":"PRD、模板字段和覆盖账本一起交给 Step 1；Factor 不再猜测原始散文的结构。","handoff_type":"sequential","replay_ms":780},{"key":"factor","step":"Step 1","title":"把 PRD 拆成实体、状态与可执行动作","clock":"13:20:35 → 14:11:49","duration":"51:14","branch":"公共主干 · 本次瓶颈","inputs":[{"name":"prd_运营分析.md","kind":"上一步交付","meta":"业务规格","preview":["物流对象、角色、目标"],"produced_by":-1,"tone":"blue"},{"name":"coverage.json","kind":"上一步交付","meta":"覆盖约束","preview":["原始需求不得丢失"],"produced_by":-1,"tone":"blue"},{"name":"filled_template.json","kind":"上一步交付","meta":"结构字段","preview":["后续脚本可直接解析"],"produced_by":-1,"tone":"blue"}],"operations":[{"label":"抽取业务对象","detail":"识别运单、仓库、线路、承运商、温度记录、质量事件等对象。","outcome":"57 个实体","status":"normal"},{"label":"建立状态机与动作","detail":"为实体生成状态变化，并补齐工具动作的参数和返回结构。","outcome":"76 个状态 · 80 个动作","status":"normal"},{"label":"第一次因子校验","detail":"检查动作引用的状态是否真实存在。","outcome":"发现 1 个 hard error","status":"error"},{"label":"修复错误引用","detail":"quality_incident.triggers 引用了不存在的 incident_closed，改为实际状态 incident_closed_without_compensation。","outcome":"1 处引用已修复","status":"repair"},{"label":"重新执行校验","detail":"保留 17 个不阻塞的 soft warning，硬错误清零。","outcome":"9 / 9 通过","status":"success"}],"outputs":[{"name":"entities.json","kind":"实体定义","meta":"57 entities","preview":["waybill · warehouse · route","carrier · temperature_record"],"produced_by":0,"tone":"purple"},{"name":"states.json","kind":"状态机","meta":"76 states","preview":["运单 20 态","异常 / 理赔 / 完结状态"],"produced_by":1,"tone":"blue"},{"name":"tools_actions.json","kind":"工具动作","meta":"80 actions","preview":["typed arguments","typed returns"],"produced_by":1,"tone":"amber"},{"name":"factor_validation_report.json","kind":"修复证据","meta":"9 / 9 passed","preview":["hard errors: 1 → 0","soft warnings: 17"],"produced_by":4,"tone":"green"}],"handoff":"57 个实体、76 个状态和 80 个动作成为 Step 2 的输入；修复前版本不会向下游流动。","handoff_type":"sequential","replay_ms":1050},{"key":"taxonomy","step":"Step 2","title":"把业务因子组织成可采样的任务空间","clock":"14:11:49 → 14:20:53","duration":"09:04","branch":"公共主干","inputs":[{"name":"entities.json","kind":"上一步交付","meta":"57 个实体","preview":["任务可以围绕哪些对象变化"],"produced_by":-1,"tone":"blue"},{"name":"states.json","kind":"上一步交付","meta":"76 个状态","preview":["任务可以要求哪些状态判断"],"produced_by":-1,"tone":"blue"},{"name":"tools_actions.json","kind":"上一步交付","meta":"80 个动作","preview":["模型在环境里能做什么"],"produced_by":-1,"tone":"blue"}],"operations":[{"label":"定义变化维度","detail":"将对象、时间、区域、状态、产品、指标等组织成正交变化轴。","outcome":"15 个维度","status":"normal"},{"label":"展开采样单元","detail":"组合维度并标记任务难度，为任务生成建立抽样底座。","outcome":"56 medium + 59 high","status":"normal"},{"label":"写入组合约束","detail":"显式禁止不合法组合，并要求关键因子共同出现。","outcome":"9 illegal · 6 required · 8 mutex","status":"normal"},{"label":"归一化覆盖计划","detail":"覆盖比例合计必须等于 1，所有引用必须能回到 Factor。","outcome":"7 / 7 通过 · ratio 1.0000","status":"normal"}],"outputs":[{"name":"factor_taxonomies.json","kind":"变化维度","meta":"15 dimensions","preview":["object · region · time","state · product · metric"],"produced_by":0,"tone":"purple"},{"name":"sampling_units.json","kind":"采样单元","meta":"115 units","preview":["medium 56","high 59"],"produced_by":1,"tone":"blue"},{"name":"combination_constraints.json","kind":"组合约束","meta":"27 条核心约束","preview":["illegal 9 · required 6","mutex 8 · scene 4"],"produced_by":2,"tone":"amber"},{"name":"coverage_plan.json","kind":"覆盖计划","meta":"7 / 7 passed","preview":["coverage ratio = 1.0000"],"produced_by":3,"tone":"green"}],"handoff":"Taxonomy 在这里分叉：同一批因子一份进入数仓支路，一份保存在上下文总线，稍后进入知识支路。","handoff_type":"fork","replay_ms":820},{"key":"schema","step":"Step 3.1","title":"把任务空间变成物流数仓结构","clock":"14:20:53 → 14:22:20","duration":"01:27","branch":"数仓支路","inputs":[{"name":"Factor bundle","kind":"上下文总线","meta":"57 entities · 80 actions","preview":["业务对象决定表的主题"],"produced_by":-1,"tone":"blue"},{"name":"Taxonomy bundle","kind":"上一步交付","meta":"15 dimensions · 115 units","preview":["采样空间决定字段覆盖"],"produced_by":-1,"tone":"blue"}],"operations":[{"label":"规划数据分层","detail":"先放平台支撑表与平台事实表，再映射业务实体。","outcome":"6 support + 3 platform fact","status":"normal"},{"label":"展开业务表","detail":"逐实体生成事实表和关系表，并声明主外键。","outcome":"54 business fact + 1 relation","status":"normal"},{"label":"生成枚举与校验规则","detail":"把 Factor 状态写入枚举字典，补齐字段级检查。","outcome":"enum_dictionary + validation_rules","status":"normal"},{"label":"执行 Schema 门禁","detail":"检查表引用、字段类型、主外键与业务覆盖。","outcome":"10 / 10 通过 · 0 errors","status":"normal"}],"outputs":[{"name":"schema_overview.json","kind":"结构总览","meta":"64 tables","preview":["6 support · 3 platform","54 business · 1 relation"],"produced_by":0,"tone":"purple"},{"name":"tables/","kind":"表定义目录","meta":"64 个 JSON","preview":["fact_waybill · fact_route","fact_temperature_record · … +61"],"produced_by":1,"tone":"blue"},{"name":"enum_dictionary.json","kind":"枚举字典","meta":"状态映射已固化","preview":["waybill status","incident status"],"produced_by":2,"tone":"amber"},{"name":"schema_validation_report.json","kind":"质量门禁","meta":"10 / 10 passed","preview":["errors 0 · warnings 16"],"produced_by":3,"tone":"green"}],"handoff":"64 张表定义和枚举字典交给 Step 4.1；Data 只能按这些结构写行。","handoff_type":"sequential","replay_ms":760},{"key":"data","step":"Step 4.1","title":"按 Schema 逐表合成物流数据","clock":"14:22:20 → 14:24:51","duration":"02:31","branch":"数仓支路","inputs":[{"name":"tables/","kind":"上一步交付","meta":"64 个表定义","preview":["字段、类型、主外键"],"produced_by":-1,"tone":"blue"},{"name":"enum_dictionary.json","kind":"上一步交付","meta":"合法枚举","preview":["生成值不能越界"],"produced_by":-1,"tone":"blue"},{"name":"validation_rules.json","kind":"上一步交付","meta":"字段门禁","preview":["每批写入后立即检查"],"produced_by":-1,"tone":"blue"}],"operations":[{"label":"逐表生成 JSONL","detail":"按依赖顺序先维表、再事实表，主外键只引用已存在记录。","outcome":"65 个 JSONL","status":"normal"},{"label":"构建 SQLite","detail":"将通过行级检查的数据装载为一个可查询物流数据库。","outcome":"36,101 rows","status":"normal"},{"label":"执行数据门禁","detail":"检查行数、枚举、非空、引用完整性和数据库可读性。","outcome":"5 / 5 通过 · 0 failures","status":"normal"}],"outputs":[{"name":"generated_data/*.jsonl","kind":"逐表数据","meta":"65 files","preview":["运单 · 仓储 · 配送","温控 · 成本 · 质量"],"produced_by":0,"tone":"blue"},{"name":"database/logistics.sqlite","kind":"物流数据库","meta":"36,101 rows","preview":["64-table schema","queryable = true"],"produced_by":1,"tone":"purple"},{"name":"data_validation_report.json","kind":"质量门禁","meta":"5 / 5 passed","preview":["failures 0 · warnings 0"],"produced_by":2,"tone":"green"}],"handoff":"数据库、Schema 和 Taxonomy 一起进入 Step 5.1，任务必须能由刚生成的数据回答或明确判定不可答。","handoff_type":"sequential","replay_ms":820},{"key":"dwh_tasks","step":"Step 5.1","title":"用物流数据库生成数仓评测任务","clock":"14:24:52 → 14:26:21","duration":"01:29","branch":"数仓支路","inputs":[{"name":"database/logistics.sqlite","kind":"上一步交付","meta":"36,101 rows","preview":["任务证据来自真实已写入数据"],"produced_by":-1,"tone":"blue"},{"name":"schema_overview.json","kind":"结构字典","meta":"64 tables","preview":["任务引用必须落到实际表"],"produced_by":-1,"tone":"blue"},{"name":"sampling_units.json","kind":"覆盖计划","meta":"115 units","preview":["控制主题和难度分布"],"produced_by":-1,"tone":"blue"}],"operations":[{"label":"批量生成候选","detail":"同时构造可回答、不可回答和超范围三类候选。","outcome":"6,000 candidates","status":"normal"},{"label":"TaskSelector 筛选","detail":"按覆盖、难度与重复度选出候选子集。","outcome":"1,000 selected","status":"normal"},{"label":"补充链式任务","detail":"加入需要多步关联的物流分析任务。","outcome":"+44 chain tasks","status":"normal"},{"label":"语义去重并验证","detail":"去除同义任务，检查每条任务的证据绑定；正文与 gold 不进入本动画。","outcome":"555 final · 0 errors","status":"normal"}],"outputs":[{"name":"candidates.jsonl","kind":"候选池","meta":"6,000 tasks","preview":["answerable 3,600","unanswerable 1,500 · OOS 900"],"produced_by":0,"tone":"blue"},{"name":"selected_tasks.jsonl","kind":"筛选结果","meta":"1,000 tasks","preview":["coverage balanced","difficulty balanced"],"produced_by":1,"tone":"blue"},{"name":"tasks.jsonl","kind":"数仓任务包","meta":"555 unique","preview":["task content sealed","hidden gold sealed"],"produced_by":3,"tone":"purple"},{"name":"task_validation_report.json","kind":"质量门禁","meta":"passed","preview":["errors 0 · warnings 0"],"produced_by":3,"tone":"green"}],"handoff":"数仓任务包先进入汇合缓冲区；生成器回到 Step 2 保存的 Factor + Taxonomy，开始知识支路。","handoff_type":"branch-return","replay_ms":880},{"key":"catalog","step":"Step 3.2","title":"从同一批因子生成物流知识目录","clock":"14:26:21 → 14:28:30","duration":"02:09","branch":"知识支路","inputs":[{"name":"Factor bundle","kind":"上下文总线回放","meta":"entities · states · actions","preview":["与数仓支路同源"],"produced_by":-1,"tone":"blue"},{"name":"Taxonomy bundle","kind":"上下文总线回放","meta":"dimensions · sampling units","preview":["与数仓支路同源"],"produced_by":-1,"tone":"blue"},{"name":"schema_overview.json","kind":"数仓结构引用","meta":"64 tables","preview":["知识条目可绑定实际表"],"produced_by":-1,"tone":"blue"}],"operations":[{"label":"规划文档类型","detail":"把业务因子映射为政策、手册、FAQ、培训资料。","outcome":"4 种文档类型","status":"normal"},{"label":"展开文档定义","detail":"逐主题声明标题、章节、事实来源和关联表。","outcome":"65 document definitions","status":"normal"},{"label":"检查双向引用","detail":"保留可审计的软警告，但阻断缺源或非法表引用。","outcome":"passed · 374 soft warnings","status":"normal"}],"outputs":[{"name":"document_catalog.json","kind":"知识目录","meta":"65 definitions · 157 KB","preview":["policy · manual","FAQ · training"],"produced_by":1,"tone":"purple"},{"name":"catalog_validation_report.json","kind":"质量门禁","meta":"overall_passed = true","preview":["soft warnings 374","blocking errors 0"],"produced_by":2,"tone":"green"}],"handoff":"65 份文档定义逐项交给 Step 4.2；下一步不是复制目录，而是按每个定义真正写出正文和索引。","handoff_type":"sequential","replay_ms":780},{"key":"documents","step":"Step 4.2","title":"按目录逐份写出物流知识库","clock":"14:28:30 → 14:31:42","duration":"03:12","branch":"知识支路","inputs":[{"name":"document_catalog.json","kind":"上一步交付","meta":"65 definitions","preview":["标题、章节、事实源、关联表"],"produced_by":-1,"tone":"blue"}],"operations":[{"label":"逐定义生成 Markdown","detail":"生成价格政策、线路 SLA、理赔规范、退货流程、异常件手册等正文。","outcome":"65 Markdown","status":"normal"},{"label":"切分并构建索引","detail":"按章节边界切块，保留文档与 chunk 的可追溯关系。","outcome":"1,587 chunks · 176,139 words","status":"normal"},{"label":"核对目录完整性","detail":"逐项比对 catalog，缺失和额外文档都必须为 0。","outcome":"0 missing · 0 extra","status":"normal"}],"outputs":[{"name":"documents/*.md","kind":"物流知识库","meta":"65 documents","preview":["价格政策 · 线路 SLA","理赔 · 退货 · 异常件"],"produced_by":0,"tone":"purple"},{"name":"document_index.json","kind":"检索索引","meta":"1,587 chunks","preview":["176,139 words","source trace retained"],"produced_by":1,"tone":"blue"},{"name":"document_validation_report.json","kind":"质量门禁","meta":"overall_passed = true","preview":["missing 0 · extra 0"],"produced_by":2,"tone":"green"}],"handoff":"文档正文、chunk 索引和 catalog 一起交给 Step 5.2，知识任务必须能回到具体来源文档。","handoff_type":"sequential","replay_ms":820},{"key":"kb_tasks","step":"Step 5.2","title":"用文档事实生成知识库评测任务","clock":"14:31:42 → 14:33:25","duration":"01:43","branch":"知识支路","inputs":[{"name":"documents/*.md","kind":"上一步交付","meta":"65 documents","preview":["任务证据来自已生成正文"],"produced_by":-1,"tone":"blue"},{"name":"document_index.json","kind":"上一步交付","meta":"1,587 chunks","preview":["每条证据可追溯"],"produced_by":-1,"tone":"blue"},{"name":"document_catalog.json","kind":"目录约束","meta":"65 definitions","preview":["主题与类型覆盖"],"produced_by":-1,"tone":"blue"}],"operations":[{"label":"生成知识候选","detail":"构造单文档、跨文档、时效与多跳检索问题。","outcome":"target 500","status":"normal"},{"label":"事实对齐与去重","detail":"原材料不足时不伪造近重复项，保留真实唯一集合。","outcome":"465 unique","status":"normal"},{"label":"执行知识任务门禁","detail":"检查 source_documents、可答性标签与覆盖结构。","outcome":"8 / 8 通过","status":"normal"}],"outputs":[{"name":"knowledge_tasks.jsonl","kind":"知识任务包","meta":"465 unique","preview":["answerable 365","unanswerable 100"],"produced_by":1,"tone":"purple"},{"name":"knowledge_task_validation.json","kind":"质量门禁","meta":"8 / 8 passed","preview":["failures 0 · warnings 0"],"produced_by":2,"tone":"green"}],"handoff":"知识任务包进入第二个汇合槽；数仓任务包与知识任务包现在同时送往 Step 5.3。","handoff_type":"merge","replay_ms":820},{"key":"hybrid","step":"Step 5.3","title":"把数据库证据与政策证据合成双源任务","clock":"14:33:25 → 14:35:51","duration":"02:26","branch":"双支路汇合","inputs":[{"name":"tasks.jsonl","kind":"数仓缓冲区","meta":"555 DWH tasks","preview":["expected_tables 已绑定"],"produced_by":-1,"tone":"blue"},{"name":"knowledge_tasks.jsonl","kind":"知识缓冲区","meta":"465 KB tasks","preview":["source_documents 已绑定"],"produced_by":-1,"tone":"blue"},{"name":"logistics.sqlite + documents/","kind":"双源环境","meta":"DB + 65 docs","preview":["每条任务必须同时依赖两侧"],"produced_by":-1,"tone":"blue"}],"operations":[{"label":"组装 data → policy","detail":"先由数据库得到运营事实，再用政策判断或解释。","outcome":"171 tasks","status":"normal"},{"label":"组装 policy → data","detail":"先读政策规则，再到数据库核验实际运营数据。","outcome":"156 tasks","status":"normal"},{"label":"组装 compliance check","detail":"把数据库事实直接与政策阈值做合规对照。","outcome":"173 tasks","status":"normal"},{"label":"验证双源覆盖","detail":"每条任务都必须同时有 expected_tables 与 source_documents。","outcome":"500 / 500 passed","status":"normal"}],"outputs":[{"name":"hybrid_tasks.jsonl","kind":"混合任务包","meta":"500 unique","preview":["data→policy 171","policy→data 156 · compliance 173"],"produced_by":2,"tone":"purple"},{"name":"hybrid_validation_report.json","kind":"双源门禁","meta":"500 / 500","preview":["expected_tables nonempty","source_documents nonempty"],"produced_by":3,"tone":"green"}],"handoff":"DB、Docs 与三类任务已经齐备，最后进入冻结器：可运行资产和评测秘密将在这里分层。","handoff_type":"sequential","replay_ms":850},{"key":"freeze","step":"完成","title":"冻结资产、隔离秘密并登记沙箱","clock":"14:35:51","duration":"总计 80:31","branch":"交付边界","inputs":[{"name":"logistics.sqlite","kind":"环境资产","meta":"36,101 rows","preview":["模型运行时需要"],"produced_by":-1,"tone":"blue"},{"name":"documents/ + index","kind":"环境资产","meta":"65 docs · 1,587 chunks","preview":["模型运行时需要"],"produced_by":-1,"tone":"blue"},{"name":"DWH + KB + Hybrid tasks","kind":"评测资产","meta":"555 + 465 + 500","preview":["模型运行时不得看见"],"produced_by":-1,"tone":"blue"}],"operations":[{"label":"计算资产校验和","detail":"为数据库、文档、Schema 和任务包建立不可混淆的版本指纹。","outcome":"checksums ready","status":"normal"},{"label":"分离 raw 与 runner","detail":"raw 保存任务与 hidden gold；runner 只保留模型可见的 DB、Docs、Schema 与 manifest。","outcome":"secret boundary enforced","status":"normal"},{"label":"写入 registry","detail":"登记 sandbox_id、路径、校验和与完成状态。","outcome":"57a3cf55…6c6c","status":"normal"}],"outputs":[{"name":"raw/","kind":"评测者专用","meta":"tasks + hidden gold","preview":["not mounted to model","audit only"],"produced_by":1,"tone":"amber"},{"name":"runner/","kind":"模型可见","meta":"DB + Docs + Schema","preview":["tasks absent","gold absent"],"produced_by":1,"tone":"purple"},{"name":"sandbox_registry.jsonl","kind":"沙箱登记","meta":"status = completed","preview":["sandbox_id = 57a3cf55…6c6c","wall clock = 80:31"],"produced_by":2,"tone":"green"}],"handoff":"生成结束：Rollout Engine 只挂载 runner/ 并核验 registry；raw/ 永远留在模型工作区之外。","handoff_type":"release","replay_ms":850},{"key":"runner","step":"运行边界外","title":"模型进入已经生成好的物流沙箱","clock":"生成后","duration":"不计入 80:31","branch":"Rollout Engine","inputs":[{"name":"runner/","kind":"冻结器交付","meta":"DB + Docs + Schema","preview":["只有模型可见资产"],"produced_by":-1,"tone":"blue"},{"name":"sandbox_registry.jsonl","kind":"登记信息","meta":"sandbox_id + checksums","preview":["挂载前先验证"],"produced_by":-1,"tone":"blue"}],"operations":[{"label":"校验登记与指纹","detail":"拒绝未登记或校验和不一致的环境资产。","outcome":"registry verified","status":"normal"},{"label":"只读挂载 runner","detail":"模型可以查询物流数据库和文档库。","outcome":"sandbox mounted","status":"normal"},{"label":"确认秘密不可见","detail":"tasks、hidden gold、验证 SQL 和原始评测记录不在工作区。","outcome":"leakage surface closed","status":"normal"}],"outputs":[{"name":"live logistics sandbox","kind":"可运行环境","meta":"ready","preview":["logistics.sqlite mounted","65 documents searchable"],"produced_by":1,"tone":"purple"},{"name":"visibility check","kind":"隔离证明","meta":"passed","preview":["tasks hidden","gold hidden"],"produced_by":2,"tone":"green"}],"handoff":"完整重放结束。点击“重新播放”可再次观察每个产物怎样成为下一步的输入。","handoff_type":"end","replay_ms":850}]</script>
+<script>
+(() => {
+  'use strict';
+  const stages = JSON.parse(document.getElementById('stageData').textContent);
+  const els = {
+    rail: document.getElementById('stageRail'), step: document.getElementById('stepBadge'),
+    title: document.getElementById('stageTitle'), time: document.getElementById('stageTime'),
+    inputs: document.getElementById('inputList'), operations: document.getElementById('operationList'),
+    outputs: document.getElementById('outputList'), inputCount: document.getElementById('inputCount'),
+    opCount: document.getElementById('opCount'), outputCount: document.getElementById('outputCount'),
+    handoff: document.getElementById('handoffText'), progress: document.getElementById('progressFill'),
+    progressLabel: document.getElementById('progressLabel'), live: document.getElementById('liveStatus'),
+    play: document.getElementById('playBtn'), prev: document.getElementById('prevBtn'),
+    next: document.getElementById('nextBtn'), restart: document.getElementById('restartBtn'),
+    speed: document.getElementById('speedSelect'), curtain: document.getElementById('transitionCurtain'),
+    transitionMessage: document.getElementById('transitionMessage'), inputZone: document.getElementById('inputZone'),
+    factorMemory: document.getElementById('factorMemory'), taxonomyMemory: document.getElementById('taxonomyMemory'),
+    dwhBuffer: document.getElementById('dwhBuffer'), kbBuffer: document.getElementById('kbBuffer')
+  };
+  const state = { stage: 0, op: -1, playing: true, speed: 1, timer: null, transitioning: false };
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-      const playButton = document.getElementById("playButton");
-      const playIcon = document.getElementById("playIcon");
-      const playLabel = document.getElementById("playLabel");
-      const restartButton = document.getElementById("restartButton");
-      const progressRange = document.getElementById("progressRange");
-      const progressStep = document.getElementById("progressStep");
-      const progressTotal = document.getElementById("progressTotal");
-      const speedSelect = document.getElementById("speedSelect");
-      const detailPanel = document.getElementById("detailPanel");
-      const detailStep = document.getElementById("detailStep");
-      const detailTitle = document.getElementById("detailTitle");
-      const detailCopy = document.getElementById("detailCopy");
-      const pathHint = document.getElementById("pathHint");
-      const artifactList = document.getElementById("artifactList");
-      const artifactCount = document.getElementById("artifactCount");
-      const liveStatus = document.getElementById("liveStatus");
-      const nodeLayer = document.getElementById("nodeLayer");
-      const connectorLayer = document.getElementById("connectorLayer");
-      const laneLayer = document.getElementById("laneLayer");
-      const mobileFlow = document.getElementById("mobileFlow");
-      const timeline = document.getElementById("timeline");
-      const sourceList = document.getElementById("sourceList");
+  const escapeHtml = value => String(value).replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[char]));
 
-      function svgElement(name, attributes = {}) {
-        const element = document.createElementNS(svgNS, name);
-        Object.entries(attributes).forEach(([key, value]) => element.setAttribute(key, String(value)));
-        return element;
-      }
+  function artifactCard(item, entering = false) {
+    const preview = item.preview.map(line => `<div>${escapeHtml(line)}</div>`).join('');
+    return `<article class="artifact-card tone-${escapeHtml(item.tone)}${entering ? ' entering output-visible' : ''}" data-artifact="${escapeHtml(item.name)}">
+      <div class="artifact-top"><span class="artifact-name">${escapeHtml(item.name)}</span><span class="artifact-kind">${escapeHtml(item.kind)}</span></div>
+      <div class="artifact-meta">${escapeHtml(item.meta)}</div><div class="artifact-preview">${preview}</div>
+    </article>`;
+  }
 
-      function addText(parent, text, className, x, y) {
-        const element = svgElement("text", { x, y, class: className });
-        element.textContent = text;
-        parent.appendChild(element);
-        return element;
-      }
+  function renderRail() {
+    els.rail.innerHTML = stages.map((stage, index) => {
+      const stateClass = index < state.stage ? 'done' : index === state.stage ? 'current' : '';
+      return `<button type="button" class="stage-tab ${stateClass}" data-index="${index}" aria-current="${index === state.stage ? 'step' : 'false'}">${escapeHtml(stage.step)}<small>${escapeHtml(stage.duration)}</small></button>`;
+    }).join('');
+    els.rail.querySelectorAll('button').forEach(button => button.addEventListener('click', () => jumpTo(Number(button.dataset.index))));
+  }
 
-      function connectorPath(from, to, route) {
-        const fromCenter = { x: from.x + nodeWidth / 2, y: from.y + nodeHeight / 2 };
-        const toCenter = { x: to.x + nodeWidth / 2, y: to.y + nodeHeight / 2 };
-        if (route === "right-rail") {
-          const railX = 1130;
-          const startX = from.x + nodeWidth;
-          const endX = to.x + nodeWidth;
-          return `M ${startX} ${fromCenter.y} C ${railX} ${fromCenter.y}, ${railX} ${toCenter.y}, ${endX} ${toCenter.y}`;
-        }
-        if (route === "merge-left") {
-          const startX = from.x;
-          const endX = to.x + nodeWidth;
-          const bendX = (startX + endX) / 2;
-          return `M ${startX} ${fromCenter.y} C ${bendX} ${fromCenter.y}, ${bendX} ${toCenter.y}, ${endX} ${toCenter.y}`;
-        }
-        if (Math.abs(from.y - to.y) < 10) {
-          const forward = to.x > from.x;
-          const startX = forward ? from.x + nodeWidth : from.x;
-          const endX = forward ? to.x : to.x + nodeWidth;
-          return `M ${startX} ${fromCenter.y} L ${endX} ${toCenter.y}`;
-        }
-        const startY = from.y + nodeHeight;
-        const endY = to.y;
-        return `M ${fromCenter.x} ${startY} C ${fromCenter.x} ${startY + 64}, ${toCenter.x} ${endY - 64}, ${toCenter.x} ${endY}`;
-      }
+  function renderBuffers(stage, complete) {
+    const factorReady = state.stage > 2 || (state.stage === 2 && complete);
+    const taxonomyReady = state.stage > 3 || (state.stage === 3 && complete);
+    const dwhReady = state.stage > 6 || (state.stage === 6 && complete);
+    const kbReady = state.stage > 9 || (state.stage === 9 && complete);
+    els.factorMemory.classList.toggle('ready', factorReady);
+    els.taxonomyMemory.classList.toggle('ready', taxonomyReady);
+    els.dwhBuffer.className = `buffer-slot ${dwhReady ? 'ready' : 'empty'}`;
+    els.kbBuffer.className = `buffer-slot ${kbReady ? 'ready' : 'empty'}`;
+    els.dwhBuffer.textContent = dwhReady ? 'DWH · 555 tasks' : 'DWH';
+    els.kbBuffer.textContent = kbReady ? 'Knowledge · 465 tasks' : 'Knowledge';
+  }
 
-      function buildLanes() {
-        const topTitle = addText(laneLayer, "公共主干 · 规格逐级落盘", "lane-title", 24, 48);
-        topTitle.setAttribute("aria-hidden", "true");
-        laneLayer.appendChild(svgElement("line", { x1: 24, y1: 258, x2: 1116, y2: 258, class: "lane-line" }));
-        const dwhTitle = addText(laneLayer, "DWH 分支", "lane-title", 24, 283);
-        dwhTitle.setAttribute("aria-hidden", "true");
-        const knowledgeTitle = addText(laneLayer, "Knowledge 分支", "lane-title", 24, 455);
-        knowledgeTitle.setAttribute("aria-hidden", "true");
-        laneLayer.appendChild(svgElement("line", { x1: 24, y1: 564, x2: 212, y2: 564, class: "boundary-line" }));
-        const boundary = addText(laneLayer, "生成边界", "boundary-label", 222, 568);
-        boundary.setAttribute("text-anchor", "start");
-      }
+  function renderStage() {
+    const stage = stages[state.stage];
+    const complete = state.op >= stage.operations.length - 1;
+    els.step.textContent = `${stage.step} · ${stage.branch}`;
+    els.title.textContent = stage.title;
+    els.time.innerHTML = `${escapeHtml(stage.clock)} <strong>${escapeHtml(stage.duration)}</strong>`;
+    els.inputs.innerHTML = stage.inputs.map(item => artifactCard(item)).join('');
+    els.inputCount.textContent = `${stage.inputs.length} 项`;
+    els.operations.innerHTML = stage.operations.map((op, index) => {
+      const phase = index < state.op ? 'done' : index === state.op ? 'active' : '';
+      const marker = index < state.op ? '✓' : index === state.op ? (op.status === 'error' ? '!' : op.status === 'repair' ? '↻' : '●') : index + 1;
+      return `<div class="operation ${phase} ${escapeHtml(op.status)}">
+        <div class="op-marker">${marker}</div><div><div class="op-label">${escapeHtml(op.label)}</div><div class="op-detail">${escapeHtml(op.detail)}</div></div><div class="op-outcome">${escapeHtml(op.outcome)}</div>
+      </div>`;
+    }).join('');
+    els.opCount.textContent = state.op < 0 ? `0 / ${stage.operations.length}` : `${Math.min(state.op + 1, stage.operations.length)} / ${stage.operations.length}`;
+    const visibleOutputs = stage.outputs.filter(item => item.produced_by <= state.op);
+    els.outputs.innerHTML = visibleOutputs.length
+      ? visibleOutputs.map(item => artifactCard(item, true)).join('')
+      : '<div class="empty-output"><div><strong>还没有产物</strong>动作完成后，文件会在这里逐个生成</div></div>';
+    els.outputCount.textContent = `${visibleOutputs.length} / ${stage.outputs.length}`;
+    els.handoff.innerHTML = complete ? `<strong>本步完成并交付：</strong>${escapeHtml(stage.handoff)}` : '<strong>生成中：</strong>右侧只显示已经真正产生的文件，未完成产物不会提前出现。';
+    const stageFraction = (state.op + 1) / Math.max(stage.operations.length, 1);
+    const totalProgress = ((state.stage + Math.max(0, stageFraction)) / stages.length) * 100;
+    els.progress.style.width = `${Math.min(100, totalProgress)}%`;
+    els.progressLabel.textContent = `${stage.step} · ${state.stage + 1}/${stages.length}`;
+    els.live.textContent = complete ? '本步产物已齐备，准备交付' : state.op < 0 ? '正在读取上一步产物' : `正在执行：${stage.operations[state.op].label}`;
+    els.prev.disabled = state.stage === 0 && state.op <= -1;
+    els.next.disabled = state.transitioning;
+    els.play.textContent = state.playing ? '暂停' : '继续播放';
+    renderRail();
+    renderBuffers(stage, complete);
+  }
 
-      function buildConnectors() {
-        connections.forEach(connection => {
-          const fromKey = connection.from_key;
-          const toKey = connection.to_key;
-          const from = stages[stageIndex.get(fromKey)];
-          const to = stages[stageIndex.get(toKey)];
-          const d = connectorPath(from, to, connection.route);
-          const path = svgElement("path", {
-            d,
-            class: `flow-path${to.boundary === "external" ? " external-link" : ""}`,
-            "data-from": fromKey,
-            "data-to": toKey,
-          });
-          connectorLayer.appendChild(path);
-          const particle = svgElement("circle", { r: 4.5, class: "flow-particle" });
-          connectorLayer.appendChild(particle);
-          connectionRecords.push({ fromKey, toKey, path, particle });
-        });
-      }
+  function clearTimer() {
+    if (state.timer !== null) { window.clearTimeout(state.timer); state.timer = null; }
+  }
 
-      function buildNodes() {
-        stages.forEach((stage, index) => {
-          const group = svgElement("g", {
-            class: `stage-card ${stage.phase}${stage.boundary === "external" ? " external" : ""}`,
-            transform: `translate(${stage.x} ${stage.y})`,
-            role: "button",
-            tabindex: "0",
-            "aria-label": `${stage.step}：${stage.title}。${stage.subtitle}`,
-            "data-key": stage.key,
-          });
-          group.appendChild(svgElement("rect", { x: -5, y: -5, width: nodeWidth + 10, height: nodeHeight + 10, rx: 18, class: "active-halo" }));
-          group.appendChild(svgElement("rect", { width: nodeWidth, height: nodeHeight, rx: 14, class: "node-bg" }));
-          addText(group, stage.step, "node-step", 15, 23);
-          addText(group, stage.title, "node-title", 15, 54);
-          addText(group, stage.subtitle, "node-subtitle", 15, 77);
-          const fileCount = addText(group, `${stage.artifacts.length} 项资产`, "node-subtitle", 15, 96);
-          fileCount.setAttribute("opacity", ".68");
-          group.appendChild(svgElement("circle", { cx: 165, cy: 23, r: 9, class: "status-ring" }));
-          group.appendChild(svgElement("path", { d: "M160.5 23.2 l3 3.1 l5.4 -6.1", class: "status-mark" }));
-          group.addEventListener("click", () => selectStage(index, false));
-          group.addEventListener("keydown", event => {
-            if (event.key === "Enter" || event.key === " ") {
-              event.preventDefault();
-              selectStage(index, false);
-            }
-          });
-          nodeLayer.appendChild(group);
-          nodes.set(stage.key, group);
-        });
-      }
+  function schedule() {
+    clearTimer();
+    if (!state.playing || state.transitioning) return;
+    const stage = stages[state.stage];
+    const delay = (state.op < 0 ? 520 : stage.replay_ms) / state.speed;
+    state.timer = window.setTimeout(tick, delay);
+  }
 
-      function buildMobileFlow() {
-        stages.forEach((stage, index) => {
-          const button = document.createElement("button");
-          button.type = "button";
-          button.className = `mobile-stage ${stage.phase}${stage.boundary === "external" ? " external" : ""}`;
-          button.setAttribute("aria-label", `${stage.step}：${stage.title}`);
-          button.innerHTML = `<span class="mobile-index">${String(index + 1).padStart(2, "0")}</span><span class="mobile-copy"><span class="mobile-step">${stage.step}</span><span class="mobile-title">${stage.title}</span><span class="mobile-subtitle">${stage.subtitle}</span></span>`;
-          button.addEventListener("click", () => selectStage(index, false));
-          mobileFlow.appendChild(button);
-          mobileNodes.set(stage.key, button);
-        });
-      }
+  function tick() {
+    const stage = stages[state.stage];
+    if (state.op < stage.operations.length - 1) {
+      state.op += 1;
+      renderStage();
+      schedule();
+      return;
+    }
+    if (state.stage === stages.length - 1) {
+      state.playing = false;
+      els.live.textContent = '完整生成重放结束';
+      renderStage();
+      return;
+    }
+    animateHandoff(state.stage + 1);
+  }
 
-      function buildTimeline() {
-        stages.forEach((stage, index) => {
-          const button = document.createElement("button");
-          button.type = "button";
-          button.className = `timeline-button ${stage.phase}${stage.boundary === "external" ? " external" : ""}`;
-          button.textContent = stage.step;
-          button.title = stage.title;
-          button.setAttribute("aria-label", `跳转到 ${stage.step} ${stage.title}`);
-          button.addEventListener("click", () => selectStage(index, false));
-          timeline.appendChild(button);
-          timelineNodes.set(stage.key, button);
-        });
-      }
+  function transferSources(type) {
+    if (type === 'merge') return [els.dwhBuffer, els.kbBuffer];
+    if (type === 'branch-return') return [els.factorMemory, els.taxonomyMemory];
+    return Array.from(els.outputs.querySelectorAll('.output-visible')).slice(-3);
+  }
 
-      function buildSources() {
-        sources.forEach(source => {
-          const item = document.createElement("li");
-          const label = document.createElement("span");
-          const path = document.createElement("code");
-          label.textContent = source.label;
-          path.textContent = source.path;
-          item.append(label, path);
-          sourceList.appendChild(item);
-        });
-      }
-
-      function updateParticle(path, particle, progress) {
-        if (!path || !particle) return;
-        const length = path.getTotalLength();
-        const point = path.getPointAtLength(length * progress);
-        particle.setAttribute("cx", point.x);
-        particle.setAttribute("cy", point.y);
-      }
-
-      function setPlayState(playing) {
-        state.playing = playing;
-        playIcon.textContent = playing ? "Ⅱ" : state.index === stages.length - 1 ? "↺" : "▶";
-        playLabel.textContent = playing ? "暂停" : state.index === stages.length - 1 ? "重播" : "播放";
-        playButton.setAttribute("aria-label", playing ? "暂停沙箱生成动画" : state.index === stages.length - 1 ? "重新播放沙箱生成动画" : "播放沙箱生成动画");
-        if (!playing) state.elapsed = 0;
-      }
-
-      function selectStage(index, keepPlaying) {
-        state.index = Math.max(0, Math.min(stages.length - 1, Number(index)));
-        state.elapsed = 0;
-        if (!keepPlaying) setPlayState(false);
-        render();
-      }
-
-      function render() {
-        const current = stages[state.index];
-        stages.forEach((stage, index) => {
-          const status = index < state.index ? "done" : index === state.index ? "active" : "pending";
-          [nodes.get(stage.key), mobileNodes.get(stage.key), timelineNodes.get(stage.key)].forEach(element => {
-            if (!element) return;
-            element.classList.remove("done", "active", "pending");
-            element.classList.add(status);
-            if (index === state.index) element.setAttribute("aria-current", "step");
-            else element.removeAttribute("aria-current");
-          });
-        });
-
-        connectionRecords.forEach(({ toKey, path, particle }) => {
-          const index = stageIndex.get(toKey);
-          path.classList.remove("done", "active");
-          particle.classList.remove("active");
-          if (index < state.index) path.classList.add("done");
-          if (index === state.index) {
-            path.classList.add("active");
-            particle.classList.add("active");
-            updateParticle(path, particle, .72);
-          }
-        });
-
-        detailPanel.classList.toggle("external-copy", current.boundary === "external");
-        detailStep.textContent = current.step;
-        detailTitle.textContent = current.title;
-        detailCopy.textContent = current.detail;
-        pathHint.textContent = current.path_hint;
-        artifactList.replaceChildren();
-        current.artifacts.forEach((artifact, index) => {
-          const chip = document.createElement("span");
-          chip.className = `artifact-chip${artifact.includes("hidden") ? " hidden" : ""}`;
-          chip.textContent = artifact;
-          chip.style.animationDelay = `${index * 70}ms`;
-          artifactList.appendChild(chip);
-        });
-        artifactCount.textContent = `${current.artifacts.length} items`;
-        progressRange.value = String(state.index);
-        progressStep.textContent = String(state.index + 1).padStart(2, "0");
-        liveStatus.textContent = `第 ${state.index + 1} 阶段，共 ${stages.length} 阶段：${current.step}，${current.title}。${current.detail}`;
-      }
-
-      function animate(timestamp) {
-        if (!state.lastFrame) state.lastFrame = timestamp;
-        const delta = Math.min(80, timestamp - state.lastFrame);
-        state.lastFrame = timestamp;
-        if (state.playing) {
-          state.elapsed += delta * state.speed;
-          const currentStage = stages[state.index];
-          connectionRecords
-            .filter(record => record.toKey === currentStage.key)
-            .forEach(({ path, particle }) => updateParticle(path, particle, Math.min(1, state.elapsed / (currentStage.replay_ms || defaultStepDuration))));
-          if (state.elapsed >= (currentStage.replay_ms || defaultStepDuration)) {
-            state.elapsed = 0;
-            if (state.index < stages.length - 1) {
-              state.index += 1;
-              render();
-            } else {
-              setPlayState(false);
-              render();
-            }
-          }
-        }
-        window.requestAnimationFrame(animate);
-      }
-
-      playButton.addEventListener("click", () => {
-        if (!state.playing && state.index === stages.length - 1) state.index = 0;
-        setPlayState(!state.playing);
-        render();
+  function animateHandoff(nextIndex) {
+    if (state.transitioning) return;
+    state.transitioning = true;
+    clearTimer();
+    const current = stages[state.stage];
+    els.transitionMessage.textContent = current.handoff;
+    els.curtain.classList.add('show');
+    const sources = transferSources(current.handoff_type);
+    const target = els.inputZone.getBoundingClientRect();
+    const animations = [];
+    if (!reducedMotion && sources.length) {
+      sources.forEach((source, index) => {
+        const rect = source.getBoundingClientRect();
+        const clone = source.cloneNode(true);
+        clone.classList.add('cargo-clone');
+        clone.style.left = `${rect.left}px`; clone.style.top = `${rect.top}px`;
+        clone.style.width = `${rect.width}px`; clone.style.height = `${rect.height}px`;
+        document.body.appendChild(clone);
+        const dx = target.left + 12 - rect.left;
+        const dy = target.top + 76 + index * 48 - rect.top;
+        const animation = clone.animate([
+          { transform: 'translate(0,0) scale(1)', opacity: 1 },
+          { transform: `translate(${dx * .48}px, ${dy * .28 - 22}px) scale(.88)`, opacity: .96, offset: .45 },
+          { transform: `translate(${dx}px, ${dy}px) scale(.68)`, opacity: .12 }
+        ], { duration: 900 / state.speed, easing: 'cubic-bezier(.35,.05,.18,1)', fill: 'forwards' });
+        animations.push(animation.finished.catch(() => undefined).finally(() => clone.remove()));
       });
-      restartButton.addEventListener("click", () => selectStage(0, false));
-      progressRange.addEventListener("input", event => selectStage(event.target.value, false));
-      speedSelect.addEventListener("change", event => { state.speed = Number(event.target.value); });
-      root.addEventListener("keydown", event => {
-        if (event.target.matches("input, select, button")) return;
-        if (event.key === "ArrowRight") selectStage(state.index + 1, false);
-        if (event.key === "ArrowLeft") selectStage(state.index - 1, false);
-      });
+    }
+    Promise.all(animations).then(() => window.setTimeout(() => {
+      state.stage = nextIndex; state.op = -1; state.transitioning = false;
+      els.curtain.classList.remove('show'); renderStage(); schedule();
+    }, reducedMotion ? 80 : 220 / state.speed));
+  }
 
-      buildLanes();
-      buildConnectors();
-      buildNodes();
-      buildMobileFlow();
-      buildTimeline();
-      buildSources();
-      progressRange.max = String(stages.length - 1);
-      progressTotal.textContent = `/ ${stages.length}`;
-      render();
-      if (!reducedMotion) setPlayState(true);
-      window.requestAnimationFrame(animate);
-    })();
-  </script>
+  function jumpTo(index) {
+    clearTimer(); state.stage = Math.max(0, Math.min(stages.length - 1, index));
+    state.op = -1; state.transitioning = false; els.curtain.classList.remove('show');
+    renderStage(); schedule();
+  }
+
+  els.play.addEventListener('click', () => { state.playing = !state.playing; renderStage(); schedule(); });
+  els.prev.addEventListener('click', () => jumpTo(state.stage - 1));
+  els.next.addEventListener('click', () => {
+    if (state.op < stages[state.stage].operations.length - 1) { state.op += 1; renderStage(); schedule(); }
+    else if (state.stage < stages.length - 1) animateHandoff(state.stage + 1);
+  });
+  els.restart.addEventListener('click', () => { state.playing = true; jumpTo(0); });
+  els.speed.addEventListener('change', () => { state.speed = Number(els.speed.value); schedule(); });
+  document.addEventListener('keydown', event => {
+    if (event.key === 'ArrowRight') els.next.click();
+    if (event.key === 'ArrowLeft') els.prev.click();
+    if (event.key === ' ') { event.preventDefault(); els.play.click(); }
+  });
+
+  renderStage();
+  requestAnimationFrame(() => schedule());
+})();
+</script>
 </body>
 </html>

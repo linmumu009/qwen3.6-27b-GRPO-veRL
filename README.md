@@ -2,6 +2,12 @@
 
 Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
+## v1.12.38（2026-08-27）
+
+- 按“实际生成过程”重做物流沙箱动态图，彻底移除上一版复用通用节点流程图的表达：桌面画面一次只聚焦一个阶段，固定展示“上一步交付的真实文件 → 本步逐条执行的动作 → 随动作逐个落盘的新文件”，阶段结束时产物卡会实际移动到下一步输入区。
+- 用真实物流场景补全因果细节：Step 1 先生成 `entities.json`、`states.json` 与 `tools_actions.json`，再演示首次校验发现 hard error、修复错误状态引用并重跑到 9/9 通过；Taxonomy 分叉后保留上下文总线，DWH 555 条与 Knowledge 465 条任务进入两个缓冲槽并共同移动到 Hybrid，最后展示 raw/runner 分层冻结和登记交付。
+- 动画改为固定桌面生成剧场，不再投入手机适配；确定性渲染与因果交付合同回归同步重写，相关通用/物流动画合计 `6 passed`。1280px 桌面实测无横向溢出，产物逐步出现、跨阶段移动、双支路汇合和播放控制均正常，控制台无警告或错误。
+
 ## v1.12.37（2026-08-27）
 
 - 新增物流运营沙箱真实生成重放动态图：依据私有 `sf_my_sandbox` 的 v20 场景 `运营分析-8767b626` 状态、阶段执行摘要及 5 号机物流沙箱实物，按真实墙钟重放 13:15:20–14:35:51 的 80 分 31 秒生成过程。
@@ -186,7 +192,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 目录
 
-- [`docs/logistics_sandbox_generation_example_animation_20260827.html`](docs/logistics_sandbox_generation_example_animation_20260827.html)：真实重放物流运营场景从 7,105 B 输入说明到 PRD、Factor、Taxonomy、数仓/知识库双分支、Hybrid、冻结登记及 Rollout 的完整过程；由 [`scripts/render_logistics_sandbox_example_animation.py`](scripts/render_logistics_sandbox_example_animation.py) 确定性生成。
+- [`docs/logistics_sandbox_generation_example_animation_20260827.html`](docs/logistics_sandbox_generation_example_animation_20260827.html)：桌面端真实生成剧场；逐阶段展示上游文件、本步生成动作、新产物落盘及产物向下一步移动，并重放 Factor 报错修复、数仓/知识双支路缓冲、Hybrid 汇合与冻结交付；由 [`scripts/render_logistics_sandbox_example_animation.py`](scripts/render_logistics_sandbox_example_animation.py) 确定性生成。
 - [`docs/sandbox_generation_animation_20260827.html`](docs/sandbox_generation_animation_20260827.html)：依据 GitHub `sf_my_sandbox main@7589170` 绘制、以 5 号机快照作历史对照的沙箱生成动态图；可播放/拖动查看公共主干、DWH/Knowledge 双分支、Hybrid 汇合、三层冻结和独立 Rollout 边界，源文件由 [`scripts/render_sandbox_generation_animation.py`](scripts/render_sandbox_generation_animation.py) 确定性生成。
 - [`docs/training_experiment_report_20260731.md`](docs/training_experiment_report_20260731.md)：从初始环境、数据改造、十余次关键尝试到最终 One-Step 与 bounded fully-async 跑通的完整复盘报告。
 - [`docs/trajectory_rollout_investigation_20260731.html`](docs/trajectory_rollout_investigation_20260731.html)：同 prompt 轨迹长度对比、长尾 rollout 超时、完整 GRPO group 队列与 vLLM 真取消方案的可交互调查报告。

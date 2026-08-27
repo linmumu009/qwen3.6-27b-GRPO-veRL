@@ -4,17 +4,16 @@ import json
 from pathlib import Path
 import re
 
-from scripts.render_logistics_sandbox_example_animation import (
-    CONNECTIONS,
-    STAGES,
-    main,
-    render_html,
-)
+from scripts.render_logistics_sandbox_example_animation import STAGES, main, render_html
 
 
-def test_replay_preserves_real_v20_stage_graph_and_timing() -> None:
+def _names(items: object) -> set[str]:
+    return {item.name for item in items}  # type: ignore[attr-defined]
+
+
+def test_replay_models_causal_artifact_handoffs_and_real_repair() -> None:
     assert [stage.key for stage in STAGES] == [
-        "input",
+        "intake",
         "prd",
         "factor",
         "taxonomy",
@@ -26,55 +25,73 @@ def test_replay_preserves_real_v20_stage_graph_and_timing() -> None:
         "kb_tasks",
         "hybrid",
         "freeze",
-        "rollout",
+        "runner",
     ]
-    assert max(STAGES, key=lambda stage: stage.duration_seconds).key == "factor"
-    assert next(stage for stage in STAGES if stage.key == "factor").duration_seconds == 3074
-    assert "80:31" in next(stage for stage in STAGES if stage.key == "freeze").step
-    edges = {(edge.from_key, edge.to_key, edge.route) for edge in CONNECTIONS}
-    assert ("taxonomy", "schema", "auto") in edges
-    assert ("taxonomy", "catalog", "right-rail") in edges
-    assert ("dwh_tasks", "hybrid", "merge-left") in edges
-    assert ("kb_tasks", "hybrid", "merge-left") in edges
-    assert STAGES[-1].boundary == "external"
+    assert "input/运营分析.md" in _names(STAGES[0].outputs) & _names(STAGES[1].inputs)
+    assert {"prd_运营分析.md", "coverage.json", "filled_template.json"} <= (
+        _names(STAGES[1].outputs) & _names(STAGES[2].inputs)
+    )
+    assert {"entities.json", "states.json", "tools_actions.json"} <= (
+        _names(STAGES[2].outputs) & _names(STAGES[3].inputs)
+    )
+    factor = STAGES[2]
+    assert factor.duration == "51:14"
+    assert [op.status for op in factor.operations] == [
+        "normal",
+        "normal",
+        "error",
+        "repair",
+        "success",
+    ]
+    assert "incident_closed_without_compensation" in factor.operations[3].detail
+    assert next(item for item in factor.outputs if item.name == "factor_validation_report.json").produced_by == 4
+    assert STAGES[6].handoff_type == "branch-return"
+    assert STAGES[9].handoff_type == "merge"
+    assert {"tasks.jsonl", "knowledge_tasks.jsonl"} <= _names(STAGES[10].inputs)
 
 
-def test_replay_embeds_only_safe_aggregate_evidence() -> None:
+def test_replay_is_a_transformation_theatre_not_the_old_pipeline_graph() -> None:
     html = render_html()
 
     assert html.startswith("<!doctype html>")
+    assert 'class="theatre-grid"' in html
+    assert 'id="inputZone"' in html
+    assert 'id="operationZone"' in html
+    assert 'id="outputZone"' in html
+    assert "animateHandoff" in html
+    assert "clone.animate" in html
+    assert "Factor bundle" in html
+    assert "DWH · 555 tasks" in html
+    assert "Knowledge · 465 tasks" in html
+    assert "第一次因子校验" in html
+    assert "修复错误引用" in html
+    assert "36,101 rows" in html
+    assert "65 documents" in html
+    assert "500 / 500 passed" in html
+    assert "pipelineSvg" not in html
+    assert 'class="stage-card"' not in html
+    assert "mobile-flow" not in html
+    assert "render_sandbox_generation_animation" not in html
     assert '<script src="http' not in html
     assert '<link href="http' not in html
-    assert "requestAnimationFrame" in html
-    assert "物流运营沙箱 · 真实生成重放" in html
-    assert "运营分析-8767b626" in html
-    assert "36,101 条记录" in html
-    assert "65 个 Markdown" in html
-    assert "555 条最终任务" in html
-    assert "465 条任务" in html
-    assert "data→policy 171" in html
-    assert "policy→data 156" in html
-    assert "compliance 173" in html
-    assert "hidden gold 不展示" in html
     assert "gold_answer" not in html
     assert "SELECT " not in html
     assert "__STAGE_DATA__" not in html
-    assert "__CONNECTION_DATA__" not in html
-    assert "__SOURCE_DATA__" not in html
 
-    stage_match = re.search(
+    match = re.search(
         r'<script id="stageData" type="application/json">(.*?)</script>',
         html,
         re.DOTALL,
     )
-    assert stage_match is not None
-    embedded = json.loads(stage_match.group(1))
-    assert [stage["key"] for stage in embedded] == [stage.key for stage in STAGES]
-    assert all(stage["replay_ms"] > 0 for stage in embedded)
+    assert match is not None
+    embedded = json.loads(match.group(1))
+    assert len(embedded) == 13
+    assert all(stage["inputs"] and stage["operations"] and stage["outputs"] for stage in embedded)
+    assert all(stage["handoff"] for stage in embedded)
 
 
 def test_cli_renders_and_checks_exact_output(tmp_path: Path, monkeypatch) -> None:
-    output = tmp_path / "logistics-sandbox-replay.html"
+    output = tmp_path / "logistics-sandbox-generation-theatre.html"
     monkeypatch.setattr("sys.argv", ["render", "--output", str(output)])
     assert main() == 0
     assert output.read_text(encoding="utf-8") == render_html()
