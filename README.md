@@ -2,6 +2,13 @@
 
 Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
+## v1.12.40（2026-08-27）
+
+- 针对上一版信息过密、世界层同时叠加导致难懂的问题，重做为 6 个连续故事章节：定义世界、建立运行机制、实例化事实世界、建立规则世界、生成混合判断、冻结并交付；13 个真实执行阶段仍完整保留，但不再作为一排细碎导航抢占注意力。
+- 每个镜头固定回答三个问题：“上一刻的世界”“这一刻发生什么”“世界因此获得什么能力”；当前变化以大字号结论和真实结果居中显示，已有世界退为暗色上下文，只有当前相关的实体、状态环、动作束、情境轨道、事实流、规则层或观察任务被镜头聚焦。Step 5.1 数仓任务和 Step 5.3 混合任务的语义与编号继续明确。
+- 文件清单默认折叠为“技术落盘凭证”，主画面只讲世界能力；新增六章节转场、镜头缩放、语义层生长、粒子爆发、可点击建模动作和颜色图例，最终保持静止的 `WORLD MODEL SEALED / 物流沙箱生成完成` 终态。
+- 相关通用/物流动画合计 `7 passed`；1280px 桌面实测 6 个章节、三段式解释、聚焦层、操作跳转、终态停止与重播均正常，无横向溢出，控制台无警告或错误。
+
 ## v1.12.39（2026-08-27）
 
 - 将物流示例从“文件生成文件”的三列流水线彻底重做为持续生长的可执行世界：画面以 `W = (Entities, States, Actions, Rules, Observations)` 为主线，依次建立世界边界、观察角色、57 类实体、76 个状态、80 个动作、情境变化轴与组合约束，再把语义世界投影到 Schema、实例化为 36,101 条事实，并加入政策/制度记忆和智能体可见性边界；文件名降级为右侧“落盘凭证”，不再充当视觉主角。
@@ -199,7 +206,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 目录
 
-- [`docs/logistics_sandbox_generation_example_animation_20260827.html`](docs/logistics_sandbox_generation_example_animation_20260827.html)：桌面端物流世界建模实录；持续展示世界边界、角色、实体、状态、动作、约束、事实、制度规则与三类观察任务怎样进入同一个可执行世界，重放 Factor 一致性修复、`State(W) × Rules(W)` Hybrid 汇合、冻结交付和明确完成终态；文件仅作为落盘凭证。由 [`scripts/render_logistics_sandbox_example_animation.py`](scripts/render_logistics_sandbox_example_animation.py) 确定性生成。
+- [`docs/logistics_sandbox_generation_example_animation_20260827.html`](docs/logistics_sandbox_generation_example_animation_20260827.html)：桌面端电影化物流世界建模实录；以 6 个故事章节和“上一刻—这一刻—获得能力”三段式解释，聚焦展示世界边界、角色、实体、状态、动作、约束、事实、制度规则与三类观察任务怎样进入同一个可执行世界；文件默认折叠为技术落盘凭证。由 [`scripts/render_logistics_sandbox_example_animation.py`](scripts/render_logistics_sandbox_example_animation.py) 确定性生成。
 - [`docs/sandbox_generation_animation_20260827.html`](docs/sandbox_generation_animation_20260827.html)：依据 GitHub `sf_my_sandbox main@7589170` 绘制、以 5 号机快照作历史对照的沙箱生成动态图；可播放/拖动查看公共主干、DWH/Knowledge 双分支、Hybrid 汇合、三层冻结和独立 Rollout 边界，源文件由 [`scripts/render_sandbox_generation_animation.py`](scripts/render_sandbox_generation_animation.py) 确定性生成。
 - [`docs/training_experiment_report_20260731.md`](docs/training_experiment_report_20260731.md)：从初始环境、数据改造、十余次关键尝试到最终 One-Step 与 bounded fully-async 跑通的完整复盘报告。
 - [`docs/trajectory_rollout_investigation_20260731.html`](docs/trajectory_rollout_investigation_20260731.html)：同 prompt 轨迹长度对比、长尾 rollout 超时、完整 GRPO group 队列与 vLLM 真取消方案的可交互调查报告。
