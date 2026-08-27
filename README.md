@@ -2,6 +2,11 @@
 
 Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
+## v1.12.35（2026-08-27）
+
+- 新增沙箱生成过程自包含动态图与可复现渲染器；依据 5 号机只读源码快照，准确展示业务说明、场景隔离、Step 0–5 阶段产物、DB/Docs/Tasks SHA256 冻结及 `sandbox_registry.jsonl` 登记，并明确把已解耦的 Rollout Engine 画在环境生成边界之外。
+- 动画支持自动播放、暂停、重置、拖动跳转、阶段直达和倍速，阶段激活时同步展示真实落盘资产；桌面与 390px 窄屏实际渲染无横向溢出，浏览器控制台无警告/错误，生成一致性与边界合同回归为 `3 passed`。
+
 ## v1.12.34（2026-08-25）
 
 - 修正 `step120-opensource` 的优化器放置合同：首个完整双机启动已通过数据转换、Ray角色和1×16 HCCL门禁，但在任何rollout或optimizer更新前，16个训练worker因继承通用入口的CPU optimizer offload而并发申请pinned host memory失败。续训入口现在显式固定 `OPTIMIZER_CPU_OFFLOAD=false / ENGINE_OPTIMIZER_OFFLOAD=false`，与原Qwen3.6 Step100已跑通配置一致；失败run及错误日志保留，Step100源权重未被修改。
@@ -170,6 +175,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
 ## 目录
 
+- [`docs/sandbox_generation_animation_20260827.html`](docs/sandbox_generation_animation_20260827.html)：依据 5 号机 runtime、stage registry 与 freezer 源码绘制的沙箱生成动态图；可播放/拖动查看 Step 0–5 的真实阶段产物、冻结校验和以及独立 Rollout 边界，源文件由 [`scripts/render_sandbox_generation_animation.py`](scripts/render_sandbox_generation_animation.py) 确定性生成。
 - [`docs/training_experiment_report_20260731.md`](docs/training_experiment_report_20260731.md)：从初始环境、数据改造、十余次关键尝试到最终 One-Step 与 bounded fully-async 跑通的完整复盘报告。
 - [`docs/trajectory_rollout_investigation_20260731.html`](docs/trajectory_rollout_investigation_20260731.html)：同 prompt 轨迹长度对比、长尾 rollout 超时、完整 GRPO group 队列与 vLLM 真取消方案的可交互调查报告。
 - [`docs/context_48k_tool_turn_validation_20260731.md`](docs/context_48k_tool_turn_validation_20260731.md)：8K/16K/32K/48K 阶梯实跑、显存峰值、system prompt 血缘和工具调用轮次对齐报告。
