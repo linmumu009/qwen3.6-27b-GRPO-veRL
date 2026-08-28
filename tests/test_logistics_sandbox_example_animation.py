@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 import re
 
-from scripts.render_logistics_sandbox_example_animation import CHAPTERS, WORLD_PHASES, STAGES, main, render_html
+from scripts.render_logistics_sandbox_example_animation import SCENES, WORLD_PHASES, STAGES, main, render_html
 
 
 def _names(items: object) -> set[str]:
@@ -64,58 +64,55 @@ def test_world_model_phases_explain_semantics_not_just_files() -> None:
     assert "状态、可执行动作" in factor.capability
     assert "世界里实际发生了什么" in WORLD_PHASES[6].capability
     assert "现实中的物流运行是否符合世界的规则" in WORLD_PHASES[10].capability
-    assert [chapter.title for chapter in CHAPTERS] == [
-        "定义世界",
-        "建立运行机制",
-        "实例化事实世界",
-        "建立规则世界",
-        "生成混合判断",
-        "冻结并交付",
+    assert [scene.key for scene in SCENES] == [
+        "brief",
+        "mechanics",
+        "reality",
+        "rules",
+        "questions",
+        "seal",
     ]
-    covered = [
-        stage_index
-        for chapter in CHAPTERS
-        for stage_index in range(chapter.start_stage, chapter.end_stage + 1)
-    ]
-    assert covered == list(range(13))
+    mapped_keys = [key for scene in SCENES for key in scene.stage_keys]
+    assert len(mapped_keys) == len(set(mapped_keys)) == len(STAGES)
+    assert set(mapped_keys) == {stage.key for stage in STAGES}
 
 
-def test_replay_uses_six_clear_chapters_and_a_focused_cinematic_world() -> None:
+def test_replay_uses_one_waybill_and_one_visible_causal_chain() -> None:
     html = render_html()
 
     assert html.startswith("<!doctype html>")
-    assert "一个物流世界，是怎样一步步建成的？" in html
-    assert "上一刻的世界有什么、这一刻改变了什么、改变后世界获得什么能力" in html
-    assert 'class="chapters"' in html
-    assert 'class="cinema"' in html
-    assert 'class="hero-change"' in html
-    assert "① 上一刻的世界" in html
-    assert "② 这一刻发生什么" in html
-    assert "③ 世界因此获得" in html
-    assert "技术落盘凭证（世界模型的载体，不是主角）" in html
-    assert 'data-layer="entities"' in html
-    assert 'data-layer="states"' in html
-    assert 'data-layer="actions"' in html
-    assert 'data-layer="taxonomy"' in html
-    assert 'data-layer="data"' in html
-    assert 'data-layer="rules"' in html
-    assert 'data-layer="hybrid"' in html
+    assert "一票运单，如何一步步长成一个物流沙箱？" in html
+    assert "const navLabels=['业务描述','世界结构','现实实例','世界规则','观察任务','冻结沙箱']" in html
+    assert "W-DEMO-001" in html
+    assert "示意运单（非真实数据库行）" in html
+    assert "输入：已经有什么" in html
+    assert "变化：这一部做什么" in html
+    assert "结果：世界因此获得" in html
+    assert "查看 13 个工程阶段与落盘凭证（主线的可审计证据）" in html
     assert "Step 5.1 数仓任务" in html
+    assert "Step 5.2 知识任务" in html
     assert "Step 5.3 混合任务" in html
+    assert "实际发生了什么？" in html
+    assert "规则要求什么？" in html
+    assert "现实是否符合规则？" in html
+    assert "实际时效 T_actual" in html
+    assert "SLA 阈值 T_sla" in html
+    assert "事实：实际发生了什么" in html
+    assert "规则：应该怎样运行" in html
     assert "transitionTo" in html
-    assert "CHAPTER ${chapterData[newChapter].number}" in html
-    assert "function burst()" in html
     assert "function finish()" in html
     assert 'id="end"' in html
-    assert "物流沙箱生成完成" in html
+    assert "沙箱生成完成" in html
     assert "state.finished=true" in html
     assert "body.finished" in html
     assert "animation-play-state:paused!important" in html
     assert "第一次因子校验" in html
     assert "修复错误引用" in html
-    assert "36,101 rows" in html
-    assert "65 documents" in html
-    assert "500 / 500 passed" in html
+    assert "36,101" in html
+    assert "65" in html
+    assert "500" in html
+    assert "评测者保险库" in html
+    assert "模型可观察" in html
     assert 'class="world-layout"' not in html
     assert 'class="inherit-panel"' not in html
     assert 'class="gain-list"' not in html
@@ -143,23 +140,17 @@ def test_replay_uses_six_clear_chapters_and_a_focused_cinematic_world() -> None:
     assert all(stage["inputs"] and stage["operations"] and stage["outputs"] for stage in embedded)
     assert all(stage["handoff"] for stage in embedded)
 
-    world_match = re.search(
-        r'<script id="phases" type="application/json">(.*?)</script>',
+    scene_match = re.search(
+        r'<script id="sceneData" type="application/json">(.*?)</script>',
         html,
         re.DOTALL,
     )
-    assert world_match is not None
-    world_embedded = json.loads(world_match.group(1))
-    assert [phase["key"] for phase in world_embedded] == [stage["key"] for stage in embedded]
-
-    chapter_match = re.search(
-        r'<script id="chapterData" type="application/json">(.*?)</script>',
-        html,
-        re.DOTALL,
-    )
-    assert chapter_match is not None
-    chapter_embedded = json.loads(chapter_match.group(1))
-    assert len(chapter_embedded) == 6
+    assert scene_match is not None
+    scene_embedded = json.loads(scene_match.group(1))
+    assert len(scene_embedded) == 6
+    mapped_keys = [key for scene in scene_embedded for key in scene["stage_keys"]]
+    assert len(mapped_keys) == len(set(mapped_keys)) == len(embedded)
+    assert set(mapped_keys) == {stage["key"] for stage in embedded}
 
 
 def test_cli_renders_and_checks_exact_output(tmp_path: Path, monkeypatch) -> None:
