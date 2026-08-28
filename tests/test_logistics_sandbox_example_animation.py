@@ -72,28 +72,33 @@ def test_world_model_phases_explain_semantics_not_just_files() -> None:
     assert PROCESS_STEPS[-1].metrics == (57, 76, 80, 64, 36101, 65, 1587, 1520)
 
 
-def test_replay_is_detailed_but_keeps_the_structure_and_scale_visible() -> None:
+def test_replay_uses_one_cumulative_particle_world_to_explain_the_process() -> None:
     html = render_html()
 
     assert html.startswith("<!doctype html>")
-    assert "物流运营沙箱，是怎样一步步生成的？" in html
-    assert "业务说明 → 需求规格" in html
+    assert "一份物流 PRD，怎样生长成一个成熟世界？" in html
+    assert "同一个世界从一个种子持续分裂" in html
+    assert "PRD → 角色与目标" in html
     assert "实体 + 状态 + 动作" in html
-    assert "Schema → 数据 → 数仓任务" in html
-    assert "目录 → 文档 → 知识任务" in html
+    assert "事实分支" in html
+    assert "规则分支" in html
     assert "事实 × 规则" in html
     assert "Runner / Raw 隔离" in html
-    assert "两条分支来自同一个世界模型" in html
     assert "十二个实际执行阶段" in html
-    assert "① 接住上一步" in html
-    assert "② 依次完成" in html
-    assert "③ 世界新增" in html
-    assert "本阶段输入" in html
     assert "本阶段动作" in html
-    assert "阶段结果" in html
-    assert "世界累计规模" in html
-    assert "只显示已完成生成的内容" in html
-    assert "查看本阶段真实落盘凭证" in html
+    assert "本阶段输入" not in html
+    assert "阶段结果" not in html
+    assert "世界累计规模" not in html
+    assert 'class="metric-grid"' not in html
+    assert "查看真实落盘凭证（不参与主叙事）" in html
+    assert 'id="worldCanvas"' in html
+    assert "粒子世界 · 累积生长" in html
+    assert "球体变化：" in html
+    assert "共享世界模型" in html
+    assert "事实世界" in html
+    assert "规则世界" in html
+    assert "外部观察任务" in html
+    assert "冻结边界" in html
     assert "Step 5.1 数仓任务" in html
     assert "Step 5.2 知识任务" in html
     assert "Step 5.3 混合任务" in html
@@ -110,16 +115,49 @@ def test_replay_is_detailed_but_keeps_the_structure_and_scale_visible() -> None:
     assert "1,587 个证据块" in html
     assert "使用 374 对文档引用关系" in html
     assert "1,520" in html
+    assert "PRD · 1 个世界种子" in html
+    assert "add('seed',1,0,-1" in html
+    assert "add('roles',5,1,0" in html
+    assert "add('entities',57,2,0" in html
+    assert "add('states',76,2,1" in html
+    assert "add('actions',80,2,1" in html
+    assert "add('taxonomy',115,3,1" in html
+    assert "add('tables',64,4,1" in html
+    assert "add('facts',36101,5,1" in html
+    assert "add('dwh',555,6,3" in html
+    assert "add('docanchors',65,7,1" in html
+    assert "add('chunks',1587,8,1" in html
+    assert "add('kb',465,9,1" in html
+    assert "add('hybridA',171,10,0" in html
+    assert "add('hybridB',156,10,1" in html
+    assert "add('hybridC',173,10,2" in html
+    assert "function fib(" in html
+    assert "origin(i,count,t)" in html
+    assert "birthTimes" in html
+    assert "当前可见 ${count.toLocaleString('zh-CN')} 个世界粒子" in html
+    assert "事实半球 · 64 表 · 36,101 实例" in html
+    assert "规则半球 · 65 文档 · 1,587 证据块" in html
+    assert "555 数仓任务 · 观察事实" in html
+    assert "465 知识任务 · 观察规则" in html
+    assert "500 混合任务 · 比较事实与规则" in html
+    assert "壳内 RUNNER · DB + Docs + Schema" in html
+    assert "壳外 RAW · 1,520 Tasks + Hidden Gold" in html
+    assert "任务始终在世界之外观察它" in html
+    assert "绿色冻结壳只封装 Runner 可见世界" in html
     assert "function finish()" in html
     assert 'id="end"' in html
     assert "物流运营沙箱生成完成" in html
     assert "state.finished=true" in html
     assert "body.finished" in html
     assert "animation-play-state:paused!important" in html
+    assert "cancelAnimationFrame(worldRaf)" in html
+    assert "if(!state.finished&&!reduced)worldRaf=requestAnimationFrame(worldLoop)" in html
+    assert "el.play.disabled=state.finished" in html
+    assert "el.next.disabled=state.finished" in html
     assert "第一次因子校验" in html
     assert "修复错误引用" in html
     assert "数量来自固定提交 7589170 的 v20 实际运行摘要" in html
-    assert "“57”是实体类型，“36,101”是实例化记录，口径不混用" in html
+    assert "57 是实体类型，36,101 是实例化记录，口径不混用" in html
     assert "W-DEMO-001" not in html
     assert 'class="world-layout"' not in html
     assert 'class="inherit-panel"' not in html
