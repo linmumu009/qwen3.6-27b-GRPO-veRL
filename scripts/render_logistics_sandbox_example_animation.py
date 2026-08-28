@@ -90,6 +90,19 @@ class StoryScene:
     replay_ms: int = 4600
 
 
+@dataclass(frozen=True)
+class ProcessStep:
+    key: str
+    phase: str
+    number: str
+    label: str
+    purpose: str
+    inherited: tuple[str, ...]
+    produced: tuple[str, ...]
+    metrics: tuple[int, ...]
+    replay_ms: int = 950
+
+
 def artifact(
     name: str,
     kind: str,
@@ -648,6 +661,97 @@ SCENES = (
         "可进入的物流沙箱",
         ("freeze", "runner"),
         5200,
+    ),
+)
+
+
+# Cumulative world scale, in this fixed order:
+# entity types, states, actions, tables, records, documents, chunks, tasks.
+# Values come from the pinned v20 run; an unproduced layer stays at zero.
+PROCESS_STEPS = (
+    ProcessStep(
+        "intake", "understand", "00", "隔离场景",
+        "先固定唯一输入和世界边界，保证后续所有内容属于同一个物流场景。",
+        ("物流运营业务说明 · 7,105 B", "原始输入指纹"),
+        ("独立场景 运营分析-8767b626", "可追溯的运行状态"),
+        (0, 0, 0, 0, 0, 0, 0, 0), 760,
+    ),
+    ProcessStep(
+        "prd", "understand", "01", "理解业务",
+        "把自然语言需求拆成角色、业务目标和必须覆盖的分析问题。",
+        ("已隔离的业务说明", "物流网络、产品线与用例"),
+        ("5 类运营角色", "查询 / 对比 / 趋势 / 归因 / 诊断", "14/14 需求覆盖"),
+        (0, 0, 0, 0, 0, 0, 0, 0), 860,
+    ),
+    ProcessStep(
+        "factor", "model", "02", "建立世界模型",
+        "定义世界中有什么、会经历哪些状态、允许执行哪些动作。",
+        ("角色、目标和分析需求", "结构化业务规格"),
+        ("57 类实体", "76 个状态", "80 个动作", "9/9 校验通过"),
+        (57, 76, 80, 0, 0, 0, 0, 0), 1100,
+    ),
+    ProcessStep(
+        "taxonomy", "model", "03", "展开情境空间",
+        "把世界模型组织成可系统采样的区域、时间、产品、状态和指标组合。",
+        ("57 类实体 · 76 状态 · 80 动作", "已闭合的世界模型"),
+        ("15 个变化维度", "115 个采样单元", "27 条组合约束", "覆盖率 1.0000"),
+        (57, 76, 80, 0, 0, 0, 0, 0), 920,
+    ),
+    ProcessStep(
+        "schema", "facts", "04", "设计事实世界结构",
+        "把语义世界投影成稳定的数据结构，让每种对象、状态和关系都有存储位置。",
+        ("世界模型", "15 维情境空间", "组合约束"),
+        ("64 张表", "54 张业务事实表", "9 张平台表", "1 张关系桥表", "10/10 校验通过"),
+        (57, 76, 80, 64, 0, 0, 0, 0), 920,
+    ),
+    ProcessStep(
+        "data", "facts", "05", "实例化事实世界",
+        "按主外键依赖逐表生成数据，让抽象世界拥有可查询的当前状态和历史。",
+        ("64 张表结构", "状态枚举", "字段与引用约束"),
+        ("36,101 条物流记录", "300 条显式关系桥记录", "64 表主外键检查通过", "5/5 数据门禁通过"),
+        (57, 76, 80, 64, 36101, 0, 0, 0), 980,
+    ),
+    ProcessStep(
+        "dwh_tasks", "facts", "06", "Step 5.1 数仓任务",
+        "从已经实例化的事实世界提出可验证的问题，而不是脱离数据编写题目。",
+        ("36,101 条事实记录", "64 张真实表", "115 个采样单元"),
+        ("6,000 个候选", "1,000 个覆盖筛选", "+44 个链式任务", "555 个唯一数仓任务"),
+        (57, 76, 80, 64, 36101, 0, 0, 555), 980,
+    ),
+    ProcessStep(
+        "catalog", "rules", "07", "设计规则世界结构",
+        "从同一世界模型规划政策、手册、FAQ 和培训材料，让规则与事实同源。",
+        ("Factor + Taxonomy", "64 张表的事实结构"),
+        ("65 份文档定义", "4 类核心文档", "9/9 目录检查通过"),
+        (57, 76, 80, 64, 36101, 0, 0, 555), 900,
+    ),
+    ProcessStep(
+        "documents", "rules", "08", "实例化规则世界",
+        "逐份写出制度正文并构建可追溯索引，让每项规则都能定位到来源。",
+        ("65 份文档定义", "章节结构与关联表"),
+        ("65 份制度文档", "1,587 个证据块", "176,139 字", "0 缺失 · 0 多余"),
+        (57, 76, 80, 64, 36101, 65, 1587, 555), 980,
+    ),
+    ProcessStep(
+        "kb_tasks", "rules", "09", "Step 5.2 知识任务",
+        "从规则世界提出检索问题，并要求答案回到具体制度来源。",
+        ("65 份制度文档", "1,587 个可检索证据块"),
+        ("目标 500", "使用 374 对文档引用关系", "去重后 465 个知识任务", "8/8 校验通过"),
+        (57, 76, 80, 64, 36101, 65, 1587, 1020), 940,
+    ),
+    ProcessStep(
+        "hybrid", "tasks", "10", "Step 5.3 混合任务",
+        "把事实世界与规则世界放进同一个问题，判断现实是否符合制度要求。",
+        ("555 个数仓任务", "465 个知识任务", "同源 DB + Docs"),
+        ("事实→规则 171", "规则→事实 156", "合规判断 173", "500/500 双源任务通过"),
+        (57, 76, 80, 64, 36101, 65, 1587, 1520), 1020,
+    ),
+    ProcessStep(
+        "freeze", "seal", "11", "冻结并交付沙箱",
+        "固定世界版本和可见边界：模型能进入世界，但任务、答案和验证 SQL 留在评测者侧。",
+        ("完整事实世界", "完整规则世界", "三类评测任务"),
+        ("Runner：DB + Docs + Schema", "Raw：Tasks + Hidden Gold", "唯一 sandbox_id", "总耗时 80:31"),
+        (57, 76, 80, 64, 36101, 65, 1587, 1520), 1020,
     ),
 )
 
@@ -1420,10 +1524,34 @@ el.prev.addEventListener('click',()=>jump(state.scene-1));el.next.addEventListen
 '''
 
 
+PROCESS_HTML_TEMPLATE = r'''<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>物流运营沙箱详细生成过程</title>
+<style>
+:root{color-scheme:dark;--bg:#07101b;--panel:#0b1726;--panel2:#0e1c2d;--line:#253b54;--text:#eef6ff;--muted:#8fa4ba;--blue:#4cb8ff;--purple:#aa82ff;--gold:#f5c25b;--green:#55d99c;--red:#ff7184}*{box-sizing:border-box}html{background:var(--bg)}body{margin:0;min-width:1180px;background:radial-gradient(circle at 16% -8%,rgba(76,184,255,.11),transparent 28%),var(--bg);color:var(--text);font-family:Inter,"PingFang SC","Microsoft YaHei",system-ui,sans-serif}.app{padding:17px 26px 14px}.top{display:flex;justify-content:space-between;gap:30px;align-items:flex-start}.eyebrow{color:var(--blue);font-size:10px;letter-spacing:.15em;margin-bottom:5px}.top h1{margin:0;font-size:26px;font-weight:600;letter-spacing:-.03em}.top p{margin:6px 0 0;color:var(--muted);font-size:12px}.run{padding-top:4px;text-align:right;color:#9bb0c5;font-size:10px}.run strong{display:block;color:#e1effc;font-size:12px;margin-bottom:3px}.controls{height:40px;margin-top:11px;display:flex;gap:7px;align-items:center}.btn,.speed{height:31px;padding:0 11px;border:1px solid #2b435e;border-radius:6px;background:#0b1828;color:#d8e7f5;font:inherit;font-size:11px;cursor:pointer}.btn.primary{background:#dff3ff;color:#06111d;border-color:#dff3ff;font-weight:600}.btn:disabled{opacity:.35;cursor:not-allowed}.progress{margin-left:8px;flex:1}.progress-copy{display:flex;justify-content:space-between;color:#7f96ad;font-size:9px;margin-bottom:4px}.progress-copy strong{color:#d8e7f5;font-weight:500}.track{height:3px;background:#15263a}.fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--purple),var(--gold),var(--green));transition:width .35s}
+.architecture{height:100px;margin-top:4px;display:grid;grid-template-columns:1fr 42px 1fr 50px 1.35fr 50px 1fr 42px 1fr;align-items:center}.macro-node{min-height:57px;padding:8px 11px;border:1px solid #20344b;background:rgba(10,22,37,.78);color:#70879d;transition:.3s}.macro-node small{display:block;font-size:8px;letter-spacing:.12em;margin-bottom:4px}.macro-node b{display:block;font-size:12px;font-weight:500;color:#9cb0c3}.macro-node span{display:block;margin-top:3px;font-size:9px}.macro-node.active{border-color:var(--blue);background:rgba(20,55,80,.58);box-shadow:0 0 22px rgba(76,184,255,.08);color:#94d9ff}.macro-node.active b{color:#fff}.macro-node.done{border-color:rgba(85,217,156,.25);color:#6fa68d}.macro-node.done b{color:#add0c1}.macro-arrow{position:relative;height:1px;background:#314b66}.macro-arrow::after{content:"›";position:absolute;right:-2px;top:-11px;color:#557593;font-size:19px}.branch{display:grid;grid-template-columns:1fr;gap:7px}.branch .macro-node{min-height:38px;padding:5px 9px}.branch .macro-node small{display:inline;margin-right:6px}.branch .macro-node b{display:inline}.branch-note{text-align:center;color:#587089;font-size:8px}.split{height:69px;border-top:1px solid #314b66;border-bottom:1px solid #314b66;border-left:1px solid #314b66}.merge{height:69px;border-top:1px solid #314b66;border-bottom:1px solid #314b66;border-right:1px solid #314b66}
+.rail{display:grid;grid-template-columns:repeat(12,1fr);gap:4px;padding:6px 0 10px;border-top:1px solid #15273a}.rail-step{min-width:0;padding:5px 4px;border:0;border-bottom:2px solid #1c3045;background:transparent;color:#5f768e;text-align:left;cursor:pointer}.rail-step small{display:block;font-size:8px}.rail-step b{display:block;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#8499ad;font-size:9px;font-weight:500}.rail-step.done{border-color:rgba(85,217,156,.4)}.rail-step.current{border-color:var(--blue);background:linear-gradient(180deg,transparent,rgba(76,184,255,.07));color:#77ccff}.rail-step.current b{color:#fff}
+.workspace{position:relative;border:1px solid var(--line);background:linear-gradient(180deg,rgba(11,24,40,.98),rgba(7,16,27,.99));overflow:hidden}.step-head{height:76px;padding:13px 17px;display:grid;grid-template-columns:1fr auto;gap:25px;border-bottom:1px solid #1b3047}.step-token{color:var(--blue);font-size:9px;letter-spacing:.12em}.step-title{display:block;font-size:20px;font-weight:600;margin-top:4px}.purpose{align-self:center;max-width:620px;text-align:right;color:#b5c6d6;font-size:11px;line-height:1.5}.purpose::before{content:"这一步为什么必要";display:block;color:#637b93;font-size:8px;letter-spacing:.12em;margin-bottom:3px}.workspace-body{display:grid;grid-template-columns:minmax(0,1fr) 320px;min-height:382px}.detail{padding:14px 16px 12px;border-right:1px solid #1b3047}.transform{display:grid;grid-template-columns:.9fr 34px 1.45fr 34px 1fr;gap:0;align-items:stretch;min-height:255px}.flow-col{padding:11px 12px;background:rgba(8,18,31,.56)}.flow-col.operations{background:rgba(13,27,44,.82)}.flow-label{display:block;color:#657d95;font-size:8px;letter-spacing:.12em;margin-bottom:9px}.flow-col h3{margin:0 0 10px;font-size:12px;font-weight:500}.point{position:relative;padding:7px 5px 7px 13px;border-bottom:1px solid #172a3e;color:#c1d1df;font-size:10px;line-height:1.35}.point::before{content:"";position:absolute;left:2px;top:12px;width:4px;height:4px;border-radius:50%;background:var(--blue)}.output .point::before{background:var(--green)}.flow-arrow{display:grid;place-items:center;color:#4c6c89;font-size:20px}.op{position:relative;margin-bottom:5px;padding:7px 9px 7px 31px;border:1px solid #1f354d;background:#0a1726;color:#71889e;transition:.25s}.op-mark{position:absolute;left:9px;top:7px;width:14px;height:14px;border:1px solid #35516d;border-radius:50%;display:grid;place-items:center;font-size:8px}.op b{display:block;color:#9cb0c4;font-size:10px;font-weight:500}.op span{display:block;margin-top:2px;font-size:9px}.op.current{border-color:var(--blue);background:rgba(24,65,91,.42);color:#b4d7eb}.op.current b{color:#fff}.op.current .op-mark{border-color:var(--blue);color:#9edfff}.op.done{border-color:rgba(85,217,156,.26);color:#789c8e}.op.done b{color:#b9d4c8}.op.done .op-mark{border-color:var(--green);background:var(--green);color:#072117}.op.error{border-color:rgba(255,113,132,.6)}.op.repair.current{border-color:var(--gold)}.active-detail{min-height:42px;margin-top:8px;padding:8px 10px;border-left:2px solid var(--blue);background:rgba(8,20,33,.78);color:#9fb4c7;font-size:9px;line-height:1.45}.active-detail strong{color:#e8f4ff;font-weight:500}.handoff{margin-top:10px;padding:9px 12px;border-top:1px solid #1b3047;color:#91a6ba;font-size:10px;line-height:1.45}.handoff b{color:var(--green);font-weight:500}.handoff .next-stage{float:right;color:#77b895}.evidence{margin-top:8px;color:#728aa1;font-size:9px}.evidence summary{cursor:pointer}.file-row{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}.file{padding:4px 7px;border:1px solid #20354c;color:#8da5bb;background:#081522}
+.scale{padding:14px 15px;background:rgba(6,15,25,.68)}.scale-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:9px}.scale-head b{font-size:12px;font-weight:500}.scale-head span{color:#607991;font-size:8px}.metric-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px}.metric{min-height:65px;padding:9px 10px;border-top:1px solid #223a52;background:rgba(11,25,41,.7)}.metric small{display:block;color:#667f97;font-size:8px}.metric strong{display:block;margin:4px 0 1px;color:#dbeaf7;font-size:20px;font-weight:600;font-variant-numeric:tabular-nums}.metric span{color:#536c83;font-size:8px}.metric.zero strong{color:#40556b}.metric.fresh{border-color:var(--green);background:rgba(23,66,50,.26)}.metric.fresh strong{color:#8aefbd}.scale-note{margin-top:10px;padding:8px 9px;border-left:2px solid var(--gold);background:rgba(42,32,12,.35);color:#a99669;font-size:9px;line-height:1.45}.scale-note b{color:#ffe1a1;font-weight:500}
+.end{position:absolute;z-index:30;inset:0;display:grid;place-items:center;background:radial-gradient(circle,rgba(22,83,62,.38),rgba(5,12,20,.98) 62%);opacity:0;visibility:hidden;transition:.5s}.end.show{opacity:1;visibility:visible}.end-card{width:650px;padding:25px 30px;border:1px solid rgba(85,217,156,.5);background:#081d19;text-align:center}.end-check{width:58px;height:58px;margin:auto;border:2px solid var(--green);border-radius:50%;display:grid;place-items:center;color:var(--green);font-size:29px}.end-card small{display:block;margin-top:13px;color:#76caa4;letter-spacing:.14em;font-size:9px}.end-card h2{margin:5px 0;font-size:25px}.end-card p{margin:0;color:#9bb9ad;font-size:10px}.final-scale{display:grid;grid-template-columns:repeat(4,1fr);margin:17px 0;border-top:1px solid rgba(85,217,156,.18);border-bottom:1px solid rgba(85,217,156,.18)}.final-scale div{padding:9px 5px;color:#76968a;font-size:8px}.final-scale strong{display:block;color:#e6fff5;font-size:17px}.footer{display:flex;justify-content:space-between;margin-top:8px;color:#536b82;font-size:8px}.footer a{color:#7391ad;text-decoration:none}body.finished *{animation-play-state:paused!important}@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition-duration:.01ms!important}}
+</style></head><body><main class="app"><header class="top"><div><div class="eyebrow">LOGISTICS OPERATIONS SANDBOX · VERIFIED V20 REPLAY</div><h1>物流运营沙箱，是怎样一步步生成的？</h1><p>先看完整结构，再看当前步骤如何接住上一步、完成哪些动作、给世界增加什么。</p></div><div class="run"><strong>真实场景 · 运营分析-8767b626</strong>13:15:20—14:35:51 · 生成耗时 80分31秒</div></header>
+<section class="controls" aria-label="播放控制"><button id="prev" class="btn" type="button">← 上一阶段</button><button id="play" class="btn primary" type="button">暂停</button><button id="next" class="btn" type="button">下一动作 →</button><button id="restart" class="btn" type="button">从头播放</button><label class="sr-only" for="speed">播放速度</label><select id="speed" class="speed"><option value=".75">0.75×</option><option value="1" selected>1×</option><option value="1.5">1.5×</option><option value="2">2×</option></select><div class="progress"><div class="progress-copy"><strong id="progressText"></strong><span id="live" aria-live="polite"></span></div><div class="track"><div id="fill" class="fill"></div></div></div></section>
+<section class="architecture" aria-label="物流沙箱整体生成结构"><div id="macroUnderstand" class="macro-node"><small>01 · 业务理解</small><b>业务说明 → 需求规格</b><span>定义世界要服务谁</span></div><div class="macro-arrow"></div><div id="macroModel" class="macro-node"><small>02 · 世界建模</small><b>实体 + 状态 + 动作</b><span>建立共同世界蓝图</span></div><div class="split"></div><div><div class="branch"><div id="macroFacts" class="macro-node"><small>03A · 事实分支</small><b>Schema → 数据 → 数仓任务</b></div><div id="macroRules" class="macro-node"><small>03B · 规则分支</small><b>目录 → 文档 → 知识任务</b></div></div><div class="branch-note">两条分支来自同一个世界模型</div></div><div class="merge"></div><div id="macroTasks" class="macro-node"><small>04 · 双源汇合</small><b>事实 × 规则</b><span>生成混合判断任务</span></div><div class="macro-arrow"></div><div id="macroSeal" class="macro-node"><small>05 · 冻结交付</small><b>Runner / Raw 隔离</b><span>形成可进入的沙箱</span></div></section>
+<nav id="rail" class="rail" aria-label="十二个实际执行阶段"></nav>
+<section class="workspace"><header class="step-head"><div><span id="stepToken" class="step-token"></span><strong id="stepTitle" class="step-title"></strong></div><div id="purpose" class="purpose"></div></header><div class="workspace-body"><div class="detail"><div class="transform"><section class="flow-col"><span class="flow-label">① 接住上一步</span><h3>本阶段输入</h3><div id="inputs"></div></section><div class="flow-arrow">→</div><section class="flow-col operations"><span class="flow-label">② 依次完成</span><h3>本阶段动作</h3><div id="operations"></div><div id="activeDetail" class="active-detail"></div></section><div class="flow-arrow">→</div><section class="flow-col output"><span class="flow-label">③ 世界新增</span><h3>阶段结果</h3><div id="outputs"></div></section></div><div id="handoff" class="handoff"></div><details class="evidence"><summary>查看本阶段真实落盘凭证</summary><div id="files" class="file-row"></div></details></div><aside class="scale"><div class="scale-head"><b>世界累计规模</b><span>只显示已完成生成的内容</span></div><div id="metricGrid" class="metric-grid"></div><div id="scaleNote" class="scale-note"></div></aside></div><div id="end" class="end"><div class="end-card"><div class="end-check">✓</div><small>MATURE LOGISTICS WORLD · SEALED</small><h2>物流运营沙箱生成完成</h2><p>事实世界、规则世界和三类任务已经同源闭环；模型只能进入冻结后的 Runner。</p><div class="final-scale"><div><strong>57</strong>实体类型</div><div><strong>64</strong>数据表</div><div><strong>36,101</strong>物流记录</div><div><strong>1,520</strong>评测任务</div><div><strong>76 / 80</strong>状态 / 动作</div><div><strong>65</strong>制度文档</div><div><strong>1,587</strong>证据块</div><div><strong>80:31</strong>生成耗时</div></div><button id="endRestart" class="btn" type="button">重新查看生成过程</button></div></div></section>
+<footer class="footer"><span>数量来自固定提交 7589170 的 v20 实际运行摘要；“57”是实体类型，“36,101”是实例化记录，口径不混用。</span><span><a href="https://github.com/renjunxiang/sf_my_sandbox/tree/758917009d0ebb0fb36561197171f6abdd279d96/.runtime_state/v20/scenes/运营分析-8767b626">运行证据</a> · 不展示任务正文、答案、SQL 或数据库行</span></footer></main>
+<script id="stages" type="application/json">__STAGE_DATA__</script><script id="processSteps" type="application/json">__PROCESS_DATA__</script>
+<script>(()=>{'use strict';const stages=JSON.parse(document.getElementById('stages').textContent),steps=JSON.parse(document.getElementById('processSteps').textContent),stageMap=Object.fromEntries(stages.map(s=>[s.key,s]));const metricDefs=[['实体类型','类','世界中有哪些对象'],['状态节点','个','对象会经历什么'],['可执行动作','个','角色能做什么'],['数据表','张','世界如何存储'],['物流记录','条','世界实际发生什么'],['制度文档','份','世界应该怎样运行'],['证据块','个','规则可追溯单元'],['评测任务','个','对世界的三种观察']];const macroOrder=['understand','model','facts','rules','tasks','seal'];const macroEls={understand:document.getElementById('macroUnderstand'),model:document.getElementById('macroModel'),facts:document.getElementById('macroFacts'),rules:document.getElementById('macroRules'),tasks:document.getElementById('macroTasks'),seal:document.getElementById('macroSeal')};const $=id=>document.getElementById(id),el={rail:$('rail'),token:$('stepToken'),title:$('stepTitle'),purpose:$('purpose'),inputs:$('inputs'),ops:$('operations'),active:$('activeDetail'),outputs:$('outputs'),handoff:$('handoff'),files:$('files'),metrics:$('metricGrid'),scaleNote:$('scaleNote'),progress:$('progressText'),live:$('live'),fill:$('fill'),prev:$('prev'),play:$('play'),next:$('next'),restart:$('restart'),speed:$('speed'),end:$('end'),endRestart:$('endRestart')};const state={step:0,op:-1,playing:true,finished:false,transitioning:false,speed:1,timer:null};let shownMetrics=[0,0,0,0,0,0,0,0];const reduced=matchMedia('(prefers-reduced-motion:reduce)').matches,esc=v=>String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+const unlocks={factor:{0:0,1:1,2:1},schema:{3:1},data:{4:1},dwh_tasks:{7:3},documents:{5:0,6:1},kb_tasks:{7:1},hybrid:{7:2}};function metricsNow(){const base=state.step?steps[state.step-1].metrics.slice():[0,0,0,0,0,0,0,0],target=steps[state.step].metrics,map=unlocks[steps[state.step].key]||{};Object.entries(map).forEach(([i,threshold])=>{if(state.op>=threshold)base[Number(i)]=target[Number(i)]});return base}function fmt(n){return Number(n).toLocaleString('en-US')}function renderMetrics(){const values=metricsNow(),previous=shownMetrics.slice();el.metrics.innerHTML=metricDefs.map((d,i)=>`<div class="metric ${values[i]===0?'zero':''} ${values[i]>previous[i]?'fresh':''}"><small>${d[0]}</small><strong data-value="${values[i]}">${fmt(reduced?values[i]:previous[i])}</strong><span>${d[1]} · ${d[2]}</span></div>`).join('');el.metrics.querySelectorAll('strong').forEach((node,i)=>{const from=previous[i],to=values[i];if(from===to||reduced){node.textContent=fmt(to);return}const start=performance.now();function frame(now){const p=Math.min(1,(now-start)/520),v=Math.round(from+(to-from)*(1-Math.pow(1-p,3)));node.textContent=fmt(v);if(p<1)requestAnimationFrame(frame)}requestAnimationFrame(frame)});shownMetrics=values;const additions=[];values.forEach((v,i)=>{if(v>previous[i])additions.push(`${metricDefs[i][0]} +${fmt(v-previous[i])}`)});el.scaleNote.innerHTML=additions.length?`<b>本动作让世界增长：</b><br>${additions.join(' · ')}`:`<b>规模保持，结构继续完善：</b><br>当前动作在建立约束、验证质量或连接上下游。`}
+function renderMacros(){const current=steps[state.step].phase,currentIndex=macroOrder.indexOf(current);macroOrder.forEach((key,i)=>{const node=macroEls[key];node.classList.toggle('active',key===current);node.classList.toggle('done',i<currentIndex)})}function renderRail(){el.rail.innerHTML=steps.map((s,i)=>`<button type="button" class="rail-step ${i<state.step?'done':i===state.step?'current':''}" data-step="${i}"><small>${s.number}</small><b>${esc(s.label)}</b></button>`).join('');el.rail.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>jump(Number(b.dataset.step),true)))}
+function render(){const view=steps[state.step],stage=stageMap[view.key],complete=state.op>=stage.operations.length-1;el.token.textContent=`实际执行 ${state.step+1}/12 · ${stage.step} · ${stage.branch} · ${stage.duration}`;el.title.textContent=view.label;el.purpose.textContent=view.purpose;el.inputs.innerHTML=view.inherited.map(x=>`<div class="point">${esc(x)}</div>`).join('');el.outputs.innerHTML=view.produced.map(x=>`<div class="point">${esc(x)}</div>`).join('');el.ops.innerHTML=stage.operations.map((op,i)=>`<div class="op ${i<state.op?'done':i===state.op?'current':''} ${op.status==='error'?'error':op.status==='repair'?'repair':''}"><span class="op-mark">${i<state.op?'✓':i+1}</span><b>${esc(op.label)}</b><span>${esc(op.outcome)}</span></div>`).join('');const activeOp=state.op>=0?stage.operations[state.op]:null;el.active.innerHTML=activeOp?`<strong>当前正在做：</strong>${esc(activeOp.detail)}`:'<strong>准备接收：</strong>先确认上一阶段交付的世界内容，再开始本阶段第一个动作。';const next=steps[state.step+1];el.handoff.innerHTML=complete?`<b>交给下一步：</b>${esc(stage.handoff)}${next?`<span class="next-stage">下一阶段：${esc(next.label)} →</span>`:''}`:`<b>逻辑关系：</b>只有本阶段所有动作完成并通过门禁，结果才会成为下一阶段输入。`;el.files.innerHTML=[...stage.inputs.map(x=>`输入 · ${x.name}`),...stage.outputs.map(x=>`输出 · ${x.name}`)].map(x=>`<span class="file">${esc(x)}</span>`).join('');const frac=(state.op+1)/stage.operations.length,pct=((state.step+Math.max(0,frac))/steps.length)*100;el.progress.textContent=state.finished?'完成 · 12/12':`${state.step+1}/12 · ${view.label}`;el.live.textContent=state.finished?'✓ 物流运营沙箱生成完成':activeOp?`正在执行：${activeOp.label}`:'正在接收上一步结果';el.fill.style.width=`${state.finished?100:Math.max(1,pct)}%`;el.prev.disabled=state.finished||state.step===0||state.transitioning;el.next.disabled=state.finished||state.transitioning;el.play.disabled=state.finished;el.play.textContent=state.finished?'已结束':state.playing?'暂停':'继续播放';el.next.textContent=complete?(state.step===steps.length-1?'完成生成':'进入下一阶段 →'):'下一动作 →';renderMacros();renderRail();renderMetrics()}
+function clearTimer(){if(state.timer!==null){clearTimeout(state.timer);state.timer=null}}function schedule(){clearTimer();if(!state.playing||state.finished||state.transitioning)return;const stage=stageMap[steps[state.step].key],delay=state.op<0?620:steps[state.step].replay_ms;state.timer=setTimeout(tick,delay/state.speed)}function tick(){const stage=stageMap[steps[state.step].key];if(state.op<stage.operations.length-1){state.op++;render();schedule()}else if(state.step<steps.length-1){advanceStage()}else finish()}function advanceStage(){clearTimer();state.transitioning=true;setTimeout(()=>{state.step++;state.op=-1;state.transitioning=false;render();schedule()},reduced?20:360/state.speed)}function jump(index,pause=false){clearTimer();state.step=Math.max(0,Math.min(steps.length-1,index));state.op=-1;state.finished=false;state.transitioning=false;if(pause)state.playing=false;document.body.classList.remove('finished');el.end.classList.remove('show');shownMetrics=state.step?steps[state.step-1].metrics.slice():[0,0,0,0,0,0,0,0];render();schedule()}function finish(){clearTimer();state.finished=true;state.playing=false;document.body.classList.add('finished');el.end.classList.add('show');shownMetrics=steps.at(-1).metrics.slice();render()}function restart(){state.playing=true;jump(0)}el.prev.addEventListener('click',()=>jump(state.step-1,true));el.next.addEventListener('click',()=>{const stage=stageMap[steps[state.step].key];if(state.op<stage.operations.length-1){state.op++;render()}else if(state.step<steps.length-1){advanceStage()}else finish();schedule()});el.play.addEventListener('click',()=>{if(state.finished)return;state.playing=!state.playing;render();schedule()});el.restart.addEventListener('click',restart);el.endRestart.addEventListener('click',restart);el.speed.addEventListener('change',()=>{state.speed=Number(el.speed.value);schedule()});document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')el.next.click();if(e.key==='ArrowLeft')el.prev.click();if(e.key===' '&&!state.finished){e.preventDefault();el.play.click()}});render();requestAnimationFrame(schedule)})();</script></body></html>
+'''
+
+
 def render_html() -> str:
     return (
-        EXPLAINER_HTML_TEMPLATE.replace("__STAGE_DATA__", _safe_json([asdict(stage) for stage in STAGES]))
-        .replace("__SCENE_DATA__", _safe_json([asdict(scene) for scene in SCENES]))
+        PROCESS_HTML_TEMPLATE.replace("__STAGE_DATA__", _safe_json([asdict(stage) for stage in STAGES]))
+        .replace("__PROCESS_DATA__", _safe_json([asdict(step) for step in PROCESS_STEPS]))
     )
 
 
