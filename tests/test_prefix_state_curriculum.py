@@ -331,3 +331,18 @@ def test_host_launcher_precreates_remote_private_directory_before_sandbox_copy()
     create = launcher.index("mkdir -p '${RUN_HOST}/private'")
     copy = launcher.index('scp -pr "${RUN_HOST}/private/pi_sandbox"')
     assert create < copy
+
+
+def test_prefix_launchers_keep_runtime_code_separate_from_image_megatron_bridge() -> None:
+    expected = (
+        'MEGATRON_BRIDGE_ROOT="${MEGATRON_BRIDGE_ROOT:-'
+        '/workspace/llin-verl-grpo/reference/Megatron-Bridge-de93536e/src}"'
+    )
+    forwarded = 'MEGATRON_BRIDGE_ROOT="${MEGATRON_BRIDGE_ROOT}"'
+    for name in (
+        "run_pi_qwen38_prefix_frontier_v1.sh",
+        "run_pi_qwen38_prefix_curriculum_canary5_v1.sh",
+    ):
+        launcher = (ROOT / "scripts" / name).read_text(encoding="utf-8")
+        assert expected in launcher
+        assert forwarded in launcher

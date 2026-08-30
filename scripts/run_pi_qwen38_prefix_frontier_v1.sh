@@ -2,6 +2,7 @@
 set -euo pipefail
 
 PROJECT_ROOT="${PROJECT_ROOT:-/workspace/llin-verl-grpo}"
+MEGATRON_BRIDGE_ROOT="${MEGATRON_BRIDGE_ROOT:-/workspace/llin-verl-grpo/reference/Megatron-Bridge-de93536e/src}"
 MODEL_PATH="${MODEL_PATH:-/models/Qwen3.8-27B}"
 DATA_FILE="${DATA_FILE:?DATA_FILE must be one frozen prefix-state runtime Parquet}"
 RUN_NAME="${RUN_NAME:?RUN_NAME is required}"
@@ -38,6 +39,7 @@ export LLIN_PREFIX_FRONTIER_ROLLOUT_ONLY=1
 export PI_AGENT_TOKENIZER_PATH="${MODEL_PATH}"
 
 MODEL_PATH="${MODEL_PATH}" \
+MEGATRON_BRIDGE_ROOT="${MEGATRON_BRIDGE_ROOT}" \
 DATA_FILE="${DATA_FILE}" \
 RUN_NAME="${RUN_NAME}" \
 OUTPUT_DIR="${OUTPUT_DIR}" \
