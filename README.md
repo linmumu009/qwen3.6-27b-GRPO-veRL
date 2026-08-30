@@ -11,6 +11,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - 主机启动器支持由已推送commit预先注入只读runtime快照，服务器部署目录本身无需是Git工作区，仍把精确40位commit写入run审计。
 - 仓库显式固定所有shell脚本为LF换行，避免Windows工作区打包后在Linux服务器出现`pipefail\r`等启动前错误。
 - Prefix loader按冻结包的原始`message_index_requires_runtime_token_boundary_adapter`声明做精确硬门，避免用近义字段名误拒全部322个ready状态。
+- Prefix prompt身份哈希在Parquet往返时仅忽略Arrow为异构message struct补出的`null`列，不忽略任何真实role、内容、工具参数、顺序或call id，确保落盘后的运行时硬门可复现且不可被内容变化绕过。
 
 ## v1.12.43（2026-08-28）
 

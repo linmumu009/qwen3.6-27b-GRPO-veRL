@@ -27,6 +27,24 @@ def stable_json_sha256(value: Any) -> str:
     return hashlib.sha256(stable_json(value).encode("utf-8")).hexdigest()
 
 
+def _drop_schema_nulls(value: Any) -> Any:
+    """Remove only null struct fields inserted by Arrow round trips."""
+
+    if isinstance(value, dict):
+        return {
+            str(key): _drop_schema_nulls(item)
+            for key, item in value.items()
+            if item is not None
+        }
+    if isinstance(value, list):
+        return [_drop_schema_nulls(item) for item in value]
+    return value
+
+
+def prompt_sha256(messages: Iterable[dict[str, Any]]) -> str:
+    return stable_json_sha256(_drop_schema_nulls(list(messages)))
+
+
 def json_field(value: Any, *, field: str, expected: type) -> Any:
     if isinstance(value, str):
         try:
@@ -221,7 +239,7 @@ def validate_runtime_prefix(extra_info: dict[str, Any], raw_prompt: Iterable[dic
         raise ValueError("runtime prefix group identity mismatch")
     prompt = list(raw_prompt)
     expected_sha = str(extra_info.get("prefix_prompt_sha256") or "")
-    if not expected_sha or stable_json_sha256(prompt) != expected_sha:
+    if not expected_sha or prompt_sha256(prompt) != expected_sha:
         raise ValueError("runtime prefix prompt hash mismatch")
     if not str(extra_info.get("database_sha256") or ""):
         raise ValueError("runtime prefix is missing database hash binding")

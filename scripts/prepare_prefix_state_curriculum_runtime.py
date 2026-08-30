@@ -23,7 +23,7 @@ from llin_verl.prefix_state_curriculum import (
     adapt_pi_prefix_messages,
     json_field,
     prefix_group_base,
-    stable_json_sha256,
+    prompt_sha256,
     validate_ready_state,
 )
 
@@ -159,7 +159,7 @@ def _runtime_row(
             "prefix_state_id": state_id,
             "task_id": task_id,
             "prefix_group_base": prefix_group_base(task_id, state_id),
-            "prefix_prompt_sha256": stable_json_sha256(prompt),
+            "prefix_prompt_sha256": prompt_sha256(prompt),
             "prefix_message_count": len(prompt),
             "generated_suffix_start_message_index": len(prompt),
             "response_mask_scope": "generated_suffix_assistant_tokens_only",

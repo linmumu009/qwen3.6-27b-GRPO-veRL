@@ -6,6 +6,8 @@ from pathlib import Path
 import sqlite3
 
 import pytest
+import pyarrow as pa
+import pyarrow.parquet as pq
 
 from llin_verl.outcome_gated_contract import evidence_binding_hash
 from llin_verl.prefix_state_curriculum import (
@@ -13,8 +15,8 @@ from llin_verl.prefix_state_curriculum import (
     adapt_pi_prefix_messages,
     prefix_group_base,
     prefix_group_key,
+    prompt_sha256,
     require_same_prefix_group,
-    stable_json_sha256,
     validate_ready_state,
     validate_runtime_prefix,
     validate_suffix_response_mask,
@@ -164,6 +166,15 @@ def test_runtime_row_keeps_truth_hidden_and_declares_suffix_only_boundary() -> N
     changed[-1]["content"] = "tampered"
     with pytest.raises(ValueError, match="prompt hash mismatch"):
         validate_runtime_prefix(extra, changed)
+
+
+def test_parquet_struct_null_columns_do_not_change_prompt_identity(tmp_path: Path) -> None:
+    runtime = _runtime_row(state(), truth_row(), "/run/private/pi_sandbox")
+    path = tmp_path / "runtime.parquet"
+    pq.write_table(pa.Table.from_pylist([runtime]), path)
+    restored = pq.read_table(path).to_pylist()[0]
+    assert restored["extra_info"]["prefix_prompt_sha256"] == prompt_sha256(restored["prompt"])
+    validate_runtime_prefix(restored["extra_info"], restored["prompt"])
 
 
 def test_suffix_response_mask_excludes_prompt_and_generated_tool_tokens() -> None:
