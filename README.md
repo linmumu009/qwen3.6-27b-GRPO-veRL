@@ -2,6 +2,12 @@
 
 Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
+## v1.12.45（2026-08-30）
+
+- 修复prefix frontier验证把预期80条与Fastest-K实际返回44条按位置直接合并的问题：现在为每个`task_id + prefix_state_id + policy_version + sample_slot`生成冻结身份，只按身份连接真实返回，取消、缺失和UNKNOWN槽位显式记录并重采，不补假轨迹、不复制、不截断，也不改写原判分。
+- 验证用divisor padding改为独立padding身份并在合并前剔除，私有0600身份账本同时保留全部请求槽位及返回状态；任意越界或重复身份继续fail closed。
+- Fastest-K不再把Agent worker的任意7条分片误当成一个prompt组；当`fastest_k == oversample_candidates`没有真实超采时完整返回分片，避免12个worker各自裁成4条后再被位置unpad删成44条。新增预期80/实际44、取消/UNKNOWN混合、重排、padding、重复/越界身份和源码注入回归。
+
 ## v1.12.44（2026-08-30）
 
 - 新增prefix-state curriculum GRPO v1运行时：把PI可观察历史结构化转换为原生role/tool消息，保留`tool_call_id`，拒绝quarantine、未来泄漏、未完成工具轮和不可恢复工作区状态。

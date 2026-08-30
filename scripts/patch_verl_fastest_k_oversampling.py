@@ -18,6 +18,7 @@ ROLLOUTER_MARKER = "LLIN_FASTEST_K_OVERSAMPLE_BATCH"
 AGENT_MARKER = "LLIN_FASTEST_K_QUORUM"
 TOOL_MARKER = "LLIN_FASTEST_K_REQUEST_ID"
 CLIENT_MARKER = "LLIN_FASTEST_K_PHYSICAL_ABORT"
+GROUP_SCOPE_MARKER = "LLIN_FASTEST_K_PER_PROMPT_GROUP_V4"
 
 
 def _replace_once(text: str, old: str, new: str, path: Path) -> str:
@@ -32,6 +33,32 @@ def _upgrade_optional_async_config(text: str) -> tuple[str, bool]:
     new = 'self.config.get("async_training", {}).get('
     upgraded = old in text
     return text.replace(old, new), upgraded
+
+
+def _upgrade_fastest_k_group_scope(text: str, path: Path) -> tuple[str, bool]:
+    """Do not treat an arbitrary agent-worker shard as one Fastest-K group."""
+
+    if GROUP_SCOPE_MARKER in text:
+        return text, False
+    old = """\
+        fastest_k = int(self.config.get("async_training", {}).get("fastest_k", 0))
+        selected_indices = list(range(len(tasks)))
+        if fastest_k > 0 and len(tasks) > fastest_k:
+"""
+    new = """\
+        fastest_k = int(self.config.get("async_training", {}).get("fastest_k", 0))
+        oversample_candidates = int(
+            self.config.get("async_training", {}).get("oversample_candidates", 0)
+        )
+        selected_indices = list(range(len(tasks)))
+        # LLIN_FASTEST_K_PER_PROMPT_GROUP_V4: fastest_k == oversample_candidates
+        # means no physical oversampling was requested.  Agent-loop batches are
+        # arbitrary worker shards, not prompt groups, so never trim such a shard.
+        if oversample_candidates > fastest_k > 0 and len(tasks) > fastest_k:
+"""
+    if old not in text:
+        raise RuntimeError(f"expected Fastest-K group-scope anchor not found in {path}")
+    return text.replace(old, new, 1), True
 
 
 def patch_rollouter(path: Path) -> str:
@@ -196,8 +223,9 @@ def patch_llm_client(path: Path) -> str:
 def patch_agent_loop(path: Path) -> str:
     text = path.read_text(encoding="utf-8")
     if AGENT_MARKER in text:
-        text, upgraded = _upgrade_optional_async_config(text)
-        if upgraded:
+        text, optional_upgraded = _upgrade_optional_async_config(text)
+        text, scope_upgraded = _upgrade_fastest_k_group_scope(text, path)
+        if optional_upgraded or scope_upgraded:
             path.write_text(text, encoding="utf-8")
             return "upgraded"
         return "already-patched"
@@ -244,8 +272,14 @@ def patch_agent_loop(path: Path) -> str:
         # LLIN_FASTEST_K_QUORUM: return as soon as fastest_k successful
         # trajectories finish, then physically abort and cancel stragglers.
         fastest_k = int(self.config.get("async_training", {}).get("fastest_k", 0))
+        oversample_candidates = int(
+            self.config.get("async_training", {}).get("oversample_candidates", 0)
+        )
         selected_indices = list(range(len(tasks)))
-        if fastest_k > 0 and len(tasks) > fastest_k:
+        # LLIN_FASTEST_K_PER_PROMPT_GROUP_V4: fastest_k == oversample_candidates
+        # means no physical oversampling was requested.  Agent-loop batches are
+        # arbitrary worker shards, not prompt groups, so never trim such a shard.
+        if oversample_candidates > fastest_k > 0 and len(tasks) > fastest_k:
             started_at = time.monotonic()
             task_to_index = {task: index for index, task in enumerate(tasks)}
             pending = set(tasks)
