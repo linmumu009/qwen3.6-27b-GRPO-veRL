@@ -2,6 +2,11 @@
 
 Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
+## v1.12.46（2026-08-30）
+
+- 修复prefix frontier长尾轨迹超时后的工作区身份二次查询：超时路径已把同一request/environment的结构化事件快照写入UNKNOWN占位并释放临时工作区，reward前现在验证持久化身份后直接接受该`released`状态，不再把“注册表中已按合同删除”误报成身份漂移。
+- 正常未释放的工具轨迹仍必须从live registry复核request/environment并在reward前释放；真实请求错配、环境错配或live工作区意外消失继续fail closed。新增超时快照、live绑定、no-tool路径和源码接线回归，不改变tiered-v1公式、UNKNOWN mask或训练门禁。
+
 ## v1.12.45（2026-08-30）
 
 - 修复prefix frontier验证把预期80条与Fastest-K实际返回44条按位置直接合并的问题：现在为每个`task_id + prefix_state_id + policy_version + sample_slot`生成冻结身份，只按身份连接真实返回，取消、缺失和UNKNOWN槽位显式记录并重采，不补假轨迹、不复制、不截断，也不改写原判分。

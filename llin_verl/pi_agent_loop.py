@@ -18,6 +18,7 @@ from llin_verl.prefix_state_curriculum import (
     validate_suffix_response_mask,
 )
 from llin_verl.pi_workspace_tools import WORKSPACES
+from llin_verl.pi_workspace_identity import workspace_binding_state
 from llin_verl.trajectory_telemetry import TrajectoryTelemetry
 
 
@@ -158,13 +159,21 @@ class PiAgentLoop(ToolAgentLoop):
         }
         for key, value in defaults.items():
             output.extra_fields.setdefault(key, value)
-        workspace_request_id = output.extra_fields.get("pi_workspace_request_id")
-        if workspace_request_id:
+        workspace_request_id = str(output.extra_fields.get("pi_workspace_request_id") or "")
+        workspace_state = workspace_binding_state(
+            output.extra_fields,
+            request_id=request_id,
+            environment_id=environment_id,
+        )
+        if workspace_state == "live":
             snapshot = WORKSPACES.snapshot(str(workspace_request_id))
-            if str(snapshot.get("pi_workspace_request_id") or "") != request_id:
-                raise RuntimeError("workspace request identity changed before reward")
-            if str(snapshot.get("pi_environment_id") or "") != environment_id:
-                raise RuntimeError("workspace environment identity changed before reward")
+            if not snapshot:
+                raise RuntimeError("live workspace disappeared before reward")
+            workspace_binding_state(
+                snapshot,
+                request_id=request_id,
+                environment_id=environment_id,
+            )
             output.extra_fields.update(snapshot)
             await WORKSPACES.release(str(workspace_request_id))
             output.extra_fields["pi_workspace_released"] = True

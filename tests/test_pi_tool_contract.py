@@ -75,6 +75,7 @@ def test_runtime_persists_exact_tool_response_token_cost_or_fails_closed():
 def test_agent_loop_persists_one_request_and_environment_identity_through_reward():
     root = Path(__file__).resolve().parents[1]
     source = (root / "llin_verl" / "pi_agent_loop.py").read_text(encoding="utf-8")
+    identity = (root / "llin_verl" / "pi_workspace_identity.py").read_text(encoding="utf-8")
     reward = (root / "llin_verl" / "tiered_query_cost_reward.py").read_text(encoding="utf-8")
 
     for required in (
@@ -82,10 +83,13 @@ def test_agent_loop_persists_one_request_and_environment_identity_through_reward
         '"pi_trajectory_request_id": request_id',
         '"pi_trajectory_environment_id": environment_id',
         '"pi_environment_id": environment_id',
+    ):
+        assert required in source
+    for required in (
         "workspace request identity changed before reward",
         "workspace environment identity changed before reward",
     ):
-        assert required in source
+        assert required in identity
     for required in (
         'extra_info.get("pi_trajectory_request_id")',
         'extra_info.get("pi_trajectory_environment_id")',
@@ -94,3 +98,13 @@ def test_agent_loop_persists_one_request_and_environment_identity_through_reward
         '"runtime_identity_incomplete"',
     ):
         assert required in reward
+
+
+def test_timeout_workspace_snapshot_is_not_looked_up_after_release():
+    root = Path(__file__).resolve().parents[1]
+    source = (root / "llin_verl" / "pi_agent_loop.py").read_text(encoding="utf-8")
+
+    assert 'workspace_state = workspace_binding_state(' in source
+    assert 'if workspace_state == "live":' in source
+    assert 'if not snapshot:' in source
+    assert 'raise RuntimeError("live workspace disappeared before reward")' in source
