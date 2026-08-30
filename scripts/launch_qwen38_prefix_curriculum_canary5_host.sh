@@ -87,7 +87,8 @@ else
 fi
 printf '%s\n' "${runtime_commit}" > "${RUN_HOST}/audit/runtime_commit.safe.txt"
 chmod -R go-rwx "${RUNTIME_HOST}"
-ssh -o BatchMode=yes "root@${ROLLOUT_HOST}" "mkdir -p '${RUN_HOST}' && chmod 700 '${RUN_HOST}'"
+ssh -o BatchMode=yes "root@${ROLLOUT_HOST}" \
+  "mkdir -p '${RUN_HOST}/private' && chmod 700 '${RUN_HOST}' '${RUN_HOST}/private'"
 scp -pr "${RUNTIME_HOST}" "root@${ROLLOUT_HOST}:${RUN_HOST}/"
 
 printf 'container_cpu_gates\n' > "${RUN_HOST}/state"

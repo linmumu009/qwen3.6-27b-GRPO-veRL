@@ -322,3 +322,12 @@ def test_frontier_analyzer_moves_between_uniform_endpoints_without_training(tmp_
     assert {row["extra_info"]["remaining_assistant_decisions"] for row in next_rows} == {2}
     assert result["optimizer_steps"] == 0
     assert result["actor_parameter_updates"] == 0
+
+
+def test_host_launcher_precreates_remote_private_directory_before_sandbox_copy() -> None:
+    launcher = (ROOT / "scripts" / "launch_qwen38_prefix_curriculum_canary5_host.sh").read_text(
+        encoding="utf-8"
+    )
+    create = launcher.index("mkdir -p '${RUN_HOST}/private'")
+    copy = launcher.index('scp -pr "${RUN_HOST}/private/pi_sandbox"')
+    assert create < copy

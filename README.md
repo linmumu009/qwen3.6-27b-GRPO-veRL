@@ -14,6 +14,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - Prefix prompt身份哈希在Parquet往返时仅忽略Arrow为异构message struct补出的`null`列，不忽略任何真实role、内容、工具参数、顺序或call id，确保落盘后的运行时硬门可复现且不可被内容变化绕过。
 - 容器CPU门现在同时支持仓库内、镜像`/verl`与服务器挂载的veRL trainer源码位置，并新增uniform端点之间继续搜索下一prefix深度的回归，防止部署快照缺少`reference/`目录时在模型加载前误停。
 - Prefix trainer回归同时验证未打补丁源码的直接V6注入与镜像既有V5补丁的原位升级，避免把可恢复的`upgraded-v6`结果误判为失败。
+- 双机启动器在复制run私有沙箱前显式创建6号机`private/`父目录，避免安全复制把`pi_sandbox`内容平铺一级、随后因数据库绑定路径不存在而停在模型加载前。
 
 ## v1.12.43（2026-08-28）
 
