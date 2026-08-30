@@ -266,7 +266,7 @@ def test_trainer_patch_uses_exact_prefix_policy_group_key(tmp_path: Path) -> Non
     assert source is not None, "the veRL trainer source must be available to the container CPU gate"
     target = tmp_path / "ray_trainer.py"
     target.write_text(source.read_text(encoding="utf-8"), encoding="utf-8")
-    assert patch_trainer(target) == "patched"
+    assert patch_trainer(target) in {"patched", "upgraded-v6"}
     text = target.read_text(encoding="utf-8")
     assert "LLIN_PREFIX_POLICY_GROUP_KEY_V6" in text
     assert "prefix_group_key(str(task_id), str(state_id), policy_version)" in text
