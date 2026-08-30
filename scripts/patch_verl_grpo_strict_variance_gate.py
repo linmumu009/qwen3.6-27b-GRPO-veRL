@@ -12,6 +12,7 @@ V2_MARKER = "LLIN_STRICT_STALENESS_ZERO_V2"
 V3_MARKER = "LLIN_ACTUAL_OPTIMIZER_VERSION_V3"
 V4_MARKER = "LLIN_EXACT_GROUP_SIZE_V4"
 V5_MARKER = "LLIN_SKIP_ROLLOUT_WINDOW_RESET_V5"
+V6_MARKER = "LLIN_PREFIX_POLICY_GROUP_KEY_V6"
 
 
 def _upgrade_v2(text: str, path: Path) -> str:
@@ -113,15 +114,78 @@ def _upgrade_v4(text: str, path: Path) -> str:
     return text
 
 
+def _upgrade_v6(text: str, path: Path) -> str:
+    """Use task+prefix+actual-policy identity for curriculum GRPO groups."""
+
+    if V6_MARKER in text:
+        return text
+    anchor = '''\
+        # add uid
+        batch.non_tensor_batch["uid"] = np.array([str(uuid.uuid4()) for _ in range(len(batch.batch))], dtype=object)
+'''
+    replacement = '''\
+        # add uid
+        # LLIN_PREFIX_POLICY_GROUP_KEY_V6: a curriculum group is exactly one
+        # task/prefix/current-policy identity.  Legacy datasets keep UUIDs.
+        prefix_bases = batch.non_tensor_batch.get("prefix_group_base")
+        task_ids = batch.non_tensor_batch.get("task_id")
+        prefix_state_ids = batch.non_tensor_batch.get("prefix_state_id")
+        ready_values = batch.non_tensor_batch.get("prefix_curriculum_training_ready")
+        extra_values = batch.non_tensor_batch.get("extra_info")
+        if prefix_bases is None and extra_values is not None:
+            prefix_bases = np.array(
+                [value.get("prefix_group_base") if isinstance(value, dict) else None for value in extra_values],
+                dtype=object,
+            )
+            task_ids = np.array(
+                [value.get("task_id") if isinstance(value, dict) else None for value in extra_values],
+                dtype=object,
+            )
+            prefix_state_ids = np.array(
+                [value.get("prefix_state_id") if isinstance(value, dict) else None for value in extra_values],
+                dtype=object,
+            )
+            ready_values = np.array(
+                [value.get("prefix_curriculum_training_ready") if isinstance(value, dict) else None for value in extra_values],
+                dtype=object,
+            )
+        if prefix_bases is None or not any(prefix_bases):
+            batch.non_tensor_batch["uid"] = np.array(
+                [str(uuid.uuid4()) for _ in range(len(batch.batch))], dtype=object
+            )
+        else:
+            from llin_verl.prefix_state_curriculum import prefix_group_base, prefix_group_key
+
+            if task_ids is None or prefix_state_ids is None or ready_values is None:
+                raise ValueError("prefix curriculum batch is missing exact identity/readiness fields")
+            policy_version = int(getattr(self, "current_param_version", self.global_steps - 1))
+            keys = []
+            for base, task_id, state_id, ready in zip(
+                prefix_bases, task_ids, prefix_state_ids, ready_values, strict=True
+            ):
+                if ready is not True or str(base) != prefix_group_base(str(task_id), str(state_id)):
+                    raise ValueError("prefix curriculum batch failed readiness/group identity gate")
+                keys.append(prefix_group_key(str(task_id), str(state_id), policy_version))
+            batch.non_tensor_batch["uid"] = np.array(keys, dtype=object)
+'''
+    if text.count(anchor) != 1:
+        raise RuntimeError(f"expected one trainer UID anchor in {path}")
+    text = text.replace(anchor, replacement, 1)
+    if V6_MARKER not in text:
+        raise RuntimeError(f"failed to upgrade strict group gate to v6 in {path}")
+    return text
+
+
 def patch_trainer(path: Path) -> str:
     text = path.read_text(encoding="utf-8")
     if MARKER in text:
         upgraded = _upgrade_v2(text, path)
         upgraded = _upgrade_v3(upgraded, path)
         upgraded = _upgrade_v4(upgraded, path)
+        upgraded = _upgrade_v6(upgraded, path)
         if upgraded != text:
             path.write_text(upgraded, encoding="utf-8")
-            return "upgraded-v4"
+            return "upgraded-v6"
         return "already-patched"
 
     advantage_anchor = '''\
@@ -225,7 +289,9 @@ def patch_trainer(path: Path) -> str:
 '''
     if text.count(weight_anchor) != 1:
         raise RuntimeError(f"expected one weight update anchor in {path}")
-    path.write_text(text.replace(weight_anchor, weight_replacement, 1), encoding="utf-8")
+    text = text.replace(weight_anchor, weight_replacement, 1)
+    text = _upgrade_v6(text, path)
+    path.write_text(text, encoding="utf-8")
     return "patched"
 
 

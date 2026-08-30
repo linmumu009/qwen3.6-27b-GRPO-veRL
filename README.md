@@ -2,6 +2,13 @@
 
 Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
+## v1.12.44（2026-08-30）
+
+- 新增prefix-state curriculum GRPO v1运行时：把PI可观察历史结构化转换为原生role/tool消息，保留`tool_call_id`，拒绝quarantine、未来泄漏、未完成工具轮和不可恢复工作区状态。
+- 固化suffix-only训练边界：历史prompt与工具结果不进入梯度，只有当前actor生成的assistant后缀token进入response mask；tiered-v1仅统计后缀查询/工具token，combined prefix+suffix仅用于最终正确性。
+- GRPO组身份升级为`task_id + prefix_state_id + policy_version`，继续执行UNKNOWN/uniform整组零梯度、无optimizer/Adam/参数变化、skip后同policy采样窗口复位和staleness=0。
+- 新增原始Qwen3.8-27B rollout-only frontier二分搜索、10/4训练/heldout隔离、至少5题且跨2个深度的硬门，以及门通过后最多5个真实optimizer更新的金丝雀启动与审计脚本；正式全量训练仍锁定。
+
 ## v1.12.43（2026-08-28）
 
 - 将物流运营沙箱的“阶段结果”改成一个持续生长的粒子世界：从 1 个 PRD 种子开始，依次分裂出 5 类运营角色、57 类实体、76 个状态、80 个动作、15 条情境轨道与 115 个采样单元；左侧只保留当前阶段动作和因果说明，不再展示“本阶段输入”、右侧数字增量栏或文件到文件的三列表达。

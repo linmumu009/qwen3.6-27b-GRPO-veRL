@@ -13,6 +13,10 @@ from verl.experimental.agent_loop.agent_loop import AgentLoopOutput
 from verl.experimental.agent_loop.tool_agent_loop import AgentData, AgentState, ToolAgentLoop
 
 from llin_verl.force_final_policy import build_force_final_instruction, decide_force_final
+from llin_verl.prefix_state_curriculum import (
+    validate_runtime_prefix,
+    validate_suffix_response_mask,
+)
 from llin_verl.pi_workspace_tools import WORKSPACES
 from llin_verl.trajectory_telemetry import TrajectoryTelemetry
 
@@ -48,6 +52,10 @@ class PiAgentLoop(ToolAgentLoop):
         input_extra = kwargs.get("extra_info", {}) or {}
         if not isinstance(input_extra, dict):
             raise TypeError("trajectory extra_info must be a mapping")
+        # Prefix-state rows are already adapted to native role/tool messages by
+        # the private loader.  Validate that exact prompt and its clean reset
+        # contract before a token is generated; quarantine rows fail closed.
+        validate_runtime_prefix(input_extra, kwargs.get("raw_prompt", []))
         environment_id = str(input_extra.get("environment_id") or "")
         telemetry = TrajectoryTelemetry.start(input_extra)
         context_token: Token = _TRAJECTORY_TELEMETRY.set(telemetry)
@@ -83,6 +91,27 @@ class PiAgentLoop(ToolAgentLoop):
                 output = await self._abort_timed_out_trajectory(task, request_id, kwargs)
         else:
             output = await super().run(sampling_params, **kwargs)
+        validate_suffix_response_mask(
+            output.prompt_ids,
+            output.response_ids,
+            output.response_mask,
+        )
+        curriculum_extra = kwargs.get("extra_info", {}) or {}
+        if curriculum_extra.get("prefix_state_id"):
+            output.extra_fields.update(
+                {
+                    "prefix_state_id": str(curriculum_extra["prefix_state_id"]),
+                    "prefix_group_base": str(curriculum_extra["prefix_group_base"]),
+                    "prefix_prompt_sha256": str(curriculum_extra["prefix_prompt_sha256"]),
+                    "prefix_history_gradient_tokens": 0,
+                    "prefix_history_process_reward_events": 0,
+                    "generated_suffix_response_token_count": len(output.response_ids),
+                    "generated_suffix_active_assistant_token_count": sum(
+                        int(value) for value in output.response_mask
+                    ),
+                    "generated_suffix_only_mask_verified": True,
+                }
+            )
         defaults = {
             # vLLM attaches these version fields to every completed request.  A
             # worker whose whole chunk times out would otherwise omit

@@ -380,6 +380,20 @@ def compute_tiered_query_cost_reward(
         "trajectory_identity_sha256": trajectory_identity,
         "sampling_policy_version_min": extra_info.get("min_global_steps"),
         "sampling_policy_version_max": extra_info.get("max_global_steps"),
+        # Prefix curriculum observability only.  These fields do not affect
+        # the frozen scalar formula; they bind private rollout/validation rows
+        # back to exactly one state and policy for frontier and staleness gates.
+        "prefix_state_id": str(extra_info.get("prefix_state_id") or ""),
+        "prefix_group_base": str(extra_info.get("prefix_group_base") or ""),
+        "curriculum_stage": str(extra_info.get("curriculum_stage") or ""),
+        "remaining_assistant_decisions": int(
+            extra_info.get("remaining_assistant_decisions", -1)
+            if extra_info.get("remaining_assistant_decisions", -1) is not None
+            else -1
+        ),
+        "generated_suffix_only_mask_verified": float(
+            bool(extra_info.get("generated_suffix_only_mask_verified", False))
+        ),
         "wrong_reward_upper_bound_inclusive": 0.2,
         "correct_grounded_reward_lower_bound_inclusive": 0.8,
         "final_answer_match_mode": final_details.get("match_mode", "none"),
