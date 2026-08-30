@@ -10,6 +10,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - 新增原始Qwen3.8-27B rollout-only frontier二分搜索、10/4训练/heldout隔离、至少5题且跨2个深度的硬门，以及门通过后最多5个真实optimizer更新的金丝雀启动与审计脚本；正式全量训练仍锁定。
 - 主机启动器支持由已推送commit预先注入只读runtime快照，服务器部署目录本身无需是Git工作区，仍把精确40位commit写入run审计。
 - 仓库显式固定所有shell脚本为LF换行，避免Windows工作区打包后在Linux服务器出现`pipefail\r`等启动前错误。
+- Prefix loader按冻结包的原始`message_index_requires_runtime_token_boundary_adapter`声明做精确硬门，避免用近义字段名误拒全部322个ready状态。
 
 ## v1.12.43（2026-08-28）
 

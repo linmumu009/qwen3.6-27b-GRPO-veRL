@@ -64,7 +64,7 @@ def state(*, ready: bool = True) -> dict:
         "prefix_messages": json.dumps(messages),
         "prefix_message_count": len(messages),
         "generated_suffix_start_message_index": len(messages),
-        "response_mask_unit": "message_index_adapter_required",
+        "response_mask_unit": "message_index_requires_runtime_token_boundary_adapter",
         "remaining_assistant_decisions": 2,
         "remaining_tool_rounds": 1,
         "environment_id": "sft/v1",

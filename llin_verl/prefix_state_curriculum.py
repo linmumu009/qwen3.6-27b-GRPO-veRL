@@ -176,7 +176,7 @@ def validate_ready_state(row: dict[str, Any]) -> dict[str, Any]:
         raise ValueError("prefix tokens must not participate in gradient")
     if row.get("prefix_counts_toward_process_or_efficiency_reward") is not False:
         raise ValueError("prefix process evidence/cost must be excluded")
-    if str(row.get("response_mask_unit") or "") != "message_index_adapter_required":
+    if str(row.get("response_mask_unit") or "") != "message_index_requires_runtime_token_boundary_adapter":
         raise ValueError("message-index response-mask boundary is not declared")
     if int(row.get("generated_suffix_start_message_index", -1)) != int(
         row.get("prefix_message_count", -2)
