@@ -259,6 +259,7 @@ def test_prefix_evidence_and_cost_do_not_enter_frozen_reward(tmp_path: Path) -> 
 def test_trainer_patch_uses_exact_prefix_policy_group_key(tmp_path: Path) -> None:
     candidates = (
         ROOT / "reference" / "verl" / "verl" / "experimental" / "separation" / "ray_trainer.py",
+        Path("/verl/verl/experimental/separation/ray_trainer.py"),
         Path("/workspace/llin-verl-grpo/reference/verl/verl/experimental/separation/ray_trainer.py"),
     )
     source = next((candidate for candidate in candidates if candidate.is_file()), None)

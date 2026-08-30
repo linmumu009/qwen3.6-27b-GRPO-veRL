@@ -12,7 +12,7 @@ Qwen3.6 27B 的 GRPO / veRL 训练项目。
 - 仓库显式固定所有shell脚本为LF换行，避免Windows工作区打包后在Linux服务器出现`pipefail\r`等启动前错误。
 - Prefix loader按冻结包的原始`message_index_requires_runtime_token_boundary_adapter`声明做精确硬门，避免用近义字段名误拒全部322个ready状态。
 - Prefix prompt身份哈希在Parquet往返时仅忽略Arrow为异构message struct补出的`null`列，不忽略任何真实role、内容、工具参数、顺序或call id，确保落盘后的运行时硬门可复现且不可被内容变化绕过。
-- 容器CPU门现在同时支持仓库内与服务器挂载的veRL trainer源码位置，并新增uniform端点之间继续搜索下一prefix深度的回归，防止部署快照缺少`reference/`目录时在模型加载前误停。
+- 容器CPU门现在同时支持仓库内、镜像`/verl`与服务器挂载的veRL trainer源码位置，并新增uniform端点之间继续搜索下一prefix深度的回归，防止部署快照缺少`reference/`目录时在模型加载前误停。
 
 ## v1.12.43（2026-08-28）
 
