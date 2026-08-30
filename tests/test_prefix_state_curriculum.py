@@ -23,6 +23,7 @@ from llin_verl.prefix_state_curriculum import (
 )
 from llin_verl.tiered_query_cost_reward import compute_tiered_query_cost_reward
 from scripts.patch_verl_grpo_strict_variance_gate import patch_trainer
+from scripts.analyze_prefix_frontier import analyze
 from scripts.prepare_prefix_state_curriculum_runtime import _runtime_row
 
 
@@ -256,7 +257,12 @@ def test_prefix_evidence_and_cost_do_not_enter_frozen_reward(tmp_path: Path) -> 
 
 
 def test_trainer_patch_uses_exact_prefix_policy_group_key(tmp_path: Path) -> None:
-    source = ROOT / "reference" / "verl" / "verl" / "experimental" / "separation" / "ray_trainer.py"
+    candidates = (
+        ROOT / "reference" / "verl" / "verl" / "experimental" / "separation" / "ray_trainer.py",
+        Path("/workspace/llin-verl-grpo/reference/verl/verl/experimental/separation/ray_trainer.py"),
+    )
+    source = next((candidate for candidate in candidates if candidate.is_file()), None)
+    assert source is not None, "the veRL trainer source must be available to the container CPU gate"
     target = tmp_path / "ray_trainer.py"
     target.write_text(source.read_text(encoding="utf-8"), encoding="utf-8")
     assert patch_trainer(target) == "patched"
@@ -265,3 +271,53 @@ def test_trainer_patch_uses_exact_prefix_policy_group_key(tmp_path: Path) -> Non
     assert "prefix_group_key(str(task_id), str(state_id), policy_version)" in text
     assert 'getattr(self, "current_param_version", self.global_steps - 1)' in text
     compile(text, str(target), "exec")
+
+
+def test_frontier_analyzer_moves_between_uniform_endpoints_without_training(tmp_path: Path) -> None:
+    ladders = []
+    validation = []
+    for task_index in range(5):
+        task_id = f"task-{task_index}"
+        for depth in (1, 2, 3):
+            state_id = f"{task_id}-depth-{depth}"
+            ladders.append(
+                {
+                    "extra_info": {
+                        "task_id": task_id,
+                        "prefix_state_id": state_id,
+                        "curriculum_split": "train",
+                        "curriculum_stage": "stage-00" if depth == 1 else "stage-full" if depth == 3 else "stage-01",
+                        "remaining_assistant_decisions": depth,
+                    }
+                }
+            )
+            if depth not in (1, 3):
+                continue
+            for slot in range(4):
+                correct = depth == 1
+                validation.append(
+                    {
+                        "prefix_state_id": state_id,
+                        "train_mask": 1,
+                        "final_answer_correct": int(correct),
+                        "success": int(correct),
+                        "tiered_reward": 0.9 if correct else 0.1,
+                        "guess_correct_blocked": 0,
+                        "unsafe": 0,
+                        "budget_exceeded": 0,
+                        "generated_suffix_only_mask_verified": 1,
+                        "slot": slot,
+                    }
+                )
+    ladder_path = tmp_path / "ladders.parquet"
+    validation_path = tmp_path / "validation.jsonl"
+    pq.write_table(pa.Table.from_pylist(ladders), ladder_path)
+    validation_path.write_text("".join(json.dumps(row) + "\n" for row in validation), encoding="utf-8")
+
+    result = analyze(ladder_path, [validation_path], tmp_path / "analysis")
+    next_rows = pq.read_table(tmp_path / "analysis" / "next_round.runtime.sensitive.parquet").to_pylist()
+    assert result["frontier_gate_passed"] is False
+    assert result["next_round_state_count"] == 5
+    assert {row["extra_info"]["remaining_assistant_decisions"] for row in next_rows} == {2}
+    assert result["optimizer_steps"] == 0
+    assert result["actor_parameter_updates"] == 0
