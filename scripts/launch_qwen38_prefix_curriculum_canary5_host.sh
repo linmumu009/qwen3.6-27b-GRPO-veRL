@@ -77,9 +77,14 @@ EOF
 
 printf 'freezing_runtime\n' > "${RUN_HOST}/state"
 mkdir -p "${RUNTIME_HOST}"
-git -C "${HOST_PROJECT_ROOT}" fetch origin main
-git -C "${HOST_PROJECT_ROOT}" archive origin/main | tar -x -C "${RUNTIME_HOST}"
-runtime_commit="$(git -C "${HOST_PROJECT_ROOT}" rev-parse origin/main)"
+if [[ -f "${RUNTIME_HOST}/.llin_runtime_commit" ]]; then
+  runtime_commit="$(cat "${RUNTIME_HOST}/.llin_runtime_commit")"
+  [[ "${runtime_commit}" =~ ^[0-9a-f]{40}$ ]]
+else
+  git -C "${HOST_PROJECT_ROOT}" fetch origin main
+  git -C "${HOST_PROJECT_ROOT}" archive origin/main | tar -x -C "${RUNTIME_HOST}"
+  runtime_commit="$(git -C "${HOST_PROJECT_ROOT}" rev-parse origin/main)"
+fi
 printf '%s\n' "${runtime_commit}" > "${RUN_HOST}/audit/runtime_commit.safe.txt"
 chmod -R go-rwx "${RUNTIME_HOST}"
 ssh -o BatchMode=yes "root@${ROLLOUT_HOST}" "mkdir -p '${RUN_HOST}' && chmod 700 '${RUN_HOST}'"
