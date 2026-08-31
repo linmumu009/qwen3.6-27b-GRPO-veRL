@@ -2,9 +2,8 @@
 """Render a causal replay of one real logistics sandbox build.
 
 The page deliberately shows transformations, not a pipeline overview: every
-stage reads concrete upstream artifacts, performs ordered work, materialises
-new artifacts, and hands those artifacts to the next stage.  Only aggregate
-evidence is embedded; prompts, hidden gold, SQL and database rows are omitted.
+stage explains one small verified logistics specimen before showing the scale
+reached by applying the same rule. Hidden gold and validation SQL stay omitted.
 """
 
 from __future__ import annotations
@@ -302,7 +301,7 @@ STAGES = (
             operation("批量生成候选", "同时构造可回答、不可回答和超范围三类候选。", "6,000 candidates"),
             operation("TaskSelector 筛选", "按覆盖、难度与重复度选出候选子集。", "1,000 selected"),
             operation("补充链式任务", "加入需要多步关联的物流分析任务。", "+44 chain tasks"),
-            operation("语义去重并验证", "去除同义任务，检查每条任务的证据绑定；正文与 gold 不进入本动画。", "555 final · 0 errors"),
+            operation("语义去重并验证", "去除同义任务并检查证据绑定；动画只展开一个已验证任务样本，其余正文、gold 与验证 SQL 不批量展示。", "555 final · 0 errors"),
         ),
         outputs=(
             artifact("candidates.jsonl", "候选池", "6,000 tasks", "answerable 3,600", "unanswerable 1,500 · OOS 900", produced_by=0),
@@ -753,6 +752,497 @@ PROCESS_STEPS = (
         ("Runner：DB + Docs + Schema", "Raw：Tasks + Hidden Gold", "唯一 sandbox_id", "总耗时 80:31"),
         (57, 76, 80, 64, 36101, 65, 1587, 1520), 1020,
     ),
+)
+
+
+# One finite, inspectable real example per stage.  The examples come from the
+# pinned v20 run and the matching 5-machine logistics archive.  They are kept
+# deliberately small: the animation explains one transformation first and only
+# then states how far the same rule was expanded.
+EXAMPLE_CASES = (
+    {
+        "key": "intake",
+        "kicker": "真实样本 01 · 一份原始业务说明",
+        "title": "先把“物流运营分析”固定成唯一输入",
+        "intro": "此时还没有表、数据或题目。第一步只解决一件事：以后生成的每一项内容，都能追溯到同一份业务说明。",
+        "nodes": (
+            {
+                "label": "原始内容",
+                "title": "运营分析.md",
+                "code": "7,105 B",
+                "items": ("业务诉求：分析华东区上周的派送延误原因", "分析路径：揽收 → 分拣 → 干线 → 派送", "使用者：运营分析师、总部管理者"),
+                "detail": "它是一份自然语言说明，还不能直接生成数据世界。",
+                "source": "input/运营分析.md",
+                "arrow": "计算指纹，固定原文",
+            },
+            {
+                "label": "输入身份",
+                "title": "同一份文档的不可混淆标识",
+                "code": "f96fc90c…ca4db",
+                "items": ("记录文件大小", "记录 SHA256", "后续阶段只读取受控副本"),
+                "detail": "即使同时生成别的行业沙箱，也不会把输入串在一起。",
+                "source": "runtime/state.json",
+                "arrow": "创建独立场景",
+            },
+            {
+                "label": "场景容器",
+                "title": "运营分析-8767b626",
+                "code": "status = running",
+                "items": ("input/：受控输入", "runtime/：过程证据", "artifacts/：阶段产物"),
+                "detail": "从这里开始，所有产物都带着同一个 scene_id。",
+                "source": "scenes/运营分析-8767b626/",
+                "arrow": "",
+            },
+        ),
+        "scale": "本阶段只有 1 份输入文档；它没有被扩写成一堆文件，而是先被固定为整个物流世界的共同来源。",
+        "why": "有了唯一输入和 scene_id，下一步才能在不串场的前提下解释业务。",
+        "evidence": ("运营分析.md", "runtime/state.json", "固定提交 7589170"),
+    },
+    {
+        "key": "prd",
+        "kicker": "真实样本 02 · 一句话怎样变成业务规格",
+        "title": "把“分析延误原因”展开成可执行的业务定义",
+        "intro": "不是改写原文，而是把一句业务诉求拆成谁来用、分析什么、按什么顺序分析，以及后续必须建模哪些对象。",
+        "nodes": (
+            {
+                "label": "原始诉求",
+                "title": "“分析上周重庆分拨中心时效下降的原因。”",
+                "code": "UC-2.2",
+                "items": ("自然语言问题", "尚未声明角色", "尚未声明分析步骤"),
+                "detail": "领导能读懂，但程序还不知道要准备哪些对象和证据。",
+                "source": "运营分析.md · UC-2.2",
+                "arrow": "识别角色、目标和分析路径",
+            },
+            {
+                "label": "结构化用例",
+                "title": "分拨中心时效归因",
+                "code": "运营分析师 / 总部管理者",
+                "items": ("揽收、分拣、干线、派送四段拆解", "逐环节同比 / 环比", "定位波动最大的环节", "数据缺失时必须说明局限"),
+                "detail": "同一句话现在变成后续可验证的角色、流程与异常处理要求。",
+                "source": "prd_运营分析-8767b626.md",
+                "arrow": "补齐核心业务对象",
+            },
+            {
+                "label": "PRD 附录",
+                "title": "运单 Waybill 成为核心实体",
+                "code": "一票运单对应一批货物",
+                "items": ("业务主键：运单号", "关键属性：重量、体积、运费、当前状态", "关系：客户 1:N 运单", "关系：运单 1:N 运单事件"),
+                "detail": "下一步不再从散文猜对象，而是从明确的实体与关系继续建模。",
+                "source": "PRD 附录 A / B",
+                "arrow": "",
+            },
+        ),
+        "scale": "同样方法覆盖仓库经理、网点主管、区域运营负责人、运营分析师、总部管理者等 5 类角色；PRD 门禁 14 / 14 通过。",
+        "why": "角色、流程和核心实体已经明确，下一步才能定义这个世界里“有什么、怎么变化、能做什么”。",
+        "evidence": ("prd_运营分析-8767b626.md", "coverage.json", "validation.json"),
+    },
+    {
+        "key": "factor",
+        "kicker": "真实样本 03 · 实体—状态—动作",
+        "title": "用一个运单，说明“世界模型”到底建了什么",
+        "intro": "运单不是一个名称，而是一组可识别的业务属性、可合法流转的状态，以及会改变世界的动作。",
+        "nodes": (
+            {
+                "label": "实体",
+                "title": "waybill · 运单",
+                "code": "23 个业务属性",
+                "items": ("waybill_no", "sender_name / sender_phone / sender_address", "receiver_name / receiver_phone / receiver_address", "weight_kg / volume_m3 / freight_amount", "current_status / current_node", "route、customer、warehouse 等 10 类关系"),
+                "detail": "主标识是 waybill_no；它承载从揽收到签收的完整生命周期信息。",
+                "source": "entities.json · waybill",
+                "arrow": "为实体定义合法生命历程",
+            },
+            {
+                "label": "状态",
+                "title": "一张运单不是静态行",
+                "code": "运单 20 个状态",
+                "items": ("waybill_created → waybill_assigned", "→ waybill_picked_up → waybill_inbound", "→ waybill_sorted → waybill_loaded", "→ waybill_in_transit → waybill_arrived", "→ waybill_dispatched → waybill_delivered", "另有 delayed / delivery_failed / returned 等异常分支"),
+                "detail": "状态转移有方向、有条件；已签收是终态，不能继续随意变化。",
+                "source": "states.json · waybill lifecycle",
+                "arrow": "定义什么动作可以推动状态变化",
+            },
+            {
+                "label": "动作",
+                "title": "update_waybill_status",
+                "code": "更新状态 + 生成事件",
+                "items": ("输入：waybill_no、target_status、node_id、operator_id", "前置：运单存在；状态转移合法", "输出：previous_status、updated_status、event_id", "效果：更新运单状态，并生成轨迹事件记录"),
+                "detail": "动作不是文案标签，它声明输入、前置条件、返回值和对世界造成的效果。",
+                "source": "tools_actions.json · update_waybill_status",
+                "arrow": "门禁检查所有引用",
+            },
+            {
+                "label": "修复实例",
+                "title": "拦住一个不存在的状态引用",
+                "code": "hard error 1 → 0",
+                "items": ("错误：incident_closed", "实际状态：incident_closed_without_compensation", "修复后重新校验：9 / 9 通过"),
+                "detail": "修复前的世界不会进入下游；17 个软警告保留在报告里供审计。",
+                "source": "factor_validation_report.json",
+                "arrow": "",
+            },
+        ),
+        "scale": "其余业务对象也按同样规则展开，最终形成 57 类实体、76 个状态、80 个动作。这里的 57 是实体类型，不是 57 条数据。",
+        "why": "世界里有什么、如何变化、允许做什么都已闭合，下一步才能系统地组合出不同物流情境。",
+        "evidence": ("entities.json", "states.json", "tools_actions.json", "factor_validation_report.json"),
+    },
+    {
+        "key": "taxonomy",
+        "kicker": "真实样本 04 · 从世界模型到可采样情境",
+        "title": "把“运输中运单”变成一个可重复抽取的任务坐标",
+        "intro": "Taxonomy 不创造新业务对象，它把已有实体、状态、动作和角色组织成可组合、可约束、可覆盖的情境空间。",
+        "nodes": (
+            {
+                "label": "一个采样单元",
+                "title": "waybill_lifecycle:normal_flow/in_transit",
+                "code": "运单 · 正常流 · 运输中",
+                "items": ("对象：waybill", "状态：in_transit", "可搭配角色：outlet_supervisor / ops_analyst", "可搭配动作：query_waybill"),
+                "detail": "后续生成任务时，可以准确抽到“某角色查询运输中运单”这一类情境。",
+                "source": "sampling_units.json",
+                "arrow": "加入业务约束，排除假情境",
+            },
+            {
+                "label": "非法组合",
+                "title": "delivered + confirm_delivery",
+                "code": "禁止",
+                "items": ("原因：已签收运单不能再次签收", "created + depart_vehicle 同样禁止", "约束严重级别：hard"),
+                "detail": "采样不是任意笛卡尔积；不符合物流常识的组合在源头被挡住。",
+                "source": "combination_constraints.json",
+                "arrow": "给正常、异常、边界、复杂情境分配覆盖",
+            },
+            {
+                "label": "覆盖计划",
+                "title": "同一个世界，既要覆盖日常也要覆盖异常",
+                "code": "coverage ratio = 1.0000",
+                "items": ("normal：运单正常流转与常规查询", "exception：延误、破损、失败与权限拒绝", "edge：刚超时、权限边界、临界值", "complex：跨对象、多步骤分析"),
+                "detail": "覆盖计划决定后面的数据和题目不会只集中在最容易的日常场景。",
+                "source": "coverage_plan.json",
+                "arrow": "",
+            },
+        ),
+        "scale": "同样方法共形成 15 个变化维度、115 个采样单元和 27 条组合约束（9 illegal、6 required、8 mutex、4 scene）。",
+        "why": "有了合法且有覆盖目标的情境坐标，下一步才能把语义世界投影成字段和表。",
+        "evidence": ("factor_taxonomies.json", "sampling_units.json", "combination_constraints.json", "coverage_plan.json"),
+    },
+    {
+        "key": "schema",
+        "kicker": "真实样本 05 · 语义实体怎样落成表",
+        "title": "waybill 不是原样复制，而是映射成 fact_waybill",
+        "intro": "这一步决定业务语言怎样落到可查询结构。语义属性会被合并、改名或转成关联字段，关系则落到其他表。",
+        "nodes": (
+            {
+                "label": "上游语义实体",
+                "title": "waybill",
+                "code": "23 个业务属性",
+                "items": ("sender_name / sender_phone / sender_address", "receiver_name / receiver_phone / receiver_address", "weight_kg", "current_status", "关系：route / customer / vehicle / product"),
+                "detail": "这是业务上怎样理解运单，还不是数据库字段。",
+                "source": "entities.json · waybill",
+                "arrow": "按查询粒度与关系规则映射",
+            },
+            {
+                "label": "字段映射",
+                "title": "业务含义被保留，存储形态被整理",
+                "code": "semantic → physical",
+                "items": ("sender_name / phone / address → sender_info", "receiver_name / phone / address → receiver_info", "weight_kg → cargo_weight_kg", "current_status → status", "route 关系 → fact_route_id", "customer 关系 → fact_customer_id"),
+                "detail": "这就是世界建模和简单“文件转文件”的区别：先决定语义，再决定稳定的物理表达。",
+                "source": "tables/fact_waybill.json",
+                "arrow": "生成事实表和关联结构",
+            },
+            {
+                "label": "物理表",
+                "title": "fact_waybill",
+                "code": "25 个物理字段",
+                "items": ("主键：waybill_no", "事实字段：cargo_weight_kg、cargo_volume_m3、status", "关联字段：fact_route_id、fact_customer_id", "关联字段：dim_vehicle_id、fact_product_id", "事件历史另落到 fact_waybill_event"),
+                "detail": "一张运单记录因此能连接线路、客户、车辆、产品和轨迹事件。",
+                "source": "tables/fact_waybill.json",
+                "arrow": "",
+            },
+        ),
+        "scale": "其余 56 类实体也按相同原则映射，最终得到 64 张表：6 张平台支撑表、3 张平台事实表、54 张业务事实表和 1 张关系桥表。",
+        "why": "字段、类型和关联位置已经固定，下一步才能生成彼此可连接的实际记录。",
+        "evidence": ("schema_overview.json", "tables/fact_waybill.json", "tables/fact_route.json", "schema_validation_report.json"),
+    },
+    {
+        "key": "data",
+        "kicker": "真实样本 06 · 一条运单怎样把世界连起来",
+        "title": "fact_waybill 中真的出现一张可查询运单",
+        "intro": "现在抽象的“运单”被实例化。下面展示的是 5 号机归档中的真实生成记录，不是为了演示临时编造的 W-DEMO。",
+        "nodes": (
+            {
+                "label": "运单实例",
+                "title": "WAY000067",
+                "code": "fact_waybill",
+                "items": ("cargo_desc：茶叶干货", "status：delivering", "cargo_weight_kg：498.3", "cargo_volume_m3：1.028", "fact_route_id：ROU000651", "fact_customer_id：CUS000669"),
+                "detail": "这一行同时携带业务事实和指向其他实体的关联字段。",
+                "source": "generated_data/fact_waybill.jsonl",
+                "arrow": "沿 fact_route_id 查到线路",
+            },
+            {
+                "label": "线路实例",
+                "title": "ROU000651 · 华东干线",
+                "code": "fact_route",
+                "items": ("distance_km：1500", "avg_transit_hours：450.0", "fact_warehouse_id：WAR000478"),
+                "detail": "运单不再是孤立记录；它能进入线路维度的时效和装载分析。",
+                "source": "generated_data/fact_route.jsonl",
+                "arrow": "沿 fact_customer_id 查到客户",
+            },
+            {
+                "label": "客户实例",
+                "title": "CUS000669 · 广星德",
+                "code": "fact_customer",
+                "items": ("status：active", "由同一关联字段命中", "可与运单重量、体积、状态共同分析"),
+                "detail": "同一张运单因此可以回答“哪条线路、哪个客户、什么货物、处于什么状态”。",
+                "source": "generated_data/fact_customer.jsonl",
+                "arrow": "装载数据库并执行完整性门禁",
+            },
+            {
+                "label": "可查询世界",
+                "title": "logistics.sqlite",
+                "code": "5 / 5 passed",
+                "items": ("行数检查", "枚举检查", "非空检查", "引用完整性检查", "数据库可读性检查"),
+                "detail": "只有通过门禁的记录才会进入后续任务生成。",
+                "source": "data_validation_report.json",
+                "arrow": "",
+            },
+        ),
+        "scale": "同样规则批量展开后，固定 v20 世界包含 36,101 条实例化记录；其中 fact_waybill 在 5 号机归档样本中有 1,000 条。另生成 300 条显式 report_user_relation 关系桥记录。",
+        "why": "世界已经有可查询的事实，下一步的数仓题目可以从真实记录反向产生，而不是先写题再找数据。",
+        "evidence": ("fact_waybill.jsonl", "fact_route.jsonl", "fact_customer.jsonl", "database/logistics.sqlite"),
+    },
+    {
+        "key": "dwh_tasks",
+        "kicker": "真实样本 07 · Step 5.1 数仓任务",
+        "title": "从数据库事实反向生成一个可验证问题",
+        "intro": "数仓任务只观察“实际发生了什么”。问题里用到的表、字段和操作，必须在刚才生成的物流数据库中真实存在。",
+        "nodes": (
+            {
+                "label": "真实问题",
+                "title": "“货损记录 2026-03-27 到 2026-06-28 的货损数量趋势是向好还是向坏？”",
+                "code": "task_000257",
+                "items": ("角色：regional_ops_manager", "类型：trend_analysis", "难度：medium"),
+                "detail": "这条问题来自 5 号机已生成任务包。",
+                "source": "dwh_tasks.jsonl · task_000257",
+                "arrow": "绑定实际证据结构",
+            },
+            {
+                "label": "证据计划",
+                "title": "先确认数据库能够回答",
+                "code": "join + filter + group_by",
+                "items": ("表：fact_cargo_damage_record", "关联表：fact_waybill", "字段：occurred_at、damage_qty、occurred_node、status", "门禁：must_query_tables = fact_cargo_damage_record"),
+                "detail": "题目与表结构、字段和运算一同生成，随后在 SQLite 上验证答案确实存在。",
+                "source": "task validation evidence",
+                "arrow": "覆盖筛选、补链、去重",
+            },
+            {
+                "label": "保留下来的任务",
+                "title": "验证通过后进入数仓任务包",
+                "code": "555 unique",
+                "items": ("checked_against_database = true", "validation_method = sqlite", "expected_result_exists = true", "题目给模型；答案与验证逻辑留在评测侧"),
+                "detail": "不重复、不可验证或没有数据依据的问题不会进入最终包。",
+                "source": "tasks.jsonl / task_validation_report.json",
+                "arrow": "",
+            },
+        ),
+        "scale": "同样流程先生成 6,000 个候选，TaskSelector 选出 1,000 个，再补 44 个链式任务并做语义去重，最终保留 555 个唯一数仓任务。",
+        "why": "事实支路已经能出题；生成器回到同一套 Factor + Taxonomy，继续建立“应该怎样运行”的规则世界。",
+        "evidence": ("candidates.jsonl", "selected_tasks.jsonl", "tasks.jsonl", "task_validation_report.json"),
+    },
+    {
+        "key": "catalog",
+        "kicker": "真实样本 08 · 从同一世界模型规划制度",
+        "title": "先定义一份《各线路时效承诺标准（SLA）》应该写什么",
+        "intro": "知识支路不是随便收集文档。它从运单状态、线路、角色和时效分析需求出发，先定义每份制度的身份、适用对象、章节和关联事实。",
+        "nodes": (
+            {
+                "label": "业务来源",
+                "title": "线路时效 + 运单状态 + 运营角色",
+                "code": "Factor + Taxonomy",
+                "items": ("对象：route / waybill / delivery", "状态：in_transit / delayed / delivered", "角色：ops_analyst / regional_ops_manager", "主题：timeliness"),
+                "detail": "它与前面的数仓结构来自同一个世界模型，因此规则和事实能对得上。",
+                "source": "Factor bundle + Taxonomy bundle",
+                "arrow": "展开成文档定义",
+            },
+            {
+                "label": "文档定义",
+                "title": "doc_002 ·《各线路时效承诺标准（SLA）》",
+                "code": "policy · v2.3",
+                "items": ("生效：2026-01-01 至 2026-12-31", "适用：运营分析师、区域运营负责人、网点主管、总部管理者", "章节：产品时效分级、主干线路时效、各环节上限", "章节：特殊线路、时效豁免、违约处理"),
+                "detail": "此时只有可审计的文档规格，还没有生成正文。",
+                "source": "document_catalog.json · doc_002",
+                "arrow": "检查引用和来源",
+            },
+            {
+                "label": "目录门禁",
+                "title": "每份定义都必须能回到业务对象和事实结构",
+                "code": "overall_passed = true",
+                "items": ("缺源或非法表引用会阻断", "374 条引用关系被保留", "blocking errors = 0"),
+                "detail": "目录通过后，下一步才逐份写正文。",
+                "source": "catalog_validation_report.json",
+                "arrow": "",
+            },
+        ),
+        "scale": "同样规则共规划 65 份文档定义，覆盖 policy、manual、FAQ、training 四类核心知识材料。",
+        "why": "文档的主题、章节、角色和事实来源已经固定，下一步可以写出可检索、可引用的真实正文。",
+        "evidence": ("document_catalog.json", "catalog_validation_report.json", "doc_002 definition"),
+    },
+    {
+        "key": "documents",
+        "kicker": "真实样本 09 · 文档定义怎样变成规则证据",
+        "title": "doc_002 从目录项变成可检索的 SLA 条款",
+        "intro": "文档生成不止落一个 Markdown 文件；正文还要按章节切成带来源位置的证据块，后续任务才能准确引用。",
+        "nodes": (
+            {
+                "label": "目录规格",
+                "title": "doc_002 要覆盖哪些内容",
+                "code": "9 个章节",
+                "items": ("产品时效分级", "主干线路时效表", "揽收 / 分拣 / 干线 / 派送上限", "特殊线路与豁免", "违约处理与速查矩阵"),
+                "detail": "生成器按目录逐项写正文，而不是写一篇无法定位来源的长文章。",
+                "source": "document_catalog.json · doc_002",
+                "arrow": "写出真实制度正文",
+            },
+            {
+                "label": "实际条款",
+                "title": "达到标准阈值的 80% 即触发预警",
+                "code": "《各线路时效承诺标准（SLA）》",
+                "items": ("特快件：次日达 / 隔日达", "标快：三到五日达", "经济件：五到七日达", "华东 → 华南标快：3 日达", "统计口径以系统时间戳为准"),
+                "detail": "这是后面回答规则问题和合规问题时真正使用的内容。",
+                "source": "documents/doc_002_各线路时效承诺标准SLA.md",
+                "arrow": "按章节边界切分并保留来源",
+            },
+            {
+                "label": "证据块",
+                "title": "doc_id + section + paragraph",
+                "code": "可追溯 chunk",
+                "items": ("doc_id：doc_002", "section：总则 / 产品时效分级 / …", "正文片段保留原文", "检索命中后能回到具体章节"),
+                "detail": "后续任务引用的是有位置的证据，不是一段无法核查的模型记忆。",
+                "source": "document_index.json",
+                "arrow": "",
+            },
+        ),
+        "scale": "其余定义也按相同过程生成，最终得到 65 份制度文档、1,587 个证据块、176,139 字；目录核对 0 缺失、0 多余。",
+        "why": "规则已经成为可检索证据，下一步可以从真实条款反向生成知识任务。",
+        "evidence": ("documents/*.md", "document_index.json", "document_validation_report.json"),
+    },
+    {
+        "key": "kb_tasks",
+        "kicker": "真实样本 10 · Step 5.2 知识任务",
+        "title": "从一段 SLA 条款反向生成可引用的问题",
+        "intro": "知识任务只观察“制度要求什么”。问题必须绑定到具体文档和章节，不能靠模型常识回答。",
+        "nodes": (
+            {
+                "label": "规则证据",
+                "title": "doc_002 · 总则：时效承诺的定义与适用范围",
+                "code": "paragraph 1",
+                "items": ("特快、标快、经济件的差异化时效", "四个关键时效节点", "达到阈值 80% 触发预警"),
+                "detail": "先有可定位的规则证据，再根据证据写问题。",
+                "source": "document_index.json · doc_002",
+                "arrow": "围绕证据生成问题",
+            },
+            {
+                "label": "真实问题",
+                "title": "“《各线路时效承诺标准（SLA）》中总则部分的适用范围是什么？”",
+                "code": "KT-LOG-0080",
+                "items": ("task_type：knowledge_retrieval", "subtype：single_doc_lookup", "source_documents：doc_002", "citation：总则 · paragraph 1"),
+                "detail": "问题、来源文档和引用位置一起进入验证。",
+                "source": "knowledge_tasks.jsonl · KT-LOG-0080",
+                "arrow": "对齐事实、去重、校验",
+            },
+            {
+                "label": "可评测任务",
+                "title": "答案必须回到 doc_002 的指定章节",
+                "code": "8 / 8 passed",
+                "items": ("单文档查找", "跨文档推理", "版本 / 时效意识", "不可回答识别", "多跳检索"),
+                "detail": "只有来源存在、引用有效且不与已有题目近重复的任务才被保留。",
+                "source": "knowledge_task_validation_report.json",
+                "arrow": "",
+            },
+        ),
+        "scale": "目标生成 500 个知识问题；材料不足时不伪造近重复题，利用 374 对文档引用关系去重后保留 465 个唯一任务。",
+        "why": "事实任务和规则任务都已形成，下一步可以把两种证据放到同一道题里检验综合判断。",
+        "evidence": ("knowledge_tasks.jsonl", "template_coverage_report.json", "knowledge_task_validation_report.json"),
+    },
+    {
+        "key": "hybrid",
+        "kicker": "真实样本 11 · Step 5.3 混合任务",
+        "title": "同一道题同时要求查数据、读制度、再作判断",
+        "intro": "混合任务不是把两道题拼在一起。它先把一个业务问题绑定到事实表与政策条款，再要求模型比较“实际发生了什么”和“制度要求什么”。",
+        "nodes": (
+            {
+                "label": "真实问题",
+                "title": "“上周华北区运单经济件产品对照标准检查的达标率，与同行对比，对照《各线路时效承诺标准（SLA）》？”",
+                "code": "HT-0007 · compliance_check",
+                "items": ("时间：上周", "区域：华北区", "产品：经济件", "判断：实际表现是否符合 SLA"),
+                "detail": "问题本身明确要求事实与规则两条证据链。",
+                "source": "hybrid_tasks.jsonl · HT-0007",
+                "arrow": "拆成两条证据计划",
+            },
+            {
+                "label": "事实证据",
+                "title": "从 fact_delivery 读取实际运营表现",
+                "code": "requires_sql = true",
+                "items": ("expected_tables：fact_delivery", "时间范围：上周", "指标：duration_hours / 达标率", "在 SQLite 中验证记录存在"),
+                "detail": "这条链回答“现实里发生了什么”。",
+                "source": "logistics.sqlite · fact_delivery",
+                "arrow": "与规则证据在同一任务汇合",
+            },
+            {
+                "label": "规则证据",
+                "title": "从 doc_002 读取经济件时效标准",
+                "code": "requires_doc_search = true",
+                "items": ("source_documents：doc_002", "section：timeliness", "经济件：五到七日达", "达到节点阈值 80% 触发预警"),
+                "detail": "这条链回答“制度要求什么”。",
+                "source": "《各线路时效承诺标准（SLA）》",
+                "arrow": "比较实际值与标准，形成合规判断",
+            },
+            {
+                "label": "混合结论结构",
+                "title": "数据结论 + 政策依据 + 偏差解释",
+                "code": "双源门禁通过",
+                "items": ("必须有 expected_tables", "必须有 source_documents", "必须有有效 table_doc_pair", "500 / 500 任务均满足双源要求"),
+                "detail": "这一步让模型不只会查数或背制度，而是能判断现实是否符合规则。",
+                "source": "hybrid validation",
+                "arrow": "",
+            },
+        ),
+        "scale": "同样方法生成 500 个唯一混合任务：事实→规则 171 个、规则→事实 156 个、合规判断 173 个；共尝试 518 次，跳过 18 个重复。",
+        "why": "事实世界、规则世界和三类任务已经齐备，最后一步只需要固定版本和模型可见边界。",
+        "evidence": ("hybrid_tasks.jsonl", "generation_summary.json", "500 / 500 双源检查"),
+    },
+    {
+        "key": "freeze",
+        "kicker": "真实样本 12 · 冻结并交付",
+        "title": "把完整世界交给模型，把答案留在评测者侧",
+        "intro": "冻结不是再生成一批内容，而是把已经通过门禁的世界版本、任务版本和可见边界一次性固定下来。",
+        "nodes": (
+            {
+                "label": "Runner 可见",
+                "title": "模型真正进入的物流世界",
+                "code": "DB + Docs + Schema",
+                "items": ("logistics.sqlite：36,101 条事实记录", "documents/：65 份制度文档", "document_index.json：1,587 个证据块", "schema：64 张表的结构和枚举"),
+                "detail": "模型可以查询数据、检索制度、执行允许的动作。",
+                "source": "runner/",
+                "arrow": "可见性边界",
+            },
+            {
+                "label": "Raw / 评测者可见",
+                "title": "题目、标准答案和验证逻辑",
+                "code": "Tasks + Hidden Gold",
+                "items": ("555 个数仓任务", "465 个知识任务", "500 个混合任务", "标准答案与验证 SQL 不进入 Runner"),
+                "detail": "模型看不到答案，但评测器可以用同一冻结世界复核模型输出。",
+                "source": "raw/",
+                "arrow": "登记唯一版本",
+            },
+            {
+                "label": "冻结身份",
+                "title": "sandbox_id + 场景 + 资产指纹",
+                "code": "运营分析-8767b626",
+                "items": ("固定提交：758917009d0e…", "事实、规则、任务分别计算 SHA256", "状态：completed", "总耗时：80 分 31 秒"),
+                "detail": "以后每次评测都能确认进入的是同一个物流世界。",
+                "source": "sandbox_registry.jsonl",
+                "arrow": "",
+            },
+        ),
+        "scale": "最终沙箱由 57 类实体、76 个状态、80 个动作、64 张表、36,101 条事实记录、65 份文档、1,587 个证据块和 1,520 个评测任务共同组成。",
+        "why": "生成到此结束。沙箱保持 completed 静止状态，只有点击“重新观看”才会重新播放讲解。",
+        "evidence": ("runner/", "raw/", "sandbox_registry.jsonl", "80:31"),
+    },
 )
 
 
@@ -1583,10 +2073,54 @@ function clearTimer(){if(state.timer!==null){clearTimeout(state.timer);state.tim
 '''
 
 
+EXAMPLE_LEDGER_HTML_TEMPLATE = r'''<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>物流运营沙箱如何形成 · 真实例子逐步讲解</title>
+<style>
+:root{color-scheme:light;--paper:#f5f3ee;--sheet:#fffefa;--ink:#1d252d;--muted:#63707a;--line:#cfd5d8;--line-strong:#9da8ad;--blue:#1769aa;--blue-soft:#e7f1f8;--green:#26734d;--green-soft:#e8f3ed;--amber:#8a5a13;--amber-soft:#f8efde;--red:#a23c37}
+*{box-sizing:border-box}html{background:var(--paper)}body{margin:0;min-width:1180px;background:var(--paper);color:var(--ink);font-family:Inter,"PingFang SC","Microsoft YaHei",system-ui,sans-serif}button,select{font:inherit}button:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid rgba(23,105,170,.32);outline-offset:2px}
+.app{width:100%;padding:22px 28px 28px}.header{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:28px;align-items:start}.eyebrow{margin:0 0 6px;color:var(--blue);font-size:12px;font-weight:700;letter-spacing:.12em}h1{margin:0;font-size:30px;line-height:1.25;font-weight:700;letter-spacing:-.02em}.lede{max-width:860px;margin:9px 0 0;color:var(--muted);font-size:14px;line-height:1.7}.run-note{border-left:3px solid var(--blue);padding:3px 0 3px 14px;font-size:12px;line-height:1.65;color:var(--muted)}.run-note b{display:block;color:var(--ink);font-size:13px}
+.macro{display:grid;grid-template-columns:1fr 32px 1fr 32px 1.35fr 32px 1fr 32px 1fr;margin-top:19px;align-items:center}.macro-node{min-height:48px;border-top:3px solid var(--line);padding:8px 10px 6px;color:var(--muted);font-size:11px;background:rgba(255,255,255,.38)}.macro-node b{display:block;margin-bottom:2px;color:var(--ink);font-size:12px}.macro-node.active{border-color:var(--blue);background:var(--blue-soft)}.macro-node.done{border-color:var(--green);background:var(--green-soft)}.macro-arrow{text-align:center;color:var(--line-strong);font-size:18px}
+.controls{display:flex;align-items:center;gap:8px;margin-top:15px}.control{min-height:36px;padding:7px 12px;border:1px solid var(--line-strong);border-radius:5px;background:var(--sheet);color:var(--ink);cursor:pointer}.control.primary{min-width:86px;border-color:var(--blue);background:var(--blue);color:#fff}.control:hover:not(:disabled){border-color:var(--blue)}.control:disabled{opacity:.42;cursor:default}.progress-area{flex:1;margin-left:10px}.progress-meta{display:flex;justify-content:space-between;margin-bottom:6px;color:var(--muted);font-size:11px}.progress-track{height:5px;background:#dfe3e4;overflow:hidden}.progress-fill{height:100%;width:0;background:var(--blue);transition:width .28s ease}
+.rail{display:grid;grid-template-columns:repeat(12,1fr);gap:4px;margin-top:14px}.rail-step{min-height:51px;padding:7px 5px;border:0;border-top:2px solid var(--line);background:transparent;color:#7b858b;text-align:left;cursor:pointer}.rail-step small{display:block;margin-bottom:2px;font-size:9px}.rail-step b{font-size:10px;font-weight:600;line-height:1.25}.rail-step.current{border-color:var(--blue);background:var(--blue-soft);color:var(--ink)}.rail-step.done{border-color:var(--green);color:#4d6558}
+.workspace{display:grid;grid-template-columns:305px minmax(0,1fr);gap:22px;margin-top:18px;align-items:start}.sidebar{border-top:4px solid var(--ink);background:rgba(255,255,255,.34);padding:15px}.stage-token{color:var(--blue);font-size:11px;font-weight:700;letter-spacing:.05em}.sidebar h2{margin:7px 0 8px;font-size:20px;line-height:1.35}.purpose{margin:0;color:var(--muted);font-size:12px;line-height:1.65}.side-label{margin:17px 0 8px;padding-top:12px;border-top:1px solid var(--line);color:var(--muted);font-size:10px;font-weight:700;letter-spacing:.1em}.ops{display:grid;gap:7px}.op{display:grid;grid-template-columns:23px minmax(0,1fr);gap:8px;padding:7px 8px;color:#798187;font-size:11px;line-height:1.45}.op-mark{display:grid;place-items:center;width:22px;height:22px;border:1px solid var(--line-strong);border-radius:50%;font-size:10px}.op b{display:block;color:inherit;font-size:11px}.op.current{background:var(--blue-soft);color:var(--ink)}.op.current .op-mark{border-color:var(--blue);background:var(--blue);color:#fff}.op.done{color:#496254}.op.done .op-mark{border-color:var(--green);background:var(--green-soft);color:var(--green)}.op.error{color:var(--red)}.op.repair.current{background:var(--amber-soft)}.clock{margin-top:15px;padding-top:12px;border-top:1px solid var(--line);color:var(--muted);font-size:11px;line-height:1.55}.clock b{color:var(--ink)}
+.main{background:var(--sheet);border:1px solid var(--line);padding:18px 20px 16px}.case-head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px;align-items:start;border-bottom:1px solid var(--line);padding-bottom:13px}.case-kicker{color:var(--blue);font-size:11px;font-weight:700;letter-spacing:.06em}.case-title{margin:4px 0 6px;font-size:22px;line-height:1.35}.case-intro{margin:0;max-width:850px;color:var(--muted);font-size:12px;line-height:1.65}.beat-status{align-self:center;min-width:110px;text-align:right;color:var(--muted);font-size:11px}.beat-status b{display:block;color:var(--ink);font-size:18px}
+.ledger{display:grid;padding:16px 0 4px}.specimen{display:grid;grid-template-columns:108px minmax(0,1fr);gap:15px;align-items:start;transition:opacity .22s ease,transform .22s ease}.specimen.pending{opacity:.16;transform:translateY(4px)}.specimen.current{opacity:1}.specimen.done{opacity:.72}.spec-label{padding-top:11px;color:var(--muted);font-size:10px;font-weight:700;letter-spacing:.08em;text-align:right}.spec-card{border-left:4px solid var(--line-strong);background:#fbfaf6;padding:10px 13px 11px}.specimen.current .spec-card{border-color:var(--blue);background:var(--blue-soft)}.specimen.done .spec-card{border-color:var(--green)}.spec-top{display:flex;justify-content:space-between;gap:16px;align-items:baseline}.spec-top h3{margin:0;font-size:15px;line-height:1.45}.spec-code{flex:0 0 auto;color:var(--blue);font-family:"Cascadia Mono",Consolas,monospace;font-size:11px}.spec-items{display:flex;flex-wrap:wrap;gap:5px 8px;margin-top:8px}.spec-item{padding:3px 7px;background:rgba(255,255,255,.72);border:1px solid #d8dddf;color:#35414a;font-size:10px;line-height:1.4}.spec-detail{margin:8px 0 0;color:#4c5962;font-size:11px;line-height:1.55}.spec-source{margin-top:6px;color:#7a858c;font-family:"Cascadia Mono",Consolas,monospace;font-size:9px}
+.connector{display:grid;grid-template-columns:108px 30px minmax(0,1fr);gap:15px;min-height:34px;align-items:center;transition:opacity .2s ease}.connector.pending{opacity:.12}.arrow-line{height:100%;border-right:1px solid var(--line-strong);position:relative}.arrow-line:after{content:"↓";position:absolute;right:-7px;bottom:-5px;color:var(--line-strong);background:var(--sheet);font-size:14px}.arrow-text{color:var(--blue);font-size:10px;font-weight:600}.scale{margin-top:11px;border-top:2px solid var(--ink);padding:12px 4px 3px;display:grid;grid-template-columns:138px minmax(0,1fr);gap:12px;font-size:12px;line-height:1.65}.scale b{color:var(--blue)}.why{margin-top:10px;padding:10px 12px;background:var(--amber-soft);color:#5d491f;font-size:11px;line-height:1.6}.why b{color:var(--amber)}.evidence{margin-top:10px;border-top:1px solid var(--line);padding-top:8px;color:var(--muted);font-size:10px}.evidence summary{cursor:pointer;font-weight:600}.evidence-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.evidence-list code{padding:3px 6px;background:#eeece5;color:#58636a;font-size:9px}.complete{display:none;margin-top:14px;border:2px solid var(--green);background:var(--green-soft);padding:14px 16px;align-items:center;justify-content:space-between;gap:20px}.complete.show{display:flex}.complete strong{display:block;color:var(--green);font-size:18px}.complete span{color:#496254;font-size:11px}.source-note{margin-top:12px;color:var(--muted);font-size:10px;line-height:1.55}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main class="app">
+<header class="header"><div><p class="eyebrow">物流运营沙箱 · 固定 v20 实际生成重放</p><h1>物流运营沙箱，是怎样一步步做出来的？</h1><p class="lede">每一步先看一个真实物流样本怎样被加工，再看同样规则批量展开后的规模。重点不是文件流转，而是业务说明怎样变成一个有对象、有状态、有事实、有规则、还能被验证的物流世界。</p></div><div class="run-note"><b>本次固定实例</b>场景：运营分析-8767b626<br>输入：运营分析.md · 7,105 B<br>提交：758917009d0e… · 总耗时 80:31</div></header>
+<section class="macro" aria-label="沙箱形成的五段主线"><div class="macro-node" id="macro-understand"><b>1. 理解业务</b>从一句诉求确定角色、目标与对象</div><div class="macro-arrow">→</div><div class="macro-node" id="macro-model"><b>2. 建立世界模型</b>实体、状态、动作与情境约束</div><div class="macro-arrow">→</div><div class="macro-node" id="macro-worlds"><b>3. 形成两个同源世界</b>事实世界（DB）+ 规则世界（Docs）</div><div class="macro-arrow">→</div><div class="macro-node" id="macro-tasks"><b>4. 从世界反向出题</b>数仓、知识与混合任务</div><div class="macro-arrow">→</div><div class="macro-node" id="macro-seal"><b>5. 冻结交付</b>Runner / Raw 可见性隔离</div></section>
+<section class="controls" aria-label="播放控制"><button class="control" id="restart" type="button">重新观看</button><button class="control" id="prev" type="button">← 上一步</button><button class="control primary" id="play" type="button">暂停</button><button class="control" id="next" type="button">下一条 →</button><label><span style="position:absolute;clip:rect(0,0,0,0)">播放速度</span><select class="control" id="speed" aria-label="播放速度"><option value="0.75">0.75×</option><option value="1" selected>1×</option><option value="1.25">1.25×</option><option value="1.75">1.75×</option><option value="2">2×</option></select></label><div class="progress-area"><div class="progress-meta"><span id="progressLabel">1 / 12</span><span id="live" aria-live="polite">正在讲解第一条真实样本</span></div><div class="progress-track" id="progressTrack" role="progressbar" aria-label="生成讲解进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="1"><div class="progress-fill" id="progressFill"></div></div></div></section>
+<nav class="rail" id="rail" aria-label="十二个实际执行阶段"></nav>
+<section class="workspace"><aside class="sidebar"><div class="stage-token" id="stageToken"></div><h2 id="stageTitle"></h2><p class="purpose" id="purpose"></p><div class="side-label">这个阶段实际做了什么</div><div class="ops" id="operations"></div><div class="clock" id="clock"></div></aside><section class="main" aria-live="polite"><div class="case-head"><div><div class="case-kicker" id="caseKicker"></div><h2 class="case-title" id="caseTitle"></h2><p class="case-intro" id="caseIntro"></p></div><div class="beat-status"><b id="beatCount"></b><span>当前例子进度</span></div></div><div class="ledger" id="ledger"></div><div class="scale"><b>同样规则批量展开后</b><span id="scaleText"></span></div><div class="why"><b>为什么能进入下一步：</b><span id="whyText"></span></div><details class="evidence"><summary>查看这一步的实际落盘证据</summary><div class="evidence-list" id="evidenceList"></div></details><div class="complete" id="complete"><div><strong>物流运营沙箱生成完成</strong><span>世界版本、任务版本和可见边界已经冻结；动画已停止。</span></div><button class="control" id="completeRestart" type="button">重新观看</button></div></section></section>
+<p class="source-note">数量来自固定提交 7589170 的 v20 实际运行摘要；真实字段、记录、制度条款和任务示例来自同一物流沙箱的 5 号机归档。57 是实体类型，36,101 是实例化记录，口径不混用。</p>
+</main>
+<script id="stages" type="application/json">__STAGE_DATA__</script><script id="processSteps" type="application/json">__PROCESS_DATA__</script><script id="exampleCases" type="application/json">__EXAMPLE_DATA__</script>
+<script>(()=>{'use strict';
+const stages=JSON.parse(document.getElementById('stages').textContent),steps=JSON.parse(document.getElementById('processSteps').textContent),cases=JSON.parse(document.getElementById('exampleCases').textContent),stageMap=Object.fromEntries(stages.map(s=>[s.key,s])),caseMap=Object.fromEntries(cases.map(s=>[s.key,s])),reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const state={step:0,beat:0,playing:true,finished:false,transitioning:false,speed:1,timer:null};const el={rail:document.getElementById('rail'),token:document.getElementById('stageToken'),title:document.getElementById('stageTitle'),purpose:document.getElementById('purpose'),ops:document.getElementById('operations'),clock:document.getElementById('clock'),kicker:document.getElementById('caseKicker'),caseTitle:document.getElementById('caseTitle'),intro:document.getElementById('caseIntro'),beat:document.getElementById('beatCount'),ledger:document.getElementById('ledger'),scale:document.getElementById('scaleText'),why:document.getElementById('whyText'),evidence:document.getElementById('evidenceList'),restart:document.getElementById('restart'),prev:document.getElementById('prev'),play:document.getElementById('play'),next:document.getElementById('next'),speed:document.getElementById('speed'),progress:document.getElementById('progressLabel'),live:document.getElementById('live'),fill:document.getElementById('progressFill'),track:document.getElementById('progressTrack'),complete:document.getElementById('complete')};const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function macroState(){const groups={understand:[0,1],model:[2,3],worlds:[4,5,7,8],tasks:[6,9,10],seal:[11]};for(const [name,ids] of Object.entries(groups)){const n=document.getElementById(`macro-${name}`),active=ids.includes(state.step),done=Math.max(...ids)<state.step||(state.finished&&name==='seal');n.className=`macro-node ${active?'active':done?'done':''}`}}
+function renderRail(){el.rail.innerHTML=steps.map((s,i)=>`<button type="button" class="rail-step ${i<state.step?'done':i===state.step?'current':''}" data-step="${i}"><small>${esc(s.number)} · ${esc(stageMap[s.key].step)}</small><b>${esc(s.label)}</b></button>`).join('');el.rail.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>jump(Number(b.dataset.step),true)))}
+function actionIndex(stage,scene){return Math.min(stage.operations.length-1,Math.floor((state.beat+1)*stage.operations.length/scene.nodes.length)-1)}
+function renderLedger(scene){el.ledger.innerHTML=scene.nodes.map((node,i)=>{const status=i<state.beat?'done':i===state.beat?'current':'pending',items=node.items.map(x=>`<span class="spec-item">${esc(x)}</span>`).join(''),connector=node.arrow?`<div class="connector ${i<=state.beat?'':'pending'}"><span></span><span class="arrow-line"></span><span class="arrow-text">${esc(node.arrow)}</span></div>`:'';return `<article class="specimen ${status}"><div class="spec-label">${esc(node.label)}</div><div class="spec-card"><div class="spec-top"><h3>${esc(node.title)}</h3><span class="spec-code">${esc(node.code)}</span></div><div class="spec-items">${items}</div><p class="spec-detail">${esc(node.detail)}</p><div class="spec-source">证据 · ${esc(node.source)}</div></div></article>${connector}`}).join('')}
+function render(){const view=steps[state.step],stage=stageMap[view.key],scene=caseMap[view.key],a=actionIndex(stage,scene);el.token.textContent=`实际执行 ${state.step+1}/12 · ${stage.step} · ${stage.branch}`;el.title.textContent=view.label;el.purpose.textContent=view.purpose;el.ops.innerHTML=stage.operations.map((op,i)=>`<div class="op ${state.finished||i<a?'done':i===a?'current':''} ${op.status==='error'?'error':op.status==='repair'?'repair':''}"><span class="op-mark">${state.finished||i<a?'✓':i+1}</span><div><b>${esc(op.label)}</b>${esc(op.outcome)}</div></div>`).join('');el.clock.innerHTML=`<b>实际时间：</b>${esc(stage.clock)}<br><b>本步耗时：</b>${esc(stage.duration)}`;el.kicker.textContent=scene.kicker;el.caseTitle.textContent=scene.title;el.intro.textContent=scene.intro;el.beat.textContent=`${state.beat+1} / ${scene.nodes.length}`;renderLedger(scene);el.scale.textContent=scene.scale;el.why.textContent=scene.why;el.evidence.innerHTML=scene.evidence.map(x=>`<code>${esc(x)}</code>`).join('');const total=cases.reduce((n,s)=>n+s.nodes.length,0),done=cases.slice(0,state.step).reduce((n,s)=>n+s.nodes.length,0)+state.beat+1,pct=state.finished?100:Math.round(done/total*100);el.progress.textContent=state.finished?'完成 · 12 / 12':`${state.step+1} / 12 · ${view.label}`;el.live.textContent=state.finished?'✓ 已完成，播放停止':`正在讲解：${scene.nodes[state.beat].label}`;el.fill.style.width=`${pct}%`;el.track.setAttribute('aria-valuenow',String(pct));el.prev.disabled=state.finished||state.step===0||state.transitioning;el.next.disabled=state.finished||state.transitioning;el.play.disabled=state.finished;el.play.textContent=state.finished?'已结束':state.playing?'暂停':'继续播放';el.next.textContent=state.beat<scene.nodes.length-1?'下一条 →':state.step<steps.length-1?'进入下一步 →':'完成生成';el.complete.classList.toggle('show',state.finished);macroState();renderRail()}
+function clearTimer(){if(state.timer!==null){clearTimeout(state.timer);state.timer=null}}function schedule(){clearTimer();if(!state.playing||state.finished||state.transitioning)return;const scene=caseMap[steps[state.step].key],delay=(reduced?120:steps[state.step].replay_ms*4.2)/state.speed;state.timer=setTimeout(()=>{if(state.beat<scene.nodes.length-1){state.beat++;render();schedule()}else if(state.step<steps.length-1){advance()}else finish()},delay)}function advance(){clearTimer();state.transitioning=true;setTimeout(()=>{state.step++;state.beat=0;state.transitioning=false;render();schedule()},reduced?20:220/state.speed)}function jump(index,pause=false){clearTimer();state.step=Math.max(0,Math.min(steps.length-1,index));state.beat=0;state.finished=false;state.transitioning=false;if(pause)state.playing=false;render();schedule()}function finish(){clearTimer();state.finished=true;state.playing=false;state.beat=caseMap.freeze.nodes.length-1;render()}function restart(){state.playing=true;jump(0)}
+el.prev.addEventListener('click',()=>jump(state.step-1,true));el.next.addEventListener('click',()=>{if(state.finished)return;const scene=caseMap[steps[state.step].key];if(state.beat<scene.nodes.length-1){state.beat++;render()}else if(state.step<steps.length-1){advance()}else finish();schedule()});el.play.addEventListener('click',()=>{if(state.finished)return;state.playing=!state.playing;render();schedule()});el.restart.addEventListener('click',restart);document.getElementById('completeRestart').addEventListener('click',restart);el.speed.addEventListener('change',()=>{state.speed=Number(el.speed.value);schedule()});document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')el.next.click();if(e.key==='ArrowLeft')el.prev.click();if(e.key===' '&&!state.finished){e.preventDefault();el.play.click()}});render();schedule()})();</script>
+</body></html>
+'''
+
+
 def render_html() -> str:
     return (
-        SPHERE_HTML_TEMPLATE.replace("__STAGE_DATA__", _safe_json([asdict(stage) for stage in STAGES]))
+        EXAMPLE_LEDGER_HTML_TEMPLATE.replace("__STAGE_DATA__", _safe_json([asdict(stage) for stage in STAGES]))
         .replace("__PROCESS_DATA__", _safe_json([asdict(step) for step in PROCESS_STEPS]))
+        .replace("__EXAMPLE_DATA__", _safe_json(EXAMPLE_CASES))
     )
 
 
