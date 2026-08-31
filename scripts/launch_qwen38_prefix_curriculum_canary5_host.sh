@@ -43,7 +43,8 @@ cleanup() {
   date -Iseconds > "${RUN_HOST}/finished_at"
   if (( code == 0 )); then
     printf 'canary_complete_full_training_locked\n' > "${RUN_HOST}/state"
-  elif [[ "$(cat "${RUN_HOST}/state" 2>/dev/null)" != frontier_gate_failed* ]]; then
+  elif [[ "$(cat "${RUN_HOST}/state" 2>/dev/null)" != frontier_gate_failed* \
+      && "$(cat "${RUN_HOST}/state" 2>/dev/null)" != resource_gate_blocked* ]]; then
     printf 'failed_full_training_locked\n' > "${RUN_HOST}/state"
   fi
   set -e
@@ -118,6 +119,52 @@ local_db="$(cd "${RUN_HOST}/private/pi_sandbox" && find . -name logistics.sqlite
 remote_db="$(ssh -o BatchMode=yes "root@${ROLLOUT_HOST}" "cd '${RUN_HOST}/private/pi_sandbox' && find . -name logistics.sqlite -type f -print0 | LC_ALL=C sort -z | xargs -0 sha256sum | sha256sum | cut -d' ' -f1")"
 [[ "${local_db}" == "${remote_db}" ]]
 
+assert_both_hosts_npu_idle() {
+  local phase="$1"
+  local local_npu remote_npu local_gate remote_gate local_count remote_count
+  [[ "${phase}" =~ ^[a-z0-9_]+$ ]]
+  local_gate="${RUN_HOST}/audit/npu_gate.${phase}.m05.safe.json"
+  remote_gate="${RUN_HOST}/audit/npu_gate.${phase}.m06.safe.json"
+  if ! local_npu="$(npu-smi info 2>&1)" || [[ -z "${local_npu}" ]]; then
+    printf '{"phase":"%s","m05_probe_ok":false,"m06_probe_ok":null,"idle":false}\n' "${phase}" \
+      > "${RUN_HOST}/audit/npu_gate.${phase}.safe.json"
+    chmod 600 "${RUN_HOST}/audit/npu_gate.${phase}.safe.json"
+    printf 'resource_gate_blocked_%s\n' "${phase}" > "${RUN_HOST}/state"
+    return 73
+  fi
+  if ! remote_npu="$(ssh -o BatchMode=yes "root@${ROLLOUT_HOST}" npu-smi info 2>&1)" \
+      || [[ -z "${remote_npu}" ]]; then
+    printf '{"phase":"%s","m05_probe_ok":true,"m06_probe_ok":false,"idle":false}\n' "${phase}" \
+      > "${RUN_HOST}/audit/npu_gate.${phase}.safe.json"
+    chmod 600 "${RUN_HOST}/audit/npu_gate.${phase}.safe.json"
+    printf 'resource_gate_blocked_%s\n' "${phase}" > "${RUN_HOST}/state"
+    return 73
+  fi
+  if ! printf '%s\n' "${local_npu}" | python3 "${RUNTIME_HOST}/scripts/check_npu_process_table.py" \
+      --host-label m05 --output "${local_gate}"; then
+    printf 'resource_gate_blocked_%s\n' "${phase}" > "${RUN_HOST}/state"
+    return 73
+  fi
+  if ! printf '%s\n' "${remote_npu}" | python3 "${RUNTIME_HOST}/scripts/check_npu_process_table.py" \
+      --host-label m06 --output "${remote_gate}"; then
+    printf 'resource_gate_blocked_%s\n' "${phase}" > "${RUN_HOST}/state"
+    return 73
+  fi
+  local_count="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["process_count"])' "${local_gate}")"
+  remote_count="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["process_count"])' "${remote_gate}")"
+  printf '{"phase":"%s","m05_probe_ok":true,"m06_probe_ok":true,"m05_process_count":%s,"m06_process_count":%s,"idle":%s}\n' \
+    "${phase}" "${local_count}" "${remote_count}" \
+    "$([[ "${local_count}" == 0 && "${remote_count}" == 0 ]] && printf true || printf false)" \
+    > "${RUN_HOST}/audit/npu_gate.${phase}.safe.json"
+  chmod 600 "${RUN_HOST}/audit/npu_gate.${phase}.safe.json"
+  if [[ "${local_count}" != 0 || "${remote_count}" != 0 ]]; then
+    printf 'resource_gate_blocked_%s\n' "${phase}" > "${RUN_HOST}/state"
+    return 73
+  fi
+}
+
+printf 'pre_ray_npu_gate\n' > "${RUN_HOST}/state"
+assert_both_hosts_npu_idle pre_ray_start
 printf 'starting_isolated_ray\n' > "${RUN_HOST}/state"
 docker exec "${TRAINER_CONTAINER}" env PROJECT_ROOT="${RUNTIME_CONTAINER}" RAY_HEAD_PORT=36379 \
   PI_AGENT_SANDBOX_LOWER="${RUN_CONTAINER}/private/pi_sandbox" PI_AGENT_TOKENIZER_PATH="${MODEL_PATH}" \
@@ -129,6 +176,8 @@ ssh -o BatchMode=yes "root@${ROLLOUT_HOST}" \
   > "${RUN_HOST}/audit/ray_m06.log" 2>&1
 docker exec "${TRAINER_CONTAINER}" ray status --address="${RAY_ADDRESS}" > "${RUN_HOST}/audit/ray_status.safe.txt"
 
+printf 'pre_actor_model_load_npu_gate\n' > "${RUN_HOST}/state"
+assert_both_hosts_npu_idle pre_actor_model_load
 printf 'frontier_round_00\n' > "${RUN_HOST}/state"
 current_data="${RUN_CONTAINER}/prepared/private/frontier_endpoints_10x2.runtime.sensitive.parquet"
 validation_args=()

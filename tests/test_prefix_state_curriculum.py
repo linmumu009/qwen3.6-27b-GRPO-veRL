@@ -24,6 +24,7 @@ from llin_verl.prefix_state_curriculum import (
 from llin_verl.tiered_query_cost_reward import compute_tiered_query_cost_reward
 from scripts.patch_verl_grpo_strict_variance_gate import patch_trainer
 from scripts.analyze_prefix_frontier import analyze
+from scripts.check_npu_process_table import summarize_npu_process_table
 from scripts.prepare_prefix_state_curriculum_runtime import _runtime_row
 
 
@@ -346,3 +347,34 @@ def test_prefix_launchers_keep_runtime_code_separate_from_image_megatron_bridge(
         launcher = (ROOT / "scripts" / name).read_text(encoding="utf-8")
         assert expected in launcher
         assert forwarded in launcher
+
+
+def test_npu_process_table_distinguishes_device_rows_from_real_processes() -> None:
+    idle = """
+| NPU   Name | Health | Power(W) |
+| 0     0    | 0000:9D:00.0 | 0 |
+| NPU     Chip | Process id | Process name | Process memory(MB) |
+"""
+    busy = idle + "| 0       0 | 3627480 | VLLMWorker_TP | 56071 | NA |\n"
+    assert summarize_npu_process_table(idle, host_label="m05")["process_count"] == 0
+    summary = summarize_npu_process_table(busy, host_label="m05")
+    assert summary["process_count"] == 1
+    assert summary["idle"] is False
+    assert "VLLMWorker" not in json.dumps(summary)
+    with pytest.raises(ValueError, match="header"):
+        summarize_npu_process_table("device rows only", host_label="m05")
+
+
+def test_host_launcher_rechecks_both_npu_hosts_before_ray_and_actor_load() -> None:
+    launcher = (ROOT / "scripts" / "launch_qwen38_prefix_curriculum_canary5_host.sh").read_text(
+        encoding="utf-8"
+    )
+    pre_ray = launcher.index("assert_both_hosts_npu_idle pre_ray_start")
+    ray_start = launcher.index("printf 'starting_isolated_ray")
+    ray_status = launcher.index('ray status --address="${RAY_ADDRESS}"')
+    pre_actor = launcher.index("assert_both_hosts_npu_idle pre_actor_model_load")
+    actor_load = launcher.index('bash "${RUNTIME_CONTAINER}/scripts/run_pi_qwen38_prefix_frontier_v1.sh"')
+    assert pre_ray < ray_start < ray_status < pre_actor < actor_load
+    assert launcher.count("assert_both_hosts_npu_idle ") == 2
+    assert "printf 'resource_gate_blocked_%s" in launcher
+    assert "return 73" in launcher
