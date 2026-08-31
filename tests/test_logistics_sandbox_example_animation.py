@@ -76,43 +76,41 @@ def test_replay_explains_each_stage_with_a_finite_real_logistics_example() -> No
     html = render_html()
 
     assert html.startswith("<!doctype html>")
-    assert "物流运营沙箱，是怎样一步步做出来的？" in html
-    assert "每一步先看一个真实物流样本怎样被加工" in html
-    assert "1. 理解业务" in html
-    assert "2. 建立世界模型" in html
-    assert "3. 形成两个同源世界" in html
-    assert "4. 从世界反向出题" in html
-    assert "5. 冻结交付" in html
-    assert "十二个实际执行阶段" in html
-    assert "这个阶段实际做了什么" in html
-    assert "同样规则批量展开后" in html
-    assert "为什么能进入下一步" in html
+    assert "物流运营沙箱生成过程 · 分页讲解" in html
+    assert '<main class="deck" id="deck">' in html
+    assert "aspect-ratio:4/3" in html
+    assert "width:min(100vw,calc(100vh * 4 / 3))" in html
+    assert "height:min(100vh,calc(100vw * 3 / 4))" in html
+    assert "html,body{width:100%;height:100%;margin:0;overflow:hidden" in html
+    assert "grid-template-columns:repeat(12,1fr)" in html
+    assert "真实生成步骤" in html
+    assert "同样规则批量展开" in html
+    assert "下一页为什么能继续" in html
+    assert "固定 v20 场景 运营分析-8767b626" in html
+    assert "shortNames=['输入','业务理解','世界模型','情境空间','表结构','真实数据','数仓任务','知识目录','制度文档','知识任务','混合任务','冻结交付']" in html
     assert "本阶段输入" not in html
     assert "阶段结果" not in html
     assert "世界累计规模" not in html
-    assert "查看这一步的实际落盘证据" in html
     assert '<canvas' not in html
-    assert 'id="worldCanvas"' not in html
     assert "粒子世界" not in html
     assert "空间球体" not in html
     assert "requestAnimationFrame" not in html
     assert "setInterval" not in html
-    assert "事实世界" in html
-    assert "规则世界" in html
     assert "Step 5.1 数仓任务" in html
     assert "Step 5.2 知识任务" in html
     assert "Step 5.3 混合任务" in html
 
-    # The main story uses actual finite specimens instead of placeholders.
+    # Every page uses a finite real specimen, with Chinese-first labels.
+    assert "业务诉求：分析华东区上周的派送延误原因" in html
     assert "分析上周重庆分拨中心时效下降的原因" in html
-    assert "waybill · 运单" in html
+    assert "运单（waybill）" in html
     assert "23 个业务属性" in html
-    assert "update_waybill_status" in html
+    assert "把运单更新为下一状态" in html
     assert "waybill_no、target_status、node_id、operator_id" in html
     assert "waybill_created → waybill_assigned" in html
     assert "incident_closed_without_compensation" in html
-    assert "waybill_lifecycle:normal_flow/in_transit" in html
-    assert "delivered + confirm_delivery" in html
+    assert "“运输中的运单”成为一种可抽取场景" in html
+    assert "已签收的运单，不能再次签收" in html
     assert "sender_name / phone / address → sender_info" in html
     assert "current_status → status" in html
     assert "fact_waybill" in html
@@ -121,16 +119,22 @@ def test_replay_explains_each_stage_with_a_finite_real_logistics_example() -> No
     assert "ROU000651 · 华东干线" in html
     assert "CUS000669 · 广星德" in html
     assert "498.3" in html
-    assert "task_000257" in html
-    assert "货损记录 2026-03-27 到 2026-06-28" in html
-    assert "fact_cargo_damage_record" in html
+    assert "task_000285" in html
+    assert "生成冷链运单最新一期的数据概览报告" in html
+    assert "product_type（产品类型）" in html
+    assert "temp_sensor_id（温度传感器）" in html
     assert "doc_002 ·《各线路时效承诺标准（SLA）》" in html
     assert "达到标准阈值的 80% 即触发预警" in html
     assert "KT-LOG-0080" in html
-    assert "HT-0007 · compliance_check" in html
+    assert "HT-0051 · data_then_policy" in html
+    assert "本季度华南区运单重货专线产品合规检查" in html
     assert "fact_delivery" in html
+    assert "验证结果：979 条派送记录" in html
+    assert "task_000257" not in html
+    assert "HT-0007" not in html
 
-    # Overall scale appears after each example, not as a decorative increment rail.
+    # The batch outcome stays attached to the example instead of becoming a
+    # decorative increment rail.
     assert "57 类实体" in html
     assert "76 个状态" in html
     assert "80 个动作" in html
@@ -138,11 +142,11 @@ def test_replay_explains_each_stage_with_a_finite_real_logistics_example() -> No
     assert "115 个采样单元" in html
     assert "27 条组合约束" in html
     assert "64 张表" in html
-    assert "36,101 条物流记录" in html
+    assert "36,101 条实例化记录" in html
     assert "300 条显式关系桥记录" in html
     assert "65 份制度文档" in html
     assert "1,587 个证据块" in html
-    assert "374 对文档引用关系" in html
+    assert "374 条引用关系" in html
     assert "1,520" in html
     assert "事实→规则 171 个" in html
     assert "规则→事实 156 个" in html
@@ -151,16 +155,14 @@ def test_replay_explains_each_stage_with_a_finite_real_logistics_example() -> No
     assert "Tasks + Hidden Gold" in html
     assert "function finish()" in html
     assert 'id="complete"' in html
-    assert "物流运营沙箱生成完成" in html
+    assert "沙箱生成完成" in html
     assert "state.finished=true" in html
     assert "state.playing=false" in html
     assert "el.play.disabled=state.finished" in html
-    assert "el.next.disabled=state.finished" in html
+    assert "el.next.disabled=state.finished||state.transitioning" in html
     assert "if(!state.playing||state.finished||state.transitioning)return" in html
-    assert "第一次因子校验" in html
-    assert "修复错误引用" in html
-    assert "数量来自固定提交 7589170 的 v20 实际运行摘要" in html
-    assert "57 是实体类型，36,101 是实例化记录，口径不混用" in html
+    assert "只有点击“重新观看”才会重新播放讲解" in html
+    assert "固定提交：758917009d0e…" in html
     assert "W-DEMO-001" not in html
     assert "本阶段新增" not in html
     assert "数字增量" not in html

@@ -844,7 +844,7 @@ EXAMPLE_CASES = (
         "nodes": (
             {
                 "label": "实体",
-                "title": "waybill · 运单",
+                "title": "运单（waybill）",
                 "code": "23 个业务属性",
                 "items": ("waybill_no", "sender_name / sender_phone / sender_address", "receiver_name / receiver_phone / receiver_address", "weight_kg / volume_m3 / freight_amount", "current_status / current_node", "route、customer、warehouse 等 10 类关系"),
                 "detail": "主标识是 waybill_no；它承载从揽收到签收的完整生命周期信息。",
@@ -853,7 +853,7 @@ EXAMPLE_CASES = (
             },
             {
                 "label": "状态",
-                "title": "一张运单不是静态行",
+                "title": "运单从创建一路走到签收",
                 "code": "运单 20 个状态",
                 "items": ("waybill_created → waybill_assigned", "→ waybill_picked_up → waybill_inbound", "→ waybill_sorted → waybill_loaded", "→ waybill_in_transit → waybill_arrived", "→ waybill_dispatched → waybill_delivered", "另有 delayed / delivery_failed / returned 等异常分支"),
                 "detail": "状态转移有方向、有条件；已签收是终态，不能继续随意变化。",
@@ -862,7 +862,7 @@ EXAMPLE_CASES = (
             },
             {
                 "label": "动作",
-                "title": "update_waybill_status",
+                "title": "把运单更新为下一状态",
                 "code": "更新状态 + 生成事件",
                 "items": ("输入：waybill_no、target_status、node_id、operator_id", "前置：运单存在；状态转移合法", "输出：previous_status、updated_status、event_id", "效果：更新运单状态，并生成轨迹事件记录"),
                 "detail": "动作不是文案标签，它声明输入、前置条件、返回值和对世界造成的效果。",
@@ -891,8 +891,8 @@ EXAMPLE_CASES = (
         "nodes": (
             {
                 "label": "一个采样单元",
-                "title": "waybill_lifecycle:normal_flow/in_transit",
-                "code": "运单 · 正常流 · 运输中",
+                "title": "“运输中的运单”成为一种可抽取场景",
+                "code": "waybill · in_transit",
                 "items": ("对象：waybill", "状态：in_transit", "可搭配角色：outlet_supervisor / ops_analyst", "可搭配动作：query_waybill"),
                 "detail": "后续生成任务时，可以准确抽到“某角色查询运输中运单”这一类情境。",
                 "source": "sampling_units.json",
@@ -900,7 +900,7 @@ EXAMPLE_CASES = (
             },
             {
                 "label": "非法组合",
-                "title": "delivered + confirm_delivery",
+                "title": "已签收的运单，不能再次签收",
                 "code": "禁止",
                 "items": ("原因：已签收运单不能再次签收", "created + depart_vehicle 同样禁止", "约束严重级别：hard"),
                 "detail": "采样不是任意笛卡尔积；不符合物流常识的组合在源头被挡住。",
@@ -928,8 +928,8 @@ EXAMPLE_CASES = (
         "intro": "这一步决定业务语言怎样落到可查询结构。语义属性会被合并、改名或转成关联字段，关系则落到其他表。",
         "nodes": (
             {
-                "label": "上游语义实体",
-                "title": "waybill",
+                "label": "业务中的对象",
+                "title": "业务人员理解的“运单”",
                 "code": "23 个业务属性",
                 "items": ("sender_name / sender_phone / sender_address", "receiver_name / receiver_phone / receiver_address", "weight_kg", "current_status", "关系：route / customer / vehicle / product"),
                 "detail": "这是业务上怎样理解运单，还不是数据库字段。",
@@ -937,8 +937,8 @@ EXAMPLE_CASES = (
                 "arrow": "按查询粒度与关系规则映射",
             },
             {
-                "label": "字段映射",
-                "title": "业务含义被保留，存储形态被整理",
+                "label": "翻译规则",
+                "title": "把业务说法翻译成数据库字段",
                 "code": "semantic → physical",
                 "items": ("sender_name / phone / address → sender_info", "receiver_name / phone / address → receiver_info", "weight_kg → cargo_weight_kg", "current_status → status", "route 关系 → fact_route_id", "customer 关系 → fact_customer_id"),
                 "detail": "这就是世界建模和简单“文件转文件”的区别：先决定语义，再决定稳定的物理表达。",
@@ -946,8 +946,8 @@ EXAMPLE_CASES = (
                 "arrow": "生成事实表和关联结构",
             },
             {
-                "label": "物理表",
-                "title": "fact_waybill",
+                "label": "数据库结构",
+                "title": "运单事实表（fact_waybill）",
                 "code": "25 个物理字段",
                 "items": ("主键：waybill_no", "事实字段：cargo_weight_kg、cargo_volume_m3、status", "关联字段：fact_route_id、fact_customer_id", "关联字段：dim_vehicle_id、fact_product_id", "事件历史另落到 fact_waybill_event"),
                 "detail": "一张运单记录因此能连接线路、客户、车辆、产品和轨迹事件。",
@@ -966,8 +966,8 @@ EXAMPLE_CASES = (
         "intro": "现在抽象的“运单”被实例化。下面展示的是 5 号机归档中的真实生成记录，不是为了演示临时编造的 W-DEMO。",
         "nodes": (
             {
-                "label": "运单实例",
-                "title": "WAY000067",
+                "label": "一张真实运单",
+                "title": "运单 WAY000067",
                 "code": "fact_waybill",
                 "items": ("cargo_desc：茶叶干货", "status：delivering", "cargo_weight_kg：498.3", "cargo_volume_m3：1.028", "fact_route_id：ROU000651", "fact_customer_id：CUS000669"),
                 "detail": "这一行同时携带业务事实和指向其他实体的关联字段。",
@@ -975,8 +975,8 @@ EXAMPLE_CASES = (
                 "arrow": "沿 fact_route_id 查到线路",
             },
             {
-                "label": "线路实例",
-                "title": "ROU000651 · 华东干线",
+                "label": "关联到线路",
+                "title": "线路 ROU000651 · 华东干线",
                 "code": "fact_route",
                 "items": ("distance_km：1500", "avg_transit_hours：450.0", "fact_warehouse_id：WAR000478"),
                 "detail": "运单不再是孤立记录；它能进入线路维度的时效和装载分析。",
@@ -984,8 +984,8 @@ EXAMPLE_CASES = (
                 "arrow": "沿 fact_customer_id 查到客户",
             },
             {
-                "label": "客户实例",
-                "title": "CUS000669 · 广星德",
+                "label": "关联到客户",
+                "title": "客户 CUS000669 · 广星德",
                 "code": "fact_customer",
                 "items": ("status：active", "由同一关联字段命中", "可与运单重量、体积、状态共同分析"),
                 "detail": "同一张运单因此可以回答“哪条线路、哪个客户、什么货物、处于什么状态”。",
@@ -993,8 +993,8 @@ EXAMPLE_CASES = (
                 "arrow": "装载数据库并执行完整性门禁",
             },
             {
-                "label": "可查询世界",
-                "title": "logistics.sqlite",
+                "label": "装进数据库",
+                "title": "形成可查询的物流数据库",
                 "code": "5 / 5 passed",
                 "items": ("行数检查", "枚举检查", "非空检查", "引用完整性检查", "数据库可读性检查"),
                 "detail": "只有通过门禁的记录才会进入后续任务生成。",
@@ -1014,18 +1014,18 @@ EXAMPLE_CASES = (
         "nodes": (
             {
                 "label": "真实问题",
-                "title": "“货损记录 2026-03-27 到 2026-06-28 的货损数量趋势是向好还是向坏？”",
-                "code": "task_000257",
-                "items": ("角色：regional_ops_manager", "类型：trend_analysis", "难度：medium"),
+                "title": "“生成冷链运单最新一期的数据概览报告。”",
+                "code": "task_000285",
+                "items": ("对象：冷链运单", "任务：生成概览报告", "只使用已经生成的运单事实"),
                 "detail": "这条问题来自 5 号机已生成任务包。",
-                "source": "dwh_tasks.jsonl · task_000257",
+                "source": "dwh_tasks.jsonl · task_000285",
                 "arrow": "绑定实际证据结构",
             },
             {
                 "label": "证据计划",
-                "title": "先确认数据库能够回答",
-                "code": "join + filter + group_by",
-                "items": ("表：fact_cargo_damage_record", "关联表：fact_waybill", "字段：occurred_at、damage_qty、occurred_node、status", "门禁：must_query_tables = fact_cargo_damage_record"),
+                "title": "先确认运单表能够回答",
+                "code": "filter + aggregate + format",
+                "items": ("表：fact_waybill（运单事实表）", "字段：product_type（产品类型）", "字段：status（运单状态）", "字段：temp_sensor_id（温度传感器）"),
                 "detail": "题目与表结构、字段和运算一同生成，随后在 SQLite 上验证答案确实存在。",
                 "source": "task validation evidence",
                 "arrow": "覆盖筛选、补链、去重",
@@ -1166,27 +1166,27 @@ EXAMPLE_CASES = (
         "nodes": (
             {
                 "label": "真实问题",
-                "title": "“上周华北区运单经济件产品对照标准检查的达标率，与同行对比，对照《各线路时效承诺标准（SLA）》？”",
-                "code": "HT-0007 · compliance_check",
-                "items": ("时间：上周", "区域：华北区", "产品：经济件", "判断：实际表现是否符合 SLA"),
+                "title": "“本季度华南区运单重货专线产品合规检查，依据《各线路时效承诺标准（SLA）》检查合规性？”",
+                "code": "HT-0051 · data_then_policy",
+                "items": ("时间：本季度", "区域：华南区", "产品：重货专线", "判断：实际表现是否符合 SLA"),
                 "detail": "问题本身明确要求事实与规则两条证据链。",
-                "source": "hybrid_tasks.jsonl · HT-0007",
+                "source": "hybrid_tasks.jsonl · HT-0051",
                 "arrow": "拆成两条证据计划",
             },
             {
                 "label": "事实证据",
                 "title": "从 fact_delivery 读取实际运营表现",
                 "code": "requires_sql = true",
-                "items": ("expected_tables：fact_delivery", "时间范围：上周", "指标：duration_hours / 达标率", "在 SQLite 中验证记录存在"),
+                "items": ("expected_tables：fact_delivery", "时间范围：本季度", "验证结果：979 条派送记录", "在 SQLite 中确认记录存在"),
                 "detail": "这条链回答“现实里发生了什么”。",
                 "source": "logistics.sqlite · fact_delivery",
                 "arrow": "与规则证据在同一任务汇合",
             },
             {
                 "label": "规则证据",
-                "title": "从 doc_002 读取经济件时效标准",
+                "title": "从 doc_002 读取时效口径和预警规则",
                 "code": "requires_doc_search = true",
-                "items": ("source_documents：doc_002", "section：timeliness", "经济件：五到七日达", "达到节点阈值 80% 触发预警"),
+                "items": ("source_documents：doc_002", "section：timeliness", "按产品类型和线路确定标准时效", "达到节点阈值 80% 触发预警"),
                 "detail": "这条链回答“制度要求什么”。",
                 "source": "《各线路时效承诺标准（SLA）》",
                 "arrow": "比较实际值与标准，形成合规判断",
@@ -2116,9 +2116,51 @@ el.prev.addEventListener('click',()=>jump(state.step-1,true));el.next.addEventLi
 '''
 
 
+PPT_DECK_HTML_TEMPLATE = r'''<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>物流运营沙箱生成过程 · 分页讲解</title>
+<style>
+:root{color-scheme:light;--red:#e92331;--red-soft:#fff0f1;--ink:#17191c;--muted:#687078;--line:#d9dde0;--soft:#f6f7f7;--green:#228558;--green-soft:#edf7f1;--amber:#8d611d;--amber-soft:#fbf4e6}
+*{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;overflow:hidden;background:transparent;color:var(--ink);font-family:Inter,"PingFang SC","Microsoft YaHei",system-ui,sans-serif}button,select{font:inherit}button:focus-visible,select:focus-visible{outline:3px solid rgba(233,35,49,.28);outline-offset:2px}
+body{display:grid;place-items:center}.deck{container-type:size;width:min(100vw,calc(100vh * 4 / 3));height:min(100vh,calc(100vw * 3 / 4));aspect-ratio:4/3;overflow:hidden;background:#fff;padding:2.3cqw 2.5cqw 1.7cqw;display:grid;grid-template-rows:auto auto auto minmax(0,1fr) auto auto auto;gap:1.05cqw}
+.head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2cqw;align-items:start}.kicker{color:var(--red);font-size:1.3cqw;font-weight:700;letter-spacing:.08em}.title{margin:.35cqw 0 0;font-size:2.65cqw;line-height:1.18;font-weight:700;letter-spacing:-.025em}.page-no{text-align:right;font-size:1.15cqw;color:var(--muted)}.page-no b{display:block;color:var(--ink);font-size:2.5cqw;line-height:1}.intro{margin:0;color:var(--muted);font-size:1.35cqw;line-height:1.45;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rail{display:grid;grid-template-columns:repeat(12,1fr);gap:.45cqw}.rail button{min-width:0;padding:.5cqw .2cqw;border:0;border-top:.22cqw solid var(--line);background:transparent;color:#9aa0a5;font-size:.86cqw;text-align:left;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rail button.current{border-color:var(--red);background:var(--red-soft);color:var(--ink);font-weight:700}.rail button.done{border-color:var(--green);color:#527263}
+.flow{min-height:0;display:flex;align-items:stretch;gap:0;padding:.35cqw 0;overflow:hidden}.node{flex:1 1 0;min-width:0;display:flex;flex-direction:column;opacity:.13;transition:opacity .24s ease,transform .24s ease;transform:translateY(.4cqw)}.node.current{opacity:1;transform:none}.node.done{opacity:.72;transform:none}.node-label{min-height:2.2cqw;color:var(--muted);font-size:1.12cqw;font-weight:700;letter-spacing:.05em}.node-card{height:100%;min-height:0;overflow:hidden;border-top:.42cqw solid #aeb4b8;background:var(--soft);padding:1.05cqw 1.05cqw .85cqw;display:flex;flex-direction:column}.node.current .node-card{border-color:var(--red);background:var(--red-soft)}.node.done .node-card{border-color:var(--green);background:var(--green-soft)}.node-card h2{margin:0;font-size:1.7cqw;line-height:1.28}.code{margin-top:.35cqw;color:var(--red);font:1.12cqw "Cascadia Mono",Consolas,monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.items{display:grid;margin-top:.65cqw}.item{padding:.55cqw 0;border-top:1px solid var(--line);font-size:1.25cqw;line-height:1.28}.detail{margin:.65cqw 0 0;color:#4c5359;font-size:1.12cqw;line-height:1.36}.source{margin-top:auto;padding-top:.55cqw;color:#8a9196;font:.92cqw "Cascadia Mono",Consolas,monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.arrow{flex:0 0 5.5cqw;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.3cqw;text-align:center;opacity:.13;transition:opacity .2s}.arrow.active{opacity:1}.arrow span{color:var(--red);font-size:1.03cqw;line-height:1.2}.arrow b{color:#9da3a7;font-size:2.2cqw;line-height:1}
+.scale{display:grid;grid-template-columns:13cqw minmax(0,1fr);gap:1cqw;padding:.8cqw 1cqw;border-top:.25cqw solid var(--ink);font-size:1.22cqw;line-height:1.38}.scale b{color:var(--red)}.why{padding:.72cqw 1cqw;background:var(--amber-soft);font-size:1.12cqw;line-height:1.35;color:#5c4a2a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.why b{color:var(--amber)}
+.controls{display:flex;align-items:center;gap:.6cqw}.control{height:2.8cqw;min-height:24px;padding:0 1cqw;border:1px solid #aeb4b8;border-radius:.35cqw;background:#fff;color:var(--ink);font-size:1.08cqw;cursor:pointer}.control.primary{border-color:var(--red);background:var(--red);color:#fff}.control:disabled{opacity:.35;cursor:default}.progress{flex:1;margin-left:.45cqw}.progress-copy{display:flex;justify-content:space-between;margin-bottom:.25cqw;color:var(--muted);font-size:.9cqw}.track{height:.32cqw;min-height:3px;background:#e5e7e8;overflow:hidden}.fill{height:100%;width:0;background:var(--red);transition:width .25s}.complete{display:none;margin-left:auto;color:var(--green);font-size:1.15cqw;font-weight:700}.complete.show{display:block}.footnote{color:#9aa0a5;font-size:.82cqw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main class="deck" id="deck">
+  <header class="head"><div><div class="kicker" id="kicker"></div><h1 class="title" id="title"></h1></div><div class="page-no"><b id="pageNo"></b><span>真实生成步骤</span></div></header>
+  <p class="intro" id="intro"></p>
+  <nav class="rail" id="rail" aria-label="沙箱生成分页"></nav>
+  <section class="flow" id="flow" aria-live="polite"></section>
+  <div class="scale"><b>同样规则批量展开</b><span id="scale"></span></div>
+  <div class="why"><b>→ 下一页为什么能继续：</b><span id="why"></span></div>
+  <div class="controls"><button class="control" id="restart" type="button">重新播放</button><button class="control" id="prev" type="button">← 上一页</button><button class="control primary" id="play" type="button">暂停</button><button class="control" id="next" type="button">下一项 →</button><label><span style="position:absolute;clip:rect(0,0,0,0)">播放速度</span><select class="control" id="speed" aria-label="播放速度"><option value="0.75">0.75×</option><option value="1" selected>1×</option><option value="1.5">1.5×</option><option value="2">2×</option></select></label><div class="progress"><div class="progress-copy"><span id="progressText"></span><span id="live" aria-live="polite"></span></div><div class="track" id="track" role="progressbar" aria-label="讲解进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="fill" id="fill"></div></div></div><span class="complete" id="complete">✓ 沙箱生成完成</span></div>
+  <div class="footnote">固定 v20 场景 运营分析-8767b626 · 真实字段、记录、制度与任务样本 · 总耗时 80:31</div>
+</main>
+<script id="stages" type="application/json">__STAGE_DATA__</script><script id="processSteps" type="application/json">__PROCESS_DATA__</script><script id="exampleCases" type="application/json">__EXAMPLE_DATA__</script>
+<script>(()=>{'use strict';
+const stages=JSON.parse(document.getElementById('stages').textContent),steps=JSON.parse(document.getElementById('processSteps').textContent),cases=JSON.parse(document.getElementById('exampleCases').textContent),stageMap=Object.fromEntries(stages.map(x=>[x.key,x])),caseMap=Object.fromEntries(cases.map(x=>[x.key,x])),shortNames=['输入','业务理解','世界模型','情境空间','表结构','真实数据','数仓任务','知识目录','制度文档','知识任务','混合任务','冻结交付'],reduced=matchMedia('(prefers-reduced-motion:reduce)').matches;
+const state={page:0,beat:0,playing:true,finished:false,transitioning:false,speed:1,timer:null};const $=id=>document.getElementById(id),el={kicker:$('kicker'),title:$('title'),pageNo:$('pageNo'),intro:$('intro'),rail:$('rail'),flow:$('flow'),scale:$('scale'),why:$('why'),restart:$('restart'),prev:$('prev'),play:$('play'),next:$('next'),speed:$('speed'),progress:$('progressText'),live:$('live'),track:$('track'),fill:$('fill'),complete:$('complete')};const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function renderRail(){el.rail.innerHTML=steps.map((s,i)=>`<button type="button" class="${i<state.page?'done':i===state.page?'current':''}" data-page="${i}">${String(i+1).padStart(2,'0')} ${shortNames[i]}</button>`).join('');el.rail.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>jump(Number(b.dataset.page),true)))}
+function renderFlow(scene){el.flow.innerHTML=scene.nodes.map((node,i)=>{const status=i<state.beat?'done':i===state.beat?'current':'',items=node.items.slice(0,4).map(x=>`<span class="item">${esc(x)}</span>`).join(''),arrow=node.arrow?`<div class="arrow ${i<=state.beat?'active':''}"><span>${esc(node.arrow)}</span><b>→</b></div>`:'';return `<article class="node ${status}"><div class="node-label">${esc(node.label)}</div><div class="node-card"><h2>${esc(node.title)}</h2><div class="code">${esc(node.code)}</div><div class="items">${items}</div><p class="detail">${esc(node.detail)}</p><div class="source">证据 · ${esc(node.source)}</div></div></article>${arrow}`}).join('')}
+function render(){const view=steps[state.page],stage=stageMap[view.key],scene=caseMap[view.key],total=cases.reduce((n,x)=>n+x.nodes.length,0),done=cases.slice(0,state.page).reduce((n,x)=>n+x.nodes.length,0)+state.beat+1,pct=state.finished?100:Math.round(done/total*100);el.kicker.textContent=`${stage.step} · ${stage.branch} · 一个真实例子`;el.title.textContent=scene.title;el.pageNo.textContent=`${String(state.page+1).padStart(2,'0')} / 12`;el.intro.textContent=scene.intro;renderFlow(scene);el.scale.textContent=scene.scale;el.why.textContent=scene.why;el.progress.textContent=`${shortNames[state.page]} · ${state.beat+1}/${scene.nodes.length}`;el.live.textContent=state.finished?'播放已停止':`当前：${scene.nodes[state.beat].label}`;el.fill.style.width=`${pct}%`;el.track.setAttribute('aria-valuenow',String(pct));el.prev.disabled=state.finished||state.page===0||state.transitioning;el.next.disabled=state.finished||state.transitioning;el.play.disabled=state.finished;el.play.textContent=state.finished?'已结束':state.playing?'暂停':'继续';el.next.textContent=state.beat<scene.nodes.length-1?'下一项 →':state.page<steps.length-1?'下一页 →':'完成';el.complete.classList.toggle('show',state.finished);renderRail()}
+function clearTimer(){if(state.timer!==null){clearTimeout(state.timer);state.timer=null}}function schedule(){clearTimer();if(!state.playing||state.finished||state.transitioning)return;const scene=caseMap[steps[state.page].key],delay=(reduced?120:4200)/state.speed;state.timer=setTimeout(()=>{if(state.beat<scene.nodes.length-1){state.beat++;render();schedule()}else if(state.page<steps.length-1){advance()}else finish()},delay)}function advance(){clearTimer();state.transitioning=true;setTimeout(()=>{state.page++;state.beat=0;state.transitioning=false;render();schedule()},reduced?20:260/state.speed)}function jump(index,pause=false){clearTimer();state.page=Math.max(0,Math.min(steps.length-1,index));state.beat=0;state.finished=false;state.transitioning=false;if(pause)state.playing=false;render();schedule()}function finish(){clearTimer();state.page=steps.length-1;state.beat=caseMap.freeze.nodes.length-1;state.finished=true;state.playing=false;render()}function restart(){state.playing=true;jump(0)}
+el.restart.addEventListener('click',restart);el.prev.addEventListener('click',()=>jump(state.page-1,true));el.next.addEventListener('click',()=>{if(state.finished)return;const scene=caseMap[steps[state.page].key];if(state.beat<scene.nodes.length-1){state.beat++;render()}else if(state.page<steps.length-1){advance()}else finish();schedule()});el.play.addEventListener('click',()=>{if(state.finished)return;state.playing=!state.playing;render();schedule()});el.speed.addEventListener('change',()=>{state.speed=Number(el.speed.value);schedule()});document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')el.next.click();if(e.key==='ArrowLeft')el.prev.click();if(e.key===' '&&!state.finished){e.preventDefault();el.play.click()}});render();schedule()})();</script>
+</body></html>
+'''
+
+
 def render_html() -> str:
     return (
-        EXAMPLE_LEDGER_HTML_TEMPLATE.replace("__STAGE_DATA__", _safe_json([asdict(stage) for stage in STAGES]))
+        PPT_DECK_HTML_TEMPLATE.replace("__STAGE_DATA__", _safe_json([asdict(stage) for stage in STAGES]))
         .replace("__PROCESS_DATA__", _safe_json([asdict(step) for step in PROCESS_STEPS]))
         .replace("__EXAMPLE_DATA__", _safe_json(EXAMPLE_CASES))
     )
