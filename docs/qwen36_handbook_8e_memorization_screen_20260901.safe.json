@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-01",
+  "model": "qwen3.6-27b",
+  "provider": "Bailian OpenAI-compatible endpoint",
+  "concurrency": 64,
+  "credential_values_included": false,
+  "raw_source_included": false,
+  "raw_outputs_included": false,
+  "target": {
+    "title": "The Handbook of Logistics and Distribution Management: Understanding the Supply Chain",
+    "edition": 8,
+    "source_scope": "official public product and table-of-contents preview only",
+    "cases": 64,
+    "successful": 64,
+    "failed": 0,
+    "prefix_tokens": 32,
+    "target_tokens": 16,
+    "mean_exact_prefix_tokens": 0.25,
+    "median_exact_prefix_tokens": 0.0,
+    "mean_token_f1": 0.276989,
+    "exact_prefix_rate": {
+      "1": 0.171875,
+      "3": 0.0,
+      "5": 0.0,
+      "10": 0.0,
+      "20": 0.0
+    }
+  },
+  "positive_control": {
+    "title": "A Tale of Two Cities",
+    "source": "Project Gutenberg public-domain text",
+    "scope": "well-known opening passage",
+    "cases": 64,
+    "successful": 64,
+    "failed": 0,
+    "prefix_tokens": 32,
+    "target_tokens": 16,
+    "mean_exact_prefix_tokens": 1.625,
+    "median_exact_prefix_tokens": 0.0,
+    "mean_token_f1": 0.230025,
+    "exact_prefix_rate": {
+      "1": 0.484375,
+      "3": 0.125,
+      "5": 0.078125,
+      "10": 0.0625,
+      "20": 0.0
+    }
+  },
+  "random_public_domain_control": {
+    "title": "A Tale of Two Cities",
+    "source": "Project Gutenberg public-domain text",
+    "scope": "random passages across the full work",
+    "cases": 64,
+    "successful": 64,
+    "failed": 0,
+    "prefix_tokens": 32,
+    "target_tokens": 16,
+    "mean_exact_prefix_tokens": 0.515625,
+    "median_exact_prefix_tokens": 0.0,
+    "mean_token_f1": 0.216999,
+    "exact_prefix_rate": {
+      "1": 0.359375,
+      "3": 0.03125,
+      "5": 0.0,
+      "10": 0.0,
+      "20": 0.0
+    }
+  },
+  "verdict": "No positive evidence of verbatim memorization was found in the official public preview. This does not establish that the full book was absent from pretraining.",
+  "formal_gate": "Obtain a licensed full-text or publisher-authorized sample, then run stratified non-overlapping continuation and exact-wording recognition tests before creating training data."
+}
