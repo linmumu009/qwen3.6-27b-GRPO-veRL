@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "dataset_type": "causal_lm_continued_pretraining",
+  "created_date": "2026-09-03",
+  "source": {
+    "file_name": "book.txt",
+    "sha256": "b2b4ed0156dea4076f86894478c8db2643ee05f25fb8af6bdf4622ee70b93bd1",
+    "bytes": 1957157
+  },
+  "rights": {
+    "basis": "user_attested_written_permission",
+    "attestation_sha256": "5e255c2dd5a3dd9202fdb551de4492b7743f7cee0c351d3f932b510c69449b49",
+    "permission_document_reviewed_by_agent": false,
+    "terms_independently_verified": false,
+    "legal_determination": false
+  },
+  "tokenizer": {
+    "tokenizer_json_sha256": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523",
+    "add_special_tokens_during_counting": false
+  },
+  "cleaning": {
+    "source_lines": 47648,
+    "main_body_source_line_start": 1541,
+    "main_body_source_line_end_exclusive": 42897,
+    "chapters_detected": 44,
+    "parts_detected": 7,
+    "blocks": 4685,
+    "page_number_lines_removed": 693,
+    "running_header_lines_removed": 375,
+    "bullet_markers_converted": 2001,
+    "line_break_hyphen_repairs": 1,
+    "references_and_index_excluded": true,
+    "front_matter_excluded": true,
+    "aggressive_figure_or_table_deletion": false
+  },
+  "records": {
+    "count": 116,
+    "target_max_tokens": 4096,
+    "content_tokens": 336586,
+    "minimum_tokens": 5,
+    "maximum_tokens": 4095,
+    "shorter_than_1024": 16,
+    "append_one_eos_per_record_at_indexing": true,
+    "planned_single_exposure": true
+  },
+  "private_jsonl_sha256": "21071ddfc147f1b2c3f1ffc4f6df66363927d4232260b41914b162a296a5816c",
+  "private_output_mode_requested": "0600",
+  "source_content_included": false
+}

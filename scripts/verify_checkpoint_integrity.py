@@ -94,7 +94,9 @@ def verify_megatron_dist_checkpoint(model_dir: Path) -> dict[str, Any]:
 
 
 def verify_checkpoint(checkpoint_dir: Path, base_model_dir: Path | None = None) -> dict[str, Any]:
-    manifest_path = checkpoint_dir / "actor" / "ckpt_contents.json"
+    actor_root = checkpoint_dir / "actor"
+    checkpoint_root = actor_root if (actor_root / "ckpt_contents.json").is_file() else checkpoint_dir
+    manifest_path = checkpoint_root / "ckpt_contents.json"
     if not manifest_path.is_file():
         return {
             "valid": False,
@@ -106,7 +108,7 @@ def verify_checkpoint(checkpoint_dir: Path, base_model_dir: Path | None = None) 
     model_entry = (contents.get("model") or {})
     model_format = str(model_entry.get("format") or "")
     relative_path = str(model_entry.get("path") or "")
-    model_dir = checkpoint_dir / "actor" / relative_path
+    model_dir = checkpoint_root / relative_path
     if model_format == "huggingface":
         if base_model_dir is None:
             result = {
@@ -138,7 +140,7 @@ def verify_checkpoint(checkpoint_dir: Path, base_model_dir: Path | None = None) 
             }
         else:
             optimizer_result = verify_megatron_dist_checkpoint(
-                checkpoint_dir / "actor" / optimizer_path
+                checkpoint_root / optimizer_path
             )
         if not optimizer_result["valid"]:
             result["valid"] = False
@@ -148,6 +150,7 @@ def verify_checkpoint(checkpoint_dir: Path, base_model_dir: Path | None = None) 
 
     return {
         "checkpoint_dir": str(checkpoint_dir),
+        "checkpoint_layout": "actor_subdirectory" if checkpoint_root == actor_root else "direct_sft",
         "global_step": manifest.get("global_step"),
         "manifest_model_path": relative_path,
         "save_contents": manifest.get("save_contents"),

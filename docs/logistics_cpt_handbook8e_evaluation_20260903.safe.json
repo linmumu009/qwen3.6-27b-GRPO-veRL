@@ -1,0 +1,115 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-03",
+  "candidate": "Qwen3.6-27B Step120 plus handbook8e single-exposure CPT",
+  "promotion_allowed": false,
+  "inputs": {
+    "logistika": {
+      "items": 1446,
+      "sha256": "4736d13abada32d203f0c1024a8d0c765aa24a5674b6ef954130f3eb9503ba45"
+    },
+    "sc_bench_knowledge": {
+      "items": 226,
+      "sha256": "8667ad6a20b11e99e1a3db35ce27640715ca3f7fa15cb6de7517ca42a3d514d1"
+    },
+    "items": 1672
+  },
+  "request": {
+    "prompt_version": "logistics-mcq-zero-based-json-v2",
+    "temperature": 0,
+    "max_output_tokens": 128,
+    "enable_thinking": false,
+    "chat_template_disable_thinking": true,
+    "concurrency": 64
+  },
+  "matched_serving": {
+    "machine": "huawei-05",
+    "image": "m.daocloud.io/quay.io/ascend/vllm-ascend:v0.22.1rc1-a3",
+    "dtype": "bfloat16",
+    "tensor_parallel_size": 4,
+    "data_parallel_size": 2,
+    "max_num_seqs_per_replica": 32,
+    "max_model_len": 32768,
+    "max_num_batched_tokens": 32768,
+    "seed": 1024,
+    "prefix_caching": true,
+    "async_scheduling": true,
+    "same_launch_parameters_for_step120_and_candidate": true
+  },
+  "runs": {
+    "step120_matched_runtime": {
+      "correct": 1369,
+      "accuracy": 0.81878,
+      "logistika_correct": 1179,
+      "logistika_accuracy": 0.815353,
+      "sc_bench_correct": 190,
+      "sc_bench_accuracy": 0.840708,
+      "macro_category_accuracy": 0.877909,
+      "api_failures": 0,
+      "parse_failures": 0,
+      "wall_elapsed_sec": 276.812044
+    },
+    "handbook8e_single_exposure_cpt": {
+      "correct": 1366,
+      "accuracy": 0.816986,
+      "logistika_correct": 1177,
+      "logistika_accuracy": 0.81397,
+      "sc_bench_correct": 189,
+      "sc_bench_accuracy": 0.836283,
+      "macro_category_accuracy": 0.876934,
+      "api_failures": 0,
+      "parse_failures": 0,
+      "wall_elapsed_sec": 244.987009
+    }
+  },
+  "primary_paired_comparison": {
+    "baseline": "step120_matched_runtime",
+    "candidate": "handbook8e_single_exposure_cpt",
+    "delta_accuracy_points": -0.1794,
+    "delta_logistika_points": -0.1383,
+    "delta_sc_bench_points": -0.4425,
+    "delta_macro_category_points": -0.0975,
+    "improved_0_to_1": 5,
+    "regressed_1_to_0": 8,
+    "both_correct": 1361,
+    "both_wrong": 298,
+    "mcnemar_exact_pvalue": 0.5810546875,
+    "pre_registered_practical_gate_points": 3.0,
+    "practical_gate_passed": false
+  },
+  "step120_repeat_sensitivity": {
+    "old_correct": 1369,
+    "matched_runtime_correct": 1369,
+    "delta_accuracy_points": 0.0,
+    "improved_0_to_1": 4,
+    "regressed_1_to_0": 4,
+    "mcnemar_exact_pvalue": 1.0,
+    "interpretation": "parallel greedy serving has small item-level variation even when aggregate accuracy is stable"
+  },
+  "auxiliary_original_base_comparison": {
+    "baseline_correct": 1363,
+    "candidate_correct": 1366,
+    "delta_accuracy_points": 0.1794,
+    "improved_0_to_1": 7,
+    "regressed_1_to_0": 4,
+    "mcnemar_exact_pvalue": 0.548828125,
+    "same_matched_launch_run": false
+  },
+  "decision": {
+    "status": "do_not_promote",
+    "reason": "no demonstrated logistics knowledge gain and practical gate missed",
+    "general_regression_suite_run": false,
+    "general_regression_suite_skip_reason": "the primary logistics gate had already failed",
+    "recommended_next_experiment": "multi-source licensed logistics corpus with a 5M-token mixed-CPT canary and general-capability replay"
+  },
+  "private_artifacts": {
+    "machine": "huawei-05",
+    "directory": "/data/llin/logistics_cpt_20260903/eval",
+    "copied_to_repository": false
+  },
+  "source_content_included": false,
+  "benchmark_prompt_content_included": false,
+  "raw_model_output_included": false,
+  "temporary_inference_containers_removed": true,
+  "npu_processes_after_cleanup": 0
+}

@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "run_name": "logistics-cpt-book-one-epoch-20260903-01",
+  "status": "complete",
+  "exit_code": 0,
+  "steps": 29,
+  "sequence_tokens_with_eos": 336702,
+  "loss": {
+    "first": 1.977795124053955,
+    "last": 2.0787243843078613,
+    "minimum": 1.7402632236480713,
+    "maximum": 2.644313335418701,
+    "mean": 2.05036304325893
+  },
+  "grad_norm_before_clip": {
+    "last": 2.616118346509174,
+    "maximum": 116.97469427855967
+  },
+  "clip_grad": 1.0,
+  "learning_rate": {
+    "first": 2.5e-07,
+    "last": 1e-07
+  },
+  "peak_memory_gb": {
+    "npu_allocated": 38.86935901641846,
+    "npu_reserved": 39.67578125,
+    "cpu_used": 88.11579513549805
+  },
+  "checkpoint": {
+    "global_step": 29,
+    "layout": "direct_sft",
+    "format": "megatron_dist_checkpoint",
+    "shard_count": 32,
+    "total_shard_bytes": 54720369973,
+    "save_contents": [
+      "model",
+      "extra"
+    ],
+    "optimizer_declared": false,
+    "promotion_allowed": false
+  },
+  "hf_export": {
+    "status": "complete",
+    "safetensor_shards": 15,
+    "total_safetensor_bytes": 56484503104,
+    "output_tensors": 1199,
+    "reference_tensors": 1199,
+    "missing_tensors": 0,
+    "extra_tensors": 0,
+    "shape_mismatches": 0,
+    "dtype_mismatches": 0,
+    "frozen_mtp_tensors_inherited_from_step120": 15
+  },
+  "nonfatal_compatibility_messages": {
+    "mstx_range_end": 3712,
+    "mixed_fused_layer_norm_safe_import": 64
+  },
+  "fatal_log_signatures": 0,
+  "source_content_included": false
+}

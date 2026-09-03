@@ -2,6 +2,18 @@
 
 Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
+## v1.12.65（2026-09-03）
+
+- 新增物流书籍 CPT 私有制数程序：强制校验用户书面训练授权确认与源文件哈希，仅抽取 `PART ONE` 至 `REFERENCES` 的 44 章正文，排除扉页、目录、参考文献和索引。
+- 对 PDF 转文本实行保守可审计清洗：页码与重复页眉仅在高置信条件下删除，项目符号转换为结构标记，只修复明确的行末连字符断词，不激进删除疑似图表内容；训练块保留章节、原始行号和内容哈希。
+- 私有 JSONL 与可提交安全清单分离，训练文本默认按 Qwen tokenizer 切成不超过 4,096 token 的章节内块并计划单次曝光；安全清单只记录哈希、计数、转换规则和授权证据边界，不包含书籍正文。
+- 新增原始文本全 token causal-LM 数据适配器、私有 JSONL→Parquet 转换器与 fail-closed tokenization gate；每块不套 chat template，末尾追加一个 EOS，并屏蔽样本首 token 以消除 veRL 左移 loss mask 后的跨样本回卷监督。
+- 新增复用原 Step120 veRL/Megatron 容器和 `dist_ckpt` 的 16-NPU 一步门禁：仅从模型态初始化 fresh optimizer，优化器与 Step120 一致驻留设备侧，显式关闭并冻结 MTP，只保存 extra 状态且禁止产物晋级，用于先验证 loss、梯度、显存和分布式拓扑。
+- 两档一步门禁均已实机通过：随机短块 loss `2.3988`、grad norm `15.51`、峰值 NPU 分配 `37.64 GiB`；最长 4,096-token 块 loss `2.1773`、grad norm `295.17`（裁剪阈值 `1.0`）、峰值分配 `37.67 GiB`，两次均退出码 0、仅保存 extra，训练后 NPU 进程归零。
+- 新增整本书单次曝光的受控 CPT 试验入口：116 块按全局 batch 4 训练 29 step，学习率 `5e-7 → 1e-7`、10% warmup 后余弦衰减；只保存 model+extra，不保存 optimizer，且在物流知识增益与通用能力回归门禁通过前禁止晋级。
+- 正式 29 步已在原 Step120 veRL 容器完成：处理 336,702 个含 EOS 的 sequence token，loss 均值 `2.0504`，单卡峰值分配 `38.87 GiB`；32 分片 Megatron checkpoint 和 15 分片 HF 导出均通过完整性校验，1,199 个 tensor 无 missing/extra/shape/dtype mismatch。
+- 在相同 5 号机 vLLM-Ascend、BF16、TP4×DP2 和 64 并发下完成 Step120 与 CPT 各 1,672 题复测：`81.88% → 81.70%`（`-0.18` 点，5 个 0→1、8 个 1→0，`p=0.581`），LogistikaBench/SC-bench 分别 `-0.14/-0.44` 点，未达到 `+3` 点门槛；候选不晋级，不重复单书曝光，下一轮改做多来源授权语料的 5M-token 混合 CPT 金丝雀。
+
 ## v1.12.64（2026-09-03）
 
 - 记录用户已确认取得《The Handbook of Logistics and Distribution Management》第八版用于 AI/ML 训练的书面授权，同时明确授权文件未由执行方审阅；正文与模型逐条输出继续只保存在 5 号机私有目录。

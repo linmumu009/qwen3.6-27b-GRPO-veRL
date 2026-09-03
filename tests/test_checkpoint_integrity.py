@@ -76,6 +76,33 @@ def test_megatron_dist_checkpoint_requires_metadata_and_shards(tmp_path: Path):
     assert complete["shard_count"] == 1
 
 
+def test_direct_sft_megatron_checkpoint_layout_is_supported(tmp_path: Path):
+    checkpoint = tmp_path / "global_step_29"
+    model = checkpoint / "model" / "dist_ckpt"
+    model.mkdir(parents=True)
+    (model / ".metadata").write_bytes(b"metadata")
+    (model / "__0_0.distcp").write_bytes(b"weights")
+    _write_json(
+        checkpoint / "ckpt_contents.json",
+        {
+            "global_step": 29,
+            "save_contents": ["model", "extra"],
+            "contents": {
+                "model": {
+                    "format": "megatron_dist_checkpoint",
+                    "path": "model/dist_ckpt",
+                }
+            },
+        },
+    )
+
+    result = verify_checkpoint(checkpoint)
+
+    assert result["valid"]
+    assert result["checkpoint_layout"] == "direct_sft"
+    assert result["global_step"] == 29
+
+
 def test_megatron_checkpoint_requires_declared_optimizer_shards(tmp_path: Path):
     checkpoint = tmp_path / "checkpoint"
     model = checkpoint / "actor" / "model" / "dist_ckpt"
