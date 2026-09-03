@@ -1,0 +1,93 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-03",
+  "evaluation_type": "closed_book_logistics_multiple_choice",
+  "prompt_version": "logistics-mcq-zero-based-json-v2",
+  "inputs": {
+    "logistika": {
+      "items": 1446,
+      "sha256": "4736d13abada32d203f0c1024a8d0c765aa24a5674b6ef954130f3eb9503ba45"
+    },
+    "sc_bench_knowledge": {
+      "items": 226,
+      "sha256": "8667ad6a20b11e99e1a3db35ce27640715ca3f7fa15cb6de7517ca42a3d514d1"
+    },
+    "unique_item_hashes": 1672
+  },
+  "request": {
+    "temperature": 0,
+    "max_output_tokens": 128,
+    "enable_thinking": false,
+    "concurrency": 64,
+    "scoring": "exact set match over zero-based option indices"
+  },
+  "runs": {
+    "bailian_qwen36_27b": {
+      "correct": 1366,
+      "accuracy": 0.816986,
+      "logistika_accuracy": 0.813278,
+      "sc_bench_knowledge_accuracy": 0.840708,
+      "parse_failures_final": 0,
+      "api_failures_final": 0
+    },
+    "machine5_local_qwen36_27b": {
+      "correct": 1363,
+      "accuracy": 0.815191,
+      "logistika_accuracy": 0.812586,
+      "sc_bench_knowledge_accuracy": 0.831858,
+      "parse_failures": 0,
+      "api_failures": 0
+    },
+    "machine5_step120_opensource": {
+      "correct": 1369,
+      "accuracy": 0.818780,
+      "logistika_accuracy": 0.816044,
+      "sc_bench_knowledge_accuracy": 0.836283,
+      "parse_failures": 0,
+      "api_failures": 0
+    }
+  },
+  "primary_same_stack_comparison": {
+    "baseline": "machine5_local_qwen36_27b",
+    "candidate": "machine5_step120_opensource",
+    "delta_accuracy_points": 0.3589,
+    "delta_logistika_points": 0.3458,
+    "delta_sc_bench_knowledge_points": 0.4425,
+    "delta_macro_category_points": 0.1496,
+    "improved_0_to_1": 6,
+    "regressed_1_to_0": 0,
+    "both_correct": 1363,
+    "both_wrong": 303,
+    "mcnemar_exact_pvalue": 0.03125,
+    "pre_registered_practical_gate_points": 3.0,
+    "practical_gate_passed": false
+  },
+  "serving_stack_sensitivity": {
+    "bailian_vs_machine5_local_base_delta_points": -0.1794,
+    "bailian_vs_machine5_local_base_improved_0_to_1": 15,
+    "bailian_vs_machine5_local_base_regressed_1_to_0": 18,
+    "mcnemar_exact_pvalue": 0.728332480881
+  },
+  "benchmark_quality": {
+    "logistika_items_with_269_options": 305,
+    "logistika_single_option_items": 1,
+    "sc_true_false_items_with_implicit_options_reconstructed": 8,
+    "maximum_prompt_characters": 7842
+  },
+  "discarded_protocol_run": {
+    "reason": "vLLM chat template left thinking enabled, so 1669 of 1672 final content fields were empty after consuming the output budget",
+    "api_failures": 0,
+    "used_for_capability_conclusion": false,
+    "corrective_probe_items": 8,
+    "corrective_probe_parse_failures": 0
+  },
+  "private_artifacts": {
+    "machine": "huawei-05",
+    "directory": "/data/llin/logistics_stage0_20260903/private",
+    "copied_to_repository": false
+  },
+  "temporary_inference_containers_removed": true,
+  "book_content_used": false,
+  "benchmark_prompt_content_included": false,
+  "raw_model_output_included": false
+}
