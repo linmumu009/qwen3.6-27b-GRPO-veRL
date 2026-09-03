@@ -96,10 +96,22 @@ def build_cases_from_text(
     needed = prefix_tokens + target_tokens
     if len(tokens) < needed:
         raise ValueError(f"text has {len(tokens)} tokens; at least {needed} are required")
-    candidates = list(range(0, len(tokens) - needed + 1))
     rng = random.Random(seed)
-    rng.shuffle(candidates)
-    selected = sorted(candidates[: min(sample_count, len(candidates))])
+    capacity = len(tokens) // needed
+    selected_count = min(sample_count, capacity)
+    if selected_count < 1:
+        raise ValueError("sample_count must be positive")
+
+    # Draw one complete window from each equal-token stratum.  Adjacent strata
+    # cannot overlap, which prevents one memorized passage from being counted
+    # repeatedly while retaining coverage across the whole source.
+    selected: list[int] = []
+    for stratum in range(selected_count):
+        low = (stratum * len(tokens)) // selected_count
+        boundary = ((stratum + 1) * len(tokens)) // selected_count
+        high = boundary - needed
+        start = low if high <= low else rng.randint(low, high)
+        selected.append(start)
     cases: list[ContinuationCase] = []
     for index, start in enumerate(selected):
         prefix = _join_tokens(tokens[start : start + prefix_tokens])

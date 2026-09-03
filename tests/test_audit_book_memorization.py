@@ -24,6 +24,17 @@ def test_build_cases_is_deterministic_and_bounded() -> None:
     assert all(len(case.case_id) > 8 for case in first)
 
 
+def test_build_cases_are_stratified_and_non_overlapping() -> None:
+    text = " ".join(f"token{index}" for index in range(500))
+    cases = build_cases_from_text(text, sample_count=20, prefix_tokens=12, target_tokens=8, seed=11)
+    spans = []
+    for case in cases:
+        first_token = case.prefix.split()[0]
+        start = int(first_token.removeprefix("token"))
+        spans.append((start, start + 20))
+    assert all(left[1] <= right[0] for left, right in zip(spans, spans[1:]))
+
+
 def test_aggregate_excludes_raw_content() -> None:
     rows = [
         {

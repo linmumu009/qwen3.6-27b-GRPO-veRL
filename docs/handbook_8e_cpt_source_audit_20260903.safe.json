@@ -1,0 +1,147 @@
+{
+  "schema_version": 1,
+  "audit_type": "private_logistics_cpt_source_quality_and_eval_overlap",
+  "source_profile": {
+    "file_name": "The_Handbook_of_Logistics_and_Distribution_Management_8th_Edition.txt",
+    "sha256": "b2b4ed0156dea4076f86894478c8db2643ee05f25fb8af6bdf4622ee70b93bd1",
+    "bytes": 1957157,
+    "characters": 1943852,
+    "lines": 47648,
+    "blank_lines": 10268,
+    "paragraphs": 9370,
+    "lexical_tokens": 300937,
+    "estimated_model_tokens": {
+      "low": 462822,
+      "high": 589046,
+      "method": "UTF-8 character heuristic retained for portability; use exact_qwen_token_counts when present"
+    },
+    "exact_qwen_token_counts": {
+      "tokenizer_json_sha256": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523",
+      "raw": 430858,
+      "main_body": 370380,
+      "special_tokens_added": false
+    },
+    "utf8_valid": true,
+    "replacement_characters": 0,
+    "nul_characters": 0,
+    "toc_unique_chapters_01_44": 44,
+    "main_body": {
+      "boundary_detected": true,
+      "lexical_tokens": 274156
+    },
+    "references": {
+      "boundary_detected": true,
+      "lexical_tokens": 4241
+    },
+    "index": {
+      "boundary_detected": true,
+      "lexical_tokens": 14413
+    },
+    "noise_indicators": {
+      "graphic_placeholder_lines": 2001,
+      "repeated_substantive_line_instances": 455,
+      "repeated_substantive_paragraph_instances": 1
+    },
+    "rights_indicator": {
+      "explicit_ai_ml_training_restriction_detected": true,
+      "training_permission_evidence_in_file": false,
+      "status": "blocked_pending_rights_confirmation"
+    }
+  },
+  "benchmark_overlap": [
+    {
+      "dataset": "LogistikaBench",
+      "items": 1446,
+      "category_counts": {
+        "material_handling": 696,
+        "procurement": 42,
+        "supply_chain": 102,
+        "transport": 404,
+        "warehousing": 202
+      },
+      "exact_full_question": {
+        "count": 0,
+        "rate": 0.0,
+        "matched_item_hashes": []
+      },
+      "any_exact_contiguous_ngram_in_question_or_option": {
+        "8": {
+          "count": 0,
+          "rate": 0.0,
+          "matched_item_hashes": []
+        },
+        "12": {
+          "count": 0,
+          "rate": 0.0,
+          "matched_item_hashes": []
+        },
+        "16": {
+          "count": 0,
+          "rate": 0.0,
+          "matched_item_hashes": []
+        },
+        "24": {
+          "count": 0,
+          "rate": 0.0,
+          "matched_item_hashes": []
+        }
+      },
+      "raw_prompts_included": false
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "items": 226,
+      "category_counts": {
+        "Finance and Operations": 20,
+        "Fulfillment": 79,
+        "In-warehouse": 12,
+        "Inventory": 4,
+        "Logistics Collaboration": 73,
+        "Merchandise": 1,
+        "Network": 3,
+        "Other": 3,
+        "Planning": 14,
+        "Procurement": 12,
+        "Returns and Waste": 1,
+        "unknown": 4
+      },
+      "exact_full_question": {
+        "count": 0,
+        "rate": 0.0,
+        "matched_item_hashes": []
+      },
+      "any_exact_contiguous_ngram_in_question_or_option": {
+        "8": {
+          "count": 0,
+          "rate": 0.0,
+          "matched_item_hashes": []
+        },
+        "12": {
+          "count": 0,
+          "rate": 0.0,
+          "matched_item_hashes": []
+        },
+        "16": {
+          "count": 0,
+          "rate": 0.0,
+          "matched_item_hashes": []
+        },
+        "24": {
+          "count": 0,
+          "rate": 0.0,
+          "matched_item_hashes": []
+        }
+      },
+      "raw_prompts_included": false
+    }
+  ],
+  "listed_logistika_source_title_matches": {
+    "MITx MicroMasters SCM Key Concepts": false,
+    "Global Supply Chain and Operations Management": false,
+    "Ports and Waterways: Navigating the changing world": false,
+    "Challenges and Opportunities in International Business": false,
+    "Glossary for Transport Statistics": false
+  },
+  "source_content_included": false,
+  "benchmark_prompt_content_included": false
+}
