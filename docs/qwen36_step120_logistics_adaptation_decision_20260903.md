@@ -4,7 +4,9 @@
 
 ## 决策
 
-**当前不启动《The Handbook of Logistics and Distribution Management》第八版的继续预训练。**
+**当前不启动《The Handbook of Logistics and Distribution Management》第八版的单书继续预训练。**
+
+> 2026-09-03 后续更新：用户已确认取得覆盖 AI/ML 训练的书面授权，但授权文件未提供给执行方审阅。全书 32/64/128-token 前缀各 200 条的同机配对续写筛查已完成，原生模型与 Step120 均无 ≥20-token 命中，且所有 ≥10-token 命中长度完全相同；详见 `docs/qwen36_step120_book_memorization_and_cpt_gate_20260903.md`。授权等待已经解除，但单书规模和 Qwen3.5 pretraining 入口未验证两项门禁仍未通过。
 
 推荐路线不是“单书纯 CPT”，而是：
 
@@ -49,9 +51,9 @@
 
 ## 权利门禁
 
-版权页明确存在“未经出版社事先书面许可，不得用于 AI/机器学习训练”的限制，而文件中没有附带训练授权证明。
+版权页明确存在“未经出版社事先书面许可，不得用于 AI/机器学习训练”的限制，而文件中没有附带训练授权证明。用户已在后续明确确认取得相应书面授权；本项目记录该确认，但未独立审阅授权文件。
 
-因此当前状态为：`blocked_pending_rights_confirmation`。需要由数据权利负责人确认下列任一证据后，才可把正文发往模型接口、制成训练样本或放入训练集：
+源文件自身仍是 `permission_evidence_not_embedded`，但项目侧后续状态已更新为 `user_attested_permission_confirmed`。基于用户确认，正文可在本项目受限环境内用于本地评测和训练准备；授权文件未由执行方审阅，正式数据治理包仍应保留下列任一证据：
 
 - Kogan Page 或相应权利人的书面训练许可；或
 - 已签订的企业许可明确覆盖模型训练、派生样本和内部模型交付。
@@ -173,12 +175,12 @@ Wikipedia 适合补“概念广度”，但不够补“业务深度”：其文�
 - Wikipedia 的 Hugging Face 数据卡说明其来自官方 dump，并列明 CC BY-SA/GFDL 及页面字段；使用时仍需履行许可义务：[wikimedia/wikipedia](https://huggingface.co/datasets/wikimedia/wikipedia)。
 - World Bank 的走廊管理工具包明确以 CC BY 3.0 IGO 提供，可复制、传播和改编，但第三方组件需另行核验：[World Bank Toolkit](https://documents1.worldbank.org/curated/en/719971468325781473/pdf/Trade-and-transport-corridor-management-toolkit.pdf)。
 
-## 本轮未执行的动作
+## 原调查时未执行的动作及后续状态
 
 - 未把书籍正文上传到百炼或其他第三方接口；
-- 未将书籍复制到 5 号机；
-- 未启动续写记忆测试；
+- 后续已在用户确认授权后，将书籍复制到 5 号机的受限私有目录；
+- 后续已完成原生模型与 Step120 各 600 条的全书续写记忆筛查；
 - 未启动 CPT、SFT 或任何会改变模型权重的训练；
 - 未删除 5 号机既有 checkpoint 或运行文件。
 
-这些动作只有在训练权、数据出境/接口使用、输出目录和试验门槛确认后才执行。
+续写筛查结果与当前训练门禁见 `docs/qwen36_step120_book_memorization_and_cpt_gate_20260903.md`。正文仍未传到第三方；权重训练只有在多来源语料和 Qwen3.5 causal-LM 一步门禁通过后才执行。

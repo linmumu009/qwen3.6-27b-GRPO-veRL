@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "record_type": "user_attested_training_rights",
+  "recorded_date": "2026-09-03",
+  "source_name": "The Handbook of Logistics and Distribution Management, 8th Edition",
+  "source_sha256": "b2b4ed0156dea4076f86894478c8db2643ee05f25fb8af6bdf4622ee70b93bd1",
+  "user_confirmed_written_permission_covering_ai_ml_training": true,
+  "permission_document_provided_to_or_reviewed_by_agent": false,
+  "permission_terms_independently_verified": false,
+  "legal_determination": false,
+  "scope_note": "This record preserves the user's explicit project-side confirmation. It is not a substitute for the underlying permission document or legal review.",
+  "source_content_included": false
+}
