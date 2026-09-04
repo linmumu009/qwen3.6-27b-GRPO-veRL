@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate and summarize the fixed 2x/4x single-book CPT exposure curve."""
+"""Validate and summarize a fixed CPT exposure curve."""
 
 from __future__ import annotations
 
@@ -21,6 +21,7 @@ def summarize_curve(
     total_exposures: int,
     sequence_tokens_per_exposure: int,
     checkpoint_exposures: tuple[int, ...],
+    experiment: str = "single_book_cpt_exposure_curve_2x_4x",
 ) -> dict[str, object]:
     if steps_per_exposure < 1 or total_exposures < 1 or sequence_tokens_per_exposure < 1:
         raise ValueError("step, exposure, and token counts must be positive")
@@ -115,7 +116,7 @@ def summarize_curve(
     return {
         "schema_version": 1,
         "run_name": run_dir.name,
-        "experiment": "single_book_cpt_exposure_curve_2x_4x",
+        "experiment": experiment,
         "status": "complete",
         "source_content_included": False,
         "promotion_allowed": False,
@@ -147,6 +148,7 @@ def main() -> None:
     parser.add_argument("--total-exposures", type=int, default=4)
     parser.add_argument("--sequence-tokens-per-exposure", type=int, default=336702)
     parser.add_argument("--checkpoint-exposure", type=int, action="append", default=[])
+    parser.add_argument("--experiment", default="single_book_cpt_exposure_curve_2x_4x")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     checkpoints = tuple(args.checkpoint_exposure or [2, 4])
@@ -156,6 +158,7 @@ def main() -> None:
         total_exposures=args.total_exposures,
         sequence_tokens_per_exposure=args.sequence_tokens_per_exposure,
         checkpoint_exposures=checkpoints,
+        experiment=args.experiment,
     )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

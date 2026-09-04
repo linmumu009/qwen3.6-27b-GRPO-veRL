@@ -1,0 +1,194 @@
+{
+  "schema_version": 1,
+  "status": "complete",
+  "date": "2026-09-04",
+  "private_content_included": false,
+  "purpose": "controlled_benchmark_contamination_probe",
+  "promotion_allowed": false,
+  "delivery_metric_valid": false,
+  "frozen_cases": {
+    "items": 1672,
+    "logistika_bench_items": 1446,
+    "sc_bench_knowledge_items": 226,
+    "source_sha256": "b652b2108cb552346df11d005c15ff3137c50a756a7b24eb35302683ec33ed99"
+  },
+  "corpus_contract": {
+    "answer_texts": 2168,
+    "true_false_items": 81,
+    "distractors_rendered": 0,
+    "option_indices_or_letters_rendered_by_template": false,
+    "chat_template_applied": false,
+    "direct": {
+      "items": 1672,
+      "changed_question_items": 0,
+      "blocks": 64,
+      "content_tokens": 93321,
+      "sequence_tokens_with_terminal_eos": 93385,
+      "parquet_sha256": "68628a5e4cfff3b3858554be93a3012b7712e3161d51a2d0e5d593876828fb81"
+    },
+    "rewritten": {
+      "items": 1672,
+      "validated_paraphrases": 1625,
+      "identity_fallback_items": 47,
+      "paraphrase_coverage": 0.97188995215311,
+      "blocks": 64,
+      "content_tokens": 88441,
+      "sequence_tokens_with_terminal_eos": 88505,
+      "rewrites_sha256": "1397e40f272b565df6f8e714c09eda508bb9d603b1550d21c0ad7354314ddb80",
+      "parquet_sha256": "9d4ed226a4e75bd8a8ca11cd5926ec193a974b4c92d11cc40e1671445c8fddbd"
+    }
+  },
+  "training_contract": {
+    "initialization": "same_step120_model_only_checkpoint",
+    "fresh_optimizer_each_arm": true,
+    "topology": "tp4_pp2_cp2_on_16_npu",
+    "records_per_exposure": 64,
+    "steps_per_exposure": 16,
+    "total_exposures": 4,
+    "total_steps": 64,
+    "peak_learning_rate": 5e-07,
+    "terminal_learning_rate": 1e-07,
+    "mtp_enabled": false,
+    "checkpoint_contents": [
+      "model",
+      "extra"
+    ],
+    "direct": {
+      "run_name": "logistics-exam-cpt-direct-4x-20260904-01",
+      "total_sequence_tokens_with_eos": 373540,
+      "mean_loss_by_exposure": [
+        3.8054215610027313,
+        2.269761860370636,
+        2.1856931149959564,
+        2.1378018260002136
+      ],
+      "maximum_grad_norm_before_clip_by_exposure": [
+        652.5118533406118,
+        21.730316726616355,
+        10.127263322455072,
+        9.82738711645273
+      ],
+      "checkpoint_shards": 32,
+      "checkpoint_bytes": 54720369973,
+      "fatal_log_signatures": 0
+    },
+    "rewritten": {
+      "run_name": "logistics-exam-cpt-rewritten-4x-20260904-01",
+      "total_sequence_tokens_with_eos": 354020,
+      "mean_loss_by_exposure": [
+        3.4647639989852905,
+        2.2658495157957077,
+        2.1846556067466736,
+        2.142324835062027
+      ],
+      "maximum_grad_norm_before_clip_by_exposure": [
+        347.14478247555445,
+        29.514747166339895,
+        7.673902690366924,
+        3.65519712237493
+      ],
+      "checkpoint_shards": 32,
+      "checkpoint_bytes": 54720369973,
+      "fatal_log_signatures": 0
+    },
+    "hf_export_verification_each_arm": {
+      "valid": true,
+      "tensor_count": 1199,
+      "safetensor_shards": 15,
+      "safetensor_bytes": 56484503104,
+      "missing_tensor_count": 0,
+      "extra_tensor_count": 0,
+      "shape_mismatch_count": 0,
+      "dtype_difference_count": 0
+    }
+  },
+  "evaluation": {
+    "method": "three_repeat_per_item_strict_majority",
+    "items_without_majority": 0,
+    "all_items": {
+      "step120": {
+        "correct": 1369,
+        "accuracy": 0.81878
+      },
+      "direct4x": {
+        "correct": 1381,
+        "accuracy": 0.825957,
+        "delta_vs_step120_points": 0.7177,
+        "improved": 21,
+        "regressed": 9,
+        "net_correct": 12,
+        "mcnemar_exact_pvalue": 0.042773945257
+      },
+      "rewritten4x": {
+        "correct": 1373,
+        "accuracy": 0.821172,
+        "delta_vs_step120_points": 0.2392,
+        "improved": 10,
+        "regressed": 6,
+        "net_correct": 4,
+        "mcnemar_exact_pvalue": 0.454498291016
+      },
+      "rewritten4x_vs_direct4x": {
+        "delta_accuracy_points": -0.4785,
+        "improved": 7,
+        "regressed": 15,
+        "net_correct": -8,
+        "mcnemar_exact_pvalue": 0.133800506592
+      }
+    },
+    "by_dataset": {
+      "LogistikaBench": {
+        "items": 1446,
+        "step120_correct": 1180,
+        "direct4x_correct": 1191,
+        "rewritten4x_correct": 1184,
+        "direct4x_delta_vs_step120_points": 0.7607,
+        "rewritten4x_delta_vs_step120_points": 0.2766
+      },
+      "SC-bench-knowledge": {
+        "items": 226,
+        "step120_correct": 189,
+        "direct4x_correct": 190,
+        "rewritten4x_correct": 189,
+        "direct4x_delta_vs_step120_points": 0.4425,
+        "rewritten4x_delta_vs_step120_points": 0.0
+      }
+    },
+    "validated_paraphrase_subset": {
+      "items": 1625,
+      "step120": {
+        "correct": 1340,
+        "accuracy": 0.824615
+      },
+      "direct4x": {
+        "correct": 1351,
+        "accuracy": 0.831385,
+        "delta_vs_step120_points": 0.6769,
+        "mcnemar_exact_pvalue": 0.06142834574
+      },
+      "rewritten4x": {
+        "correct": 1344,
+        "accuracy": 0.827077,
+        "delta_vs_step120_points": 0.2462,
+        "mcnemar_exact_pvalue": 0.454498291016
+      }
+    },
+    "identity_fallback_subset": {
+      "items": 47,
+      "step120_correct": 29,
+      "direct4x_correct": 30,
+      "rewritten4x_correct": 29
+    }
+  },
+  "interpretation": {
+    "same_item_association_signal": "small",
+    "evidence_supports_semantic_transfer": false,
+    "loss_reduction_implies_qa_gain": false,
+    "recommended_action": "do_not_add_more_exposures; move to clean concept/source-held-out logistics training and evaluation"
+  },
+  "input_sha256": {
+    "step120_majority_private": "76d1cf72e4f013d144a402efa179b3a21d7af77b6527bb8971a0609557aa66b0",
+    "direct4x_majority_private": "f8581f6d23a3e55e88af761d381d00c0f0f285a8633e33c2e51e237211cab578",
+    "rewritten4x_majority_private": "9c63f34f0c0c499c99f033cdc1ebd8a46fcffeacb1f657c46563a3802fcc9b66"
+  }
+}
