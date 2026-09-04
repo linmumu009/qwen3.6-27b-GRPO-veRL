@@ -1,0 +1,278 @@
+{
+  "schema_version": 1,
+  "run_name": "logistics-cpt-book-exposure-curve-2x4x-20260904-01",
+  "diagnostic_run_name": "logistics-cpt-exposure-curve-diagnostics-20260904",
+  "baseline_model": "qwen3.6-27b-step120",
+  "candidate_models": {
+    "2x": "qwen3.6-27b-step120-handbook8e-cpt-2x",
+    "4x": "qwen3.6-27b-step120-handbook8e-cpt-4x"
+  },
+  "private_content_included": false,
+  "decision": {
+    "promote_2x": false,
+    "promote_4x": false,
+    "verdict": "repeated_single_book_cpt_improves_book_likelihood_but_not_deliverable_logistics_qa",
+    "confidence": "high",
+    "stop_further_identical_book_exposures": true
+  },
+  "training": {
+    "source_sha256": "b2b4ed0156dea4076f86894478c8db2643ee05f25fb8af6bdf4622ee70b93bd1",
+    "source_blocks_per_exposure": 116,
+    "global_batch_size": 4,
+    "steps_per_exposure": 29,
+    "total_steps": 116,
+    "sequence_tokens_with_eos_per_exposure": 336702,
+    "total_sequence_tokens_with_eos": 1346808,
+    "optimizer": "fresh Adam initialized at Step120 and continuous through step 116",
+    "optimizer_reset_at_step_58": false,
+    "learning_rate": {
+      "peak": 5e-7,
+      "minimum": 1e-7,
+      "schedule": "two-step effective warmup then cosine decay across all 116 steps"
+    },
+    "mean_loss_by_exposure": [
+      2.044721825,
+      1.970227949,
+      1.923275841,
+      1.91647796
+    ],
+    "maximum_grad_norm_before_clip_by_exposure": [
+      117.20267,
+      8.045309,
+      9.127187,
+      7.131619
+    ],
+    "checkpoints": {
+      "2x": {
+        "global_step": 58,
+        "cumulative_sequence_tokens_with_eos": 673404,
+        "megatron_shards": 32,
+        "megatron_shard_bytes": 54720369973,
+        "valid": true
+      },
+      "4x": {
+        "global_step": 116,
+        "cumulative_sequence_tokens_with_eos": 1346808,
+        "megatron_shards": 32,
+        "megatron_shard_bytes": 54720369973,
+        "valid": true
+      }
+    },
+    "peak_memory_gib": {
+      "npu_allocated": 38.870385,
+      "npu_reserved": 40.816406,
+      "cpu_used": 115.785229
+    },
+    "fatal_log_signatures": 0
+  },
+  "hf_exports": {
+    "2x": {
+      "valid": true,
+      "safetensor_shards": 15,
+      "safetensor_bytes": 56484503104,
+      "tensor_count": 1199,
+      "language_layers": 64,
+      "missing_tensors": 0,
+      "extra_tensors": 0,
+      "shape_mismatches": 0,
+      "dtype_mismatches": 0,
+      "frozen_mtp_fallback_tensors": 15
+    },
+    "4x": {
+      "valid": true,
+      "safetensor_shards": 15,
+      "safetensor_bytes": 56484503104,
+      "tensor_count": 1199,
+      "language_layers": 64,
+      "missing_tensors": 0,
+      "extra_tensors": 0,
+      "shape_mismatches": 0,
+      "dtype_mismatches": 0,
+      "frozen_mtp_fallback_tensors": 15
+    }
+  },
+  "tests": {
+    "fixed_passage_nll": {
+      "cases": 200,
+      "scored_tokens": 102200,
+      "baseline_mean_nll": 2.20996923,
+      "2x": {
+        "mean_nll": 2.155932725,
+        "relative_improvement": 0.024451248,
+        "paired_lower_nll_cases": 200,
+        "paired_bootstrap_95pct_ci_candidate_minus_baseline": [
+          -0.057619394,
+          -0.051023084
+        ],
+        "passed_2pct_uptake_gate": true
+      },
+      "4x": {
+        "mean_nll": 2.118789987,
+        "relative_improvement": 0.041258151,
+        "paired_lower_nll_cases": 200,
+        "paired_bootstrap_95pct_ci_candidate_minus_baseline": [
+          -0.095726228,
+          -0.087222252
+        ],
+        "passed_2pct_uptake_gate": true
+      },
+      "4x_relative_improvement_over_2x": 0.017228153
+    },
+    "verbatim_continuation": {
+      "cases_per_prefix": 200,
+      "prefix_tokens": [
+        32,
+        64,
+        128
+      ],
+      "baseline_max_exact_prefix_tokens": [
+        8,
+        11,
+        15
+      ],
+      "2x": {
+        "max_exact_prefix_tokens": [
+          6,
+          11,
+          15
+        ],
+        "mean_exact_prefix_delta_tokens_vs_baseline": [
+          -0.025,
+          0.02,
+          0.02
+        ],
+        "new_candidate_only_at_10_tokens": 0,
+        "new_candidate_only_at_20_tokens": 0,
+        "memorization_alert": false
+      },
+      "4x": {
+        "max_exact_prefix_tokens": [
+          6,
+          11,
+          15
+        ],
+        "mean_exact_prefix_delta_tokens_vs_baseline": [
+          -0.01,
+          0.03,
+          0.035
+        ],
+        "new_candidate_only_at_10_tokens": 0,
+        "new_candidate_only_at_20_tokens": 0,
+        "memorization_alert": false
+      }
+    },
+    "paraphrased_book_mcq": {
+      "cases": 200,
+      "baseline_correct": 189,
+      "2x_correct": 189,
+      "4x_correct": 189,
+      "2x_improved": 0,
+      "2x_regressed": 0,
+      "4x_improved": 0,
+      "4x_regressed": 0,
+      "required_delta_accuracy_points": 1.5,
+      "2x_passed": false,
+      "4x_passed": false,
+      "caveat": "Step120 generated the probes, so absolute accuracy is optimistic; the paired zero delta is still informative."
+    },
+    "checkpoint_weight_delta": {
+      "tensor_keys": 1199,
+      "parameter_elements": 27781427952,
+      "2x": {
+        "changed_elements": 2790310060,
+        "changed_fraction": 0.100437964,
+        "overall_relative_l2": 0.000212625161,
+        "maximum_absolute_element_delta": 0.000030517578125,
+        "visual_encoder_changed_elements": 0,
+        "mtp_changed_elements": 0
+      },
+      "4x": {
+        "changed_elements": 3496808568,
+        "changed_fraction": 0.125868569,
+        "overall_relative_l2": 0.000307672205,
+        "maximum_absolute_element_delta": 0.00006103515625,
+        "visual_encoder_changed_elements": 0,
+        "mtp_changed_elements": 0
+      }
+    },
+    "public_mcq_three_repeat_majority": {
+      "items": 1672,
+      "baseline": {
+        "accuracy_by_repeat": [
+          0.818182,
+          0.817584,
+          0.819976
+        ],
+        "majority_correct": 1369,
+        "majority_accuracy": 0.81878,
+        "items_without_majority": 0
+      },
+      "2x": {
+        "accuracy_by_repeat": [
+          0.818182,
+          0.816986,
+          0.816986
+        ],
+        "majority_correct": 1366,
+        "majority_accuracy": 0.816986,
+        "items_without_majority": 0,
+        "improved_vs_baseline": 5,
+        "regressed_vs_baseline": 8,
+        "net_correct_vs_baseline": -3,
+        "delta_accuracy_points_vs_baseline": -0.1794,
+        "mcnemar_exact_pvalue_vs_baseline": 0.5810546875,
+        "logistika_bench": {
+          "correct": 1177,
+          "items": 1446,
+          "accuracy": 0.81397,
+          "delta_accuracy_points_vs_baseline": -0.2075
+        },
+        "sc_bench_knowledge": {
+          "correct": 189,
+          "items": 226,
+          "accuracy": 0.836283,
+          "delta_accuracy_points_vs_baseline": 0.0
+        }
+      },
+      "4x": {
+        "accuracy_by_repeat": [
+          0.820574,
+          0.819378,
+          0.817584
+        ],
+        "majority_correct": 1371,
+        "majority_accuracy": 0.819976,
+        "items_without_majority": 2,
+        "improved_vs_baseline": 6,
+        "regressed_vs_baseline": 4,
+        "net_correct_vs_baseline": 2,
+        "delta_accuracy_points_vs_baseline": 0.1196,
+        "mcnemar_exact_pvalue_vs_baseline": 0.75390625,
+        "logistika_bench": {
+          "correct": 1182,
+          "items": 1446,
+          "accuracy": 0.817427,
+          "delta_accuracy_points_vs_baseline": 0.1383
+        },
+        "sc_bench_knowledge": {
+          "correct": 189,
+          "items": 226,
+          "accuracy": 0.836283,
+          "delta_accuracy_points_vs_baseline": 0.0
+        }
+      },
+      "required_practical_delta_accuracy_points": 3.0,
+      "2x_passed": false,
+      "4x_passed": false
+    },
+    "general_and_agent_regression": {
+      "status": "not_run",
+      "reason": "The sequential promotion gate stopped after both candidates failed the independent knowledge and public practical-improvement gates; regression testing could not change the no-promotion decision."
+    }
+  },
+  "remote_artifacts": {
+    "training_root": "/data3/llin/qwen3.6-27b-verl-grpo/runs/logistics-cpt-book-exposure-curve-2x4x-20260904-01",
+    "safe_diagnostics_root": "/data3/llin/qwen3.6-27b-verl-grpo/runs/logistics-cpt-exposure-curve-diagnostics-20260904/safe",
+    "private_diagnostics_root": "/data3/llin/qwen3.6-27b-verl-grpo/runs/logistics-cpt-exposure-curve-diagnostics-20260904/private"
+  }
+}
