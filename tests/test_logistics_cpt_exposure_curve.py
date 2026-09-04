@@ -53,7 +53,11 @@ def test_summarize_exposure_curve_validates_each_epoch_and_checkpoint(tmp_path: 
             f"- train/lr:{step}e-8 - train/global_tokens:3 - train/total_tokens(B):{step * 3e-9}"
         )
     stdout.write_text("\n".join(rows) + "\n", encoding="utf-8")
-    stdout.with_name("stderr.log").write_text("", encoding="utf-8")
+    stdout.with_name("stderr.log").write_text(
+        "safe_import failed with: Traceback (most recent call last):\n"
+        "AttributeError: optional compatibility symbol is absent\n",
+        encoding="utf-8",
+    )
     _checkpoint(run_dir, 2)
     _checkpoint(run_dir, 4)
 

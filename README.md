@@ -2,6 +2,10 @@
 
 Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
+## v1.12.68（2026-09-04）
+
+- 修正2遍/4遍CPT汇总器对Megatron-Bridge可选`MixedFusedLayerNorm`安全导入诊断的误判：普通兼容性`Traceback`只做计数，继续以`[rankN]: Traceback`、训练器错误、OOM和完整步序列作为失败门禁，避免已成功的116步训练被阻断在HF导出前。
+
 ## v1.12.67（2026-09-04）
 
 - 新增单书 CPT 的 2遍/4遍连续曝光曲线：从同一 Step120 模型态初始化 fresh Adam，保持原全参 TP4/PP2/CP2、全局 batch 4、`5e-7 → 1e-7` 与两步有效预热，在第58/116 optimizer step分别保存模型，避免在2遍处重置优化器造成比较混杂。

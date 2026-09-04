@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import re
 import statistics
 from pathlib import Path
 
@@ -34,8 +35,11 @@ def summarize_curve(
     all_stderr = "\n".join(path.read_text(encoding="utf-8", errors="replace") for path in stderr_paths)
     combined = all_stdout + "\n" + all_stderr
     fatal_matches = [pattern for pattern in FATAL_PATTERNS if pattern in combined]
-    if fatal_matches or "Traceback (most recent call last)" in combined:
-        raise ValueError(f"fatal log signatures found: {fatal_matches}")
+    fatal_rank_tracebacks = len(re.findall(r"\[rank\d+\]: Traceback", combined))
+    if fatal_matches or fatal_rank_tracebacks:
+        raise ValueError(
+            f"fatal log signatures found: {fatal_matches}, rank_tracebacks={fatal_rank_tracebacks}"
+        )
 
     total_steps = steps_per_exposure * total_exposures
     metrics = parse_metrics(all_stdout)
@@ -128,6 +132,11 @@ def summarize_curve(
             "cpu_used": max(row["perf/cpu_memory_used_gb"] for row in metrics.values()),
         },
         "fatal_log_signatures": 0,
+        "nonfatal_compatibility_messages": {
+            "mixed_fused_layer_norm_safe_import": combined.count(
+                "apex.normalization.fused_layer_norm' has no attribute 'MixedFusedLayerNorm'"
+            )
+        },
     }
 
 
