@@ -1,0 +1,93 @@
+{
+  "schema_version": 1,
+  "run_name": "logistics-cpt-diagnostics-20260904",
+  "baseline_model": "qwen3.6-27b-step120",
+  "candidate_model": "qwen3.6-27b-step120-handbook8e-cpt",
+  "private_content_included": false,
+  "decision": {
+    "promote_candidate": false,
+    "verdict": "training_completed_but_domain_uptake_is_not_material",
+    "confidence": "high"
+  },
+  "training_context": {
+    "sequence_tokens_with_eos": 336702,
+    "optimizer_steps": 29,
+    "source_blocks": 116,
+    "global_batch_size": 4,
+    "peak_learning_rate": 5e-7,
+    "minimum_learning_rate": 1e-7
+  },
+  "tests": {
+    "fixed_passage_nll": {
+      "cases": 200,
+      "scored_tokens": 102200,
+      "baseline_nll": 2.20996923,
+      "candidate_nll": 2.201163945,
+      "relative_improvement": 0.003984348,
+      "paired_bootstrap_95pct_ci_candidate_minus_baseline": [-0.010289373, -0.00759073],
+      "required_relative_improvement": 0.02,
+      "passed": false
+    },
+    "verbatim_continuation": {
+      "cases_per_prefix": 200,
+      "prefix_tokens": [32, 64, 128],
+      "mean_exact_prefix_delta_tokens": [-0.025, 0.02, 0.005],
+      "maximum_exact_prefix_baseline": [8, 11, 15],
+      "maximum_exact_prefix_candidate": [6, 11, 15],
+      "new_candidate_only_at_10_tokens": 0,
+      "new_candidate_only_at_20_tokens": 0,
+      "memorization_alert": false
+    },
+    "paraphrased_book_mcq": {
+      "cases": 200,
+      "question_and_correct_answer_shared_4gram_with_source": 0,
+      "baseline_correct": 189,
+      "candidate_correct": 189,
+      "delta_accuracy_points": 0.0,
+      "improved": 0,
+      "regressed": 0,
+      "passed": false,
+      "caveat": "Step120 generated the probes, so absolute accuracy is optimistic; the paired delta remains informative."
+    },
+    "checkpoint_weight_delta": {
+      "tensor_keys": 1199,
+      "parameter_elements": 27781427952,
+      "changed_elements": 1404461317,
+      "changed_fraction": 0.050553964,
+      "overall_relative_l2": 0.00007189346056450403,
+      "language_only_relative_l2": 0.00008455019391155502,
+      "maximum_absolute_element_delta": 0.0000152587890625,
+      "language_layers_with_nonzero_delta": 64,
+      "visual_encoder_changed_elements": 0,
+      "mtp_changed_elements": 0
+    },
+    "public_mcq_three_repeat_majority": {
+      "items": 1672,
+      "baseline_accuracy_by_repeat": [0.818182, 0.817584, 0.819976],
+      "candidate_accuracy_by_repeat": [0.820574, 0.818182, 0.819378],
+      "baseline_parsed_answer_identical_items": 1646,
+      "candidate_parsed_answer_identical_items": 1658,
+      "baseline_majority_correct": 1369,
+      "candidate_majority_correct": 1370,
+      "delta_accuracy_points": 0.0598,
+      "improved": 4,
+      "regressed": 3,
+      "mcnemar_exact_pvalue": 1.0,
+      "logistika_bench": {
+        "items": 1446,
+        "baseline_accuracy": 0.816044,
+        "candidate_accuracy": 0.816736,
+        "delta_accuracy_points": 0.0692
+      },
+      "sc_bench_knowledge": {
+        "items": 226,
+        "baseline_accuracy": 0.836283,
+        "candidate_accuracy": 0.836283,
+        "delta_accuracy_points": 0.0
+      },
+      "required_practical_delta_accuracy_points": 3.0,
+      "passed": false
+    }
+  },
+  "remote_safe_evidence_root": "/data3/llin/qwen3.6-27b-verl-grpo/runs/logistics-cpt-diagnostics-20260904/safe"
+}
