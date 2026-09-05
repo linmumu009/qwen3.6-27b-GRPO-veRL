@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "items": 1672,
+  "private_content_included": false,
+  "same_as_official_eval_prefix": true,
+  "gold_roundtrip": true,
+  "eos_supervised": true,
+  "sequence_tokens_per_epoch": 1126158,
+  "supervised_tokens_per_epoch": 11516
+}

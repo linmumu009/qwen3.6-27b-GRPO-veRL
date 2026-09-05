@@ -1,0 +1,29 @@
+{
+  "contract": "logistics-mcq-same-item-answer-sft-v1",
+  "private_content_included": false,
+  "independent_test": false,
+  "source_sha256": "b652b2108cb552346df11d005c15ff3137c50a756a7b24eb35302683ec33ed99",
+  "items": 1672,
+  "by_dataset": {
+    "LogistikaBench": 1446,
+    "SC-bench-knowledge": 226
+  },
+  "prompt_version": "logistics-mcq-zero-based-json-v2",
+  "enable_thinking": false,
+  "evaluation_prompt_tokens_preserved": true,
+  "all_options_retained": true,
+  "sequence_tokens_per_epoch": 1126158,
+  "supervised_tokens_per_epoch": 11516,
+  "max_sequence_tokens": 3034,
+  "parquet_sha256": "2ffac65c1d6306093427e388438601e044dd46cd65f9f0050bc752774b4abd73",
+  "tokenizer_sha256": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523",
+  "epochs": 2,
+  "batch_size": 4,
+  "steps_per_epoch": 418,
+  "total_steps": 836,
+  "checkpoint_steps": [
+    418,
+    836
+  ],
+  "optimizer_checkpoint_saved": false
+}
