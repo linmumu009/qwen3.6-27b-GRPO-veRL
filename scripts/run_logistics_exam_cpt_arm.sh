@@ -25,6 +25,9 @@ TOTAL_EXPOSURES="${TOTAL_EXPOSURES:-4}"
 TOTAL_STEPS="${TOTAL_STEPS:-64}"
 LEARNING_RATE="${LEARNING_RATE:-5e-7}"
 MIN_LEARNING_RATE="${MIN_LEARNING_RATE:-1e-7}"
+# Reproduce the historical effective values, not the ignored generic betas field.
+ADAM_BETA1="${ADAM_BETA1:-0.9}"
+ADAM_BETA2="${ADAM_BETA2:-0.999}"
 WARMUP_RATIO="${WARMUP_RATIO:-0.03125}"
 TOKENIZER_SHA256="${TOKENIZER_SHA256:-06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523}"
 
@@ -107,6 +110,8 @@ train_batch_size=${TRAIN_BATCH_SIZE}
 total_training_steps=${TOTAL_STEPS}
 learning_rate=${LEARNING_RATE}
 minimum_learning_rate=${MIN_LEARNING_RATE}
+adam_beta1=${ADAM_BETA1}
+adam_beta2=${ADAM_BETA2}
 warmup_ratio=${WARMUP_RATIO}
 lr_decay_style=cosine
 mtp_enable=false
@@ -146,7 +151,9 @@ torchrun --standalone --nnodes=1 --nproc_per_node="${NPROC}" \
   "optim.min_lr=${MIN_LEARNING_RATE}" \
   "optim.lr_warmup_steps_ratio=${WARMUP_RATIO}" \
   optim.weight_decay=0 \
-  'optim.betas=[0.9,0.95]' \
+  "optim.betas=[${ADAM_BETA1},${ADAM_BETA2}]" \
+  "+optim.override_optimizer_config.adam_beta1=${ADAM_BETA1}" \
+  "+optim.override_optimizer_config.adam_beta2=${ADAM_BETA2}" \
   optim.clip_grad=1.0 \
   optim.lr_decay_style=cosine \
   +optim.override_optimizer_config.optimizer_cpu_offload=false \

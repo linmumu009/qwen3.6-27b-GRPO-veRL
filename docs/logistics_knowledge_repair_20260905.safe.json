@@ -1,0 +1,40 @@
+{
+  "date": "2026-09-05",
+  "status": "automatic_generation_and_screening_complete_substantive_review_pending",
+  "private_content_included": false,
+  "source_hash": "b652b2108cb552346df11d005c15ff3137c50a756a7b24eb35302683ec33ed99",
+  "items": 1672,
+  "automatic_entailment_passed": 1582,
+  "withheld": 90,
+  "risk_counts_nonexclusive": {
+    "matching_or_large_pool": 1169,
+    "negative_stem": 179,
+    "ordinary": 361,
+    "true_false": 81
+  },
+  "passed_risk_counts_nonexclusive": {
+    "matching_or_large_pool": 1099,
+    "ordinary": 353,
+    "negative_stem": 166,
+    "true_false": 79
+  },
+  "check_failure_counts_nonexclusive": {
+    "not_audited": 64,
+    "candidate_without_valid_audit": 45,
+    "model_withheld": 15,
+    "invalid_generation_json": 4,
+    "entailed_by_gold": 25,
+    "scope_preserved": 14,
+    "all_gold_covered": 25,
+    "no_unsupported_facts": 17,
+    "issues_present": 26,
+    "polarity_preserved": 4
+  },
+  "human_reviewed": 0,
+  "agent_substantively_reviewed": 0,
+  "independent_fact_checked": 0,
+  "review_limitation": "same local model generated and audited; automatic checks do not guarantee semantic or factual correctness",
+  "review_blocker": "auto_review_rejected_displaying_8_private_samples_in_current_task_pending_explicit_destination_authorization",
+  "training_launched": false,
+  "private_candidates_sha256": "6b0913bb9e27283e82f89aec7bf1c40e2e4d65423cfa779d1dacc1bfad7632ac"
+}

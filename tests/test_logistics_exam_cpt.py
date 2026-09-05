@@ -65,7 +65,7 @@ def test_multiple_choice_preserves_all_gold_text_in_source_order():
     ("gold", "verdict"),
     [("true", "This statement is true."), ("false", "This statement is false.")],
 )
-def test_true_false_makes_the_entire_training_document_truthful(gold: str, verdict: str):
+def test_historical_true_false_preserves_statement_and_appends_verdict(gold: str, verdict: str):
     row = source_row(
         question_type="true_or_false",
         question="Inventory is free.",

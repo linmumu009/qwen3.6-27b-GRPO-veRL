@@ -1,0 +1,176 @@
+{
+  "contract": "exam-answer-paired-comparison-v1",
+  "private_content_included": false,
+  "input_hashes": {
+    "step120": "24473b97caa902bfe99c3857074269714565f9a978e39a348c074fbfcf186c61",
+    "direct": "1663715940960e9b5b808d569537165e4090654aef58b42c21294bb8fd796cca",
+    "rewritten": "5f9e572703f6f3cb3abedb21e1d4de698a89ae33fb8182e14e84ba3b03c2060c"
+  },
+  "direct_vs_step120": {
+    "direct": {
+      "baseline": {
+        "items": 1672,
+        "answer_tokens": 21140,
+        "answer_nll": 2.8990203676621635,
+        "prefix_nll": 3.544364163770743,
+        "answer_teacher_forced_top1": 0.43107852412488173,
+        "greedy_gold_token_prefix_exact": 110,
+        "generation_censored": 0,
+        "boundary_crossings": 0
+      },
+      "candidate": {
+        "items": 1672,
+        "answer_tokens": 21140,
+        "answer_nll": 2.66322861690753,
+        "prefix_nll": 2.945700441790125,
+        "answer_teacher_forced_top1": 0.45085146641438034,
+        "greedy_gold_token_prefix_exact": 129,
+        "generation_censored": 0,
+        "boundary_crossings": 0
+      },
+      "relative_answer_nll_reduction_percent": 8.133497556099659,
+      "items_answer_nll_improved": 1365,
+      "greedy_improved": 39,
+      "greedy_regressed": 20
+    },
+    "rewritten": {
+      "baseline": {
+        "items": 1672,
+        "answer_tokens": 21140,
+        "answer_nll": 2.901154391322316,
+        "prefix_nll": 3.243977525523614,
+        "answer_teacher_forced_top1": 0.4281929990539262,
+        "greedy_gold_token_prefix_exact": 127,
+        "generation_censored": 0,
+        "boundary_crossings": 0
+      },
+      "candidate": {
+        "items": 1672,
+        "answer_tokens": 21140,
+        "answer_nll": 2.6996650256167536,
+        "prefix_nll": 2.74555194348182,
+        "answer_teacher_forced_top1": 0.4456953642384106,
+        "greedy_gold_token_prefix_exact": 132,
+        "generation_censored": 0,
+        "boundary_crossings": 0
+      },
+      "relative_answer_nll_reduction_percent": 6.94514453654173,
+      "items_answer_nll_improved": 1298,
+      "greedy_improved": 24,
+      "greedy_regressed": 19
+    }
+  },
+  "rewritten_vs_step120": {
+    "direct": {
+      "baseline": {
+        "items": 1672,
+        "answer_tokens": 21140,
+        "answer_nll": 2.8990203676621635,
+        "prefix_nll": 3.544364163770743,
+        "answer_teacher_forced_top1": 0.43107852412488173,
+        "greedy_gold_token_prefix_exact": 110,
+        "generation_censored": 0,
+        "boundary_crossings": 0
+      },
+      "candidate": {
+        "items": 1672,
+        "answer_tokens": 21140,
+        "answer_nll": 2.6680621945131957,
+        "prefix_nll": 3.1249843507705752,
+        "answer_teacher_forced_top1": 0.44933774834437085,
+        "greedy_gold_token_prefix_exact": 128,
+        "generation_censored": 0,
+        "boundary_crossings": 0
+      },
+      "relative_answer_nll_reduction_percent": 7.966766143668656,
+      "items_answer_nll_improved": 1396,
+      "greedy_improved": 29,
+      "greedy_regressed": 11
+    },
+    "rewritten": {
+      "baseline": {
+        "items": 1672,
+        "answer_tokens": 21140,
+        "answer_nll": 2.901154391322316,
+        "prefix_nll": 3.243977525523614,
+        "answer_teacher_forced_top1": 0.4281929990539262,
+        "greedy_gold_token_prefix_exact": 127,
+        "generation_censored": 0,
+        "boundary_crossings": 0
+      },
+      "candidate": {
+        "items": 1672,
+        "answer_tokens": 21140,
+        "answer_nll": 2.682237124853043,
+        "prefix_nll": 2.64269059808549,
+        "answer_teacher_forced_top1": 0.44479659413434247,
+        "greedy_gold_token_prefix_exact": 135,
+        "generation_censored": 0,
+        "boundary_crossings": 0
+      },
+      "relative_answer_nll_reduction_percent": 7.5458675044692285,
+      "items_answer_nll_improved": 1328,
+      "greedy_improved": 26,
+      "greedy_regressed": 18
+    }
+  },
+  "packed_training_context": {
+    "step120": {
+      "direct": {
+        "items": 1672,
+        "answer_tokens": 21140,
+        "scored_total_tokens": 93321,
+        "answer_nll": 4.787301482612334,
+        "all_target_nll": 5.118782102524691
+      },
+      "rewritten": {
+        "items": 1672,
+        "answer_tokens": 21140,
+        "scored_total_tokens": 88441,
+        "answer_nll": 4.577512719636331,
+        "all_target_nll": 4.6135032404294956
+      }
+    },
+    "direct": {
+      "direct": {
+        "items": 1672,
+        "answer_tokens": 21140,
+        "scored_total_tokens": 93321,
+        "answer_nll": 2.487345400019809,
+        "all_target_nll": 2.118860836580348
+      },
+      "rewritten": {
+        "items": 1672,
+        "answer_tokens": 21140,
+        "scored_total_tokens": 88441,
+        "answer_nll": 2.568314346694555,
+        "all_target_nll": 2.1701003788335496
+      }
+    },
+    "rewritten": {
+      "direct": {
+        "items": 1672,
+        "answer_tokens": 21140,
+        "scored_total_tokens": 93321,
+        "answer_nll": 2.5055851746358777,
+        "all_target_nll": 2.172833570344696
+      },
+      "rewritten": {
+        "items": 1672,
+        "answer_tokens": 21140,
+        "scored_total_tokens": 88441,
+        "answer_nll": 2.536215911715722,
+        "all_target_nll": 2.125673172835382
+      }
+    }
+  },
+  "packed_parquet_hashes": {
+    "direct": "68628a5e4cfff3b3858554be93a3012b7712e3161d51a2d0e5d593876828fb81",
+    "rewritten": "9d4ed226a4e75bd8a8ca11cd5926ec193a974b4c92d11cc40e1671445c8fddbd"
+  },
+  "packed_input_hashes": {
+    "step120": "327c85860e9788817d48c365a259f55159a55dc031220ba4e39c86dfe0cf7a19",
+    "direct": "c181ca0568286f79daba80d436a944f2f40e25e92e18198ff92b7a0a31a95fda",
+    "rewritten": "0c134bef935073b9fc6ac057780478a09d03ba19b9c1473aa39c41971c069201"
+  }
+}

@@ -181,10 +181,11 @@
     }
   },
   "interpretation": {
-    "same_item_association_signal": "small",
+    "same_item_association_signal": "small_observed_gain_mechanism_unresolved",
     "evidence_supports_semantic_transfer": false,
     "loss_reduction_implies_qa_gain": false,
-    "recommended_action": "do_not_add_more_exposures; move to clean concept/source-held-out logistics training and evaluation"
+    "recommended_action": "superseded_20260905: measure_answer_only_learning_and_repair_knowledge_rendering_before_training_decision",
+    "correction_20260905": "historical_true_false_used_original_statement_plus_verdict_not_corrected_knowledge; absence_of_significance_does_not_establish_absence_of_transfer"
   },
   "input_sha256": {
     "step120_majority_private": "76d1cf72e4f013d144a402efa179b3a21d7af77b6527bb8971a0609557aa66b0",
