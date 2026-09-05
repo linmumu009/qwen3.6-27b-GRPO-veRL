@@ -1,6 +1,6 @@
 {
   "date": "2026-09-05",
-  "status": "automatic_generation_and_screening_complete_substantive_review_pending",
+  "status": "automatic_generation_complete_eight_item_agent_review_completed",
   "private_content_included": false,
   "source_hash": "b652b2108cb552346df11d005c15ff3137c50a756a7b24eb35302683ec33ed99",
   "items": 1672,
@@ -31,10 +31,15 @@
     "polarity_preserved": 4
   },
   "human_reviewed": 0,
-  "agent_substantively_reviewed": 0,
+  "agent_substantively_reviewed": 8,
+  "agent_review_accepted_as_is": 7,
+  "agent_review_required_chapter_reference_removal": 1,
+  "false_judgment_items_substantively_reviewed": 0,
   "independent_fact_checked": 0,
   "review_limitation": "same local model generated and audited; automatic checks do not guarantee semantic or factual correctness",
-  "review_blocker": "auto_review_rejected_displaying_8_private_samples_in_current_task_pending_explicit_destination_authorization",
+  "review_blocker": null,
+  "limited_review_authorization": "user_explicitly_allowed_up_to_eight_samples_in_current_Codex_task",
   "training_launched": false,
+  "training_scope_note": "knowledge candidates have not been trained; a separate same-QA-text eight-item supervision-mask experiment was launched",
   "private_candidates_sha256": "6b0913bb9e27283e82f89aec7bf1c40e2e4d65423cfa779d1dacc1bfad7632ac"
 }

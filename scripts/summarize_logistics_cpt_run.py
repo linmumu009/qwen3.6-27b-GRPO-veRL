@@ -28,9 +28,11 @@ def parse_metrics(text: str) -> dict[int, dict[str, float]]:
         for segment in match.group("metrics").split(" - "):
             key, raw_value = segment.split(":", 1)
             metrics[key] = float(raw_value)
-        if step in parsed and parsed[step] != metrics:
+        previous = parsed.get(step, {})
+        if any(previous[key] != metrics[key] for key in previous.keys() & metrics.keys()):
             raise ValueError(f"conflicting duplicate metrics for step {step}")
-        parsed[step] = metrics
+        # veRL emits validation separately from training at the same step.
+        parsed[step] = {**previous, **metrics}
     return parsed
 
 

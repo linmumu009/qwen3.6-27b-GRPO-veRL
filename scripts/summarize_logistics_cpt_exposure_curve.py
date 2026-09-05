@@ -91,15 +91,17 @@ def summarize_curve(
         )
 
     checkpoints: list[dict[str, object]] = []
+    optimizer_required = experiment in {"logistics_reviewed8_mask_all", "logistics_reviewed8_mask_answer"}
+    expected_contents = ["model", "optimizer", "extra"] if optimizer_required else ["model", "extra"]
     for exposure in checkpoint_exposures:
         step = exposure * steps_per_exposure
         result = verify_checkpoint(run_dir / "checkpoints" / f"global_step_{step}")
         if not result["valid"]:
             raise ValueError(f"checkpoint at exposure {exposure} failed integrity: {result['errors']}")
-        if result.get("global_step") != step or result.get("save_contents") != ["model", "extra"]:
+        if result.get("global_step") != step or result.get("save_contents") != expected_contents:
             raise ValueError(f"checkpoint at exposure {exposure} has an unexpected manifest")
-        if result.get("optimizer_declared"):
-            raise ValueError(f"checkpoint at exposure {exposure} must not include optimizer state")
+        if bool(result.get("optimizer_declared")) != optimizer_required:
+            raise ValueError(f"checkpoint at exposure {exposure} optimizer state does not match the experiment contract")
         checkpoints.append(
             {
                 "exposure": exposure,
