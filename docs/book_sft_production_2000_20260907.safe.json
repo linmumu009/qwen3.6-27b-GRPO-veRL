@@ -1,0 +1,77 @@
+{
+  "target": 2000,
+  "batch_size": 500,
+  "max_candidates": 6000,
+  "workers": 64,
+  "model": "qwen3.8-max",
+  "source_sha256": "21071ddfc147f1b2c3f1ffc4f6df66363927d4232260b41914b162a296a5816c",
+  "benchmark_sha256": "b652b2108cb552346df11d005c15ff3137c50a756a7b24eb35302683ec33ed99",
+  "policy": "One generation and one audit; discard all concerns, no repairs. Benchmark only in local lexical screen.",
+  "existing_pilots_reused": false,
+  "training_started": false,
+  "generated": 2500,
+  "retained": 2000,
+  "counts": {
+    "retained": 2000,
+    "audit_reject": 79,
+    "audit_note_reject": 52,
+    "duplicate_reject": 15,
+    "structural_reject": 13,
+    "cross_batch_duplicate_reject": 44,
+    "abstain": 3,
+    "invalid_audit_evidence": 5,
+    "request_or_parse_failure": 2,
+    "surplus_not_selected": 286,
+    "invalid_audit": 1
+  },
+  "usage": {
+    "prompt_tokens": 18848735,
+    "completion_tokens": 756643,
+    "total_tokens": 19605378
+  },
+  "batches": [
+    {
+      "batch": 1,
+      "candidates": 500,
+      "new_retained": 479,
+      "retained_total": 479
+    },
+    {
+      "batch": 2,
+      "candidates": 500,
+      "new_retained": 463,
+      "retained_total": 942
+    },
+    {
+      "batch": 3,
+      "candidates": 500,
+      "new_retained": 443,
+      "retained_total": 1385
+    },
+    {
+      "batch": 4,
+      "candidates": 500,
+      "new_retained": 448,
+      "retained_total": 1833
+    },
+    {
+      "batch": 5,
+      "candidates": 500,
+      "new_retained": 167,
+      "retained_total": 2000
+    }
+  ],
+  "splits": {
+    "train": 1814,
+    "dev": 186
+  },
+  "dev_chapters": [
+    4,
+    15,
+    26,
+    37
+  ],
+  "dataset_ready": true,
+  "quality_basis": "Automated source-grounded filtering, not human expert verification.",
+  "semantic_decontamination_proven": false
+}
