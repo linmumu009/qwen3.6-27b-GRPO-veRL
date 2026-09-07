@@ -33,6 +33,8 @@
 
 ## 状态与复现
 
+2026-09-07恢复记录：全量836步训练已经完成，第418/836步检查点均通过校验。原流水线在首次导出时误用了系统安装的Megatron-Bridge，缺少该模型架构支持。现已把固定版本路径配置提升到父进程，并加入模块来源预检；以`POSTTRAIN_ONLY=true`启动后，仅重新核验已保存训练并继续导出、正式评测，不重训。恢复运行写入`recovery.log`及`export_418.true.log`/`export_836.true.log`，保留原始失败证据。启动恢复时确认处于第418步导出，尚无全量SFT正式得分。
+
 本版本已启动流水线，实机制数门禁通过：每遍1,126,158个输入token、11,516个受监督token，最大序列3,034 token；两遍合计2,252,316个输入token。首次状态核验处于`evaluating_mask8_all`，尚未产生全量SFT得分；40项相关本地测试通过。安全证据见[制数清单](logistics_mcq_fit_data_20260905.safe.json)和[实机门禁](logistics_mcq_fit_gate_20260905.safe.json)。
 
 入口：`scripts/run_logistics_mcq_fit_pipeline.sh`。远端目录：`/workspace/llin-verl-grpo/runs/logistics-mcq-fit-20260905`。`status.txt`记录当前阶段，`pipeline.log`记录进程及失败位置；私有题目/预测留在`private`和`data`目录，`safe`目录用于无正文汇总。

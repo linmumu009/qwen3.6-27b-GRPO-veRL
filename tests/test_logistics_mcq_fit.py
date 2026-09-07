@@ -1,4 +1,5 @@
 import pytest
+from pathlib import Path
 from scripts.evaluate_logistics_knowledge import _make_item, build_messages
 from scripts.prepare_logistics_mcq_fit import encode_item
 from scripts.qwen36_mcq_answer_dataset import validate_record
@@ -13,6 +14,26 @@ class Tokenizer:
         return 'PREFIX'
     def encode(self,text,**kwargs):
         return [ord(c) for c in text]
+
+
+def test_pipeline_pins_export_bridge_and_checks_resolution():
+    script=(Path(__file__).parents[1]/'scripts/run_logistics_mcq_fit_pipeline.sh').read_text()
+    assert 'BRIDGE=${ROOT}/reference/Megatron-Bridge-de93536e/src' in script
+    assert '${ROOT}:${BRIDGE}:${ROOT}/runtime:/verl:' in script
+    assert 'origin.is_relative_to(expected)' in script
+    assert script.index('origin.is_relative_to(expected)') < script.index('for step in 418 836')
+
+
+def test_recovery_skips_training_and_preserves_original_log():
+    script=(Path(__file__).parents[1]/'scripts/run_logistics_mcq_fit_pipeline.sh').read_text()
+    assert 'POSTTRAIN_ONLY=${POSTTRAIN_ONLY:-false}' in script
+    assert '! -e "${RUN}/recovery.log"' in script
+    assert 'exec >"${RUN}/recovery.log"' in script
+    guarded=script.split('if [[ "${POSTTRAIN_ONLY}" == false ]]; then\nfor arm',1)[1]
+    fresh,recovery=guarded.split('\nelse\n',1)
+    assert 'run_logistics_mcq_fit_train.sh' in fresh
+    assert 'run_logistics_mcq_fit_train.sh' not in recovery
+    assert '--checkpoint-exposure 1 --checkpoint-exposure 2' in recovery
 
 
 def test_exact_eval_messages_options_and_multi_answer_json():
