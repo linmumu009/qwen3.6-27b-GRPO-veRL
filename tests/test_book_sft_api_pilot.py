@@ -16,6 +16,8 @@ def test_grounding_requires_exact_quote():
 def test_missing_and_dependent_questions_rejected():
     assert 'missing_answer' in pilot.validate({}, '')
     assert 'context_dependency' in pilot.validate({'question': 'What does the above show?'}, '')
+    assert 'context_dependency' in pilot.validate({'question': 'Based on the excerpt, what should the retailer do?'}, '')
+    assert 'context_dependency' not in pilot.validate({'question': 'How do warehouse costs affect service levels?'}, '')
 
 
 def test_chapter_balancing_and_repeatability():

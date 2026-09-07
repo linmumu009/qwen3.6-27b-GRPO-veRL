@@ -30,7 +30,7 @@ def validate(qa, source):
         not isinstance(q, str) or len(q.strip()) < 15 or q not in source for q in quotes
     ):
         errors.append('invalid_verbatim_support')
-    if re.search(r'\b(above|below|provided passage|given passage|this passage|figure\s+\d|table\s+\d)\b', str(qa.get('question', '')), re.I):
+    if re.search(r'\b(above|below|provided passage|given passage|this passage|the excerpt|this excerpt|provided text|given text|the passage|figure\s+\d|table\s+\d)\b', str(qa.get('question', '')), re.I):
         errors.append('context_dependency')
     return errors
 

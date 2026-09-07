@@ -1,0 +1,90 @@
+{
+  "model": "qwen3.8-max",
+  "sample_ids": [
+    "bookqa-0068",
+    "bookqa-0072",
+    "bookqa-0108",
+    "bookqa-0050",
+    "bookqa-0089",
+    "bookqa-0137",
+    "bookqa-0102",
+    "bookqa-0044"
+  ],
+  "candidate_sha256": "6b81760e38a0c04d8e13ab314eec0dfa50596cebd04869c531f0003b586f75a4",
+  "review_sha256": "1c6c33efce344ccd0fb9998c1b2e5788bcfc9bf19e48fc1699ae0c1f256ca041",
+  "source_sha256": "21071ddfc147f1b2c3f1ffc4f6df66363927d4232260b41914b162a296a5816c",
+  "requests_per_item": 1,
+  "categories": [
+    "likely_false_positive",
+    "material",
+    "uncertain",
+    "wording_only"
+  ],
+  "unit_size_characters": 800,
+  "completed": 8,
+  "status": {
+    "valid_adjudication": 7,
+    "invalid_evidence_id": 1
+  },
+  "issue_categories": {
+    "likely_false_positive": 3,
+    "wording_only": 3,
+    "material": 2
+  },
+  "per_item": [
+    {
+      "id": "bookqa-0068",
+      "categories": {
+        "likely_false_positive": 1
+      }
+    },
+    {
+      "id": "bookqa-0072",
+      "categories": {
+        "wording_only": 1,
+        "material": 1
+      }
+    },
+    {
+      "id": "bookqa-0108",
+      "categories": {
+        "likely_false_positive": 1
+      }
+    },
+    {
+      "id": "bookqa-0050",
+      "categories": {
+        "wording_only": 1
+      }
+    },
+    {
+      "id": "bookqa-0089",
+      "categories": {
+        "wording_only": 1
+      }
+    },
+    {
+      "id": "bookqa-0102",
+      "categories": {
+        "material": 1
+      }
+    },
+    {
+      "id": "bookqa-0044",
+      "categories": {
+        "likely_false_positive": 1
+      }
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 32290,
+    "completion_tokens": 1108,
+    "total_tokens": 33398
+  },
+  "evidence_id_validation_only": true,
+  "independent_fact_check": false,
+  "human_review_complete": false,
+  "automatic_promotion": false,
+  "expanded": false,
+  "training_started": false
+}
