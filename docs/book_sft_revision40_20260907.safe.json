@@ -1,0 +1,246 @@
+{
+  "model": "qwen3.8-max",
+  "source_sha256": "21071ddfc147f1b2c3f1ffc4f6df66363927d4232260b41914b162a296a5816c",
+  "count": 40,
+  "workers": 40,
+  "seed": 20260908,
+  "chapter_count": 40,
+  "benchmark_used_in_generation": false,
+  "training_started": false,
+  "tasks": [
+    {
+      "id": "revision40-001",
+      "kind": "definition",
+      "source_id": "handbook8e-00038"
+    },
+    {
+      "id": "revision40-002",
+      "kind": "comparison",
+      "source_id": "handbook8e-00030"
+    },
+    {
+      "id": "revision40-003",
+      "kind": "conditions",
+      "source_id": "handbook8e-00057"
+    },
+    {
+      "id": "revision40-004",
+      "kind": "application",
+      "source_id": "handbook8e-00021"
+    },
+    {
+      "id": "revision40-005",
+      "kind": "definition",
+      "source_id": "handbook8e-00113"
+    },
+    {
+      "id": "revision40-006",
+      "kind": "comparison",
+      "source_id": "handbook8e-00078"
+    },
+    {
+      "id": "revision40-007",
+      "kind": "conditions",
+      "source_id": "handbook8e-00110"
+    },
+    {
+      "id": "revision40-008",
+      "kind": "application",
+      "source_id": "handbook8e-00040"
+    },
+    {
+      "id": "revision40-009",
+      "kind": "definition",
+      "source_id": "handbook8e-00003"
+    },
+    {
+      "id": "revision40-010",
+      "kind": "comparison",
+      "source_id": "handbook8e-00027"
+    },
+    {
+      "id": "revision40-011",
+      "kind": "conditions",
+      "source_id": "handbook8e-00079"
+    },
+    {
+      "id": "revision40-012",
+      "kind": "application",
+      "source_id": "handbook8e-00020"
+    },
+    {
+      "id": "revision40-013",
+      "kind": "definition",
+      "source_id": "handbook8e-00032"
+    },
+    {
+      "id": "revision40-014",
+      "kind": "comparison",
+      "source_id": "handbook8e-00081"
+    },
+    {
+      "id": "revision40-015",
+      "kind": "conditions",
+      "source_id": "handbook8e-00088"
+    },
+    {
+      "id": "revision40-016",
+      "kind": "application",
+      "source_id": "handbook8e-00072"
+    },
+    {
+      "id": "revision40-017",
+      "kind": "definition",
+      "source_id": "handbook8e-00049"
+    },
+    {
+      "id": "revision40-018",
+      "kind": "comparison",
+      "source_id": "handbook8e-00019"
+    },
+    {
+      "id": "revision40-019",
+      "kind": "conditions",
+      "source_id": "handbook8e-00084"
+    },
+    {
+      "id": "revision40-020",
+      "kind": "application",
+      "source_id": "handbook8e-00065"
+    },
+    {
+      "id": "revision40-021",
+      "kind": "definition",
+      "source_id": "handbook8e-00101"
+    },
+    {
+      "id": "revision40-022",
+      "kind": "comparison",
+      "source_id": "handbook8e-00099"
+    },
+    {
+      "id": "revision40-023",
+      "kind": "conditions",
+      "source_id": "handbook8e-00061"
+    },
+    {
+      "id": "revision40-024",
+      "kind": "application",
+      "source_id": "handbook8e-00108"
+    },
+    {
+      "id": "revision40-025",
+      "kind": "definition",
+      "source_id": "handbook8e-00104"
+    },
+    {
+      "id": "revision40-026",
+      "kind": "comparison",
+      "source_id": "handbook8e-00008"
+    },
+    {
+      "id": "revision40-027",
+      "kind": "conditions",
+      "source_id": "handbook8e-00005"
+    },
+    {
+      "id": "revision40-028",
+      "kind": "application",
+      "source_id": "handbook8e-00055"
+    },
+    {
+      "id": "revision40-029",
+      "kind": "definition",
+      "source_id": "handbook8e-00046"
+    },
+    {
+      "id": "revision40-030",
+      "kind": "comparison",
+      "source_id": "handbook8e-00096"
+    },
+    {
+      "id": "revision40-031",
+      "kind": "conditions",
+      "source_id": "handbook8e-00011"
+    },
+    {
+      "id": "revision40-032",
+      "kind": "application",
+      "source_id": "handbook8e-00067"
+    },
+    {
+      "id": "revision40-033",
+      "kind": "definition",
+      "source_id": "handbook8e-00114"
+    },
+    {
+      "id": "revision40-034",
+      "kind": "comparison",
+      "source_id": "handbook8e-00051"
+    },
+    {
+      "id": "revision40-035",
+      "kind": "conditions",
+      "source_id": "handbook8e-00036"
+    },
+    {
+      "id": "revision40-036",
+      "kind": "application",
+      "source_id": "handbook8e-00092"
+    },
+    {
+      "id": "revision40-037",
+      "kind": "definition",
+      "source_id": "handbook8e-00043"
+    },
+    {
+      "id": "revision40-038",
+      "kind": "comparison",
+      "source_id": "handbook8e-00026"
+    },
+    {
+      "id": "revision40-039",
+      "kind": "conditions",
+      "source_id": "handbook8e-00075"
+    },
+    {
+      "id": "revision40-040",
+      "kind": "application",
+      "source_id": "handbook8e-00091"
+    }
+  ],
+  "completed": 40,
+  "status": {
+    "auto_pass": 40
+  },
+  "kind_counts": {
+    "definition": 10,
+    "comparison": 10,
+    "conditions": 10,
+    "application": 10
+  },
+  "pass_by_kind": {
+    "definition": 10,
+    "comparison": 10,
+    "conditions": 10,
+    "application": 10
+  },
+  "passes_with_minor_notes": 0,
+  "usage": {
+    "prompt_tokens": 305911,
+    "completion_tokens": 12085,
+    "total_tokens": 317996
+  },
+  "human_review_complete": false,
+  "ready_for_training": false,
+  "benchmark_overlap_checked": true,
+  "limitation": "Same-model generation and audit; new samples and changed rubric prevent causal comparison with prior pilot.",
+  "benchmark_sha256": "b652b2108cb552346df11d005c15ff3137c50a756a7b24eb35302683ec33ed99",
+  "benchmark_rows": 1672,
+  "overlap_quarantined": 0,
+  "review_queue_count": 40,
+  "structural_issue_counts": {},
+  "lexical_rule": "Normalized exact question or shared 12-word span with benchmark question/options.",
+  "overlap_limitation": "Lexical screen only; neither semantic decontamination proof nor independent test-set status.",
+  "no_benchmark_content_sent_to_api": true
+}
