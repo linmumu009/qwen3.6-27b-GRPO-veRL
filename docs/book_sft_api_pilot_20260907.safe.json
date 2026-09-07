@@ -1,0 +1,43 @@
+{
+  "source_sha256": "21071ddfc147f1b2c3f1ffc4f6df66363927d4232260b41914b162a296a5816c",
+  "model": "qwen3.8-max",
+  "count": 200,
+  "workers": 64,
+  "benchmark_used": false,
+  "training_started": false,
+  "chapter_count": 44,
+  "completed": 200,
+  "status": {
+    "auto_pass": 151,
+    "structural_reject": 32,
+    "audit_reject": 17
+  },
+  "usage": {
+    "prompt_tokens": 1316607,
+    "completion_tokens": 50859,
+    "total_tokens": 1367466
+  },
+  "kind_counts": {
+    "definition": 50,
+    "comparison": 50,
+    "conditions": 50,
+    "application": 50
+  },
+  "accepted_chapters": 44,
+  "benchmark_overlap_checked": true,
+  "human_review_complete": false,
+  "ready_for_training": false,
+  "reviewer_limitation": "Same model, separate requests; not independent factual verification.",
+  "benchmark_sha256": "b652b2108cb552346df11d005c15ff3137c50a756a7b24eb35302683ec33ed99",
+  "benchmark_rows": 1672,
+  "overlap_quarantined": 0,
+  "review_queue_count": 151,
+  "structural_issue_counts": {
+    "invalid_verbatim_support": 32,
+    "missing_question": 1,
+    "missing_answer": 1
+  },
+  "lexical_rule": "Normalized exact question or shared 12-word span with benchmark question/options.",
+  "overlap_limitation": "Lexical screen only; neither semantic decontamination proof nor independent test-set status.",
+  "no_benchmark_content_sent_to_api": true
+}
