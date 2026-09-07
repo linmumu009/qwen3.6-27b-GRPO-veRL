@@ -1,0 +1,18 @@
+{
+  "label": "sft",
+  "model": "/opt/llin-book-sft-2000-20260907-run2/hf_export",
+  "dev_sha256": "bc1e47fb35979e77a06e0150ee4a84a8ac1d2f3a686ad33ba3c3e1e23d00b97d",
+  "items": 186,
+  "reference_answer_token_nll": 1.402268861556341,
+  "scored_tokens": 11562,
+  "finish_reasons": {
+    "stop": 186
+  },
+  "generated_tokens": 9961,
+  "training_performed": false,
+  "generation_repeats": 1,
+  "max_output_tokens": 256,
+  "temperature": 0,
+  "seed": 1024,
+  "evidence_in_model_prompt": false
+}

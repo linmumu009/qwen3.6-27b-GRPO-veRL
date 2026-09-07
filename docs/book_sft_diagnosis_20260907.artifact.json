@@ -1,0 +1,214 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "title": "教材 QA SFT 回退诊断",
+    "blocks": [
+      {
+        "id": "title",
+        "type": "markdown",
+        "body": "# 教材 QA SFT 回退诊断"
+      },
+      {
+        "id": "summary",
+        "type": "markdown",
+        "body": "## Executive Summary\n\n- **教材问答出现收益，正式评测没有受益。** 自动评分的完全正确回答从 41/183 增至 78/183；两个正式评测集的合计答对数从 1,371/1,672 降至 1,345/1,672。\n- **不能归结为“没有学到”。** 参考答案损失下降，训练与导出结构检查未发现明显异常；但这些检查不能证明整个供应链问答能力已提升。\n- **暂不扩大同一批数据的训练量。** 先检查教材问答与目标任务的覆盖和题型差异。当前证据支持收益未迁移，不足以认定唯一原因。"
+      },
+      {
+        "id": "scope",
+        "type": "markdown",
+        "body": "## 比较的是同一个 CPT 起点，两个不同的考察范围\n\n本轮比较纯教材 CPT 四遍第 116 步，与从该模型继续训练的教材 QA SFT 模型，不是直接比较原始 Step120。SFT 使用 1,814 条训练 QA；186 道开发题按教材章节留出，只对 SFT 留出，相关教材内容已参与 CPT。\n\n正式评测为 SC-bench knowledge 与 LogistikaBench 的同一批 1,672 道题，比较三轮严格多数票。教材诊断则为闭卷开放式短答，评分用教材证据，但两个被测模型推理时都不看证据。两种结果不能当成同一个准确率。"
+      },
+      {
+        "id": "book",
+        "type": "markdown",
+        "body": "## 教材短答更接近要求，但仍不是全面改善\n\n百炼 qwen3.8-max 隐去模型身份、按题目哈希确定 A/B 呈现位置，对两个回答分别按 0/1/2 分评分：错误或无有效回答、部分正确、完全正确。186 对中 183 对有效；1 对评分结构无效，2 对的题目可独立回答性或参考答案支持性被标记，均不计入分母。\n\n| 自动评分 | 纯教材 CPT | 教材 QA SFT |\n|---|---:|---:|\n| 完全正确（2 分） | 41 / 183（22.4%） | 78 / 183（42.6%） |\n| 部分正确（1 分） | 133 | 90 |\n| 错误或无有效回答（0 分） | 9 | 15 |\n\n完全正确比例增加 **20.2 个百分点**；逐题评分 SFT 更高 54 道、更低 22 道、相同 107 道。按是否满分划分，49 道提升至满分，12 道从满分下降。这支持教材短答任务上的收益，但低分题也增加，不能说所有题都改善。\n\n**这是自动裁判结果，不是专家正确率。** 出题和评分均来自同系列模型，可能偏好相似措辞与答案风格；单次评分仍有不确定性。",
+        "sourceId": "grading"
+      },
+      {
+        "id": "fairness",
+        "type": "markdown",
+        "body": "## 短答对照排除了明显截断偏差\n\n初次不加简答约束、输出上限 256 tokens 时，CPT 有 181/186 道触顶，SFT 全部自然结束。因此没有拿这组输出直接比较正确率。\n\n正式复核统一要求直接回答、不超过 100 个英文词、保留必要条件，并将输出上限提高到 512 tokens。两模型均 186/186 道自然结束；CPT 合计生成 19,870 tokens，SFT 11,644 tokens。评分仍可能受简答要求和长度差异影响，因此结论限定为该短答协议。"
+      },
+      {
+        "id": "bench",
+        "type": "markdown",
+        "body": "## 正式评测的损失主要来自物料搬运和运输\n\n合计净少答对 **26 道（−1.56 个百分点）**：21 道改对、47 道改错，1,324 道保持正确、280 道保持错误。下降不是单轮偶然现象：CPT 三轮答对 1,372、1,370、1,367 道，SFT 为 1,344、1,347、1,343 道。\n\n下图显示净变化非零的类别，单位为题，正值表示 SFT 多答对。物料搬运与运输合计 −23 道，仓储 +3 道。前两类本身题量较大（696、404 道），净下降集中不等同于单位题目退化风险最高。",
+        "sourceId": "metrics"
+      },
+      {
+        "id": "drivers",
+        "type": "chart",
+        "chartId": "drivers"
+      },
+      {
+        "id": "training",
+        "type": "markdown",
+        "body": "## 模型学到了参考答案分布，尚未发现明显训练或导出故障\n\n同一批 186 道开发题、11,562 个参考答案及结束符 tokens，逐 token 平均损失从 **1.925 降至 1.402**，约下降 27.2%。这是对参考答案分布的拟合，不等同于事实知识增加；答案风格变化也会影响这个数。\n\n训练完成 226 步，前 20 步平均损失约 1.723，末 20 步约 1.324，未发现非有限损失、梯度或学习率。导出模型开发损失 1.402 与训练器最终开发损失 1.401 接近。导出结构检查的 1,199 个张量名称、形状、类型均匹配；未做全部权重数值等价证明。\n\n这些证据降低了“根本没训练成功或导出明显损坏”的可能性，却不能证明完全不存在实现问题，也不能单凭最终损失判断是否过拟合。"
+      },
+      {
+        "id": "next",
+        "type": "markdown",
+        "body": "## 下一步先验证任务匹配，再决定是否重训\n\n1. **保留纯教材 CPT 作为当前两个评测集的较好候选。** 不将这次 SFT 当作已验证的交付提升，也不直接增加同配方轮数。\n2. **检查教材 QA 的覆盖与任务形式。** 在不使用评测题正文生成训练数据的前提下，检查是否缺少条件判断、概念辨析、干扰项排除、运输与物料搬运应用题。这些是待验证方向，不是已经确认的根因。\n3. **若要验证题型迁移，做受控小实验。** 仍从同一 CPT 起点，用独立教材内容构造应用和辨析题，尽量匹配训练 token 预算和其他设置，并用独立开发集选择配置。训练需下一步授权，本轮未启动。"
+      },
+      {
+        "id": "questions",
+        "type": "markdown",
+        "body": "## 尚待回答：学的是知识、表达，还是特定题型\n\n目前不能将“知识不足”和“不会回答”二选一。教材短答改善，既可能来自知识提取，也可能来自简洁表达、条件覆盖或裁判偏好；正式评测下降还可能来自训练分布偏移或对既有能力的干扰。\n\n区分这些解释，需要跨来源开发题、专家小样本复核或匹配训练量的题型对照；仅靠这一组 SFT 与一个自动裁判无法完成因果归因。"
+      },
+      {
+        "id": "caveats",
+        "type": "markdown",
+        "body": "## 结论边界\n\n教材开发题只覆盖 4 个留出章节，且同一本书已参加 CPT，不是全新知识测验。两个评测集被多次用于实验比较，不能将该分数当作未触碰测试集上的泛化证明。自动评分不替代人工金标。\n\n正式评测每轮解析失败均为 0；CPT 多数票汇总中的 2 个失败实际是没有严格多数票，不是输出格式错误。汇总请求元数据中的输出上限 128 与运行脚本的 96 不一致，不能把 128 当作实际运行配置。\n\n本轮仅进行推理、评分和诊断，没有新增训练。私有题目、模型回答及教材片段保留在 5 号机；报告与 GitHub 仅包含安全汇总、脚本和方法说明。"
+      }
+    ],
+    "sources": [
+      {
+        "id": "metrics",
+        "label": "正式评测逐题配对与训练日志",
+        "path": "docs/book_sft_diagnosis_metrics_20260907.safe.json",
+        "query": {
+          "engine": "SQLite",
+          "sql": "SELECT c.dataset,c.category,COUNT(*) AS items, SUM(CASE WHEN c.correct=0 AND s.correct=1 THEN 1 ELSE 0 END) AS improved, SUM(CASE WHEN c.correct=1 AND s.correct=0 THEN 1 ELSE 0 END) AS regressed, SUM(s.correct-c.correct) AS net FROM cpt_results c JOIN sft_results s ON c.item_hash=s.item_hash GROUP BY c.dataset,c.category ORDER BY net,c.dataset,c.category",
+          "tables_used": [
+            "cpt_results",
+            "sft_results"
+          ],
+          "description": "将冻结的CPT/SFT安全逐题结果载入SQLite，按题目哈希连接，计算分类净变化。",
+          "metric_definitions": {
+            "net": "SFT正确数减去CPT正确数；正值为改进，单位题。"
+          },
+          "filters": [
+            "同一1672题三轮严格多数票"
+          ]
+        }
+      },
+      {
+        "id": "grading",
+        "label": "百炼匿名配对评分（183/186有效）",
+        "path": "docs/book_sft_diagnosis_grading_20260907.safe.json"
+      },
+      {
+        "id": "cpt_nll",
+        "label": "纯教材CPT参考答案损失",
+        "path": "docs/book_sft_diagnosis_cpt_20260907.safe.json"
+      },
+      {
+        "id": "sft_nll",
+        "label": "教材QA SFT参考答案损失",
+        "path": "docs/book_sft_diagnosis_sft_20260907.safe.json"
+      },
+      {
+        "id": "cpt_concise",
+        "label": "CPT简答生成覆盖",
+        "path": "docs/book_sft_diagnosis_cpt_concise_20260907.safe.json"
+      },
+      {
+        "id": "sft_concise",
+        "label": "SFT简答生成覆盖",
+        "path": "docs/book_sft_diagnosis_sft_concise_20260907.safe.json"
+      }
+    ],
+    "charts": [
+      {
+        "id": "drivers",
+        "type": "bar",
+        "title": "分类净答对数变化",
+        "sourceId": "metrics",
+        "encodings": {
+          "x": {
+            "field": "category",
+            "type": "nominal"
+          },
+          "y": {
+            "field": "net",
+            "type": "quantitative"
+          }
+        },
+        "options": {
+          "orientation": "vertical"
+        },
+        "dataset": "drivers",
+        "source": {
+          "id": "metrics",
+          "label": "正式评测逐题配对与训练日志",
+          "path": "docs/book_sft_diagnosis_metrics_20260907.safe.json",
+          "query": {
+            "engine": "SQLite",
+            "sql": "SELECT c.dataset,c.category,COUNT(*) AS items, SUM(CASE WHEN c.correct=0 AND s.correct=1 THEN 1 ELSE 0 END) AS improved, SUM(CASE WHEN c.correct=1 AND s.correct=0 THEN 1 ELSE 0 END) AS regressed, SUM(s.correct-c.correct) AS net FROM cpt_results c JOIN sft_results s ON c.item_hash=s.item_hash GROUP BY c.dataset,c.category ORDER BY net,c.dataset,c.category",
+            "tables_used": [
+              "cpt_results",
+              "sft_results"
+            ],
+            "description": "将冻结的CPT/SFT安全逐题结果载入SQLite，按题目哈希连接，计算分类净变化。",
+            "metric_definitions": {
+              "net": "SFT正确数减去CPT正确数；正值为改进，单位题。"
+            },
+            "filters": [
+              "同一1672题三轮严格多数票"
+            ]
+          }
+        },
+        "description": "SFT − CPT；单位：题；仅显示净变化非零类别",
+        "showDescription": true
+      }
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "status": "ready",
+    "datasets": {
+      "drivers": [
+        {
+          "category": "物料搬运",
+          "net": -12,
+          "improved": 4,
+          "regressed": 16,
+          "items": 696
+        },
+        {
+          "category": "运输",
+          "net": -11,
+          "improved": 5,
+          "regressed": 16,
+          "items": 404
+        },
+        {
+          "category": "履约",
+          "net": -4,
+          "improved": 1,
+          "regressed": 5,
+          "items": 79
+        },
+        {
+          "category": "供应链",
+          "net": -2,
+          "improved": 1,
+          "regressed": 3,
+          "items": 102
+        },
+        {
+          "category": "采购-L",
+          "net": -1,
+          "improved": 0,
+          "regressed": 1,
+          "items": 42
+        },
+        {
+          "category": "采购-SC",
+          "net": 1,
+          "improved": 1,
+          "regressed": 0,
+          "items": 12
+        },
+        {
+          "category": "仓储",
+          "net": 3,
+          "improved": 6,
+          "regressed": 3,
+          "items": 202
+        }
+      ]
+    }
+  }
+}

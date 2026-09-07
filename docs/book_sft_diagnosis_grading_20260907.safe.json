@@ -1,0 +1,50 @@
+{
+  "items": 186,
+  "model": "qwen3.8-max",
+  "workers": 64,
+  "calls_per_pair": 1,
+  "rubric": "2 = fully correct, answers question, no material unsupported claims; 1 = partially correct/material omission; 0 = wrong or no useful answer.",
+  "blind_model_names": true,
+  "position_rule": "sha256(id) parity",
+  "training": false,
+  "input_hashes": {
+    "cpt": "4ac80167defac17277bc806daf4cd7d0911d92349d7d96851626e79190254d5d",
+    "sft": "e36c2ae852b8d49ae8133fdedd62dd050a0e4478b8258c4d20e19d36d00c3762"
+  },
+  "status": {
+    "scored": 183,
+    "invalid_review": 1,
+    "question_or_reference_flag": 2
+  },
+  "scored_items": 183,
+  "scores": {
+    "cpt": {
+      "1": 133,
+      "2": 41,
+      "0": 9
+    },
+    "sft": {
+      "2": 78,
+      "0": 15,
+      "1": 90
+    }
+  },
+  "paired": {
+    "sft_better": 54,
+    "tie": 107,
+    "cpt_better": 22
+  },
+  "full_correct_transitions": {
+    "improved": 49,
+    "both": 29,
+    "neither": 93,
+    "regressed": 12
+  },
+  "usage": {
+    "prompt_tokens": 759914,
+    "completion_tokens": 28270,
+    "total_tokens": 788184
+  },
+  "human_verified": false,
+  "limitation": "Same model family as QA author; automatic judge and chapter-limited dev data, not expert gold labels."
+}

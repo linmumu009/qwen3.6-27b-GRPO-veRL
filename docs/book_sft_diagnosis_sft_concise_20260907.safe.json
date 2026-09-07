@@ -1,0 +1,13 @@
+{
+  "label": "sft",
+  "items": 186,
+  "variant": "concise",
+  "finish_reasons": {
+    "stop": 186
+  },
+  "generated_tokens": 11644,
+  "max_output_tokens": 512,
+  "training_performed": false,
+  "same_short_answer_instruction": true,
+  "reference_answer_nll_measured": false
+}
