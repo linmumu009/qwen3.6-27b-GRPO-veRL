@@ -1,0 +1,66 @@
+{
+  "seed": 20260907,
+  "candidate_sha256": "6b81760e38a0c04d8e13ab314eec0dfa50596cebd04869c531f0003b586f75a4",
+  "source_sha256": "21071ddfc147f1b2c3f1ffc4f6df66363927d4232260b41914b162a296a5816c",
+  "sample_ids": [
+    "bookqa-0076",
+    "bookqa-0068",
+    "bookqa-0134",
+    "bookqa-0072",
+    "bookqa-0185",
+    "bookqa-0104",
+    "bookqa-0163",
+    "bookqa-0108",
+    "bookqa-0178",
+    "bookqa-0057",
+    "bookqa-0066",
+    "bookqa-0050",
+    "bookqa-0113",
+    "bookqa-0187",
+    "bookqa-0089",
+    "bookqa-0137",
+    "bookqa-0004",
+    "bookqa-0102",
+    "bookqa-0024",
+    "bookqa-0044",
+    "bookqa-0008",
+    "bookqa-0012",
+    "bookqa-0002",
+    "bookqa-0059",
+    "bookqa-0039",
+    "bookqa-0135",
+    "bookqa-0071",
+    "bookqa-0036"
+  ],
+  "sample_n": 28,
+  "model": "qwen3.8-max",
+  "workers": 28,
+  "groups": {
+    "auto_pass": {
+      "recheck_pass": 12,
+      "concern": 8
+    },
+    "structural_reject": {
+      "concern": 2,
+      "evidence_unverified": 2
+    },
+    "audit_reject": {
+      "concern": 4
+    }
+  },
+  "all_structural_reject_quote_status": {
+    "content_mismatch": 27,
+    "whitespace_only": 4,
+    "missing_or_short": 1
+  },
+  "usage": {
+    "prompt_tokens": 109319,
+    "completion_tokens": 9680,
+    "total_tokens": 118999
+  },
+  "prior_verdict_visible_to_reviewer": false,
+  "human_review_complete": false,
+  "expanded": false,
+  "training_started": false,
+  "limitation": "Same-model automated re-review, stratified small sample; not independent human verification."
+}
