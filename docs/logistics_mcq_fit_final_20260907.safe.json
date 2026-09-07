@@ -1,0 +1,303 @@
+{
+  "private_content_included": false,
+  "independent_test": false,
+  "phase": "final",
+  "objective": "maximize SC-bench and LogistikaBench same-item official-format scores",
+  "baseline_source_sha256": "76d1cf72e4f013d144a402efa179b3a21d7af77b6527bb8971a0609557aa66b0",
+  "models": {
+    "step120": {
+      "items": 1672,
+      "correct": 1369,
+      "accuracy": 0.81878,
+      "parse_failures": 0,
+      "by_dataset": [
+        {
+          "dataset": "LogistikaBench",
+          "items": 1446,
+          "correct": 1180,
+          "accuracy": 0.816044,
+          "parse_failures": 0,
+          "api_failures": 0
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "items": 226,
+          "correct": 189,
+          "accuracy": 0.836283,
+          "parse_failures": 0,
+          "api_failures": 0
+        }
+      ]
+    },
+    "mask8_all": {
+      "items": 1672,
+      "correct": 1374,
+      "accuracy": 0.82177,
+      "parse_failures": 1,
+      "by_dataset": [
+        {
+          "dataset": "LogistikaBench",
+          "items": 1446,
+          "correct": 1185,
+          "accuracy": 0.819502,
+          "parse_failures": 1,
+          "api_failures": 0
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "items": 226,
+          "correct": 189,
+          "accuracy": 0.836283,
+          "parse_failures": 0,
+          "api_failures": 0
+        }
+      ]
+    },
+    "mask8_answer": {
+      "items": 1672,
+      "correct": 1374,
+      "accuracy": 0.82177,
+      "parse_failures": 1,
+      "by_dataset": [
+        {
+          "dataset": "LogistikaBench",
+          "items": 1446,
+          "correct": 1185,
+          "accuracy": 0.819502,
+          "parse_failures": 1,
+          "api_failures": 0
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "items": 226,
+          "correct": 189,
+          "accuracy": 0.836283,
+          "parse_failures": 0,
+          "api_failures": 0
+        }
+      ]
+    },
+    "sft_step418": {
+      "items": 1672,
+      "correct": 1558,
+      "accuracy": 0.931818,
+      "parse_failures": 0,
+      "by_dataset": [
+        {
+          "dataset": "LogistikaBench",
+          "items": 1446,
+          "correct": 1335,
+          "accuracy": 0.923237,
+          "parse_failures": 0,
+          "api_failures": 0
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "items": 226,
+          "correct": 223,
+          "accuracy": 0.986726,
+          "parse_failures": 0,
+          "api_failures": 0
+        }
+      ]
+    },
+    "sft_step836": {
+      "items": 1672,
+      "correct": 1579,
+      "accuracy": 0.944378,
+      "parse_failures": 0,
+      "by_dataset": [
+        {
+          "dataset": "LogistikaBench",
+          "items": 1446,
+          "correct": 1359,
+          "accuracy": 0.939834,
+          "parse_failures": 0,
+          "api_failures": 0
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "items": 226,
+          "correct": 220,
+          "accuracy": 0.973451,
+          "parse_failures": 0,
+          "api_failures": 0
+        }
+      ]
+    }
+  },
+  "vs_step120": {
+    "mask8_all": {
+      "overall": {
+        "items": 1672,
+        "baseline_correct": 1369,
+        "candidate_correct": 1374,
+        "baseline_accuracy": 0.81877990430622,
+        "candidate_accuracy": 0.8217703349282297,
+        "delta_accuracy_points": 0.29904306220095694,
+        "net_correct": 5,
+        "improved_0_to_1": 27,
+        "regressed_1_to_0": 22
+      },
+      "by_dataset": {
+        "LogistikaBench": {
+          "items": 1446,
+          "baseline_correct": 1180,
+          "candidate_correct": 1185,
+          "baseline_accuracy": 0.8160442600276625,
+          "candidate_accuracy": 0.8195020746887967,
+          "delta_accuracy_points": 0.3457814661134163,
+          "net_correct": 5,
+          "improved_0_to_1": 26,
+          "regressed_1_to_0": 21
+        },
+        "SC-bench-knowledge": {
+          "items": 226,
+          "baseline_correct": 189,
+          "candidate_correct": 189,
+          "baseline_accuracy": 0.8362831858407079,
+          "candidate_accuracy": 0.8362831858407079,
+          "delta_accuracy_points": 0.0,
+          "net_correct": 0,
+          "improved_0_to_1": 1,
+          "regressed_1_to_0": 1
+        }
+      }
+    },
+    "mask8_answer": {
+      "overall": {
+        "items": 1672,
+        "baseline_correct": 1369,
+        "candidate_correct": 1374,
+        "baseline_accuracy": 0.81877990430622,
+        "candidate_accuracy": 0.8217703349282297,
+        "delta_accuracy_points": 0.29904306220095694,
+        "net_correct": 5,
+        "improved_0_to_1": 25,
+        "regressed_1_to_0": 20
+      },
+      "by_dataset": {
+        "LogistikaBench": {
+          "items": 1446,
+          "baseline_correct": 1180,
+          "candidate_correct": 1185,
+          "baseline_accuracy": 0.8160442600276625,
+          "candidate_accuracy": 0.8195020746887967,
+          "delta_accuracy_points": 0.3457814661134163,
+          "net_correct": 5,
+          "improved_0_to_1": 24,
+          "regressed_1_to_0": 19
+        },
+        "SC-bench-knowledge": {
+          "items": 226,
+          "baseline_correct": 189,
+          "candidate_correct": 189,
+          "baseline_accuracy": 0.8362831858407079,
+          "candidate_accuracy": 0.8362831858407079,
+          "delta_accuracy_points": 0.0,
+          "net_correct": 0,
+          "improved_0_to_1": 1,
+          "regressed_1_to_0": 1
+        }
+      }
+    },
+    "sft_step418": {
+      "overall": {
+        "items": 1672,
+        "baseline_correct": 1369,
+        "candidate_correct": 1558,
+        "baseline_accuracy": 0.81877990430622,
+        "candidate_accuracy": 0.9318181818181818,
+        "delta_accuracy_points": 11.303827751196172,
+        "net_correct": 189,
+        "improved_0_to_1": 237,
+        "regressed_1_to_0": 48
+      },
+      "by_dataset": {
+        "LogistikaBench": {
+          "items": 1446,
+          "baseline_correct": 1180,
+          "candidate_correct": 1335,
+          "baseline_accuracy": 0.8160442600276625,
+          "candidate_accuracy": 0.9232365145228216,
+          "delta_accuracy_points": 10.719225449515905,
+          "net_correct": 155,
+          "improved_0_to_1": 203,
+          "regressed_1_to_0": 48
+        },
+        "SC-bench-knowledge": {
+          "items": 226,
+          "baseline_correct": 189,
+          "candidate_correct": 223,
+          "baseline_accuracy": 0.8362831858407079,
+          "candidate_accuracy": 0.9867256637168141,
+          "delta_accuracy_points": 15.044247787610619,
+          "net_correct": 34,
+          "improved_0_to_1": 34,
+          "regressed_1_to_0": 0
+        }
+      }
+    },
+    "sft_step836": {
+      "overall": {
+        "items": 1672,
+        "baseline_correct": 1369,
+        "candidate_correct": 1579,
+        "baseline_accuracy": 0.81877990430622,
+        "candidate_accuracy": 0.944377990430622,
+        "delta_accuracy_points": 12.559808612440191,
+        "net_correct": 210,
+        "improved_0_to_1": 251,
+        "regressed_1_to_0": 41
+      },
+      "by_dataset": {
+        "LogistikaBench": {
+          "items": 1446,
+          "baseline_correct": 1180,
+          "candidate_correct": 1359,
+          "baseline_accuracy": 0.8160442600276625,
+          "candidate_accuracy": 0.9398340248962656,
+          "delta_accuracy_points": 12.378976486860305,
+          "net_correct": 179,
+          "improved_0_to_1": 219,
+          "regressed_1_to_0": 40
+        },
+        "SC-bench-knowledge": {
+          "items": 226,
+          "baseline_correct": 189,
+          "candidate_correct": 220,
+          "baseline_accuracy": 0.8362831858407079,
+          "candidate_accuracy": 0.9734513274336283,
+          "delta_accuracy_points": 13.716814159292035,
+          "net_correct": 31,
+          "improved_0_to_1": 32,
+          "regressed_1_to_0": 1
+        }
+      }
+    }
+  },
+  "reviewed8_in_official_format": {
+    "step120": {
+      "items": 8,
+      "correct": 7
+    },
+    "mask8_all": {
+      "items": 8,
+      "correct": 8
+    },
+    "mask8_answer": {
+      "items": 8,
+      "correct": 8
+    },
+    "sft_step418": {
+      "items": 8,
+      "correct": 8
+    },
+    "sft_step836": {
+      "items": 8,
+      "correct": 8
+    }
+  },
+  "best_without_dataset_regression": "sft_step836",
+  "selection_rule": "highest total correct among candidates with neither dataset below Step120; ties keep earlier baseline/candidate"
+}
