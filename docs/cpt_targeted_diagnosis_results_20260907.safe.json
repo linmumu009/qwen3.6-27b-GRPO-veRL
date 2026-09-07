@@ -1,0 +1,250 @@
+{
+  "private_content_included": false,
+  "training_performed": false,
+  "model": "pure_book_CPT4x_step116",
+  "items": 363,
+  "repeats": 3,
+  "author_reviewer_and_test_model_same": false,
+  "automatic_probe_passed": 76,
+  "automatic_evidence_gold_agree_passed": 13,
+  "human_validated_probes": 0,
+  "gold_used_for_retrieval_or_authoring": false,
+  "limitations": [
+    "single-book lexical retrieval, not exhaustive knowledge coverage",
+    "same-model automatic probe/reviewer judgments are provisional",
+    "selection is historical errors, not population prevalence",
+    "closed/open conditions use a common neutral diagnostic system prompt",
+    "references can directly reveal answers; rescue does not prove missing parametric knowledge",
+    "Inherited probe/evidence quality is not upgraded by changing the test model.",
+    "Current closed/open results use diagnostic prompts, not official benchmark scores.",
+    "Do not use any case, probe, targeted evidence pack or answer from this run as training data."
+  ],
+  "cohorts": {
+    "cpt_historical_correct": {
+      "items": 65,
+      "conditions": {
+        "original_closed": {
+          "items": 65,
+          "correct": 60,
+          "no_majority": 0,
+          "repeat_unstable": 1
+        },
+        "original_with_book": {
+          "items": 65,
+          "correct": 60,
+          "no_majority": 0,
+          "repeat_unstable": 2
+        },
+        "basic_closed": {
+          "items": 13,
+          "correct": 13,
+          "no_majority": 0,
+          "repeat_unstable": 0
+        },
+        "basic_with_book": {
+          "items": 13,
+          "correct": 13,
+          "no_majority": 0,
+          "repeat_unstable": 0
+        }
+      },
+      "original_transitions_all": {
+        "items": 65,
+        "closed_wrong_book_correct": 3,
+        "closed_correct_book_wrong": 3
+      },
+      "original_transitions_auto_coverage_subset": {
+        "items": 7,
+        "closed_wrong_book_correct": 0,
+        "closed_correct_book_wrong": 0
+      },
+      "provisional_application_review_candidates": 0,
+      "provisional_application_candidate_denominator": 7,
+      "evidence_not_auto_verified": 58
+    },
+    "cpt_historical_wrong": {
+      "items": 298,
+      "conditions": {
+        "original_closed": {
+          "items": 298,
+          "correct": 8,
+          "no_majority": 0,
+          "repeat_unstable": 10
+        },
+        "original_with_book": {
+          "items": 298,
+          "correct": 50,
+          "no_majority": 1,
+          "repeat_unstable": 4
+        },
+        "basic_closed": {
+          "items": 63,
+          "correct": 57,
+          "no_majority": 0,
+          "repeat_unstable": 0
+        },
+        "basic_with_book": {
+          "items": 63,
+          "correct": 62,
+          "no_majority": 0,
+          "repeat_unstable": 0
+        }
+      },
+      "original_transitions_all": {
+        "items": 298,
+        "closed_wrong_book_correct": 48,
+        "closed_correct_book_wrong": 6
+      },
+      "original_transitions_auto_coverage_subset": {
+        "items": 6,
+        "closed_wrong_book_correct": 2,
+        "closed_correct_book_wrong": 0
+      },
+      "provisional_application_review_candidates": 3,
+      "provisional_application_candidate_denominator": 5,
+      "evidence_not_auto_verified": 292
+    }
+  },
+  "manifest": {
+    "model": "/workspace/llin-verl-grpo/runs/logistics-cpt-book-exposure-curve-2x4x-20260904-01/hf_export_step_116",
+    "baseline_sha256": "3ab3202011e6e58e1ec3db7b1b1dce8692369c433e33c3d8bb3eda131f51b92a",
+    "cases_sha256": "9a76408e3075e013b4814449fc1c147e7dccff04806582c663419fe4b2f3475a",
+    "probes_sha256": "a6d4f5a4746853d29d25c7c9bd9b022c13608380175bb8fe54209736ccc2be0f",
+    "baseline_items": 1672,
+    "baseline_wrong": 301,
+    "old_cohort_items": 363,
+    "cpt_wrong_in_old_cohort": 298,
+    "cpt_wrong_outside_old_cohort": 3,
+    "error_profile": [
+      {
+        "dataset": "LogistikaBench",
+        "category": "material_handling",
+        "items": 696,
+        "wrong": 125,
+        "error_rate": 0.17959770114942528
+      },
+      {
+        "dataset": "LogistikaBench",
+        "category": "transport",
+        "items": 404,
+        "wrong": 70,
+        "error_rate": 0.17326732673267325
+      },
+      {
+        "dataset": "LogistikaBench",
+        "category": "warehousing",
+        "items": 202,
+        "wrong": 50,
+        "error_rate": 0.24752475247524752
+      },
+      {
+        "dataset": "LogistikaBench",
+        "category": "supply_chain",
+        "items": 102,
+        "wrong": 13,
+        "error_rate": 0.12745098039215685
+      },
+      {
+        "dataset": "SC-bench-knowledge",
+        "category": "Logistics Collaboration",
+        "items": 73,
+        "wrong": 13,
+        "error_rate": 0.1780821917808219
+      },
+      {
+        "dataset": "SC-bench-knowledge",
+        "category": "Fulfillment",
+        "items": 79,
+        "wrong": 12,
+        "error_rate": 0.1518987341772152
+      },
+      {
+        "dataset": "LogistikaBench",
+        "category": "procurement",
+        "items": 42,
+        "wrong": 6,
+        "error_rate": 0.14285714285714285
+      },
+      {
+        "dataset": "SC-bench-knowledge",
+        "category": "Procurement",
+        "items": 12,
+        "wrong": 4,
+        "error_rate": 0.3333333333333333
+      },
+      {
+        "dataset": "SC-bench-knowledge",
+        "category": "Finance and Operations",
+        "items": 20,
+        "wrong": 3,
+        "error_rate": 0.15
+      },
+      {
+        "dataset": "SC-bench-knowledge",
+        "category": "In-warehouse",
+        "items": 12,
+        "wrong": 3,
+        "error_rate": 0.25
+      },
+      {
+        "dataset": "SC-bench-knowledge",
+        "category": "Planning",
+        "items": 14,
+        "wrong": 2,
+        "error_rate": 0.14285714285714285
+      },
+      {
+        "dataset": "SC-bench-knowledge",
+        "category": "Network",
+        "items": 3,
+        "wrong": 0,
+        "error_rate": 0.0
+      },
+      {
+        "dataset": "SC-bench-knowledge",
+        "category": "unknown",
+        "items": 4,
+        "wrong": 0,
+        "error_rate": 0.0
+      },
+      {
+        "dataset": "SC-bench-knowledge",
+        "category": "Other",
+        "items": 3,
+        "wrong": 0,
+        "error_rate": 0.0
+      },
+      {
+        "dataset": "SC-bench-knowledge",
+        "category": "Inventory",
+        "items": 4,
+        "wrong": 0,
+        "error_rate": 0.0
+      },
+      {
+        "dataset": "SC-bench-knowledge",
+        "category": "Merchandise",
+        "items": 1,
+        "wrong": 0,
+        "error_rate": 0.0
+      },
+      {
+        "dataset": "SC-bench-knowledge",
+        "category": "Returns and Waste",
+        "items": 1,
+        "wrong": 0,
+        "error_rate": 0.0
+      }
+    ],
+    "training": false,
+    "new_qa_generated": false,
+    "benchmark_text_sent_to_api": false,
+    "old_probe_quality_not_upgraded": true,
+    "cohort_basis": "Old Step120 errors plus matched controls; not a representative new CPT cohort."
+  },
+  "finish_reasons": {
+    "stop": 2634
+  },
+  "inherited_probes_from": "Step120",
+  "no_new_training": true
+}
