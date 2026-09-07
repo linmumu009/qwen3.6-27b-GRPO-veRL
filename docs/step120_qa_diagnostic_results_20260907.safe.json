@@ -1,0 +1,132 @@
+{
+  "private_content_included": false,
+  "training_performed": false,
+  "model": "Step120",
+  "items": 363,
+  "repeats": 3,
+  "author_reviewer_and_test_model_same": true,
+  "automatic_probe_passed": 76,
+  "automatic_evidence_gold_agree_passed": 13,
+  "human_validated_probes": 0,
+  "gold_used_for_retrieval_or_authoring": false,
+  "limitations": [
+    "single-book lexical retrieval, not exhaustive knowledge coverage",
+    "same-model automatic probe/reviewer judgments are provisional",
+    "selection is historical errors, not population prevalence",
+    "closed/open conditions use a common neutral diagnostic system prompt",
+    "references can directly reveal answers; rescue does not prove missing parametric knowledge"
+  ],
+  "cohorts": {
+    "original_correct_control": {
+      "items": 60,
+      "conditions": {
+        "original_closed": {
+          "items": 60,
+          "correct": 57,
+          "no_majority": 0,
+          "repeat_unstable": 1
+        },
+        "original_with_book": {
+          "items": 60,
+          "correct": 54,
+          "no_majority": 0,
+          "repeat_unstable": 1
+        },
+        "basic_closed": {
+          "items": 11,
+          "correct": 11,
+          "no_majority": 0,
+          "repeat_unstable": 0
+        },
+        "basic_with_book": {
+          "items": 11,
+          "correct": 11,
+          "no_majority": 0,
+          "repeat_unstable": 0
+        }
+      },
+      "original_transitions_all": {
+        "items": 60,
+        "closed_wrong_book_correct": 1,
+        "closed_correct_book_wrong": 4
+      },
+      "original_transitions_auto_coverage_subset": {
+        "items": 7,
+        "closed_wrong_book_correct": 0,
+        "closed_correct_book_wrong": 0
+      },
+      "provisional_application_review_candidates": 0,
+      "provisional_application_candidate_denominator": 7,
+      "evidence_not_auto_verified": 53
+    },
+    "original_error": {
+      "items": 303,
+      "conditions": {
+        "original_closed": {
+          "items": 303,
+          "correct": 6,
+          "no_majority": 0,
+          "repeat_unstable": 17
+        },
+        "original_with_book": {
+          "items": 303,
+          "correct": 58,
+          "no_majority": 1,
+          "repeat_unstable": 13
+        },
+        "basic_closed": {
+          "items": 65,
+          "correct": 59,
+          "no_majority": 0,
+          "repeat_unstable": 0
+        },
+        "basic_with_book": {
+          "items": 65,
+          "correct": 64,
+          "no_majority": 0,
+          "repeat_unstable": 0
+        }
+      },
+      "original_transitions_all": {
+        "items": 303,
+        "closed_wrong_book_correct": 55,
+        "closed_correct_book_wrong": 3
+      },
+      "original_transitions_auto_coverage_subset": {
+        "items": 6,
+        "closed_wrong_book_correct": 2,
+        "closed_correct_book_wrong": 0
+      },
+      "provisional_application_review_candidates": 3,
+      "provisional_application_candidate_denominator": 5,
+      "evidence_not_auto_verified": 297
+    }
+  },
+  "manifest": {
+    "private_content_included": false,
+    "training_allowed": false,
+    "source_sha256": "b652b2108cb552346df11d005c15ff3137c50a756a7b24eb35302683ec33ed99",
+    "historical_majority_sha256": "76d1cf72e4f013d144a402efa179b3a21d7af77b6527bb8971a0609557aa66b0",
+    "book_parquet_sha256": "975dc8719da2ff6ba0f2eb5db4faa03cb72f2f1ee36c14ed5e35460d4ca4c1c2",
+    "book_source": "user-authorized Handbook of Logistics and Distribution Management, 8th edition",
+    "cases_sha256": "9a76408e3075e013b4814449fc1c147e7dccff04806582c663419fe4b2f3475a",
+    "errors": 303,
+    "controls": 60,
+    "items": 363,
+    "exact_dataset_type_category_controls": 60,
+    "cohort_by_dataset": {
+      "original_error / LogistikaBench": 266,
+      "original_error / SC-bench-knowledge": 37,
+      "original_correct_control / LogistikaBench": 53,
+      "original_correct_control / SC-bench-knowledge": 7
+    },
+    "retrieval_queries_use_gold": false,
+    "book_windows": 1183,
+    "zero_retrieval_cases": 0,
+    "coverage_note": "lexical retrieval is not verified sufficiency; a single handbook may omit topics or jurisdictions",
+    "historical_error_selection_not_recomputed": true,
+    "control_sampling": "60 systematic error anchors stratified by dataset/category/type; nearest unused original-correct match",
+    "model": "Step120, not any exam-CPT/SFT checkpoint"
+  },
+  "results_sha256": "b1eb1b2b1486df995f87bcb0b8b5e14f482e2bfaba2a006aa0e7fb286b49bc4b"
+}

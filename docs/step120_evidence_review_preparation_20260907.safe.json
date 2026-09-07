@@ -1,0 +1,46 @@
+{
+  "private_content_included": false,
+  "training_performed": false,
+  "status": "prepared_pending_authorized_content_review",
+  "review_items": 8,
+  "application_candidates": 3,
+  "additional_systematic_errors": 5,
+  "selected_by_dataset": {
+    "SC-bench-knowledge": 2,
+    "LogistikaBench": 6
+  },
+  "candidate_all_four_conditions_stable": 3,
+  "evidence_gate_counts_all": {
+    "audit_did_not_assert_sufficiency": 80,
+    "audit_missing_or_invalid": 259,
+    "blind_reference_answer_disagrees_with_gold": 10,
+    "automatic_pass_not_independently_verified": 13,
+    "verbatim_quote_gate_failed": 1
+  },
+  "evidence_gate_counts_errors": {
+    "audit_did_not_assert_sufficiency": 70,
+    "audit_missing_or_invalid": 218,
+    "blind_reference_answer_disagrees_with_gold": 8,
+    "automatic_pass_not_independently_verified": 6,
+    "verbatim_quote_gate_failed": 1
+  },
+  "independently_reviewed_items": 0,
+  "new_evidence_verified_items": 0,
+  "new_evaluation_performed": false,
+  "limitations": [
+    "structural gate reasons are not semantic diagnoses",
+    "candidate selection is outcome dependent; extra sample is systematic not random",
+    "blinded packet excludes gold, predictions, old audit, and selection reason",
+    "reference enrichment and rerun are gated on content review; no new evidence claimed"
+  ],
+  "source_hashes": {
+    "cases.private.json": "9a76408e3075e013b4814449fc1c147e7dccff04806582c663419fe4b2f3475a",
+    "probes.private.json": "a6d4f5a4746853d29d25c7c9bd9b022c13608380175bb8fe54209736ccc2be0f",
+    "progress.private.json": "c01b44d35e5674df44fb8bf17d5f672fbfb645cfdd77bd6f9a12440463277522",
+    "results.private.json": "b1eb1b2b1486df995f87bcb0b8b5e14f482e2bfaba2a006aa0e7fb286b49bc4b",
+    "diagnostic.safe.json": "c836601ee8ca3cd2be8b6b2898019537e7682f796f58415a56e63e8f13b3c7e6",
+    "cohort.safe.json": "04eaa70b66a37f5a6a87171efabc9bce530b3433b232d414a08a73d4986ccd0b"
+  },
+  "all_majorities_and_summary_recomputed": true,
+  "blinded_packet_sha256": "2e8719bd512789624146b8c671430f5f776ede33c74125c449834e0e0a8811f6"
+}

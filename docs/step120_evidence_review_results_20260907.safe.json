@@ -1,0 +1,76 @@
+{
+  "private_content_included": false,
+  "training_performed": false,
+  "model": "Step120",
+  "status": "complete_eight_item_source_review",
+  "items": 8,
+  "repeats": 3,
+  "conditions": {
+    "original_closed": {
+      "items": 8,
+      "correct": 0,
+      "no_majority": 0,
+      "unstable": 0
+    },
+    "original_with_book": {
+      "items": 8,
+      "correct": 0,
+      "no_majority": 0,
+      "unstable": 0
+    },
+    "original_with_reviewed_reference": {
+      "items": 4,
+      "correct": 4,
+      "no_majority": 0,
+      "unstable": 0
+    },
+    "original_with_reviewed_reference_type_hint": {
+      "items": 4,
+      "correct": 4,
+      "no_majority": 0,
+      "unstable": 0
+    },
+    "original_with_type_hint": {
+      "items": 8,
+      "correct": 0,
+      "no_majority": 0,
+      "unstable": 0
+    }
+  },
+  "paired_reviewed_source_subset": {
+    "items": 4,
+    "original_closed_correct": 0,
+    "original_with_book_correct": 0,
+    "original_with_reviewed_reference_correct": 4,
+    "original_with_reviewed_reference_type_hint_correct": 4,
+    "closed_wrong_reference_correct": 4,
+    "closed_correct_reference_wrong": 0
+  },
+  "audit_generation_budget_probe": {
+    "512": {
+      "items": 8,
+      "json_objects": 8,
+      "length_terminated": 0
+    },
+    "1536": {
+      "items": 8,
+      "json_objects": 8,
+      "length_terminated": 0
+    }
+  },
+  "answer_generation_finish_reasons": {
+    "stop": 96
+  },
+  "human_expert_reviewed": 0,
+  "agent_reviewed": 8,
+  "source_enrichment_after_gold_reveal": true,
+  "limitations": [
+    "eight selected historical errors, not an unbiased estimate",
+    "source packets are agent paraphrases reviewed after gold reveal, not blind retrieval",
+    "four cases withheld from repaired-reference inference for unresolved input/scope issues",
+    "exact original labels and options preserved; no alternative semantic scores replace benchmark scores",
+    "new audit budget probe does not establish cause of historical null audits without old raw outputs",
+    "successful open-book answers do not prove missing parametric knowledge"
+  ],
+  "results_sha256": "5b6edc8f644d77813e4389f033f1b719659750ed9e026d917ab619af44fff30c"
+}
