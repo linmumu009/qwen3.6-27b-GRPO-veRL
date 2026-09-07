@@ -1,0 +1,89 @@
+{
+  "candidate_sha256": "2277f4ac340a7467f660184c5e0568179f54f493aab53a9a0cb6d441971d893d",
+  "source_sha256": "21071ddfc147f1b2c3f1ffc4f6df66363927d4232260b41914b162a296a5816c",
+  "seed": 20260909,
+  "sample_n": 8,
+  "records": [
+    {
+      "id": "revision40-005",
+      "kind": "definition",
+      "source_id": "handbook8e-00113",
+      "qa_sha256": "e5ab16c6a809bc172fffbf244801e08448af75a814ded6d62f8018723e976408",
+      "decision": "minor_revision",
+      "reason_code": "ambiguous_timeframe_wording"
+    },
+    {
+      "id": "revision40-037",
+      "kind": "definition",
+      "source_id": "handbook8e-00043",
+      "qa_sha256": "dfe3fe85d0983658a84cb2a8c61264df719e50274d635f74798d3a5bff5a905b",
+      "decision": "keep",
+      "reason_code": "source_supported_definition_in_scenario"
+    },
+    {
+      "id": "revision40-010",
+      "kind": "comparison",
+      "source_id": "handbook8e-00027",
+      "qa_sha256": "c15d2a2b88ba68478f9e45557362f3438b4e2369248958a963e34d13def7e630",
+      "decision": "keep",
+      "reason_code": "source_supported_comparison"
+    },
+    {
+      "id": "revision40-034",
+      "kind": "comparison",
+      "source_id": "handbook8e-00051",
+      "qa_sha256": "471ad24a0eab606b353ee99d27039fbdbffff719b73ee003920f5ba4f57a3e75",
+      "decision": "type_revision",
+      "reason_code": "comparison_label_without_explicit_comparison"
+    },
+    {
+      "id": "revision40-007",
+      "kind": "conditions",
+      "source_id": "handbook8e-00110",
+      "qa_sha256": "a4dd3151827da3382eacaf85dea5c813568270ed1a222a8149477a11fe11dd5a",
+      "decision": "scope_revision",
+      "reason_code": "engine_compatibility_condition_omitted"
+    },
+    {
+      "id": "revision40-031",
+      "kind": "conditions",
+      "source_id": "handbook8e-00011",
+      "qa_sha256": "ff4a95f2dc34d04ebd344159d4d471f328f59977536d769d531670b20e13747d",
+      "decision": "keep",
+      "reason_code": "source_supported_factors_and_visibility"
+    },
+    {
+      "id": "revision40-004",
+      "kind": "application",
+      "source_id": "handbook8e-00021",
+      "qa_sha256": "af24381ff9155fb3c9ea737dc5853285660ff2287c567b85dd1de6081c45a61e",
+      "decision": "scope_revision",
+      "reason_code": "illustration_generalized_without_network_conditions"
+    },
+    {
+      "id": "revision40-020",
+      "kind": "application",
+      "source_id": "handbook8e-00065",
+      "qa_sha256": "1ac77e152e594ce7004457f2dd6b2d7c15289b56bcae7dd404cc6e8e76be32b2",
+      "decision": "minor_revision",
+      "reason_code": "import_clearance_scope_needs_explicit_wording"
+    }
+  ],
+  "counts": {
+    "minor_revision": 2,
+    "keep": 3,
+    "type_revision": 1,
+    "scope_revision": 2
+  },
+  "reviewer": "Codex agent reading candidate QA and original supporting excerpts; not a human expert",
+  "scope": "source fidelity, question completeness and type; not current external factual/legal verification",
+  "selection_before_reading": true,
+  "decision_record_created_after_reading": true,
+  "new_api_calls": 0,
+  "new_qa_generated": 0,
+  "unreviewed_candidates": 32,
+  "human_review_complete": false,
+  "training_started": false,
+  "expanded": false,
+  "ready_for_training": false
+}
