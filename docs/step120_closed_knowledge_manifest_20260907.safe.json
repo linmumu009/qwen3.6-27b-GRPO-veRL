@@ -1,0 +1,18 @@
+{
+  "private_content_included": false,
+  "training_performed": false,
+  "topics": 4,
+  "probes": 12,
+  "repeats": 3,
+  "protocol_sha256": "05ccd53264747666f8f87214e440b04b593909464f896201f7826c22d55fc4bc",
+  "input_file_sha256": "0c9b1fca4c0c7753718061d0e91effaf66538114d370222603f022d0667364de",
+  "rubric_frozen_before_model_load": true,
+  "reference_text_in_prompts": false,
+  "model": "Step120",
+  "max_tokens": 512,
+  "max_model_len": 8192,
+  "max_num_seqs": 64,
+  "temperature": 0,
+  "seed": 1024,
+  "enable_thinking": false
+}

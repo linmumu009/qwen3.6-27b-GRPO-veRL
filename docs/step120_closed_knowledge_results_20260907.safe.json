@@ -1,0 +1,241 @@
+{
+  "private_content_included": false,
+  "training_performed": false,
+  "model": "Step120",
+  "status": "complete_agent_semantic_review",
+  "topics": 4,
+  "questions": 12,
+  "responses": 36,
+  "question_passed": 6,
+  "conservative_question_passed_excluding_flagged_extra_errors": 5,
+  "flagged_extra_factual_issue_responses": 2,
+  "extra_error_sensitivity_is_posthoc_not_primary_scoring": true,
+  "topics_all_three_passed": 1,
+  "response_statuses": {
+    "full": 18,
+    "conflict": 15,
+    "partial": 3
+  },
+  "by_kind": {
+    "application": {
+      "questions": 4,
+      "passed": 1
+    },
+    "definition": {
+      "questions": 4,
+      "passed": 2
+    },
+    "distinction": {
+      "questions": 4,
+      "passed": 3
+    }
+  },
+  "by_topic": {
+    "R02": {
+      "questions": 3,
+      "passed": 2,
+      "all_three_passed": false
+    },
+    "R05": {
+      "questions": 3,
+      "passed": 1,
+      "all_three_passed": false
+    },
+    "R06": {
+      "questions": 3,
+      "passed": 3,
+      "all_three_passed": true
+    },
+    "R08": {
+      "questions": 3,
+      "passed": 0,
+      "all_three_passed": false
+    }
+  },
+  "question_results": {
+    "K01": {
+      "review_id": "R02",
+      "kind": "definition",
+      "full_repeats": 3,
+      "pass": true,
+      "statuses": {
+        "full": 3
+      },
+      "all_texts_identical": false,
+      "alternative_convention_repeats": 0,
+      "flagged_extra_factual_issue_repeats": 0,
+      "conservative_pass_excluding_flagged_extra_errors": true,
+      "unclear_criterion_judgments": 0
+    },
+    "K02": {
+      "review_id": "R02",
+      "kind": "distinction",
+      "full_repeats": 3,
+      "pass": true,
+      "statuses": {
+        "full": 3
+      },
+      "all_texts_identical": false,
+      "alternative_convention_repeats": 0,
+      "flagged_extra_factual_issue_repeats": 0,
+      "conservative_pass_excluding_flagged_extra_errors": true,
+      "unclear_criterion_judgments": 0
+    },
+    "K03": {
+      "review_id": "R02",
+      "kind": "application",
+      "full_repeats": 0,
+      "pass": false,
+      "statuses": {
+        "conflict": 3
+      },
+      "all_texts_identical": false,
+      "alternative_convention_repeats": 0,
+      "flagged_extra_factual_issue_repeats": 0,
+      "conservative_pass_excluding_flagged_extra_errors": false,
+      "unclear_criterion_judgments": 0
+    },
+    "K04": {
+      "review_id": "R05",
+      "kind": "definition",
+      "full_repeats": 0,
+      "pass": false,
+      "statuses": {
+        "conflict": 3
+      },
+      "all_texts_identical": false,
+      "alternative_convention_repeats": 3,
+      "flagged_extra_factual_issue_repeats": 0,
+      "conservative_pass_excluding_flagged_extra_errors": false,
+      "unclear_criterion_judgments": 0
+    },
+    "K05": {
+      "review_id": "R05",
+      "kind": "distinction",
+      "full_repeats": 3,
+      "pass": true,
+      "statuses": {
+        "full": 3
+      },
+      "all_texts_identical": true,
+      "alternative_convention_repeats": 0,
+      "flagged_extra_factual_issue_repeats": 0,
+      "conservative_pass_excluding_flagged_extra_errors": true,
+      "unclear_criterion_judgments": 0
+    },
+    "K06": {
+      "review_id": "R05",
+      "kind": "application",
+      "full_repeats": 0,
+      "pass": false,
+      "statuses": {
+        "partial": 3
+      },
+      "all_texts_identical": false,
+      "alternative_convention_repeats": 0,
+      "flagged_extra_factual_issue_repeats": 0,
+      "conservative_pass_excluding_flagged_extra_errors": false,
+      "unclear_criterion_judgments": 0
+    },
+    "K07": {
+      "review_id": "R06",
+      "kind": "definition",
+      "full_repeats": 3,
+      "pass": true,
+      "statuses": {
+        "full": 3
+      },
+      "all_texts_identical": false,
+      "alternative_convention_repeats": 0,
+      "flagged_extra_factual_issue_repeats": 2,
+      "conservative_pass_excluding_flagged_extra_errors": false,
+      "unclear_criterion_judgments": 0
+    },
+    "K08": {
+      "review_id": "R06",
+      "kind": "distinction",
+      "full_repeats": 3,
+      "pass": true,
+      "statuses": {
+        "full": 3
+      },
+      "all_texts_identical": false,
+      "alternative_convention_repeats": 0,
+      "flagged_extra_factual_issue_repeats": 0,
+      "conservative_pass_excluding_flagged_extra_errors": true,
+      "unclear_criterion_judgments": 0
+    },
+    "K09": {
+      "review_id": "R06",
+      "kind": "application",
+      "full_repeats": 3,
+      "pass": true,
+      "statuses": {
+        "full": 3
+      },
+      "all_texts_identical": false,
+      "alternative_convention_repeats": 0,
+      "flagged_extra_factual_issue_repeats": 0,
+      "conservative_pass_excluding_flagged_extra_errors": true,
+      "unclear_criterion_judgments": 0
+    },
+    "K10": {
+      "review_id": "R08",
+      "kind": "definition",
+      "full_repeats": 0,
+      "pass": false,
+      "statuses": {
+        "conflict": 3
+      },
+      "all_texts_identical": true,
+      "alternative_convention_repeats": 0,
+      "flagged_extra_factual_issue_repeats": 0,
+      "conservative_pass_excluding_flagged_extra_errors": false,
+      "unclear_criterion_judgments": 0
+    },
+    "K11": {
+      "review_id": "R08",
+      "kind": "distinction",
+      "full_repeats": 0,
+      "pass": false,
+      "statuses": {
+        "conflict": 3
+      },
+      "all_texts_identical": false,
+      "alternative_convention_repeats": 3,
+      "flagged_extra_factual_issue_repeats": 0,
+      "conservative_pass_excluding_flagged_extra_errors": false,
+      "unclear_criterion_judgments": 0
+    },
+    "K12": {
+      "review_id": "R08",
+      "kind": "application",
+      "full_repeats": 0,
+      "pass": false,
+      "statuses": {
+        "conflict": 3
+      },
+      "all_texts_identical": true,
+      "alternative_convention_repeats": 0,
+      "flagged_extra_factual_issue_repeats": 0,
+      "conservative_pass_excluding_flagged_extra_errors": false,
+      "unclear_criterion_judgments": 0
+    }
+  },
+  "reviewer": "Codex agent, not human domain expert; rubric frozen before inference",
+  "human_expert_reviewed": 0,
+  "limitations": [
+    "four outcome-selected topics, twelve related probes, not twelve independent topics",
+    "named-concept questions and simpler scenarios provide cues and differ from original MCQ format",
+    "three deterministic repeats check stability, not independent statistical confidence",
+    "source-specific taxonomy agreement is distinct from universal factual correctness",
+    "primary full means frozen core criteria satisfied, not a certification of every extra factual claim",
+    "conservative score excludes observed flagged extra errors; not an exhaustive all-fact audit",
+    "passing a probe does not prove all original-question reasoning prerequisites are present",
+    "missing/unclear criteria mean not demonstrated in this answer, not proven absent in model parameters",
+    "historical original MCQ and current free-response probes are not a controlled format-only ablation"
+  ],
+  "protocol_sha256": "05ccd53264747666f8f87214e440b04b593909464f896201f7826c22d55fc4bc",
+  "responses_sha256": "346e0f37e1a44a57efbb01950fd18feab62f6948ab19573931c17791dba86a34",
+  "decisions_sha256": "5267df062222f436677f38b50f517685664484135e403ecdaebe6dbaca7a75a2"
+}
