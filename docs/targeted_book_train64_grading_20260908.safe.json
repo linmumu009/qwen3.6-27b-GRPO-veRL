@@ -1,0 +1,75 @@
+{
+  "items": 64,
+  "status": {
+    "invalid_review": 5,
+    "scored": 59
+  },
+  "cohorts": {
+    "in_training_opportunities": {
+      "items": 64,
+      "scored": 59,
+      "concept_groups_scored": 29,
+      "statuses": {
+        "scored": 59,
+        "invalid_review": 5
+      },
+      "metrics": {
+        "baseline": {
+          "closed": {
+            "both_pass": 2,
+            "answer_pass": 8,
+            "answer_count": 118
+          },
+          "open": {
+            "both_pass": 58,
+            "answer_pass": 117,
+            "answer_count": 118
+          }
+        },
+        "step5": {
+          "closed": {
+            "both_pass": 1,
+            "answer_pass": 7,
+            "answer_count": 118
+          },
+          "open": {
+            "both_pass": 58,
+            "answer_pass": 116,
+            "answer_count": 118
+          }
+        },
+        "step10": {
+          "closed": {
+            "both_pass": 0,
+            "answer_pass": 4,
+            "answer_count": 118
+          },
+          "open": {
+            "both_pass": 57,
+            "answer_pass": 115,
+            "answer_count": 118
+          }
+        }
+      },
+      "paired_closed_both": {
+        "step5": {
+          "both_not_pass": 57,
+          "both_pass": 1,
+          "loss": 1
+        },
+        "step10": {
+          "both_not_pass": 57,
+          "loss": 2
+        }
+      }
+    }
+  },
+  "usage": {
+    "prompt_tokens": 415733,
+    "completion_tokens": 47096,
+    "total_tokens": 462829
+  },
+  "reviews_sha256": "ccc13172ff6e2b364ea478c057e068253332b4483f406ba5afceb2edb4a8bb35",
+  "training": false,
+  "limitation": "Small correlated textbook cohort and same-family automatic review; maintenance is in training. No causal selection or general capability claim."
+}

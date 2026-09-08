@@ -1,0 +1,101 @@
+{
+  "steps": [
+    {
+      "step": 1.0,
+      "train/loss": 2.2148237228393555,
+      "train/grad_norm": 24.970228855610486,
+      "train/lr": 5e-07,
+      "train/global_tokens": 1496.0
+    },
+    {
+      "step": 2.0,
+      "train/loss": 1.6760436296463013,
+      "train/grad_norm": 21.97620145010919,
+      "train/lr": 5e-07,
+      "train/global_tokens": 1543.0
+    },
+    {
+      "step": 3.0,
+      "train/loss": 1.909813404083252,
+      "train/grad_norm": 22.523026953854636,
+      "train/lr": 5e-07,
+      "train/global_tokens": 1513.0
+    },
+    {
+      "step": 4.0,
+      "train/loss": 2.1160809993743896,
+      "train/grad_norm": 23.888524883168277,
+      "train/lr": 5e-07,
+      "train/global_tokens": 1696.0
+    },
+    {
+      "step": 5.0,
+      "train/loss": 1.909773826599121,
+      "train/grad_norm": 17.927845765975167,
+      "train/lr": 5e-07,
+      "train/global_tokens": 1626.0
+    },
+    {
+      "step": 6.0,
+      "train/loss": 1.6076691150665283,
+      "train/grad_norm": 11.355795945793496,
+      "train/lr": 5e-07,
+      "train/global_tokens": 1629.0
+    },
+    {
+      "step": 7.0,
+      "train/loss": 1.8816355466842651,
+      "train/grad_norm": 11.32278834424948,
+      "train/lr": 5e-07,
+      "train/global_tokens": 1368.0
+    },
+    {
+      "step": 8.0,
+      "train/loss": 1.732090711593628,
+      "train/grad_norm": 12.896310299304119,
+      "train/lr": 5e-07,
+      "train/global_tokens": 1557.0
+    },
+    {
+      "step": 9.0,
+      "train/loss": 1.862053632736206,
+      "train/grad_norm": 10.803947815086543,
+      "train/lr": 5e-07,
+      "train/global_tokens": 1489.0
+    },
+    {
+      "step": 10.0,
+      "train/loss": 1.842660665512085,
+      "train/grad_norm": 10.449684569056304,
+      "train/lr": 5e-07,
+      "train/global_tokens": 1574.0
+    }
+  ],
+  "all_logged_metrics_finite": true,
+  "sequence_tokens_reconciled": 15491,
+  "supervised_tokens_revalidated": 7183,
+  "exact_retokenized_records": 80,
+  "closed_answer_lengths": {
+    "baseline": {
+      "count": 110,
+      "mean": 192.77272727272728,
+      "median": 193.0
+    },
+    "step5": {
+      "count": 110,
+      "mean": 159.4,
+      "median": 162.5
+    },
+    "step10": {
+      "count": 110,
+      "mean": 82.89090909090909,
+      "median": 76.0
+    }
+  },
+  "training_answer_mean_tokens_including_eos": 89.7875,
+  "limitations": [
+    "Different batches per step; loss trend is not a fixed-set before/after comparison.",
+    "Finite logged gradients and correct supervision do not prove full numerical correctness.",
+    "Answer shortening is observed; its causal role is not established."
+  ]
+}
