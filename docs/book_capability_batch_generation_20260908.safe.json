@@ -1,0 +1,92 @@
+{
+  "status": "api_review_complete",
+  "planned_batches": 107,
+  "completed_batches": 107,
+  "generated_questions": 636,
+  "api_accepted_questions": 453,
+  "statuses": {
+    "review_complete": 94,
+    "blind_schema_reject": 6,
+    "audit_schema_reject": 7
+  },
+  "rejections": {
+    "blind_review": 65,
+    "structure": 14,
+    "source_audit": 24,
+    "overlap": 4
+  },
+  "api_calls": 315,
+  "usage": {
+    "prompt_tokens": 767043,
+    "completion_tokens": 165861,
+    "total_tokens": 932904
+  },
+  "training": false,
+  "training_ready": false,
+  "retained_questions": 453,
+  "split_counts": {
+    "dev": 72,
+    "train": 381
+  },
+  "kind_counts": {
+    "definition": 91,
+    "distinction": 90,
+    "condition": 72,
+    "application": 145,
+    "calculation": 55
+  },
+  "mode_counts": {
+    "closed": 453
+  },
+  "chapter_counts": {
+    "4": 5,
+    "15": 7,
+    "19": 20,
+    "21": 20,
+    "26": 11,
+    "37": 9,
+    "1": 9,
+    "2": 9,
+    "3": 4,
+    "5": 19,
+    "6": 6,
+    "7": 10,
+    "8": 6,
+    "9": 9,
+    "10": 11,
+    "11": 6,
+    "12": 6,
+    "13": 9,
+    "14": 13,
+    "16": 5,
+    "17": 8,
+    "18": 10,
+    "20": 9,
+    "22": 4,
+    "23": 9,
+    "24": 10,
+    "25": 16,
+    "27": 5,
+    "28": 13,
+    "29": 9,
+    "30": 15,
+    "31": 5,
+    "32": 7,
+    "33": 16,
+    "34": 17,
+    "35": 8,
+    "36": 13,
+    "38": 9,
+    "39": 6,
+    "40": 19,
+    "41": 10,
+    "42": 17,
+    "43": 10,
+    "44": 14
+  },
+  "lexical_duplicates": 0,
+  "sample_questions": 20,
+  "candidates_sha256": "1252b1f8f6b4b618703e938d959811411de4bd91804bc30c62847694efeae0da",
+  "semantic_dedup_completed": false,
+  "target_probe_completed": false
+}

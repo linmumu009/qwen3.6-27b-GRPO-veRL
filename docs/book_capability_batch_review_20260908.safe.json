@@ -1,0 +1,97 @@
+{
+  "before_semantic": 453,
+  "after_semantic": 442,
+  "semantic_duplicates": 11,
+  "cross_split_clusters": 1,
+  "sample_questions": 20,
+  "sample_pass": 18,
+  "sample_rejected": 2,
+  "retained_questions": 440,
+  "split_counts": {
+    "dev": 72,
+    "train": 368
+  },
+  "kind_counts": {
+    "definition": 87,
+    "distinction": 84,
+    "condition": 72,
+    "application": 143,
+    "calculation": 54
+  },
+  "mode_counts": {
+    "closed": 440
+  },
+  "chapter_counts": {
+    "4": 5,
+    "15": 7,
+    "19": 20,
+    "21": 20,
+    "26": 11,
+    "37": 9,
+    "1": 8,
+    "2": 9,
+    "3": 4,
+    "5": 19,
+    "6": 6,
+    "7": 10,
+    "8": 6,
+    "9": 9,
+    "10": 10,
+    "11": 6,
+    "12": 6,
+    "13": 9,
+    "14": 13,
+    "16": 2,
+    "17": 8,
+    "18": 10,
+    "20": 9,
+    "22": 4,
+    "23": 9,
+    "24": 10,
+    "25": 16,
+    "27": 4,
+    "28": 13,
+    "29": 9,
+    "30": 14,
+    "31": 4,
+    "32": 7,
+    "33": 15,
+    "34": 16,
+    "35": 8,
+    "36": 13,
+    "38": 9,
+    "39": 6,
+    "40": 18,
+    "41": 10,
+    "42": 16,
+    "43": 9,
+    "44": 14
+  },
+  "api_calls": 21,
+  "previous_failed_semantic_calls": 1,
+  "previous_failed_semantic_usage": {
+    "completion_tokens": 360,
+    "prompt_tokens": 31111,
+    "prompt_tokens_details": {
+      "cached_tokens": 0,
+      "text_tokens": 31111
+    },
+    "total_tokens": 31471
+  },
+  "usage": {
+    "prompt_tokens": 54268,
+    "completion_tokens": 1703,
+    "total_tokens": 55971
+  },
+  "candidates_sha256": "38cb19d1f2c30cf3b05cb47140b36ccd403df28bf322c620ee3635deed30e546",
+  "training_ready": false,
+  "training": false,
+  "target_probe_completed": false,
+  "sampling": "At most two per split/kind/mode; stratified audit, not representative defect-rate estimate",
+  "limitations": [
+    "Unflagged pairs are not certified nonduplicates.",
+    "Same-family semantic dedup and audit may share mistakes.",
+    "Passing candidates are not certified high-value training data.",
+    "Development is SFT-only holdout, book seen in CPT."
+  ]
+}

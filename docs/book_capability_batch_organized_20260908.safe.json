@@ -1,0 +1,48 @@
+{
+  "input_candidates": 440,
+  "additional_held": 4,
+  "retained_questions": 436,
+  "split_counts": {
+    "dev": 71,
+    "train": 365
+  },
+  "kind_counts": {
+    "definition": 86,
+    "distinction": 84,
+    "condition": 70,
+    "application": 143,
+    "calculation": 53
+  },
+  "chapter_count": 44,
+  "modes": {
+    "closed": 436
+  },
+  "holds": {
+    "handbook8e-00046-cap-Q3": "Battery ventilation statement is insufficiently scoped for general safety-related QA; source fidelity alone is not current safety validation.",
+    "handbook8e-00003-cap-Q6": "Reuses source table numbers with ambiguous extracted alignment rather than a newly specified hypothetical calculation.",
+    "handbook8e-00088-cap-Q6": "Source-specific illustrative fleet margin is described as a standard guideline.",
+    "handbook8e-00102-cap-Q3": "Degraded or delayed inputs are overgeneralized into impossibility of useful planning.",
+    "handbook8e-00021-cap-Q1": "Specific demand-production decoupling buffer is generalized to the only point where buffer inventory is needed."
+  },
+  "probe_sample_questions": 40,
+  "probe_sample_split": {
+    "train": 30,
+    "dev": 10
+  },
+  "probe_sample_sha256": "1cd978fa46c40fb5622c773fe1244280076d6abebadcaafd09c6da6199f3c60f",
+  "files": {
+    "train": {
+      "sha256": "f12bbbd1fca24a1f8cf14862b1240761022a52cb315646a7098c7abf86bac545",
+      "questions": 365
+    },
+    "dev": {
+      "sha256": "88a838674b9162b856a9cd02beb8a2fda6289e169d80835a8bcd83facb4e81c3",
+      "questions": 71
+    }
+  },
+  "training": false,
+  "training_ready": false,
+  "target_probe_completed": false,
+  "manual_inspected": 16,
+  "manual_sample_representative": false
+}
