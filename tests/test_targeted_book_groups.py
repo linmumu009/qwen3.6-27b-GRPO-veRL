@@ -1,13 +1,15 @@
 import sys
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).parents[1]/'scripts'))
-from build_targeted_book_groups import valid_group,audit_pass,KINDS
+from build_targeted_book_groups import valid_group,audit_pass,KINDS,choose_supplement_tasks
 from probe_targeted_book_groups import prompt_messages
 from grade_targeted_book_groups import valid_verdict
 import io
 import json
 import build_targeted_book_groups as builder
 from organize_targeted_book_pools import pool
+from screen_book_group_semantics import validate_clusters
+from merge_targeted_book_selection import merge
 
 
 def test_group_requires_variants_and_all_three_kinds():
@@ -57,3 +59,43 @@ def test_pool_does_not_export_dev_as_training_opportunity():
     assert pool({'decision':'mixed_opportunity','split':'train'})=='opportunity'
     assert pool({'decision':'mixed_opportunity','split':'dev'})=='quarantine'
     assert pool({'decision':'development_only','split':'dev'})=='development'
+
+
+def test_supplement_covers_every_topic_in_each_split():
+    from collections import Counter
+    sources=[{'record_id':f'r{i:03d}','chapter':19 if i<24 else 20,
+              'text':'handling warehouse transport supply '*40} for i in range(60)]
+    tasks=choose_supplement_tasks(sources)
+    counts=Counter((t['split'],t['topic']) for t in tasks)
+    assert len(tasks)==96
+    assert all(counts['dev',k]==8 for k in builder.LEXICON)
+    assert counts['train','material_handling']==32
+    assert not ({t['source']['record_id'] for t in tasks if t['split']=='train'} & {t['source']['record_id'] for t in tasks if t['split']=='dev'})
+
+
+def test_semantic_partition_requires_every_group_once():
+    v={'clusters':[{'ids':['a','b'],'reason':'same rule'},{'ids':['c'],'reason':'different rule'}]}
+    assert validate_clusters(v,{'a','b','c'})
+    assert not validate_clusters(v,{'a','b'})
+    v['clusters'][1]['ids']=['a'];assert not validate_clusters(v,{'a','b','c'})
+
+
+def test_merge_refuses_prompt_mutation():
+    import pytest
+    r={k:'same' for k in ('id','question','variant','answer','rubric','source_id','source_hash','kind','concept_group')}
+    r['split']='train'
+    changed=dict(r,question='changed')
+    with pytest.raises(ValueError,match='changed after scoring'):merge([changed],[r])
+
+
+def test_merge_quarantines_entire_bad_group_and_blocks_dev_reuse():
+    import pytest
+    rows=[dict(id=str(i),question='q',variant='v',answer='a',rubric=['r'],
+               source_id='s',source_hash='hash',kind=k,concept_group='g',split='dev')
+          for i,k in enumerate(KINDS)]
+    merged=merge(rows,rows)
+    assert {r['decision'] for r in merged}=={'group_quality_quarantine'}
+    with pytest.raises(ValueError,match='Cannot reuse dev'):
+        merge([dict(r,split='train') for r in rows],rows)
+    with pytest.raises(ValueError,match='Duplicate retained'):
+        merge([rows[0]]*3,rows)

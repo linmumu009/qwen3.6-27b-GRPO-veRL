@@ -1,0 +1,16 @@
+{
+  "model": "pure_book_CPT4x_step116",
+  "items": 105,
+  "responses": 420,
+  "conditions": 4,
+  "max_output_tokens": 512,
+  "candidate_sha256": "306a8254843d7cd70d27b1cce3e94b4de5cb7deed8d850890a5dec27ebc36bcb",
+  "answers_sha256": "e2055033fe93d684bd1f0bf0bce8c322af1a70a8d72aa1f4735f9db7ff907413",
+  "finish_reasons": {
+    "stop": 418,
+    "length": 2
+  },
+  "training": false,
+  "reference_answers_in_model_prompt": false,
+  "source_only_in_open_condition": true
+}

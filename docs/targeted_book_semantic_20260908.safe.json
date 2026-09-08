@@ -1,0 +1,26 @@
+{
+  "input_groups": 72,
+  "retained_groups": 59,
+  "removed_groups": 13,
+  "cross_split_clusters": 0,
+  "retained_questions": 177,
+  "split_groups": {
+    "train": 42,
+    "dev": 17
+  },
+  "source_chapters_moved_train_to_dev": 9,
+  "usage": {
+    "completion_tokens": 1727,
+    "prompt_tokens": 17382,
+    "prompt_tokens_details": {
+      "cached_tokens": 0,
+      "text_tokens": 17382
+    },
+    "total_tokens": 19109
+  },
+  "candidates_sha256": "1bba367b181e7d9e225c7009d3583c2eca9ecd413db564c20f5c4c8171387853",
+  "training_ready": false,
+  "semantic_screen_completed": true,
+  "semantic_decontamination_proven": false,
+  "limitation": "Single same-family automatic review of rule and task summaries; not exhaustive expert equivalence or benchmark decontamination."
+}

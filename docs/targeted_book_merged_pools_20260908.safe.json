@@ -1,0 +1,24 @@
+{
+  "items": 177,
+  "pools": {
+    "development": 39,
+    "opportunity": 67,
+    "quarantine": 55,
+    "maintenance": 16
+  },
+  "hashes": {
+    "opportunity": "aa8d853d5d9a0d582e90a4ff622fa87e0d549709c9d45cba93f9e4c322eda09c",
+    "maintenance": "b304dd9ce43d189be0656167520088191d75138066a7102ba7ec2ea961e77e70",
+    "development": "7cb005034b49c9463bb4441e2f34022df7b6c7b8e517706a122f6f968dfc6434",
+    "quarantine": "2418f900499a5a77eab0501ff5b804b6da43d34306916f18d6a9369f1dc13f58"
+  },
+  "input_sha256": "7c837d395904a3f63f697f0e81bc3e3070421ba682ce3a0752456c853a1da86d",
+  "training_ready": false,
+  "training_started": false,
+  "messages_training_export_created": false,
+  "limitations": [
+    "Automatic learning-opportunity proxy, not measured training gain.",
+    "Post-grading exclusions can leave incomplete concept groups; no training export until reviewed.",
+    "This partitioner does not establish semantic deduplication or coverage; consult the upstream screening and merged-selection summaries."
+  ]
+}

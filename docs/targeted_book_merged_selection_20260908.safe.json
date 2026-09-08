@@ -1,0 +1,72 @@
+{
+  "items": 177,
+  "input_graded_items": 216,
+  "semantic_excluded_items": 39,
+  "source_hashes": {
+    "runs/targeted-book-selection-20260908": "1ff582ede72b6b1513145360eafa52b9c147ebda145ba88fd9bd8dad8cb053c2",
+    "runs/targeted-book-supplement-selection-20260908": "610ae4bc89dce5a31449f7901145a8004bd5bb6c1cf181eb85dc4b50a4772f2a"
+  },
+  "semantic_candidates_sha256": "1bba367b181e7d9e225c7009d3583c2eca9ecd413db564c20f5c4c8171387853",
+  "decisions": {
+    "development_only": 39,
+    "knowledge_access_opportunity": 24,
+    "mixed_opportunity": 39,
+    "unresolved_review": 7,
+    "group_quality_quarantine": 45,
+    "maintenance_pool": 16,
+    "application_opportunity": 4,
+    "unstable_review": 3
+  },
+  "pools": {
+    "development": 39,
+    "opportunity": 67,
+    "quarantine": 55,
+    "maintenance": 16
+  },
+  "split_topic_pools": {
+    "train": {
+      "general": {
+        "quarantine": 12,
+        "opportunity": 23,
+        "maintenance": 7
+      },
+      "material_handling": {
+        "quarantine": 3,
+        "opportunity": 6
+      },
+      "transport": {
+        "quarantine": 10,
+        "opportunity": 13,
+        "maintenance": 4
+      },
+      "warehousing": {
+        "opportunity": 25,
+        "quarantine": 18,
+        "maintenance": 5
+      }
+    },
+    "dev": {
+      "general": {
+        "development": 9,
+        "quarantine": 6
+      },
+      "material_handling": {
+        "development": 6,
+        "quarantine": 3
+      },
+      "transport": {
+        "quarantine": 3,
+        "development": 12
+      },
+      "warehousing": {
+        "development": 12
+      }
+    }
+  },
+  "moved_train_to_dev_questions": 9,
+  "training_ready": false,
+  "training_started": false,
+  "semantic_screen_completed": true,
+  "semantic_decontamination_proven": false,
+  "limitation": "Automated group screen and opportunity proxy; final training mixture, token budget and independent evaluation not approved by this script."
+}

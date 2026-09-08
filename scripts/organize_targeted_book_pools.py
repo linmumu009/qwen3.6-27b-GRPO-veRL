@@ -38,7 +38,7 @@ def main():
       'training_ready':False,'training_started':False,'messages_training_export_created':False,
       'limitations':['Automatic learning-opportunity proxy, not measured training gain.',
          'Post-grading exclusions can leave incomplete concept groups; no training export until reviewed.',
-         'Semantic deduplication and topic/development coverage remain open.']}
+         'This partitioner does not establish semantic deduplication or coverage; consult the upstream screening and merged-selection summaries.']}
     (a.output/'summary.safe.json').write_text(json.dumps(safe,indent=2));print(json.dumps(safe,indent=2))
 
 

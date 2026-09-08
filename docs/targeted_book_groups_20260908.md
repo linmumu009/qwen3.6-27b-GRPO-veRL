@@ -60,6 +60,8 @@
 
 本轮验收结论：未达到训练启动条件。物料搬运仅3个概念组、训练侧候选机会4问；开发仅10问且只覆盖物料搬运/运输，缺乏仓储及一般物流开发覆盖。下一轮应先改进物料搬运来源的规则提取和评分点约束，补齐开发来源与语义近重复检查，再扩大同标准候选；不能以这63问直接替代计划中的最终训练数据。
 
+后续补充核对：开发缺少仓储/一般物流包含主题循环与切分循环耦合的程序原因，并非已证实的教材覆盖不足；修正和跨批合并见[补充记录](targeted_book_supplement_20260908.md)。
+
 ## 复现与检查
 
 入口：`build_targeted_book_groups.py`、`probe_targeted_book_groups.py`、`run_targeted_book_probe_m05.sh`、`grade_targeted_book_groups.py`及`select_targeted_sft_records.py`。原批次和修复批次目录均拒绝覆盖。新增测试覆盖三题成组、两问法不同、审核布尔严格性、四答案评分ID覆盖、闭卷提示隔离及JSON模式提示约束。

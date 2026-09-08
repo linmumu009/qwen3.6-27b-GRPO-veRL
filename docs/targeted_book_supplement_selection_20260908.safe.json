@@ -1,0 +1,81 @@
+{
+  "items": 105,
+  "status": {
+    "scored": 93,
+    "truncated_quarantine": 2,
+    "invalid_review": 10
+  },
+  "decisions": {
+    "development_only": 42,
+    "quality_not_passed": 12,
+    "knowledge_access_opportunity": 16,
+    "mixed_opportunity": 22,
+    "maintenance_pool": 7,
+    "unstable_review": 5,
+    "unresolved_review": 1
+  },
+  "by_kind": {
+    "definition": {
+      "development_only": 14,
+      "quality_not_passed": 4,
+      "knowledge_access_opportunity": 16,
+      "unstable_review": 1
+    },
+    "boundary": {
+      "development_only": 14,
+      "quality_not_passed": 3,
+      "mixed_opportunity": 12,
+      "unstable_review": 3,
+      "unresolved_review": 1,
+      "maintenance_pool": 2
+    },
+    "application": {
+      "quality_not_passed": 5,
+      "development_only": 14,
+      "mixed_opportunity": 10,
+      "maintenance_pool": 5,
+      "unstable_review": 1
+    }
+  },
+  "by_topic": {
+    "general": {
+      "development_only": 13,
+      "quality_not_passed": 3,
+      "knowledge_access_opportunity": 5,
+      "mixed_opportunity": 7,
+      "maintenance_pool": 2
+    },
+    "material_handling": {
+      "development_only": 5,
+      "quality_not_passed": 2,
+      "knowledge_access_opportunity": 5,
+      "mixed_opportunity": 7,
+      "maintenance_pool": 1,
+      "unstable_review": 3,
+      "unresolved_review": 1
+    },
+    "transport": {
+      "development_only": 12,
+      "knowledge_access_opportunity": 2,
+      "mixed_opportunity": 2,
+      "maintenance_pool": 2
+    },
+    "warehousing": {
+      "development_only": 12,
+      "knowledge_access_opportunity": 4,
+      "mixed_opportunity": 6,
+      "unstable_review": 2,
+      "quality_not_passed": 7,
+      "maintenance_pool": 2
+    }
+  },
+  "usage": {
+    "prompt_tokens": 534869,
+    "completion_tokens": 31816,
+    "total_tokens": 566685
+  },
+  "training_ready": false,
+  "training_started": false,
+  "semantic_decontamination_proven": false,
+  "reason_not_training_ready": "Candidate opportunity screen only; semantic group dedup, domain coverage, development adequacy and training-token design not signed off."
+}
