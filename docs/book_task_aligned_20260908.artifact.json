@@ -1,0 +1,236 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "title": "教材四任务数据首批审核",
+    "blocks": [
+      {
+        "id": "title",
+        "type": "markdown",
+        "body": "# 教材四任务数据首批审核"
+      },
+      {
+        "id": "summary",
+        "type": "markdown",
+        "body": "## Executive Summary\n\n- **已完成教材数据构造和来源审核，不是训练完成。** 修正后处理120组，组内审核通过54组，语义去重后保留51组、204道候选题。\n- **新增了概念辨析和证据选择任务。** 每组四题：直接问答、概念辨析、情境应用、带资料选择；整组任一题未通过便不进入本批候选。\n- **可靠性通过仍不等于有训练收益。** 两个起点模型尚未预答，当前不能称为学习机会池或直接启动SFT。"
+      },
+      {
+        "id": "scope",
+        "type": "markdown",
+        "body": "## 先按来源隔离，再观察模型表现\n\n本轮仅使用现有授权教材，由5号机百炼qwen3.8-max生成和复核，并发上限64。120组尝试预先固定为90训练侧、30开发侧；相同章节不跨两侧，没有把评测题、答案或本轮定向证据发送百炼。\n\n开发章节只对这轮SFT保留，整本书已经用于CPT，因此不能称作未见知识测试。自动词面隔离也不是语义零泄露证明。"
+      },
+      {
+        "id": "outcome",
+        "type": "markdown",
+        "body": "## 保留完整概念组，不用零散通过题凑数\n\n下图的每根柱是修正后批次的一个互斥最终状态，分母为120组，不是API调用数或题目数。组内审核通过后，另移除3个语义重复组，最终训练侧43组、开发侧8组。\n\n审核失败表示当前证据或表达没有通过既定检查，不自动等于教材缺少该知识。只有保留组进入下一步模型预答。"
+      },
+      {
+        "id": "status-chart",
+        "type": "chart",
+        "chartId": "status"
+      },
+      {
+        "id": "quality",
+        "type": "markdown",
+        "body": "## 索引一致性由程序检查，事实由来源审核\n\n求答请求看不到生成答案；选择题先重排选项，求答结果再由程序映射为选项文本。随后审核教材依据、语义一致性、条件、评分点及每个干扰项的排除理由。不得以“教材未提到”充当“该选项必然错误”。\n\n保留清单共有204题；精确重复题组0个，训练/开发来源块交集0个。引用编号能定位教材窗口，但自动审阅仍可能遗漏事实错误，尤其生成与审核使用同一模型系列。"
+      },
+      {
+        "id": "corrections",
+        "type": "markdown",
+        "body": "## 初次零通过包含程序契约问题，不能归因于教材\n\n初次120组尝试没有完整通过组，记录全部保留。复核发现题干重复选项会破坏重排；审核提示也存在歧义，索引映射还会被审核器误读。修正后先跑12组，随后定位到选择题求答多余文字字段的校验问题。\n\n复用已有12组的生成和求答，仅补做缺失审核；达到至少3组完整通过的条件后才继续其余108组。未将原失败记录改写为通过，也未放宽事实、来源、完整组选项或语义审核要求。初次与最终批次不是受控质量提升实验。"
+      },
+      {
+        "id": "cost",
+        "type": "markdown",
+        "body": "## 费用包含失败尝试，不重复计算复用请求\n\n本轮累计540次API请求，成功返回的用量共2,947,073 tokens；其中初次失败构造使用1,234,803 tokens。最终批次统计已包含复用的12组请求，不再叠加预检批次。以上是接口返回用量，不是人民币账单。\n\n没有本地模型生成训练QA，没有更新任何模型权重。"
+      },
+      {
+        "id": "next",
+        "type": "markdown",
+        "body": "## 下一步先测数据的学习价值\n\n1. 冻结保留组，让Step120和纯教材CPT在不见参考答案的条件下作答；选择题检查原序与重排，开放题按预先冻结的必要语义点复核。\n2. 区分候选学习机会、能力保持题和仍有歧义的隔离题；开发数据不因为模型答对或答错而移动到训练侧。\n3. 确认存在足够学习机会及开发覆盖后，再组织同数据、双起点的短程SFT；保持Agent与开源回归约束。"
+      },
+      {
+        "id": "questions",
+        "type": "markdown",
+        "body": "## 还不能回答的问题\n\n这些题对两个起点是否已经过于容易？带证据的辨析能力能否改善闭卷问答？目前均未测量。首批选择题提示要求六候选、两正确项，只是构造模板，后续不能把固定答案数量当作目标能力。"
+      },
+      {
+        "id": "limits",
+        "type": "markdown",
+        "body": "## 使用边界\n\n当前只获得同系列API自动审核后的候选数据，不是人工金标，也没有证明训练收益。教材对企业规则的缺口仍保留，不生成无依据制度；本次来源授权记录来自用户确认，不是独立法律审查。私有题目、答案、教材和API响应仅保留在5号机，仓库只提交代码、汇总和检查结果。"
+      }
+    ],
+    "charts": [
+      {
+        "id": "status",
+        "type": "bar",
+        "title": "概念组审核状态",
+        "description": "修正后批次，单位：组；共120组",
+        "showDescription": true,
+        "dataset": "outcomes",
+        "sourceId": "outcomes",
+        "source": {
+          "id": "outcomes",
+          "label": "教材四任务构造安全汇总",
+          "path": "docs/book_task_aligned_result_20260908.safe.json",
+          "query": {
+            "engine": "SQLite",
+            "sql": "SELECT status,label,SUM(groups) AS groups,MAX(total) AS total,1.0*SUM(groups)/MAX(total) AS share FROM candidate_outcomes GROUP BY status,label ORDER BY groups DESC",
+            "tables_used": [
+              "candidate_outcomes"
+            ],
+            "description": "将最终批次互斥状态计数载入内存SQLite后聚合；包括复用的12组预检，不重复计算。",
+            "metric_definitions": {
+              "groups": "最终状态对应的概念组数；每个完整组四题。",
+              "share": "该状态组数/最终批次已处理组数"
+            },
+            "filters": [
+              "仅修正后最终批次；初次失败尝试另列，不混入当前分母"
+            ]
+          }
+        },
+        "encodings": {
+          "x": {
+            "field": "label",
+            "type": "nominal"
+          },
+          "y": {
+            "field": "groups",
+            "type": "quantitative"
+          }
+        },
+        "options": {
+          "orientation": "vertical"
+        },
+        "palette": {
+          "kind": "sequential",
+          "name": "blue"
+        }
+      }
+    ],
+    "sources": [
+      {
+        "id": "outcomes",
+        "label": "教材四任务构造安全汇总",
+        "path": "docs/book_task_aligned_result_20260908.safe.json",
+        "query": {
+          "engine": "SQLite",
+          "sql": "SELECT status,label,SUM(groups) AS groups,MAX(total) AS total,1.0*SUM(groups)/MAX(total) AS share FROM candidate_outcomes GROUP BY status,label ORDER BY groups DESC",
+          "tables_used": [
+            "candidate_outcomes"
+          ],
+          "description": "将最终批次互斥状态计数载入内存SQLite后聚合；包括复用的12组预检，不重复计算。",
+          "metric_definitions": {
+            "groups": "最终状态对应的概念组数；每个完整组四题。",
+            "share": "该状态组数/最终批次已处理组数"
+          },
+          "filters": [
+            "仅修正后最终批次；初次失败尝试另列，不混入当前分母"
+          ]
+        }
+      },
+      {
+        "id": "quality",
+        "label": "来源、切分与问题清单检查",
+        "path": "docs/book_task_aligned_quality_20260908.safe.json"
+      },
+      {
+        "id": "first",
+        "label": "初次失败尝试，未丢弃记录",
+        "path": "docs/book_task_aligned_initial_20260908.safe.json"
+      },
+      {
+        "id": "manifest",
+        "label": "预先冻结的来源和切分协议",
+        "path": "docs/book_task_aligned_manifest_20260908.safe.json"
+      }
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "status": "ready",
+    "datasets": {
+      "outcomes": [
+        {
+          "status": "quality_pass",
+          "label": "组内审核通过",
+          "groups": 54,
+          "total": 120,
+          "share": 0.45
+        },
+        {
+          "status": "audit_reject",
+          "label": "来源审核未通过",
+          "groups": 39,
+          "total": 120,
+          "share": 0.325
+        },
+        {
+          "status": "structural_reject",
+          "label": "结构不合要求",
+          "groups": 12,
+          "total": 120,
+          "share": 0.1
+        },
+        {
+          "status": "solver_disagreement",
+          "label": "独立求答不一致",
+          "groups": 8,
+          "total": 120,
+          "share": 0.06666666666666667
+        },
+        {
+          "status": "overlap_quarantine",
+          "label": "词面重合隔离",
+          "groups": 5,
+          "total": 120,
+          "share": 0.041666666666666664
+        },
+        {
+          "status": "solver_unresolved",
+          "label": "求答未完成验证",
+          "groups": 2,
+          "total": 120,
+          "share": 0.016666666666666666
+        }
+      ]
+    }
+  },
+  "sources": [
+    {
+      "id": "outcomes",
+      "label": "教材四任务构造安全汇总",
+      "path": "docs/book_task_aligned_result_20260908.safe.json",
+      "query": {
+        "engine": "SQLite",
+        "sql": "SELECT status,label,SUM(groups) AS groups,MAX(total) AS total,1.0*SUM(groups)/MAX(total) AS share FROM candidate_outcomes GROUP BY status,label ORDER BY groups DESC",
+        "tables_used": [
+          "candidate_outcomes"
+        ],
+        "description": "将最终批次互斥状态计数载入内存SQLite后聚合；包括复用的12组预检，不重复计算。",
+        "metric_definitions": {
+          "groups": "最终状态对应的概念组数；每个完整组四题。",
+          "share": "该状态组数/最终批次已处理组数"
+        },
+        "filters": [
+          "仅修正后最终批次；初次失败尝试另列，不混入当前分母"
+        ]
+      }
+    },
+    {
+      "id": "quality",
+      "label": "来源、切分与问题清单检查",
+      "path": "docs/book_task_aligned_quality_20260908.safe.json"
+    },
+    {
+      "id": "first",
+      "label": "初次失败尝试，未丢弃记录",
+      "path": "docs/book_task_aligned_initial_20260908.safe.json"
+    },
+    {
+      "id": "manifest",
+      "label": "预先冻结的来源和切分协议",
+      "path": "docs/book_task_aligned_manifest_20260908.safe.json"
+    }
+  ]
+}

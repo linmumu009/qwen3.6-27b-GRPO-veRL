@@ -1,0 +1,89 @@
+{
+  "completed_groups": 120,
+  "statuses": {
+    "audit_reject": 39,
+    "quality_pass": 54,
+    "solver_disagreement": 8,
+    "structural_reject": 12,
+    "overlap_quarantine": 5,
+    "solver_unresolved": 2
+  },
+  "nonexclusive_audit_failure_fields": {
+    "evidence_selection:all_claims_supported": 18,
+    "definition:all_claims_supported": 3,
+    "discrimination:all_claims_supported": 4,
+    "application:all_claims_supported": 4,
+    "application:solver_equivalent": 2,
+    "evidence_selection:supported": 5,
+    "evidence_selection:unambiguous": 3,
+    "evidence_selection:standalone": 5,
+    "evidence_selection:rubric_fair": 4,
+    "evidence_selection:solver_equivalent": 1,
+    "discrimination:solver_equivalent": 1,
+    "discrimination:valuable": 1,
+    "application:rubric_fair": 1,
+    "definition:rubric_fair": 1,
+    "discrimination:supported": 1,
+    "definition:valuable": 1
+  },
+  "nonexclusive_structural_failure_hints": {
+    "rubric_count": 6,
+    "long_answer": 2,
+    "question_citation_count": 3,
+    "position_reference_filter": 3
+  },
+  "audit_metadata_counts": {
+    "same_concept_True": 93,
+    "issues_empty_True": 325,
+    "citation_count_2": 163,
+    "citation_count_3": 94,
+    "issues_empty_False": 44,
+    "citation_count_4": 27,
+    "citation_count_1": 67,
+    "citation_count_5": 14,
+    "citation_count_6": 4
+  },
+  "solver_unresolved_nonexclusive_hints": {
+    "question_count_4": 2,
+    "definition:indices_type_list": 2,
+    "discrimination:indices_type_list": 2,
+    "discrimination:answerable_False": 2,
+    "discrimination:unambiguous_False": 2,
+    "application:indices_type_list": 2,
+    "evidence_selection:indices_type_list": 2,
+    "selection_count_1": 1,
+    "evidence_selection:answer_text_invalid": 1,
+    "selection_count_2": 1
+  },
+  "training_ready": false,
+  "target_probe_completed": false,
+  "source_only": true,
+  "new_sft_holdout_only": true,
+  "retained_groups": 51,
+  "questions": 204,
+  "by_kind": {
+    "definition": 51,
+    "discrimination": 51,
+    "application": 51,
+    "evidence_selection": 51
+  },
+  "split_questions": {
+    "train": 172,
+    "dev": 32
+  },
+  "source_overlap_count": 0,
+  "exact_duplicate_question_groups": 0,
+  "exact_duplicate_concept_names": 0,
+  "answer_word_counts": {
+    "minimum": 40,
+    "maximum": 109
+  },
+  "option_counts": {
+    "6": 51
+  },
+  "gold_cardinality": {
+    "2": 51
+  },
+  "inventory_sha256": "1649925cef3eaada27c0a2dd20d58ccf85288ea9da622bddd81610daca59e94d",
+  "inventory_is_training_messages": false
+}

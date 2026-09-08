@@ -1,0 +1,27 @@
+{
+  "planned_groups": 120,
+  "completed_groups": 12,
+  "quality_pass_groups": 1,
+  "quality_pass_questions": 4,
+  "statuses": {
+    "audit_reject": 2,
+    "solver_unresolved": 9,
+    "quality_pass": 1
+  },
+  "split_groups": {
+    "train": 1
+  },
+  "chapter_groups": {
+    "28": 1
+  },
+  "api_calls": 27,
+  "usage": {
+    "prompt_tokens": 134374,
+    "completion_tokens": 19270,
+    "total_tokens": 153644
+  },
+  "training_ready": false,
+  "target_model_probe_completed": false,
+  "semantic_screen_completed": false,
+  "limitation": "Same-family separate API requests, not expert approval; source split is SFT-only holdout, not unseen CPT knowledge."
+}

@@ -1,0 +1,874 @@
+{
+  "source_sha256": "21071ddfc147f1b2c3f1ffc4f6df66363927d4232260b41914b162a296a5816c",
+  "api_model": "qwen3.8-max",
+  "workers": 64,
+  "max_group_api_calls": 360,
+  "max_semantic_api_calls": 1,
+  "retries": 0,
+  "groups_planned": 120,
+  "tasks_per_group": 4,
+  "heldout_chapters": [
+    4,
+    15,
+    19,
+    21,
+    26,
+    37
+  ],
+  "train_groups": 90,
+  "dev_groups": 30,
+  "prompt_revision": 2,
+  "canary_groups": 12,
+  "canary_minimum_pass": 3,
+  "split_frozen_before_generation_and_model_probe": true,
+  "benchmark_text_sent_to_api": false,
+  "training_started": false,
+  "development_scope": "held out from new SFT only; entire book has already been used for CPT",
+  "source_selection": "Even chapter exposure, hash-order source preference, max two attempts per source; no benchmark topic/answer targeting.",
+  "tasks": [
+    {
+      "id": "taskgroup-001",
+      "split": "train",
+      "chapter": 27,
+      "source_id": "handbook8e-00069",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-002",
+      "split": "train",
+      "chapter": 32,
+      "source_id": "handbook8e-00082",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-003",
+      "split": "train",
+      "chapter": 28,
+      "source_id": "handbook8e-00072",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-004",
+      "split": "train",
+      "chapter": 40,
+      "source_id": "handbook8e-00102",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-005",
+      "split": "train",
+      "chapter": 1,
+      "source_id": "handbook8e-00002",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-006",
+      "split": "train",
+      "chapter": 42,
+      "source_id": "handbook8e-00111",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-007",
+      "split": "train",
+      "chapter": 3,
+      "source_id": "handbook8e-00006",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-008",
+      "split": "train",
+      "chapter": 23,
+      "source_id": "handbook8e-00057",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-009",
+      "split": "train",
+      "chapter": 33,
+      "source_id": "handbook8e-00083",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-010",
+      "split": "train",
+      "chapter": 13,
+      "source_id": "handbook8e-00029",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-011",
+      "split": "train",
+      "chapter": 36,
+      "source_id": "handbook8e-00092",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-012",
+      "split": "train",
+      "chapter": 7,
+      "source_id": "handbook8e-00018",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-013",
+      "split": "train",
+      "chapter": 22,
+      "source_id": "handbook8e-00056",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-014",
+      "split": "train",
+      "chapter": 5,
+      "source_id": "handbook8e-00011",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-015",
+      "split": "train",
+      "chapter": 10,
+      "source_id": "handbook8e-00024",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-016",
+      "split": "train",
+      "chapter": 44,
+      "source_id": "handbook8e-00114",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-017",
+      "split": "train",
+      "chapter": 12,
+      "source_id": "handbook8e-00027",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-018",
+      "split": "train",
+      "chapter": 18,
+      "source_id": "handbook8e-00044",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-019",
+      "split": "train",
+      "chapter": 6,
+      "source_id": "handbook8e-00017",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-020",
+      "split": "train",
+      "chapter": 30,
+      "source_id": "handbook8e-00078",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-021",
+      "split": "train",
+      "chapter": 31,
+      "source_id": "handbook8e-00080",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-022",
+      "split": "train",
+      "chapter": 24,
+      "source_id": "handbook8e-00060",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-023",
+      "split": "train",
+      "chapter": 29,
+      "source_id": "handbook8e-00075",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-024",
+      "split": "train",
+      "chapter": 2,
+      "source_id": "handbook8e-00005",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-025",
+      "split": "train",
+      "chapter": 38,
+      "source_id": "handbook8e-00099",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-026",
+      "split": "train",
+      "chapter": 25,
+      "source_id": "handbook8e-00065",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-027",
+      "split": "train",
+      "chapter": 35,
+      "source_id": "handbook8e-00091",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-028",
+      "split": "train",
+      "chapter": 11,
+      "source_id": "handbook8e-00025",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-029",
+      "split": "train",
+      "chapter": 41,
+      "source_id": "handbook8e-00106",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-030",
+      "split": "train",
+      "chapter": 34,
+      "source_id": "handbook8e-00089",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-031",
+      "split": "train",
+      "chapter": 16,
+      "source_id": "handbook8e-00038",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-032",
+      "split": "train",
+      "chapter": 17,
+      "source_id": "handbook8e-00041",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-033",
+      "split": "train",
+      "chapter": 43,
+      "source_id": "handbook8e-00112",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-034",
+      "split": "train",
+      "chapter": 14,
+      "source_id": "handbook8e-00034",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-035",
+      "split": "train",
+      "chapter": 39,
+      "source_id": "handbook8e-00101",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-036",
+      "split": "train",
+      "chapter": 8,
+      "source_id": "handbook8e-00020",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-037",
+      "split": "train",
+      "chapter": 20,
+      "source_id": "handbook8e-00049",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-038",
+      "split": "train",
+      "chapter": 9,
+      "source_id": "handbook8e-00022",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-039",
+      "split": "train",
+      "chapter": 32,
+      "source_id": "handbook8e-00081",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-040",
+      "split": "train",
+      "chapter": 28,
+      "source_id": "handbook8e-00071",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-041",
+      "split": "train",
+      "chapter": 40,
+      "source_id": "handbook8e-00104",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-042",
+      "split": "train",
+      "chapter": 5,
+      "source_id": "handbook8e-00012",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-043",
+      "split": "train",
+      "chapter": 44,
+      "source_id": "handbook8e-00116",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-044",
+      "split": "train",
+      "chapter": 23,
+      "source_id": "handbook8e-00058",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-045",
+      "split": "train",
+      "chapter": 6,
+      "source_id": "handbook8e-00016",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-046",
+      "split": "train",
+      "chapter": 29,
+      "source_id": "handbook8e-00074",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-047",
+      "split": "train",
+      "chapter": 12,
+      "source_id": "handbook8e-00028",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-048",
+      "split": "train",
+      "chapter": 33,
+      "source_id": "handbook8e-00084",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-049",
+      "split": "train",
+      "chapter": 10,
+      "source_id": "handbook8e-00023",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-050",
+      "split": "train",
+      "chapter": 42,
+      "source_id": "handbook8e-00109",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-051",
+      "split": "train",
+      "chapter": 38,
+      "source_id": "handbook8e-00100",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-052",
+      "split": "train",
+      "chapter": 1,
+      "source_id": "handbook8e-00003",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-053",
+      "split": "train",
+      "chapter": 36,
+      "source_id": "handbook8e-00093",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-054",
+      "split": "train",
+      "chapter": 31,
+      "source_id": "handbook8e-00079",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-055",
+      "split": "train",
+      "chapter": 18,
+      "source_id": "handbook8e-00043",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-056",
+      "split": "train",
+      "chapter": 30,
+      "source_id": "handbook8e-00076",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-057",
+      "split": "train",
+      "chapter": 34,
+      "source_id": "handbook8e-00088",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-058",
+      "split": "train",
+      "chapter": 41,
+      "source_id": "handbook8e-00107",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-059",
+      "split": "train",
+      "chapter": 25,
+      "source_id": "handbook8e-00063",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-060",
+      "split": "train",
+      "chapter": 17,
+      "source_id": "handbook8e-00040",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-061",
+      "split": "train",
+      "chapter": 7,
+      "source_id": "handbook8e-00019",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-062",
+      "split": "train",
+      "chapter": 43,
+      "source_id": "handbook8e-00113",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-063",
+      "split": "train",
+      "chapter": 35,
+      "source_id": "handbook8e-00090",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-064",
+      "split": "train",
+      "chapter": 24,
+      "source_id": "handbook8e-00061",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-065",
+      "split": "train",
+      "chapter": 3,
+      "source_id": "handbook8e-00007",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-066",
+      "split": "train",
+      "chapter": 22,
+      "source_id": "handbook8e-00055",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-067",
+      "split": "train",
+      "chapter": 14,
+      "source_id": "handbook8e-00033",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-068",
+      "split": "train",
+      "chapter": 27,
+      "source_id": "handbook8e-00070",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-069",
+      "split": "train",
+      "chapter": 13,
+      "source_id": "handbook8e-00030",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-070",
+      "split": "train",
+      "chapter": 11,
+      "source_id": "handbook8e-00026",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-071",
+      "split": "train",
+      "chapter": 2,
+      "source_id": "handbook8e-00004",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-072",
+      "split": "train",
+      "chapter": 20,
+      "source_id": "handbook8e-00050",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-073",
+      "split": "train",
+      "chapter": 9,
+      "source_id": "handbook8e-00021",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-074",
+      "split": "train",
+      "chapter": 16,
+      "source_id": "handbook8e-00038",
+      "variation": 2
+    },
+    {
+      "id": "taskgroup-075",
+      "split": "train",
+      "chapter": 39,
+      "source_id": "handbook8e-00101",
+      "variation": 2
+    },
+    {
+      "id": "taskgroup-076",
+      "split": "train",
+      "chapter": 8,
+      "source_id": "handbook8e-00020",
+      "variation": 2
+    },
+    {
+      "id": "taskgroup-077",
+      "split": "train",
+      "chapter": 28,
+      "source_id": "handbook8e-00073",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-078",
+      "split": "train",
+      "chapter": 40,
+      "source_id": "handbook8e-00105",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-079",
+      "split": "train",
+      "chapter": 44,
+      "source_id": "handbook8e-00115",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-080",
+      "split": "train",
+      "chapter": 42,
+      "source_id": "handbook8e-00110",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-081",
+      "split": "train",
+      "chapter": 30,
+      "source_id": "handbook8e-00077",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-082",
+      "split": "train",
+      "chapter": 23,
+      "source_id": "handbook8e-00059",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-083",
+      "split": "train",
+      "chapter": 14,
+      "source_id": "handbook8e-00032",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-084",
+      "split": "train",
+      "chapter": 5,
+      "source_id": "handbook8e-00013",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-085",
+      "split": "train",
+      "chapter": 41,
+      "source_id": "handbook8e-00108",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-086",
+      "split": "train",
+      "chapter": 38,
+      "source_id": "handbook8e-00098",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-087",
+      "split": "train",
+      "chapter": 17,
+      "source_id": "handbook8e-00039",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-088",
+      "split": "train",
+      "chapter": 34,
+      "source_id": "handbook8e-00087",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-089",
+      "split": "train",
+      "chapter": 36,
+      "source_id": "handbook8e-00094",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-090",
+      "split": "train",
+      "chapter": 25,
+      "source_id": "handbook8e-00064",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-091",
+      "split": "dev",
+      "chapter": 19,
+      "source_id": "handbook8e-00047",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-092",
+      "split": "dev",
+      "chapter": 37,
+      "source_id": "handbook8e-00095",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-093",
+      "split": "dev",
+      "chapter": 4,
+      "source_id": "handbook8e-00010",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-094",
+      "split": "dev",
+      "chapter": 15,
+      "source_id": "handbook8e-00036",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-095",
+      "split": "dev",
+      "chapter": 26,
+      "source_id": "handbook8e-00067",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-096",
+      "split": "dev",
+      "chapter": 21,
+      "source_id": "handbook8e-00053",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-097",
+      "split": "dev",
+      "chapter": 19,
+      "source_id": "handbook8e-00045",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-098",
+      "split": "dev",
+      "chapter": 26,
+      "source_id": "handbook8e-00068",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-099",
+      "split": "dev",
+      "chapter": 37,
+      "source_id": "handbook8e-00096",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-100",
+      "split": "dev",
+      "chapter": 21,
+      "source_id": "handbook8e-00051",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-101",
+      "split": "dev",
+      "chapter": 4,
+      "source_id": "handbook8e-00009",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-102",
+      "split": "dev",
+      "chapter": 15,
+      "source_id": "handbook8e-00035",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-103",
+      "split": "dev",
+      "chapter": 19,
+      "source_id": "handbook8e-00046",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-104",
+      "split": "dev",
+      "chapter": 21,
+      "source_id": "handbook8e-00052",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-105",
+      "split": "dev",
+      "chapter": 26,
+      "source_id": "handbook8e-00066",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-106",
+      "split": "dev",
+      "chapter": 37,
+      "source_id": "handbook8e-00095",
+      "variation": 2
+    },
+    {
+      "id": "taskgroup-107",
+      "split": "dev",
+      "chapter": 4,
+      "source_id": "handbook8e-00010",
+      "variation": 2
+    },
+    {
+      "id": "taskgroup-108",
+      "split": "dev",
+      "chapter": 15,
+      "source_id": "handbook8e-00036",
+      "variation": 2
+    },
+    {
+      "id": "taskgroup-109",
+      "split": "dev",
+      "chapter": 19,
+      "source_id": "handbook8e-00048",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-110",
+      "split": "dev",
+      "chapter": 21,
+      "source_id": "handbook8e-00054",
+      "variation": 1
+    },
+    {
+      "id": "taskgroup-111",
+      "split": "dev",
+      "chapter": 26,
+      "source_id": "handbook8e-00067",
+      "variation": 2
+    },
+    {
+      "id": "taskgroup-112",
+      "split": "dev",
+      "chapter": 37,
+      "source_id": "handbook8e-00096",
+      "variation": 2
+    },
+    {
+      "id": "taskgroup-113",
+      "split": "dev",
+      "chapter": 4,
+      "source_id": "handbook8e-00009",
+      "variation": 2
+    },
+    {
+      "id": "taskgroup-114",
+      "split": "dev",
+      "chapter": 15,
+      "source_id": "handbook8e-00035",
+      "variation": 2
+    },
+    {
+      "id": "taskgroup-115",
+      "split": "dev",
+      "chapter": 19,
+      "source_id": "handbook8e-00047",
+      "variation": 2
+    },
+    {
+      "id": "taskgroup-116",
+      "split": "dev",
+      "chapter": 26,
+      "source_id": "handbook8e-00068",
+      "variation": 2
+    },
+    {
+      "id": "taskgroup-117",
+      "split": "dev",
+      "chapter": 21,
+      "source_id": "handbook8e-00053",
+      "variation": 2
+    },
+    {
+      "id": "taskgroup-118",
+      "split": "dev",
+      "chapter": 19,
+      "source_id": "handbook8e-00045",
+      "variation": 2
+    },
+    {
+      "id": "taskgroup-119",
+      "split": "dev",
+      "chapter": 21,
+      "source_id": "handbook8e-00051",
+      "variation": 2
+    },
+    {
+      "id": "taskgroup-120",
+      "split": "dev",
+      "chapter": 26,
+      "source_id": "handbook8e-00066",
+      "variation": 2
+    }
+  ],
+  "resume_from": "/workspace/llin-verl-grpo/runs/book-task-aligned-groups-20260908-02",
+  "resume_rows_sha256": "52f268d7b76f8cafd2fcb21342432a4451c3e67021089321c22c4d99e30536f0",
+  "inherited_api_calls": 27,
+  "validator_revision": 3
+}
