@@ -1,0 +1,33 @@
+{
+  "api_accepted_questions": 12,
+  "human_review_held_questions": 6,
+  "reviewed_candidate_questions": 6,
+  "reviewed_modes": {
+    "closed": 4,
+    "evidence": 2
+  },
+  "human_holds": {
+    "taskgroup-002-discrimination": "Closed task still depends on source-specific operating policy; rubric requires reporting what the absent text does not state.",
+    "taskgroup-003-discrimination": "Answer asserts absent ferrywagon design/cargo restrictions without supporting evidence.",
+    "taskgroup-017-discrimination": "Still requires exactly two essential characteristics without defining the framework, despite explicit repair constraint.",
+    "taskgroup-039-application": "Source example of three to six months becomes typical duration; rubric additionally requires an unasked historical-data point.",
+    "taskgroup-052-definition": "Why-question rubric requires incidental numerical averages not requested and conflates sales turnover with cost of sales.",
+    "taskgroup-072-discrimination": "Typical wall-supported and rail-mounted designs become essential dependencies; source itself mentions rubber-tyred gantries."
+  },
+  "duplicate_ids": 0,
+  "split_changes": 0,
+  "old_scores_inherited": false,
+  "training_ready": false,
+  "target_probe_completed": false,
+  "replacement_sha256": "720de390cf4bb2e0aa0a5b726a8da00db300d7f235570fa9a23af407ccfb91e0",
+  "reviewed_replacement_sha256": "9b400cea4b20ed7639cc45c72379f885d00d286486476a2fc207851a224522b7",
+  "first_round_hold": {
+    "status": "superseded_human_review_hold",
+    "automatic_passes": 1,
+    "usable_after_human_review": 0,
+    "reason": "Source possibility was strengthened into guaranteed instant complete identification; no old candidate may be promoted.",
+    "training_ready": false
+  },
+  "authoritative_candidate_file": "reviewed_replacements.private.jsonl",
+  "draft_groups_not_promoted": true
+}

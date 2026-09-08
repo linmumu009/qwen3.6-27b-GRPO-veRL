@@ -1,0 +1,27 @@
+{
+  "status": "repair_complete_pending_probe",
+  "planned_questions": 17,
+  "completed_questions": 17,
+  "statuses": {
+    "quality_pass": 12,
+    "schema_reject": 1,
+    "audit_reject": 4
+  },
+  "accepted_questions": 12,
+  "accepted_modes": {
+    "closed": 10,
+    "evidence": 2
+  },
+  "api_calls": 65,
+  "usage": {
+    "prompt_tokens": 103623,
+    "completion_tokens": 7225,
+    "total_tokens": 110848
+  },
+  "training": false,
+  "training_ready": false,
+  "target_probe_completed": false,
+  "old_pools_modified": false,
+  "replacement_sha256": "720de390cf4bb2e0aa0a5b726a8da00db300d7f235570fa9a23af407ccfb91e0",
+  "draft_groups_sha256": "a9300186bbaf68892967af022e56eb4cab0bea28d089a67df402b755d5f5562a"
+}
