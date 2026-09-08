@@ -1,0 +1,122 @@
+{
+  "items": 96,
+  "requests": 1728,
+  "models": {
+    "step120": {
+      "conditions": {
+        "original": {
+          "items": 96,
+          "correct": 48,
+          "gains": 0,
+          "losses": 0,
+          "answer_changed": 0,
+          "parse_failures": 0,
+          "truncated": 0,
+          "repeat_unstable": 4,
+          "input_tokens": 443139,
+          "output_tokens": 2201
+        },
+        "permuted": {
+          "items": 96,
+          "correct": 54,
+          "gains": 11,
+          "losses": 5,
+          "answer_changed": 27,
+          "parse_failures": 0,
+          "truncated": 0,
+          "repeat_unstable": 5,
+          "input_tokens": 443139,
+          "output_tokens": 2170
+        },
+        "deliberate": {
+          "items": 96,
+          "correct": 59,
+          "gains": 13,
+          "losses": 2,
+          "answer_changed": 26,
+          "parse_failures": 20,
+          "truncated": 20,
+          "repeat_unstable": 15,
+          "input_tokens": 460995,
+          "output_tokens": 180981
+        }
+      },
+      "unflagged_valid_permutation": {
+        "items": 95,
+        "gains": 10,
+        "losses": 5,
+        "answer_changed": 26
+      }
+    },
+    "cpt": {
+      "conditions": {
+        "original": {
+          "items": 96,
+          "correct": 48,
+          "gains": 0,
+          "losses": 0,
+          "answer_changed": 0,
+          "parse_failures": 0,
+          "truncated": 0,
+          "repeat_unstable": 5,
+          "input_tokens": 443139,
+          "output_tokens": 2224
+        },
+        "permuted": {
+          "items": 96,
+          "correct": 53,
+          "gains": 10,
+          "losses": 5,
+          "answer_changed": 26,
+          "parse_failures": 0,
+          "truncated": 0,
+          "repeat_unstable": 2,
+          "input_tokens": 443139,
+          "output_tokens": 2153
+        },
+        "deliberate": {
+          "items": 96,
+          "correct": 57,
+          "gains": 13,
+          "losses": 4,
+          "answer_changed": 30,
+          "parse_failures": 14,
+          "truncated": 14,
+          "repeat_unstable": 16,
+          "input_tokens": 460995,
+          "output_tokens": 168556
+        }
+      },
+      "unflagged_valid_permutation": {
+        "items": 95,
+        "gains": 9,
+        "losses": 5,
+        "answer_changed": 25
+      }
+    }
+  },
+  "history": {
+    "long_pool": {
+      "items": 305,
+      "wrong": 93,
+      "error_rate": 0.30491803278688523
+    },
+    "material_other": {
+      "items": 391,
+      "wrong": 32,
+      "error_rate": 0.08184143222506395
+    },
+    "transport": {
+      "items": 404,
+      "wrong": 70,
+      "error_rate": 0.17326732673267325
+    },
+    "warehousing": {
+      "items": 202,
+      "wrong": 50,
+      "error_rate": 0.24752475247524752
+    }
+  },
+  "private_content_included": false,
+  "stable_wrong_cpt_all_conditions": 18
+}

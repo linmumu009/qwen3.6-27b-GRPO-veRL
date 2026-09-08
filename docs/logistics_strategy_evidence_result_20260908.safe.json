@@ -1,0 +1,40 @@
+{
+  "items": 3,
+  "requests": 36,
+  "models": {
+    "step120": {
+      "closed": {
+        "items": 3,
+        "correct": 0,
+        "parse_failures": 0
+      },
+      "with_evidence": {
+        "items": 3,
+        "correct": 2,
+        "parse_failures": 0
+      },
+      "gains": 2,
+      "losses": 0
+    },
+    "cpt": {
+      "closed": {
+        "items": 3,
+        "correct": 0,
+        "parse_failures": 0
+      },
+      "with_evidence": {
+        "items": 3,
+        "correct": 1,
+        "parse_failures": 0
+      },
+      "gains": 1,
+      "losses": 0
+    }
+  },
+  "training": false,
+  "private_content_included": false,
+  "limits": [
+    "Selected stable errors and source-supported subset; not population prevalence.",
+    "Reference assistance does not prove absence of parametric knowledge."
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "items": 1672,
+  "large_pool_unique_ordered_banks": 1,
+  "large_pool_bank_sizes": [
+    305
+  ],
+  "items_with_exact_normalized_duplicate_options": 305,
+  "items_with_gold_option_text_duplicated": 6,
+  "duplicate_question_and_options_groups": 1,
+  "items_in_duplicate_question_and_options_groups": 2,
+  "same_question_options_conflicting_gold_groups": 0,
+  "normalization": "casefold whitespace only; not semantic adjudication",
+  "private_content_included": false,
+  "historical_duplicate_target_outcomes": {
+    "step120": {
+      "gold_duplicate_items": 6,
+      "strict_correct": 2,
+      "strict_wrong_identical_normalized_text": 1
+    },
+    "cpt": {
+      "gold_duplicate_items": 6,
+      "strict_correct": 2,
+      "strict_wrong_identical_normalized_text": 1
+    }
+  }
+}

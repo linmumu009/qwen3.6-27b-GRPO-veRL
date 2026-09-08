@@ -1,0 +1,263 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "title": "供应链问答能力诊断",
+    "blocks": [
+      {
+        "id": "title",
+        "type": "markdown",
+        "body": "# 供应链问答能力诊断"
+      },
+      {
+        "id": "summary",
+        "type": "markdown",
+        "body": "## Executive Summary\n\n- **不能再归结为单一的“缺知识”或“缺推理”。** 不加新知识，仅改变作答指引和计算预算，两模型各救回13道原本答错的诊断题；也分别改错2道、4道。\n- **应优先改数据的任务形式与证据匹配，而不是继续增加同一批教材QA。** 题库存在长候选表、干扰性题头与少量重复答案文本，普通教材短答不能覆盖这些差异。\n- **SFT仍值得做，但CPT前置没有被证明必要。** 下一轮用独立来源构造概念辨析、条件判断和候选匹配数据；保留Step120与纯CPT两个起点，防止把路线假设当成既定结论。"
+      },
+      {
+        "id": "scope",
+        "type": "markdown",
+        "body": "## 这次测的是作答机制，不是重新公布整体成绩\n\n本轮在5号机完成96题、两模型、三条件、各三次重复，共1,728次本地生成；随后补做3道来源支持题的36次生成，没有训练模型或调用百炼。\n\n96题包括48道长候选表题、24道其他LogistikaBench题和24道SC-bench知识题。每层按纯CPT历史答对/答错各半抽样；这种病例对照分布不是原始题库分布。以下答对数按每题三次严格多数票计算，不能将样本净增题数换算为整体提升百分点。\n\n原协议与重排条件均最多输出96 tokens；核查条件仍关闭内置thinking，但允许简短解释、提示检查否定词与选项完整性，并把输出上限提高到2,048 tokens。它同时改变提示与计算预算，不是只改变某一种推理能力。"
+      },
+      {
+        "id": "history",
+        "type": "markdown",
+        "body": "## 主要错误集中区比“物料搬运”标签更具体\n\n纯CPT的物料搬运125道错误中，有93道位于共用269项候选表的305题内，占74.4%；其余391道物料搬运题只错32道。下图比较错误率，分母各不相同，并非互相匹配的难度对照。\n\n这说明应优先调查长候选表任务，而不是据类别名称判断整个物料搬运领域都缺知识。候选数量与知识难度、题目质量仍混在一起，只有后续同题干预才能提供更直接的线索。",
+        "sourceId": "analysis"
+      },
+      {
+        "id": "history-chart",
+        "type": "chart",
+        "chartId": "history"
+      },
+      {
+        "id": "interventions",
+        "type": "markdown",
+        "body": "## 无新增知识的干预能救回部分错题，但会付出代价\n\n| 模型与分组 | 题数 | 原协议 | 重排选项 | 核查指引+较长输出 |\n|---|---:|---:|---:|---:|\n| Step120 · 长候选表 | 48 | 24 | 28 | 29 |\n| Step120 · 其他Logistika | 24 | 12 | 13 | 16 |\n| Step120 · SC知识 | 24 | 12 | 13 | 14 |\n| 纯CPT · 长候选表 | 48 | 24 | 28 | 30 |\n| 纯CPT · 其他Logistika | 24 | 12 | 12 | 14 |\n| 纯CPT · SC知识 | 24 | 12 | 13 | 13 |\n\n合计Step120为48→54→59，纯CPT为48→53→57。重排分别有11/10道改对、两模型各5道改错；核查条件两模型各13道改对，但Step120有2道改错，纯CPT有4道改错。\n\n**这是知识调用或作答过程可改善的证据，不是“所有知识已具备”的证明。** 也不能据纯CPT在核查条件少2题，就断言CPT有害或Step120必然更适合SFT。样本小，且两个模型的完整训练路线尚未做同数据对照。",
+        "sourceId": "phase"
+      },
+      {
+        "id": "stability",
+        "type": "markdown",
+        "body": "## 答案对选项排列敏感，不能直接靠固定排序提分\n\n仅重排选项、映射回原索引后，Step120有27/96题改变多数答案，纯CPT有26/96题改变。排除1道自动标记的位置依赖题后，95道有效配对中仍分别有26道、25道改变。\n\n自动标记不等于完整语义审计；本轮只测试一个固定重排，三次重复不是三个不同排列。这个结果支持进一步训练和验证候选辨析稳定性，不支持挑一个最有利排序后宣布整体能力提高。",
+        "sourceId": "analysis"
+      },
+      {
+        "id": "cost",
+        "type": "markdown",
+        "body": "## 长回答不是免费的能力提升\n\nStep120原协议共生成2,201 tokens，核查条件180,981，约82倍；纯CPT分别为2,224和168,556，约76倍。核查条件各有20/288、14/288次生成触及输出上限，均计为无效回答，不从分母删除。\n\n因此不能把该长输出提示直接作为已经验证的交付方案。更值得测试的是能否通过独立数据SFT，让模型用较短且足够的判断过程保留收益，同时减少原本正确题的损失。",
+        "sourceId": "analysis"
+      },
+      {
+        "id": "quality",
+        "type": "markdown",
+        "body": "## 原始题库也会制造并非能力不足的错误\n\n原始CSV的305道长候选表题都继承同一集装箱化题头；本轮12题盲审中，部分题头与后面的铁路、车辆等术语定义不一致。原始CSV与冻结题库的全部LogistikaBench题目身份摘要一致，未发现本地导入改写这些题面。\n\n305题共用的选项表有重复文本，其中6题的金答案文本不唯一。两个历史模型各有1题虽被索引严格评分判错，但所选文本与金答案相同。这只能解释很少一部分错误，不能据此否定整套评测。\n\n官方原始分数保持不变。题库瑕疵、缺少业务规则和真实能力不足要分别记录，不能靠删除难题、改答案或训练测试集来掩盖。"
+      },
+      {
+        "id": "evidence",
+        "type": "markdown",
+        "body": "## 旧教材检索不足以支持知识与推理二分\n\n第一阶段纯CPT有18题在三个条件下均稳定答错，从中按冻结规则选取12题复核。隐藏金答案审阅原来的三段教材检索结果，没有一题能据此可靠判定全部且唯一的正确选项；这是“检索证据不充分”，不是“整本书完全没有相关知识”。\n\n其中3道术语题可由联合国、欧盟统计局和国际运输论坛联合发布的2019年运输统计术语表支持。先固定基于来源的判断，之后才比较金答案，三题全部一致；两模型使用同一份无选项索引的术语释义资料、保留原题面，再配对复测。\n\nStep120：闭卷0/3，带证据2/3，改对2、改错0。 纯CPT：闭卷0/3，带证据1/3，改对1、改错0。\n\n这只是3道有意筛选的稳定错题，不代表全体错误的原因比例；资料直接提供相关定义，也不能证明模型参数里原先没有这些知识。审阅由本任务助手完成，不是独立领域专家认证。其余9题保持未归因，不靠通用教材推断企业特定规则。"
+      },
+      {
+        "id": "next",
+        "type": "markdown",
+        "body": "## 下一轮先改变训练目标，再比较训练起点\n\n1. **组织独立、来源可验证的任务组。** 每个知识点覆盖直接问答、易混概念、适用条件和反例；候选匹配使用独立题干与候选池，并做排列变体。不继承错误题头，不把“以上皆是”等位置依赖选项机械打乱。\n2. **教材只承担它确实覆盖的内容。** 技术术语与业务规则另找授权来源；企业特定规则必须随题提供上下文。公开可下载不自动等于可以用于商业训练。不得将本轮评测题、改写、答案或定向证据回流训练。\n3. **先做同数据的两个起点小试验。** 比较Step120→SFT与纯CPT→SFT，并保留未训练起点；先不扩大CPT轮数、不上RL大网格。用来源分组隔离的独立开发题决定设置，官方集不用于反复挑检查点。\n4. **检查效率与保留能力。** 除正确率，还看原正确题损失、排列稳定性、回答长度；独立Agent和开源回归未通过前，不替换交付模型。\n\n本轮支持“任务对齐的SFT值得小规模验证”，不支持承诺下一轮必定提升，也不支持继续批量复制原来的教材短答配方。"
+      },
+      {
+        "id": "questions",
+        "type": "markdown",
+        "body": "## 仍需验证的两个问题\n\n**训练能否把额外计算带来的收益压缩成高效作答？** 提示干预有收益，不等于SFT一定能学到同样效果。\n\n**补充知识与作答训练各贡献多少？** 当前参考资料只覆盖小子集；要作可靠分解，需要独立且证据充分的开发题，不能把所有剩余错题都贴成知识不足或推理不足。"
+      },
+      {
+        "id": "limits",
+        "type": "markdown",
+        "body": "## 解释边界\n\n这是一次无训练、固定样本、有限干预的机制诊断，不是完整训练方案的因果证明。官方题已在历史实验中反复观察，不再是未触碰测试集；SC范围仅为知识子集。原答案集合严格评分全部保留，无效回答计入分母。\n\n本轮没有测量新的Agent或通用能力回归，也未给任何模型颁发交付通过结论。训练数据量、学习率和轮数应在下一轮独立开发实验中确定，而非由这96题反向调参。"
+      }
+    ],
+    "sources": [
+      {
+        "id": "analysis",
+        "label": "无训练诊断安全分析",
+        "path": "docs/logistics_strategy_diagnostic_analysis_20260908.safe.json"
+      },
+      {
+        "id": "phase",
+        "label": "第一阶段逐题安全结果",
+        "path": "docs/logistics_strategy_diagnostic_result_20260908.safe.json"
+      },
+      {
+        "id": "evidence",
+        "label": "第二阶段来源复核及配对结果",
+        "path": "docs/logistics_strategy_evidence_result_20260908.safe.json"
+      },
+      {
+        "id": "review",
+        "label": "12题证据充分性安全审阅记录",
+        "path": "docs/logistics_strategy_evidence_review_20260908.safe.json"
+      },
+      {
+        "id": "integrity",
+        "label": "原始CSV与冻结题库身份核对",
+        "path": "docs/logistics_strategy_source_integrity_20260908.safe.json"
+      },
+      {
+        "id": "structure",
+        "label": "重复候选与题库结构核查",
+        "path": "docs/logistics_strategy_diagnostic_structure_20260908.safe.json"
+      },
+      {
+        "id": "history_query",
+        "label": "冻结历史题目按候选数量与主题重聚合",
+        "path": "docs/logistics_strategy_diagnostic_manifest_20260908.safe.json",
+        "query": {
+          "engine": "SQLite",
+          "sql": "SELECT CASE WHEN choice_count=269 THEN '长候选表' WHEN category='material_handling' THEN '其余物料搬运' WHEN category='transport' THEN '运输' ELSE '仓储' END AS category,\nSUM(items) AS items, SUM(items-cpt_correct) AS wrong,\n1.0*SUM(items-cpt_correct)/SUM(items) AS error_rate,\n100.0*SUM(items-cpt_correct)/SUM(items) AS error_percent\nFROM history_snapshot WHERE category IN ('material_handling','transport','warehousing')\nGROUP BY 1 ORDER BY error_percent DESC",
+          "tables_used": [
+            "history_snapshot"
+          ],
+          "description": "将安全交叉汇总载入内存SQLite，按长候选表/其他物料搬运/运输/仓储聚合。",
+          "metric_definitions": {
+            "error_percent": "100 * 错题数量 / 对应分组题目数量；纯教材CPT历史三次多数票。"
+          },
+          "filters": [
+            "仅物料搬运、运输、仓储；长候选表从物料搬运中分离。"
+          ]
+        }
+      }
+    ],
+    "charts": [
+      {
+        "id": "history",
+        "type": "bar",
+        "title": "纯CPT分组错误率",
+        "description": "单位：%；长候选表305题，其余物料搬运391题，运输404题，仓储202题",
+        "showDescription": true,
+        "dataset": "history",
+        "sourceId": "history_query",
+        "source": {
+          "id": "history_query",
+          "label": "冻结历史题目按候选数量与主题重聚合",
+          "path": "docs/logistics_strategy_diagnostic_manifest_20260908.safe.json",
+          "query": {
+            "engine": "SQLite",
+            "sql": "SELECT CASE WHEN choice_count=269 THEN '长候选表' WHEN category='material_handling' THEN '其余物料搬运' WHEN category='transport' THEN '运输' ELSE '仓储' END AS category,\nSUM(items) AS items, SUM(items-cpt_correct) AS wrong,\n1.0*SUM(items-cpt_correct)/SUM(items) AS error_rate,\n100.0*SUM(items-cpt_correct)/SUM(items) AS error_percent\nFROM history_snapshot WHERE category IN ('material_handling','transport','warehousing')\nGROUP BY 1 ORDER BY error_percent DESC",
+            "tables_used": [
+              "history_snapshot"
+            ],
+            "description": "将安全交叉汇总载入内存SQLite，按长候选表/其他物料搬运/运输/仓储聚合。",
+            "metric_definitions": {
+              "error_percent": "100 * 错题数量 / 对应分组题目数量；纯教材CPT历史三次多数票。"
+            },
+            "filters": [
+              "仅物料搬运、运输、仓储；长候选表从物料搬运中分离。"
+            ]
+          }
+        },
+        "encodings": {
+          "x": {
+            "field": "category",
+            "type": "nominal"
+          },
+          "y": {
+            "field": "error_percent",
+            "type": "quantitative"
+          }
+        },
+        "options": {
+          "orientation": "vertical"
+        },
+        "palette": {
+          "kind": "sequential",
+          "name": "blue"
+        }
+      }
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "status": "ready",
+    "datasets": {
+      "history": [
+        {
+          "category": "长候选表",
+          "items": 305,
+          "wrong": 93,
+          "error_rate": 0.30491803278688523,
+          "error_percent": 30.491803278688526
+        },
+        {
+          "category": "仓储",
+          "items": 202,
+          "wrong": 50,
+          "error_rate": 0.24752475247524752,
+          "error_percent": 24.752475247524753
+        },
+        {
+          "category": "运输",
+          "items": 404,
+          "wrong": 70,
+          "error_rate": 0.17326732673267325,
+          "error_percent": 17.326732673267326
+        },
+        {
+          "category": "其余物料搬运",
+          "items": 391,
+          "wrong": 32,
+          "error_rate": 0.08184143222506395,
+          "error_percent": 8.184143222506394
+        }
+      ]
+    }
+  },
+  "sources": [
+    {
+      "id": "analysis",
+      "label": "无训练诊断安全分析",
+      "path": "docs/logistics_strategy_diagnostic_analysis_20260908.safe.json"
+    },
+    {
+      "id": "phase",
+      "label": "第一阶段逐题安全结果",
+      "path": "docs/logistics_strategy_diagnostic_result_20260908.safe.json"
+    },
+    {
+      "id": "evidence",
+      "label": "第二阶段来源复核及配对结果",
+      "path": "docs/logistics_strategy_evidence_result_20260908.safe.json"
+    },
+    {
+      "id": "review",
+      "label": "12题证据充分性安全审阅记录",
+      "path": "docs/logistics_strategy_evidence_review_20260908.safe.json"
+    },
+    {
+      "id": "integrity",
+      "label": "原始CSV与冻结题库身份核对",
+      "path": "docs/logistics_strategy_source_integrity_20260908.safe.json"
+    },
+    {
+      "id": "structure",
+      "label": "重复候选与题库结构核查",
+      "path": "docs/logistics_strategy_diagnostic_structure_20260908.safe.json"
+    },
+    {
+      "id": "history_query",
+      "label": "冻结历史题目按候选数量与主题重聚合",
+      "path": "docs/logistics_strategy_diagnostic_manifest_20260908.safe.json",
+      "query": {
+        "engine": "SQLite",
+        "sql": "SELECT CASE WHEN choice_count=269 THEN '长候选表' WHEN category='material_handling' THEN '其余物料搬运' WHEN category='transport' THEN '运输' ELSE '仓储' END AS category,\nSUM(items) AS items, SUM(items-cpt_correct) AS wrong,\n1.0*SUM(items-cpt_correct)/SUM(items) AS error_rate,\n100.0*SUM(items-cpt_correct)/SUM(items) AS error_percent\nFROM history_snapshot WHERE category IN ('material_handling','transport','warehousing')\nGROUP BY 1 ORDER BY error_percent DESC",
+        "tables_used": [
+          "history_snapshot"
+        ],
+        "description": "将安全交叉汇总载入内存SQLite，按长候选表/其他物料搬运/运输/仓储聚合。",
+        "metric_definitions": {
+          "error_percent": "100 * 错题数量 / 对应分组题目数量；纯教材CPT历史三次多数票。"
+        },
+        "filters": [
+          "仅物料搬运、运输、仓储；长候选表从物料搬运中分离。"
+        ]
+      }
+    }
+  ]
+}

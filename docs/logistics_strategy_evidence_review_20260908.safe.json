@@ -1,0 +1,121 @@
+{
+  "reviewed": 12,
+  "book_sufficient": 0,
+  "supplemental_supported": 3,
+  "eligible": 3,
+  "rows": [
+    {
+      "item_hash": "e3088b9150e023a5f93a271135122c2eab86cabe4519010dabd3ce0e7af57f49",
+      "book_evidence_sufficient": false,
+      "status": "missing_emissions_method_and_scheme_details",
+      "supplemental_source_supported": false,
+      "gold_agreement": null
+    },
+    {
+      "item_hash": "01512c3a8ddccce75d4f20ace58cdc9c1cd864087365abd61644865152258ed4",
+      "book_evidence_sufficient": false,
+      "status": "missing_business_metric_definition",
+      "supplemental_source_supported": false,
+      "gold_agreement": null
+    },
+    {
+      "item_hash": "730f789a53fe4b3290888e77068da2a5b23680bd42eb345838eab8677cd2205a",
+      "book_evidence_sufficient": false,
+      "status": "unspecified_accounting_rule_scope",
+      "supplemental_source_supported": false,
+      "gold_agreement": null
+    },
+    {
+      "item_hash": "6069315419feafa62b38e43f0714669fc93fab47d0f1ea8a4fc7e6fcb6651237",
+      "book_evidence_sufficient": false,
+      "status": "missing_handling_code_definition",
+      "supplemental_source_supported": false,
+      "gold_agreement": null
+    },
+    {
+      "item_hash": "c450852b40ca0fd40cecb1dce82cbb35cac77000a94c5500ba467f2dd1132c6d",
+      "book_evidence_sufficient": false,
+      "status": "terminology_missing_and_incongruous_prefix",
+      "supplemental_source_supported": true,
+      "gold_agreement": true
+    },
+    {
+      "item_hash": "1039b3279b684789d6156f6b91a813e10353dd8b0ae6c7dda0a5c28c9e581102",
+      "book_evidence_sufficient": false,
+      "status": "fragmentary_prompt_relationship_unspecified",
+      "supplemental_source_supported": false,
+      "gold_agreement": null
+    },
+    {
+      "item_hash": "95524347f87bae46f4cce77e1a9bcebf2f9875af56746a2462d24f6516647428",
+      "book_evidence_sufficient": false,
+      "status": "missing_cargo_vs_gross_mass_definition",
+      "supplemental_source_supported": true,
+      "gold_agreement": true
+    },
+    {
+      "item_hash": "4da87384f492c7632cb5261137d688862608463d197ea82a38a2482cc6d034ce",
+      "book_evidence_sufficient": false,
+      "status": "missing_powered_vs_hauled_rail_vehicle_definition",
+      "supplemental_source_supported": true,
+      "gold_agreement": true
+    },
+    {
+      "item_hash": "481d3e310e0ec79992ed1435a8153b5803a14f3f8c13cccbac48619af830c787",
+      "book_evidence_sufficient": false,
+      "status": "missing_cross_mode_rate_and_cost_scope",
+      "supplemental_source_supported": false,
+      "gold_agreement": null
+    },
+    {
+      "item_hash": "b1ed82b8aebfe139c81ea9e5e577fca4b8d390c5c027a2c551d3fd5fbf06edb7",
+      "book_evidence_sufficient": false,
+      "status": "missing_company_effective_time_rules",
+      "supplemental_source_supported": false,
+      "gold_agreement": null
+    },
+    {
+      "item_hash": "c7254a1e7fca43ac0cfa8183358e361466345afb5a883240458bff7271d765e1",
+      "book_evidence_sufficient": false,
+      "status": "overlapping_process_labels_not_fully_distinguished",
+      "supplemental_source_supported": false,
+      "gold_agreement": null
+    },
+    {
+      "item_hash": "acd6f92e6ad5ea58b7278b32079937a79293d9eba17a4c41b6b997d9840001eb",
+      "book_evidence_sufficient": false,
+      "status": "unspecified_label_tool_and_template_rules",
+      "supplemental_source_supported": false,
+      "gold_agreement": null
+    }
+  ],
+  "decisions_sha256": "e334f90ef4d9348d71720fd0efa1146d1c79ff90be689c890c95b7f10a279a52",
+  "cases_sha256": "c05ee7148402dd0fb20475391238a56afda0a34e2a86b9b80e1039cf72dade7f",
+  "source": {
+    "title": "Glossary for Transport Statistics 2019, fifth edition",
+    "url": "https://www.oecd.org/content/dam/oecd/en/publications/reports/2020/03/glossary-for-transport-statistics-2019-5th-edition_3044081f/505b670b-en.pdf",
+    "sections": [
+      "A.I-02.1",
+      "A.II-07",
+      "A.II-09",
+      "B.II-35",
+      "B.II-38"
+    ],
+    "printed_pages": [
+      10,
+      15,
+      16,
+      44
+    ],
+    "representation": "common paraphrased terminology sheet; no option indices or benchmark answer labels",
+    "training_allowed": false
+  },
+  "private_content_included": false,
+  "training": false,
+  "limits": [
+    "Single assistant source review, not independent human expert validation.",
+    "Old top-three retrieval only; no claim that the full book lacks all facts.",
+    "Supplement is a common source-grounded glossary paraphrase, not new training data.",
+    "Supplementary candidates have an incongruous inherited question prefix; full original wording is retained."
+  ]
+}

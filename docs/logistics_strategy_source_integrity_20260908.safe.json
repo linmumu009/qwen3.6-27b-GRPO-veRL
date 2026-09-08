@@ -1,0 +1,15 @@
+{
+  "logistika_items": 1446,
+  "raw_csv_sha256": "4736d13abada32d203f0c1024a8d0c765aa24a5674b6ef954130f3eb9503ba45",
+  "raw_item_hash_set_digest": "25999ed8e5e5c742ebd06e420953858a950537454a84a1079f6a08c9bfe7e47c",
+  "frozen_item_hash_set_digest": "25999ed8e5e5c742ebd06e420953858a950537454a84a1079f6a08c9bfe7e47c",
+  "identity_digest_method": "SHA256 of newline-joined sorted item_hash strings; same canonical loader used for raw CSV and frozen source",
+  "large_pool_items": 305,
+  "large_pool_items_with_inherited_containerisation_prefix": 305,
+  "private_content_included": false,
+  "limits": [
+    "Identity checks establish local raw-to-frozen fidelity, not independent upstream curation correctness.",
+    "Repeated prefix count is not a claim that every one of the 305 questions is semantically invalid.",
+    "Only the 12 authorized cases were reviewed at content level in this round."
+  ]
+}
