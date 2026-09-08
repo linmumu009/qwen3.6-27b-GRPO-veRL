@@ -1,0 +1,44 @@
+{
+  "train_count": 80,
+  "opportunity_count": 64,
+  "maintenance_count": 16,
+  "reserve_count": 3,
+  "development_count": 39,
+  "evaluation_count": 55,
+  "batch_size": 8,
+  "epochs": 1,
+  "steps": 10,
+  "save_steps": [
+    5,
+    10
+  ],
+  "learning_rate": 5e-07,
+  "dropped_tail": 0,
+  "loss_tokens": 7183,
+  "sequence_tokens": 15491,
+  "max_length": 275,
+  "train_topics": {
+    "warehousing": 29,
+    "transport": 16,
+    "general": 29,
+    "material_handling": 6
+  },
+  "pool_hashes": {
+    "opportunity": "aa8d853d5d9a0d582e90a4ff622fa87e0d549709c9d45cba93f9e4c322eda09c",
+    "maintenance": "b304dd9ce43d189be0656167520088191d75138066a7102ba7ec2ea961e77e70",
+    "development": "7cb005034b49c9463bb4441e2f34022df7b6c7b8e517706a122f6f968dfc6434",
+    "quarantine": "2418f900499a5a77eab0501ff5b804b6da43d34306916f18d6a9369f1dc13f58"
+  },
+  "train_parquet_sha256": "d61e519147813c7d845fc64144860135d2dfdea089d46f69e3a1d8fe0c4968ba",
+  "source_model": "/workspace/llin-verl-grpo/runs/logistics-cpt-book-exposure-curve-2x4x-20260904-01/hf_export_step_116",
+  "source_book_sha256": "21071ddfc147f1b2c3f1ffc4f6df66363927d4232260b41914b162a296a5816c",
+  "training_started": false,
+  "supervision": "reference answer plus EOS only; original question only; closed-book",
+  "benchmark_text_in_training": false,
+  "development_chapter_disjoint": true,
+  "limitations": [
+    "Small nonrandom textbook development set; CPT has seen the full book.",
+    "One short pilot, not a causal comparison of selection strategies; 16 maintenance items are in-training.",
+    "No claim of Agent/general regression safety without separate evaluation."
+  ]
+}

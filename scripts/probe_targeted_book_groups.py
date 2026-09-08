@@ -17,6 +17,8 @@ def prompt_messages(row,variant,evidence=None):
 def main():
     p=argparse.ArgumentParser()
     for k in ('root','data','output'):p.add_argument('--'+k,type=Path,required=True)
+    p.add_argument('--model',type=Path)
+    p.add_argument('--model-label',default='pure_book_CPT4x_step116')
     a=p.parse_args();os.umask(0o077)
     raw=(a.data/'candidates.private.jsonl').read_bytes();summary=json.loads((a.data/'summary.safe.json').read_text())
     if hashlib.sha256(raw).hexdigest()!=summary['candidates_sha256']:raise ValueError('Changed candidate set')
@@ -26,7 +28,8 @@ def main():
     sources={r['record_id']:r['text'] for r in map(json.loads,src.read_text().splitlines())}
     for r in rows:
         if hashlib.sha256(sources[r['source_id']].encode()).hexdigest()!=r['source_hash']:raise ValueError('Changed source')
-    model=a.root/'runs/logistics-cpt-book-exposure-curve-2x4x-20260904-01/hf_export_step_116'
+    model=a.model or a.root/'runs/logistics-cpt-book-exposure-curve-2x4x-20260904-01/hf_export_step_116'
+    if a.model and a.model_label=='pure_book_CPT4x_step116':raise ValueError('Custom model requires distinct label')
     a.output.mkdir(parents=True,exist_ok=False)
     from vllm import LLM,SamplingParams
     llm=LLM(model=str(model),tensor_parallel_size=8,dtype='bfloat16',trust_remote_code=True,
@@ -47,7 +50,7 @@ def main():
             records.append({'id':r['id'],'condition':condition,'text':ans.text,'finish_reason':ans.finish_reason,'tokens':len(ans.token_ids)})
         (a.output/'answers.private.json').write_text(json.dumps(records))
         print(json.dumps({'condition':condition,'items':len(rows),'complete':True}),flush=True)
-    safe={'model':'pure_book_CPT4x_step116','items':len(rows),'responses':len(records),'conditions':4,
+    safe={'model':a.model_label,'model_path':str(model),'items':len(rows),'responses':len(records),'conditions':4,
       'max_output_tokens':512,'candidate_sha256':summary['candidates_sha256'],
       'answers_sha256':hashlib.sha256((a.output/'answers.private.json').read_bytes()).hexdigest(),
       'finish_reasons':dict(Counter(r['finish_reason'] for r in records)),
