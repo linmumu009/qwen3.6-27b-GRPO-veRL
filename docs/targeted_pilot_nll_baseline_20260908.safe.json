@@ -1,0 +1,33 @@
+{
+  "label": "baseline",
+  "cohorts": {
+    "opportunity": {
+      "items": 64,
+      "content_tokens": 5655,
+      "content_nll": 2.1014173201120085,
+      "mean_eos_nll": 2.05094642387121,
+      "answer_and_eos_nll": 2.1008525120407704,
+      "mean_first_content_nll": 1.7818984732139143
+    },
+    "maintenance": {
+      "items": 16,
+      "content_tokens": 1448,
+      "content_nll": 1.515658418722385,
+      "mean_eos_nll": 2.260829662438482,
+      "answer_and_eos_nll": 1.5238023667411402,
+      "mean_first_content_nll": 0.20696364525065292
+    },
+    "development": {
+      "items": 39,
+      "content_tokens": 3755,
+      "content_nll": 1.8652318594217707,
+      "mean_eos_nll": 1.2699126374836152,
+      "answer_and_eos_nll": 1.8591123418530864,
+      "mean_first_content_nll": 1.498995447011951
+    }
+  },
+  "input_sha256": "ad6a9396764fa965b01aa3588569f1030794c942bc9984a29271bb4529f2568f",
+  "scores_sha256": "0b5da3cf7cb0b793b4a76db8d4758c00a33e5a8f35f02113e2c21fec1b705d2e",
+  "training": false,
+  "limitation": "Teacher-forced reference likelihood, not generated factual correctness; exact original prompt only."
+}

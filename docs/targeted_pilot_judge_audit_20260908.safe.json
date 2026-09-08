@@ -1,0 +1,49 @@
+{
+  "calls": 56,
+  "statuses": {
+    "valid": 56
+  },
+  "groups": {
+    "loss": {
+      "pairs": 14,
+      "statuses": {
+        "stable_pair": 10,
+        "order_disagreement_pair": 4
+      },
+      "stable_axes": {
+        "baseline": {
+          "core_correct": 10,
+          "necessary_complete": 10,
+          "material_error": 0
+        },
+        "step10": {
+          "core_correct": 9,
+          "necessary_complete": 9,
+          "material_error": 1
+        }
+      }
+    },
+    "control": {
+      "pairs": 14,
+      "statuses": {
+        "stable_pair": 11,
+        "order_disagreement_pair": 3
+      },
+      "stable_axes": {
+        "baseline": {
+          "core_correct": 6,
+          "necessary_complete": 6,
+          "material_error": 5
+        },
+        "step10": {
+          "core_correct": 6,
+          "necessary_complete": 6,
+          "material_error": 5
+        }
+      }
+    }
+  },
+  "usage_tokens": 258247,
+  "training": false,
+  "limitations": "Selected diagnostic sample; no full-cohort corrected accuracy or independent expert claim."
+}
