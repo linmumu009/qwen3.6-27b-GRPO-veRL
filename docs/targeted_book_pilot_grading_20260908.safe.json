@@ -1,0 +1,134 @@
+{
+  "items": 55,
+  "status": {
+    "scored": 50,
+    "invalid_review": 5
+  },
+  "cohorts": {
+    "development": {
+      "items": 39,
+      "scored": 34,
+      "concept_groups_scored": 12,
+      "statuses": {
+        "invalid_review": 5,
+        "scored": 34
+      },
+      "metrics": {
+        "baseline": {
+          "closed": {
+            "both_pass": 7,
+            "answer_pass": 17,
+            "answer_count": 68
+          },
+          "open": {
+            "both_pass": 32,
+            "answer_pass": 66,
+            "answer_count": 68
+          }
+        },
+        "step5": {
+          "closed": {
+            "both_pass": 7,
+            "answer_pass": 16,
+            "answer_count": 68
+          },
+          "open": {
+            "both_pass": 31,
+            "answer_pass": 65,
+            "answer_count": 68
+          }
+        },
+        "step10": {
+          "closed": {
+            "both_pass": 3,
+            "answer_pass": 10,
+            "answer_count": 68
+          },
+          "open": {
+            "both_pass": 27,
+            "answer_pass": 60,
+            "answer_count": 68
+          }
+        }
+      },
+      "paired_closed_both": {
+        "step5": {
+          "both_not_pass": 26,
+          "both_pass": 6,
+          "gain": 1,
+          "loss": 1
+        },
+        "step10": {
+          "both_not_pass": 27,
+          "both_pass": 3,
+          "loss": 4
+        }
+      }
+    },
+    "in_training_maintenance": {
+      "items": 16,
+      "scored": 16,
+      "concept_groups_scored": 11,
+      "statuses": {
+        "scored": 16
+      },
+      "metrics": {
+        "baseline": {
+          "closed": {
+            "both_pass": 13,
+            "answer_pass": 27,
+            "answer_count": 32
+          },
+          "open": {
+            "both_pass": 16,
+            "answer_pass": 32,
+            "answer_count": 32
+          }
+        },
+        "step5": {
+          "closed": {
+            "both_pass": 13,
+            "answer_pass": 27,
+            "answer_count": 32
+          },
+          "open": {
+            "both_pass": 16,
+            "answer_pass": 32,
+            "answer_count": 32
+          }
+        },
+        "step10": {
+          "closed": {
+            "both_pass": 10,
+            "answer_pass": 23,
+            "answer_count": 32
+          },
+          "open": {
+            "both_pass": 16,
+            "answer_pass": 32,
+            "answer_count": 32
+          }
+        }
+      },
+      "paired_closed_both": {
+        "step5": {
+          "both_pass": 13,
+          "both_not_pass": 3
+        },
+        "step10": {
+          "both_pass": 10,
+          "both_not_pass": 3,
+          "loss": 3
+        }
+      }
+    }
+  },
+  "usage": {
+    "prompt_tokens": 368139,
+    "completion_tokens": 39070,
+    "total_tokens": 407209
+  },
+  "reviews_sha256": "00364019fe1a16f4ec675e6a5ae9dc5e8ac190af05c870baeafca9eae174268a",
+  "training": false,
+  "limitation": "Small correlated textbook cohort and same-family automatic review; maintenance is in training. No causal selection or general capability claim."
+}

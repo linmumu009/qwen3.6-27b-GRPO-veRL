@@ -1,0 +1,24 @@
+{
+  "items": 55,
+  "models": [
+    "baseline",
+    "step5",
+    "step10"
+  ],
+  "candidate_sha256": "56b33e3241088ad510f1611731af2848086e63bea90f085d4f945180a7795b4e",
+  "answer_hashes": {
+    "targeted-book-probe-20260908": "fcdbd8e345d433dde9555fcf1aaa35d296237b4a878e9bda3576aabdc3c81139",
+    "targeted-book-supplement-probe-20260908": "e2055033fe93d684bd1f0bf0bce8c322af1a70a8d72aa1f4735f9db7ff907413",
+    "step5": "926ed718376fc2dbe771276c2e9b1ebc9d2867184fe3ee0ad98d8b6d90f8aa36",
+    "step10": "8c3129c84cc1d3d2acab77c89577e404d4d91e1e962dd1c3473b379c1f327de9"
+  },
+  "workers": 64,
+  "max_calls": 55,
+  "retries": 0,
+  "api_model": "qwen3.8-max",
+  "benchmark_text_sent": false,
+  "training": false,
+  "blind_models_and_conditions": true,
+  "primary": "paired closed-book both-variant pass on common valid development questions; exclusions reported",
+  "limitations": "Same-family automatic judge, 12 answers jointly reviewed; not independent expert labels."
+}
