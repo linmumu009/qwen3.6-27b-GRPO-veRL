@@ -1,0 +1,99 @@
+{
+  "items": 6,
+  "generations": 20,
+  "prompt_identity_verified": true,
+  "results": [
+    {
+      "id": "taskgroup-025-discrimination-repair1",
+      "mode": "evidence",
+      "status": "agreed",
+      "review_statuses": [
+        "scored",
+        "scored"
+      ],
+      "scores": {
+        "step120:evidence": 2,
+        "cpt:evidence": 2
+      }
+    },
+    {
+      "id": "taskgroup-045-discrimination-repair1",
+      "mode": "closed",
+      "status": "unresolved",
+      "review_statuses": [
+        "scored",
+        "scored"
+      ]
+    },
+    {
+      "id": "taskgroup-070-definition-repair1",
+      "mode": "closed",
+      "status": "unresolved",
+      "review_statuses": [
+        "scored",
+        "scored"
+      ]
+    },
+    {
+      "id": "taskgroup-082-discrimination-repair1",
+      "mode": "closed",
+      "status": "agreed",
+      "review_statuses": [
+        "scored",
+        "scored"
+      ],
+      "scores": {
+        "step120:evidence": 2,
+        "cpt:closed": 1,
+        "step120:closed": 1,
+        "cpt:evidence": 2
+      },
+      "decisions": {
+        "step120": "evidence_rescued_candidate",
+        "cpt": "evidence_rescued_candidate"
+      }
+    },
+    {
+      "id": "taskgroup-084-discrimination-repair1",
+      "mode": "closed",
+      "status": "agreed",
+      "review_statuses": [
+        "scored",
+        "scored"
+      ],
+      "scores": {
+        "cpt:closed": 1,
+        "step120:closed": 1,
+        "cpt:evidence": 2,
+        "step120:evidence": 2
+      },
+      "decisions": {
+        "step120": "evidence_rescued_candidate",
+        "cpt": "evidence_rescued_candidate"
+      }
+    },
+    {
+      "id": "taskgroup-087-definition-repair1",
+      "mode": "evidence",
+      "status": "agreed",
+      "review_statuses": [
+        "scored",
+        "scored"
+      ],
+      "scores": {
+        "cpt:evidence": 2,
+        "step120:evidence": 2
+      }
+    }
+  ],
+  "api_calls": 12,
+  "usage": {
+    "prompt_tokens": 16262,
+    "completion_tokens": 3402,
+    "total_tokens": 19664
+  },
+  "training": false,
+  "training_ready": false,
+  "full_groups_reviewed": false,
+  "old_pools_modified": false
+}

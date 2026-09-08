@@ -1,0 +1,23 @@
+{
+  "items": 6,
+  "closed_items": 4,
+  "evidence_only_items": 2,
+  "source_candidates_sha256": "9b400cea4b20ed7639cc45c72379f885d00d286486476a2fc207851a224522b7",
+  "cases_sha256": "12b62ae4580683e7308ab91e03585bd156738041795cdb69deb51cfe63ea84a2",
+  "models": {
+    "step120": "runs/llin-step120-opensource-20260825-02/hf_export_step120_opensource",
+    "cpt": "runs/logistics-cpt-book-exposure-curve-2x4x-20260904-01/hf_export_step_116"
+  },
+  "generations_per_model": 10,
+  "generations_total": 20,
+  "max_output_tokens": 512,
+  "temperature": 0,
+  "seed": 1024,
+  "thinking": false,
+  "repeats": 1,
+  "judge_repeats": 2,
+  "max_api_calls": 12,
+  "training": false,
+  "old_scores_inherited": false,
+  "script_sha256": "c72c26009acc12df7b69653dbc8c03245d829044b24938585b6ced64f47dcde3"
+}
