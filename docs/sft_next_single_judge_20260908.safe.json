@@ -1,0 +1,25 @@
+{
+  "questions": 14,
+  "criteria_valid": 28,
+  "criteria_supported": 28,
+  "score_statuses": {
+    "valid": 110,
+    "invalid": 2
+  },
+  "pairs": {
+    "joint_agree": 51,
+    "disagree": 3,
+    "invalid_or_unsupported": 2
+  },
+  "pair_denominator": 56,
+  "joint_agreement": 0.9107142857142857,
+  "axis_agreements": {
+    "core_correct": 52,
+    "necessary_complete": 53,
+    "material_error": 53
+  },
+  "gate_passed": true,
+  "usage_tokens": 607313,
+  "training_started": false,
+  "limitation": "Repeatability of fixed selected sample, not independent correctness or new-set validation."
+}

@@ -1,0 +1,38 @@
+{
+  "opensource_rows": 80,
+  "datasets": {
+    "MATH": 48,
+    "PHYBench": 16,
+    "C-Eval-dev": 8,
+    "GSM8K": 8
+  },
+  "checks": {
+    "source_answer_matches": 76,
+    "has_solution_text": 80,
+    "answer_needs_review": 4
+  },
+  "source_file_hashes": {
+    "/data/renjunxiang/coding/huawei_train/datasets/open_source/raw/MATH/default__train.jsonl": "538bf530f86df03a0d2be0e33b9864044347bfa9fb82eee1075043d40ab9b5ff",
+    "/data/renjunxiang/coding/huawei_train/datasets/open_source/raw/PHYBench/default__train.jsonl": "ba4e30963fae59e8ae86782ead4150d78eed6e7cb4dbe272edddeabb014b7d31",
+    "/data/renjunxiang/coding/huawei_train/datasets/open_source/raw/C-Eval/high_school_mathematics__dev.jsonl": "bb11cb7c906154d7d7807475e11831879f9260fdb9e35f998f679996441d5e40",
+    "/data/renjunxiang/coding/huawei_train/datasets/open_source/raw/GSM8K/main__train.jsonl": "aab3610849c9dcb3caaa8662759da2a6e6b74eb561f60ec56332031a222549f6",
+    "/data/renjunxiang/coding/huawei_train/datasets/open_source/raw/C-Eval/high_school_chemistry__dev.jsonl": "9846091804911a5b713bff755ad02c525e55dc2ea605e2dc837eca82d9732ef5",
+    "/data/renjunxiang/coding/huawei_train/datasets/open_source/raw/C-Eval/discrete_mathematics__dev.jsonl": "74acd9dd4d75121512acd3b8812f48eb7be80e30ac8a899b48f3725fc7d18bb1",
+    "/data/renjunxiang/coding/huawei_train/datasets/open_source/raw/C-Eval/electrical_engineer__dev.jsonl": "370d06b1851cae69a4d2c71548897eb8ec302686b375ee124caf25e82fa779dd",
+    "/data/renjunxiang/coding/huawei_train/datasets/open_source/raw/C-Eval/operating_system__dev.jsonl": "6fde852ef4cb8a1df36c27b76bcd5cbb0fa65cdf11452855e96607527e91c8d0",
+    "/data/renjunxiang/coding/huawei_train/datasets/open_source/raw/C-Eval/college_chemistry__dev.jsonl": "f94b4e77bac49112ac4c784d2f5011517ffa322e40952192ea64c56fd3978617",
+    "/data/renjunxiang/coding/huawei_train/datasets/open_source/raw/C-Eval/college_physics__dev.jsonl": "e6cce11678222ce84131c5d4ac23729d56b2f1343467aa611ea71fe00f57159f",
+    "/data/renjunxiang/coding/huawei_train/datasets/open_source/raw/C-Eval/college_programming__dev.jsonl": "4708390d3a955812e78f51486d3a5d53a79dee26445bd303ec6f29ace317046a"
+  },
+  "historical_train_jsonl_sha256": "0576d5017b39ad306105639cf4d0f55cbecb34c4a9eb926b06053464d2859aee",
+  "agent_candidate_rows": 16,
+  "agent_semantic_warning_rows": 12,
+  "agent_contract_promotion_allowed": false,
+  "replay_training_ready": false,
+  "training_exported": false,
+  "limits": [
+    "Source final-answer consistency is not solution reasoning validation.",
+    "Historical train-only provenance is not a newly verified full benchmark decontamination audit.",
+    "Agent warning rows and separate held-out regression require validation; textbook maintenance is not Agent replay."
+  ]
+}

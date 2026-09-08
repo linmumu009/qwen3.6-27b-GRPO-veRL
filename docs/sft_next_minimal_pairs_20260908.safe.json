@@ -1,0 +1,32 @@
+{
+  "attempted": 80,
+  "accepted": 44,
+  "status": {
+    "generation_quarantine": 8,
+    "audit_quarantine": 28,
+    "accepted": 44
+  },
+  "accepted_topics": {
+    "warehousing": 19,
+    "transport": 7,
+    "general": 16,
+    "material_handling": 2
+  },
+  "accepted_kinds": {
+    "definition": 13,
+    "application": 15,
+    "boundary": 16
+  },
+  "supervised_tokens_one_exposure": {
+    "a": 3956,
+    "b": 6886
+  },
+  "relative_budget_gap_max_denominator": 0.4255010165553297,
+  "budget_match_5pct_passed": false,
+  "mean_word_edit_ratio": 0.6900732592784149,
+  "pairs_sha256": "c91b8b32d44c8ab787a3359df52ef9679f1a5e8cd2037a1277d972035072ca7a",
+  "usage_tokens": 677212,
+  "training_ready": false,
+  "training_started": false,
+  "limits": "Same-family automated audit; pair quality does not prove minimality, learning value or fair matched budget."
+}
