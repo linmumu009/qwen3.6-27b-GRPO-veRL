@@ -1,0 +1,33 @@
+{
+  "model": "cpt",
+  "model_path": "/workspace/llin-verl-grpo/runs/logistics-cpt-book-exposure-curve-2x4x-20260904-01/hf_export_step_116",
+  "model_config_sha256": "43eee23b0489ed1769bf2d49438015728ad686bef55d4aecb18a3a1ce840d6da",
+  "cases_sha256": "f488306a5e9911e9ae6985397f2c44d6559ddfe82e30db66ade248855b8961ee",
+  "responses": 408,
+  "items": 204,
+  "finish_reasons": {
+    "stop": 406,
+    "length": 2
+  },
+  "conditions": {
+    "closed": {
+      "items": 153,
+      "output_tokens": 20510
+    },
+    "evidence": {
+      "items": 153,
+      "output_tokens": 18635
+    },
+    "original": {
+      "items": 51,
+      "output_tokens": 8885
+    },
+    "permuted": {
+      "items": 51,
+      "output_tokens": 8562
+    }
+  },
+  "answers_sha256": "4e65f9082d5500af7fdc1b9dcfc770dfde210714bfb5ea16a56af542e072d0cb",
+  "training": false,
+  "reference_answers_in_prompts": false
+}

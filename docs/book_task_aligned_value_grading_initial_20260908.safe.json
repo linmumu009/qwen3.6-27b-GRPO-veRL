@@ -1,0 +1,18 @@
+{
+  "items": 153,
+  "reviews": 306,
+  "api_calls": 304,
+  "statuses": {
+    "invalid_grade": 157,
+    "scored": 145,
+    "quality_quarantine": 2,
+    "truncated_quarantine": 2
+  },
+  "usage": {
+    "prompt_tokens": 407228,
+    "completion_tokens": 88169,
+    "total_tokens": 495397
+  },
+  "reviews_sha256": "7335f8be15f781436fe44d00ee245dc33e10c81d66787cfda1dedb30398f652d",
+  "training": false
+}

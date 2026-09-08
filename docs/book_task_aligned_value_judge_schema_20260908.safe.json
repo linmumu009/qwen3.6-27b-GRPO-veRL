@@ -1,0 +1,148 @@
+{
+  "counts": {
+    "invalid_records": 157,
+    "answer_count_4": 157,
+    "unknown_source_ids": 252,
+    "invalid_source_count": 210
+  },
+  "examples_without_content": [
+    {
+      "id": "taskgroup-002-definition",
+      "repeat": 0,
+      "keys": [
+        "question_valid",
+        "rubric_valid",
+        "answers"
+      ],
+      "question_valid": true,
+      "rubric_valid": true,
+      "answer_shapes": [
+        {
+          "id": "A",
+          "score": 2,
+          "source_ids": [
+            1,
+            2
+          ]
+        },
+        {
+          "id": "B",
+          "score": 0,
+          "source_ids": []
+        },
+        {
+          "id": "C",
+          "score": 0,
+          "source_ids": []
+        },
+        {
+          "id": "D",
+          "score": 2,
+          "source_ids": [
+            1,
+            2
+          ]
+        }
+      ],
+      "allowed_source_ids": [
+        "S001",
+        "S002"
+      ]
+    },
+    {
+      "id": "taskgroup-002-discrimination",
+      "repeat": 0,
+      "keys": [
+        "question_valid",
+        "rubric_valid",
+        "answers"
+      ],
+      "question_valid": true,
+      "rubric_valid": true,
+      "answer_shapes": [
+        {
+          "id": "A",
+          "score": 0,
+          "source_ids": []
+        },
+        {
+          "id": "B",
+          "score": 0,
+          "source_ids": []
+        },
+        {
+          "id": "C",
+          "score": 2,
+          "source_ids": [
+            "S001",
+            "S002"
+          ]
+        },
+        {
+          "id": "D",
+          "score": 2,
+          "source_ids": [
+            "S001",
+            "S002"
+          ]
+        }
+      ],
+      "allowed_source_ids": [
+        "S001",
+        "S002"
+      ]
+    },
+    {
+      "id": "taskgroup-002-application",
+      "repeat": 0,
+      "keys": [
+        "question_valid",
+        "rubric_valid",
+        "answers"
+      ],
+      "question_valid": true,
+      "rubric_valid": true,
+      "answer_shapes": [
+        {
+          "id": "A",
+          "score": 2,
+          "source_ids": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "id": "B",
+          "score": 1,
+          "source_ids": [
+            1,
+            2
+          ]
+        },
+        {
+          "id": "C",
+          "score": 1,
+          "source_ids": [
+            1,
+            2
+          ]
+        },
+        {
+          "id": "D",
+          "score": 2,
+          "source_ids": [
+            1,
+            2,
+            3
+          ]
+        }
+      ],
+      "allowed_source_ids": [
+        "S001",
+        "S002",
+        "S003"
+      ]
+    }
+  ]
+}

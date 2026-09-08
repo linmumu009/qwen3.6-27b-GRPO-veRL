@@ -1,0 +1,7243 @@
+{
+  "items": 204,
+  "groups": 51,
+  "generations": 816,
+  "models": [
+    "step120",
+    "cpt"
+  ],
+  "table": [
+    {
+      "split": "train",
+      "model": "step120",
+      "kind": "definition",
+      "items": 43,
+      "decisions": {
+        "evidence_rescued_candidate": 29,
+        "judge_invalid": 2,
+        "judge_disagreement": 11,
+        "unresolved_both_conditions": 1
+      },
+      "agreed_items": 30,
+      "closed_correct": 0,
+      "evidence_correct": 29
+    },
+    {
+      "split": "train",
+      "model": "step120",
+      "kind": "discrimination",
+      "items": 43,
+      "decisions": {
+        "evidence_rescued_candidate": 39,
+        "judge_disagreement": 3,
+        "unresolved_both_conditions": 1
+      },
+      "agreed_items": 40,
+      "closed_correct": 0,
+      "evidence_correct": 39
+    },
+    {
+      "split": "train",
+      "model": "step120",
+      "kind": "application",
+      "items": 43,
+      "decisions": {
+        "evidence_rescued_candidate": 27,
+        "unresolved_both_conditions": 5,
+        "judge_disagreement": 8,
+        "maintenance_candidate": 3
+      },
+      "agreed_items": 35,
+      "closed_correct": 3,
+      "evidence_correct": 30
+    },
+    {
+      "split": "train",
+      "model": "step120",
+      "kind": "evidence_selection",
+      "items": 43,
+      "decisions": {
+        "both_orders_correct": 38,
+        "both_orders_wrong_candidate": 3,
+        "order_sensitive_candidate": 2
+      },
+      "original_correct": 39,
+      "permuted_correct": 39,
+      "answers_changed": 2,
+      "invalid_responses": 0
+    },
+    {
+      "split": "train",
+      "model": "cpt",
+      "kind": "definition",
+      "items": 43,
+      "decisions": {
+        "evidence_rescued_candidate": 29,
+        "judge_invalid": 2,
+        "judge_disagreement": 11,
+        "maintenance_candidate": 1
+      },
+      "agreed_items": 30,
+      "closed_correct": 1,
+      "evidence_correct": 30
+    },
+    {
+      "split": "train",
+      "model": "cpt",
+      "kind": "discrimination",
+      "items": 43,
+      "decisions": {
+        "evidence_rescued_candidate": 38,
+        "judge_disagreement": 3,
+        "unresolved_both_conditions": 2
+      },
+      "agreed_items": 40,
+      "closed_correct": 0,
+      "evidence_correct": 38
+    },
+    {
+      "split": "train",
+      "model": "cpt",
+      "kind": "application",
+      "items": 43,
+      "decisions": {
+        "evidence_rescued_candidate": 28,
+        "unresolved_both_conditions": 4,
+        "judge_disagreement": 8,
+        "maintenance_candidate": 3
+      },
+      "agreed_items": 35,
+      "closed_correct": 3,
+      "evidence_correct": 31
+    },
+    {
+      "split": "train",
+      "model": "cpt",
+      "kind": "evidence_selection",
+      "items": 43,
+      "decisions": {
+        "both_orders_correct": 38,
+        "invalid_response": 1,
+        "order_sensitive_candidate": 2,
+        "both_orders_wrong_candidate": 2
+      },
+      "original_correct": 39,
+      "permuted_correct": 39,
+      "answers_changed": 2,
+      "invalid_responses": 1
+    },
+    {
+      "split": "dev",
+      "model": "step120",
+      "kind": "definition",
+      "items": 8,
+      "decisions": {
+        "evidence_rescued_candidate": 7,
+        "maintenance_candidate": 1
+      },
+      "agreed_items": 8,
+      "closed_correct": 1,
+      "evidence_correct": 8
+    },
+    {
+      "split": "dev",
+      "model": "step120",
+      "kind": "discrimination",
+      "items": 8,
+      "decisions": {
+        "evidence_rescued_candidate": 7,
+        "judge_disagreement": 1
+      },
+      "agreed_items": 7,
+      "closed_correct": 0,
+      "evidence_correct": 7
+    },
+    {
+      "split": "dev",
+      "model": "step120",
+      "kind": "application",
+      "items": 8,
+      "decisions": {
+        "evidence_rescued_candidate": 5,
+        "maintenance_candidate": 1,
+        "judge_disagreement": 1,
+        "judge_invalid": 1
+      },
+      "agreed_items": 6,
+      "closed_correct": 1,
+      "evidence_correct": 6
+    },
+    {
+      "split": "dev",
+      "model": "step120",
+      "kind": "evidence_selection",
+      "items": 8,
+      "decisions": {
+        "both_orders_correct": 8
+      },
+      "original_correct": 8,
+      "permuted_correct": 8,
+      "answers_changed": 0,
+      "invalid_responses": 0
+    },
+    {
+      "split": "dev",
+      "model": "cpt",
+      "kind": "definition",
+      "items": 8,
+      "decisions": {
+        "evidence_rescued_candidate": 7,
+        "maintenance_candidate": 1
+      },
+      "agreed_items": 8,
+      "closed_correct": 1,
+      "evidence_correct": 8
+    },
+    {
+      "split": "dev",
+      "model": "cpt",
+      "kind": "discrimination",
+      "items": 8,
+      "decisions": {
+        "evidence_rescued_candidate": 7,
+        "judge_disagreement": 1
+      },
+      "agreed_items": 7,
+      "closed_correct": 0,
+      "evidence_correct": 7
+    },
+    {
+      "split": "dev",
+      "model": "cpt",
+      "kind": "application",
+      "items": 8,
+      "decisions": {
+        "evidence_rescued_candidate": 5,
+        "maintenance_candidate": 1,
+        "judge_disagreement": 1,
+        "judge_invalid": 1
+      },
+      "agreed_items": 6,
+      "closed_correct": 1,
+      "evidence_correct": 6
+    },
+    {
+      "split": "dev",
+      "model": "cpt",
+      "kind": "evidence_selection",
+      "items": 8,
+      "decisions": {
+        "both_orders_correct": 7,
+        "order_sensitive_candidate": 1
+      },
+      "original_correct": 7,
+      "permuted_correct": 8,
+      "answers_changed": 1,
+      "invalid_responses": 0
+    }
+  ],
+  "grade_consensus": {
+    "judge_agreed": 126,
+    "judge_invalid": 3,
+    "judge_disagreement": 24
+  },
+  "judge_api_calls": 461,
+  "judge_usage": {
+    "prompt_tokens": 633144,
+    "completion_tokens": 142278,
+    "total_tokens": 775422
+  },
+  "group_assessment": [
+    {
+      "concept_group": "taskgroup-002",
+      "split": "train",
+      "candidate_items": 3,
+      "unresolved_items": 0,
+      "all_four_items_assessable": true
+    },
+    {
+      "concept_group": "taskgroup-003",
+      "split": "train",
+      "candidate_items": 2,
+      "unresolved_items": 1,
+      "all_four_items_assessable": false
+    },
+    {
+      "concept_group": "taskgroup-004",
+      "split": "train",
+      "candidate_items": 1,
+      "unresolved_items": 2,
+      "all_four_items_assessable": false
+    },
+    {
+      "concept_group": "taskgroup-009",
+      "split": "train",
+      "candidate_items": 1,
+      "unresolved_items": 2,
+      "all_four_items_assessable": false
+    },
+    {
+      "concept_group": "taskgroup-010",
+      "split": "train",
+      "candidate_items": 2,
+      "unresolved_items": 1,
+      "all_four_items_assessable": false
+    },
+    {
+      "concept_group": "taskgroup-011",
+      "split": "train",
+      "candidate_items": 3,
+      "unresolved_items": 0,
+      "all_four_items_assessable": true
+    },
+    {
+      "concept_group": "taskgroup-012",
+      "split": "train",
+      "candidate_items": 4,
+      "unresolved_items": 1,
+      "all_four_items_assessable": false
+    },
+    {
+      "concept_group": "taskgroup-014",
+      "split": "train",
+      "candidate_items": 3,
+      "unresolved_items": 0,
+      "all_four_items_assessable": true
+    },
+    {
+      "concept_group": "taskgroup-017",
+      "split": "train",
+      "candidate_items": 2,
+      "unresolved_items": 1,
+      "all_four_items_assessable": false
+    },
+    {
+      "concept_group": "taskgroup-019",
+      "split": "train",
+      "candidate_items": 3,
+      "unresolved_items": 0,
+      "all_four_items_assessable": true
+    },
+    {
+      "concept_group": "taskgroup-020",
+      "split": "train",
+      "candidate_items": 2,
+      "unresolved_items": 1,
+      "all_four_items_assessable": false
+    },
+    {
+      "concept_group": "taskgroup-022",
+      "split": "train",
+      "candidate_items": 2,
+      "unresolved_items": 1,
+      "all_four_items_assessable": false
+    },
+    {
+      "concept_group": "taskgroup-024",
+      "split": "train",
+      "candidate_items": 1,
+      "unresolved_items": 2,
+      "all_four_items_assessable": false
+    },
+    {
+      "concept_group": "taskgroup-025",
+      "split": "train",
+      "candidate_items": 1,
+      "unresolved_items": 2,
+      "all_four_items_assessable": false
+    },
+    {
+      "concept_group": "taskgroup-027",
+      "split": "train",
+      "candidate_items": 2,
+      "unresolved_items": 1,
+      "all_four_items_assessable": false
+    },
+    {
+      "concept_group": "taskgroup-030",
+      "split": "train",
+      "candidate_items": 3,
+      "unresolved_items": 0,
+      "all_four_items_assessable": true
+    },
+    {
+      "concept_group": "taskgroup-032",
+      "split": "train",
+      "candidate_items": 3,
+      "unresolved_items": 1,
+      "all_four_items_assessable": false
+    },
+    {
+      "concept_group": "taskgroup-038",
+      "split": "train",
+      "candidate_items": 1,
+      "unresolved_items": 3,
+      "all_four_items_assessable": false
+    },
+    {
+      "concept_group": "taskgroup-039",
+      "split": "train",
+      "candidate_items": 3,
+      "unresolved_items": 0,
+      "all_four_items_assessable": true
+    },
+    {
+      "concept_group": "taskgroup-042",
+      "split": "train",
+      "candidate_items": 3,
+      "unresolved_items": 0,
+      "all_four_items_assessable": true
+    },
+    {
+      "concept_group": "taskgroup-044",
+      "split": "train",
+      "candidate_items": 3,
+      "unresolved_items": 1,
+      "all_four_items_assessable": false
+    },
+    {
+      "concept_group": "taskgroup-045",
+      "split": "train",
+      "candidate_items": 3,
+      "unresolved_items": 0,
+      "all_four_items_assessable": true
+    },
+    {
+      "concept_group": "taskgroup-046",
+      "split": "train",
+      "candidate_items": 2,
+      "unresolved_items": 1,
+      "all_four_items_assessable": false
+    },
+    {
+      "concept_group": "taskgroup-049",
+      "split": "train",
+      "candidate_items": 3,
+      "unresolved_items": 0,
+      "all_four_items_assessable": true
+    },
+    {
+      "concept_group": "taskgroup-052",
+      "split": "train",
+      "candidate_items": 2,
+      "unresolved_items": 2,
+      "all_four_items_assessable": false
+    },
+    {
+      "concept_group": "taskgroup-053",
+      "split": "train",
+      "candidate_items": 1,
+      "unresolved_items": 1,
+      "all_four_items_assessable": false
+    },
+    {
+      "concept_group": "taskgroup-057",
+      "split": "train",
+      "candidate_items": 3,
+      "unresolved_items": 0,
+      "all_four_items_assessable": true
+    },
+    {
+      "concept_group": "taskgroup-060",
+      "split": "train",
+      "candidate_items": 2,
+      "unresolved_items": 1,
+      "all_four_items_assessable": false
+    },
+    {
+      "concept_group": "taskgroup-064",
+      "split": "train",
+      "candidate_items": 3,
+      "unresolved_items": 1,
+      "all_four_items_assessable": false
+    },
+    {
+      "concept_group": "taskgroup-067",
+      "split": "train",
+      "candidate_items": 2,
+      "unresolved_items": 1,
+      "all_four_items_assessable": false
+    },
+    {
+      "concept_group": "taskgroup-068",
+      "split": "train",
+      "candidate_items": 3,
+      "unresolved_items": 0,
+      "all_four_items_assessable": true
+    },
+    {
+      "concept_group": "taskgroup-070",
+      "split": "train",
+      "candidate_items": 2,
+      "unresolved_items": 1,
+      "all_four_items_assessable": false
+    },
+    {
+      "concept_group": "taskgroup-071",
+      "split": "train",
+      "candidate_items": 3,
+      "unresolved_items": 1,
+      "all_four_items_assessable": false
+    },
+    {
+      "concept_group": "taskgroup-072",
+      "split": "train",
+      "candidate_items": 3,
+      "unresolved_items": 0,
+      "all_four_items_assessable": true
+    },
+    {
+      "concept_group": "taskgroup-076",
+      "split": "train",
+      "candidate_items": 2,
+      "unresolved_items": 1,
+      "all_four_items_assessable": false
+    },
+    {
+      "concept_group": "taskgroup-077",
+      "split": "train",
+      "candidate_items": 2,
+      "unresolved_items": 1,
+      "all_four_items_assessable": false
+    },
+    {
+      "concept_group": "taskgroup-079",
+      "split": "train",
+      "candidate_items": 2,
+      "unresolved_items": 1,
+      "all_four_items_assessable": false
+    },
+    {
+      "concept_group": "taskgroup-080",
+      "split": "train",
+      "candidate_items": 3,
+      "unresolved_items": 0,
+      "all_four_items_assessable": true
+    },
+    {
+      "concept_group": "taskgroup-082",
+      "split": "train",
+      "candidate_items": 2,
+      "unresolved_items": 0,
+      "all_four_items_assessable": true
+    },
+    {
+      "concept_group": "taskgroup-084",
+      "split": "train",
+      "candidate_items": 3,
+      "unresolved_items": 0,
+      "all_four_items_assessable": true
+    },
+    {
+      "concept_group": "taskgroup-087",
+      "split": "train",
+      "candidate_items": 3,
+      "unresolved_items": 0,
+      "all_four_items_assessable": true
+    },
+    {
+      "concept_group": "taskgroup-088",
+      "split": "train",
+      "candidate_items": 2,
+      "unresolved_items": 1,
+      "all_four_items_assessable": false
+    },
+    {
+      "concept_group": "taskgroup-089",
+      "split": "train",
+      "candidate_items": 3,
+      "unresolved_items": 0,
+      "all_four_items_assessable": true
+    },
+    {
+      "concept_group": "taskgroup-091",
+      "split": "dev",
+      "candidate_items": 3,
+      "unresolved_items": 0,
+      "all_four_items_assessable": true
+    },
+    {
+      "concept_group": "taskgroup-092",
+      "split": "dev",
+      "candidate_items": 3,
+      "unresolved_items": 0,
+      "all_four_items_assessable": true
+    },
+    {
+      "concept_group": "taskgroup-094",
+      "split": "dev",
+      "candidate_items": 2,
+      "unresolved_items": 0,
+      "all_four_items_assessable": true
+    },
+    {
+      "concept_group": "taskgroup-103",
+      "split": "dev",
+      "candidate_items": 2,
+      "unresolved_items": 1,
+      "all_four_items_assessable": false
+    },
+    {
+      "concept_group": "taskgroup-109",
+      "split": "dev",
+      "candidate_items": 2,
+      "unresolved_items": 1,
+      "all_four_items_assessable": false
+    },
+    {
+      "concept_group": "taskgroup-116",
+      "split": "dev",
+      "candidate_items": 1,
+      "unresolved_items": 1,
+      "all_four_items_assessable": false
+    },
+    {
+      "concept_group": "taskgroup-118",
+      "split": "dev",
+      "candidate_items": 4,
+      "unresolved_items": 0,
+      "all_four_items_assessable": true
+    },
+    {
+      "concept_group": "taskgroup-120",
+      "split": "dev",
+      "candidate_items": 3,
+      "unresolved_items": 0,
+      "all_four_items_assessable": true
+    }
+  ],
+  "decisions": [
+    {
+      "id": "taskgroup-002-definition",
+      "concept_group": "taskgroup-002",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 32,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-002-definition",
+      "concept_group": "taskgroup-002",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 32,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-002-discrimination",
+      "concept_group": "taskgroup-002",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 32,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-002-discrimination",
+      "concept_group": "taskgroup-002",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 32,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-002-application",
+      "concept_group": "taskgroup-002",
+      "kind": "application",
+      "split": "train",
+      "chapter": 32,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-002-application",
+      "concept_group": "taskgroup-002",
+      "kind": "application",
+      "split": "train",
+      "chapter": 32,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-002-evidence_selection",
+      "concept_group": "taskgroup-002",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 32,
+      "model": "step120",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-002-evidence_selection",
+      "concept_group": "taskgroup-002",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 32,
+      "model": "cpt",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-003-definition",
+      "concept_group": "taskgroup-003",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 28,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-003-definition",
+      "concept_group": "taskgroup-003",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 28,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-003-discrimination",
+      "concept_group": "taskgroup-003",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 28,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-003-discrimination",
+      "concept_group": "taskgroup-003",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 28,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-003-application",
+      "concept_group": "taskgroup-003",
+      "kind": "application",
+      "split": "train",
+      "chapter": 28,
+      "model": "step120",
+      "decision": "unresolved_both_conditions"
+    },
+    {
+      "id": "taskgroup-003-application",
+      "concept_group": "taskgroup-003",
+      "kind": "application",
+      "split": "train",
+      "chapter": 28,
+      "model": "cpt",
+      "decision": "unresolved_both_conditions"
+    },
+    {
+      "id": "taskgroup-003-evidence_selection",
+      "concept_group": "taskgroup-003",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 28,
+      "model": "step120",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-003-evidence_selection",
+      "concept_group": "taskgroup-003",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 28,
+      "model": "cpt",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-004-definition",
+      "concept_group": "taskgroup-004",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 40,
+      "model": "step120",
+      "decision": "judge_invalid"
+    },
+    {
+      "id": "taskgroup-004-definition",
+      "concept_group": "taskgroup-004",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 40,
+      "model": "cpt",
+      "decision": "judge_invalid"
+    },
+    {
+      "id": "taskgroup-004-discrimination",
+      "concept_group": "taskgroup-004",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 40,
+      "model": "step120",
+      "decision": "judge_disagreement"
+    },
+    {
+      "id": "taskgroup-004-discrimination",
+      "concept_group": "taskgroup-004",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 40,
+      "model": "cpt",
+      "decision": "judge_disagreement"
+    },
+    {
+      "id": "taskgroup-004-application",
+      "concept_group": "taskgroup-004",
+      "kind": "application",
+      "split": "train",
+      "chapter": 40,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-004-application",
+      "concept_group": "taskgroup-004",
+      "kind": "application",
+      "split": "train",
+      "chapter": 40,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-004-evidence_selection",
+      "concept_group": "taskgroup-004",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 40,
+      "model": "step120",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-004-evidence_selection",
+      "concept_group": "taskgroup-004",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 40,
+      "model": "cpt",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-009-definition",
+      "concept_group": "taskgroup-009",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 33,
+      "model": "step120",
+      "decision": "judge_invalid"
+    },
+    {
+      "id": "taskgroup-009-definition",
+      "concept_group": "taskgroup-009",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 33,
+      "model": "cpt",
+      "decision": "judge_invalid"
+    },
+    {
+      "id": "taskgroup-009-discrimination",
+      "concept_group": "taskgroup-009",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 33,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-009-discrimination",
+      "concept_group": "taskgroup-009",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 33,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-009-application",
+      "concept_group": "taskgroup-009",
+      "kind": "application",
+      "split": "train",
+      "chapter": 33,
+      "model": "step120",
+      "decision": "unresolved_both_conditions"
+    },
+    {
+      "id": "taskgroup-009-application",
+      "concept_group": "taskgroup-009",
+      "kind": "application",
+      "split": "train",
+      "chapter": 33,
+      "model": "cpt",
+      "decision": "unresolved_both_conditions"
+    },
+    {
+      "id": "taskgroup-009-evidence_selection",
+      "concept_group": "taskgroup-009",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 33,
+      "model": "step120",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-009-evidence_selection",
+      "concept_group": "taskgroup-009",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 33,
+      "model": "cpt",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-010-definition",
+      "concept_group": "taskgroup-010",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 13,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-010-definition",
+      "concept_group": "taskgroup-010",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 13,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-010-discrimination",
+      "concept_group": "taskgroup-010",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 13,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-010-discrimination",
+      "concept_group": "taskgroup-010",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 13,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-010-application",
+      "concept_group": "taskgroup-010",
+      "kind": "application",
+      "split": "train",
+      "chapter": 13,
+      "model": "step120",
+      "decision": "judge_disagreement"
+    },
+    {
+      "id": "taskgroup-010-application",
+      "concept_group": "taskgroup-010",
+      "kind": "application",
+      "split": "train",
+      "chapter": 13,
+      "model": "cpt",
+      "decision": "judge_disagreement"
+    },
+    {
+      "id": "taskgroup-010-evidence_selection",
+      "concept_group": "taskgroup-010",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 13,
+      "model": "step120",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-010-evidence_selection",
+      "concept_group": "taskgroup-010",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 13,
+      "model": "cpt",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-011-definition",
+      "concept_group": "taskgroup-011",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 36,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-011-definition",
+      "concept_group": "taskgroup-011",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 36,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-011-discrimination",
+      "concept_group": "taskgroup-011",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 36,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-011-discrimination",
+      "concept_group": "taskgroup-011",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 36,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-011-application",
+      "concept_group": "taskgroup-011",
+      "kind": "application",
+      "split": "train",
+      "chapter": 36,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-011-application",
+      "concept_group": "taskgroup-011",
+      "kind": "application",
+      "split": "train",
+      "chapter": 36,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-011-evidence_selection",
+      "concept_group": "taskgroup-011",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 36,
+      "model": "step120",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-011-evidence_selection",
+      "concept_group": "taskgroup-011",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 36,
+      "model": "cpt",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-012-definition",
+      "concept_group": "taskgroup-012",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 7,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-012-definition",
+      "concept_group": "taskgroup-012",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 7,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-012-discrimination",
+      "concept_group": "taskgroup-012",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 7,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-012-discrimination",
+      "concept_group": "taskgroup-012",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 7,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-012-application",
+      "concept_group": "taskgroup-012",
+      "kind": "application",
+      "split": "train",
+      "chapter": 7,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-012-application",
+      "concept_group": "taskgroup-012",
+      "kind": "application",
+      "split": "train",
+      "chapter": 7,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-012-evidence_selection",
+      "concept_group": "taskgroup-012",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 7,
+      "model": "step120",
+      "decision": "both_orders_wrong_candidate",
+      "original_correct": false,
+      "permuted_correct": false,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-012-evidence_selection",
+      "concept_group": "taskgroup-012",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 7,
+      "model": "cpt",
+      "decision": "invalid_response",
+      "original_correct": false,
+      "permuted_correct": false,
+      "answers_changed": false,
+      "invalid_responses": 1
+    },
+    {
+      "id": "taskgroup-014-definition",
+      "concept_group": "taskgroup-014",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 5,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-014-definition",
+      "concept_group": "taskgroup-014",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 5,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-014-discrimination",
+      "concept_group": "taskgroup-014",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 5,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-014-discrimination",
+      "concept_group": "taskgroup-014",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 5,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-014-application",
+      "concept_group": "taskgroup-014",
+      "kind": "application",
+      "split": "train",
+      "chapter": 5,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-014-application",
+      "concept_group": "taskgroup-014",
+      "kind": "application",
+      "split": "train",
+      "chapter": 5,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-014-evidence_selection",
+      "concept_group": "taskgroup-014",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 5,
+      "model": "step120",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-014-evidence_selection",
+      "concept_group": "taskgroup-014",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 5,
+      "model": "cpt",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-017-definition",
+      "concept_group": "taskgroup-017",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 12,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-017-definition",
+      "concept_group": "taskgroup-017",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 12,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-017-discrimination",
+      "concept_group": "taskgroup-017",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 12,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-017-discrimination",
+      "concept_group": "taskgroup-017",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 12,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-017-application",
+      "concept_group": "taskgroup-017",
+      "kind": "application",
+      "split": "train",
+      "chapter": 12,
+      "model": "step120",
+      "decision": "judge_disagreement"
+    },
+    {
+      "id": "taskgroup-017-application",
+      "concept_group": "taskgroup-017",
+      "kind": "application",
+      "split": "train",
+      "chapter": 12,
+      "model": "cpt",
+      "decision": "judge_disagreement"
+    },
+    {
+      "id": "taskgroup-017-evidence_selection",
+      "concept_group": "taskgroup-017",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 12,
+      "model": "step120",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-017-evidence_selection",
+      "concept_group": "taskgroup-017",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 12,
+      "model": "cpt",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-019-definition",
+      "concept_group": "taskgroup-019",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 6,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-019-definition",
+      "concept_group": "taskgroup-019",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 6,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-019-discrimination",
+      "concept_group": "taskgroup-019",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 6,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-019-discrimination",
+      "concept_group": "taskgroup-019",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 6,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-019-application",
+      "concept_group": "taskgroup-019",
+      "kind": "application",
+      "split": "train",
+      "chapter": 6,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-019-application",
+      "concept_group": "taskgroup-019",
+      "kind": "application",
+      "split": "train",
+      "chapter": 6,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-019-evidence_selection",
+      "concept_group": "taskgroup-019",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 6,
+      "model": "step120",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-019-evidence_selection",
+      "concept_group": "taskgroup-019",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 6,
+      "model": "cpt",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-020-definition",
+      "concept_group": "taskgroup-020",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 30,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-020-definition",
+      "concept_group": "taskgroup-020",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 30,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-020-discrimination",
+      "concept_group": "taskgroup-020",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 30,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-020-discrimination",
+      "concept_group": "taskgroup-020",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 30,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-020-application",
+      "concept_group": "taskgroup-020",
+      "kind": "application",
+      "split": "train",
+      "chapter": 30,
+      "model": "step120",
+      "decision": "judge_disagreement"
+    },
+    {
+      "id": "taskgroup-020-application",
+      "concept_group": "taskgroup-020",
+      "kind": "application",
+      "split": "train",
+      "chapter": 30,
+      "model": "cpt",
+      "decision": "judge_disagreement"
+    },
+    {
+      "id": "taskgroup-020-evidence_selection",
+      "concept_group": "taskgroup-020",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 30,
+      "model": "step120",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-020-evidence_selection",
+      "concept_group": "taskgroup-020",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 30,
+      "model": "cpt",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-022-definition",
+      "concept_group": "taskgroup-022",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 24,
+      "model": "step120",
+      "decision": "judge_disagreement"
+    },
+    {
+      "id": "taskgroup-022-definition",
+      "concept_group": "taskgroup-022",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 24,
+      "model": "cpt",
+      "decision": "judge_disagreement"
+    },
+    {
+      "id": "taskgroup-022-discrimination",
+      "concept_group": "taskgroup-022",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 24,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-022-discrimination",
+      "concept_group": "taskgroup-022",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 24,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-022-application",
+      "concept_group": "taskgroup-022",
+      "kind": "application",
+      "split": "train",
+      "chapter": 24,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-022-application",
+      "concept_group": "taskgroup-022",
+      "kind": "application",
+      "split": "train",
+      "chapter": 24,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-022-evidence_selection",
+      "concept_group": "taskgroup-022",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 24,
+      "model": "step120",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-022-evidence_selection",
+      "concept_group": "taskgroup-022",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 24,
+      "model": "cpt",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-024-definition",
+      "concept_group": "taskgroup-024",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 2,
+      "model": "step120",
+      "decision": "judge_disagreement"
+    },
+    {
+      "id": "taskgroup-024-definition",
+      "concept_group": "taskgroup-024",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 2,
+      "model": "cpt",
+      "decision": "judge_disagreement"
+    },
+    {
+      "id": "taskgroup-024-discrimination",
+      "concept_group": "taskgroup-024",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 2,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-024-discrimination",
+      "concept_group": "taskgroup-024",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 2,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-024-application",
+      "concept_group": "taskgroup-024",
+      "kind": "application",
+      "split": "train",
+      "chapter": 2,
+      "model": "step120",
+      "decision": "judge_disagreement"
+    },
+    {
+      "id": "taskgroup-024-application",
+      "concept_group": "taskgroup-024",
+      "kind": "application",
+      "split": "train",
+      "chapter": 2,
+      "model": "cpt",
+      "decision": "judge_disagreement"
+    },
+    {
+      "id": "taskgroup-024-evidence_selection",
+      "concept_group": "taskgroup-024",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 2,
+      "model": "step120",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-024-evidence_selection",
+      "concept_group": "taskgroup-024",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 2,
+      "model": "cpt",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-025-definition",
+      "concept_group": "taskgroup-025",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 38,
+      "model": "step120",
+      "decision": "judge_disagreement"
+    },
+    {
+      "id": "taskgroup-025-definition",
+      "concept_group": "taskgroup-025",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 38,
+      "model": "cpt",
+      "decision": "judge_disagreement"
+    },
+    {
+      "id": "taskgroup-025-discrimination",
+      "concept_group": "taskgroup-025",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 38,
+      "model": "step120",
+      "decision": "judge_disagreement"
+    },
+    {
+      "id": "taskgroup-025-discrimination",
+      "concept_group": "taskgroup-025",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 38,
+      "model": "cpt",
+      "decision": "judge_disagreement"
+    },
+    {
+      "id": "taskgroup-025-application",
+      "concept_group": "taskgroup-025",
+      "kind": "application",
+      "split": "train",
+      "chapter": 38,
+      "model": "step120",
+      "decision": "maintenance_candidate"
+    },
+    {
+      "id": "taskgroup-025-application",
+      "concept_group": "taskgroup-025",
+      "kind": "application",
+      "split": "train",
+      "chapter": 38,
+      "model": "cpt",
+      "decision": "maintenance_candidate"
+    },
+    {
+      "id": "taskgroup-025-evidence_selection",
+      "concept_group": "taskgroup-025",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 38,
+      "model": "step120",
+      "decision": "order_sensitive_candidate",
+      "original_correct": false,
+      "permuted_correct": true,
+      "answers_changed": true,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-025-evidence_selection",
+      "concept_group": "taskgroup-025",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 38,
+      "model": "cpt",
+      "decision": "order_sensitive_candidate",
+      "original_correct": false,
+      "permuted_correct": true,
+      "answers_changed": true,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-027-definition",
+      "concept_group": "taskgroup-027",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 35,
+      "model": "step120",
+      "decision": "judge_disagreement"
+    },
+    {
+      "id": "taskgroup-027-definition",
+      "concept_group": "taskgroup-027",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 35,
+      "model": "cpt",
+      "decision": "judge_disagreement"
+    },
+    {
+      "id": "taskgroup-027-discrimination",
+      "concept_group": "taskgroup-027",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 35,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-027-discrimination",
+      "concept_group": "taskgroup-027",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 35,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-027-application",
+      "concept_group": "taskgroup-027",
+      "kind": "application",
+      "split": "train",
+      "chapter": 35,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-027-application",
+      "concept_group": "taskgroup-027",
+      "kind": "application",
+      "split": "train",
+      "chapter": 35,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-027-evidence_selection",
+      "concept_group": "taskgroup-027",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 35,
+      "model": "step120",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-027-evidence_selection",
+      "concept_group": "taskgroup-027",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 35,
+      "model": "cpt",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-030-definition",
+      "concept_group": "taskgroup-030",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 34,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-030-definition",
+      "concept_group": "taskgroup-030",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 34,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-030-discrimination",
+      "concept_group": "taskgroup-030",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 34,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-030-discrimination",
+      "concept_group": "taskgroup-030",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 34,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-030-application",
+      "concept_group": "taskgroup-030",
+      "kind": "application",
+      "split": "train",
+      "chapter": 34,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-030-application",
+      "concept_group": "taskgroup-030",
+      "kind": "application",
+      "split": "train",
+      "chapter": 34,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-030-evidence_selection",
+      "concept_group": "taskgroup-030",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 34,
+      "model": "step120",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-030-evidence_selection",
+      "concept_group": "taskgroup-030",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 34,
+      "model": "cpt",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-032-definition",
+      "concept_group": "taskgroup-032",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 17,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-032-definition",
+      "concept_group": "taskgroup-032",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 17,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-032-discrimination",
+      "concept_group": "taskgroup-032",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 17,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-032-discrimination",
+      "concept_group": "taskgroup-032",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 17,
+      "model": "cpt",
+      "decision": "unresolved_both_conditions"
+    },
+    {
+      "id": "taskgroup-032-application",
+      "concept_group": "taskgroup-032",
+      "kind": "application",
+      "split": "train",
+      "chapter": 17,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-032-application",
+      "concept_group": "taskgroup-032",
+      "kind": "application",
+      "split": "train",
+      "chapter": 17,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-032-evidence_selection",
+      "concept_group": "taskgroup-032",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 17,
+      "model": "step120",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-032-evidence_selection",
+      "concept_group": "taskgroup-032",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 17,
+      "model": "cpt",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-038-definition",
+      "concept_group": "taskgroup-038",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 9,
+      "model": "step120",
+      "decision": "judge_disagreement"
+    },
+    {
+      "id": "taskgroup-038-definition",
+      "concept_group": "taskgroup-038",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 9,
+      "model": "cpt",
+      "decision": "judge_disagreement"
+    },
+    {
+      "id": "taskgroup-038-discrimination",
+      "concept_group": "taskgroup-038",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 9,
+      "model": "step120",
+      "decision": "unresolved_both_conditions"
+    },
+    {
+      "id": "taskgroup-038-discrimination",
+      "concept_group": "taskgroup-038",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 9,
+      "model": "cpt",
+      "decision": "unresolved_both_conditions"
+    },
+    {
+      "id": "taskgroup-038-application",
+      "concept_group": "taskgroup-038",
+      "kind": "application",
+      "split": "train",
+      "chapter": 9,
+      "model": "step120",
+      "decision": "unresolved_both_conditions"
+    },
+    {
+      "id": "taskgroup-038-application",
+      "concept_group": "taskgroup-038",
+      "kind": "application",
+      "split": "train",
+      "chapter": 9,
+      "model": "cpt",
+      "decision": "unresolved_both_conditions"
+    },
+    {
+      "id": "taskgroup-038-evidence_selection",
+      "concept_group": "taskgroup-038",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 9,
+      "model": "step120",
+      "decision": "both_orders_wrong_candidate",
+      "original_correct": false,
+      "permuted_correct": false,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-038-evidence_selection",
+      "concept_group": "taskgroup-038",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 9,
+      "model": "cpt",
+      "decision": "both_orders_wrong_candidate",
+      "original_correct": false,
+      "permuted_correct": false,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-039-definition",
+      "concept_group": "taskgroup-039",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 32,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-039-definition",
+      "concept_group": "taskgroup-039",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 32,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-039-discrimination",
+      "concept_group": "taskgroup-039",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 32,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-039-discrimination",
+      "concept_group": "taskgroup-039",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 32,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-039-application",
+      "concept_group": "taskgroup-039",
+      "kind": "application",
+      "split": "train",
+      "chapter": 32,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-039-application",
+      "concept_group": "taskgroup-039",
+      "kind": "application",
+      "split": "train",
+      "chapter": 32,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-039-evidence_selection",
+      "concept_group": "taskgroup-039",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 32,
+      "model": "step120",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-039-evidence_selection",
+      "concept_group": "taskgroup-039",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 32,
+      "model": "cpt",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-042-definition",
+      "concept_group": "taskgroup-042",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 5,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-042-definition",
+      "concept_group": "taskgroup-042",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 5,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-042-discrimination",
+      "concept_group": "taskgroup-042",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 5,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-042-discrimination",
+      "concept_group": "taskgroup-042",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 5,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-042-application",
+      "concept_group": "taskgroup-042",
+      "kind": "application",
+      "split": "train",
+      "chapter": 5,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-042-application",
+      "concept_group": "taskgroup-042",
+      "kind": "application",
+      "split": "train",
+      "chapter": 5,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-042-evidence_selection",
+      "concept_group": "taskgroup-042",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 5,
+      "model": "step120",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-042-evidence_selection",
+      "concept_group": "taskgroup-042",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 5,
+      "model": "cpt",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-044-definition",
+      "concept_group": "taskgroup-044",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 23,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-044-definition",
+      "concept_group": "taskgroup-044",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 23,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-044-discrimination",
+      "concept_group": "taskgroup-044",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 23,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-044-discrimination",
+      "concept_group": "taskgroup-044",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 23,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-044-application",
+      "concept_group": "taskgroup-044",
+      "kind": "application",
+      "split": "train",
+      "chapter": 23,
+      "model": "step120",
+      "decision": "unresolved_both_conditions"
+    },
+    {
+      "id": "taskgroup-044-application",
+      "concept_group": "taskgroup-044",
+      "kind": "application",
+      "split": "train",
+      "chapter": 23,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-044-evidence_selection",
+      "concept_group": "taskgroup-044",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 23,
+      "model": "step120",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-044-evidence_selection",
+      "concept_group": "taskgroup-044",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 23,
+      "model": "cpt",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-045-definition",
+      "concept_group": "taskgroup-045",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 6,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-045-definition",
+      "concept_group": "taskgroup-045",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 6,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-045-discrimination",
+      "concept_group": "taskgroup-045",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 6,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-045-discrimination",
+      "concept_group": "taskgroup-045",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 6,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-045-application",
+      "concept_group": "taskgroup-045",
+      "kind": "application",
+      "split": "train",
+      "chapter": 6,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-045-application",
+      "concept_group": "taskgroup-045",
+      "kind": "application",
+      "split": "train",
+      "chapter": 6,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-045-evidence_selection",
+      "concept_group": "taskgroup-045",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 6,
+      "model": "step120",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-045-evidence_selection",
+      "concept_group": "taskgroup-045",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 6,
+      "model": "cpt",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-046-definition",
+      "concept_group": "taskgroup-046",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 29,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-046-definition",
+      "concept_group": "taskgroup-046",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 29,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-046-discrimination",
+      "concept_group": "taskgroup-046",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 29,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-046-discrimination",
+      "concept_group": "taskgroup-046",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 29,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-046-application",
+      "concept_group": "taskgroup-046",
+      "kind": "application",
+      "split": "train",
+      "chapter": 29,
+      "model": "step120",
+      "decision": "unresolved_both_conditions"
+    },
+    {
+      "id": "taskgroup-046-application",
+      "concept_group": "taskgroup-046",
+      "kind": "application",
+      "split": "train",
+      "chapter": 29,
+      "model": "cpt",
+      "decision": "unresolved_both_conditions"
+    },
+    {
+      "id": "taskgroup-046-evidence_selection",
+      "concept_group": "taskgroup-046",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 29,
+      "model": "step120",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-046-evidence_selection",
+      "concept_group": "taskgroup-046",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 29,
+      "model": "cpt",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-049-definition",
+      "concept_group": "taskgroup-049",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 10,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-049-definition",
+      "concept_group": "taskgroup-049",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 10,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-049-discrimination",
+      "concept_group": "taskgroup-049",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 10,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-049-discrimination",
+      "concept_group": "taskgroup-049",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 10,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-049-application",
+      "concept_group": "taskgroup-049",
+      "kind": "application",
+      "split": "train",
+      "chapter": 10,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-049-application",
+      "concept_group": "taskgroup-049",
+      "kind": "application",
+      "split": "train",
+      "chapter": 10,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-049-evidence_selection",
+      "concept_group": "taskgroup-049",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 10,
+      "model": "step120",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-049-evidence_selection",
+      "concept_group": "taskgroup-049",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 10,
+      "model": "cpt",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-052-definition",
+      "concept_group": "taskgroup-052",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 1,
+      "model": "step120",
+      "decision": "unresolved_both_conditions"
+    },
+    {
+      "id": "taskgroup-052-definition",
+      "concept_group": "taskgroup-052",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 1,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-052-discrimination",
+      "concept_group": "taskgroup-052",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 1,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-052-discrimination",
+      "concept_group": "taskgroup-052",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 1,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-052-application",
+      "concept_group": "taskgroup-052",
+      "kind": "application",
+      "split": "train",
+      "chapter": 1,
+      "model": "step120",
+      "decision": "judge_disagreement"
+    },
+    {
+      "id": "taskgroup-052-application",
+      "concept_group": "taskgroup-052",
+      "kind": "application",
+      "split": "train",
+      "chapter": 1,
+      "model": "cpt",
+      "decision": "judge_disagreement"
+    },
+    {
+      "id": "taskgroup-052-evidence_selection",
+      "concept_group": "taskgroup-052",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 1,
+      "model": "step120",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-052-evidence_selection",
+      "concept_group": "taskgroup-052",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 1,
+      "model": "cpt",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-053-definition",
+      "concept_group": "taskgroup-053",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 36,
+      "model": "step120",
+      "decision": "judge_disagreement"
+    },
+    {
+      "id": "taskgroup-053-definition",
+      "concept_group": "taskgroup-053",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 36,
+      "model": "cpt",
+      "decision": "judge_disagreement"
+    },
+    {
+      "id": "taskgroup-053-discrimination",
+      "concept_group": "taskgroup-053",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 36,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-053-discrimination",
+      "concept_group": "taskgroup-053",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 36,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-053-application",
+      "concept_group": "taskgroup-053",
+      "kind": "application",
+      "split": "train",
+      "chapter": 36,
+      "model": "step120",
+      "decision": "maintenance_candidate"
+    },
+    {
+      "id": "taskgroup-053-application",
+      "concept_group": "taskgroup-053",
+      "kind": "application",
+      "split": "train",
+      "chapter": 36,
+      "model": "cpt",
+      "decision": "maintenance_candidate"
+    },
+    {
+      "id": "taskgroup-053-evidence_selection",
+      "concept_group": "taskgroup-053",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 36,
+      "model": "step120",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-053-evidence_selection",
+      "concept_group": "taskgroup-053",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 36,
+      "model": "cpt",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-057-definition",
+      "concept_group": "taskgroup-057",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 34,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-057-definition",
+      "concept_group": "taskgroup-057",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 34,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-057-discrimination",
+      "concept_group": "taskgroup-057",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 34,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-057-discrimination",
+      "concept_group": "taskgroup-057",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 34,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-057-application",
+      "concept_group": "taskgroup-057",
+      "kind": "application",
+      "split": "train",
+      "chapter": 34,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-057-application",
+      "concept_group": "taskgroup-057",
+      "kind": "application",
+      "split": "train",
+      "chapter": 34,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-057-evidence_selection",
+      "concept_group": "taskgroup-057",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 34,
+      "model": "step120",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-057-evidence_selection",
+      "concept_group": "taskgroup-057",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 34,
+      "model": "cpt",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-060-definition",
+      "concept_group": "taskgroup-060",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 17,
+      "model": "step120",
+      "decision": "judge_disagreement"
+    },
+    {
+      "id": "taskgroup-060-definition",
+      "concept_group": "taskgroup-060",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 17,
+      "model": "cpt",
+      "decision": "judge_disagreement"
+    },
+    {
+      "id": "taskgroup-060-discrimination",
+      "concept_group": "taskgroup-060",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 17,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-060-discrimination",
+      "concept_group": "taskgroup-060",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 17,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-060-application",
+      "concept_group": "taskgroup-060",
+      "kind": "application",
+      "split": "train",
+      "chapter": 17,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-060-application",
+      "concept_group": "taskgroup-060",
+      "kind": "application",
+      "split": "train",
+      "chapter": 17,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-060-evidence_selection",
+      "concept_group": "taskgroup-060",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 17,
+      "model": "step120",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-060-evidence_selection",
+      "concept_group": "taskgroup-060",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 17,
+      "model": "cpt",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-064-definition",
+      "concept_group": "taskgroup-064",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 24,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-064-definition",
+      "concept_group": "taskgroup-064",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 24,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-064-discrimination",
+      "concept_group": "taskgroup-064",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 24,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-064-discrimination",
+      "concept_group": "taskgroup-064",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 24,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-064-application",
+      "concept_group": "taskgroup-064",
+      "kind": "application",
+      "split": "train",
+      "chapter": 24,
+      "model": "step120",
+      "decision": "judge_disagreement"
+    },
+    {
+      "id": "taskgroup-064-application",
+      "concept_group": "taskgroup-064",
+      "kind": "application",
+      "split": "train",
+      "chapter": 24,
+      "model": "cpt",
+      "decision": "judge_disagreement"
+    },
+    {
+      "id": "taskgroup-064-evidence_selection",
+      "concept_group": "taskgroup-064",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 24,
+      "model": "step120",
+      "decision": "both_orders_wrong_candidate",
+      "original_correct": false,
+      "permuted_correct": false,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-064-evidence_selection",
+      "concept_group": "taskgroup-064",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 24,
+      "model": "cpt",
+      "decision": "both_orders_wrong_candidate",
+      "original_correct": false,
+      "permuted_correct": false,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-067-definition",
+      "concept_group": "taskgroup-067",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 14,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-067-definition",
+      "concept_group": "taskgroup-067",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 14,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-067-discrimination",
+      "concept_group": "taskgroup-067",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 14,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-067-discrimination",
+      "concept_group": "taskgroup-067",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 14,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-067-application",
+      "concept_group": "taskgroup-067",
+      "kind": "application",
+      "split": "train",
+      "chapter": 14,
+      "model": "step120",
+      "decision": "judge_disagreement"
+    },
+    {
+      "id": "taskgroup-067-application",
+      "concept_group": "taskgroup-067",
+      "kind": "application",
+      "split": "train",
+      "chapter": 14,
+      "model": "cpt",
+      "decision": "judge_disagreement"
+    },
+    {
+      "id": "taskgroup-067-evidence_selection",
+      "concept_group": "taskgroup-067",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 14,
+      "model": "step120",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-067-evidence_selection",
+      "concept_group": "taskgroup-067",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 14,
+      "model": "cpt",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-068-definition",
+      "concept_group": "taskgroup-068",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 27,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-068-definition",
+      "concept_group": "taskgroup-068",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 27,
+      "model": "cpt",
+      "decision": "maintenance_candidate"
+    },
+    {
+      "id": "taskgroup-068-discrimination",
+      "concept_group": "taskgroup-068",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 27,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-068-discrimination",
+      "concept_group": "taskgroup-068",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 27,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-068-application",
+      "concept_group": "taskgroup-068",
+      "kind": "application",
+      "split": "train",
+      "chapter": 27,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-068-application",
+      "concept_group": "taskgroup-068",
+      "kind": "application",
+      "split": "train",
+      "chapter": 27,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-068-evidence_selection",
+      "concept_group": "taskgroup-068",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 27,
+      "model": "step120",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-068-evidence_selection",
+      "concept_group": "taskgroup-068",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 27,
+      "model": "cpt",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-070-definition",
+      "concept_group": "taskgroup-070",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 11,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-070-definition",
+      "concept_group": "taskgroup-070",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 11,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-070-discrimination",
+      "concept_group": "taskgroup-070",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 11,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-070-discrimination",
+      "concept_group": "taskgroup-070",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 11,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-070-application",
+      "concept_group": "taskgroup-070",
+      "kind": "application",
+      "split": "train",
+      "chapter": 11,
+      "model": "step120",
+      "decision": "judge_disagreement"
+    },
+    {
+      "id": "taskgroup-070-application",
+      "concept_group": "taskgroup-070",
+      "kind": "application",
+      "split": "train",
+      "chapter": 11,
+      "model": "cpt",
+      "decision": "judge_disagreement"
+    },
+    {
+      "id": "taskgroup-070-evidence_selection",
+      "concept_group": "taskgroup-070",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 11,
+      "model": "step120",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-070-evidence_selection",
+      "concept_group": "taskgroup-070",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 11,
+      "model": "cpt",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-071-definition",
+      "concept_group": "taskgroup-071",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 2,
+      "model": "step120",
+      "decision": "judge_disagreement"
+    },
+    {
+      "id": "taskgroup-071-definition",
+      "concept_group": "taskgroup-071",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 2,
+      "model": "cpt",
+      "decision": "judge_disagreement"
+    },
+    {
+      "id": "taskgroup-071-discrimination",
+      "concept_group": "taskgroup-071",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 2,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-071-discrimination",
+      "concept_group": "taskgroup-071",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 2,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-071-application",
+      "concept_group": "taskgroup-071",
+      "kind": "application",
+      "split": "train",
+      "chapter": 2,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-071-application",
+      "concept_group": "taskgroup-071",
+      "kind": "application",
+      "split": "train",
+      "chapter": 2,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-071-evidence_selection",
+      "concept_group": "taskgroup-071",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 2,
+      "model": "step120",
+      "decision": "order_sensitive_candidate",
+      "original_correct": true,
+      "permuted_correct": false,
+      "answers_changed": true,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-071-evidence_selection",
+      "concept_group": "taskgroup-071",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 2,
+      "model": "cpt",
+      "decision": "order_sensitive_candidate",
+      "original_correct": true,
+      "permuted_correct": false,
+      "answers_changed": true,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-072-definition",
+      "concept_group": "taskgroup-072",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 20,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-072-definition",
+      "concept_group": "taskgroup-072",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 20,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-072-discrimination",
+      "concept_group": "taskgroup-072",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 20,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-072-discrimination",
+      "concept_group": "taskgroup-072",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 20,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-072-application",
+      "concept_group": "taskgroup-072",
+      "kind": "application",
+      "split": "train",
+      "chapter": 20,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-072-application",
+      "concept_group": "taskgroup-072",
+      "kind": "application",
+      "split": "train",
+      "chapter": 20,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-072-evidence_selection",
+      "concept_group": "taskgroup-072",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 20,
+      "model": "step120",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-072-evidence_selection",
+      "concept_group": "taskgroup-072",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 20,
+      "model": "cpt",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-076-definition",
+      "concept_group": "taskgroup-076",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 8,
+      "model": "step120",
+      "decision": "judge_disagreement"
+    },
+    {
+      "id": "taskgroup-076-definition",
+      "concept_group": "taskgroup-076",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 8,
+      "model": "cpt",
+      "decision": "judge_disagreement"
+    },
+    {
+      "id": "taskgroup-076-discrimination",
+      "concept_group": "taskgroup-076",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 8,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-076-discrimination",
+      "concept_group": "taskgroup-076",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 8,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-076-application",
+      "concept_group": "taskgroup-076",
+      "kind": "application",
+      "split": "train",
+      "chapter": 8,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-076-application",
+      "concept_group": "taskgroup-076",
+      "kind": "application",
+      "split": "train",
+      "chapter": 8,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-076-evidence_selection",
+      "concept_group": "taskgroup-076",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 8,
+      "model": "step120",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-076-evidence_selection",
+      "concept_group": "taskgroup-076",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 8,
+      "model": "cpt",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-077-definition",
+      "concept_group": "taskgroup-077",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 28,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-077-definition",
+      "concept_group": "taskgroup-077",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 28,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-077-discrimination",
+      "concept_group": "taskgroup-077",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 28,
+      "model": "step120",
+      "decision": "judge_disagreement"
+    },
+    {
+      "id": "taskgroup-077-discrimination",
+      "concept_group": "taskgroup-077",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 28,
+      "model": "cpt",
+      "decision": "judge_disagreement"
+    },
+    {
+      "id": "taskgroup-077-application",
+      "concept_group": "taskgroup-077",
+      "kind": "application",
+      "split": "train",
+      "chapter": 28,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-077-application",
+      "concept_group": "taskgroup-077",
+      "kind": "application",
+      "split": "train",
+      "chapter": 28,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-077-evidence_selection",
+      "concept_group": "taskgroup-077",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 28,
+      "model": "step120",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-077-evidence_selection",
+      "concept_group": "taskgroup-077",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 28,
+      "model": "cpt",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-079-definition",
+      "concept_group": "taskgroup-079",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 44,
+      "model": "step120",
+      "decision": "judge_disagreement"
+    },
+    {
+      "id": "taskgroup-079-definition",
+      "concept_group": "taskgroup-079",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 44,
+      "model": "cpt",
+      "decision": "judge_disagreement"
+    },
+    {
+      "id": "taskgroup-079-discrimination",
+      "concept_group": "taskgroup-079",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 44,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-079-discrimination",
+      "concept_group": "taskgroup-079",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 44,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-079-application",
+      "concept_group": "taskgroup-079",
+      "kind": "application",
+      "split": "train",
+      "chapter": 44,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-079-application",
+      "concept_group": "taskgroup-079",
+      "kind": "application",
+      "split": "train",
+      "chapter": 44,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-079-evidence_selection",
+      "concept_group": "taskgroup-079",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 44,
+      "model": "step120",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-079-evidence_selection",
+      "concept_group": "taskgroup-079",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 44,
+      "model": "cpt",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-080-definition",
+      "concept_group": "taskgroup-080",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 42,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-080-definition",
+      "concept_group": "taskgroup-080",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 42,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-080-discrimination",
+      "concept_group": "taskgroup-080",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 42,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-080-discrimination",
+      "concept_group": "taskgroup-080",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 42,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-080-application",
+      "concept_group": "taskgroup-080",
+      "kind": "application",
+      "split": "train",
+      "chapter": 42,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-080-application",
+      "concept_group": "taskgroup-080",
+      "kind": "application",
+      "split": "train",
+      "chapter": 42,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-080-evidence_selection",
+      "concept_group": "taskgroup-080",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 42,
+      "model": "step120",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-080-evidence_selection",
+      "concept_group": "taskgroup-080",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 42,
+      "model": "cpt",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-082-definition",
+      "concept_group": "taskgroup-082",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 23,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-082-definition",
+      "concept_group": "taskgroup-082",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 23,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-082-discrimination",
+      "concept_group": "taskgroup-082",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 23,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-082-discrimination",
+      "concept_group": "taskgroup-082",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 23,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-082-application",
+      "concept_group": "taskgroup-082",
+      "kind": "application",
+      "split": "train",
+      "chapter": 23,
+      "model": "step120",
+      "decision": "maintenance_candidate"
+    },
+    {
+      "id": "taskgroup-082-application",
+      "concept_group": "taskgroup-082",
+      "kind": "application",
+      "split": "train",
+      "chapter": 23,
+      "model": "cpt",
+      "decision": "maintenance_candidate"
+    },
+    {
+      "id": "taskgroup-082-evidence_selection",
+      "concept_group": "taskgroup-082",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 23,
+      "model": "step120",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-082-evidence_selection",
+      "concept_group": "taskgroup-082",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 23,
+      "model": "cpt",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-084-definition",
+      "concept_group": "taskgroup-084",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 5,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-084-definition",
+      "concept_group": "taskgroup-084",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 5,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-084-discrimination",
+      "concept_group": "taskgroup-084",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 5,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-084-discrimination",
+      "concept_group": "taskgroup-084",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 5,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-084-application",
+      "concept_group": "taskgroup-084",
+      "kind": "application",
+      "split": "train",
+      "chapter": 5,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-084-application",
+      "concept_group": "taskgroup-084",
+      "kind": "application",
+      "split": "train",
+      "chapter": 5,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-084-evidence_selection",
+      "concept_group": "taskgroup-084",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 5,
+      "model": "step120",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-084-evidence_selection",
+      "concept_group": "taskgroup-084",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 5,
+      "model": "cpt",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-087-definition",
+      "concept_group": "taskgroup-087",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 17,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-087-definition",
+      "concept_group": "taskgroup-087",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 17,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-087-discrimination",
+      "concept_group": "taskgroup-087",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 17,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-087-discrimination",
+      "concept_group": "taskgroup-087",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 17,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-087-application",
+      "concept_group": "taskgroup-087",
+      "kind": "application",
+      "split": "train",
+      "chapter": 17,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-087-application",
+      "concept_group": "taskgroup-087",
+      "kind": "application",
+      "split": "train",
+      "chapter": 17,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-087-evidence_selection",
+      "concept_group": "taskgroup-087",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 17,
+      "model": "step120",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-087-evidence_selection",
+      "concept_group": "taskgroup-087",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 17,
+      "model": "cpt",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-088-definition",
+      "concept_group": "taskgroup-088",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 34,
+      "model": "step120",
+      "decision": "judge_disagreement"
+    },
+    {
+      "id": "taskgroup-088-definition",
+      "concept_group": "taskgroup-088",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 34,
+      "model": "cpt",
+      "decision": "judge_disagreement"
+    },
+    {
+      "id": "taskgroup-088-discrimination",
+      "concept_group": "taskgroup-088",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 34,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-088-discrimination",
+      "concept_group": "taskgroup-088",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 34,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-088-application",
+      "concept_group": "taskgroup-088",
+      "kind": "application",
+      "split": "train",
+      "chapter": 34,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-088-application",
+      "concept_group": "taskgroup-088",
+      "kind": "application",
+      "split": "train",
+      "chapter": 34,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-088-evidence_selection",
+      "concept_group": "taskgroup-088",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 34,
+      "model": "step120",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-088-evidence_selection",
+      "concept_group": "taskgroup-088",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 34,
+      "model": "cpt",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-089-definition",
+      "concept_group": "taskgroup-089",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 36,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-089-definition",
+      "concept_group": "taskgroup-089",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 36,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-089-discrimination",
+      "concept_group": "taskgroup-089",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 36,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-089-discrimination",
+      "concept_group": "taskgroup-089",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 36,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-089-application",
+      "concept_group": "taskgroup-089",
+      "kind": "application",
+      "split": "train",
+      "chapter": 36,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-089-application",
+      "concept_group": "taskgroup-089",
+      "kind": "application",
+      "split": "train",
+      "chapter": 36,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-089-evidence_selection",
+      "concept_group": "taskgroup-089",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 36,
+      "model": "step120",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-089-evidence_selection",
+      "concept_group": "taskgroup-089",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 36,
+      "model": "cpt",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-091-definition",
+      "concept_group": "taskgroup-091",
+      "kind": "definition",
+      "split": "dev",
+      "chapter": 19,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-091-definition",
+      "concept_group": "taskgroup-091",
+      "kind": "definition",
+      "split": "dev",
+      "chapter": 19,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-091-discrimination",
+      "concept_group": "taskgroup-091",
+      "kind": "discrimination",
+      "split": "dev",
+      "chapter": 19,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-091-discrimination",
+      "concept_group": "taskgroup-091",
+      "kind": "discrimination",
+      "split": "dev",
+      "chapter": 19,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-091-application",
+      "concept_group": "taskgroup-091",
+      "kind": "application",
+      "split": "dev",
+      "chapter": 19,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-091-application",
+      "concept_group": "taskgroup-091",
+      "kind": "application",
+      "split": "dev",
+      "chapter": 19,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-091-evidence_selection",
+      "concept_group": "taskgroup-091",
+      "kind": "evidence_selection",
+      "split": "dev",
+      "chapter": 19,
+      "model": "step120",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-091-evidence_selection",
+      "concept_group": "taskgroup-091",
+      "kind": "evidence_selection",
+      "split": "dev",
+      "chapter": 19,
+      "model": "cpt",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-092-definition",
+      "concept_group": "taskgroup-092",
+      "kind": "definition",
+      "split": "dev",
+      "chapter": 37,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-092-definition",
+      "concept_group": "taskgroup-092",
+      "kind": "definition",
+      "split": "dev",
+      "chapter": 37,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-092-discrimination",
+      "concept_group": "taskgroup-092",
+      "kind": "discrimination",
+      "split": "dev",
+      "chapter": 37,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-092-discrimination",
+      "concept_group": "taskgroup-092",
+      "kind": "discrimination",
+      "split": "dev",
+      "chapter": 37,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-092-application",
+      "concept_group": "taskgroup-092",
+      "kind": "application",
+      "split": "dev",
+      "chapter": 37,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-092-application",
+      "concept_group": "taskgroup-092",
+      "kind": "application",
+      "split": "dev",
+      "chapter": 37,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-092-evidence_selection",
+      "concept_group": "taskgroup-092",
+      "kind": "evidence_selection",
+      "split": "dev",
+      "chapter": 37,
+      "model": "step120",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-092-evidence_selection",
+      "concept_group": "taskgroup-092",
+      "kind": "evidence_selection",
+      "split": "dev",
+      "chapter": 37,
+      "model": "cpt",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-094-definition",
+      "concept_group": "taskgroup-094",
+      "kind": "definition",
+      "split": "dev",
+      "chapter": 15,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-094-definition",
+      "concept_group": "taskgroup-094",
+      "kind": "definition",
+      "split": "dev",
+      "chapter": 15,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-094-discrimination",
+      "concept_group": "taskgroup-094",
+      "kind": "discrimination",
+      "split": "dev",
+      "chapter": 15,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-094-discrimination",
+      "concept_group": "taskgroup-094",
+      "kind": "discrimination",
+      "split": "dev",
+      "chapter": 15,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-094-application",
+      "concept_group": "taskgroup-094",
+      "kind": "application",
+      "split": "dev",
+      "chapter": 15,
+      "model": "step120",
+      "decision": "maintenance_candidate"
+    },
+    {
+      "id": "taskgroup-094-application",
+      "concept_group": "taskgroup-094",
+      "kind": "application",
+      "split": "dev",
+      "chapter": 15,
+      "model": "cpt",
+      "decision": "maintenance_candidate"
+    },
+    {
+      "id": "taskgroup-094-evidence_selection",
+      "concept_group": "taskgroup-094",
+      "kind": "evidence_selection",
+      "split": "dev",
+      "chapter": 15,
+      "model": "step120",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-094-evidence_selection",
+      "concept_group": "taskgroup-094",
+      "kind": "evidence_selection",
+      "split": "dev",
+      "chapter": 15,
+      "model": "cpt",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-103-definition",
+      "concept_group": "taskgroup-103",
+      "kind": "definition",
+      "split": "dev",
+      "chapter": 19,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-103-definition",
+      "concept_group": "taskgroup-103",
+      "kind": "definition",
+      "split": "dev",
+      "chapter": 19,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-103-discrimination",
+      "concept_group": "taskgroup-103",
+      "kind": "discrimination",
+      "split": "dev",
+      "chapter": 19,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-103-discrimination",
+      "concept_group": "taskgroup-103",
+      "kind": "discrimination",
+      "split": "dev",
+      "chapter": 19,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-103-application",
+      "concept_group": "taskgroup-103",
+      "kind": "application",
+      "split": "dev",
+      "chapter": 19,
+      "model": "step120",
+      "decision": "judge_disagreement"
+    },
+    {
+      "id": "taskgroup-103-application",
+      "concept_group": "taskgroup-103",
+      "kind": "application",
+      "split": "dev",
+      "chapter": 19,
+      "model": "cpt",
+      "decision": "judge_disagreement"
+    },
+    {
+      "id": "taskgroup-103-evidence_selection",
+      "concept_group": "taskgroup-103",
+      "kind": "evidence_selection",
+      "split": "dev",
+      "chapter": 19,
+      "model": "step120",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-103-evidence_selection",
+      "concept_group": "taskgroup-103",
+      "kind": "evidence_selection",
+      "split": "dev",
+      "chapter": 19,
+      "model": "cpt",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-109-definition",
+      "concept_group": "taskgroup-109",
+      "kind": "definition",
+      "split": "dev",
+      "chapter": 19,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-109-definition",
+      "concept_group": "taskgroup-109",
+      "kind": "definition",
+      "split": "dev",
+      "chapter": 19,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-109-discrimination",
+      "concept_group": "taskgroup-109",
+      "kind": "discrimination",
+      "split": "dev",
+      "chapter": 19,
+      "model": "step120",
+      "decision": "judge_disagreement"
+    },
+    {
+      "id": "taskgroup-109-discrimination",
+      "concept_group": "taskgroup-109",
+      "kind": "discrimination",
+      "split": "dev",
+      "chapter": 19,
+      "model": "cpt",
+      "decision": "judge_disagreement"
+    },
+    {
+      "id": "taskgroup-109-application",
+      "concept_group": "taskgroup-109",
+      "kind": "application",
+      "split": "dev",
+      "chapter": 19,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-109-application",
+      "concept_group": "taskgroup-109",
+      "kind": "application",
+      "split": "dev",
+      "chapter": 19,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-109-evidence_selection",
+      "concept_group": "taskgroup-109",
+      "kind": "evidence_selection",
+      "split": "dev",
+      "chapter": 19,
+      "model": "step120",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-109-evidence_selection",
+      "concept_group": "taskgroup-109",
+      "kind": "evidence_selection",
+      "split": "dev",
+      "chapter": 19,
+      "model": "cpt",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-116-definition",
+      "concept_group": "taskgroup-116",
+      "kind": "definition",
+      "split": "dev",
+      "chapter": 26,
+      "model": "step120",
+      "decision": "maintenance_candidate"
+    },
+    {
+      "id": "taskgroup-116-definition",
+      "concept_group": "taskgroup-116",
+      "kind": "definition",
+      "split": "dev",
+      "chapter": 26,
+      "model": "cpt",
+      "decision": "maintenance_candidate"
+    },
+    {
+      "id": "taskgroup-116-discrimination",
+      "concept_group": "taskgroup-116",
+      "kind": "discrimination",
+      "split": "dev",
+      "chapter": 26,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-116-discrimination",
+      "concept_group": "taskgroup-116",
+      "kind": "discrimination",
+      "split": "dev",
+      "chapter": 26,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-116-application",
+      "concept_group": "taskgroup-116",
+      "kind": "application",
+      "split": "dev",
+      "chapter": 26,
+      "model": "step120",
+      "decision": "judge_invalid"
+    },
+    {
+      "id": "taskgroup-116-application",
+      "concept_group": "taskgroup-116",
+      "kind": "application",
+      "split": "dev",
+      "chapter": 26,
+      "model": "cpt",
+      "decision": "judge_invalid"
+    },
+    {
+      "id": "taskgroup-116-evidence_selection",
+      "concept_group": "taskgroup-116",
+      "kind": "evidence_selection",
+      "split": "dev",
+      "chapter": 26,
+      "model": "step120",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-116-evidence_selection",
+      "concept_group": "taskgroup-116",
+      "kind": "evidence_selection",
+      "split": "dev",
+      "chapter": 26,
+      "model": "cpt",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-118-definition",
+      "concept_group": "taskgroup-118",
+      "kind": "definition",
+      "split": "dev",
+      "chapter": 19,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-118-definition",
+      "concept_group": "taskgroup-118",
+      "kind": "definition",
+      "split": "dev",
+      "chapter": 19,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-118-discrimination",
+      "concept_group": "taskgroup-118",
+      "kind": "discrimination",
+      "split": "dev",
+      "chapter": 19,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-118-discrimination",
+      "concept_group": "taskgroup-118",
+      "kind": "discrimination",
+      "split": "dev",
+      "chapter": 19,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-118-application",
+      "concept_group": "taskgroup-118",
+      "kind": "application",
+      "split": "dev",
+      "chapter": 19,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-118-application",
+      "concept_group": "taskgroup-118",
+      "kind": "application",
+      "split": "dev",
+      "chapter": 19,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-118-evidence_selection",
+      "concept_group": "taskgroup-118",
+      "kind": "evidence_selection",
+      "split": "dev",
+      "chapter": 19,
+      "model": "step120",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-118-evidence_selection",
+      "concept_group": "taskgroup-118",
+      "kind": "evidence_selection",
+      "split": "dev",
+      "chapter": 19,
+      "model": "cpt",
+      "decision": "order_sensitive_candidate",
+      "original_correct": false,
+      "permuted_correct": true,
+      "answers_changed": true,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-120-definition",
+      "concept_group": "taskgroup-120",
+      "kind": "definition",
+      "split": "dev",
+      "chapter": 26,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-120-definition",
+      "concept_group": "taskgroup-120",
+      "kind": "definition",
+      "split": "dev",
+      "chapter": 26,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-120-discrimination",
+      "concept_group": "taskgroup-120",
+      "kind": "discrimination",
+      "split": "dev",
+      "chapter": 26,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-120-discrimination",
+      "concept_group": "taskgroup-120",
+      "kind": "discrimination",
+      "split": "dev",
+      "chapter": 26,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-120-application",
+      "concept_group": "taskgroup-120",
+      "kind": "application",
+      "split": "dev",
+      "chapter": 26,
+      "model": "step120",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-120-application",
+      "concept_group": "taskgroup-120",
+      "kind": "application",
+      "split": "dev",
+      "chapter": 26,
+      "model": "cpt",
+      "decision": "evidence_rescued_candidate"
+    },
+    {
+      "id": "taskgroup-120-evidence_selection",
+      "concept_group": "taskgroup-120",
+      "kind": "evidence_selection",
+      "split": "dev",
+      "chapter": 26,
+      "model": "step120",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    },
+    {
+      "id": "taskgroup-120-evidence_selection",
+      "concept_group": "taskgroup-120",
+      "kind": "evidence_selection",
+      "split": "dev",
+      "chapter": 26,
+      "model": "cpt",
+      "decision": "both_orders_correct",
+      "original_correct": true,
+      "permuted_correct": true,
+      "answers_changed": false,
+      "invalid_responses": 0
+    }
+  ],
+  "open_scores": [
+    {
+      "id": "taskgroup-002-definition",
+      "concept_group": "taskgroup-002",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 32,
+      "model": "step120",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-002-definition",
+      "concept_group": "taskgroup-002",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 32,
+      "model": "cpt",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-002-discrimination",
+      "concept_group": "taskgroup-002",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 32,
+      "model": "step120",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-002-discrimination",
+      "concept_group": "taskgroup-002",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 32,
+      "model": "cpt",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-002-application",
+      "concept_group": "taskgroup-002",
+      "kind": "application",
+      "split": "train",
+      "chapter": 32,
+      "model": "step120",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-002-application",
+      "concept_group": "taskgroup-002",
+      "kind": "application",
+      "split": "train",
+      "chapter": 32,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-003-definition",
+      "concept_group": "taskgroup-003",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 28,
+      "model": "step120",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-003-definition",
+      "concept_group": "taskgroup-003",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 28,
+      "model": "cpt",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-003-discrimination",
+      "concept_group": "taskgroup-003",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 28,
+      "model": "step120",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-003-discrimination",
+      "concept_group": "taskgroup-003",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 28,
+      "model": "cpt",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-003-application",
+      "concept_group": "taskgroup-003",
+      "kind": "application",
+      "split": "train",
+      "chapter": 28,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 1
+    },
+    {
+      "id": "taskgroup-003-application",
+      "concept_group": "taskgroup-003",
+      "kind": "application",
+      "split": "train",
+      "chapter": 28,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 1
+    },
+    {
+      "id": "taskgroup-004-application",
+      "concept_group": "taskgroup-004",
+      "kind": "application",
+      "split": "train",
+      "chapter": 40,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-004-application",
+      "concept_group": "taskgroup-004",
+      "kind": "application",
+      "split": "train",
+      "chapter": 40,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-009-discrimination",
+      "concept_group": "taskgroup-009",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 33,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-009-discrimination",
+      "concept_group": "taskgroup-009",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 33,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-009-application",
+      "concept_group": "taskgroup-009",
+      "kind": "application",
+      "split": "train",
+      "chapter": 33,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 1
+    },
+    {
+      "id": "taskgroup-009-application",
+      "concept_group": "taskgroup-009",
+      "kind": "application",
+      "split": "train",
+      "chapter": 33,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 1
+    },
+    {
+      "id": "taskgroup-010-definition",
+      "concept_group": "taskgroup-010",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 13,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-010-definition",
+      "concept_group": "taskgroup-010",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 13,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-010-discrimination",
+      "concept_group": "taskgroup-010",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 13,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-010-discrimination",
+      "concept_group": "taskgroup-010",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 13,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-011-definition",
+      "concept_group": "taskgroup-011",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 36,
+      "model": "step120",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-011-definition",
+      "concept_group": "taskgroup-011",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 36,
+      "model": "cpt",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-011-discrimination",
+      "concept_group": "taskgroup-011",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 36,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-011-discrimination",
+      "concept_group": "taskgroup-011",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 36,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-011-application",
+      "concept_group": "taskgroup-011",
+      "kind": "application",
+      "split": "train",
+      "chapter": 36,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-011-application",
+      "concept_group": "taskgroup-011",
+      "kind": "application",
+      "split": "train",
+      "chapter": 36,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-012-definition",
+      "concept_group": "taskgroup-012",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 7,
+      "model": "step120",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-012-definition",
+      "concept_group": "taskgroup-012",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 7,
+      "model": "cpt",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-012-discrimination",
+      "concept_group": "taskgroup-012",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 7,
+      "model": "step120",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-012-discrimination",
+      "concept_group": "taskgroup-012",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 7,
+      "model": "cpt",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-012-application",
+      "concept_group": "taskgroup-012",
+      "kind": "application",
+      "split": "train",
+      "chapter": 7,
+      "model": "step120",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-012-application",
+      "concept_group": "taskgroup-012",
+      "kind": "application",
+      "split": "train",
+      "chapter": 7,
+      "model": "cpt",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-014-definition",
+      "concept_group": "taskgroup-014",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 5,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-014-definition",
+      "concept_group": "taskgroup-014",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 5,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-014-discrimination",
+      "concept_group": "taskgroup-014",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 5,
+      "model": "step120",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-014-discrimination",
+      "concept_group": "taskgroup-014",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 5,
+      "model": "cpt",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-014-application",
+      "concept_group": "taskgroup-014",
+      "kind": "application",
+      "split": "train",
+      "chapter": 5,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-014-application",
+      "concept_group": "taskgroup-014",
+      "kind": "application",
+      "split": "train",
+      "chapter": 5,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-017-definition",
+      "concept_group": "taskgroup-017",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 12,
+      "model": "step120",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-017-definition",
+      "concept_group": "taskgroup-017",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 12,
+      "model": "cpt",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-017-discrimination",
+      "concept_group": "taskgroup-017",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 12,
+      "model": "step120",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-017-discrimination",
+      "concept_group": "taskgroup-017",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 12,
+      "model": "cpt",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-019-definition",
+      "concept_group": "taskgroup-019",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 6,
+      "model": "step120",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-019-definition",
+      "concept_group": "taskgroup-019",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 6,
+      "model": "cpt",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-019-discrimination",
+      "concept_group": "taskgroup-019",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 6,
+      "model": "step120",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-019-discrimination",
+      "concept_group": "taskgroup-019",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 6,
+      "model": "cpt",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-019-application",
+      "concept_group": "taskgroup-019",
+      "kind": "application",
+      "split": "train",
+      "chapter": 6,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-019-application",
+      "concept_group": "taskgroup-019",
+      "kind": "application",
+      "split": "train",
+      "chapter": 6,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-020-definition",
+      "concept_group": "taskgroup-020",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 30,
+      "model": "step120",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-020-definition",
+      "concept_group": "taskgroup-020",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 30,
+      "model": "cpt",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-020-discrimination",
+      "concept_group": "taskgroup-020",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 30,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-020-discrimination",
+      "concept_group": "taskgroup-020",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 30,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-022-discrimination",
+      "concept_group": "taskgroup-022",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 24,
+      "model": "step120",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-022-discrimination",
+      "concept_group": "taskgroup-022",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 24,
+      "model": "cpt",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-022-application",
+      "concept_group": "taskgroup-022",
+      "kind": "application",
+      "split": "train",
+      "chapter": 24,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-022-application",
+      "concept_group": "taskgroup-022",
+      "kind": "application",
+      "split": "train",
+      "chapter": 24,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-024-discrimination",
+      "concept_group": "taskgroup-024",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 2,
+      "model": "step120",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-024-discrimination",
+      "concept_group": "taskgroup-024",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 2,
+      "model": "cpt",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-025-application",
+      "concept_group": "taskgroup-025",
+      "kind": "application",
+      "split": "train",
+      "chapter": 38,
+      "model": "step120",
+      "closed_score": 2,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-025-application",
+      "concept_group": "taskgroup-025",
+      "kind": "application",
+      "split": "train",
+      "chapter": 38,
+      "model": "cpt",
+      "closed_score": 2,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-027-discrimination",
+      "concept_group": "taskgroup-027",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 35,
+      "model": "step120",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-027-discrimination",
+      "concept_group": "taskgroup-027",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 35,
+      "model": "cpt",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-027-application",
+      "concept_group": "taskgroup-027",
+      "kind": "application",
+      "split": "train",
+      "chapter": 35,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-027-application",
+      "concept_group": "taskgroup-027",
+      "kind": "application",
+      "split": "train",
+      "chapter": 35,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-030-definition",
+      "concept_group": "taskgroup-030",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 34,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-030-definition",
+      "concept_group": "taskgroup-030",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 34,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-030-discrimination",
+      "concept_group": "taskgroup-030",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 34,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-030-discrimination",
+      "concept_group": "taskgroup-030",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 34,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-030-application",
+      "concept_group": "taskgroup-030",
+      "kind": "application",
+      "split": "train",
+      "chapter": 34,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-030-application",
+      "concept_group": "taskgroup-030",
+      "kind": "application",
+      "split": "train",
+      "chapter": 34,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-032-definition",
+      "concept_group": "taskgroup-032",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 17,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-032-definition",
+      "concept_group": "taskgroup-032",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 17,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-032-discrimination",
+      "concept_group": "taskgroup-032",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 17,
+      "model": "step120",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-032-discrimination",
+      "concept_group": "taskgroup-032",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 17,
+      "model": "cpt",
+      "closed_score": 0,
+      "evidence_score": 1
+    },
+    {
+      "id": "taskgroup-032-application",
+      "concept_group": "taskgroup-032",
+      "kind": "application",
+      "split": "train",
+      "chapter": 17,
+      "model": "step120",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-032-application",
+      "concept_group": "taskgroup-032",
+      "kind": "application",
+      "split": "train",
+      "chapter": 17,
+      "model": "cpt",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-038-discrimination",
+      "concept_group": "taskgroup-038",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 9,
+      "model": "step120",
+      "closed_score": 0,
+      "evidence_score": 1
+    },
+    {
+      "id": "taskgroup-038-discrimination",
+      "concept_group": "taskgroup-038",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 9,
+      "model": "cpt",
+      "closed_score": 0,
+      "evidence_score": 1
+    },
+    {
+      "id": "taskgroup-038-application",
+      "concept_group": "taskgroup-038",
+      "kind": "application",
+      "split": "train",
+      "chapter": 9,
+      "model": "step120",
+      "closed_score": 0,
+      "evidence_score": 1
+    },
+    {
+      "id": "taskgroup-038-application",
+      "concept_group": "taskgroup-038",
+      "kind": "application",
+      "split": "train",
+      "chapter": 9,
+      "model": "cpt",
+      "closed_score": 0,
+      "evidence_score": 1
+    },
+    {
+      "id": "taskgroup-039-definition",
+      "concept_group": "taskgroup-039",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 32,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-039-definition",
+      "concept_group": "taskgroup-039",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 32,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-039-discrimination",
+      "concept_group": "taskgroup-039",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 32,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-039-discrimination",
+      "concept_group": "taskgroup-039",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 32,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-039-application",
+      "concept_group": "taskgroup-039",
+      "kind": "application",
+      "split": "train",
+      "chapter": 32,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-039-application",
+      "concept_group": "taskgroup-039",
+      "kind": "application",
+      "split": "train",
+      "chapter": 32,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-042-definition",
+      "concept_group": "taskgroup-042",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 5,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-042-definition",
+      "concept_group": "taskgroup-042",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 5,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-042-discrimination",
+      "concept_group": "taskgroup-042",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 5,
+      "model": "step120",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-042-discrimination",
+      "concept_group": "taskgroup-042",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 5,
+      "model": "cpt",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-042-application",
+      "concept_group": "taskgroup-042",
+      "kind": "application",
+      "split": "train",
+      "chapter": 5,
+      "model": "step120",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-042-application",
+      "concept_group": "taskgroup-042",
+      "kind": "application",
+      "split": "train",
+      "chapter": 5,
+      "model": "cpt",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-044-definition",
+      "concept_group": "taskgroup-044",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 23,
+      "model": "step120",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-044-definition",
+      "concept_group": "taskgroup-044",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 23,
+      "model": "cpt",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-044-discrimination",
+      "concept_group": "taskgroup-044",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 23,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-044-discrimination",
+      "concept_group": "taskgroup-044",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 23,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-044-application",
+      "concept_group": "taskgroup-044",
+      "kind": "application",
+      "split": "train",
+      "chapter": 23,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 1
+    },
+    {
+      "id": "taskgroup-044-application",
+      "concept_group": "taskgroup-044",
+      "kind": "application",
+      "split": "train",
+      "chapter": 23,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-045-definition",
+      "concept_group": "taskgroup-045",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 6,
+      "model": "step120",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-045-definition",
+      "concept_group": "taskgroup-045",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 6,
+      "model": "cpt",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-045-discrimination",
+      "concept_group": "taskgroup-045",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 6,
+      "model": "step120",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-045-discrimination",
+      "concept_group": "taskgroup-045",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 6,
+      "model": "cpt",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-045-application",
+      "concept_group": "taskgroup-045",
+      "kind": "application",
+      "split": "train",
+      "chapter": 6,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-045-application",
+      "concept_group": "taskgroup-045",
+      "kind": "application",
+      "split": "train",
+      "chapter": 6,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-046-definition",
+      "concept_group": "taskgroup-046",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 29,
+      "model": "step120",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-046-definition",
+      "concept_group": "taskgroup-046",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 29,
+      "model": "cpt",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-046-discrimination",
+      "concept_group": "taskgroup-046",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 29,
+      "model": "step120",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-046-discrimination",
+      "concept_group": "taskgroup-046",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 29,
+      "model": "cpt",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-046-application",
+      "concept_group": "taskgroup-046",
+      "kind": "application",
+      "split": "train",
+      "chapter": 29,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 1
+    },
+    {
+      "id": "taskgroup-046-application",
+      "concept_group": "taskgroup-046",
+      "kind": "application",
+      "split": "train",
+      "chapter": 29,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 1
+    },
+    {
+      "id": "taskgroup-049-definition",
+      "concept_group": "taskgroup-049",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 10,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-049-definition",
+      "concept_group": "taskgroup-049",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 10,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-049-discrimination",
+      "concept_group": "taskgroup-049",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 10,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-049-discrimination",
+      "concept_group": "taskgroup-049",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 10,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-049-application",
+      "concept_group": "taskgroup-049",
+      "kind": "application",
+      "split": "train",
+      "chapter": 10,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-049-application",
+      "concept_group": "taskgroup-049",
+      "kind": "application",
+      "split": "train",
+      "chapter": 10,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-052-definition",
+      "concept_group": "taskgroup-052",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 1,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 1
+    },
+    {
+      "id": "taskgroup-052-definition",
+      "concept_group": "taskgroup-052",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 1,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-052-discrimination",
+      "concept_group": "taskgroup-052",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 1,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-052-discrimination",
+      "concept_group": "taskgroup-052",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 1,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-053-discrimination",
+      "concept_group": "taskgroup-053",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 36,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-053-discrimination",
+      "concept_group": "taskgroup-053",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 36,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-053-application",
+      "concept_group": "taskgroup-053",
+      "kind": "application",
+      "split": "train",
+      "chapter": 36,
+      "model": "step120",
+      "closed_score": 2,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-053-application",
+      "concept_group": "taskgroup-053",
+      "kind": "application",
+      "split": "train",
+      "chapter": 36,
+      "model": "cpt",
+      "closed_score": 2,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-057-definition",
+      "concept_group": "taskgroup-057",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 34,
+      "model": "step120",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-057-definition",
+      "concept_group": "taskgroup-057",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 34,
+      "model": "cpt",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-057-discrimination",
+      "concept_group": "taskgroup-057",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 34,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-057-discrimination",
+      "concept_group": "taskgroup-057",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 34,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-057-application",
+      "concept_group": "taskgroup-057",
+      "kind": "application",
+      "split": "train",
+      "chapter": 34,
+      "model": "step120",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-057-application",
+      "concept_group": "taskgroup-057",
+      "kind": "application",
+      "split": "train",
+      "chapter": 34,
+      "model": "cpt",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-060-discrimination",
+      "concept_group": "taskgroup-060",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 17,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-060-discrimination",
+      "concept_group": "taskgroup-060",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 17,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-060-application",
+      "concept_group": "taskgroup-060",
+      "kind": "application",
+      "split": "train",
+      "chapter": 17,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-060-application",
+      "concept_group": "taskgroup-060",
+      "kind": "application",
+      "split": "train",
+      "chapter": 17,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-064-definition",
+      "concept_group": "taskgroup-064",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 24,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-064-definition",
+      "concept_group": "taskgroup-064",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 24,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-064-discrimination",
+      "concept_group": "taskgroup-064",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 24,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-064-discrimination",
+      "concept_group": "taskgroup-064",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 24,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-067-definition",
+      "concept_group": "taskgroup-067",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 14,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-067-definition",
+      "concept_group": "taskgroup-067",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 14,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-067-discrimination",
+      "concept_group": "taskgroup-067",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 14,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-067-discrimination",
+      "concept_group": "taskgroup-067",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 14,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-068-definition",
+      "concept_group": "taskgroup-068",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 27,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-068-definition",
+      "concept_group": "taskgroup-068",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 27,
+      "model": "cpt",
+      "closed_score": 2,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-068-discrimination",
+      "concept_group": "taskgroup-068",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 27,
+      "model": "step120",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-068-discrimination",
+      "concept_group": "taskgroup-068",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 27,
+      "model": "cpt",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-068-application",
+      "concept_group": "taskgroup-068",
+      "kind": "application",
+      "split": "train",
+      "chapter": 27,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-068-application",
+      "concept_group": "taskgroup-068",
+      "kind": "application",
+      "split": "train",
+      "chapter": 27,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-070-definition",
+      "concept_group": "taskgroup-070",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 11,
+      "model": "step120",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-070-definition",
+      "concept_group": "taskgroup-070",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 11,
+      "model": "cpt",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-070-discrimination",
+      "concept_group": "taskgroup-070",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 11,
+      "model": "step120",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-070-discrimination",
+      "concept_group": "taskgroup-070",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 11,
+      "model": "cpt",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-071-discrimination",
+      "concept_group": "taskgroup-071",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 2,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-071-discrimination",
+      "concept_group": "taskgroup-071",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 2,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-071-application",
+      "concept_group": "taskgroup-071",
+      "kind": "application",
+      "split": "train",
+      "chapter": 2,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-071-application",
+      "concept_group": "taskgroup-071",
+      "kind": "application",
+      "split": "train",
+      "chapter": 2,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-072-definition",
+      "concept_group": "taskgroup-072",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 20,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-072-definition",
+      "concept_group": "taskgroup-072",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 20,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-072-discrimination",
+      "concept_group": "taskgroup-072",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 20,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-072-discrimination",
+      "concept_group": "taskgroup-072",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 20,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-072-application",
+      "concept_group": "taskgroup-072",
+      "kind": "application",
+      "split": "train",
+      "chapter": 20,
+      "model": "step120",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-072-application",
+      "concept_group": "taskgroup-072",
+      "kind": "application",
+      "split": "train",
+      "chapter": 20,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-076-discrimination",
+      "concept_group": "taskgroup-076",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 8,
+      "model": "step120",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-076-discrimination",
+      "concept_group": "taskgroup-076",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 8,
+      "model": "cpt",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-076-application",
+      "concept_group": "taskgroup-076",
+      "kind": "application",
+      "split": "train",
+      "chapter": 8,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-076-application",
+      "concept_group": "taskgroup-076",
+      "kind": "application",
+      "split": "train",
+      "chapter": 8,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-077-definition",
+      "concept_group": "taskgroup-077",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 28,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-077-definition",
+      "concept_group": "taskgroup-077",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 28,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-077-application",
+      "concept_group": "taskgroup-077",
+      "kind": "application",
+      "split": "train",
+      "chapter": 28,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-077-application",
+      "concept_group": "taskgroup-077",
+      "kind": "application",
+      "split": "train",
+      "chapter": 28,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-079-discrimination",
+      "concept_group": "taskgroup-079",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 44,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-079-discrimination",
+      "concept_group": "taskgroup-079",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 44,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-079-application",
+      "concept_group": "taskgroup-079",
+      "kind": "application",
+      "split": "train",
+      "chapter": 44,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-079-application",
+      "concept_group": "taskgroup-079",
+      "kind": "application",
+      "split": "train",
+      "chapter": 44,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-080-definition",
+      "concept_group": "taskgroup-080",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 42,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-080-definition",
+      "concept_group": "taskgroup-080",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 42,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-080-discrimination",
+      "concept_group": "taskgroup-080",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 42,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-080-discrimination",
+      "concept_group": "taskgroup-080",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 42,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-080-application",
+      "concept_group": "taskgroup-080",
+      "kind": "application",
+      "split": "train",
+      "chapter": 42,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-080-application",
+      "concept_group": "taskgroup-080",
+      "kind": "application",
+      "split": "train",
+      "chapter": 42,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-082-definition",
+      "concept_group": "taskgroup-082",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 23,
+      "model": "step120",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-082-definition",
+      "concept_group": "taskgroup-082",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 23,
+      "model": "cpt",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-082-discrimination",
+      "concept_group": "taskgroup-082",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 23,
+      "model": "step120",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-082-discrimination",
+      "concept_group": "taskgroup-082",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 23,
+      "model": "cpt",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-082-application",
+      "concept_group": "taskgroup-082",
+      "kind": "application",
+      "split": "train",
+      "chapter": 23,
+      "model": "step120",
+      "closed_score": 2,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-082-application",
+      "concept_group": "taskgroup-082",
+      "kind": "application",
+      "split": "train",
+      "chapter": 23,
+      "model": "cpt",
+      "closed_score": 2,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-084-definition",
+      "concept_group": "taskgroup-084",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 5,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-084-definition",
+      "concept_group": "taskgroup-084",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 5,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-084-discrimination",
+      "concept_group": "taskgroup-084",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 5,
+      "model": "step120",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-084-discrimination",
+      "concept_group": "taskgroup-084",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 5,
+      "model": "cpt",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-084-application",
+      "concept_group": "taskgroup-084",
+      "kind": "application",
+      "split": "train",
+      "chapter": 5,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-084-application",
+      "concept_group": "taskgroup-084",
+      "kind": "application",
+      "split": "train",
+      "chapter": 5,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-087-definition",
+      "concept_group": "taskgroup-087",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 17,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-087-definition",
+      "concept_group": "taskgroup-087",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 17,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-087-discrimination",
+      "concept_group": "taskgroup-087",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 17,
+      "model": "step120",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-087-discrimination",
+      "concept_group": "taskgroup-087",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 17,
+      "model": "cpt",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-087-application",
+      "concept_group": "taskgroup-087",
+      "kind": "application",
+      "split": "train",
+      "chapter": 17,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-087-application",
+      "concept_group": "taskgroup-087",
+      "kind": "application",
+      "split": "train",
+      "chapter": 17,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-088-discrimination",
+      "concept_group": "taskgroup-088",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 34,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-088-discrimination",
+      "concept_group": "taskgroup-088",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 34,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-088-application",
+      "concept_group": "taskgroup-088",
+      "kind": "application",
+      "split": "train",
+      "chapter": 34,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-088-application",
+      "concept_group": "taskgroup-088",
+      "kind": "application",
+      "split": "train",
+      "chapter": 34,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-089-definition",
+      "concept_group": "taskgroup-089",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 36,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-089-definition",
+      "concept_group": "taskgroup-089",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 36,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-089-discrimination",
+      "concept_group": "taskgroup-089",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 36,
+      "model": "step120",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-089-discrimination",
+      "concept_group": "taskgroup-089",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 36,
+      "model": "cpt",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-089-application",
+      "concept_group": "taskgroup-089",
+      "kind": "application",
+      "split": "train",
+      "chapter": 36,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-089-application",
+      "concept_group": "taskgroup-089",
+      "kind": "application",
+      "split": "train",
+      "chapter": 36,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-091-definition",
+      "concept_group": "taskgroup-091",
+      "kind": "definition",
+      "split": "dev",
+      "chapter": 19,
+      "model": "step120",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-091-definition",
+      "concept_group": "taskgroup-091",
+      "kind": "definition",
+      "split": "dev",
+      "chapter": 19,
+      "model": "cpt",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-091-discrimination",
+      "concept_group": "taskgroup-091",
+      "kind": "discrimination",
+      "split": "dev",
+      "chapter": 19,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-091-discrimination",
+      "concept_group": "taskgroup-091",
+      "kind": "discrimination",
+      "split": "dev",
+      "chapter": 19,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-091-application",
+      "concept_group": "taskgroup-091",
+      "kind": "application",
+      "split": "dev",
+      "chapter": 19,
+      "model": "step120",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-091-application",
+      "concept_group": "taskgroup-091",
+      "kind": "application",
+      "split": "dev",
+      "chapter": 19,
+      "model": "cpt",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-092-definition",
+      "concept_group": "taskgroup-092",
+      "kind": "definition",
+      "split": "dev",
+      "chapter": 37,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-092-definition",
+      "concept_group": "taskgroup-092",
+      "kind": "definition",
+      "split": "dev",
+      "chapter": 37,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-092-discrimination",
+      "concept_group": "taskgroup-092",
+      "kind": "discrimination",
+      "split": "dev",
+      "chapter": 37,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-092-discrimination",
+      "concept_group": "taskgroup-092",
+      "kind": "discrimination",
+      "split": "dev",
+      "chapter": 37,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-092-application",
+      "concept_group": "taskgroup-092",
+      "kind": "application",
+      "split": "dev",
+      "chapter": 37,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-092-application",
+      "concept_group": "taskgroup-092",
+      "kind": "application",
+      "split": "dev",
+      "chapter": 37,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-094-definition",
+      "concept_group": "taskgroup-094",
+      "kind": "definition",
+      "split": "dev",
+      "chapter": 15,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-094-definition",
+      "concept_group": "taskgroup-094",
+      "kind": "definition",
+      "split": "dev",
+      "chapter": 15,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-094-discrimination",
+      "concept_group": "taskgroup-094",
+      "kind": "discrimination",
+      "split": "dev",
+      "chapter": 15,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-094-discrimination",
+      "concept_group": "taskgroup-094",
+      "kind": "discrimination",
+      "split": "dev",
+      "chapter": 15,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-094-application",
+      "concept_group": "taskgroup-094",
+      "kind": "application",
+      "split": "dev",
+      "chapter": 15,
+      "model": "step120",
+      "closed_score": 2,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-094-application",
+      "concept_group": "taskgroup-094",
+      "kind": "application",
+      "split": "dev",
+      "chapter": 15,
+      "model": "cpt",
+      "closed_score": 2,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-103-definition",
+      "concept_group": "taskgroup-103",
+      "kind": "definition",
+      "split": "dev",
+      "chapter": 19,
+      "model": "step120",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-103-definition",
+      "concept_group": "taskgroup-103",
+      "kind": "definition",
+      "split": "dev",
+      "chapter": 19,
+      "model": "cpt",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-103-discrimination",
+      "concept_group": "taskgroup-103",
+      "kind": "discrimination",
+      "split": "dev",
+      "chapter": 19,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-103-discrimination",
+      "concept_group": "taskgroup-103",
+      "kind": "discrimination",
+      "split": "dev",
+      "chapter": 19,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-109-definition",
+      "concept_group": "taskgroup-109",
+      "kind": "definition",
+      "split": "dev",
+      "chapter": 19,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-109-definition",
+      "concept_group": "taskgroup-109",
+      "kind": "definition",
+      "split": "dev",
+      "chapter": 19,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-109-application",
+      "concept_group": "taskgroup-109",
+      "kind": "application",
+      "split": "dev",
+      "chapter": 19,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-109-application",
+      "concept_group": "taskgroup-109",
+      "kind": "application",
+      "split": "dev",
+      "chapter": 19,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-116-definition",
+      "concept_group": "taskgroup-116",
+      "kind": "definition",
+      "split": "dev",
+      "chapter": 26,
+      "model": "step120",
+      "closed_score": 2,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-116-definition",
+      "concept_group": "taskgroup-116",
+      "kind": "definition",
+      "split": "dev",
+      "chapter": 26,
+      "model": "cpt",
+      "closed_score": 2,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-116-discrimination",
+      "concept_group": "taskgroup-116",
+      "kind": "discrimination",
+      "split": "dev",
+      "chapter": 26,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-116-discrimination",
+      "concept_group": "taskgroup-116",
+      "kind": "discrimination",
+      "split": "dev",
+      "chapter": 26,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-118-definition",
+      "concept_group": "taskgroup-118",
+      "kind": "definition",
+      "split": "dev",
+      "chapter": 19,
+      "model": "step120",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-118-definition",
+      "concept_group": "taskgroup-118",
+      "kind": "definition",
+      "split": "dev",
+      "chapter": 19,
+      "model": "cpt",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-118-discrimination",
+      "concept_group": "taskgroup-118",
+      "kind": "discrimination",
+      "split": "dev",
+      "chapter": 19,
+      "model": "step120",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-118-discrimination",
+      "concept_group": "taskgroup-118",
+      "kind": "discrimination",
+      "split": "dev",
+      "chapter": 19,
+      "model": "cpt",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-118-application",
+      "concept_group": "taskgroup-118",
+      "kind": "application",
+      "split": "dev",
+      "chapter": 19,
+      "model": "step120",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-118-application",
+      "concept_group": "taskgroup-118",
+      "kind": "application",
+      "split": "dev",
+      "chapter": 19,
+      "model": "cpt",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-120-definition",
+      "concept_group": "taskgroup-120",
+      "kind": "definition",
+      "split": "dev",
+      "chapter": 26,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-120-definition",
+      "concept_group": "taskgroup-120",
+      "kind": "definition",
+      "split": "dev",
+      "chapter": 26,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-120-discrimination",
+      "concept_group": "taskgroup-120",
+      "kind": "discrimination",
+      "split": "dev",
+      "chapter": 26,
+      "model": "step120",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-120-discrimination",
+      "concept_group": "taskgroup-120",
+      "kind": "discrimination",
+      "split": "dev",
+      "chapter": 26,
+      "model": "cpt",
+      "closed_score": 0,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-120-application",
+      "concept_group": "taskgroup-120",
+      "kind": "application",
+      "split": "dev",
+      "chapter": 26,
+      "model": "step120",
+      "closed_score": 1,
+      "evidence_score": 2
+    },
+    {
+      "id": "taskgroup-120-application",
+      "concept_group": "taskgroup-120",
+      "kind": "application",
+      "split": "dev",
+      "chapter": 26,
+      "model": "cpt",
+      "closed_score": 1,
+      "evidence_score": 2
+    }
+  ],
+  "training": false,
+  "training_ready": false,
+  "official_benchmark_evaluated": false,
+  "limits": [
+    "Candidate utility proxy, not measured SFT gain.",
+    "Exact score disagreement quarantined; agreed subset is selected, not whole-bank accuracy.",
+    "One response per condition; evidence is not proof of absent parametric knowledge.",
+    "Selection correctness ignores free-text rationale.",
+    "All selection items have six options and two gold options; target prompt never states this count.",
+    "Development groups already seen as CPT book source."
+  ],
+  "pools": {
+    "learning_candidate": {
+      "groups": 17,
+      "questions": 68
+    },
+    "quarantine": {
+      "groups": 26,
+      "questions": 104
+    },
+    "development": {
+      "groups": 8,
+      "questions": 32
+    },
+    "maintenance_candidate": {
+      "groups": 0,
+      "questions": 0
+    }
+  },
+  "pool_policy": "Whole groups retained; development always held out; training groups require all four questions assessable for BOTH origins; candidate if either origin has an opportunity. Not a training export."
+}

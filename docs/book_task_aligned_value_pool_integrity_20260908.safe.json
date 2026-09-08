@@ -1,0 +1,31 @@
+{
+  "groups": 51,
+  "questions": 204,
+  "pools": {
+    "development": {
+      "groups": 8,
+      "questions": 32,
+      "sha256": "f82ec0d5c696b44f7b212a33da2d6128f5d6374c573bf04cc3b7f791c2391ea5"
+    },
+    "quarantine": {
+      "groups": 35,
+      "questions": 140,
+      "sha256": "d3421e51b6043b1d94e8e829357c4b26a70df72504e5ebc882d5417ff6d1d842"
+    },
+    "learning_candidate": {
+      "groups": 8,
+      "questions": 32,
+      "sha256": "486abee6aed658b04624b9981a8e0b3dce4addd14236fdd59841eb7fefb476eb"
+    },
+    "maintenance_candidate": {
+      "groups": 0,
+      "questions": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "duplicate_groups": 0,
+  "duplicate_questions": 0,
+  "changed_questions": 0,
+  "split_migrations": 0,
+  "training": false
+}

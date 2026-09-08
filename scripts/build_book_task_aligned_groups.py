@@ -11,9 +11,11 @@ import copy
 import urllib.error
 
 try:
+    from scripts.audit_book_value_context import context_flags
     from scripts.build_targeted_book_groups import BOOK_SHA, call_api, unpack, digest, source_units, ids_valid, exclusion_index, grams, words
     from scripts.screen_book_group_semantics import validate_clusters, HELDOUT
 except ModuleNotFoundError:
+    from audit_book_value_context import context_flags
     from build_targeted_book_groups import BOOK_SHA, call_api, unpack, digest, source_units, ids_valid, exclusion_index, grams, words
     from screen_book_group_semantics import validate_clusters, HELDOUT
 
@@ -61,6 +63,7 @@ def valid_group(g,units):
     if not isinstance(qs,list) or len(qs)!=4 or any(not isinstance(q,dict) for q in qs) or [q.get('kind') for q in qs]!=list(KINDS):return False
     for q in qs:
         if any(not isinstance(q.get(k),str) or not q[k].strip() for k in ('question','answer')) or len(words(q['answer']))>120:return False
+        if q['kind']!='evidence_selection' and context_flags(q['question']):return False
         if not ids_valid(q.get('source_ids'),units):return False
         if not isinstance(q.get('rubric'),list) or not 1<=len(q['rubric'])<=3 or any(not isinstance(v,str) or not v.strip() for v in q['rubric']):return False
         if q['kind']=='evidence_selection':

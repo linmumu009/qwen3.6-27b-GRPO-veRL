@@ -48,6 +48,10 @@ class GroupTests(unittest.TestCase):
         g=fixture();g['questions'][-1]['question']+=' Candidate 0'
         self.assertFalse(valid_group(g,{'S001':'text'}))
 
+    def test_closed_question_cannot_depend_on_missing_source(self):
+        g=fixture();g['questions'][0]['question']='According to the source, define the rule.'
+        self.assertFalse(valid_group(g,{'S001':'text'}))
+
     def test_auditor_receives_remapped_text_not_ambiguous_indices(self):
         value={'questions':[{}, {}, {}, dict(selected_indices=[0,2],source_ids=['S001'],answer='Index prose')]}
         r=audit_solution(value,fixture(),[3,0,1,2,4,5])

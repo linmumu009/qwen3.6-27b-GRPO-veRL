@@ -1,0 +1,19 @@
+{
+  "items": 153,
+  "reviews": 306,
+  "api_calls": 304,
+  "cumulative_api_calls": 461,
+  "new_api_calls": 157,
+  "statuses": {
+    "scored": 300,
+    "quality_quarantine": 4,
+    "truncated_quarantine": 2
+  },
+  "usage": {
+    "prompt_tokens": 633144,
+    "completion_tokens": 142278,
+    "total_tokens": 775422
+  },
+  "reviews_sha256": "27d9ee34ff9fd8a166a36dfd41c2cf24f0b2d2d8d9287a2166a6c4741dad499d",
+  "training": false
+}

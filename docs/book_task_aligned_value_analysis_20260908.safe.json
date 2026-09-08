@@ -1,0 +1,181 @@
+{
+  "pre_context_aggregate": [
+    {
+      "model": "step120",
+      "kind": "definition",
+      "items": 51,
+      "agreed_items": 38,
+      "closed_correct": 1,
+      "evidence_correct": 37,
+      "decisions": {
+        "evidence_rescued_candidate": 36,
+        "judge_invalid": 2,
+        "judge_disagreement": 11,
+        "unresolved_both_conditions": 1,
+        "maintenance_candidate": 1
+      }
+    },
+    {
+      "model": "step120",
+      "kind": "discrimination",
+      "items": 51,
+      "agreed_items": 47,
+      "closed_correct": 0,
+      "evidence_correct": 46,
+      "decisions": {
+        "evidence_rescued_candidate": 46,
+        "judge_disagreement": 4,
+        "unresolved_both_conditions": 1
+      }
+    },
+    {
+      "model": "step120",
+      "kind": "application",
+      "items": 51,
+      "agreed_items": 41,
+      "closed_correct": 4,
+      "evidence_correct": 36,
+      "decisions": {
+        "evidence_rescued_candidate": 32,
+        "unresolved_both_conditions": 5,
+        "judge_disagreement": 9,
+        "maintenance_candidate": 4,
+        "judge_invalid": 1
+      }
+    },
+    {
+      "model": "step120",
+      "kind": "evidence_selection",
+      "items": 51,
+      "original_correct": 47,
+      "permuted_correct": 47,
+      "answers_changed": 2,
+      "invalid_responses": 0,
+      "decisions": {
+        "both_orders_correct": 46,
+        "both_orders_wrong_candidate": 3,
+        "order_sensitive_candidate": 2
+      }
+    },
+    {
+      "model": "cpt",
+      "kind": "definition",
+      "items": 51,
+      "agreed_items": 38,
+      "closed_correct": 2,
+      "evidence_correct": 38,
+      "decisions": {
+        "evidence_rescued_candidate": 36,
+        "judge_invalid": 2,
+        "judge_disagreement": 11,
+        "maintenance_candidate": 2
+      }
+    },
+    {
+      "model": "cpt",
+      "kind": "discrimination",
+      "items": 51,
+      "agreed_items": 47,
+      "closed_correct": 0,
+      "evidence_correct": 45,
+      "decisions": {
+        "evidence_rescued_candidate": 45,
+        "judge_disagreement": 4,
+        "unresolved_both_conditions": 2
+      }
+    },
+    {
+      "model": "cpt",
+      "kind": "application",
+      "items": 51,
+      "agreed_items": 41,
+      "closed_correct": 4,
+      "evidence_correct": 37,
+      "decisions": {
+        "evidence_rescued_candidate": 33,
+        "unresolved_both_conditions": 4,
+        "judge_disagreement": 9,
+        "maintenance_candidate": 4,
+        "judge_invalid": 1
+      }
+    },
+    {
+      "model": "cpt",
+      "kind": "evidence_selection",
+      "items": 51,
+      "original_correct": 46,
+      "permuted_correct": 47,
+      "answers_changed": 3,
+      "invalid_responses": 1,
+      "decisions": {
+        "both_orders_correct": 45,
+        "invalid_response": 1,
+        "order_sensitive_candidate": 3,
+        "both_orders_wrong_candidate": 2
+      }
+    }
+  ],
+  "pre_context_pools": {
+    "learning_candidate": {
+      "groups": 17,
+      "questions": 68
+    },
+    "quarantine": {
+      "groups": 26,
+      "questions": 104
+    },
+    "development": {
+      "groups": 8,
+      "questions": 32
+    },
+    "maintenance_candidate": {
+      "groups": 0,
+      "questions": 0
+    }
+  },
+  "pools": {
+    "development": {
+      "groups": 8,
+      "questions": 32
+    },
+    "quarantine": {
+      "groups": 35,
+      "questions": 140
+    },
+    "learning_candidate": {
+      "groups": 8,
+      "questions": 32
+    },
+    "maintenance_candidate": {
+      "groups": 0,
+      "questions": 0
+    }
+  },
+  "context_clean_aggregate": [
+    {
+      "model": "step120",
+      "items": 110,
+      "closed_correct": 5,
+      "evidence_correct": 104
+    },
+    {
+      "model": "cpt",
+      "items": 110,
+      "closed_correct": 6,
+      "evidence_correct": 104
+    }
+  ],
+  "context_flagged_questions": 17,
+  "grade_consensus": {
+    "judge_agreed": 126,
+    "judge_invalid": 3,
+    "judge_disagreement": 24
+  },
+  "judge_api_calls": 461,
+  "judge_usage": {
+    "prompt_tokens": 633144,
+    "completion_tokens": 142278,
+    "total_tokens": 775422
+  },
+  "training": false
+}

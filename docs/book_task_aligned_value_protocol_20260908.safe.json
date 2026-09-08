@@ -1,0 +1,1880 @@
+{
+  "items": 204,
+  "groups": 51,
+  "split_items": {
+    "train": 172,
+    "dev": 32
+  },
+  "inventory_sha256": "1649925cef3eaada27c0a2dd20d58ccf85288ea9da622bddd81610daca59e94d",
+  "source_sha256": "21071ddfc147f1b2c3f1ffc4f6df66363927d4232260b41914b162a296a5816c",
+  "cases_sha256": "f488306a5e9911e9ae6985397f2c44d6559ddfe82e30db66ade248855b8961ee",
+  "models": {
+    "step120": "runs/llin-step120-opensource-20260825-02/hf_export_step120_opensource",
+    "cpt": "runs/logistics-cpt-book-exposure-curve-2x4x-20260904-01/hf_export_step_116"
+  },
+  "open_answer_conditions": [
+    "closed",
+    "evidence"
+  ],
+  "selection_conditions": [
+    "original",
+    "permuted"
+  ],
+  "generations_per_model": 408,
+  "generations_total": 816,
+  "repeats_per_condition": 1,
+  "selection_permutations": 1,
+  "max_output_tokens": 512,
+  "temperature": 0,
+  "seed": 1024,
+  "thinking": false,
+  "workers": 64,
+  "training": false,
+  "open_answer_judge_repeats": 2,
+  "max_judge_api_calls": 306,
+  "judge_order_reversed_second_pass": true,
+  "classification": "Exact agreement across both anonymous four-answer grades; invalid/disputed items isolated. Closed fail and evidence pass is a candidate, not proof of missing knowledge. Preserve split and groups; do not export training messages.",
+  "limitations": [
+    "Development is new-SFT holdout only, not unseen CPT source.",
+    "Single target-model response per condition; not a reliability estimate.",
+    "Selection questions retain fixed six candidates/two correct answers, not disclosed to target model."
+  ],
+  "items_safe": [
+    {
+      "id": "taskgroup-002-definition",
+      "concept_group": "taskgroup-002",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 32,
+      "source_id": "handbook8e-00082",
+      "source_hash": "1d8b63dd335baa95a119e745ee900548795bf1c52d887a3c39dab3455291feac"
+    },
+    {
+      "id": "taskgroup-002-discrimination",
+      "concept_group": "taskgroup-002",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 32,
+      "source_id": "handbook8e-00082",
+      "source_hash": "1d8b63dd335baa95a119e745ee900548795bf1c52d887a3c39dab3455291feac"
+    },
+    {
+      "id": "taskgroup-002-application",
+      "concept_group": "taskgroup-002",
+      "kind": "application",
+      "split": "train",
+      "chapter": 32,
+      "source_id": "handbook8e-00082",
+      "source_hash": "1d8b63dd335baa95a119e745ee900548795bf1c52d887a3c39dab3455291feac"
+    },
+    {
+      "id": "taskgroup-002-evidence_selection",
+      "concept_group": "taskgroup-002",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 32,
+      "source_id": "handbook8e-00082",
+      "source_hash": "1d8b63dd335baa95a119e745ee900548795bf1c52d887a3c39dab3455291feac"
+    },
+    {
+      "id": "taskgroup-003-definition",
+      "concept_group": "taskgroup-003",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 28,
+      "source_id": "handbook8e-00072",
+      "source_hash": "10531e97ba18f2ffd2a92385ba1beb5934c06f1b17129d36b756d5df1b6a29aa"
+    },
+    {
+      "id": "taskgroup-003-discrimination",
+      "concept_group": "taskgroup-003",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 28,
+      "source_id": "handbook8e-00072",
+      "source_hash": "10531e97ba18f2ffd2a92385ba1beb5934c06f1b17129d36b756d5df1b6a29aa"
+    },
+    {
+      "id": "taskgroup-003-application",
+      "concept_group": "taskgroup-003",
+      "kind": "application",
+      "split": "train",
+      "chapter": 28,
+      "source_id": "handbook8e-00072",
+      "source_hash": "10531e97ba18f2ffd2a92385ba1beb5934c06f1b17129d36b756d5df1b6a29aa"
+    },
+    {
+      "id": "taskgroup-003-evidence_selection",
+      "concept_group": "taskgroup-003",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 28,
+      "source_id": "handbook8e-00072",
+      "source_hash": "10531e97ba18f2ffd2a92385ba1beb5934c06f1b17129d36b756d5df1b6a29aa"
+    },
+    {
+      "id": "taskgroup-004-definition",
+      "concept_group": "taskgroup-004",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 40,
+      "source_id": "handbook8e-00102",
+      "source_hash": "2835199fea183cd43a7b29788d5bd5e6c1d108e0e8d9e919f3017de288fdeba0"
+    },
+    {
+      "id": "taskgroup-004-discrimination",
+      "concept_group": "taskgroup-004",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 40,
+      "source_id": "handbook8e-00102",
+      "source_hash": "2835199fea183cd43a7b29788d5bd5e6c1d108e0e8d9e919f3017de288fdeba0"
+    },
+    {
+      "id": "taskgroup-004-application",
+      "concept_group": "taskgroup-004",
+      "kind": "application",
+      "split": "train",
+      "chapter": 40,
+      "source_id": "handbook8e-00102",
+      "source_hash": "2835199fea183cd43a7b29788d5bd5e6c1d108e0e8d9e919f3017de288fdeba0"
+    },
+    {
+      "id": "taskgroup-004-evidence_selection",
+      "concept_group": "taskgroup-004",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 40,
+      "source_id": "handbook8e-00102",
+      "source_hash": "2835199fea183cd43a7b29788d5bd5e6c1d108e0e8d9e919f3017de288fdeba0"
+    },
+    {
+      "id": "taskgroup-009-definition",
+      "concept_group": "taskgroup-009",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 33,
+      "source_id": "handbook8e-00083",
+      "source_hash": "93998adc4e3c791c5db071beef745e211d0567c0278863868d950c191097e16b"
+    },
+    {
+      "id": "taskgroup-009-discrimination",
+      "concept_group": "taskgroup-009",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 33,
+      "source_id": "handbook8e-00083",
+      "source_hash": "93998adc4e3c791c5db071beef745e211d0567c0278863868d950c191097e16b"
+    },
+    {
+      "id": "taskgroup-009-application",
+      "concept_group": "taskgroup-009",
+      "kind": "application",
+      "split": "train",
+      "chapter": 33,
+      "source_id": "handbook8e-00083",
+      "source_hash": "93998adc4e3c791c5db071beef745e211d0567c0278863868d950c191097e16b"
+    },
+    {
+      "id": "taskgroup-009-evidence_selection",
+      "concept_group": "taskgroup-009",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 33,
+      "source_id": "handbook8e-00083",
+      "source_hash": "93998adc4e3c791c5db071beef745e211d0567c0278863868d950c191097e16b"
+    },
+    {
+      "id": "taskgroup-010-definition",
+      "concept_group": "taskgroup-010",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 13,
+      "source_id": "handbook8e-00029",
+      "source_hash": "505e2fbc68aa9158f1c6bbd713e4f22300281e1d55b523f416e098451f2b05cb"
+    },
+    {
+      "id": "taskgroup-010-discrimination",
+      "concept_group": "taskgroup-010",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 13,
+      "source_id": "handbook8e-00029",
+      "source_hash": "505e2fbc68aa9158f1c6bbd713e4f22300281e1d55b523f416e098451f2b05cb"
+    },
+    {
+      "id": "taskgroup-010-application",
+      "concept_group": "taskgroup-010",
+      "kind": "application",
+      "split": "train",
+      "chapter": 13,
+      "source_id": "handbook8e-00029",
+      "source_hash": "505e2fbc68aa9158f1c6bbd713e4f22300281e1d55b523f416e098451f2b05cb"
+    },
+    {
+      "id": "taskgroup-010-evidence_selection",
+      "concept_group": "taskgroup-010",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 13,
+      "source_id": "handbook8e-00029",
+      "source_hash": "505e2fbc68aa9158f1c6bbd713e4f22300281e1d55b523f416e098451f2b05cb"
+    },
+    {
+      "id": "taskgroup-011-definition",
+      "concept_group": "taskgroup-011",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 36,
+      "source_id": "handbook8e-00092",
+      "source_hash": "4e376100514eb2fe50b443089d249ee070af571c78f15c3d17b8cc81ced5f1ae"
+    },
+    {
+      "id": "taskgroup-011-discrimination",
+      "concept_group": "taskgroup-011",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 36,
+      "source_id": "handbook8e-00092",
+      "source_hash": "4e376100514eb2fe50b443089d249ee070af571c78f15c3d17b8cc81ced5f1ae"
+    },
+    {
+      "id": "taskgroup-011-application",
+      "concept_group": "taskgroup-011",
+      "kind": "application",
+      "split": "train",
+      "chapter": 36,
+      "source_id": "handbook8e-00092",
+      "source_hash": "4e376100514eb2fe50b443089d249ee070af571c78f15c3d17b8cc81ced5f1ae"
+    },
+    {
+      "id": "taskgroup-011-evidence_selection",
+      "concept_group": "taskgroup-011",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 36,
+      "source_id": "handbook8e-00092",
+      "source_hash": "4e376100514eb2fe50b443089d249ee070af571c78f15c3d17b8cc81ced5f1ae"
+    },
+    {
+      "id": "taskgroup-012-definition",
+      "concept_group": "taskgroup-012",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 7,
+      "source_id": "handbook8e-00018",
+      "source_hash": "cb8ca9e858646307b30221a11711258da5bfcae2699a73a27893c5738a150b85"
+    },
+    {
+      "id": "taskgroup-012-discrimination",
+      "concept_group": "taskgroup-012",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 7,
+      "source_id": "handbook8e-00018",
+      "source_hash": "cb8ca9e858646307b30221a11711258da5bfcae2699a73a27893c5738a150b85"
+    },
+    {
+      "id": "taskgroup-012-application",
+      "concept_group": "taskgroup-012",
+      "kind": "application",
+      "split": "train",
+      "chapter": 7,
+      "source_id": "handbook8e-00018",
+      "source_hash": "cb8ca9e858646307b30221a11711258da5bfcae2699a73a27893c5738a150b85"
+    },
+    {
+      "id": "taskgroup-012-evidence_selection",
+      "concept_group": "taskgroup-012",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 7,
+      "source_id": "handbook8e-00018",
+      "source_hash": "cb8ca9e858646307b30221a11711258da5bfcae2699a73a27893c5738a150b85"
+    },
+    {
+      "id": "taskgroup-014-definition",
+      "concept_group": "taskgroup-014",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 5,
+      "source_id": "handbook8e-00011",
+      "source_hash": "ed6f82ad008b430b2367c24e4f93d7e67470624511a3678adddac2795c9ccb0c"
+    },
+    {
+      "id": "taskgroup-014-discrimination",
+      "concept_group": "taskgroup-014",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 5,
+      "source_id": "handbook8e-00011",
+      "source_hash": "ed6f82ad008b430b2367c24e4f93d7e67470624511a3678adddac2795c9ccb0c"
+    },
+    {
+      "id": "taskgroup-014-application",
+      "concept_group": "taskgroup-014",
+      "kind": "application",
+      "split": "train",
+      "chapter": 5,
+      "source_id": "handbook8e-00011",
+      "source_hash": "ed6f82ad008b430b2367c24e4f93d7e67470624511a3678adddac2795c9ccb0c"
+    },
+    {
+      "id": "taskgroup-014-evidence_selection",
+      "concept_group": "taskgroup-014",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 5,
+      "source_id": "handbook8e-00011",
+      "source_hash": "ed6f82ad008b430b2367c24e4f93d7e67470624511a3678adddac2795c9ccb0c"
+    },
+    {
+      "id": "taskgroup-017-definition",
+      "concept_group": "taskgroup-017",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 12,
+      "source_id": "handbook8e-00027",
+      "source_hash": "aa4b81b50fd5e5e2880ae5a0c684761f4667e2f4ffbea0672d90a473ebaf8d85"
+    },
+    {
+      "id": "taskgroup-017-discrimination",
+      "concept_group": "taskgroup-017",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 12,
+      "source_id": "handbook8e-00027",
+      "source_hash": "aa4b81b50fd5e5e2880ae5a0c684761f4667e2f4ffbea0672d90a473ebaf8d85"
+    },
+    {
+      "id": "taskgroup-017-application",
+      "concept_group": "taskgroup-017",
+      "kind": "application",
+      "split": "train",
+      "chapter": 12,
+      "source_id": "handbook8e-00027",
+      "source_hash": "aa4b81b50fd5e5e2880ae5a0c684761f4667e2f4ffbea0672d90a473ebaf8d85"
+    },
+    {
+      "id": "taskgroup-017-evidence_selection",
+      "concept_group": "taskgroup-017",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 12,
+      "source_id": "handbook8e-00027",
+      "source_hash": "aa4b81b50fd5e5e2880ae5a0c684761f4667e2f4ffbea0672d90a473ebaf8d85"
+    },
+    {
+      "id": "taskgroup-019-definition",
+      "concept_group": "taskgroup-019",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 6,
+      "source_id": "handbook8e-00017",
+      "source_hash": "cab9790e8d898fdb7c79f2912ba8a02a85f7251ba00ea05037cad5b3a41fb65e"
+    },
+    {
+      "id": "taskgroup-019-discrimination",
+      "concept_group": "taskgroup-019",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 6,
+      "source_id": "handbook8e-00017",
+      "source_hash": "cab9790e8d898fdb7c79f2912ba8a02a85f7251ba00ea05037cad5b3a41fb65e"
+    },
+    {
+      "id": "taskgroup-019-application",
+      "concept_group": "taskgroup-019",
+      "kind": "application",
+      "split": "train",
+      "chapter": 6,
+      "source_id": "handbook8e-00017",
+      "source_hash": "cab9790e8d898fdb7c79f2912ba8a02a85f7251ba00ea05037cad5b3a41fb65e"
+    },
+    {
+      "id": "taskgroup-019-evidence_selection",
+      "concept_group": "taskgroup-019",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 6,
+      "source_id": "handbook8e-00017",
+      "source_hash": "cab9790e8d898fdb7c79f2912ba8a02a85f7251ba00ea05037cad5b3a41fb65e"
+    },
+    {
+      "id": "taskgroup-020-definition",
+      "concept_group": "taskgroup-020",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 30,
+      "source_id": "handbook8e-00078",
+      "source_hash": "b420034d091c209a0fd83ff0b33c2cf937d3c440862736e78d78fefc6b0a0b66"
+    },
+    {
+      "id": "taskgroup-020-discrimination",
+      "concept_group": "taskgroup-020",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 30,
+      "source_id": "handbook8e-00078",
+      "source_hash": "b420034d091c209a0fd83ff0b33c2cf937d3c440862736e78d78fefc6b0a0b66"
+    },
+    {
+      "id": "taskgroup-020-application",
+      "concept_group": "taskgroup-020",
+      "kind": "application",
+      "split": "train",
+      "chapter": 30,
+      "source_id": "handbook8e-00078",
+      "source_hash": "b420034d091c209a0fd83ff0b33c2cf937d3c440862736e78d78fefc6b0a0b66"
+    },
+    {
+      "id": "taskgroup-020-evidence_selection",
+      "concept_group": "taskgroup-020",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 30,
+      "source_id": "handbook8e-00078",
+      "source_hash": "b420034d091c209a0fd83ff0b33c2cf937d3c440862736e78d78fefc6b0a0b66"
+    },
+    {
+      "id": "taskgroup-022-definition",
+      "concept_group": "taskgroup-022",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 24,
+      "source_id": "handbook8e-00060",
+      "source_hash": "faaf2777329b3d1fc4edb833171a545e4088c3e6fd924a6242ca146bca450185"
+    },
+    {
+      "id": "taskgroup-022-discrimination",
+      "concept_group": "taskgroup-022",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 24,
+      "source_id": "handbook8e-00060",
+      "source_hash": "faaf2777329b3d1fc4edb833171a545e4088c3e6fd924a6242ca146bca450185"
+    },
+    {
+      "id": "taskgroup-022-application",
+      "concept_group": "taskgroup-022",
+      "kind": "application",
+      "split": "train",
+      "chapter": 24,
+      "source_id": "handbook8e-00060",
+      "source_hash": "faaf2777329b3d1fc4edb833171a545e4088c3e6fd924a6242ca146bca450185"
+    },
+    {
+      "id": "taskgroup-022-evidence_selection",
+      "concept_group": "taskgroup-022",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 24,
+      "source_id": "handbook8e-00060",
+      "source_hash": "faaf2777329b3d1fc4edb833171a545e4088c3e6fd924a6242ca146bca450185"
+    },
+    {
+      "id": "taskgroup-024-definition",
+      "concept_group": "taskgroup-024",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 2,
+      "source_id": "handbook8e-00005",
+      "source_hash": "a0e834eec6c43b6df685147b80bdd9c79994bb912067336dc249ee0d0bc02d78"
+    },
+    {
+      "id": "taskgroup-024-discrimination",
+      "concept_group": "taskgroup-024",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 2,
+      "source_id": "handbook8e-00005",
+      "source_hash": "a0e834eec6c43b6df685147b80bdd9c79994bb912067336dc249ee0d0bc02d78"
+    },
+    {
+      "id": "taskgroup-024-application",
+      "concept_group": "taskgroup-024",
+      "kind": "application",
+      "split": "train",
+      "chapter": 2,
+      "source_id": "handbook8e-00005",
+      "source_hash": "a0e834eec6c43b6df685147b80bdd9c79994bb912067336dc249ee0d0bc02d78"
+    },
+    {
+      "id": "taskgroup-024-evidence_selection",
+      "concept_group": "taskgroup-024",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 2,
+      "source_id": "handbook8e-00005",
+      "source_hash": "a0e834eec6c43b6df685147b80bdd9c79994bb912067336dc249ee0d0bc02d78"
+    },
+    {
+      "id": "taskgroup-025-definition",
+      "concept_group": "taskgroup-025",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 38,
+      "source_id": "handbook8e-00099",
+      "source_hash": "0fff1b51556db159cadd6cd6b194ef9b03885828b2918565abdf4b2a3f66da25"
+    },
+    {
+      "id": "taskgroup-025-discrimination",
+      "concept_group": "taskgroup-025",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 38,
+      "source_id": "handbook8e-00099",
+      "source_hash": "0fff1b51556db159cadd6cd6b194ef9b03885828b2918565abdf4b2a3f66da25"
+    },
+    {
+      "id": "taskgroup-025-application",
+      "concept_group": "taskgroup-025",
+      "kind": "application",
+      "split": "train",
+      "chapter": 38,
+      "source_id": "handbook8e-00099",
+      "source_hash": "0fff1b51556db159cadd6cd6b194ef9b03885828b2918565abdf4b2a3f66da25"
+    },
+    {
+      "id": "taskgroup-025-evidence_selection",
+      "concept_group": "taskgroup-025",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 38,
+      "source_id": "handbook8e-00099",
+      "source_hash": "0fff1b51556db159cadd6cd6b194ef9b03885828b2918565abdf4b2a3f66da25"
+    },
+    {
+      "id": "taskgroup-027-definition",
+      "concept_group": "taskgroup-027",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 35,
+      "source_id": "handbook8e-00091",
+      "source_hash": "c203b1a671b83de249ea72b25f62c29a31478ecbaddc26a637a8f3dd8c79d544"
+    },
+    {
+      "id": "taskgroup-027-discrimination",
+      "concept_group": "taskgroup-027",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 35,
+      "source_id": "handbook8e-00091",
+      "source_hash": "c203b1a671b83de249ea72b25f62c29a31478ecbaddc26a637a8f3dd8c79d544"
+    },
+    {
+      "id": "taskgroup-027-application",
+      "concept_group": "taskgroup-027",
+      "kind": "application",
+      "split": "train",
+      "chapter": 35,
+      "source_id": "handbook8e-00091",
+      "source_hash": "c203b1a671b83de249ea72b25f62c29a31478ecbaddc26a637a8f3dd8c79d544"
+    },
+    {
+      "id": "taskgroup-027-evidence_selection",
+      "concept_group": "taskgroup-027",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 35,
+      "source_id": "handbook8e-00091",
+      "source_hash": "c203b1a671b83de249ea72b25f62c29a31478ecbaddc26a637a8f3dd8c79d544"
+    },
+    {
+      "id": "taskgroup-030-definition",
+      "concept_group": "taskgroup-030",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 34,
+      "source_id": "handbook8e-00089",
+      "source_hash": "69b60dab3d225c278e7c35871cb833958d871e041431f9c24c3a13252233cd6b"
+    },
+    {
+      "id": "taskgroup-030-discrimination",
+      "concept_group": "taskgroup-030",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 34,
+      "source_id": "handbook8e-00089",
+      "source_hash": "69b60dab3d225c278e7c35871cb833958d871e041431f9c24c3a13252233cd6b"
+    },
+    {
+      "id": "taskgroup-030-application",
+      "concept_group": "taskgroup-030",
+      "kind": "application",
+      "split": "train",
+      "chapter": 34,
+      "source_id": "handbook8e-00089",
+      "source_hash": "69b60dab3d225c278e7c35871cb833958d871e041431f9c24c3a13252233cd6b"
+    },
+    {
+      "id": "taskgroup-030-evidence_selection",
+      "concept_group": "taskgroup-030",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 34,
+      "source_id": "handbook8e-00089",
+      "source_hash": "69b60dab3d225c278e7c35871cb833958d871e041431f9c24c3a13252233cd6b"
+    },
+    {
+      "id": "taskgroup-032-definition",
+      "concept_group": "taskgroup-032",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 17,
+      "source_id": "handbook8e-00041",
+      "source_hash": "e66abe4f6382b2c3c4aaa12dd28d5deaafcf827881abb7368b2d07e381e28c7d"
+    },
+    {
+      "id": "taskgroup-032-discrimination",
+      "concept_group": "taskgroup-032",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 17,
+      "source_id": "handbook8e-00041",
+      "source_hash": "e66abe4f6382b2c3c4aaa12dd28d5deaafcf827881abb7368b2d07e381e28c7d"
+    },
+    {
+      "id": "taskgroup-032-application",
+      "concept_group": "taskgroup-032",
+      "kind": "application",
+      "split": "train",
+      "chapter": 17,
+      "source_id": "handbook8e-00041",
+      "source_hash": "e66abe4f6382b2c3c4aaa12dd28d5deaafcf827881abb7368b2d07e381e28c7d"
+    },
+    {
+      "id": "taskgroup-032-evidence_selection",
+      "concept_group": "taskgroup-032",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 17,
+      "source_id": "handbook8e-00041",
+      "source_hash": "e66abe4f6382b2c3c4aaa12dd28d5deaafcf827881abb7368b2d07e381e28c7d"
+    },
+    {
+      "id": "taskgroup-038-definition",
+      "concept_group": "taskgroup-038",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 9,
+      "source_id": "handbook8e-00022",
+      "source_hash": "5f4fda087c639285ee9bf82dda5aa141feaade9edd9cd16a25d9c8cc1fafcf72"
+    },
+    {
+      "id": "taskgroup-038-discrimination",
+      "concept_group": "taskgroup-038",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 9,
+      "source_id": "handbook8e-00022",
+      "source_hash": "5f4fda087c639285ee9bf82dda5aa141feaade9edd9cd16a25d9c8cc1fafcf72"
+    },
+    {
+      "id": "taskgroup-038-application",
+      "concept_group": "taskgroup-038",
+      "kind": "application",
+      "split": "train",
+      "chapter": 9,
+      "source_id": "handbook8e-00022",
+      "source_hash": "5f4fda087c639285ee9bf82dda5aa141feaade9edd9cd16a25d9c8cc1fafcf72"
+    },
+    {
+      "id": "taskgroup-038-evidence_selection",
+      "concept_group": "taskgroup-038",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 9,
+      "source_id": "handbook8e-00022",
+      "source_hash": "5f4fda087c639285ee9bf82dda5aa141feaade9edd9cd16a25d9c8cc1fafcf72"
+    },
+    {
+      "id": "taskgroup-039-definition",
+      "concept_group": "taskgroup-039",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 32,
+      "source_id": "handbook8e-00081",
+      "source_hash": "b8f411441b9f5a68afc21bdacd400d808de8d3ba71963089e5dd84afb4d8e0b3"
+    },
+    {
+      "id": "taskgroup-039-discrimination",
+      "concept_group": "taskgroup-039",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 32,
+      "source_id": "handbook8e-00081",
+      "source_hash": "b8f411441b9f5a68afc21bdacd400d808de8d3ba71963089e5dd84afb4d8e0b3"
+    },
+    {
+      "id": "taskgroup-039-application",
+      "concept_group": "taskgroup-039",
+      "kind": "application",
+      "split": "train",
+      "chapter": 32,
+      "source_id": "handbook8e-00081",
+      "source_hash": "b8f411441b9f5a68afc21bdacd400d808de8d3ba71963089e5dd84afb4d8e0b3"
+    },
+    {
+      "id": "taskgroup-039-evidence_selection",
+      "concept_group": "taskgroup-039",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 32,
+      "source_id": "handbook8e-00081",
+      "source_hash": "b8f411441b9f5a68afc21bdacd400d808de8d3ba71963089e5dd84afb4d8e0b3"
+    },
+    {
+      "id": "taskgroup-042-definition",
+      "concept_group": "taskgroup-042",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 5,
+      "source_id": "handbook8e-00012",
+      "source_hash": "f50d3c7ee8a69b1d529a02adc9e612912c3f18e6e35f7668a183451c1b53a1be"
+    },
+    {
+      "id": "taskgroup-042-discrimination",
+      "concept_group": "taskgroup-042",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 5,
+      "source_id": "handbook8e-00012",
+      "source_hash": "f50d3c7ee8a69b1d529a02adc9e612912c3f18e6e35f7668a183451c1b53a1be"
+    },
+    {
+      "id": "taskgroup-042-application",
+      "concept_group": "taskgroup-042",
+      "kind": "application",
+      "split": "train",
+      "chapter": 5,
+      "source_id": "handbook8e-00012",
+      "source_hash": "f50d3c7ee8a69b1d529a02adc9e612912c3f18e6e35f7668a183451c1b53a1be"
+    },
+    {
+      "id": "taskgroup-042-evidence_selection",
+      "concept_group": "taskgroup-042",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 5,
+      "source_id": "handbook8e-00012",
+      "source_hash": "f50d3c7ee8a69b1d529a02adc9e612912c3f18e6e35f7668a183451c1b53a1be"
+    },
+    {
+      "id": "taskgroup-044-definition",
+      "concept_group": "taskgroup-044",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 23,
+      "source_id": "handbook8e-00058",
+      "source_hash": "808d5e62d331af171c2df40b2ad9e833adbda60d6cfac7269c356369b84da5dc"
+    },
+    {
+      "id": "taskgroup-044-discrimination",
+      "concept_group": "taskgroup-044",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 23,
+      "source_id": "handbook8e-00058",
+      "source_hash": "808d5e62d331af171c2df40b2ad9e833adbda60d6cfac7269c356369b84da5dc"
+    },
+    {
+      "id": "taskgroup-044-application",
+      "concept_group": "taskgroup-044",
+      "kind": "application",
+      "split": "train",
+      "chapter": 23,
+      "source_id": "handbook8e-00058",
+      "source_hash": "808d5e62d331af171c2df40b2ad9e833adbda60d6cfac7269c356369b84da5dc"
+    },
+    {
+      "id": "taskgroup-044-evidence_selection",
+      "concept_group": "taskgroup-044",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 23,
+      "source_id": "handbook8e-00058",
+      "source_hash": "808d5e62d331af171c2df40b2ad9e833adbda60d6cfac7269c356369b84da5dc"
+    },
+    {
+      "id": "taskgroup-045-definition",
+      "concept_group": "taskgroup-045",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 6,
+      "source_id": "handbook8e-00016",
+      "source_hash": "3819c9cf909eff1c3c44e3f61db63cb90c0378f2d6b99802c84265e8fd0798c9"
+    },
+    {
+      "id": "taskgroup-045-discrimination",
+      "concept_group": "taskgroup-045",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 6,
+      "source_id": "handbook8e-00016",
+      "source_hash": "3819c9cf909eff1c3c44e3f61db63cb90c0378f2d6b99802c84265e8fd0798c9"
+    },
+    {
+      "id": "taskgroup-045-application",
+      "concept_group": "taskgroup-045",
+      "kind": "application",
+      "split": "train",
+      "chapter": 6,
+      "source_id": "handbook8e-00016",
+      "source_hash": "3819c9cf909eff1c3c44e3f61db63cb90c0378f2d6b99802c84265e8fd0798c9"
+    },
+    {
+      "id": "taskgroup-045-evidence_selection",
+      "concept_group": "taskgroup-045",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 6,
+      "source_id": "handbook8e-00016",
+      "source_hash": "3819c9cf909eff1c3c44e3f61db63cb90c0378f2d6b99802c84265e8fd0798c9"
+    },
+    {
+      "id": "taskgroup-046-definition",
+      "concept_group": "taskgroup-046",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 29,
+      "source_id": "handbook8e-00074",
+      "source_hash": "b28a7222f3d0b6d9fc834584cc7b80f24dd526977a15daeea62279132eb5b9b7"
+    },
+    {
+      "id": "taskgroup-046-discrimination",
+      "concept_group": "taskgroup-046",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 29,
+      "source_id": "handbook8e-00074",
+      "source_hash": "b28a7222f3d0b6d9fc834584cc7b80f24dd526977a15daeea62279132eb5b9b7"
+    },
+    {
+      "id": "taskgroup-046-application",
+      "concept_group": "taskgroup-046",
+      "kind": "application",
+      "split": "train",
+      "chapter": 29,
+      "source_id": "handbook8e-00074",
+      "source_hash": "b28a7222f3d0b6d9fc834584cc7b80f24dd526977a15daeea62279132eb5b9b7"
+    },
+    {
+      "id": "taskgroup-046-evidence_selection",
+      "concept_group": "taskgroup-046",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 29,
+      "source_id": "handbook8e-00074",
+      "source_hash": "b28a7222f3d0b6d9fc834584cc7b80f24dd526977a15daeea62279132eb5b9b7"
+    },
+    {
+      "id": "taskgroup-049-definition",
+      "concept_group": "taskgroup-049",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 10,
+      "source_id": "handbook8e-00023",
+      "source_hash": "07724ad61bc527c5b9c61f63f542f2148e6112f58a58539ae2cd4f82d91781f3"
+    },
+    {
+      "id": "taskgroup-049-discrimination",
+      "concept_group": "taskgroup-049",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 10,
+      "source_id": "handbook8e-00023",
+      "source_hash": "07724ad61bc527c5b9c61f63f542f2148e6112f58a58539ae2cd4f82d91781f3"
+    },
+    {
+      "id": "taskgroup-049-application",
+      "concept_group": "taskgroup-049",
+      "kind": "application",
+      "split": "train",
+      "chapter": 10,
+      "source_id": "handbook8e-00023",
+      "source_hash": "07724ad61bc527c5b9c61f63f542f2148e6112f58a58539ae2cd4f82d91781f3"
+    },
+    {
+      "id": "taskgroup-049-evidence_selection",
+      "concept_group": "taskgroup-049",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 10,
+      "source_id": "handbook8e-00023",
+      "source_hash": "07724ad61bc527c5b9c61f63f542f2148e6112f58a58539ae2cd4f82d91781f3"
+    },
+    {
+      "id": "taskgroup-052-definition",
+      "concept_group": "taskgroup-052",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 1,
+      "source_id": "handbook8e-00003",
+      "source_hash": "29ba81651df8c2522fe749cff425406c714bcda62b0c359deff884314814bef6"
+    },
+    {
+      "id": "taskgroup-052-discrimination",
+      "concept_group": "taskgroup-052",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 1,
+      "source_id": "handbook8e-00003",
+      "source_hash": "29ba81651df8c2522fe749cff425406c714bcda62b0c359deff884314814bef6"
+    },
+    {
+      "id": "taskgroup-052-application",
+      "concept_group": "taskgroup-052",
+      "kind": "application",
+      "split": "train",
+      "chapter": 1,
+      "source_id": "handbook8e-00003",
+      "source_hash": "29ba81651df8c2522fe749cff425406c714bcda62b0c359deff884314814bef6"
+    },
+    {
+      "id": "taskgroup-052-evidence_selection",
+      "concept_group": "taskgroup-052",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 1,
+      "source_id": "handbook8e-00003",
+      "source_hash": "29ba81651df8c2522fe749cff425406c714bcda62b0c359deff884314814bef6"
+    },
+    {
+      "id": "taskgroup-053-definition",
+      "concept_group": "taskgroup-053",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 36,
+      "source_id": "handbook8e-00093",
+      "source_hash": "665efcd9704a5f1e05ad0ef23b048fd8af162ce02d716252a5f7287b6232f44d"
+    },
+    {
+      "id": "taskgroup-053-discrimination",
+      "concept_group": "taskgroup-053",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 36,
+      "source_id": "handbook8e-00093",
+      "source_hash": "665efcd9704a5f1e05ad0ef23b048fd8af162ce02d716252a5f7287b6232f44d"
+    },
+    {
+      "id": "taskgroup-053-application",
+      "concept_group": "taskgroup-053",
+      "kind": "application",
+      "split": "train",
+      "chapter": 36,
+      "source_id": "handbook8e-00093",
+      "source_hash": "665efcd9704a5f1e05ad0ef23b048fd8af162ce02d716252a5f7287b6232f44d"
+    },
+    {
+      "id": "taskgroup-053-evidence_selection",
+      "concept_group": "taskgroup-053",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 36,
+      "source_id": "handbook8e-00093",
+      "source_hash": "665efcd9704a5f1e05ad0ef23b048fd8af162ce02d716252a5f7287b6232f44d"
+    },
+    {
+      "id": "taskgroup-057-definition",
+      "concept_group": "taskgroup-057",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 34,
+      "source_id": "handbook8e-00088",
+      "source_hash": "1f2a99f46307b2f8a2567c00ffaad84ed31e9c924a7b04555b685bc8076bae97"
+    },
+    {
+      "id": "taskgroup-057-discrimination",
+      "concept_group": "taskgroup-057",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 34,
+      "source_id": "handbook8e-00088",
+      "source_hash": "1f2a99f46307b2f8a2567c00ffaad84ed31e9c924a7b04555b685bc8076bae97"
+    },
+    {
+      "id": "taskgroup-057-application",
+      "concept_group": "taskgroup-057",
+      "kind": "application",
+      "split": "train",
+      "chapter": 34,
+      "source_id": "handbook8e-00088",
+      "source_hash": "1f2a99f46307b2f8a2567c00ffaad84ed31e9c924a7b04555b685bc8076bae97"
+    },
+    {
+      "id": "taskgroup-057-evidence_selection",
+      "concept_group": "taskgroup-057",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 34,
+      "source_id": "handbook8e-00088",
+      "source_hash": "1f2a99f46307b2f8a2567c00ffaad84ed31e9c924a7b04555b685bc8076bae97"
+    },
+    {
+      "id": "taskgroup-060-definition",
+      "concept_group": "taskgroup-060",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 17,
+      "source_id": "handbook8e-00040",
+      "source_hash": "cd02ec0905da143e27290ebb51b7e6a81b3471caab2bc77d8cfeb2487897ceb1"
+    },
+    {
+      "id": "taskgroup-060-discrimination",
+      "concept_group": "taskgroup-060",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 17,
+      "source_id": "handbook8e-00040",
+      "source_hash": "cd02ec0905da143e27290ebb51b7e6a81b3471caab2bc77d8cfeb2487897ceb1"
+    },
+    {
+      "id": "taskgroup-060-application",
+      "concept_group": "taskgroup-060",
+      "kind": "application",
+      "split": "train",
+      "chapter": 17,
+      "source_id": "handbook8e-00040",
+      "source_hash": "cd02ec0905da143e27290ebb51b7e6a81b3471caab2bc77d8cfeb2487897ceb1"
+    },
+    {
+      "id": "taskgroup-060-evidence_selection",
+      "concept_group": "taskgroup-060",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 17,
+      "source_id": "handbook8e-00040",
+      "source_hash": "cd02ec0905da143e27290ebb51b7e6a81b3471caab2bc77d8cfeb2487897ceb1"
+    },
+    {
+      "id": "taskgroup-064-definition",
+      "concept_group": "taskgroup-064",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 24,
+      "source_id": "handbook8e-00061",
+      "source_hash": "ee28dabd50bda3dd30ef2d88f8af7a5deb94b538b16d6780af61d157813e2b32"
+    },
+    {
+      "id": "taskgroup-064-discrimination",
+      "concept_group": "taskgroup-064",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 24,
+      "source_id": "handbook8e-00061",
+      "source_hash": "ee28dabd50bda3dd30ef2d88f8af7a5deb94b538b16d6780af61d157813e2b32"
+    },
+    {
+      "id": "taskgroup-064-application",
+      "concept_group": "taskgroup-064",
+      "kind": "application",
+      "split": "train",
+      "chapter": 24,
+      "source_id": "handbook8e-00061",
+      "source_hash": "ee28dabd50bda3dd30ef2d88f8af7a5deb94b538b16d6780af61d157813e2b32"
+    },
+    {
+      "id": "taskgroup-064-evidence_selection",
+      "concept_group": "taskgroup-064",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 24,
+      "source_id": "handbook8e-00061",
+      "source_hash": "ee28dabd50bda3dd30ef2d88f8af7a5deb94b538b16d6780af61d157813e2b32"
+    },
+    {
+      "id": "taskgroup-067-definition",
+      "concept_group": "taskgroup-067",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 14,
+      "source_id": "handbook8e-00033",
+      "source_hash": "b97c7e872c735922e20c96a924f9039215b703764ad7f2430da905c555da1174"
+    },
+    {
+      "id": "taskgroup-067-discrimination",
+      "concept_group": "taskgroup-067",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 14,
+      "source_id": "handbook8e-00033",
+      "source_hash": "b97c7e872c735922e20c96a924f9039215b703764ad7f2430da905c555da1174"
+    },
+    {
+      "id": "taskgroup-067-application",
+      "concept_group": "taskgroup-067",
+      "kind": "application",
+      "split": "train",
+      "chapter": 14,
+      "source_id": "handbook8e-00033",
+      "source_hash": "b97c7e872c735922e20c96a924f9039215b703764ad7f2430da905c555da1174"
+    },
+    {
+      "id": "taskgroup-067-evidence_selection",
+      "concept_group": "taskgroup-067",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 14,
+      "source_id": "handbook8e-00033",
+      "source_hash": "b97c7e872c735922e20c96a924f9039215b703764ad7f2430da905c555da1174"
+    },
+    {
+      "id": "taskgroup-068-definition",
+      "concept_group": "taskgroup-068",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 27,
+      "source_id": "handbook8e-00070",
+      "source_hash": "c15fd264ec18d4cb30fb561f0739554f42713a76f8aff7bb8219d2a179e1d8e7"
+    },
+    {
+      "id": "taskgroup-068-discrimination",
+      "concept_group": "taskgroup-068",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 27,
+      "source_id": "handbook8e-00070",
+      "source_hash": "c15fd264ec18d4cb30fb561f0739554f42713a76f8aff7bb8219d2a179e1d8e7"
+    },
+    {
+      "id": "taskgroup-068-application",
+      "concept_group": "taskgroup-068",
+      "kind": "application",
+      "split": "train",
+      "chapter": 27,
+      "source_id": "handbook8e-00070",
+      "source_hash": "c15fd264ec18d4cb30fb561f0739554f42713a76f8aff7bb8219d2a179e1d8e7"
+    },
+    {
+      "id": "taskgroup-068-evidence_selection",
+      "concept_group": "taskgroup-068",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 27,
+      "source_id": "handbook8e-00070",
+      "source_hash": "c15fd264ec18d4cb30fb561f0739554f42713a76f8aff7bb8219d2a179e1d8e7"
+    },
+    {
+      "id": "taskgroup-070-definition",
+      "concept_group": "taskgroup-070",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 11,
+      "source_id": "handbook8e-00026",
+      "source_hash": "45edf9482815ae4de0d6c6abb187462e46e932b07f4d25628b8a7e77f732d7bc"
+    },
+    {
+      "id": "taskgroup-070-discrimination",
+      "concept_group": "taskgroup-070",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 11,
+      "source_id": "handbook8e-00026",
+      "source_hash": "45edf9482815ae4de0d6c6abb187462e46e932b07f4d25628b8a7e77f732d7bc"
+    },
+    {
+      "id": "taskgroup-070-application",
+      "concept_group": "taskgroup-070",
+      "kind": "application",
+      "split": "train",
+      "chapter": 11,
+      "source_id": "handbook8e-00026",
+      "source_hash": "45edf9482815ae4de0d6c6abb187462e46e932b07f4d25628b8a7e77f732d7bc"
+    },
+    {
+      "id": "taskgroup-070-evidence_selection",
+      "concept_group": "taskgroup-070",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 11,
+      "source_id": "handbook8e-00026",
+      "source_hash": "45edf9482815ae4de0d6c6abb187462e46e932b07f4d25628b8a7e77f732d7bc"
+    },
+    {
+      "id": "taskgroup-071-definition",
+      "concept_group": "taskgroup-071",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 2,
+      "source_id": "handbook8e-00004",
+      "source_hash": "5bb31fbce33bfa6f60e7f823fc786f55ebfa69f8f9946f11ec437ecd9f36d2c5"
+    },
+    {
+      "id": "taskgroup-071-discrimination",
+      "concept_group": "taskgroup-071",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 2,
+      "source_id": "handbook8e-00004",
+      "source_hash": "5bb31fbce33bfa6f60e7f823fc786f55ebfa69f8f9946f11ec437ecd9f36d2c5"
+    },
+    {
+      "id": "taskgroup-071-application",
+      "concept_group": "taskgroup-071",
+      "kind": "application",
+      "split": "train",
+      "chapter": 2,
+      "source_id": "handbook8e-00004",
+      "source_hash": "5bb31fbce33bfa6f60e7f823fc786f55ebfa69f8f9946f11ec437ecd9f36d2c5"
+    },
+    {
+      "id": "taskgroup-071-evidence_selection",
+      "concept_group": "taskgroup-071",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 2,
+      "source_id": "handbook8e-00004",
+      "source_hash": "5bb31fbce33bfa6f60e7f823fc786f55ebfa69f8f9946f11ec437ecd9f36d2c5"
+    },
+    {
+      "id": "taskgroup-072-definition",
+      "concept_group": "taskgroup-072",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 20,
+      "source_id": "handbook8e-00050",
+      "source_hash": "72ff9b0e1e5e6acabbe85124359cdc836ad4c4aca1da8b5c58d84236ef803283"
+    },
+    {
+      "id": "taskgroup-072-discrimination",
+      "concept_group": "taskgroup-072",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 20,
+      "source_id": "handbook8e-00050",
+      "source_hash": "72ff9b0e1e5e6acabbe85124359cdc836ad4c4aca1da8b5c58d84236ef803283"
+    },
+    {
+      "id": "taskgroup-072-application",
+      "concept_group": "taskgroup-072",
+      "kind": "application",
+      "split": "train",
+      "chapter": 20,
+      "source_id": "handbook8e-00050",
+      "source_hash": "72ff9b0e1e5e6acabbe85124359cdc836ad4c4aca1da8b5c58d84236ef803283"
+    },
+    {
+      "id": "taskgroup-072-evidence_selection",
+      "concept_group": "taskgroup-072",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 20,
+      "source_id": "handbook8e-00050",
+      "source_hash": "72ff9b0e1e5e6acabbe85124359cdc836ad4c4aca1da8b5c58d84236ef803283"
+    },
+    {
+      "id": "taskgroup-076-definition",
+      "concept_group": "taskgroup-076",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 8,
+      "source_id": "handbook8e-00020",
+      "source_hash": "85193aa729ebc49db4438353ee06a41086eda69cf0e00c29f35452912efa70d3"
+    },
+    {
+      "id": "taskgroup-076-discrimination",
+      "concept_group": "taskgroup-076",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 8,
+      "source_id": "handbook8e-00020",
+      "source_hash": "85193aa729ebc49db4438353ee06a41086eda69cf0e00c29f35452912efa70d3"
+    },
+    {
+      "id": "taskgroup-076-application",
+      "concept_group": "taskgroup-076",
+      "kind": "application",
+      "split": "train",
+      "chapter": 8,
+      "source_id": "handbook8e-00020",
+      "source_hash": "85193aa729ebc49db4438353ee06a41086eda69cf0e00c29f35452912efa70d3"
+    },
+    {
+      "id": "taskgroup-076-evidence_selection",
+      "concept_group": "taskgroup-076",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 8,
+      "source_id": "handbook8e-00020",
+      "source_hash": "85193aa729ebc49db4438353ee06a41086eda69cf0e00c29f35452912efa70d3"
+    },
+    {
+      "id": "taskgroup-077-definition",
+      "concept_group": "taskgroup-077",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 28,
+      "source_id": "handbook8e-00073",
+      "source_hash": "5a5f11789c494c8dba7e21212624eb6a766abbe2e924b0926cd056740b402b29"
+    },
+    {
+      "id": "taskgroup-077-discrimination",
+      "concept_group": "taskgroup-077",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 28,
+      "source_id": "handbook8e-00073",
+      "source_hash": "5a5f11789c494c8dba7e21212624eb6a766abbe2e924b0926cd056740b402b29"
+    },
+    {
+      "id": "taskgroup-077-application",
+      "concept_group": "taskgroup-077",
+      "kind": "application",
+      "split": "train",
+      "chapter": 28,
+      "source_id": "handbook8e-00073",
+      "source_hash": "5a5f11789c494c8dba7e21212624eb6a766abbe2e924b0926cd056740b402b29"
+    },
+    {
+      "id": "taskgroup-077-evidence_selection",
+      "concept_group": "taskgroup-077",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 28,
+      "source_id": "handbook8e-00073",
+      "source_hash": "5a5f11789c494c8dba7e21212624eb6a766abbe2e924b0926cd056740b402b29"
+    },
+    {
+      "id": "taskgroup-079-definition",
+      "concept_group": "taskgroup-079",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 44,
+      "source_id": "handbook8e-00115",
+      "source_hash": "bb07417e5dd6434b8aa7ee6351bb67b95291bba820c4b123f8a2da257ba57d8b"
+    },
+    {
+      "id": "taskgroup-079-discrimination",
+      "concept_group": "taskgroup-079",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 44,
+      "source_id": "handbook8e-00115",
+      "source_hash": "bb07417e5dd6434b8aa7ee6351bb67b95291bba820c4b123f8a2da257ba57d8b"
+    },
+    {
+      "id": "taskgroup-079-application",
+      "concept_group": "taskgroup-079",
+      "kind": "application",
+      "split": "train",
+      "chapter": 44,
+      "source_id": "handbook8e-00115",
+      "source_hash": "bb07417e5dd6434b8aa7ee6351bb67b95291bba820c4b123f8a2da257ba57d8b"
+    },
+    {
+      "id": "taskgroup-079-evidence_selection",
+      "concept_group": "taskgroup-079",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 44,
+      "source_id": "handbook8e-00115",
+      "source_hash": "bb07417e5dd6434b8aa7ee6351bb67b95291bba820c4b123f8a2da257ba57d8b"
+    },
+    {
+      "id": "taskgroup-080-definition",
+      "concept_group": "taskgroup-080",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 42,
+      "source_id": "handbook8e-00110",
+      "source_hash": "864211a3d614fc9365410409a1ddf376a72e94be4b1cfc72612cd0611fd20db0"
+    },
+    {
+      "id": "taskgroup-080-discrimination",
+      "concept_group": "taskgroup-080",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 42,
+      "source_id": "handbook8e-00110",
+      "source_hash": "864211a3d614fc9365410409a1ddf376a72e94be4b1cfc72612cd0611fd20db0"
+    },
+    {
+      "id": "taskgroup-080-application",
+      "concept_group": "taskgroup-080",
+      "kind": "application",
+      "split": "train",
+      "chapter": 42,
+      "source_id": "handbook8e-00110",
+      "source_hash": "864211a3d614fc9365410409a1ddf376a72e94be4b1cfc72612cd0611fd20db0"
+    },
+    {
+      "id": "taskgroup-080-evidence_selection",
+      "concept_group": "taskgroup-080",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 42,
+      "source_id": "handbook8e-00110",
+      "source_hash": "864211a3d614fc9365410409a1ddf376a72e94be4b1cfc72612cd0611fd20db0"
+    },
+    {
+      "id": "taskgroup-082-definition",
+      "concept_group": "taskgroup-082",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 23,
+      "source_id": "handbook8e-00059",
+      "source_hash": "33dc58987f506e3630649a7e0fcc5c34d3718c665f4b5a6f8e68e242af8b0800"
+    },
+    {
+      "id": "taskgroup-082-discrimination",
+      "concept_group": "taskgroup-082",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 23,
+      "source_id": "handbook8e-00059",
+      "source_hash": "33dc58987f506e3630649a7e0fcc5c34d3718c665f4b5a6f8e68e242af8b0800"
+    },
+    {
+      "id": "taskgroup-082-application",
+      "concept_group": "taskgroup-082",
+      "kind": "application",
+      "split": "train",
+      "chapter": 23,
+      "source_id": "handbook8e-00059",
+      "source_hash": "33dc58987f506e3630649a7e0fcc5c34d3718c665f4b5a6f8e68e242af8b0800"
+    },
+    {
+      "id": "taskgroup-082-evidence_selection",
+      "concept_group": "taskgroup-082",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 23,
+      "source_id": "handbook8e-00059",
+      "source_hash": "33dc58987f506e3630649a7e0fcc5c34d3718c665f4b5a6f8e68e242af8b0800"
+    },
+    {
+      "id": "taskgroup-084-definition",
+      "concept_group": "taskgroup-084",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 5,
+      "source_id": "handbook8e-00013",
+      "source_hash": "8b775335c9731794c76507257c1327db87d48c06319e9fb0c12e1f16e8ea762b"
+    },
+    {
+      "id": "taskgroup-084-discrimination",
+      "concept_group": "taskgroup-084",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 5,
+      "source_id": "handbook8e-00013",
+      "source_hash": "8b775335c9731794c76507257c1327db87d48c06319e9fb0c12e1f16e8ea762b"
+    },
+    {
+      "id": "taskgroup-084-application",
+      "concept_group": "taskgroup-084",
+      "kind": "application",
+      "split": "train",
+      "chapter": 5,
+      "source_id": "handbook8e-00013",
+      "source_hash": "8b775335c9731794c76507257c1327db87d48c06319e9fb0c12e1f16e8ea762b"
+    },
+    {
+      "id": "taskgroup-084-evidence_selection",
+      "concept_group": "taskgroup-084",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 5,
+      "source_id": "handbook8e-00013",
+      "source_hash": "8b775335c9731794c76507257c1327db87d48c06319e9fb0c12e1f16e8ea762b"
+    },
+    {
+      "id": "taskgroup-087-definition",
+      "concept_group": "taskgroup-087",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 17,
+      "source_id": "handbook8e-00039",
+      "source_hash": "761695187a4e08f8ace2b745998b131d4429b1ee366f434ca63c25feb4d7eec8"
+    },
+    {
+      "id": "taskgroup-087-discrimination",
+      "concept_group": "taskgroup-087",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 17,
+      "source_id": "handbook8e-00039",
+      "source_hash": "761695187a4e08f8ace2b745998b131d4429b1ee366f434ca63c25feb4d7eec8"
+    },
+    {
+      "id": "taskgroup-087-application",
+      "concept_group": "taskgroup-087",
+      "kind": "application",
+      "split": "train",
+      "chapter": 17,
+      "source_id": "handbook8e-00039",
+      "source_hash": "761695187a4e08f8ace2b745998b131d4429b1ee366f434ca63c25feb4d7eec8"
+    },
+    {
+      "id": "taskgroup-087-evidence_selection",
+      "concept_group": "taskgroup-087",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 17,
+      "source_id": "handbook8e-00039",
+      "source_hash": "761695187a4e08f8ace2b745998b131d4429b1ee366f434ca63c25feb4d7eec8"
+    },
+    {
+      "id": "taskgroup-088-definition",
+      "concept_group": "taskgroup-088",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 34,
+      "source_id": "handbook8e-00087",
+      "source_hash": "0beeb1a050cccd4018c83c2120138fd8fdbfaf7d3468d42221f6e11019a99dfb"
+    },
+    {
+      "id": "taskgroup-088-discrimination",
+      "concept_group": "taskgroup-088",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 34,
+      "source_id": "handbook8e-00087",
+      "source_hash": "0beeb1a050cccd4018c83c2120138fd8fdbfaf7d3468d42221f6e11019a99dfb"
+    },
+    {
+      "id": "taskgroup-088-application",
+      "concept_group": "taskgroup-088",
+      "kind": "application",
+      "split": "train",
+      "chapter": 34,
+      "source_id": "handbook8e-00087",
+      "source_hash": "0beeb1a050cccd4018c83c2120138fd8fdbfaf7d3468d42221f6e11019a99dfb"
+    },
+    {
+      "id": "taskgroup-088-evidence_selection",
+      "concept_group": "taskgroup-088",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 34,
+      "source_id": "handbook8e-00087",
+      "source_hash": "0beeb1a050cccd4018c83c2120138fd8fdbfaf7d3468d42221f6e11019a99dfb"
+    },
+    {
+      "id": "taskgroup-089-definition",
+      "concept_group": "taskgroup-089",
+      "kind": "definition",
+      "split": "train",
+      "chapter": 36,
+      "source_id": "handbook8e-00094",
+      "source_hash": "cc0676b3a68e33f0f5a9f4683d34e1efc972cb8d771891f9ddaef4fe2f99aef4"
+    },
+    {
+      "id": "taskgroup-089-discrimination",
+      "concept_group": "taskgroup-089",
+      "kind": "discrimination",
+      "split": "train",
+      "chapter": 36,
+      "source_id": "handbook8e-00094",
+      "source_hash": "cc0676b3a68e33f0f5a9f4683d34e1efc972cb8d771891f9ddaef4fe2f99aef4"
+    },
+    {
+      "id": "taskgroup-089-application",
+      "concept_group": "taskgroup-089",
+      "kind": "application",
+      "split": "train",
+      "chapter": 36,
+      "source_id": "handbook8e-00094",
+      "source_hash": "cc0676b3a68e33f0f5a9f4683d34e1efc972cb8d771891f9ddaef4fe2f99aef4"
+    },
+    {
+      "id": "taskgroup-089-evidence_selection",
+      "concept_group": "taskgroup-089",
+      "kind": "evidence_selection",
+      "split": "train",
+      "chapter": 36,
+      "source_id": "handbook8e-00094",
+      "source_hash": "cc0676b3a68e33f0f5a9f4683d34e1efc972cb8d771891f9ddaef4fe2f99aef4"
+    },
+    {
+      "id": "taskgroup-091-definition",
+      "concept_group": "taskgroup-091",
+      "kind": "definition",
+      "split": "dev",
+      "chapter": 19,
+      "source_id": "handbook8e-00047",
+      "source_hash": "874c029fb20a416ebb0aa429a806655d8281dfd5b604eeb4aaebf88f000038b9"
+    },
+    {
+      "id": "taskgroup-091-discrimination",
+      "concept_group": "taskgroup-091",
+      "kind": "discrimination",
+      "split": "dev",
+      "chapter": 19,
+      "source_id": "handbook8e-00047",
+      "source_hash": "874c029fb20a416ebb0aa429a806655d8281dfd5b604eeb4aaebf88f000038b9"
+    },
+    {
+      "id": "taskgroup-091-application",
+      "concept_group": "taskgroup-091",
+      "kind": "application",
+      "split": "dev",
+      "chapter": 19,
+      "source_id": "handbook8e-00047",
+      "source_hash": "874c029fb20a416ebb0aa429a806655d8281dfd5b604eeb4aaebf88f000038b9"
+    },
+    {
+      "id": "taskgroup-091-evidence_selection",
+      "concept_group": "taskgroup-091",
+      "kind": "evidence_selection",
+      "split": "dev",
+      "chapter": 19,
+      "source_id": "handbook8e-00047",
+      "source_hash": "874c029fb20a416ebb0aa429a806655d8281dfd5b604eeb4aaebf88f000038b9"
+    },
+    {
+      "id": "taskgroup-092-definition",
+      "concept_group": "taskgroup-092",
+      "kind": "definition",
+      "split": "dev",
+      "chapter": 37,
+      "source_id": "handbook8e-00095",
+      "source_hash": "585216c53abc69d0c76d1f282082d9a7d1205678f2a05df6874296684f18479b"
+    },
+    {
+      "id": "taskgroup-092-discrimination",
+      "concept_group": "taskgroup-092",
+      "kind": "discrimination",
+      "split": "dev",
+      "chapter": 37,
+      "source_id": "handbook8e-00095",
+      "source_hash": "585216c53abc69d0c76d1f282082d9a7d1205678f2a05df6874296684f18479b"
+    },
+    {
+      "id": "taskgroup-092-application",
+      "concept_group": "taskgroup-092",
+      "kind": "application",
+      "split": "dev",
+      "chapter": 37,
+      "source_id": "handbook8e-00095",
+      "source_hash": "585216c53abc69d0c76d1f282082d9a7d1205678f2a05df6874296684f18479b"
+    },
+    {
+      "id": "taskgroup-092-evidence_selection",
+      "concept_group": "taskgroup-092",
+      "kind": "evidence_selection",
+      "split": "dev",
+      "chapter": 37,
+      "source_id": "handbook8e-00095",
+      "source_hash": "585216c53abc69d0c76d1f282082d9a7d1205678f2a05df6874296684f18479b"
+    },
+    {
+      "id": "taskgroup-094-definition",
+      "concept_group": "taskgroup-094",
+      "kind": "definition",
+      "split": "dev",
+      "chapter": 15,
+      "source_id": "handbook8e-00036",
+      "source_hash": "dbfddb4bbd9bf7792ee21267c4df5098e6f9e1319e185f73a41a28c8b6ca94c7"
+    },
+    {
+      "id": "taskgroup-094-discrimination",
+      "concept_group": "taskgroup-094",
+      "kind": "discrimination",
+      "split": "dev",
+      "chapter": 15,
+      "source_id": "handbook8e-00036",
+      "source_hash": "dbfddb4bbd9bf7792ee21267c4df5098e6f9e1319e185f73a41a28c8b6ca94c7"
+    },
+    {
+      "id": "taskgroup-094-application",
+      "concept_group": "taskgroup-094",
+      "kind": "application",
+      "split": "dev",
+      "chapter": 15,
+      "source_id": "handbook8e-00036",
+      "source_hash": "dbfddb4bbd9bf7792ee21267c4df5098e6f9e1319e185f73a41a28c8b6ca94c7"
+    },
+    {
+      "id": "taskgroup-094-evidence_selection",
+      "concept_group": "taskgroup-094",
+      "kind": "evidence_selection",
+      "split": "dev",
+      "chapter": 15,
+      "source_id": "handbook8e-00036",
+      "source_hash": "dbfddb4bbd9bf7792ee21267c4df5098e6f9e1319e185f73a41a28c8b6ca94c7"
+    },
+    {
+      "id": "taskgroup-103-definition",
+      "concept_group": "taskgroup-103",
+      "kind": "definition",
+      "split": "dev",
+      "chapter": 19,
+      "source_id": "handbook8e-00046",
+      "source_hash": "8b6df32155757b37eae40a89b3711ed72b9b8134c0953c689c87003f12c26c0f"
+    },
+    {
+      "id": "taskgroup-103-discrimination",
+      "concept_group": "taskgroup-103",
+      "kind": "discrimination",
+      "split": "dev",
+      "chapter": 19,
+      "source_id": "handbook8e-00046",
+      "source_hash": "8b6df32155757b37eae40a89b3711ed72b9b8134c0953c689c87003f12c26c0f"
+    },
+    {
+      "id": "taskgroup-103-application",
+      "concept_group": "taskgroup-103",
+      "kind": "application",
+      "split": "dev",
+      "chapter": 19,
+      "source_id": "handbook8e-00046",
+      "source_hash": "8b6df32155757b37eae40a89b3711ed72b9b8134c0953c689c87003f12c26c0f"
+    },
+    {
+      "id": "taskgroup-103-evidence_selection",
+      "concept_group": "taskgroup-103",
+      "kind": "evidence_selection",
+      "split": "dev",
+      "chapter": 19,
+      "source_id": "handbook8e-00046",
+      "source_hash": "8b6df32155757b37eae40a89b3711ed72b9b8134c0953c689c87003f12c26c0f"
+    },
+    {
+      "id": "taskgroup-109-definition",
+      "concept_group": "taskgroup-109",
+      "kind": "definition",
+      "split": "dev",
+      "chapter": 19,
+      "source_id": "handbook8e-00048",
+      "source_hash": "d676b3aab949778b5ca95a64dbaa7a017bf9468ebca7e300224f9a3a176afe69"
+    },
+    {
+      "id": "taskgroup-109-discrimination",
+      "concept_group": "taskgroup-109",
+      "kind": "discrimination",
+      "split": "dev",
+      "chapter": 19,
+      "source_id": "handbook8e-00048",
+      "source_hash": "d676b3aab949778b5ca95a64dbaa7a017bf9468ebca7e300224f9a3a176afe69"
+    },
+    {
+      "id": "taskgroup-109-application",
+      "concept_group": "taskgroup-109",
+      "kind": "application",
+      "split": "dev",
+      "chapter": 19,
+      "source_id": "handbook8e-00048",
+      "source_hash": "d676b3aab949778b5ca95a64dbaa7a017bf9468ebca7e300224f9a3a176afe69"
+    },
+    {
+      "id": "taskgroup-109-evidence_selection",
+      "concept_group": "taskgroup-109",
+      "kind": "evidence_selection",
+      "split": "dev",
+      "chapter": 19,
+      "source_id": "handbook8e-00048",
+      "source_hash": "d676b3aab949778b5ca95a64dbaa7a017bf9468ebca7e300224f9a3a176afe69"
+    },
+    {
+      "id": "taskgroup-116-definition",
+      "concept_group": "taskgroup-116",
+      "kind": "definition",
+      "split": "dev",
+      "chapter": 26,
+      "source_id": "handbook8e-00068",
+      "source_hash": "74f20a7c699e7f5be7d770c7dceabc58027bbe8b9d932b27cbe72fdb2ed31f1e"
+    },
+    {
+      "id": "taskgroup-116-discrimination",
+      "concept_group": "taskgroup-116",
+      "kind": "discrimination",
+      "split": "dev",
+      "chapter": 26,
+      "source_id": "handbook8e-00068",
+      "source_hash": "74f20a7c699e7f5be7d770c7dceabc58027bbe8b9d932b27cbe72fdb2ed31f1e"
+    },
+    {
+      "id": "taskgroup-116-application",
+      "concept_group": "taskgroup-116",
+      "kind": "application",
+      "split": "dev",
+      "chapter": 26,
+      "source_id": "handbook8e-00068",
+      "source_hash": "74f20a7c699e7f5be7d770c7dceabc58027bbe8b9d932b27cbe72fdb2ed31f1e"
+    },
+    {
+      "id": "taskgroup-116-evidence_selection",
+      "concept_group": "taskgroup-116",
+      "kind": "evidence_selection",
+      "split": "dev",
+      "chapter": 26,
+      "source_id": "handbook8e-00068",
+      "source_hash": "74f20a7c699e7f5be7d770c7dceabc58027bbe8b9d932b27cbe72fdb2ed31f1e"
+    },
+    {
+      "id": "taskgroup-118-definition",
+      "concept_group": "taskgroup-118",
+      "kind": "definition",
+      "split": "dev",
+      "chapter": 19,
+      "source_id": "handbook8e-00045",
+      "source_hash": "fc530fb5f3cf2c0087055868928f094e120d11556c56d47e10b828b6acb4d5d4"
+    },
+    {
+      "id": "taskgroup-118-discrimination",
+      "concept_group": "taskgroup-118",
+      "kind": "discrimination",
+      "split": "dev",
+      "chapter": 19,
+      "source_id": "handbook8e-00045",
+      "source_hash": "fc530fb5f3cf2c0087055868928f094e120d11556c56d47e10b828b6acb4d5d4"
+    },
+    {
+      "id": "taskgroup-118-application",
+      "concept_group": "taskgroup-118",
+      "kind": "application",
+      "split": "dev",
+      "chapter": 19,
+      "source_id": "handbook8e-00045",
+      "source_hash": "fc530fb5f3cf2c0087055868928f094e120d11556c56d47e10b828b6acb4d5d4"
+    },
+    {
+      "id": "taskgroup-118-evidence_selection",
+      "concept_group": "taskgroup-118",
+      "kind": "evidence_selection",
+      "split": "dev",
+      "chapter": 19,
+      "source_id": "handbook8e-00045",
+      "source_hash": "fc530fb5f3cf2c0087055868928f094e120d11556c56d47e10b828b6acb4d5d4"
+    },
+    {
+      "id": "taskgroup-120-definition",
+      "concept_group": "taskgroup-120",
+      "kind": "definition",
+      "split": "dev",
+      "chapter": 26,
+      "source_id": "handbook8e-00066",
+      "source_hash": "6c432e95506791e3c701c75a414acd55b75d94ba467d63cadf016f79f58b49d9"
+    },
+    {
+      "id": "taskgroup-120-discrimination",
+      "concept_group": "taskgroup-120",
+      "kind": "discrimination",
+      "split": "dev",
+      "chapter": 26,
+      "source_id": "handbook8e-00066",
+      "source_hash": "6c432e95506791e3c701c75a414acd55b75d94ba467d63cadf016f79f58b49d9"
+    },
+    {
+      "id": "taskgroup-120-application",
+      "concept_group": "taskgroup-120",
+      "kind": "application",
+      "split": "dev",
+      "chapter": 26,
+      "source_id": "handbook8e-00066",
+      "source_hash": "6c432e95506791e3c701c75a414acd55b75d94ba467d63cadf016f79f58b49d9"
+    },
+    {
+      "id": "taskgroup-120-evidence_selection",
+      "concept_group": "taskgroup-120",
+      "kind": "evidence_selection",
+      "split": "dev",
+      "chapter": 26,
+      "source_id": "handbook8e-00066",
+      "source_hash": "6c432e95506791e3c701c75a414acd55b75d94ba467d63cadf016f79f58b49d9"
+    }
+  ]
+}
