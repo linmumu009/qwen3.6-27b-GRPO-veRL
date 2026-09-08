@@ -1,0 +1,92 @@
+{
+  "items": 111,
+  "status": {
+    "scored": 100,
+    "invalid_review": 8,
+    "quality_quarantine": 3
+  },
+  "decisions": {
+    "development_only": 10,
+    "knowledge_access_opportunity": 25,
+    "mixed_opportunity": 34,
+    "unresolved_review": 10,
+    "quality_not_passed": 11,
+    "maintenance_pool": 14,
+    "application_opportunity": 4,
+    "unstable_review": 3
+  },
+  "by_kind": {
+    "definition": {
+      "development_only": 4,
+      "knowledge_access_opportunity": 25,
+      "unresolved_review": 3,
+      "maintenance_pool": 3,
+      "unstable_review": 1,
+      "quality_not_passed": 1
+    },
+    "boundary": {
+      "development_only": 3,
+      "mixed_opportunity": 18,
+      "quality_not_passed": 6,
+      "maintenance_pool": 5,
+      "unresolved_review": 2,
+      "application_opportunity": 2,
+      "unstable_review": 1
+    },
+    "application": {
+      "development_only": 3,
+      "unresolved_review": 5,
+      "quality_not_passed": 4,
+      "maintenance_pool": 6,
+      "mixed_opportunity": 16,
+      "application_opportunity": 2,
+      "unstable_review": 1
+    }
+  },
+  "by_topic": {
+    "general": {
+      "knowledge_access_opportunity": 8,
+      "mixed_opportunity": 13,
+      "quality_not_passed": 2,
+      "maintenance_pool": 6,
+      "application_opportunity": 1,
+      "unstable_review": 1,
+      "unresolved_review": 2
+    },
+    "material_handling": {
+      "development_only": 3,
+      "knowledge_access_opportunity": 2,
+      "quality_not_passed": 1,
+      "unresolved_review": 1,
+      "mixed_opportunity": 2
+    },
+    "transport": {
+      "development_only": 7,
+      "quality_not_passed": 5,
+      "unresolved_review": 4,
+      "mixed_opportunity": 6,
+      "maintenance_pool": 2,
+      "application_opportunity": 1,
+      "unstable_review": 1,
+      "knowledge_access_opportunity": 4
+    },
+    "warehousing": {
+      "knowledge_access_opportunity": 11,
+      "mixed_opportunity": 13,
+      "unresolved_review": 3,
+      "maintenance_pool": 6,
+      "application_opportunity": 2,
+      "quality_not_passed": 3,
+      "unstable_review": 1
+    }
+  },
+  "usage": {
+    "prompt_tokens": 599198,
+    "completion_tokens": 38361,
+    "total_tokens": 637559
+  },
+  "training_ready": false,
+  "training_started": false,
+  "semantic_decontamination_proven": false,
+  "reason_not_training_ready": "Candidate opportunity screen only; semantic group dedup, domain coverage, development adequacy and training-token design not signed off."
+}

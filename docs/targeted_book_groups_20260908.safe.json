@@ -1,0 +1,31 @@
+{
+  "groups_generated": 120,
+  "groups_accepted": 37,
+  "questions_accepted": 111,
+  "statuses": {
+    "auto_pass": 37,
+    "audit_reject": 78,
+    "overlap_quarantine": 2,
+    "duplicate_group_quarantine": 2,
+    "request_or_parse_failure": 1
+  },
+  "split_groups": {
+    "dev": 4,
+    "train": 33
+  },
+  "topic_groups": {
+    "material_handling": 3,
+    "warehousing": 13,
+    "transport": 10,
+    "general": 11
+  },
+  "usage": {
+    "prompt_tokens": 1080960,
+    "completion_tokens": 126439,
+    "total_tokens": 1207399
+  },
+  "candidates_sha256": "f0253dccb4e3ee10675ba189f013da8798de65d3c32c51b98543a0365ad9c833",
+  "training_ready": false,
+  "target_probe_completed": false,
+  "quality_basis": "Same-family automated source audit, not expert labels; lexical screening is not semantic decontamination proof."
+}

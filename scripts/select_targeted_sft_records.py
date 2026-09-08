@@ -11,14 +11,14 @@ from pathlib import Path
 
 
 def decision(row):
-    if row.get('split')=='dev':return 'development_only'
-    if row.get('split')!='train':return 'invalid_split'
+    if row.get('split') not in ('train','dev'):return 'invalid_split'
     quality=row.get('quality',{})
     required=('source_verified','standalone','answer_correct','conditions_complete',
               'no_benchmark_derivation','decontamination_pass','dedup_pass','group_split_frozen')
     if any(quality.get(k) is not True for k in required):return 'quality_not_passed'
     if not all(isinstance(row.get(k),str) and row[k].strip() for k in ('id','concept_group','source_hash')):
         return 'missing_provenance'
+    if row['split']=='dev':return 'development_only'
     diagnostic=row.get('target_probe',{})
     if diagnostic.get('model')!='pure_book_CPT4x_step116':return 'wrong_or_missing_target'
     closed=diagnostic.get('closed_scores'); opened=diagnostic.get('open_scores')
