@@ -1,0 +1,328 @@
+{
+  "sources": {
+    "step120_official.private.jsonl": "e3b156efffa52c68c672397571fb98d5b1d954174dad563bef6f79962cfbf3a8",
+    "step120_official.private.repeat2.jsonl": "ec5212dc292ce7729b5bed47a4532565c9b44cfe3d1816292e3d377569f0406d",
+    "step120_official.private.repeat3.jsonl": "2dff3840e98423c359fbb7bb65a01ea3513b96ec5e1222e1456c7577a18b22a5",
+    "cpt116_official.private.jsonl": "4813474c3348c62bf55a70922140ccbcd4a02e8aa5b02783686b22dd0bb6208b",
+    "cpt116_official.private.repeat2.jsonl": "e6017570b2b12c82c2fe38e4d4b72c93c2a884109b56faa4a0b3d623e457e08b",
+    "cpt116_official.private.repeat3.jsonl": "b9e6e49cab3bc7d5da0a5c773ca425b339870044dc6f8b739454ade1e9d655f2",
+    "sft73_official.private.jsonl": "11eec840e3b8cfc4dd5947e0218afa28116789765a3b546f2e2fc18261e49413",
+    "sft73_official.private.repeat2.jsonl": "8aefe11797f8dc16284d0d1a7c8a0770944146c0a38ee85c9900ae891497c593",
+    "sft73_official.private.repeat3.jsonl": "79cf7a1e89de642e211cd8848d8ddd832d558279eac2cba90cc989d31bc05b93"
+  },
+  "models": {
+    "step120": {
+      "repeat_correct": [
+        1366,
+        1367,
+        1369
+      ],
+      "majority_correct": 1367,
+      "unstable": 20,
+      "no_majority": 0
+    },
+    "cpt116": {
+      "repeat_correct": [
+        1371,
+        1368,
+        1370
+      ],
+      "majority_correct": 1371,
+      "unstable": 18,
+      "no_majority": 1
+    },
+    "sft73": {
+      "repeat_correct": [
+        1365,
+        1368,
+        1369
+      ],
+      "majority_correct": 1369,
+      "unstable": 12,
+      "no_majority": 0
+    }
+  },
+  "pairs": {
+    "all": {
+      "n": 1672,
+      "before": 1371,
+      "after": 1369,
+      "gains": 12,
+      "losses": 14
+    },
+    "both_stable": {
+      "n": 1646,
+      "before": 1360,
+      "after": 1358,
+      "gains": 7,
+      "losses": 9
+    },
+    "dataset": {
+      "SC-bench-knowledge": {
+        "n": 226,
+        "before": 189,
+        "after": 191,
+        "gains": 2,
+        "losses": 0
+      },
+      "LogistikaBench": {
+        "n": 1446,
+        "before": 1182,
+        "after": 1178,
+        "gains": 10,
+        "losses": 14
+      }
+    },
+    "category": {
+      "transport": {
+        "n": 404,
+        "before": 334,
+        "after": 332,
+        "gains": 3,
+        "losses": 5
+      },
+      "unknown": {
+        "n": 4,
+        "before": 4,
+        "after": 4,
+        "gains": 0,
+        "losses": 0
+      },
+      "Network": {
+        "n": 3,
+        "before": 3,
+        "after": 3,
+        "gains": 0,
+        "losses": 0
+      },
+      "procurement": {
+        "n": 42,
+        "before": 36,
+        "after": 35,
+        "gains": 0,
+        "losses": 1
+      },
+      "Logistics Collaboration": {
+        "n": 73,
+        "before": 60,
+        "after": 61,
+        "gains": 1,
+        "losses": 0
+      },
+      "In-warehouse": {
+        "n": 12,
+        "before": 9,
+        "after": 9,
+        "gains": 0,
+        "losses": 0
+      },
+      "Planning": {
+        "n": 14,
+        "before": 12,
+        "after": 12,
+        "gains": 0,
+        "losses": 0
+      },
+      "Inventory": {
+        "n": 4,
+        "before": 4,
+        "after": 4,
+        "gains": 0,
+        "losses": 0
+      },
+      "Merchandise": {
+        "n": 1,
+        "before": 1,
+        "after": 1,
+        "gains": 0,
+        "losses": 0
+      },
+      "material_handling": {
+        "n": 696,
+        "before": 571,
+        "after": 572,
+        "gains": 6,
+        "losses": 5
+      },
+      "warehousing": {
+        "n": 202,
+        "before": 152,
+        "after": 150,
+        "gains": 1,
+        "losses": 3
+      },
+      "Returns and Waste": {
+        "n": 1,
+        "before": 1,
+        "after": 1,
+        "gains": 0,
+        "losses": 0
+      },
+      "Finance and Operations": {
+        "n": 20,
+        "before": 17,
+        "after": 17,
+        "gains": 0,
+        "losses": 0
+      },
+      "Procurement": {
+        "n": 12,
+        "before": 8,
+        "after": 8,
+        "gains": 0,
+        "losses": 0
+      },
+      "supply_chain": {
+        "n": 102,
+        "before": 89,
+        "after": 89,
+        "gains": 0,
+        "losses": 0
+      },
+      "Fulfillment": {
+        "n": 79,
+        "before": 67,
+        "after": 68,
+        "gains": 1,
+        "losses": 0
+      },
+      "Other": {
+        "n": 3,
+        "before": 3,
+        "after": 3,
+        "gains": 0,
+        "losses": 0
+      }
+    },
+    "kind": {
+      "multiple_choices": {
+        "n": 63,
+        "before": 53,
+        "after": 54,
+        "gains": 1,
+        "losses": 0
+      },
+      "single_choice": {
+        "n": 82,
+        "before": 72,
+        "after": 72,
+        "gains": 0,
+        "losses": 0
+      },
+      "true_or_false": {
+        "n": 81,
+        "before": 64,
+        "after": 65,
+        "gains": 1,
+        "losses": 0
+      },
+      "multiple_choice": {
+        "n": 1446,
+        "before": 1182,
+        "after": 1178,
+        "gains": 10,
+        "losses": 14
+      }
+    },
+    "long": {
+      "False": {
+        "n": 1367,
+        "before": 1158,
+        "after": 1154,
+        "gains": 8,
+        "losses": 12
+      },
+      "True": {
+        "n": 305,
+        "before": 213,
+        "after": 215,
+        "gains": 4,
+        "losses": 2
+      }
+    }
+  },
+  "training_value": {
+    "book_task_learning_check": {
+      "n": 402,
+      "before": 364,
+      "after": 369,
+      "gains": 7,
+      "losses": 2,
+      "by_kind": {
+        "single_choice": {
+          "n": 187,
+          "before": 178,
+          "after": 178,
+          "gains": 0,
+          "losses": 0
+        },
+        "multiple_choice": {
+          "n": 190,
+          "before": 161,
+          "after": 166,
+          "gains": 7,
+          "losses": 2
+        },
+        "matching": {
+          "n": 25,
+          "before": 25,
+          "after": 25,
+          "gains": 0,
+          "losses": 0
+        }
+      }
+    },
+    "book_task_development": {
+      "n": 74,
+      "before": 67,
+      "after": 65,
+      "gains": 0,
+      "losses": 2,
+      "by_kind": {
+        "single_choice": {
+          "n": 31,
+          "before": 29,
+          "after": 28,
+          "gains": 0,
+          "losses": 1
+        },
+        "multiple_choice": {
+          "n": 34,
+          "before": 30,
+          "after": 29,
+          "gains": 0,
+          "losses": 1
+        },
+        "matching": {
+          "n": 9,
+          "before": 8,
+          "after": 8,
+          "gains": 0,
+          "losses": 0
+        }
+      }
+    }
+  },
+  "cpt_stable_wrong": 290,
+  "general": {
+    "paired": {
+      "n": 314,
+      "before": 281,
+      "after": 279,
+      "gains": 4,
+      "losses": 6
+    },
+    "counts": {
+      "step120": 282,
+      "cpt116": 281,
+      "sft73": 279
+    }
+  },
+  "limitations": [
+    "No benchmark text or IDs exported",
+    "Three repeats are not independent items",
+    "Task learning checks are single-repeat and only objective subset",
+    "Agent regression not performed",
+    "No causal assignment of knowledge versus reasoning"
+  ]
+}
