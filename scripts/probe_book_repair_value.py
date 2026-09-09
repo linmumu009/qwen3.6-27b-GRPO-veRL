@@ -47,14 +47,14 @@ def run(root,out,model):
             ids=tok.encode(tok.apply_chat_template(msgs,tokenize=False,add_generation_prompt=True,enable_thinking=False),add_special_tokens=False)
             assert len(ids)+512<=8192;jobs.append((q,c,ids))
     outputs=llm.generate([{'prompt_token_ids':ids} for _,_,ids in jobs],SamplingParams(temperature=0,max_tokens=512,seed=1024))
-    assert len(outputs)==len(jobs)==10
+    assert len(outputs)==len(jobs)==meta['generations_per_model']
     records=[]
     for (q,c,ids),output in zip(jobs,outputs):
         answer=output.outputs[0]
         records.append(dict(id=q['id'],condition=c,model=model,text=answer.text,finish_reason=answer.finish_reason,output_tokens=len(answer.token_ids),prompt_ids_sha256=hashlib.sha256(json.dumps(ids).encode()).hexdigest()))
     with (dest/'answers.private.jsonl').open('x') as f:
         for r in records:f.write(json.dumps(r)+'\n')
-    write(dest/'summary.safe.json',dict(model=model,model_path=str(path),model_config_sha256=digest(path/'config.json'),responses=10,finish_reasons=dict(Counter(r['finish_reason'] for r in records)),answers_sha256=digest(dest/'answers.private.jsonl'),cases_sha256=meta['cases_sha256'],training=False))
+    write(dest/'summary.safe.json',dict(model=model,model_path=str(path),model_config_sha256=digest(path/'config.json'),responses=len(records),finish_reasons=dict(Counter(r['finish_reason'] for r in records)),answers_sha256=digest(dest/'answers.private.jsonl'),cases_sha256=meta['cases_sha256'],training=False))
     (out/'status.txt').write_text(model+'_inference_complete')
 
 def grade(out,config_path):
@@ -63,7 +63,7 @@ def grade(out,config_path):
     for m in MODEL_PATHS:
         path=out/m/'answers.private.jsonl';sm=read(out/m/'summary.safe.json')
         assert digest(path)==sm['answers_sha256'] and sm['cases_sha256']==meta['cases_sha256']
-        rows=[json.loads(x) for x in path.read_text().splitlines()];assert len(rows)==10
+        rows=[json.loads(x) for x in path.read_text().splitlines()];assert len(rows)==meta['generations_per_model']
         for r in rows:
             key=(r['id'],m+':'+r['condition']);assert key not in responses;responses[key]=r
     expected={(q['id'],m+':'+c) for q in cases for m in MODEL_PATHS for c in conditions(q)}
@@ -79,6 +79,7 @@ def grade(out,config_path):
         if any(responses[q['id'],label]['finish_reason']!='stop' for label in labels):r['status']='truncated';return r
         # Dynamic label count is explicit, never pad two-answer evidence tasks with duplicates.
         system=SYSTEM.replace('FOUR anonymous','the supplied anonymous').replace("{id:'A'|'B'|'C'|'D',score", "{id:string,score").replace('Every A/B/C/D must occur EXACTLY once.', 'Every ID in allowed_answer_ids must occur EXACTLY once; no other IDs.')
+        system+='\n'+meta.get('judge_policy_addendum','')
         data=dict(question=q['question'],reference_answer=q['answer'],rubric=q['rubric'],numbered_source=q['reference_units'],allowed_source_ids=list(q['reference_units']),allowed_answer_ids=list(mapping),answers=[dict(id=k,text=responses[q['id'],v]['text']) for k,v in mapping.items()])
         try:
             r['api_called']=True;response=call_api(config,system,data,2200);r['response']=response;v=unpack(response);r['verdict']=v
@@ -102,7 +103,7 @@ def grade(out,config_path):
             row['scores']=pair[0]['scores']
             if q['mode']=='closed':row['decisions']={m:classify_open(row['scores'][m+':closed'],row['scores'][m+':evidence']) for m in MODEL_PATHS}
         results.append(row)
-    value=dict(items=6,generations=20,prompt_identity_verified=True,results=results,api_calls=sum(r.get('api_called',False) for r in reviews),usage={k:sum(r.get('response',{}).get('usage',{}).get(k,0) for r in reviews) for k in ('prompt_tokens','completion_tokens','total_tokens')},training=False,training_ready=False,full_groups_reviewed=False,old_pools_modified=False)
+    value=dict(items=len(cases),generations=meta['generations_total'],prompt_identity_verified=True,results=results,api_calls=sum(r.get('api_called',False) for r in reviews),usage={k:sum(r.get('response',{}).get('usage',{}).get(k,0) for r in reviews) for k in ('prompt_tokens','completion_tokens','total_tokens')},training=False,training_ready=False,full_groups_reviewed=False,old_pools_modified=False)
     write(out/'result.safe.json',value);(out/'status.txt').write_text('complete_no_training');print(json.dumps(value,indent=2))
 
 if __name__=='__main__':

@@ -1,0 +1,22 @@
+{
+  "items": 40,
+  "models": {
+    "step120": "runs/llin-step120-opensource-20260825-02/hf_export_step120_opensource",
+    "cpt": "runs/logistics-cpt-book-exposure-curve-2x4x-20260904-01/hf_export_step_116"
+  },
+  "cases_sha256": "1cd978fa46c40fb5622c773fe1244280076d6abebadcaafd09c6da6199f3c60f",
+  "source_sample_sha256": "1cd978fa46c40fb5622c773fe1244280076d6abebadcaafd09c6da6199f3c60f",
+  "generations_per_model": 80,
+  "generations_total": 160,
+  "max_output_tokens": 512,
+  "temperature": 0,
+  "seed": 1024,
+  "thinking": false,
+  "repeats": 1,
+  "judge_repeats": 2,
+  "max_api_calls": 80,
+  "judge_policy_addendum": "IMPORTANT OVERRIDE: Source absence alone is NOT proof a student's extra claim is false. Only penalize a material contradiction, an incorrect calculation, an unjustified universal claim, or omission of a genuinely requested necessary point. Semantically equivalent terms and reasonable examples need not match the book's example list. If the frozen rubric requires unasked specific examples/list entries or incidental figures, mark rubric_valid=false instead of enforcing them. Independently recompute calculations. Judge the capability actually requested, not closeness to reference prose. Do not silently rewrite the rubric.",
+  "training": false,
+  "script_sha256": "9f427ae10963d311a95b93969862f877b25c90e8a2a3a97f2e5a12e327ed4461",
+  "sampling": "Frozen balanced sample: six train and two dev per kind; not population-weighted accuracy."
+}

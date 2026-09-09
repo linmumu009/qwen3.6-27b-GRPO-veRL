@@ -1,0 +1,1336 @@
+{
+  "items": 40,
+  "agreed": 35,
+  "unresolved": 5,
+  "review_statuses": {
+    "scored": 78,
+    "quality_quarantine": 2
+  },
+  "groups": [
+    {
+      "split": "all",
+      "kind": "all",
+      "model": "step120",
+      "planned": 40,
+      "agreed": 35,
+      "unresolved": 5,
+      "closed_full": 13,
+      "evidence_full": 34,
+      "decisions": {
+        "evidence_rescued_candidate": 21,
+        "maintenance_candidate": 13,
+        "unresolved_both_conditions": 1
+      }
+    },
+    {
+      "split": "all",
+      "kind": "all",
+      "model": "cpt",
+      "planned": 40,
+      "agreed": 35,
+      "unresolved": 5,
+      "closed_full": 13,
+      "evidence_full": 34,
+      "decisions": {
+        "evidence_rescued_candidate": 21,
+        "maintenance_candidate": 13,
+        "unresolved_both_conditions": 1
+      }
+    },
+    {
+      "split": "all",
+      "kind": "application",
+      "model": "step120",
+      "planned": 8,
+      "agreed": 7,
+      "unresolved": 1,
+      "closed_full": 3,
+      "evidence_full": 7,
+      "decisions": {
+        "evidence_rescued_candidate": 4,
+        "maintenance_candidate": 3
+      }
+    },
+    {
+      "split": "all",
+      "kind": "application",
+      "model": "cpt",
+      "planned": 8,
+      "agreed": 7,
+      "unresolved": 1,
+      "closed_full": 3,
+      "evidence_full": 7,
+      "decisions": {
+        "evidence_rescued_candidate": 4,
+        "maintenance_candidate": 3
+      }
+    },
+    {
+      "split": "all",
+      "kind": "calculation",
+      "model": "step120",
+      "planned": 8,
+      "agreed": 7,
+      "unresolved": 1,
+      "closed_full": 6,
+      "evidence_full": 6,
+      "decisions": {
+        "unresolved_both_conditions": 1,
+        "maintenance_candidate": 6
+      }
+    },
+    {
+      "split": "all",
+      "kind": "calculation",
+      "model": "cpt",
+      "planned": 8,
+      "agreed": 7,
+      "unresolved": 1,
+      "closed_full": 6,
+      "evidence_full": 6,
+      "decisions": {
+        "unresolved_both_conditions": 1,
+        "maintenance_candidate": 6
+      }
+    },
+    {
+      "split": "all",
+      "kind": "condition",
+      "model": "step120",
+      "planned": 8,
+      "agreed": 6,
+      "unresolved": 2,
+      "closed_full": 2,
+      "evidence_full": 6,
+      "decisions": {
+        "maintenance_candidate": 2,
+        "evidence_rescued_candidate": 4
+      }
+    },
+    {
+      "split": "all",
+      "kind": "condition",
+      "model": "cpt",
+      "planned": 8,
+      "agreed": 6,
+      "unresolved": 2,
+      "closed_full": 2,
+      "evidence_full": 6,
+      "decisions": {
+        "maintenance_candidate": 2,
+        "evidence_rescued_candidate": 4
+      }
+    },
+    {
+      "split": "all",
+      "kind": "definition",
+      "model": "step120",
+      "planned": 8,
+      "agreed": 8,
+      "unresolved": 0,
+      "closed_full": 1,
+      "evidence_full": 8,
+      "decisions": {
+        "evidence_rescued_candidate": 7,
+        "maintenance_candidate": 1
+      }
+    },
+    {
+      "split": "all",
+      "kind": "definition",
+      "model": "cpt",
+      "planned": 8,
+      "agreed": 8,
+      "unresolved": 0,
+      "closed_full": 1,
+      "evidence_full": 8,
+      "decisions": {
+        "evidence_rescued_candidate": 7,
+        "maintenance_candidate": 1
+      }
+    },
+    {
+      "split": "all",
+      "kind": "distinction",
+      "model": "step120",
+      "planned": 8,
+      "agreed": 7,
+      "unresolved": 1,
+      "closed_full": 1,
+      "evidence_full": 7,
+      "decisions": {
+        "evidence_rescued_candidate": 6,
+        "maintenance_candidate": 1
+      }
+    },
+    {
+      "split": "all",
+      "kind": "distinction",
+      "model": "cpt",
+      "planned": 8,
+      "agreed": 7,
+      "unresolved": 1,
+      "closed_full": 1,
+      "evidence_full": 7,
+      "decisions": {
+        "evidence_rescued_candidate": 6,
+        "maintenance_candidate": 1
+      }
+    },
+    {
+      "split": "train",
+      "kind": "all",
+      "model": "step120",
+      "planned": 30,
+      "agreed": 26,
+      "unresolved": 4,
+      "closed_full": 9,
+      "evidence_full": 25,
+      "decisions": {
+        "evidence_rescued_candidate": 16,
+        "maintenance_candidate": 9,
+        "unresolved_both_conditions": 1
+      }
+    },
+    {
+      "split": "train",
+      "kind": "all",
+      "model": "cpt",
+      "planned": 30,
+      "agreed": 26,
+      "unresolved": 4,
+      "closed_full": 9,
+      "evidence_full": 25,
+      "decisions": {
+        "evidence_rescued_candidate": 16,
+        "maintenance_candidate": 9,
+        "unresolved_both_conditions": 1
+      }
+    },
+    {
+      "split": "train",
+      "kind": "application",
+      "model": "step120",
+      "planned": 6,
+      "agreed": 6,
+      "unresolved": 0,
+      "closed_full": 2,
+      "evidence_full": 6,
+      "decisions": {
+        "evidence_rescued_candidate": 4,
+        "maintenance_candidate": 2
+      }
+    },
+    {
+      "split": "train",
+      "kind": "application",
+      "model": "cpt",
+      "planned": 6,
+      "agreed": 6,
+      "unresolved": 0,
+      "closed_full": 2,
+      "evidence_full": 6,
+      "decisions": {
+        "evidence_rescued_candidate": 4,
+        "maintenance_candidate": 2
+      }
+    },
+    {
+      "split": "train",
+      "kind": "calculation",
+      "model": "step120",
+      "planned": 6,
+      "agreed": 5,
+      "unresolved": 1,
+      "closed_full": 4,
+      "evidence_full": 4,
+      "decisions": {
+        "unresolved_both_conditions": 1,
+        "maintenance_candidate": 4
+      }
+    },
+    {
+      "split": "train",
+      "kind": "calculation",
+      "model": "cpt",
+      "planned": 6,
+      "agreed": 5,
+      "unresolved": 1,
+      "closed_full": 4,
+      "evidence_full": 4,
+      "decisions": {
+        "unresolved_both_conditions": 1,
+        "maintenance_candidate": 4
+      }
+    },
+    {
+      "split": "train",
+      "kind": "condition",
+      "model": "step120",
+      "planned": 6,
+      "agreed": 4,
+      "unresolved": 2,
+      "closed_full": 2,
+      "evidence_full": 4,
+      "decisions": {
+        "maintenance_candidate": 2,
+        "evidence_rescued_candidate": 2
+      }
+    },
+    {
+      "split": "train",
+      "kind": "condition",
+      "model": "cpt",
+      "planned": 6,
+      "agreed": 4,
+      "unresolved": 2,
+      "closed_full": 2,
+      "evidence_full": 4,
+      "decisions": {
+        "maintenance_candidate": 2,
+        "evidence_rescued_candidate": 2
+      }
+    },
+    {
+      "split": "train",
+      "kind": "definition",
+      "model": "step120",
+      "planned": 6,
+      "agreed": 6,
+      "unresolved": 0,
+      "closed_full": 0,
+      "evidence_full": 6,
+      "decisions": {
+        "evidence_rescued_candidate": 6
+      }
+    },
+    {
+      "split": "train",
+      "kind": "definition",
+      "model": "cpt",
+      "planned": 6,
+      "agreed": 6,
+      "unresolved": 0,
+      "closed_full": 0,
+      "evidence_full": 6,
+      "decisions": {
+        "evidence_rescued_candidate": 6
+      }
+    },
+    {
+      "split": "train",
+      "kind": "distinction",
+      "model": "step120",
+      "planned": 6,
+      "agreed": 5,
+      "unresolved": 1,
+      "closed_full": 1,
+      "evidence_full": 5,
+      "decisions": {
+        "evidence_rescued_candidate": 4,
+        "maintenance_candidate": 1
+      }
+    },
+    {
+      "split": "train",
+      "kind": "distinction",
+      "model": "cpt",
+      "planned": 6,
+      "agreed": 5,
+      "unresolved": 1,
+      "closed_full": 1,
+      "evidence_full": 5,
+      "decisions": {
+        "evidence_rescued_candidate": 4,
+        "maintenance_candidate": 1
+      }
+    },
+    {
+      "split": "dev",
+      "kind": "all",
+      "model": "step120",
+      "planned": 10,
+      "agreed": 9,
+      "unresolved": 1,
+      "closed_full": 4,
+      "evidence_full": 9,
+      "decisions": {
+        "maintenance_candidate": 4,
+        "evidence_rescued_candidate": 5
+      }
+    },
+    {
+      "split": "dev",
+      "kind": "all",
+      "model": "cpt",
+      "planned": 10,
+      "agreed": 9,
+      "unresolved": 1,
+      "closed_full": 4,
+      "evidence_full": 9,
+      "decisions": {
+        "maintenance_candidate": 4,
+        "evidence_rescued_candidate": 5
+      }
+    },
+    {
+      "split": "dev",
+      "kind": "application",
+      "model": "step120",
+      "planned": 2,
+      "agreed": 1,
+      "unresolved": 1,
+      "closed_full": 1,
+      "evidence_full": 1,
+      "decisions": {
+        "maintenance_candidate": 1
+      }
+    },
+    {
+      "split": "dev",
+      "kind": "application",
+      "model": "cpt",
+      "planned": 2,
+      "agreed": 1,
+      "unresolved": 1,
+      "closed_full": 1,
+      "evidence_full": 1,
+      "decisions": {
+        "maintenance_candidate": 1
+      }
+    },
+    {
+      "split": "dev",
+      "kind": "calculation",
+      "model": "step120",
+      "planned": 2,
+      "agreed": 2,
+      "unresolved": 0,
+      "closed_full": 2,
+      "evidence_full": 2,
+      "decisions": {
+        "maintenance_candidate": 2
+      }
+    },
+    {
+      "split": "dev",
+      "kind": "calculation",
+      "model": "cpt",
+      "planned": 2,
+      "agreed": 2,
+      "unresolved": 0,
+      "closed_full": 2,
+      "evidence_full": 2,
+      "decisions": {
+        "maintenance_candidate": 2
+      }
+    },
+    {
+      "split": "dev",
+      "kind": "condition",
+      "model": "step120",
+      "planned": 2,
+      "agreed": 2,
+      "unresolved": 0,
+      "closed_full": 0,
+      "evidence_full": 2,
+      "decisions": {
+        "evidence_rescued_candidate": 2
+      }
+    },
+    {
+      "split": "dev",
+      "kind": "condition",
+      "model": "cpt",
+      "planned": 2,
+      "agreed": 2,
+      "unresolved": 0,
+      "closed_full": 0,
+      "evidence_full": 2,
+      "decisions": {
+        "evidence_rescued_candidate": 2
+      }
+    },
+    {
+      "split": "dev",
+      "kind": "definition",
+      "model": "step120",
+      "planned": 2,
+      "agreed": 2,
+      "unresolved": 0,
+      "closed_full": 1,
+      "evidence_full": 2,
+      "decisions": {
+        "maintenance_candidate": 1,
+        "evidence_rescued_candidate": 1
+      }
+    },
+    {
+      "split": "dev",
+      "kind": "definition",
+      "model": "cpt",
+      "planned": 2,
+      "agreed": 2,
+      "unresolved": 0,
+      "closed_full": 1,
+      "evidence_full": 2,
+      "decisions": {
+        "maintenance_candidate": 1,
+        "evidence_rescued_candidate": 1
+      }
+    },
+    {
+      "split": "dev",
+      "kind": "distinction",
+      "model": "step120",
+      "planned": 2,
+      "agreed": 2,
+      "unresolved": 0,
+      "closed_full": 0,
+      "evidence_full": 2,
+      "decisions": {
+        "evidence_rescued_candidate": 2
+      }
+    },
+    {
+      "split": "dev",
+      "kind": "distinction",
+      "model": "cpt",
+      "planned": 2,
+      "agreed": 2,
+      "unresolved": 0,
+      "closed_full": 0,
+      "evidence_full": 2,
+      "decisions": {
+        "evidence_rescued_candidate": 2
+      }
+    }
+  ],
+  "api_calls": 80,
+  "usage": {
+    "prompt_tokens": 121254,
+    "completion_tokens": 24233,
+    "total_tokens": 145487
+  },
+  "models": {
+    "step120": {
+      "model": "step120",
+      "model_path": "/workspace/llin-verl-grpo/runs/llin-step120-opensource-20260825-02/hf_export_step120_opensource",
+      "model_config_sha256": "43eee23b0489ed1769bf2d49438015728ad686bef55d4aecb18a3a1ce840d6da",
+      "responses": 80,
+      "finish_reasons": {
+        "stop": 80
+      },
+      "answers_sha256": "920a35384dbcb730880419f2e0d845a3ee9b063563aad47862980a7b49c1be43",
+      "cases_sha256": "1cd978fa46c40fb5622c773fe1244280076d6abebadcaafd09c6da6199f3c60f",
+      "training": false
+    },
+    "cpt": {
+      "model": "cpt",
+      "model_path": "/workspace/llin-verl-grpo/runs/logistics-cpt-book-exposure-curve-2x4x-20260904-01/hf_export_step_116",
+      "model_config_sha256": "43eee23b0489ed1769bf2d49438015728ad686bef55d4aecb18a3a1ce840d6da",
+      "responses": 80,
+      "finish_reasons": {
+        "stop": 80
+      },
+      "answers_sha256": "f293dcdd212291bde6db64eb4d0554cefee86ff754952414db5ef9d483a9e07c",
+      "cases_sha256": "1cd978fa46c40fb5622c773fe1244280076d6abebadcaafd09c6da6199f3c60f",
+      "training": false
+    }
+  },
+  "prompt_identity_verified": true,
+  "training": false,
+  "population_accuracy_estimate": false,
+  "results": [
+    {
+      "id": "handbook8e-00104-cap-Q5",
+      "mode": "closed",
+      "status": "agreed",
+      "review_statuses": [
+        "scored",
+        "scored"
+      ],
+      "scores": {
+        "cpt:evidence": 2,
+        "cpt:closed": 1,
+        "step120:closed": 1,
+        "step120:evidence": 2
+      },
+      "decisions": {
+        "step120": "evidence_rescued_candidate",
+        "cpt": "evidence_rescued_candidate"
+      },
+      "kind": "application",
+      "split": "train"
+    },
+    {
+      "id": "handbook8e-00021-cap-Q4",
+      "mode": "closed",
+      "status": "agreed",
+      "review_statuses": [
+        "scored",
+        "scored"
+      ],
+      "scores": {
+        "cpt:evidence": 2,
+        "cpt:closed": 2,
+        "step120:closed": 2,
+        "step120:evidence": 2
+      },
+      "decisions": {
+        "step120": "maintenance_candidate",
+        "cpt": "maintenance_candidate"
+      },
+      "kind": "application",
+      "split": "train"
+    },
+    {
+      "id": "handbook8e-00049-cap-Q5",
+      "mode": "closed",
+      "status": "agreed",
+      "review_statuses": [
+        "scored",
+        "scored"
+      ],
+      "scores": {
+        "cpt:closed": 2,
+        "cpt:evidence": 2,
+        "step120:closed": 2,
+        "step120:evidence": 2
+      },
+      "decisions": {
+        "step120": "maintenance_candidate",
+        "cpt": "maintenance_candidate"
+      },
+      "kind": "application",
+      "split": "train"
+    },
+    {
+      "id": "handbook8e-00103-cap-Q5",
+      "mode": "closed",
+      "status": "agreed",
+      "review_statuses": [
+        "scored",
+        "scored"
+      ],
+      "scores": {
+        "step120:closed": 1,
+        "cpt:evidence": 2,
+        "cpt:closed": 1,
+        "step120:evidence": 2
+      },
+      "decisions": {
+        "step120": "evidence_rescued_candidate",
+        "cpt": "evidence_rescued_candidate"
+      },
+      "kind": "application",
+      "split": "train"
+    },
+    {
+      "id": "handbook8e-00060-cap-Q4",
+      "mode": "closed",
+      "status": "agreed",
+      "review_statuses": [
+        "scored",
+        "scored"
+      ],
+      "scores": {
+        "step120:closed": 1,
+        "cpt:closed": 1,
+        "cpt:evidence": 2,
+        "step120:evidence": 2
+      },
+      "decisions": {
+        "step120": "evidence_rescued_candidate",
+        "cpt": "evidence_rescued_candidate"
+      },
+      "kind": "application",
+      "split": "train"
+    },
+    {
+      "id": "handbook8e-00018-cap-Q4",
+      "mode": "closed",
+      "status": "agreed",
+      "review_statuses": [
+        "scored",
+        "scored"
+      ],
+      "scores": {
+        "step120:closed": 1,
+        "cpt:closed": 1,
+        "step120:evidence": 2,
+        "cpt:evidence": 2
+      },
+      "decisions": {
+        "step120": "evidence_rescued_candidate",
+        "cpt": "evidence_rescued_candidate"
+      },
+      "kind": "application",
+      "split": "train"
+    },
+    {
+      "id": "handbook8e-00021-cap-Q6",
+      "mode": "closed",
+      "status": "agreed",
+      "review_statuses": [
+        "scored",
+        "scored"
+      ],
+      "scores": {
+        "cpt:closed": 1,
+        "cpt:evidence": 1,
+        "step120:evidence": 1,
+        "step120:closed": 1
+      },
+      "decisions": {
+        "step120": "unresolved_both_conditions",
+        "cpt": "unresolved_both_conditions"
+      },
+      "kind": "calculation",
+      "split": "train"
+    },
+    {
+      "id": "handbook8e-00025-cap-Q6",
+      "mode": "closed",
+      "status": "unresolved",
+      "review_statuses": [
+        "quality_quarantine",
+        "quality_quarantine"
+      ],
+      "kind": "calculation",
+      "split": "train"
+    },
+    {
+      "id": "handbook8e-00002-cap-Q6",
+      "mode": "closed",
+      "status": "agreed",
+      "review_statuses": [
+        "scored",
+        "scored"
+      ],
+      "scores": {
+        "cpt:evidence": 2,
+        "step120:evidence": 2,
+        "step120:closed": 2,
+        "cpt:closed": 2
+      },
+      "decisions": {
+        "step120": "maintenance_candidate",
+        "cpt": "maintenance_candidate"
+      },
+      "kind": "calculation",
+      "split": "train"
+    },
+    {
+      "id": "handbook8e-00115-cap-Q6",
+      "mode": "closed",
+      "status": "agreed",
+      "review_statuses": [
+        "scored",
+        "scored"
+      ],
+      "scores": {
+        "cpt:closed": 2,
+        "step120:closed": 2,
+        "step120:evidence": 2,
+        "cpt:evidence": 2
+      },
+      "decisions": {
+        "step120": "maintenance_candidate",
+        "cpt": "maintenance_candidate"
+      },
+      "kind": "calculation",
+      "split": "train"
+    },
+    {
+      "id": "handbook8e-00044-cap-Q6",
+      "mode": "closed",
+      "status": "agreed",
+      "review_statuses": [
+        "scored",
+        "scored"
+      ],
+      "scores": {
+        "step120:closed": 2,
+        "step120:evidence": 2,
+        "cpt:evidence": 2,
+        "cpt:closed": 2
+      },
+      "decisions": {
+        "step120": "maintenance_candidate",
+        "cpt": "maintenance_candidate"
+      },
+      "kind": "calculation",
+      "split": "train"
+    },
+    {
+      "id": "handbook8e-00013-cap-Q6",
+      "mode": "closed",
+      "status": "agreed",
+      "review_statuses": [
+        "scored",
+        "scored"
+      ],
+      "scores": {
+        "step120:evidence": 2,
+        "cpt:closed": 2,
+        "step120:closed": 2,
+        "cpt:evidence": 2
+      },
+      "decisions": {
+        "step120": "maintenance_candidate",
+        "cpt": "maintenance_candidate"
+      },
+      "kind": "calculation",
+      "split": "train"
+    },
+    {
+      "id": "handbook8e-00016-cap-Q3",
+      "mode": "closed",
+      "status": "agreed",
+      "review_statuses": [
+        "scored",
+        "scored"
+      ],
+      "scores": {
+        "step120:evidence": 2,
+        "step120:closed": 2,
+        "cpt:closed": 2,
+        "cpt:evidence": 2
+      },
+      "decisions": {
+        "step120": "maintenance_candidate",
+        "cpt": "maintenance_candidate"
+      },
+      "kind": "condition",
+      "split": "train"
+    },
+    {
+      "id": "handbook8e-00110-cap-Q3",
+      "mode": "closed",
+      "status": "agreed",
+      "review_statuses": [
+        "scored",
+        "scored"
+      ],
+      "scores": {
+        "cpt:closed": 2,
+        "step120:closed": 2,
+        "step120:evidence": 2,
+        "cpt:evidence": 2
+      },
+      "decisions": {
+        "step120": "maintenance_candidate",
+        "cpt": "maintenance_candidate"
+      },
+      "kind": "condition",
+      "split": "train"
+    },
+    {
+      "id": "handbook8e-00106-cap-Q3",
+      "mode": "closed",
+      "status": "unresolved",
+      "review_statuses": [
+        "scored",
+        "scored"
+      ],
+      "kind": "condition",
+      "split": "train"
+    },
+    {
+      "id": "handbook8e-00022-cap-Q3",
+      "mode": "closed",
+      "status": "unresolved",
+      "review_statuses": [
+        "scored",
+        "scored"
+      ],
+      "kind": "condition",
+      "split": "train"
+    },
+    {
+      "id": "handbook8e-00113-cap-Q3",
+      "mode": "closed",
+      "status": "agreed",
+      "review_statuses": [
+        "scored",
+        "scored"
+      ],
+      "scores": {
+        "cpt:evidence": 2,
+        "step120:closed": 1,
+        "cpt:closed": 1,
+        "step120:evidence": 2
+      },
+      "decisions": {
+        "step120": "evidence_rescued_candidate",
+        "cpt": "evidence_rescued_candidate"
+      },
+      "kind": "condition",
+      "split": "train"
+    },
+    {
+      "id": "handbook8e-00006-cap-Q3",
+      "mode": "closed",
+      "status": "agreed",
+      "review_statuses": [
+        "scored",
+        "scored"
+      ],
+      "scores": {
+        "cpt:closed": 1,
+        "step120:evidence": 2,
+        "step120:closed": 1,
+        "cpt:evidence": 2
+      },
+      "decisions": {
+        "step120": "evidence_rescued_candidate",
+        "cpt": "evidence_rescued_candidate"
+      },
+      "kind": "condition",
+      "split": "train"
+    },
+    {
+      "id": "handbook8e-00115-cap-Q1",
+      "mode": "closed",
+      "status": "agreed",
+      "review_statuses": [
+        "scored",
+        "scored"
+      ],
+      "scores": {
+        "step120:evidence": 2,
+        "cpt:closed": 1,
+        "step120:closed": 1,
+        "cpt:evidence": 2
+      },
+      "decisions": {
+        "step120": "evidence_rescued_candidate",
+        "cpt": "evidence_rescued_candidate"
+      },
+      "kind": "definition",
+      "split": "train"
+    },
+    {
+      "id": "handbook8e-00107-cap-Q1",
+      "mode": "closed",
+      "status": "agreed",
+      "review_statuses": [
+        "scored",
+        "scored"
+      ],
+      "scores": {
+        "cpt:closed": 1,
+        "cpt:evidence": 2,
+        "step120:closed": 1,
+        "step120:evidence": 2
+      },
+      "decisions": {
+        "step120": "evidence_rescued_candidate",
+        "cpt": "evidence_rescued_candidate"
+      },
+      "kind": "definition",
+      "split": "train"
+    },
+    {
+      "id": "handbook8e-00006-cap-Q1",
+      "mode": "closed",
+      "status": "agreed",
+      "review_statuses": [
+        "scored",
+        "scored"
+      ],
+      "scores": {
+        "step120:closed": 1,
+        "cpt:evidence": 2,
+        "step120:evidence": 2,
+        "cpt:closed": 1
+      },
+      "decisions": {
+        "step120": "evidence_rescued_candidate",
+        "cpt": "evidence_rescued_candidate"
+      },
+      "kind": "definition",
+      "split": "train"
+    },
+    {
+      "id": "handbook8e-00018-cap-Q1",
+      "mode": "closed",
+      "status": "agreed",
+      "review_statuses": [
+        "scored",
+        "scored"
+      ],
+      "scores": {
+        "step120:evidence": 2,
+        "step120:closed": 0,
+        "cpt:closed": 0,
+        "cpt:evidence": 2
+      },
+      "decisions": {
+        "step120": "evidence_rescued_candidate",
+        "cpt": "evidence_rescued_candidate"
+      },
+      "kind": "definition",
+      "split": "train"
+    },
+    {
+      "id": "handbook8e-00061-cap-Q1",
+      "mode": "closed",
+      "status": "agreed",
+      "review_statuses": [
+        "scored",
+        "scored"
+      ],
+      "scores": {
+        "cpt:closed": 1,
+        "cpt:evidence": 2,
+        "step120:evidence": 2,
+        "step120:closed": 1
+      },
+      "decisions": {
+        "step120": "evidence_rescued_candidate",
+        "cpt": "evidence_rescued_candidate"
+      },
+      "kind": "definition",
+      "split": "train"
+    },
+    {
+      "id": "handbook8e-00016-cap-Q1",
+      "mode": "closed",
+      "status": "agreed",
+      "review_statuses": [
+        "scored",
+        "scored"
+      ],
+      "scores": {
+        "step120:evidence": 2,
+        "cpt:evidence": 2,
+        "step120:closed": 1,
+        "cpt:closed": 1
+      },
+      "decisions": {
+        "step120": "evidence_rescued_candidate",
+        "cpt": "evidence_rescued_candidate"
+      },
+      "kind": "definition",
+      "split": "train"
+    },
+    {
+      "id": "handbook8e-00019-cap-Q2",
+      "mode": "closed",
+      "status": "agreed",
+      "review_statuses": [
+        "scored",
+        "scored"
+      ],
+      "scores": {
+        "step120:closed": 0,
+        "cpt:evidence": 2,
+        "cpt:closed": 0,
+        "step120:evidence": 2
+      },
+      "decisions": {
+        "step120": "evidence_rescued_candidate",
+        "cpt": "evidence_rescued_candidate"
+      },
+      "kind": "distinction",
+      "split": "train"
+    },
+    {
+      "id": "handbook8e-00018-cap-Q2",
+      "mode": "closed",
+      "status": "agreed",
+      "review_statuses": [
+        "scored",
+        "scored"
+      ],
+      "scores": {
+        "cpt:closed": 0,
+        "cpt:evidence": 2,
+        "step120:closed": 0,
+        "step120:evidence": 2
+      },
+      "decisions": {
+        "step120": "evidence_rescued_candidate",
+        "cpt": "evidence_rescued_candidate"
+      },
+      "kind": "distinction",
+      "split": "train"
+    },
+    {
+      "id": "handbook8e-00113-cap-Q2",
+      "mode": "closed",
+      "status": "agreed",
+      "review_statuses": [
+        "scored",
+        "scored"
+      ],
+      "scores": {
+        "step120:closed": 0,
+        "cpt:evidence": 2,
+        "cpt:closed": 0,
+        "step120:evidence": 2
+      },
+      "decisions": {
+        "step120": "evidence_rescued_candidate",
+        "cpt": "evidence_rescued_candidate"
+      },
+      "kind": "distinction",
+      "split": "train"
+    },
+    {
+      "id": "handbook8e-00105-cap-Q2",
+      "mode": "closed",
+      "status": "agreed",
+      "review_statuses": [
+        "scored",
+        "scored"
+      ],
+      "scores": {
+        "cpt:closed": 2,
+        "step120:evidence": 2,
+        "step120:closed": 2,
+        "cpt:evidence": 2
+      },
+      "decisions": {
+        "step120": "maintenance_candidate",
+        "cpt": "maintenance_candidate"
+      },
+      "kind": "distinction",
+      "split": "train"
+    },
+    {
+      "id": "handbook8e-00116-cap-Q2",
+      "mode": "closed",
+      "status": "unresolved",
+      "review_statuses": [
+        "scored",
+        "scored"
+      ],
+      "kind": "distinction",
+      "split": "train"
+    },
+    {
+      "id": "handbook8e-00013-cap-Q2",
+      "mode": "closed",
+      "status": "agreed",
+      "review_statuses": [
+        "scored",
+        "scored"
+      ],
+      "scores": {
+        "step120:closed": 1,
+        "cpt:closed": 1,
+        "step120:evidence": 2,
+        "cpt:evidence": 2
+      },
+      "decisions": {
+        "step120": "evidence_rescued_candidate",
+        "cpt": "evidence_rescued_candidate"
+      },
+      "kind": "distinction",
+      "split": "train"
+    },
+    {
+      "id": "handbook8e-00009-cap-Q4",
+      "mode": "closed",
+      "status": "unresolved",
+      "review_statuses": [
+        "scored",
+        "scored"
+      ],
+      "kind": "application",
+      "split": "dev"
+    },
+    {
+      "id": "handbook8e-00096-cap-Q5",
+      "mode": "closed",
+      "status": "agreed",
+      "review_statuses": [
+        "scored",
+        "scored"
+      ],
+      "scores": {
+        "step120:evidence": 2,
+        "cpt:evidence": 2,
+        "step120:closed": 2,
+        "cpt:closed": 2
+      },
+      "decisions": {
+        "step120": "maintenance_candidate",
+        "cpt": "maintenance_candidate"
+      },
+      "kind": "application",
+      "split": "dev"
+    },
+    {
+      "id": "handbook8e-00046-cap-Q6",
+      "mode": "closed",
+      "status": "agreed",
+      "review_statuses": [
+        "scored",
+        "scored"
+      ],
+      "scores": {
+        "cpt:evidence": 2,
+        "step120:closed": 2,
+        "cpt:closed": 2,
+        "step120:evidence": 2
+      },
+      "decisions": {
+        "step120": "maintenance_candidate",
+        "cpt": "maintenance_candidate"
+      },
+      "kind": "calculation",
+      "split": "dev"
+    },
+    {
+      "id": "handbook8e-00096-cap-Q6",
+      "mode": "closed",
+      "status": "agreed",
+      "review_statuses": [
+        "scored",
+        "scored"
+      ],
+      "scores": {
+        "step120:evidence": 2,
+        "cpt:closed": 2,
+        "step120:closed": 2,
+        "cpt:evidence": 2
+      },
+      "decisions": {
+        "step120": "maintenance_candidate",
+        "cpt": "maintenance_candidate"
+      },
+      "kind": "calculation",
+      "split": "dev"
+    },
+    {
+      "id": "handbook8e-00048-cap-Q3",
+      "mode": "closed",
+      "status": "agreed",
+      "review_statuses": [
+        "scored",
+        "scored"
+      ],
+      "scores": {
+        "step120:evidence": 2,
+        "step120:closed": 0,
+        "cpt:evidence": 2,
+        "cpt:closed": 1
+      },
+      "decisions": {
+        "step120": "evidence_rescued_candidate",
+        "cpt": "evidence_rescued_candidate"
+      },
+      "kind": "condition",
+      "split": "dev"
+    },
+    {
+      "id": "handbook8e-00009-cap-Q3",
+      "mode": "closed",
+      "status": "agreed",
+      "review_statuses": [
+        "scored",
+        "scored"
+      ],
+      "scores": {
+        "step120:evidence": 2,
+        "cpt:closed": 0,
+        "cpt:evidence": 2,
+        "step120:closed": 0
+      },
+      "decisions": {
+        "step120": "evidence_rescued_candidate",
+        "cpt": "evidence_rescued_candidate"
+      },
+      "kind": "condition",
+      "split": "dev"
+    },
+    {
+      "id": "handbook8e-00036-cap-Q1",
+      "mode": "closed",
+      "status": "agreed",
+      "review_statuses": [
+        "scored",
+        "scored"
+      ],
+      "scores": {
+        "step120:evidence": 2,
+        "cpt:closed": 2,
+        "step120:closed": 2,
+        "cpt:evidence": 2
+      },
+      "decisions": {
+        "step120": "maintenance_candidate",
+        "cpt": "maintenance_candidate"
+      },
+      "kind": "definition",
+      "split": "dev"
+    },
+    {
+      "id": "handbook8e-00054-cap-Q1",
+      "mode": "closed",
+      "status": "agreed",
+      "review_statuses": [
+        "scored",
+        "scored"
+      ],
+      "scores": {
+        "cpt:evidence": 2,
+        "step120:closed": 1,
+        "step120:evidence": 2,
+        "cpt:closed": 1
+      },
+      "decisions": {
+        "step120": "evidence_rescued_candidate",
+        "cpt": "evidence_rescued_candidate"
+      },
+      "kind": "definition",
+      "split": "dev"
+    },
+    {
+      "id": "handbook8e-00009-cap-Q2",
+      "mode": "closed",
+      "status": "agreed",
+      "review_statuses": [
+        "scored",
+        "scored"
+      ],
+      "scores": {
+        "step120:evidence": 2,
+        "cpt:closed": 1,
+        "step120:closed": 1,
+        "cpt:evidence": 2
+      },
+      "decisions": {
+        "step120": "evidence_rescued_candidate",
+        "cpt": "evidence_rescued_candidate"
+      },
+      "kind": "distinction",
+      "split": "dev"
+    },
+    {
+      "id": "handbook8e-00051-cap-Q2",
+      "mode": "closed",
+      "status": "agreed",
+      "review_statuses": [
+        "scored",
+        "scored"
+      ],
+      "scores": {
+        "step120:closed": 1,
+        "step120:evidence": 2,
+        "cpt:closed": 1,
+        "cpt:evidence": 2
+      },
+      "decisions": {
+        "step120": "evidence_rescued_candidate",
+        "cpt": "evidence_rescued_candidate"
+      },
+      "kind": "distinction",
+      "split": "dev"
+    }
+  ]
+}
