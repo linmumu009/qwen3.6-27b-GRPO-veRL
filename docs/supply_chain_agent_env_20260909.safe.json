@@ -1,0 +1,41 @@
+{
+  "status": "isolated_sandbox_preflight_passed",
+  "preflight": {
+    "contract": "pi-agent-runtime-visibility-preflight-v1",
+    "valid": true,
+    "environment_count": 1,
+    "required_files": [
+      "logistics.sqlite",
+      "schema_dictionary.md"
+    ],
+    "required_directories": [
+      "documents"
+    ],
+    "sqlite_opened_read_only": true,
+    "sqlite_has_relations": true,
+    "environment_ids_emitted": false
+  },
+  "source_files": 105,
+  "source_bytes": 6250741,
+  "source_manifest_sha256": "921e72cb35aa07f918e3e9d54e0374e149efa578fb8da75ccd0f9663f60e2d65",
+  "database_sha256": "6d9c90cb5869dca751ba4865d4e682578105f984b52837a7f75adfdc8d9ef5f8",
+  "schema_sha256": "909152378620d08e008bbe756cc05fe76b0961723f328b281a482c34cb491c27",
+  "dataset_sha256": {
+    "train": "925c2db871cce77016319264c1555b1ddfdfbe8159c6f968f840717e09507ec0",
+    "val": "0fa49b2ba2a1ea662887017b96c65de9142bc39af8aad74774817cfc0373c08c",
+    "test": "dd72b5f7ef1f55ea43f51c3b0b47abb6a15f46afc0c39509c994d92c74dcd1c1"
+  },
+  "split_sizes": {
+    "train": 236,
+    "val": 20,
+    "test": 20
+  },
+  "instruction_overlap": 0,
+  "shared_sandbox_modified": false,
+  "generated_reports_excluded": true,
+  "historical_protocol_exact_reproduction": false,
+  "model_inference_run": false,
+  "required_runtime_env": {
+    "PI_AGENT_SANDBOX_LOWER": "/workspace/llin-verl-grpo/runs/supply-chain-agent-regression-env-20260909-01/sandbox"
+  }
+}

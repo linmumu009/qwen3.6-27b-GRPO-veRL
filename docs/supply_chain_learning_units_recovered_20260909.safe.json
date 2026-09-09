@@ -1,0 +1,31 @@
+{
+  "status": "audit_complete_needs_dedup_and_tasks",
+  "planned_calls": 44,
+  "completed_calls": 44,
+  "failed_calls": 0,
+  "missing_audit_ids": 14,
+  "units": 253,
+  "split_counts": {
+    "train": 218,
+    "dev": 35
+  },
+  "domain_counts": {
+    "supply_chain_coordination": 41,
+    "other": 20,
+    "transport": 39,
+    "information_systems": 28,
+    "inventory_planning": 24,
+    "warehousing": 38,
+    "returns_sustainability": 8,
+    "finance_performance": 30,
+    "material_handling": 17,
+    "procurement": 8
+  },
+  "usage": {
+    "prompt_tokens": 473748,
+    "completion_tokens": 11569,
+    "total_tokens": 485317
+  },
+  "training": false,
+  "training_ready": false
+}

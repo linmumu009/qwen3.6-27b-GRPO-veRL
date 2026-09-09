@@ -1,0 +1,74 @@
+{
+  "input_count": 697,
+  "retained": 696,
+  "rejected": [
+    {
+      "id": "C39-U06-Q1",
+      "reason": "Unspecified author-specific first-step framework in manual spot check"
+    }
+  ],
+  "source_sha256": "102f5a5f5301d99cffea02ef69699517acbac6474d6b9d58bcfa95b135246483",
+  "units_sha256": "e142fcf7a59f2a6c1075a3bdbcf9522d53390c5f350023750f91b6bb52bb39af",
+  "script_sha256": "1340a09bfbfaa5f4fedd2c9592170ceb90cbee529b897f58f3138ba8cb511920",
+  "supervision": "assistant and EOS only",
+  "training": false,
+  "development_limit": "Chapters held out of SFT, not of prior book CPT; objective subset excludes free answers.",
+  "format_policy": "One record/task. Deterministic ID hash chooses direct JSON or API-authored brief explanation plus JSON; free-answer tasks unchanged.",
+  "train": {
+    "count": 591,
+    "objective_cases": 402,
+    "kind_counts": {
+      "short_answer": 189,
+      "single_choice": 187,
+      "multiple_choice": 190,
+      "matching": 25
+    },
+    "domain_counts": {
+      "other": 54,
+      "supply_chain_coordination": 75,
+      "finance_performance": 78,
+      "information_systems": 77,
+      "inventory_planning": 48,
+      "transport": 103,
+      "warehousing": 91,
+      "material_handling": 27,
+      "procurement": 25,
+      "returns_sustainability": 13
+    },
+    "concepts": 199,
+    "loss_tokens": 18579,
+    "sequence_tokens": 88819,
+    "max_length": 359,
+    "parquet_sha256": "2f10b42c9a8ad0bde49b2c1887a6216727352c4871d1afdc5e84145e70dd9051",
+    "cases_sha256": "7f5554535798d8c3684ee7db8e60baa1e1fcefbdf39bbfc711d1f52e9f6ea8d6"
+  },
+  "dev": {
+    "count": 105,
+    "objective_cases": 74,
+    "kind_counts": {
+      "short_answer": 31,
+      "single_choice": 31,
+      "multiple_choice": 34,
+      "matching": 9
+    },
+    "domain_counts": {
+      "transport": 10,
+      "inventory_planning": 16,
+      "returns_sustainability": 4,
+      "material_handling": 15,
+      "warehousing": 15,
+      "information_systems": 5,
+      "supply_chain_coordination": 28,
+      "finance_performance": 12
+    },
+    "concepts": 35,
+    "loss_tokens": 3295,
+    "sequence_tokens": 16345,
+    "max_length": 361,
+    "parquet_sha256": "54410c6d33db3cbbdcaa542a6a3a978f10d5acd4470dd8d132493629127c0e3a",
+    "cases_sha256": "6198b632c424fb6d3c7c3d01e092387fc46c10c5470a19874a197c7df7976073"
+  },
+  "batch_size": 8,
+  "steps_one_epoch": 73,
+  "dropped_tail_one_epoch": 7
+}

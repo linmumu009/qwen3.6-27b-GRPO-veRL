@@ -1,0 +1,25 @@
+{
+  "status": "tasks_ready_for_final_quality_and_training_contract",
+  "retained_units": 243,
+  "completed_units": 243,
+  "calls": 487,
+  "failed_units": 0,
+  "tasks": 697,
+  "split_counts": {
+    "train": 592,
+    "dev": 105
+  },
+  "kind_counts": {
+    "short_answer": 221,
+    "single_choice": 218,
+    "multiple_choice": 224,
+    "matching": 34
+  },
+  "usage": {
+    "prompt_tokens": 2556456,
+    "completion_tokens": 235964,
+    "total_tokens": 2792420
+  },
+  "training": false,
+  "training_ready": false
+}
