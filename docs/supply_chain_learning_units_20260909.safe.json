@@ -1,0 +1,31 @@
+{
+  "status": "units_ready_for_dedup_and_task_generation",
+  "chapters_done": 44,
+  "failed_chapters": 6,
+  "calls": 88,
+  "accepted_units": 127,
+  "split_counts": {
+    "train": 112,
+    "dev": 15
+  },
+  "domain_counts": {
+    "supply_chain_coordination": 22,
+    "other": 5,
+    "transport": 22,
+    "information_systems": 12,
+    "inventory_planning": 14,
+    "warehousing": 24,
+    "returns_sustainability": 4,
+    "finance_performance": 17,
+    "material_handling": 5,
+    "procurement": 2
+  },
+  "usage": {
+    "prompt_tokens": 837831,
+    "completion_tokens": 168393,
+    "total_tokens": 1006224
+  },
+  "training_ready": false,
+  "expert_certified": false,
+  "training": false
+}
