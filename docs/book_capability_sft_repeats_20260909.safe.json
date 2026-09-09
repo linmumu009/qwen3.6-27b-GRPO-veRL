@@ -1,0 +1,244 @@
+{
+  "items": 1672,
+  "case_sha256": "b652b2108cb552346df11d005c15ff3137c50a756a7b24eb35302683ec33ed99",
+  "repeat_correct": {
+    "cpt": [
+      1372,
+      1370,
+      1367
+    ],
+    "sft": [
+      1371,
+      1368,
+      1372
+    ]
+  },
+  "repeat_parse_failures": {
+    "cpt": [
+      0,
+      0,
+      0
+    ],
+    "sft": [
+      0,
+      0,
+      0
+    ]
+  },
+  "correctness_unstable": {
+    "cpt": 14,
+    "sft": 14
+  },
+  "stable_in_both": 1651,
+  "stable_transitions": {
+    "both_wrong": 294,
+    "both_correct": 1356,
+    "improved": 1
+  },
+  "runtime": {
+    "cpt": [
+      {
+        "prompt_version": "logistics-mcq-zero-based-json-v2",
+        "request": {
+          "temperature": 0,
+          "max_output_tokens": 128,
+          "enable_thinking": false,
+          "chat_template_disable_thinking": true,
+          "concurrency": 64
+        },
+        "runtime": {
+          "backend": "offline_vllm",
+          "dtype": "bfloat16",
+          "tensor_parallel_size": 8,
+          "data_parallel_size": 1,
+          "async_scheduling": true,
+          "prefix_caching": false,
+          "seed": 1024,
+          "repeat_index": 1,
+          "all_repeats_elapsed_sec": 475.624
+        }
+      },
+      {
+        "prompt_version": "logistics-mcq-zero-based-json-v2",
+        "request": {
+          "temperature": 0,
+          "max_output_tokens": 128,
+          "enable_thinking": false,
+          "chat_template_disable_thinking": true,
+          "concurrency": 64
+        },
+        "runtime": {
+          "backend": "offline_vllm",
+          "dtype": "bfloat16",
+          "tensor_parallel_size": 8,
+          "data_parallel_size": 1,
+          "async_scheduling": true,
+          "prefix_caching": false,
+          "seed": 1024,
+          "repeat_index": 2
+        }
+      },
+      {
+        "prompt_version": "logistics-mcq-zero-based-json-v2",
+        "request": {
+          "temperature": 0,
+          "max_output_tokens": 128,
+          "enable_thinking": false,
+          "chat_template_disable_thinking": true,
+          "concurrency": 64
+        },
+        "runtime": {
+          "backend": "offline_vllm",
+          "dtype": "bfloat16",
+          "tensor_parallel_size": 8,
+          "data_parallel_size": 1,
+          "async_scheduling": true,
+          "prefix_caching": false,
+          "seed": 1024,
+          "repeat_index": 3
+        }
+      }
+    ],
+    "sft": [
+      {
+        "prompt_version": "logistics-mcq-zero-based-json-v2",
+        "request": {
+          "temperature": 0,
+          "max_output_tokens": 96,
+          "enable_thinking": false,
+          "chat_template_disable_thinking": true,
+          "concurrency": 64
+        },
+        "runtime": {
+          "backend": "offline_vllm",
+          "dtype": "bfloat16",
+          "tensor_parallel_size": 8,
+          "data_parallel_size": 1,
+          "async_scheduling": true,
+          "prefix_caching": false,
+          "seed": 1024,
+          "repeat_index": 1,
+          "all_repeats_elapsed_sec": 474.683
+        }
+      },
+      {
+        "prompt_version": "logistics-mcq-zero-based-json-v2",
+        "request": {
+          "temperature": 0,
+          "max_output_tokens": 96,
+          "enable_thinking": false,
+          "chat_template_disable_thinking": true,
+          "concurrency": 64
+        },
+        "runtime": {
+          "backend": "offline_vllm",
+          "dtype": "bfloat16",
+          "tensor_parallel_size": 8,
+          "data_parallel_size": 1,
+          "async_scheduling": true,
+          "prefix_caching": false,
+          "seed": 1024,
+          "repeat_index": 2
+        }
+      },
+      {
+        "prompt_version": "logistics-mcq-zero-based-json-v2",
+        "request": {
+          "temperature": 0,
+          "max_output_tokens": 96,
+          "enable_thinking": false,
+          "chat_template_disable_thinking": true,
+          "concurrency": 64
+        },
+        "runtime": {
+          "backend": "offline_vllm",
+          "dtype": "bfloat16",
+          "tensor_parallel_size": 8,
+          "data_parallel_size": 1,
+          "async_scheduling": true,
+          "prefix_caching": false,
+          "seed": 1024,
+          "repeat_index": 3
+        }
+      }
+    ]
+  },
+  "report_keys": {
+    "cpt": [
+      "schema_version",
+      "evaluation_type",
+      "prompt_version",
+      "model",
+      "endpoint_label",
+      "request",
+      "input_sha256",
+      "items",
+      "correct",
+      "accuracy",
+      "macro_category_accuracy",
+      "parse_failures",
+      "api_failures",
+      "degenerate_single_option_items",
+      "wall_elapsed_sec",
+      "latency_sec",
+      "by_dataset",
+      "by_dataset_category",
+      "by_dataset_question_type",
+      "rows",
+      "private_content_included",
+      "runtime",
+      "repeat_stability"
+    ],
+    "sft": [
+      "schema_version",
+      "evaluation_type",
+      "prompt_version",
+      "model",
+      "endpoint_label",
+      "request",
+      "input_sha256",
+      "items",
+      "correct",
+      "accuracy",
+      "macro_category_accuracy",
+      "parse_failures",
+      "api_failures",
+      "degenerate_single_option_items",
+      "wall_elapsed_sec",
+      "latency_sec",
+      "by_dataset",
+      "by_dataset_category",
+      "by_dataset_question_type",
+      "rows",
+      "private_content_included",
+      "runtime",
+      "repeat_stability"
+    ]
+  },
+  "source_sha256": {
+    "cpt": [
+      "95d840bf3094c13f7a492a0e528bf627e2eaafb75ea4f3ad57d1da667c7c0337",
+      "a68dc4c3b2e93bfc6c3cc3eee41f6983003cedbae436df314ce9c614a8fcde82",
+      "13fec292a84537b0f2c04cc2d2ac0a49c9acf859ae4375ebb1e1e0ad2d8c40eb"
+    ],
+    "sft": [
+      "d639308cd0a0a711ee6332c3494fb37789dbdf525652cd6bc80216da076059a7",
+      "9428bf992985a30f5cc8e01613d3fcd1e9614c692f02e85e219720f803b14b62",
+      "0cb8eda589f5acefc2b3770d2069f33718e3153b6b0f9b6c8b8469eaeafc316a"
+    ]
+  },
+  "private_content_included": false,
+  "step120_checkpoint_entries": [
+    "checkpoints/global_step_120",
+    "checkpoints/global_step_120/actor",
+    "checkpoints/global_step_120/actor/model",
+    "checkpoints/global_step_120/actor/extra",
+    "checkpoints/global_step_120/actor/model/dist_ckpt",
+    "checkpoints/global_step_120/actor/model/dist_ckpt/.metadata",
+    "checkpoints/global_step_120/actor/extra/dist_ckpt"
+  ],
+  "step120_native_metadata": [
+    "/workspace/llin-verl-grpo/runs/llin-step120-opensource-20260825-02/checkpoints/global_step_120/actor/model/dist_ckpt/.metadata"
+  ],
+  "step120_hf_exists": true
+}

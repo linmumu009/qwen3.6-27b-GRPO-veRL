@@ -60,6 +60,8 @@ def main() -> int:
     parser.add_argument("--model-label", required=True)
     parser.add_argument("--private-output", type=Path, required=True)
     parser.add_argument("--safe-output", type=Path, required=True)
+    parser.add_argument("--repeat-safe", action="append", type=Path,
+                        help="Optional per-repeat metadata; all requests and case hashes must agree")
     args = parser.parse_args()
     repeat_maps = [load_private_rows(path) for path in args.repeat]
     rows, no_majority = majority_rows(repeat_maps)
@@ -81,6 +83,17 @@ def main() -> int:
             round(sum(bool(row["correct"]) for row in repeat.values()) / len(repeat), 6) for repeat in repeat_maps
         ],
     }
+    if args.repeat_safe:
+        if len(args.repeat_safe) != len(args.repeat):
+            raise ValueError("repeat metadata count differs")
+        metadata = [json.loads(path.read_text(encoding="utf-8")) for path in args.repeat_safe]
+        for report in metadata:
+            if (report['request'] != metadata[0]['request']
+                    or report['input_sha256'] != result['input_sha256']
+                    or report['items'] != len(rows)):
+                raise ValueError("repeat metadata contract mismatch")
+        result['request'] = metadata[0]['request']
+        result['request_provenance'] = 'validated_per_repeat_safe_reports'
     args.safe_output.parent.mkdir(parents=True, exist_ok=True)
     args.safe_output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps({

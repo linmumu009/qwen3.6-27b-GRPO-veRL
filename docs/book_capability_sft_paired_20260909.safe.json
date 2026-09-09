@@ -1,0 +1,485 @@
+{
+  "baseline_correct": 1371,
+  "sft_correct": 1373,
+  "items": 1672,
+  "transitions": {
+    "both_correct": 1366,
+    "both_wrong": 294,
+    "improved": 7,
+    "regressed": 5
+  },
+  "mcnemar_exact_two_sided_p": 0.7744140625,
+  "segments": [
+    {
+      "dataset": "LogistikaBench",
+      "category": "warehousing",
+      "items": 202,
+      "both_correct": 150,
+      "both_wrong": 50,
+      "regressed": 2,
+      "net": -2
+    },
+    {
+      "dataset": "LogistikaBench",
+      "category": "transport",
+      "items": 404,
+      "both_correct": 333,
+      "both_wrong": 69,
+      "improved": 1,
+      "regressed": 1,
+      "net": 0
+    },
+    {
+      "dataset": "LogistikaBench",
+      "category": "procurement",
+      "items": 42,
+      "both_wrong": 6,
+      "both_correct": 36,
+      "net": 0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Procurement",
+      "items": 12,
+      "both_wrong": 4,
+      "both_correct": 8,
+      "net": 0
+    },
+    {
+      "dataset": "LogistikaBench",
+      "category": "supply_chain",
+      "items": 102,
+      "both_correct": 89,
+      "both_wrong": 13,
+      "net": 0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Finance and Operations",
+      "items": 20,
+      "both_correct": 17,
+      "both_wrong": 3,
+      "net": 0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Fulfillment",
+      "items": 79,
+      "both_correct": 67,
+      "both_wrong": 12,
+      "net": 0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Planning",
+      "items": 14,
+      "both_wrong": 2,
+      "both_correct": 12,
+      "net": 0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Network",
+      "items": 3,
+      "both_correct": 3,
+      "net": 0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "unknown",
+      "items": 4,
+      "both_correct": 4,
+      "net": 0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Other",
+      "items": 3,
+      "both_correct": 3,
+      "net": 0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Inventory",
+      "items": 4,
+      "both_correct": 4,
+      "net": 0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Merchandise",
+      "items": 1,
+      "both_correct": 1,
+      "net": 0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Returns and Waste",
+      "items": 1,
+      "both_correct": 1,
+      "net": 0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Logistics Collaboration",
+      "items": 73,
+      "both_correct": 60,
+      "improved": 1,
+      "both_wrong": 12,
+      "net": 1
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "In-warehouse",
+      "items": 12,
+      "both_wrong": 2,
+      "both_correct": 9,
+      "improved": 1,
+      "net": 1
+    },
+    {
+      "dataset": "LogistikaBench",
+      "category": "material_handling",
+      "items": 696,
+      "both_correct": 569,
+      "both_wrong": 121,
+      "improved": 4,
+      "regressed": 2,
+      "net": 2
+    }
+  ],
+  "input_hashes": {
+    "cpt": "3ab3202011e6e58e1ec3db7b1b1dce8692369c433e33c3d8bb3eda131f51b92a",
+    "sft": "115008f49ab00ec9c0626d28cda189712a3a96b00ce6e53137b9a17a5c60679f"
+  },
+  "benchmark_case_hashes": {
+    "cpt": {
+      "cases_jsonl": "b652b2108cb552346df11d005c15ff3137c50a756a7b24eb35302683ec33ed99"
+    },
+    "sft": {
+      "cases_jsonl": "b652b2108cb552346df11d005c15ff3137c50a756a7b24eb35302683ec33ed99"
+    }
+  },
+  "reported_requests": {
+    "cpt": {
+      "temperature": 0,
+      "max_output_tokens": 128,
+      "enable_thinking": false,
+      "chat_template_disable_thinking": true,
+      "concurrency": 64
+    },
+    "sft": {
+      "temperature": 0,
+      "max_output_tokens": 128,
+      "enable_thinking": false,
+      "chat_template_disable_thinking": true,
+      "concurrency": 64
+    }
+  },
+  "parse_failures": {
+    "cpt": 2,
+    "sft": 0
+  },
+  "training": {
+    "logged_steps": 44,
+    "first": [
+      {
+        "step": 1,
+        "loss": 2.215888261795044,
+        "grad_norm": 17.77829518095072,
+        "lr": 2e-07
+      },
+      {
+        "step": 2,
+        "loss": 1.9051709175109863,
+        "grad_norm": 19.834081982926982,
+        "lr": 2e-07
+      },
+      {
+        "step": 3,
+        "loss": 1.7598474025726318,
+        "grad_norm": 13.716717197947785,
+        "lr": 2e-07
+      }
+    ],
+    "last": [
+      {
+        "step": 42,
+        "loss": 1.5532872676849365,
+        "grad_norm": 11.006447723016368,
+        "lr": 2e-07
+      },
+      {
+        "step": 43,
+        "loss": 2.046175956726074,
+        "grad_norm": 10.428559454446328,
+        "lr": 2e-07
+      },
+      {
+        "step": 44,
+        "loss": 1.6572632789611816,
+        "grad_norm": 11.450244244631586,
+        "lr": 2e-07
+      }
+    ],
+    "first20_mean_loss": 1.8374089241027831,
+    "last20_mean_loss": 1.7754529595375061,
+    "nonfinite": 0
+  },
+  "validation": [
+    {
+      "step": 44,
+      "loss": 1.7338600158691406
+    }
+  ],
+  "export_manifest": {
+    "schema_version": 1,
+    "created_at": "2026-09-09T02:28:32.186313+00:00",
+    "actor_checkpoint": "/opt/llin-capability-sft-cpt-20260909-01/checkpoints/global_step_44",
+    "megatron_model_checkpoint": "/opt/llin-capability-sft-cpt-20260909-01/checkpoints/global_step_44/model/dist_ckpt",
+    "base_model": "/workspace/llin-verl-grpo/runs/logistics-cpt-book-exposure-curve-2x4x-20260904-01/hf_export_step_116",
+    "conversion": "Megatron Bridge Qwen3.6 TP1/PP1/CP1 CPU strict export",
+    "frozen_base_fallback_keys": [
+      "mtp.fc.weight",
+      "mtp.layers.0.input_layernorm.weight",
+      "mtp.layers.0.mlp.down_proj.weight",
+      "mtp.layers.0.mlp.gate_proj.weight",
+      "mtp.layers.0.mlp.up_proj.weight",
+      "mtp.layers.0.post_attention_layernorm.weight",
+      "mtp.layers.0.self_attn.k_norm.weight",
+      "mtp.layers.0.self_attn.k_proj.weight",
+      "mtp.layers.0.self_attn.o_proj.weight",
+      "mtp.layers.0.self_attn.q_norm.weight",
+      "mtp.layers.0.self_attn.q_proj.weight",
+      "mtp.layers.0.self_attn.v_proj.weight",
+      "mtp.norm.weight",
+      "mtp.pre_fc_norm_embedding.weight",
+      "mtp.pre_fc_norm_hidden.weight"
+    ],
+    "resume_checkpoint_modified": false,
+    "verification": {
+      "valid": true,
+      "errors": [],
+      "base_tensor_count": 1199,
+      "output_tensor_count": 1199,
+      "referenced_shard_count": 15,
+      "total_safetensor_bytes": 56484503104,
+      "language_layer_ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63
+      ],
+      "missing_tensor_count": 0,
+      "extra_tensor_count": 0,
+      "shape_mismatch_count": 0,
+      "dtype_difference_count": 0,
+      "missing_tensor_examples": [],
+      "extra_tensor_examples": [],
+      "shape_mismatch_examples": [],
+      "dtype_difference_examples": [],
+      "dtype_difference_details": []
+    }
+  },
+  "source_content_included": false,
+  "chart_sql": "SELECT c.dataset,c.category,COUNT(*) AS items,\n SUM(CASE WHEN c.correct=0 AND s.correct=1 THEN 1 ELSE 0 END) AS improved,\n SUM(CASE WHEN c.correct=1 AND s.correct=0 THEN 1 ELSE 0 END) AS regressed,\n SUM(s.correct-c.correct) AS net\n FROM cpt_results c JOIN sft_results s ON c.item_hash=s.item_hash\n GROUP BY c.dataset,c.category ORDER BY net,c.dataset,c.category",
+  "chart_rows": [
+    {
+      "dataset": "LogistikaBench",
+      "category": "warehousing",
+      "items": 202,
+      "improved": 0,
+      "regressed": 2,
+      "net": -2
+    },
+    {
+      "dataset": "LogistikaBench",
+      "category": "procurement",
+      "items": 42,
+      "improved": 0,
+      "regressed": 0,
+      "net": 0
+    },
+    {
+      "dataset": "LogistikaBench",
+      "category": "supply_chain",
+      "items": 102,
+      "improved": 0,
+      "regressed": 0,
+      "net": 0
+    },
+    {
+      "dataset": "LogistikaBench",
+      "category": "transport",
+      "items": 404,
+      "improved": 1,
+      "regressed": 1,
+      "net": 0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Finance and Operations",
+      "items": 20,
+      "improved": 0,
+      "regressed": 0,
+      "net": 0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Fulfillment",
+      "items": 79,
+      "improved": 0,
+      "regressed": 0,
+      "net": 0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Inventory",
+      "items": 4,
+      "improved": 0,
+      "regressed": 0,
+      "net": 0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Merchandise",
+      "items": 1,
+      "improved": 0,
+      "regressed": 0,
+      "net": 0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Network",
+      "items": 3,
+      "improved": 0,
+      "regressed": 0,
+      "net": 0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Other",
+      "items": 3,
+      "improved": 0,
+      "regressed": 0,
+      "net": 0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Planning",
+      "items": 14,
+      "improved": 0,
+      "regressed": 0,
+      "net": 0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Procurement",
+      "items": 12,
+      "improved": 0,
+      "regressed": 0,
+      "net": 0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Returns and Waste",
+      "items": 1,
+      "improved": 0,
+      "regressed": 0,
+      "net": 0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "unknown",
+      "items": 4,
+      "improved": 0,
+      "regressed": 0,
+      "net": 0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "In-warehouse",
+      "items": 12,
+      "improved": 1,
+      "regressed": 0,
+      "net": 1
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Logistics Collaboration",
+      "items": 73,
+      "improved": 1,
+      "regressed": 0,
+      "net": 1
+    },
+    {
+      "dataset": "LogistikaBench",
+      "category": "material_handling",
+      "items": 696,
+      "improved": 4,
+      "regressed": 2,
+      "net": 2
+    }
+  ],
+  "sql_engine": "SQLite in-memory; inputs loaded from the two frozen safe row reports"
+}
