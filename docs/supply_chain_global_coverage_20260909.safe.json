@@ -1,0 +1,1074 @@
+{
+  "coverage": {
+    "book_chunks": {
+      "items": 115,
+      "primary_domain": {
+        "other": 4,
+        "inventory_planning": 8,
+        "warehousing": 14,
+        "transport": 29,
+        "procurement": 6,
+        "material_handling": 8,
+        "finance_performance": 8,
+        "supply_chain_coordination": 28,
+        "information_systems": 6,
+        "returns_sustainability": 4
+      },
+      "capabilities_multilabel": {
+        "recall": 114,
+        "distinction": 106,
+        "conditional_application": 28,
+        "calculation": 21,
+        "multi_step_decision": 2,
+        "other": 1
+      },
+      "evidence": {
+        "none": 1,
+        "explicit": 22,
+        "partial": 92
+      }
+    },
+    "all_qa": {
+      "items": 436,
+      "primary_domain": {
+        "transport": 119,
+        "supply_chain_coordination": 71,
+        "finance_performance": 41,
+        "material_handling": 23,
+        "warehousing": 79,
+        "inventory_planning": 30,
+        "information_systems": 20,
+        "procurement": 17,
+        "returns_sustainability": 16,
+        "other": 20
+      },
+      "capabilities_multilabel": {
+        "conditional_application": 150,
+        "calculation": 59,
+        "recall": 119,
+        "distinction": 102,
+        "multi_step_decision": 20,
+        "other": 4
+      },
+      "evidence": {
+        "explicit": 434,
+        "partial": 2
+      }
+    },
+    "actual_train": {
+      "items": 355,
+      "primary_domain": {
+        "material_handling": 19,
+        "warehousing": 45,
+        "inventory_planning": 22,
+        "finance_performance": 40,
+        "information_systems": 19,
+        "supply_chain_coordination": 58,
+        "transport": 101,
+        "procurement": 16,
+        "returns_sustainability": 16,
+        "other": 19
+      },
+      "capabilities_multilabel": {
+        "recall": 99,
+        "distinction": 81,
+        "conditional_application": 119,
+        "multi_step_decision": 15,
+        "calculation": 51,
+        "other": 4
+      },
+      "evidence": {
+        "explicit": 353,
+        "partial": 2
+      }
+    }
+  },
+  "api_summary": {
+    "status": "complete",
+    "planned_calls": 137,
+    "completed_calls": 137,
+    "failed_calls": 0,
+    "usage": {
+      "prompt_tokens": 457025,
+      "completion_tokens": 39137,
+      "total_tokens": 496162
+    },
+    "domain_counts": {
+      "source": {
+        "other": 4,
+        "inventory_planning": 8,
+        "warehousing": 14,
+        "transport": 29,
+        "procurement": 6,
+        "material_handling": 8,
+        "finance_performance": 8,
+        "supply_chain_coordination": 28,
+        "information_systems": 6,
+        "returns_sustainability": 4
+      },
+      "qa": {
+        "transport": 119,
+        "supply_chain_coordination": 71,
+        "finance_performance": 41,
+        "material_handling": 23,
+        "warehousing": 79,
+        "inventory_planning": 30,
+        "information_systems": 20,
+        "procurement": 17,
+        "returns_sustainability": 16,
+        "other": 20
+      }
+    },
+    "provisional_labels_not_quality_certification": true,
+    "training": false
+  },
+  "models": {
+    "step120_historical": {
+      "correct": 1369,
+      "items": 1672,
+      "input_report_sha256": "42f64c8b19851e4f6ad6363d7260191a40151f4ea90858b3d7676c1e526bee4e",
+      "strata": [
+        {
+          "dataset": "LogistikaBench",
+          "category": "material_handling",
+          "question_type": "multiple_choice",
+          "choice_pool": "large_pool",
+          "items": 305,
+          "correct": 213,
+          "errors": 92
+        },
+        {
+          "dataset": "LogistikaBench",
+          "category": "material_handling",
+          "question_type": "multiple_choice",
+          "choice_pool": "ordinary",
+          "items": 391,
+          "correct": 359,
+          "errors": 32
+        },
+        {
+          "dataset": "LogistikaBench",
+          "category": "procurement",
+          "question_type": "multiple_choice",
+          "choice_pool": "ordinary",
+          "items": 42,
+          "correct": 36,
+          "errors": 6
+        },
+        {
+          "dataset": "LogistikaBench",
+          "category": "supply_chain",
+          "question_type": "multiple_choice",
+          "choice_pool": "ordinary",
+          "items": 102,
+          "correct": 89,
+          "errors": 13
+        },
+        {
+          "dataset": "LogistikaBench",
+          "category": "transport",
+          "question_type": "multiple_choice",
+          "choice_pool": "large_pool",
+          "items": 1,
+          "correct": 1,
+          "errors": 0
+        },
+        {
+          "dataset": "LogistikaBench",
+          "category": "transport",
+          "question_type": "multiple_choice",
+          "choice_pool": "ordinary",
+          "items": 403,
+          "correct": 333,
+          "errors": 70
+        },
+        {
+          "dataset": "LogistikaBench",
+          "category": "warehousing",
+          "question_type": "multiple_choice",
+          "choice_pool": "large_pool",
+          "items": 1,
+          "correct": 1,
+          "errors": 0
+        },
+        {
+          "dataset": "LogistikaBench",
+          "category": "warehousing",
+          "question_type": "multiple_choice",
+          "choice_pool": "ordinary",
+          "items": 201,
+          "correct": 148,
+          "errors": 53
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Finance and Operations",
+          "question_type": "multiple_choices",
+          "choice_pool": "ordinary",
+          "items": 4,
+          "correct": 4,
+          "errors": 0
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Finance and Operations",
+          "question_type": "single_choice",
+          "choice_pool": "ordinary",
+          "items": 4,
+          "correct": 4,
+          "errors": 0
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Finance and Operations",
+          "question_type": "true_or_false",
+          "choice_pool": "ordinary",
+          "items": 12,
+          "correct": 9,
+          "errors": 3
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Fulfillment",
+          "question_type": "multiple_choices",
+          "choice_pool": "ordinary",
+          "items": 25,
+          "correct": 22,
+          "errors": 3
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Fulfillment",
+          "question_type": "single_choice",
+          "choice_pool": "ordinary",
+          "items": 34,
+          "correct": 30,
+          "errors": 4
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Fulfillment",
+          "question_type": "true_or_false",
+          "choice_pool": "ordinary",
+          "items": 20,
+          "correct": 15,
+          "errors": 5
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "In-warehouse",
+          "question_type": "multiple_choices",
+          "choice_pool": "ordinary",
+          "items": 4,
+          "correct": 2,
+          "errors": 2
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "In-warehouse",
+          "question_type": "single_choice",
+          "choice_pool": "ordinary",
+          "items": 3,
+          "correct": 3,
+          "errors": 0
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "In-warehouse",
+          "question_type": "true_or_false",
+          "choice_pool": "ordinary",
+          "items": 5,
+          "correct": 4,
+          "errors": 1
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Inventory",
+          "question_type": "single_choice",
+          "choice_pool": "ordinary",
+          "items": 2,
+          "correct": 2,
+          "errors": 0
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Inventory",
+          "question_type": "true_or_false",
+          "choice_pool": "ordinary",
+          "items": 2,
+          "correct": 2,
+          "errors": 0
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Logistics Collaboration",
+          "question_type": "multiple_choices",
+          "choice_pool": "ordinary",
+          "items": 18,
+          "correct": 15,
+          "errors": 3
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Logistics Collaboration",
+          "question_type": "single_choice",
+          "choice_pool": "ordinary",
+          "items": 26,
+          "correct": 22,
+          "errors": 4
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Logistics Collaboration",
+          "question_type": "true_or_false",
+          "choice_pool": "ordinary",
+          "items": 29,
+          "correct": 23,
+          "errors": 6
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Merchandise",
+          "question_type": "true_or_false",
+          "choice_pool": "ordinary",
+          "items": 1,
+          "correct": 1,
+          "errors": 0
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Network",
+          "question_type": "multiple_choices",
+          "choice_pool": "ordinary",
+          "items": 2,
+          "correct": 2,
+          "errors": 0
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Network",
+          "question_type": "true_or_false",
+          "choice_pool": "ordinary",
+          "items": 1,
+          "correct": 1,
+          "errors": 0
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Other",
+          "question_type": "single_choice",
+          "choice_pool": "ordinary",
+          "items": 3,
+          "correct": 3,
+          "errors": 0
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Planning",
+          "question_type": "multiple_choices",
+          "choice_pool": "ordinary",
+          "items": 2,
+          "correct": 2,
+          "errors": 0
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Planning",
+          "question_type": "single_choice",
+          "choice_pool": "ordinary",
+          "items": 5,
+          "correct": 4,
+          "errors": 1
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Planning",
+          "question_type": "true_or_false",
+          "choice_pool": "ordinary",
+          "items": 7,
+          "correct": 6,
+          "errors": 1
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Procurement",
+          "question_type": "multiple_choices",
+          "choice_pool": "ordinary",
+          "items": 4,
+          "correct": 2,
+          "errors": 2
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Procurement",
+          "question_type": "single_choice",
+          "choice_pool": "ordinary",
+          "items": 4,
+          "correct": 3,
+          "errors": 1
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Procurement",
+          "question_type": "true_or_false",
+          "choice_pool": "ordinary",
+          "items": 4,
+          "correct": 3,
+          "errors": 1
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Returns and Waste",
+          "question_type": "single_choice",
+          "choice_pool": "ordinary",
+          "items": 1,
+          "correct": 1,
+          "errors": 0
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "unknown",
+          "question_type": "multiple_choices",
+          "choice_pool": "ordinary",
+          "items": 4,
+          "correct": 4,
+          "errors": 0
+        }
+      ]
+    },
+    "cpt_aligned": {
+      "correct": 1368,
+      "items": 1672,
+      "input_report_sha256": "d6e664ceec509c4848e4439db131351d8201df7acac182ab0173725c008a67d4",
+      "strata": [
+        {
+          "dataset": "LogistikaBench",
+          "category": "material_handling",
+          "question_type": "multiple_choice",
+          "choice_pool": "large_pool",
+          "items": 305,
+          "correct": 212,
+          "errors": 93
+        },
+        {
+          "dataset": "LogistikaBench",
+          "category": "material_handling",
+          "question_type": "multiple_choice",
+          "choice_pool": "ordinary",
+          "items": 391,
+          "correct": 359,
+          "errors": 32
+        },
+        {
+          "dataset": "LogistikaBench",
+          "category": "procurement",
+          "question_type": "multiple_choice",
+          "choice_pool": "ordinary",
+          "items": 42,
+          "correct": 36,
+          "errors": 6
+        },
+        {
+          "dataset": "LogistikaBench",
+          "category": "supply_chain",
+          "question_type": "multiple_choice",
+          "choice_pool": "ordinary",
+          "items": 102,
+          "correct": 89,
+          "errors": 13
+        },
+        {
+          "dataset": "LogistikaBench",
+          "category": "transport",
+          "question_type": "multiple_choice",
+          "choice_pool": "large_pool",
+          "items": 1,
+          "correct": 1,
+          "errors": 0
+        },
+        {
+          "dataset": "LogistikaBench",
+          "category": "transport",
+          "question_type": "multiple_choice",
+          "choice_pool": "ordinary",
+          "items": 403,
+          "correct": 332,
+          "errors": 71
+        },
+        {
+          "dataset": "LogistikaBench",
+          "category": "warehousing",
+          "question_type": "multiple_choice",
+          "choice_pool": "large_pool",
+          "items": 1,
+          "correct": 1,
+          "errors": 0
+        },
+        {
+          "dataset": "LogistikaBench",
+          "category": "warehousing",
+          "question_type": "multiple_choice",
+          "choice_pool": "ordinary",
+          "items": 201,
+          "correct": 149,
+          "errors": 52
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Finance and Operations",
+          "question_type": "multiple_choices",
+          "choice_pool": "ordinary",
+          "items": 4,
+          "correct": 4,
+          "errors": 0
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Finance and Operations",
+          "question_type": "single_choice",
+          "choice_pool": "ordinary",
+          "items": 4,
+          "correct": 4,
+          "errors": 0
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Finance and Operations",
+          "question_type": "true_or_false",
+          "choice_pool": "ordinary",
+          "items": 12,
+          "correct": 9,
+          "errors": 3
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Fulfillment",
+          "question_type": "multiple_choices",
+          "choice_pool": "ordinary",
+          "items": 25,
+          "correct": 22,
+          "errors": 3
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Fulfillment",
+          "question_type": "single_choice",
+          "choice_pool": "ordinary",
+          "items": 34,
+          "correct": 30,
+          "errors": 4
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Fulfillment",
+          "question_type": "true_or_false",
+          "choice_pool": "ordinary",
+          "items": 20,
+          "correct": 15,
+          "errors": 5
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "In-warehouse",
+          "question_type": "multiple_choices",
+          "choice_pool": "ordinary",
+          "items": 4,
+          "correct": 2,
+          "errors": 2
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "In-warehouse",
+          "question_type": "single_choice",
+          "choice_pool": "ordinary",
+          "items": 3,
+          "correct": 3,
+          "errors": 0
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "In-warehouse",
+          "question_type": "true_or_false",
+          "choice_pool": "ordinary",
+          "items": 5,
+          "correct": 4,
+          "errors": 1
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Inventory",
+          "question_type": "single_choice",
+          "choice_pool": "ordinary",
+          "items": 2,
+          "correct": 2,
+          "errors": 0
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Inventory",
+          "question_type": "true_or_false",
+          "choice_pool": "ordinary",
+          "items": 2,
+          "correct": 2,
+          "errors": 0
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Logistics Collaboration",
+          "question_type": "multiple_choices",
+          "choice_pool": "ordinary",
+          "items": 18,
+          "correct": 15,
+          "errors": 3
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Logistics Collaboration",
+          "question_type": "single_choice",
+          "choice_pool": "ordinary",
+          "items": 26,
+          "correct": 22,
+          "errors": 4
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Logistics Collaboration",
+          "question_type": "true_or_false",
+          "choice_pool": "ordinary",
+          "items": 29,
+          "correct": 23,
+          "errors": 6
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Merchandise",
+          "question_type": "true_or_false",
+          "choice_pool": "ordinary",
+          "items": 1,
+          "correct": 1,
+          "errors": 0
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Network",
+          "question_type": "multiple_choices",
+          "choice_pool": "ordinary",
+          "items": 2,
+          "correct": 2,
+          "errors": 0
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Network",
+          "question_type": "true_or_false",
+          "choice_pool": "ordinary",
+          "items": 1,
+          "correct": 1,
+          "errors": 0
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Other",
+          "question_type": "single_choice",
+          "choice_pool": "ordinary",
+          "items": 3,
+          "correct": 3,
+          "errors": 0
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Planning",
+          "question_type": "multiple_choices",
+          "choice_pool": "ordinary",
+          "items": 2,
+          "correct": 2,
+          "errors": 0
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Planning",
+          "question_type": "single_choice",
+          "choice_pool": "ordinary",
+          "items": 5,
+          "correct": 4,
+          "errors": 1
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Planning",
+          "question_type": "true_or_false",
+          "choice_pool": "ordinary",
+          "items": 7,
+          "correct": 6,
+          "errors": 1
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Procurement",
+          "question_type": "multiple_choices",
+          "choice_pool": "ordinary",
+          "items": 4,
+          "correct": 2,
+          "errors": 2
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Procurement",
+          "question_type": "single_choice",
+          "choice_pool": "ordinary",
+          "items": 4,
+          "correct": 3,
+          "errors": 1
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Procurement",
+          "question_type": "true_or_false",
+          "choice_pool": "ordinary",
+          "items": 4,
+          "correct": 3,
+          "errors": 1
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Returns and Waste",
+          "question_type": "single_choice",
+          "choice_pool": "ordinary",
+          "items": 1,
+          "correct": 1,
+          "errors": 0
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "unknown",
+          "question_type": "multiple_choices",
+          "choice_pool": "ordinary",
+          "items": 4,
+          "correct": 4,
+          "errors": 0
+        }
+      ]
+    },
+    "sft_aligned": {
+      "correct": 1369,
+      "items": 1672,
+      "input_report_sha256": "3c54e1aa09fad58b6faf72c9a312597fe0efd04b33ae95a9003cd18fa8c11f6b",
+      "strata": [
+        {
+          "dataset": "LogistikaBench",
+          "category": "material_handling",
+          "question_type": "multiple_choice",
+          "choice_pool": "large_pool",
+          "items": 305,
+          "correct": 214,
+          "errors": 91
+        },
+        {
+          "dataset": "LogistikaBench",
+          "category": "material_handling",
+          "question_type": "multiple_choice",
+          "choice_pool": "ordinary",
+          "items": 391,
+          "correct": 356,
+          "errors": 35
+        },
+        {
+          "dataset": "LogistikaBench",
+          "category": "procurement",
+          "question_type": "multiple_choice",
+          "choice_pool": "ordinary",
+          "items": 42,
+          "correct": 36,
+          "errors": 6
+        },
+        {
+          "dataset": "LogistikaBench",
+          "category": "supply_chain",
+          "question_type": "multiple_choice",
+          "choice_pool": "ordinary",
+          "items": 102,
+          "correct": 89,
+          "errors": 13
+        },
+        {
+          "dataset": "LogistikaBench",
+          "category": "transport",
+          "question_type": "multiple_choice",
+          "choice_pool": "large_pool",
+          "items": 1,
+          "correct": 1,
+          "errors": 0
+        },
+        {
+          "dataset": "LogistikaBench",
+          "category": "transport",
+          "question_type": "multiple_choice",
+          "choice_pool": "ordinary",
+          "items": 403,
+          "correct": 333,
+          "errors": 70
+        },
+        {
+          "dataset": "LogistikaBench",
+          "category": "warehousing",
+          "question_type": "multiple_choice",
+          "choice_pool": "large_pool",
+          "items": 1,
+          "correct": 1,
+          "errors": 0
+        },
+        {
+          "dataset": "LogistikaBench",
+          "category": "warehousing",
+          "question_type": "multiple_choice",
+          "choice_pool": "ordinary",
+          "items": 201,
+          "correct": 149,
+          "errors": 52
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Finance and Operations",
+          "question_type": "multiple_choices",
+          "choice_pool": "ordinary",
+          "items": 4,
+          "correct": 4,
+          "errors": 0
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Finance and Operations",
+          "question_type": "single_choice",
+          "choice_pool": "ordinary",
+          "items": 4,
+          "correct": 4,
+          "errors": 0
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Finance and Operations",
+          "question_type": "true_or_false",
+          "choice_pool": "ordinary",
+          "items": 12,
+          "correct": 9,
+          "errors": 3
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Fulfillment",
+          "question_type": "multiple_choices",
+          "choice_pool": "ordinary",
+          "items": 25,
+          "correct": 22,
+          "errors": 3
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Fulfillment",
+          "question_type": "single_choice",
+          "choice_pool": "ordinary",
+          "items": 34,
+          "correct": 30,
+          "errors": 4
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Fulfillment",
+          "question_type": "true_or_false",
+          "choice_pool": "ordinary",
+          "items": 20,
+          "correct": 15,
+          "errors": 5
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "In-warehouse",
+          "question_type": "multiple_choices",
+          "choice_pool": "ordinary",
+          "items": 4,
+          "correct": 2,
+          "errors": 2
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "In-warehouse",
+          "question_type": "single_choice",
+          "choice_pool": "ordinary",
+          "items": 3,
+          "correct": 3,
+          "errors": 0
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "In-warehouse",
+          "question_type": "true_or_false",
+          "choice_pool": "ordinary",
+          "items": 5,
+          "correct": 4,
+          "errors": 1
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Inventory",
+          "question_type": "single_choice",
+          "choice_pool": "ordinary",
+          "items": 2,
+          "correct": 2,
+          "errors": 0
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Inventory",
+          "question_type": "true_or_false",
+          "choice_pool": "ordinary",
+          "items": 2,
+          "correct": 2,
+          "errors": 0
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Logistics Collaboration",
+          "question_type": "multiple_choices",
+          "choice_pool": "ordinary",
+          "items": 18,
+          "correct": 15,
+          "errors": 3
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Logistics Collaboration",
+          "question_type": "single_choice",
+          "choice_pool": "ordinary",
+          "items": 26,
+          "correct": 22,
+          "errors": 4
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Logistics Collaboration",
+          "question_type": "true_or_false",
+          "choice_pool": "ordinary",
+          "items": 29,
+          "correct": 24,
+          "errors": 5
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Merchandise",
+          "question_type": "true_or_false",
+          "choice_pool": "ordinary",
+          "items": 1,
+          "correct": 1,
+          "errors": 0
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Network",
+          "question_type": "multiple_choices",
+          "choice_pool": "ordinary",
+          "items": 2,
+          "correct": 2,
+          "errors": 0
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Network",
+          "question_type": "true_or_false",
+          "choice_pool": "ordinary",
+          "items": 1,
+          "correct": 1,
+          "errors": 0
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Other",
+          "question_type": "single_choice",
+          "choice_pool": "ordinary",
+          "items": 3,
+          "correct": 3,
+          "errors": 0
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Planning",
+          "question_type": "multiple_choices",
+          "choice_pool": "ordinary",
+          "items": 2,
+          "correct": 2,
+          "errors": 0
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Planning",
+          "question_type": "single_choice",
+          "choice_pool": "ordinary",
+          "items": 5,
+          "correct": 4,
+          "errors": 1
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Planning",
+          "question_type": "true_or_false",
+          "choice_pool": "ordinary",
+          "items": 7,
+          "correct": 6,
+          "errors": 1
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Procurement",
+          "question_type": "multiple_choices",
+          "choice_pool": "ordinary",
+          "items": 4,
+          "correct": 2,
+          "errors": 2
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Procurement",
+          "question_type": "single_choice",
+          "choice_pool": "ordinary",
+          "items": 4,
+          "correct": 3,
+          "errors": 1
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Procurement",
+          "question_type": "true_or_false",
+          "choice_pool": "ordinary",
+          "items": 4,
+          "correct": 3,
+          "errors": 1
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "Returns and Waste",
+          "question_type": "single_choice",
+          "choice_pool": "ordinary",
+          "items": 1,
+          "correct": 1,
+          "errors": 0
+        },
+        {
+          "dataset": "SC-bench-knowledge",
+          "category": "unknown",
+          "question_type": "multiple_choices",
+          "choice_pool": "ordinary",
+          "items": 4,
+          "correct": 4,
+          "errors": 0
+        }
+      ]
+    }
+  },
+  "private_content_included": false,
+  "limitations": [
+    "AI labels are provisional, not expert-certified knowledge coverage.",
+    "Topic distribution mismatch is not proof of a training cause.",
+    "Step120 historical baseline is not contemporaneous with aligned CPT/SFT.",
+    "All official benchmarks have been repeatedly observed; not pristine holdouts."
+  ],
+  "benchmark_case_sha256": "b652b2108cb552346df11d005c15ff3137c50a756a7b24eb35302683ec33ed99"
+}
