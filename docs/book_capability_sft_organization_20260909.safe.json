@@ -1,0 +1,28 @@
+{
+  "input_questions": 365,
+  "retained": 355,
+  "excluded": 10,
+  "kind_counts": {
+    "definition": 70,
+    "distinction": 68,
+    "condition": 57,
+    "application": 115,
+    "calculation": 45
+  },
+  "chapter_count": 38,
+  "statuses": {
+    "complete": 72,
+    "no_candidates": 1
+  },
+  "api_calls": 145,
+  "usage": {
+    "prompt_tokens": 372365,
+    "completion_tokens": 74667,
+    "total_tokens": 447032
+  },
+  "train_sha256": "07f50bbb7ea767ca6a38205db6e004e13eee7559ded71b205cf6e78bee025af5",
+  "questions_changed": 0,
+  "dev_modified": false,
+  "training": false,
+  "training_ready": false
+}

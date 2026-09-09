@@ -1,0 +1,26 @@
+{
+  "train": {
+    "count": 355,
+    "loss_tokens": 23296,
+    "sequence_tokens": 40380,
+    "max_length": 259,
+    "source_sha256": "07f50bbb7ea767ca6a38205db6e004e13eee7559ded71b205cf6e78bee025af5",
+    "parquet_sha256": "79b0dddc1be95ba2701fe4daf5d2d4740b02458bb4f4d0b8003e8badefc79118"
+  },
+  "dev": {
+    "count": 71,
+    "loss_tokens": 5355,
+    "sequence_tokens": 8620,
+    "max_length": 226,
+    "source_sha256": "88a838674b9162b856a9cd02beb8a2fda6289e169d80835a8bcd83facb4e81c3",
+    "parquet_sha256": "69d26dae5eba6d4ed0289af2e9e813b2a94b739a9bb6b424738c226bdbf313e7"
+  },
+  "steps": 44,
+  "batch_size": 8,
+  "epochs": 1,
+  "dropped_tail": 3,
+  "learning_rate": 2e-07,
+  "supervision": "answer and EOS only",
+  "dev_use": "Loss diagnostic only; unchanged references may contain rubric/answer defects. Not checkpoint selection.",
+  "training": false
+}
