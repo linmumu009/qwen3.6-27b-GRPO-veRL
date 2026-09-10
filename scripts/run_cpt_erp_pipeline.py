@@ -1,5 +1,6 @@
 """One exact epoch of released ERP corpus followed by both frozen benchmarks."""
 import hashlib
+import argparse
 import json
 import math
 import os
@@ -43,6 +44,9 @@ def audit_evaluation(directory):
 
 
 def main():
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--after-training',action='store_true',help='Continue from completed step47 without repeating training')
+    args=parser.parse_args()
     import fcntl
     os.umask(0o077)
     code=Path(__file__).resolve().parent
@@ -61,7 +65,10 @@ def main():
                     save(status,dict(status=label))
                     with (OUT/(label+'.log')).open('x') as log:
                         subprocess.run(command,env=environment,stdout=log,stderr=subprocess.STDOUT,check=True)
-                run('training',['bash',str(code/'run_cpt_erp_one_epoch.sh')],env)
+                if args.after_training:
+                    checkpoint_gate(OUT/'llin-training/checkpoints/global_step_47')
+                else:
+                    run('training',['bash',str(code/'run_cpt_erp_one_epoch.sh')],env)
                 from summarize_logistics_cpt_run import parse_metrics
                 logs='\n'.join(p.read_text(errors='replace') for p in (OUT/'llin-training').glob('torchrun_logs/*/attempt_0/*/stdout.log'))
                 lengths=[json.loads(x)['sequence_tokens'] for x in (CORPUS/'train.jsonl').read_text().splitlines()]
