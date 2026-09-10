@@ -1,0 +1,47 @@
+{
+  "table": [
+    {
+      "dataset": "SC-bench-knowledge",
+      "n": 226,
+      "before": 189,
+      "after": 187,
+      "gains": 0,
+      "losses": 2
+    },
+    {
+      "dataset": "LogistikaBench",
+      "n": 1446,
+      "before": 1180,
+      "after": 1178,
+      "gains": 1,
+      "losses": 3
+    },
+    {
+      "dataset": "all",
+      "n": 1672,
+      "before": 1369,
+      "after": 1365,
+      "gains": 1,
+      "losses": 5
+    }
+  ],
+  "baseline_reused": true,
+  "baseline": "/workspace/llin-verl-grpo/runs/cpt-controlled-storage-20260910/llin/cpt-controlled-20260910/curve8x/eval_epoch_0",
+  "candidate_requests": 5016,
+  "prompt_identity_verified": true,
+  "independent_test": false,
+  "promotion": false,
+  "training_audit": {
+    "steps": 47,
+    "epochs": 1,
+    "sequence_tokens": 32515,
+    "length_multiset_matches": true,
+    "mean_step_loss": 1.8917238255764575
+  },
+  "model_name": "llin-step120-erp-cpt-1epoch-20260910",
+  "model_path": "/workspace/llin-verl-grpo/runs/cpt-stage2-storage-20260910/llin/llin-cpt-erp-one-epoch-20260910/llin-step120-erp-cpt-1epoch-20260910",
+  "invalid_requests": 0,
+  "truncated_requests": 0,
+  "audited_requests": 5016,
+  "evaluation_sha256": "91db11669d06f25332f12b8fb529a01f3be50f021190e53b61ce38e972c46426"
+}
