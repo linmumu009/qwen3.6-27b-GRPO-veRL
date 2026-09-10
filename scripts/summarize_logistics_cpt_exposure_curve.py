@@ -91,7 +91,8 @@ def summarize_curve(
         )
 
     checkpoints: list[dict[str, object]] = []
-    optimizer_required = experiment in {"logistics_reviewed8_mask_all", "logistics_reviewed8_mask_answer"}
+    optimizer_required = experiment in {"logistics_reviewed8_mask_all", "logistics_reviewed8_mask_answer",
+                                       "single_book_cpt_exposure_curve_0_to_8"}
     expected_contents = ["model", "optimizer", "extra"] if optimizer_required else ["model", "extra"]
     for exposure in checkpoint_exposures:
         step = exposure * steps_per_exposure

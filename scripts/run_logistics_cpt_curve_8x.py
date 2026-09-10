@@ -37,6 +37,14 @@ def paired(baseline, candidate):
                 losses=sum(baseline[k] and not candidate[k] for k in baseline))
 
 
+def evaluation_env(environ):
+    """Prefer the installed vLLM source root while preserving Ascend imports."""
+    return dict(environ, ASCEND_RT_VISIBLE_DEVICES='0,1,2,3,4,5,6,7',
+                PYTHONPATH='/vllm:' + environ.get('PYTHONPATH', ''),
+                VLLM_WORKER_MULTIPROC_METHOD='spawn', OMP_NUM_THREADS='1',
+                MKL_NUM_THREADS='1', NUMEXPR_NUM_THREADS='1')
+
+
 def checkpoint_gate(path):
     manifest = json.loads((path / 'ckpt_contents.json').read_text())
     if not {'model', 'optimizer', 'extra'} <= set(manifest['save_contents']):
@@ -111,6 +119,7 @@ def main():
     parser.add_argument('--output', type=Path)
     parser.add_argument('--after-training', action='store_true',
                         help='Attach to existing training; never restart or overwrite it')
+    parser.add_argument('--log-suffix', default='')
     args = parser.parse_args()
     os.umask(0o077)
     if args.evaluate:
@@ -127,7 +136,9 @@ def main():
         status = RUN.parent / 'status.safe.json'
         def run(command, label, env=None):
             save(status, dict(status=label))
-            with (RUN.parent / (label + '.log')).open('x') as log:
+            if '/' in args.log_suffix or '\\' in args.log_suffix:
+                raise ValueError('Invalid log suffix')
+            with (RUN.parent / (label + args.log_suffix + '.log')).open('x') as log:
                 subprocess.run(command, check=True, stdout=log, stderr=subprocess.STDOUT, env=env)
         try:
             env = dict(os.environ, OUTPUT_DIR=str(RUN), RUN_NAME='logistics-cpt-book-exposure-curve-8x-20260910-01')
@@ -142,7 +153,7 @@ def main():
                 run(['bash', str(code / 'run_logistics_cpt_curve_8x.sh')], 'training_8x', env)
             for epoch in range(1, 9):
                 checkpoint_gate(RUN / f'checkpoints/global_step_{epoch * 29}')
-            eval_env = dict(os.environ, ASCEND_RT_VISIBLE_DEVICES='0,1,2,3,4,5,6,7')
+            eval_env = evaluation_env(os.environ)
             for epoch in range(9):
                 model = BASE if epoch == 0 else RUN / f'hf_export_step_{epoch * 29}'
                 if epoch:

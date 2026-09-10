@@ -2,7 +2,16 @@ import json
 
 import pytest
 
-from scripts.run_logistics_cpt_curve_8x import checkpoint_gate, majority, paired
+from scripts.run_logistics_cpt_curve_8x import checkpoint_gate, evaluation_env, majority, paired
+
+
+def test_eval_environment_keeps_ascend_and_resolves_vllm_source():
+    source = dict(PYTHONPATH='/ascend/python:/frozen/code', OTHER='retained')
+    result = evaluation_env(source)
+    assert result['PYTHONPATH'] == '/vllm:/ascend/python:/frozen/code'
+    assert result['OTHER'] == 'retained'
+    assert result['VLLM_WORKER_MULTIPROC_METHOD'] == 'spawn'
+    assert source['PYTHONPATH'] == '/ascend/python:/frozen/code'
 
 
 def test_invalid_majority_and_missing_repeat_do_not_pass():
