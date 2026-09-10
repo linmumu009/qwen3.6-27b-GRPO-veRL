@@ -7,11 +7,10 @@ from pathlib import Path
 import shutil
 import subprocess
 import sys
-import time
 
 from run_logistics_cpt_curve_8x import BASE, ROOT, checkpoint_gate, evaluation_env, majority, paired, save
 
-OUT=ROOT/'runs/cpt-stage2-storage-20260910/llin/cpt-erp-one-epoch-20260910'
+OUT=ROOT/'runs/cpt-stage2-storage-20260910/llin/llin-cpt-erp-one-epoch-20260910'
 CORPUS=ROOT/'runs/cpt-corpus-v1.0.2-20260910'
 RETENTION=ROOT/'runs/cpt-stage2-storage-20260910/llin/cpt-retention-20260910'
 BASELINE=ROOT/'runs/cpt-controlled-storage-20260910/llin/cpt-controlled-20260910/curve8x/eval_epoch_0'
@@ -52,34 +51,27 @@ def main():
         fcntl.flock(own,fcntl.LOCK_EX|fcntl.LOCK_NB)
         try:
             assert hashlib.sha256((CORPUS/'train.parquet').read_bytes()).hexdigest()==TRAIN_SHA
-            save(status,dict(status='waiting_for_existing_confirmation'))
-            deadline=time.monotonic()+24*3600
-            while True:
-                state=json.loads((RETENTION/'confirmation_status.safe.json').read_text())['status']
-                if state=='confirmation_general_complete_agent_pending':break
-                if state=='failed':raise RuntimeError('Existing confirmation failed; inspect resource state')
-                if time.monotonic()>deadline:raise TimeoutError('Existing confirmation exceeded24h wait')
-                time.sleep(30)
+            save(status,dict(status='waiting_for_resource_lock'))
             with (ROOT/'runs/.logistics-exam-cpt.lock').open('a') as resource:
                 fcntl.flock(resource,fcntl.LOCK_EX)
                 if shutil.disk_usage(OUT).free<550_000_000_000:raise RuntimeError('Need550GB checkpoint/export headroom')
                 env=dict(os.environ,TRAIN_FILE=str(CORPUS/'train.parquet'),EXPECTED_TRAIN_SHA=TRAIN_SHA,
-                    EXPECTED_CONTENT_TOKENS='32468',OUTPUT_DIR=str(OUT/'training'),RUN_NAME='cpt-erp-one-epoch-20260910')
+                    EXPECTED_CONTENT_TOKENS='32468',OUTPUT_DIR=str(OUT/'llin-training'),RUN_NAME='llin-cpt-erp-one-epoch-20260910')
                 def run(label,command,environment):
                     save(status,dict(status=label))
                     with (OUT/(label+'.log')).open('x') as log:
                         subprocess.run(command,env=environment,stdout=log,stderr=subprocess.STDOUT,check=True)
                 run('training',['bash',str(code/'run_cpt_erp_one_epoch.sh')],env)
                 from summarize_logistics_cpt_run import parse_metrics
-                logs='\n'.join(p.read_text(errors='replace') for p in (OUT/'training').glob('torchrun_logs/*/attempt_0/*/stdout.log'))
+                logs='\n'.join(p.read_text(errors='replace') for p in (OUT/'llin-training').glob('torchrun_logs/*/attempt_0/*/stdout.log'))
                 lengths=[json.loads(x)['sequence_tokens'] for x in (CORPUS/'train.jsonl').read_text().splitlines()]
                 save(OUT/'training_audit.safe.json',audit_training(parse_metrics(logs),lengths))
-                checkpoint=OUT/'training/checkpoints/global_step_47'
+                checkpoint=OUT/'llin-training/checkpoints/global_step_47'
                 checkpoint_gate(checkpoint)
                 run('export',[sys.executable,str(code/'export_megatron_dist_to_hf.py'),
-                    '--actor-checkpoint',str(checkpoint),'--base-model',str(BASE),'--output-dir',str(OUT/'hf_export')],env)
+                    '--actor-checkpoint',str(checkpoint),'--base-model',str(BASE),'--output-dir',str(OUT/'llin-step120-erp-cpt-1epoch-20260910')],env)
                 run('evaluation',[sys.executable,str(code/'run_logistics_cpt_curve_8x.py'),
-                    '--evaluate',str(OUT/'hf_export'),'--output',str(OUT/'evaluation')],evaluation_env(env))
+                    '--evaluate',str(OUT/'llin-step120-erp-cpt-1epoch-20260910'),'--output',str(OUT/'evaluation')],evaluation_env(env))
                 before=audit_evaluation(BASELINE);after=audit_evaluation(OUT/'evaluation')
                 protocols=[json.loads((d/'protocol.safe.json').read_text()) for d in (BASELINE,OUT/'evaluation')]
                 for key in ('cases_sha256','cases','repeats','temperature','seed','max_tokens','max_model_len','tp','max_num_seqs','prompt','prompt_hashes'):
