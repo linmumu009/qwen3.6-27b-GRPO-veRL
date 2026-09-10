@@ -1,0 +1,32 @@
+{
+  "status": "PASS",
+  "scope": "artifact integrity, provenance, tokenization, exact decontamination and split checks",
+  "manifest_sha256": "71265b909a3d526e473648576c91de3c440721f26ec985ca967bc66235567fb3",
+  "splits": {
+    "train": {
+      "records": 47,
+      "content_tokens": 32468
+    },
+    "validation": {
+      "records": 3,
+      "content_tokens": 3515
+    }
+  },
+  "min_sequence_tokens": 112,
+  "max_sequence_tokens": 2637,
+  "eos_token_id": 248046,
+  "cross_split_max_5gram_jaccard": 0.0024171270718232043,
+  "parquet_roundtrip": true,
+  "all_blocks_traceable": true,
+  "benchmark_exact_matches": 0,
+  "semantic_contamination_proven_absent": false,
+  "factual_expert_review_complete": false,
+  "training_started": false,
+  "dependencies": {
+    "transformers": "4.49.0",
+    "tokenizers": "0.21.0",
+    "pyarrow": "23.0.0",
+    "beautifulsoup4": "4.13.3",
+    "lxml": "5.3.1"
+  }
+}

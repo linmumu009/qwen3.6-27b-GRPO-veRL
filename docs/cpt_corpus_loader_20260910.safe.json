@@ -1,0 +1,15 @@
+{
+  "train": {
+    "records": 47,
+    "loss_tokens": 32468,
+    "parquet_sha256": "7918321f1b66f62c4239d419f2b7093b483748c31fae4fdfc850c4aa34065172"
+  },
+  "validation": {
+    "records": 3,
+    "loss_tokens": 3515,
+    "parquet_sha256": "4e1ea17874186102463c3e36af561305a229d2162a636e9084b13d3ec53aa151"
+  },
+  "status": "PASS",
+  "runtime": "existing training container; actual Qwen36CausalLMDataset CPU",
+  "training_started": false
+}

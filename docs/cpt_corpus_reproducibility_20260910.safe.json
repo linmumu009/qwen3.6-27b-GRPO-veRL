@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "identical_artifact_hashes": {
+    "ATTRIBUTION.md": "27d075afc0b143a46b5e9eabef95dad68525c88e73c16dc3a70554705c9b7dc7",
+    "quarantine.jsonl": "5c961c04182c767c2a5b52aa90058260ae19d4c5c868bc52a5e974c08245fc96",
+    "sources.jsonl": "f33ed870bf50f3eee8c95aadf9dd425e622543c8779031e6ea727cd732caa729",
+    "staging_documents.jsonl": "59ec54b1177557f0737b70e69283e012700c9fb1e365203ee020e890e4121fbc",
+    "train.jsonl": "042e6de61b28f7c68f878d19637faf6d8d94e05a08941e2157be5914451ff9e7",
+    "train.parquet": "7918321f1b66f62c4239d419f2b7093b483748c31fae4fdfc850c4aa34065172",
+    "validation.jsonl": "cd7a67bd9f42f491c1b122060a7d9eb3c709418ddb949a86f2dc5386aaff4b63",
+    "validation.parquet": "4e1ea17874186102463c3e36af561305a229d2162a636e9084b13d3ec53aa151"
+  },
+  "incremental_delta": {
+    "added": 0,
+    "removed": 0,
+    "unchanged": 50,
+    "existing_family_splits_unchanged": true,
+    "previous_manifest_sha256": "71265b909a3d526e473648576c91de3c440721f26ec985ca967bc66235567fb3"
+  }
+}
