@@ -1,0 +1,311 @@
+{
+  "curve": [
+    {
+      "epoch": 0,
+      "dataset": "SC-bench-knowledge",
+      "n": 226,
+      "before": 189,
+      "after": 189,
+      "gains": 0,
+      "losses": 0
+    },
+    {
+      "epoch": 0,
+      "dataset": "LogistikaBench",
+      "n": 1446,
+      "before": 1180,
+      "after": 1180,
+      "gains": 0,
+      "losses": 0
+    },
+    {
+      "epoch": 0,
+      "dataset": "all",
+      "n": 1672,
+      "before": 1369,
+      "after": 1369,
+      "gains": 0,
+      "losses": 0
+    },
+    {
+      "epoch": 1,
+      "dataset": "SC-bench-knowledge",
+      "n": 226,
+      "before": 189,
+      "after": 190,
+      "gains": 2,
+      "losses": 1
+    },
+    {
+      "epoch": 1,
+      "dataset": "LogistikaBench",
+      "n": 1446,
+      "before": 1180,
+      "after": 1182,
+      "gains": 4,
+      "losses": 2
+    },
+    {
+      "epoch": 1,
+      "dataset": "all",
+      "n": 1672,
+      "before": 1369,
+      "after": 1372,
+      "gains": 6,
+      "losses": 3
+    },
+    {
+      "epoch": 2,
+      "dataset": "SC-bench-knowledge",
+      "n": 226,
+      "before": 189,
+      "after": 189,
+      "gains": 1,
+      "losses": 1
+    },
+    {
+      "epoch": 2,
+      "dataset": "LogistikaBench",
+      "n": 1446,
+      "before": 1180,
+      "after": 1180,
+      "gains": 6,
+      "losses": 6
+    },
+    {
+      "epoch": 2,
+      "dataset": "all",
+      "n": 1672,
+      "before": 1369,
+      "after": 1369,
+      "gains": 7,
+      "losses": 7
+    },
+    {
+      "epoch": 3,
+      "dataset": "SC-bench-knowledge",
+      "n": 226,
+      "before": 189,
+      "after": 191,
+      "gains": 2,
+      "losses": 0
+    },
+    {
+      "epoch": 3,
+      "dataset": "LogistikaBench",
+      "n": 1446,
+      "before": 1180,
+      "after": 1180,
+      "gains": 5,
+      "losses": 5
+    },
+    {
+      "epoch": 3,
+      "dataset": "all",
+      "n": 1672,
+      "before": 1369,
+      "after": 1371,
+      "gains": 7,
+      "losses": 5
+    },
+    {
+      "epoch": 4,
+      "dataset": "SC-bench-knowledge",
+      "n": 226,
+      "before": 189,
+      "after": 190,
+      "gains": 1,
+      "losses": 0
+    },
+    {
+      "epoch": 4,
+      "dataset": "LogistikaBench",
+      "n": 1446,
+      "before": 1180,
+      "after": 1177,
+      "gains": 7,
+      "losses": 10
+    },
+    {
+      "epoch": 4,
+      "dataset": "all",
+      "n": 1672,
+      "before": 1369,
+      "after": 1367,
+      "gains": 8,
+      "losses": 10
+    },
+    {
+      "epoch": 5,
+      "dataset": "SC-bench-knowledge",
+      "n": 226,
+      "before": 189,
+      "after": 191,
+      "gains": 2,
+      "losses": 0
+    },
+    {
+      "epoch": 5,
+      "dataset": "LogistikaBench",
+      "n": 1446,
+      "before": 1180,
+      "after": 1177,
+      "gains": 8,
+      "losses": 11
+    },
+    {
+      "epoch": 5,
+      "dataset": "all",
+      "n": 1672,
+      "before": 1369,
+      "after": 1368,
+      "gains": 10,
+      "losses": 11
+    },
+    {
+      "epoch": 6,
+      "dataset": "SC-bench-knowledge",
+      "n": 226,
+      "before": 189,
+      "after": 191,
+      "gains": 2,
+      "losses": 0
+    },
+    {
+      "epoch": 6,
+      "dataset": "LogistikaBench",
+      "n": 1446,
+      "before": 1180,
+      "after": 1177,
+      "gains": 7,
+      "losses": 10
+    },
+    {
+      "epoch": 6,
+      "dataset": "all",
+      "n": 1672,
+      "before": 1369,
+      "after": 1368,
+      "gains": 9,
+      "losses": 10
+    },
+    {
+      "epoch": 7,
+      "dataset": "SC-bench-knowledge",
+      "n": 226,
+      "before": 189,
+      "after": 190,
+      "gains": 1,
+      "losses": 0
+    },
+    {
+      "epoch": 7,
+      "dataset": "LogistikaBench",
+      "n": 1446,
+      "before": 1180,
+      "after": 1178,
+      "gains": 8,
+      "losses": 10
+    },
+    {
+      "epoch": 7,
+      "dataset": "all",
+      "n": 1672,
+      "before": 1369,
+      "after": 1368,
+      "gains": 9,
+      "losses": 10
+    },
+    {
+      "epoch": 8,
+      "dataset": "SC-bench-knowledge",
+      "n": 226,
+      "before": 189,
+      "after": 190,
+      "gains": 1,
+      "losses": 0
+    },
+    {
+      "epoch": 8,
+      "dataset": "LogistikaBench",
+      "n": 1446,
+      "before": 1180,
+      "after": 1174,
+      "gains": 7,
+      "losses": 13
+    },
+    {
+      "epoch": 8,
+      "dataset": "all",
+      "n": 1672,
+      "before": 1369,
+      "after": 1364,
+      "gains": 8,
+      "losses": 13
+    }
+  ],
+  "audit": [
+    {
+      "epoch": 0,
+      "requests": 5016,
+      "invalid": 0,
+      "truncated": 0
+    },
+    {
+      "epoch": 1,
+      "requests": 5016,
+      "invalid": 0,
+      "truncated": 0
+    },
+    {
+      "epoch": 2,
+      "requests": 5016,
+      "invalid": 0,
+      "truncated": 0
+    },
+    {
+      "epoch": 3,
+      "requests": 5016,
+      "invalid": 0,
+      "truncated": 0
+    },
+    {
+      "epoch": 4,
+      "requests": 5016,
+      "invalid": 0,
+      "truncated": 0
+    },
+    {
+      "epoch": 5,
+      "requests": 5016,
+      "invalid": 1,
+      "truncated": 0
+    },
+    {
+      "epoch": 6,
+      "requests": 5016,
+      "invalid": 0,
+      "truncated": 0
+    },
+    {
+      "epoch": 7,
+      "requests": 5016,
+      "invalid": 0,
+      "truncated": 0
+    },
+    {
+      "epoch": 8,
+      "requests": 5016,
+      "invalid": 0,
+      "truncated": 0
+    }
+  ],
+  "prompt_hashes_equal_across_epochs": true,
+  "original_arm": {
+    "steps": 116,
+    "input_tokens": 1346808,
+    "every_step_matches_frozen_plan": true
+  },
+  "confirmation_candidate_epoch": 1,
+  "promotion": false
+}

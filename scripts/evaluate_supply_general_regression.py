@@ -36,7 +36,8 @@ def main():
     outputs=llm.generate(prompts,SamplingParams(temperature=0,max_tokens=2048,seed=1024))
     outputs=sorted(outputs,key=lambda o:int(o.request_id));assert len(outputs)==len(rows)
     results=[]
-    for r,o in zip(rows,outputs):
+    for r,prompt,o in zip(rows,prompts,outputs):
+        assert list(o.prompt_token_ids)==prompt['prompt_token_ids'], 'Regression prompt/output mismatch'
         assert o.outputs
         prediction=o.outputs[0].text;truncated=o.outputs[0].finish_reason=='length'
         score=compute_score(r['dataset'],prediction,r['ground_truth'],{})
