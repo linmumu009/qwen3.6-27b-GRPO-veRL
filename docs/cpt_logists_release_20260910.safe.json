@@ -1,0 +1,161 @@
+{
+  "version": "llin-logists-v4",
+  "date": "2026-09-10",
+  "status": "READY_FOR_CPT",
+  "raw_sources": 13,
+  "pdf_pages": 4050,
+  "mineru_books": 7,
+  "mineru_pages": 2189,
+  "mineru_parts": 14,
+  "eligible_books": 9,
+  "verification": {
+    "status": "PASS",
+    "manifest_sha256": "f98ccb2379c48da6dc2ce82714d8a502c97141c9cbf5d9011026380256ce748d",
+    "checks": [
+      "artifact and original-source hashes",
+      "JSONL/Parquet equality",
+      "actual tokenizer lengths and special tokens",
+      "single-source block provenance and page bounds",
+      "group separation and unique released blocks",
+      "1672-case exact/13-word fingerprint isolation",
+      "cross-split block 5-word Jaccard >=0.85 (>=40 words)"
+    ],
+    "splits": {
+      "train": {
+        "records": 3016,
+        "content_tokens": 1180181,
+        "max_sequence_tokens": 4068,
+        "median_sequence_tokens": 191,
+        "tables": 248,
+        "display_formulas": 196
+      },
+      "validation": {
+        "records": 161,
+        "content_tokens": 120066,
+        "max_sequence_tokens": 4074,
+        "median_sequence_tokens": 463,
+        "tables": 24,
+        "display_formulas": 44
+      }
+    },
+    "source_counts": {
+      "Beyond Lean_ Simulation in Practice Second Edition.pdf": {
+        "train_tokens": 178564,
+        "train_records": 226,
+        "validation_tokens": 7566,
+        "validation_records": 12
+      },
+      "Container terminals and automated transport systems  logistics control issues and quantitative decision support (Günther, Hans Otto Kim, Kap Hwan) (z-library.sk, 1lib.sk, z-lib.sk).pdf": {
+        "train_tokens": 211960,
+        "train_records": 294
+      },
+      "Distribution logistics  advanced solutions to practical problems (Fleischmann, Bernhard Klose, Andreas etc.) (z-library.sk, 1lib.sk, z-lib.sk).pdf": {
+        "train_tokens": 110638,
+        "train_records": 161,
+        "validation_tokens": 35178,
+        "validation_records": 22
+      },
+      "Fundamentals of Global Strategy.pdf": {
+        "train_tokens": 91588,
+        "train_records": 543
+      },
+      "International Trade - Theory and Policy.pdf": {
+        "train_tokens": 159662,
+        "train_records": 1103
+      },
+      "JSI_LogisticHandbook_English_2019_combined_web.pdf": {
+        "train_tokens": 87754,
+        "train_records": 141,
+        "validation_tokens": 6963,
+        "validation_records": 16
+      },
+      "Knoop+-+Traffic+Flow+Theory.pdf": {
+        "train_tokens": 106453,
+        "train_records": 206,
+        "validation_tokens": 9638,
+        "validation_records": 27
+      },
+      "Managing supply chain risk (ManMohan S. Sodhi etc.) (z-library.sk, 1lib.sk, z-lib.sk).pdf": {
+        "train_tokens": 113969,
+        "train_records": 148,
+        "validation_tokens": 57215,
+        "validation_records": 71
+      },
+      "wh-sci-0.98.1.pdf": {
+        "train_tokens": 119593,
+        "train_records": 194,
+        "validation_tokens": 3506,
+        "validation_records": 13
+      }
+    },
+    "cross_split_near_duplicate_pairs": 0,
+    "benchmark_source_families_excluded": 4,
+    "training_started": false,
+    "limitations": [
+      "Sampled visual QA, not a proof that every OCR formula is correct",
+      "No semantic benchmark decontamination guarantee"
+    ]
+  },
+  "server_loader_validation": {
+    "status": "PASS",
+    "device": "CPU",
+    "training_started": false,
+    "tokenizer_sha256": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523",
+    "splits": {
+      "train": {
+        "records": 3016,
+        "sequence_tokens": 1183197,
+        "eos_and_loss_mask": "PASS",
+        "truncated": 0
+      },
+      "validation": {
+        "records": 161,
+        "sequence_tokens": 120227,
+        "eos_and_loss_mask": "PASS",
+        "truncated": 0
+      }
+    },
+    "loader_sha256": "ed7900844c58da7ce3ba23c538e6b0c6aecc8d3d1665b1aeb92eb5159862f8ee"
+  },
+  "reproducibility": {
+    "status": "PASS",
+    "byte_identical_files": 8
+  },
+  "sampled_visual_qa": [
+    {
+      "source": "Warehouse & Distribution Science",
+      "pdf_page": 125,
+      "check": "allocation objective, inequality constraints and variable definitions compared with original PDF"
+    },
+    {
+      "source": "Distribution Logistics",
+      "pdf_page": 22,
+      "check": "scanned column-generation equations compared with original PDF; remains OCR, not expert-certified mathematics"
+    },
+    {
+      "source": "Supply Chain Manager Handbook (JSI)",
+      "pdf_page": 47,
+      "check": "3-column merged-header table, 300/780000 stock and 120/253 consumption examples retained"
+    },
+    {
+      "source": "Beyond Lean",
+      "pdf_page": 221,
+      "check": "pseudocode embedded as image; excluded rather than reconstructed"
+    }
+  ],
+  "dataset_contract": {
+    "text_key": "text",
+    "max_length": 4096,
+    "truncation": "error",
+    "pad_mode": "no_padding",
+    "chat_template": false,
+    "eos_added_by_loader": 248046
+  },
+  "server_directory": "/workspace/llin-verl-grpo/runs/llin-logists-cpt-v4-20260910",
+  "model_name_prefix": "llin",
+  "training_started": false,
+  "artifact_sha256": {
+    "train.parquet": "f79c1cf5c7418f73fa6ca099c397a66915bec7366f010dbbb2366b3d02881c5e",
+    "validation.parquet": "4b8008a0864e8291868f228e48a00f773cf16571985b4b20c498a698195db6ee"
+  }
+}
