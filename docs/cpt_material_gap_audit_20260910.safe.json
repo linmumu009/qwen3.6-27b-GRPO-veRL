@@ -1,0 +1,87 @@
+{
+  "total": 1672,
+  "wrong": 303,
+  "categories": {
+    "LogistikaBench|transport": {
+      "n": 404,
+      "wrong": 71
+    },
+    "LogistikaBench|material_handling": {
+      "n": 696,
+      "wrong": 125
+    },
+    "LogistikaBench|procurement": {
+      "n": 42,
+      "wrong": 6
+    },
+    "SC-bench-knowledge|Procurement": {
+      "n": 12,
+      "wrong": 4
+    },
+    "LogistikaBench|supply_chain": {
+      "n": 102,
+      "wrong": 13
+    },
+    "SC-bench-knowledge|Logistics Collaboration": {
+      "n": 73,
+      "wrong": 12
+    },
+    "LogistikaBench|warehousing": {
+      "n": 202,
+      "wrong": 51
+    },
+    "SC-bench-knowledge|Finance and Operations": {
+      "n": 20,
+      "wrong": 3
+    },
+    "SC-bench-knowledge|Fulfillment": {
+      "n": 79,
+      "wrong": 13
+    },
+    "SC-bench-knowledge|In-warehouse": {
+      "n": 12,
+      "wrong": 3
+    },
+    "SC-bench-knowledge|Planning": {
+      "n": 14,
+      "wrong": 2
+    },
+    "SC-bench-knowledge|Network": {
+      "n": 3,
+      "wrong": 0
+    },
+    "SC-bench-knowledge|unknown": {
+      "n": 4,
+      "wrong": 0
+    },
+    "SC-bench-knowledge|Other": {
+      "n": 3,
+      "wrong": 0
+    },
+    "SC-bench-knowledge|Inventory": {
+      "n": 4,
+      "wrong": 0
+    },
+    "SC-bench-knowledge|Merchandise": {
+      "n": 1,
+      "wrong": 0
+    },
+    "SC-bench-knowledge|Returns and Waste": {
+      "n": 1,
+      "wrong": 0
+    }
+  },
+  "quality_flags": {
+    "options_269": {
+      "n": 305,
+      "wrong": 92
+    },
+    "visual_reference_regex": {
+      "n": 8,
+      "wrong": 3
+    }
+  },
+  "quality_flags_are_screening_not_adjudication": true,
+  "benchmark_use_after_survey": "development_only",
+  "question_text_exported": false
+}

@@ -1,0 +1,92 @@
+[
+  {
+    "id": "mit_key",
+    "title": "MITx SCM Key Concepts",
+    "url": "https://scx-static-assets.s3.amazonaws.com/SCx%20Key%20Concept%20Documents/MITx_MicroMasters_SCM_KeyConcepts.pdf",
+    "topic": "supply_chain_quantitative",
+    "rights_status": "CC_BY_NC_SA_verify_edition",
+    "benchmark_source_linked": true,
+    "crawl": null,
+    "training_approved": false
+  },
+  {
+    "id": "ports_book",
+    "title": "Ports and Waterways publisher page",
+    "url": "https://books.open.tudelft.nl/home/catalog/book/204",
+    "topic": "ports_waterways",
+    "rights_status": "verify_publisher_license",
+    "benchmark_source_linked": true,
+    "crawl": null,
+    "training_approved": false
+  },
+  {
+    "id": "ivanov",
+    "title": "Global Supply Chain and Operations Management author resources",
+    "url": "https://sites.google.com/view/profdrdrhabildmitryivanov/books/global-supply-chain-and-operations-management",
+    "topic": "supply_chain_operations",
+    "rights_status": "copyrighted_reference_only",
+    "benchmark_source_linked": true,
+    "crawl": null,
+    "training_approved": false
+  },
+  {
+    "id": "international_business",
+    "title": "Challenges and Opportunities in International Business",
+    "url": "https://2012books.lardbucket.org/books/challenges-and-opportunities-in-international-business/",
+    "topic": "international_business",
+    "rights_status": "CC_BY_NC_SA_verify_book",
+    "benchmark_source_linked": true,
+    "crawl": "pdf",
+    "training_approved": false
+  },
+  {
+    "id": "rabbit_priority",
+    "title": "RabbitMQ priority queues",
+    "url": "https://www.rabbitmq.com/docs/priority",
+    "topic": "messaging_priority",
+    "rights_status": "public_access_license_review_required",
+    "benchmark_source_linked": false,
+    "crawl": null,
+    "training_approved": false
+  },
+  {
+    "id": "rabbit_consumer",
+    "title": "RabbitMQ consumer priorities",
+    "url": "https://www.rabbitmq.com/docs/consumer-priority",
+    "topic": "messaging_priority",
+    "rights_status": "public_access_license_review_required",
+    "benchmark_source_linked": false,
+    "crawl": null,
+    "training_approved": false
+  },
+  {
+    "id": "china_customs194",
+    "title": "China cross-border ecommerce supervision announcement 194",
+    "url": "https://www.mofcom.gov.cn/zfxxgk/gkml/art/2021/art_1e97a9dbe17b45398e962927596b16f9.html",
+    "topic": "crossborder_china",
+    "rights_status": "official_historical_version_effectivity_review",
+    "benchmark_source_linked": false,
+    "crawl": null,
+    "training_approved": false
+  },
+  {
+    "id": "china_tax49",
+    "title": "China cross-border retail import tax policy 2018-49",
+    "url": "https://www.chinatax.gov.cn/chinatax/n810341/n810765/n3359382/201812/c4182338/content.html",
+    "topic": "crossborder_china",
+    "rights_status": "official_historical_version_effectivity_review",
+    "benchmark_source_linked": false,
+    "crawl": null,
+    "training_approved": false
+  },
+  {
+    "id": "mit_terms",
+    "title": "MIT OCW terms and license",
+    "url": "https://ocw.mit.edu/pages/privacy-and-terms-of-use/",
+    "topic": "license_evidence",
+    "rights_status": "public_access_license_review_required",
+    "benchmark_source_linked": false,
+    "crawl": null,
+    "training_approved": false
+  }
+]

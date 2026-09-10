@@ -1,0 +1,1132 @@
+[
+  {
+    "sha256": "1c4db4f28175cbce2e130c73e2f4d09ba8e295783d318a6519a40ab7fe731882",
+    "id": "warehouse",
+    "pages": 337,
+    "readable": true,
+    "text_chars": 584258,
+    "words": 104351,
+    "low_text_pages": 33,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "c1b2544efa1004345193cef129bfdbb8ce5473fdc135e2af03cb75d1cfa3d30b",
+    "id": "port_toolkit",
+    "pages": 77,
+    "readable": true,
+    "text_chars": 178434,
+    "words": 23719,
+    "low_text_pages": 3,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "4c7f5b7de9da1aef7750bfdbeca9ee62df0e98de42cb181424915a22e00ccf64",
+    "id": "icc_checklist",
+    "pages": 15,
+    "readable": true,
+    "text_chars": 24114,
+    "words": 3984,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "c205f3e7be867b6c787fbeb7f7f6c913a93ce2054d1275fbbdc210fa5c5fc14d",
+    "id": "aws_patterns",
+    "pages": 107,
+    "readable": true,
+    "text_chars": 164854,
+    "words": 20893,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "5ba61e3461758e33724e74c27c5e996fde3300906c59b51064c111221f18c680",
+    "id": "openstax_is",
+    "pages": 502,
+    "readable": true,
+    "text_chars": 1577773,
+    "words": 228567,
+    "low_text_pages": 3,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "3ee6b110397a749ea71222d3bb6e1d7e28452d780f8ba6c585bf3619075528c0",
+    "id": "mit_scm",
+    "pages": 22,
+    "readable": true,
+    "text_chars": 6487,
+    "words": 1177,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "175854724aef133372aa0c5f063778cd249d35c4ab50a6b3065b82b87fd1e21a",
+    "id": "mit_scm",
+    "pages": 42,
+    "readable": true,
+    "text_chars": 13855,
+    "words": 2338,
+    "low_text_pages": 6,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "c55bb42d31d31e324e12c717dc0f7c61564c372abaf46b6a4c09009c2cb82627",
+    "id": "mit_scm",
+    "pages": 85,
+    "readable": true,
+    "text_chars": 28416,
+    "words": 4615,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "c5c54083895a804bab4ac08acf79e79a538612dbb1a08e155f815bdd9720dafa",
+    "id": "mit_scm",
+    "pages": 15,
+    "readable": true,
+    "text_chars": 8940,
+    "words": 1318,
+    "low_text_pages": 1,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "547d0c7231c7249f2e26dfbcc9aa7402d5ecbcd8d43afd0741f0951cf27d82bc",
+    "id": "mit_scm",
+    "pages": 17,
+    "readable": true,
+    "text_chars": 4640,
+    "words": 721,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "c16bcae39055f13917d6c023814b48b84ba5e02c24456fdcd7067298e56785b9",
+    "id": "mit_scm",
+    "pages": 39,
+    "readable": true,
+    "text_chars": 13465,
+    "words": 2230,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "495c581cdefc7377954a0a44f9b6e47604ec537b52d4eca902a737fef38d797f",
+    "id": "mit_scm",
+    "pages": 10,
+    "readable": true,
+    "text_chars": 692,
+    "words": 83,
+    "low_text_pages": 5,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "ab92c02ba87ba5c36407e23896a04e64c3ebd4d65f7693047689ffa387f450f1",
+    "id": "mit_scm",
+    "pages": 3,
+    "readable": true,
+    "text_chars": 2264,
+    "words": 420,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "bd6fc369aef2aa77f4f377b517cc3d9887ab46bb3e927aefd00dd71e598efa67",
+    "id": "mit_flow",
+    "pages": 9,
+    "readable": true,
+    "text_chars": 5808,
+    "words": 846,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "5d3dcce617ded8a8d2755c11ed71fd050af6e9c74ae52e580125cf9ac3080d7f",
+    "id": "mit_flow",
+    "pages": 13,
+    "readable": true,
+    "text_chars": 4848,
+    "words": 690,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "2d11516ea792b587e49fc4faad81b3d53db206eda2ea7ae2e086bf1eb49ce1fa",
+    "id": "mit_flow",
+    "pages": 5,
+    "readable": true,
+    "text_chars": 4581,
+    "words": 655,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "8353d3c8709ac135f035c5d2290a9e757ca086b6d68d4927f74e3af63e2fa647",
+    "id": "mit_flow",
+    "pages": 14,
+    "readable": true,
+    "text_chars": 4203,
+    "words": 851,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "a2c399b468055fa2c4d8ba4920993fa6d390c1fb8e49dab5cd19df16cb4ad0a9",
+    "id": "mit_flow",
+    "pages": 7,
+    "readable": true,
+    "text_chars": 14045,
+    "words": 2448,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "74f8babc1ae550f89906c4c1ad78b813283134802dee290bd907943f146ccf53",
+    "id": "mit_flow",
+    "pages": 3,
+    "readable": true,
+    "text_chars": 605,
+    "words": 160,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "0bfb5d55bfccde306c6c9b116127f2ff193e1f7fb9c8a47ecf867ead0015eadf",
+    "id": "mit_flow",
+    "pages": 8,
+    "readable": true,
+    "text_chars": 7470,
+    "words": 1396,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "22b6f9b3bb7a2e8f0a519bb8318a012c0d88da062d4657888edd00981e4c7f5f",
+    "id": "mit_flow",
+    "pages": 1,
+    "readable": true,
+    "text_chars": 157,
+    "words": 36,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "ccfc09d7bcd7d27a053aa14d1c4252ca54ff04020603f134d626bffb1a0f65d5",
+    "id": "mit_flow",
+    "pages": 15,
+    "readable": true,
+    "text_chars": 11998,
+    "words": 2427,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "9a6bae44a2b5904dd210f9f12121fead67dcffec57d19301ce69a7e7ce02f913",
+    "id": "mit_flow",
+    "pages": 11,
+    "readable": true,
+    "text_chars": 9848,
+    "words": 1745,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "3e9f51dfff4568245b00e339a4b289d0962e5012f6bb9615ab2ed9ba47f57498",
+    "id": "mit_flow",
+    "pages": 8,
+    "readable": true,
+    "text_chars": 8573,
+    "words": 1981,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "672aaa6993e201921a252971ec28b86ff289d0d54f9de28b6307aed1f3e643bb",
+    "id": "mit_flow",
+    "pages": 6,
+    "readable": true,
+    "text_chars": 5154,
+    "words": 1009,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "7634ee39040493a7ea9476d1b2147c701adcf68c178f8c7dfe2c861c570f0f84",
+    "id": "mit_flow",
+    "pages": 9,
+    "readable": true,
+    "text_chars": 8323,
+    "words": 1681,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "2d5c50d65117763489a691988e4a37f9c9f12d7e8b33e7d6a051cc8799c86ab4",
+    "id": "mit_flow",
+    "pages": 11,
+    "readable": true,
+    "text_chars": 11486,
+    "words": 2055,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "62a7bb32499e9aac857c73d6c9813d083938f1b8c71296d627bfb2a758171dc6",
+    "id": "mit_flow",
+    "pages": 8,
+    "readable": true,
+    "text_chars": 7304,
+    "words": 1209,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "61bb955b38729c11fddc1dfc8c8615bd2a1708bca56bbb5ce99fe3cc1034f57d",
+    "id": "mit_flow",
+    "pages": 15,
+    "readable": true,
+    "text_chars": 14866,
+    "words": 2545,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "4708bae731d609a15e348e427ffa3393ac10c4041c0df045e5b1fb550d227043",
+    "id": "mit_flow",
+    "pages": 12,
+    "readable": true,
+    "text_chars": 9809,
+    "words": 1715,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "d58e7708b3cc2f069014056edd5aa6083fb09e3b0b8703520eac6a921d672cf6",
+    "id": "mit_transport",
+    "pages": 10,
+    "readable": true,
+    "text_chars": 3276,
+    "words": 519,
+    "low_text_pages": 1,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "07f232bc685a2f437a08a23413a1ed218a6f430e3d62b5ff21fdec61cffa7251",
+    "id": "mit_transport",
+    "pages": 8,
+    "readable": true,
+    "text_chars": 1566,
+    "words": 248,
+    "low_text_pages": 2,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "a5a6d30035a50e9671bc6dfcc249dbb2d8ac266eb1d8ef0d45b4082694d4a464",
+    "id": "mit_transport",
+    "pages": 10,
+    "readable": true,
+    "text_chars": 2320,
+    "words": 320,
+    "low_text_pages": 2,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "c2afb6c4db2af58399ec3f8b16b5273c6e57285e4d207c6a60cb0dcc256d3116",
+    "id": "mit_transport",
+    "pages": 20,
+    "readable": true,
+    "text_chars": 3588,
+    "words": 535,
+    "low_text_pages": 1,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "1c357fc77cc9ddde27367c5635086fc3cc6340331ed9a3bbb145ab632867b168",
+    "id": "mit_transport",
+    "pages": 10,
+    "readable": true,
+    "text_chars": 1376,
+    "words": 193,
+    "low_text_pages": 2,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "918474bcaaf307c5d3d2e7a115fcf3bfb68ed78fbf3d99c959328c22c1a1ee1c",
+    "id": "mit_transport",
+    "pages": 19,
+    "readable": true,
+    "text_chars": 6489,
+    "words": 846,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "231e91286209ea8767f3fed65283315047e22eda5d3fc9c40a870236d17c8099",
+    "id": "mit_transport",
+    "pages": 38,
+    "readable": true,
+    "text_chars": 8757,
+    "words": 1322,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "8911b8acf825229ea9c306fe9d896ad9b8b4890000880ceed6f6e4e94bedc5e6",
+    "id": "mit_transport",
+    "pages": 102,
+    "readable": true,
+    "text_chars": 32476,
+    "words": 4842,
+    "low_text_pages": 5,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "c4aff2049946df34f1087d64028e0809f089595c9ee3e92e4097e386a10473e1",
+    "id": "mit_transport",
+    "pages": 10,
+    "readable": true,
+    "text_chars": 2266,
+    "words": 363,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "a5fd3d0216cd78d0319eba37b72ad4ab6759230d751eea055c3f5612a2507708",
+    "id": "mit_transport",
+    "pages": 39,
+    "readable": true,
+    "text_chars": 12533,
+    "words": 1875,
+    "low_text_pages": 1,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "81434ad15b5c9fcd2325e43fe82bb65f4b5ce3865e88f19352f7b6188df26dd1",
+    "id": "mit_transport",
+    "pages": 89,
+    "readable": true,
+    "text_chars": 26165,
+    "words": 4397,
+    "low_text_pages": 1,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "86965e5d2bd2cf499e32cefe22f22c3e7e462a78fcc859c6805e1c66bdec57ca",
+    "id": "mit_transport",
+    "pages": 6,
+    "readable": true,
+    "text_chars": 1137,
+    "words": 181,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "dcfbd2a0bce5dbd7f1a69c0bd49dfb8eec36b690244889543713c921926c23f1",
+    "id": "mit_transport",
+    "pages": 27,
+    "readable": true,
+    "text_chars": 5979,
+    "words": 942,
+    "low_text_pages": 2,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "696af9478d12d20f27f04b3838bddc7c5746302d33cb9656605363440fe41c18",
+    "id": "mit_transport",
+    "pages": 16,
+    "readable": true,
+    "text_chars": 2096,
+    "words": 337,
+    "low_text_pages": 2,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "a3f02fbf93186981c79632ef8583a438f59252cfabd820498203e60017585398",
+    "id": "mit_transport",
+    "pages": 20,
+    "readable": true,
+    "text_chars": 3996,
+    "words": 596,
+    "low_text_pages": 1,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "9e4c175d353f5544f774a5ece9675375e0871e821edef763f76f4c701fe10687",
+    "id": "mit_transport",
+    "pages": 23,
+    "readable": true,
+    "text_chars": 4905,
+    "words": 761,
+    "low_text_pages": 1,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "7b00c35f899b1bdbfb407743db5e559a1cb422eab4e99b04b72c3146f5fc27bd",
+    "id": "mit_transport",
+    "pages": 28,
+    "readable": true,
+    "text_chars": 7390,
+    "words": 1160,
+    "low_text_pages": 2,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "620ee65be7221b57a002f54fe6233e9f23d114db16e03e969083af5b5d638b1f",
+    "id": "mit_transport",
+    "pages": 26,
+    "readable": true,
+    "text_chars": 8608,
+    "words": 1218,
+    "low_text_pages": 1,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "fbf969eb415825539c8244423c5487f1cee4bea1a1b8c0d75e202a501a5195e6",
+    "id": "mit_transport",
+    "pages": 21,
+    "readable": true,
+    "text_chars": 5569,
+    "words": 814,
+    "low_text_pages": 3,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "dc430148aba877b31a9c55ffd7bd6ed2d1c282e6cf48b9b8619da636c80820a3",
+    "id": "mit_transport",
+    "pages": 18,
+    "readable": true,
+    "text_chars": 3952,
+    "words": 593,
+    "low_text_pages": 2,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "5f51a0ad526f82c4f99d1876a74edbbb021e92b10403c43504d7c7c0b4f05d56",
+    "id": "mit_transport",
+    "pages": 30,
+    "readable": true,
+    "text_chars": 7339,
+    "words": 1204,
+    "low_text_pages": 2,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "783144df04fbab398c8f755c76a3dc72e86603c9209559da16fa4ebd1c5adbef",
+    "id": "mit_transport",
+    "pages": 12,
+    "readable": true,
+    "text_chars": 2000,
+    "words": 307,
+    "low_text_pages": 3,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "42eb27500e7be75c2c2b55140982a7ab66d1dd39f5d2cb40a33c80f8b09b6278",
+    "id": "mit_transport",
+    "pages": 18,
+    "readable": true,
+    "text_chars": 4706,
+    "words": 810,
+    "low_text_pages": 3,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "8d66c77d1b549e2502b20d98212eda5e06ee84233d20b61227d39d290ffa1b0a",
+    "id": "mit_transport",
+    "pages": 20,
+    "readable": true,
+    "text_chars": 3793,
+    "words": 619,
+    "low_text_pages": 4,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "fa6eb1022c790d4abef5068a00170f4b7e622e3a2c2c9bf7f0b11e14f95d3e54",
+    "id": "mit_transport",
+    "pages": 18,
+    "readable": true,
+    "text_chars": 5757,
+    "words": 1000,
+    "low_text_pages": 3,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "f3009d891918fc72b99ed51aa7c6d737c029aca5535a168d7d240294ede1db13",
+    "id": "mit_transport",
+    "pages": 24,
+    "readable": true,
+    "text_chars": 7787,
+    "words": 1269,
+    "low_text_pages": 2,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "8d9a012e948ff7d85f475dab02ebb7c33107a1ca98aa7e5626cae21f563d51ab",
+    "id": "mit_transport",
+    "pages": 11,
+    "readable": true,
+    "text_chars": 2801,
+    "words": 469,
+    "low_text_pages": 2,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "e74a3bfbb252fc2b5310d56ca66670c612ab3c982eee4b5364d12b0bcb67af6a",
+    "id": "mit_transport",
+    "pages": 14,
+    "readable": true,
+    "text_chars": 3993,
+    "words": 619,
+    "low_text_pages": 3,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "fcc628fb785bb8c53a0d48120e339c64c15eebd7bccd3cb6ad9c21f6790fddd4",
+    "id": "mit_transport",
+    "pages": 18,
+    "readable": true,
+    "text_chars": 3680,
+    "words": 601,
+    "low_text_pages": 1,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "6da47610be56d5e902c9475919e264a533aaff1e6d4316075d28d4786f0af830",
+    "id": "mit_transport",
+    "pages": 12,
+    "readable": true,
+    "text_chars": 2679,
+    "words": 366,
+    "low_text_pages": 3,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "844daf4b0cac392267bcaef604c2a2e16e55f7f3235dc9a8a32513267e9561d8",
+    "id": "mit_transport",
+    "pages": 12,
+    "readable": true,
+    "text_chars": 3085,
+    "words": 497,
+    "low_text_pages": 3,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "568a3e76ade8e0c17dfbbd0cc59b1d55611d0bab7ac416aaa2863bd7ea5d3b2d",
+    "id": "mit_transport",
+    "pages": 25,
+    "readable": true,
+    "text_chars": 9800,
+    "words": 1382,
+    "low_text_pages": 3,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "fe25565b6c08183db560890b8e4bcb258f34d196a1195a87f23a2e22ab67f1d2",
+    "id": "mit_transport",
+    "pages": 20,
+    "readable": true,
+    "text_chars": 6653,
+    "words": 1104,
+    "low_text_pages": 2,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "d6fa91c2dc0ed9f20d6af235e238f58180b194b6eef3689286409e6cac784e25",
+    "id": "mit_transport",
+    "pages": 10,
+    "readable": true,
+    "text_chars": 1851,
+    "words": 303,
+    "low_text_pages": 2,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "95c720739b05de9b1ee778a10bec4b5e90385e0c42656c7011a0382234d4ca5f",
+    "id": "mit_transport",
+    "pages": 20,
+    "readable": true,
+    "text_chars": 3507,
+    "words": 652,
+    "low_text_pages": 3,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "35e79a4ae77f776bfe8bde3e391a71adcffc474c4801da4fa68dc36e739604a0",
+    "id": "mit_transport",
+    "pages": 25,
+    "readable": true,
+    "text_chars": 5159,
+    "words": 798,
+    "low_text_pages": 3,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "e365119dc8360cd09e3c49e7c3f4108b09b5f389d15f9f05bc6d735d5064adc2",
+    "id": "mit_transport",
+    "pages": 18,
+    "readable": true,
+    "text_chars": 3962,
+    "words": 582,
+    "low_text_pages": 2,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "8be62f990c63fce384d6b3131aadae4fed5d156f3af21b1c7d39e8817d336ef6",
+    "id": "mit_transport",
+    "pages": 14,
+    "readable": true,
+    "text_chars": 4545,
+    "words": 668,
+    "low_text_pages": 2,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "e106ee87b4a0f7d011de650dd5c21670111a4ca48875f8b11ff8ecb3179959d3",
+    "id": "mit_intro_transport",
+    "pages": 29,
+    "readable": true,
+    "text_chars": 8065,
+    "words": 1082,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "10c3f4add3efb0726b30c95436bf17782a3daad0e6c4e3f0172233bf3779fbcc",
+    "id": "mit_intro_transport",
+    "pages": 23,
+    "readable": true,
+    "text_chars": 4494,
+    "words": 671,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "8749bd8f9d40a66fc8d76d30a11f83a723f85ba2aeea878c02ff3dd09465072b",
+    "id": "mit_intro_transport",
+    "pages": 10,
+    "readable": true,
+    "text_chars": 1946,
+    "words": 279,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "da1c142784493e7020c788d6897269ca0d9ed13dc9e430b4abd3730c504bc89b",
+    "id": "mit_intro_transport",
+    "pages": 34,
+    "readable": true,
+    "text_chars": 11620,
+    "words": 1710,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "8509035a9bae098592911e690b66aafc04dc3fcfae31bea98c648fe41c80c650",
+    "id": "mit_intro_transport",
+    "pages": 58,
+    "readable": true,
+    "text_chars": 16854,
+    "words": 2928,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "27b50d67e5433e1f494e0b61ded3916a3e6b163b544967eab383d23b7910226d",
+    "id": "mit_intro_transport",
+    "pages": 68,
+    "readable": true,
+    "text_chars": 25290,
+    "words": 4076,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "4a3198bc59a2352a881bbdbff2f3d155a92f5d39a8e522066a27c0a1859f8714",
+    "id": "mit_intro_transport",
+    "pages": 53,
+    "readable": true,
+    "text_chars": 20296,
+    "words": 3239,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "a497b55fdefab6d497c9228e7ef2d1261f10286e3921b779464649a5f63a695d",
+    "id": "mit_intro_transport",
+    "pages": 25,
+    "readable": true,
+    "text_chars": 10451,
+    "words": 1684,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "98fc34d146f2162415070c7dd2b21fbe48953d316ceb281468adde0273ad332f",
+    "id": "mit_intro_transport",
+    "pages": 19,
+    "readable": true,
+    "text_chars": 7161,
+    "words": 1169,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "9be0ba92c40c341dc7a3b44c2e726467f7afd6317c7a1a9272332ff1f143f743",
+    "id": "mit_intro_transport",
+    "pages": 13,
+    "readable": true,
+    "text_chars": 4725,
+    "words": 793,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "4f0e30469f5c64bdc9c203e08f86266370172e5c213df90300d51afae1e27bac",
+    "id": "mit_intro_transport",
+    "pages": 29,
+    "readable": true,
+    "text_chars": 8339,
+    "words": 1279,
+    "low_text_pages": 1,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "8ecad6aad6ab0596d7d41c40a89163324cebc1a9d35887568831afd7e0742c4a",
+    "id": "mit_intro_transport",
+    "pages": 105,
+    "readable": true,
+    "text_chars": 29128,
+    "words": 4874,
+    "low_text_pages": 2,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "e28e4c5dc3aa76aaaa59150f99d10a3b8fd5edf95b2cd6d1b50fd44d763a6882",
+    "id": "mit_intro_transport",
+    "pages": 72,
+    "readable": true,
+    "text_chars": 27929,
+    "words": 4238,
+    "low_text_pages": 1,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "7fd39576d9a87860b51fdbffa1954f4035c9ef8acc9b0fa6d6f3323c603fb13a",
+    "id": "mit_intro_transport",
+    "pages": 46,
+    "readable": true,
+    "text_chars": 19155,
+    "words": 2915,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "5d810cc68b7f9139f33ee842f57d41196e657f036145e9e070e3056992f6dd63",
+    "id": "mit_intro_transport",
+    "pages": 31,
+    "readable": true,
+    "text_chars": 12272,
+    "words": 1748,
+    "low_text_pages": 1,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "0f41092175910de18613fd35b5672eb9788c7e05a63cb5d3c8562f36d300182b",
+    "id": "mit_intro_transport",
+    "pages": 40,
+    "readable": true,
+    "text_chars": 13958,
+    "words": 2205,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "411900a9de4c34cb614903d466d1fec8739f100c91efe6cc11e961daa4da4e78",
+    "id": "mit_intro_transport",
+    "pages": 18,
+    "readable": true,
+    "text_chars": 8523,
+    "words": 1410,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "a893bcd0777be77a6a603f130fe60873fea4bd929b596bc9e6168253f2beede1",
+    "id": "mit_intro_transport",
+    "pages": 13,
+    "readable": true,
+    "text_chars": 4006,
+    "words": 538,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "a668adff16484456cb27d8b379916233ed7fb2a7906f704d3d2d9930b161d1cd",
+    "id": "mit_ops",
+    "pages": 16,
+    "readable": true,
+    "text_chars": 4876,
+    "words": 694,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "0f5004b13dca1898b8e01000cb1584b5926b200b9e220f6876b03f727d21bc29",
+    "id": "mit_ops",
+    "pages": 22,
+    "readable": true,
+    "text_chars": 6297,
+    "words": 1039,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "76f4c8550377d280b281c64c93b0b6729f3ee507a5cd39146952b81d1c63526f",
+    "id": "mit_ops",
+    "pages": 2,
+    "readable": true,
+    "text_chars": 555,
+    "words": 84,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "b6072c28f7c3d392c43a8f1370f9ddf10c25040ed3e08d30d7cf395d4648e540",
+    "id": "mit_ops",
+    "pages": 2,
+    "readable": true,
+    "text_chars": 968,
+    "words": 197,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "25b9d6d09ae185aea28b5d7a935ee7573544570f8b866cc340f051c40649acd0",
+    "id": "mit_ops",
+    "pages": 27,
+    "readable": true,
+    "text_chars": 8651,
+    "words": 1569,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "a5890f2bf69fb1d9dc8a59a75bd8ec79cac29b7fa46e3a7b632e1ae5fd7ce22b",
+    "id": "mit_ops",
+    "pages": 2,
+    "readable": true,
+    "text_chars": 630,
+    "words": 107,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "f3b1e0bb2f269c1b29459be20a3cab5f0b405b019d27b3f4b1800c7d694152cc",
+    "id": "mit_ops",
+    "pages": 16,
+    "readable": true,
+    "text_chars": 3136,
+    "words": 460,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "681ef4657d31c8e90b24d732464840619b1677e3923eb576e3b848ea3083dba4",
+    "id": "mit_ops",
+    "pages": 2,
+    "readable": true,
+    "text_chars": 874,
+    "words": 145,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "6d70cbede78a365e25c05d39773597fee35745c6bdd2005570510a15157dd151",
+    "id": "mit_ops",
+    "pages": 22,
+    "readable": true,
+    "text_chars": 7855,
+    "words": 1287,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "c0d651079bed9b7aaa4c93e7b24aab8662f9d90b6cdef18c358ab8b54d2e852f",
+    "id": "mit_ops",
+    "pages": 2,
+    "readable": true,
+    "text_chars": 731,
+    "words": 113,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "df369b21680ad4b296c0582c4d9386661427272c6ea4201ccd72462f0a94ccb1",
+    "id": "mit_ops",
+    "pages": 51,
+    "readable": true,
+    "text_chars": 18893,
+    "words": 2600,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "0b225809169c0e25a54727340fa22575655e738ede155d3845ed198ffcc4fb6f",
+    "id": "mit_ops",
+    "pages": 23,
+    "readable": true,
+    "text_chars": 6525,
+    "words": 999,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "6b7d1f889156f83e7d202d2ca35cf8b98ff014a42d2ec87602b986e28f30c438",
+    "id": "mit_optimization",
+    "pages": 61,
+    "readable": true,
+    "text_chars": 32466,
+    "words": 7140,
+    "low_text_pages": 2,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "62b216724515cfa18244d2ff71d46ebbaef8e6165dba02e0cac3e84586fa56f3",
+    "id": "mit_optimization",
+    "pages": 14,
+    "readable": true,
+    "text_chars": 2819,
+    "words": 403,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "e86ec79fbf8e1ae966575585c475cc2fb12e54cf79f2346e63de14e8c32b706c",
+    "id": "mit_optimization",
+    "pages": 45,
+    "readable": true,
+    "text_chars": 14418,
+    "words": 2553,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "f0fc409d63690b48caf32607436bd11ca04069e7a8049ea844da0ca1b6a8411e",
+    "id": "mit_optimization",
+    "pages": 36,
+    "readable": true,
+    "text_chars": 10874,
+    "words": 1966,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "29f65b4fce1903e31e52f6635e150bcef0bde1f8c66c871da2664ffa70f88e2a",
+    "id": "mit_optimization",
+    "pages": 29,
+    "readable": true,
+    "text_chars": 7878,
+    "words": 1513,
+    "low_text_pages": 1,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "c1250ae78e3dfd23e28f01b1b63cddf2f8531d578b8f9e7eb54b403ac6db9d50",
+    "id": "mit_optimization",
+    "pages": 24,
+    "readable": true,
+    "text_chars": 6239,
+    "words": 1267,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "7462d1154a542d2ccad24f651fc56410d7f5ef3e2667575f6d68d636ab601321",
+    "id": "mit_optimization",
+    "pages": 27,
+    "readable": true,
+    "text_chars": 7307,
+    "words": 1347,
+    "low_text_pages": 1,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "3216914d4b395ae8738c8d291fc36442c98d78069cfcafd3f8672e225ae1fc46",
+    "id": "mit_optimization",
+    "pages": 35,
+    "readable": true,
+    "text_chars": 9285,
+    "words": 1719,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "64f25135dfcf9f4f0f9edaaed079c6053d0d7fee79f039991f53cbdbadf47a97",
+    "id": "mit_optimization",
+    "pages": 33,
+    "readable": true,
+    "text_chars": 9886,
+    "words": 1748,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "fc7fe5a502fdc76ca30755466bf8c9fe4b3828cdcc7f3ba104d7a398b5becdf7",
+    "id": "mit_optimization",
+    "pages": 33,
+    "readable": true,
+    "text_chars": 10014,
+    "words": 1770,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "e7003e4ef71096e91cd366775f5efb2158fc72c3229d5d513b41d7499229586e",
+    "id": "gs1_cbv_text",
+    "pages": 124,
+    "readable": true,
+    "text_chars": 278649,
+    "words": 38385,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "6c9b2b51b41cd2cf169f6723001cac56a31c574e9c79ec8d4d52d2bf505f8eaa",
+    "id": "gs1_epcis_text",
+    "pages": 229,
+    "readable": true,
+    "text_chars": 509778,
+    "words": 72065,
+    "low_text_pages": 0,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "e32083e25325b5660df0c7db775cfacd343e702517ff2bbcb8273d01d5f37467",
+    "id": "ports_pdf",
+    "pages": 517,
+    "readable": true,
+    "text_chars": 1141949,
+    "words": 195369,
+    "low_text_pages": 22,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "91727eb1e29c0b12a435cfce09a4583ec6c0616a45688047d8b21c48a8c13f24",
+    "id": "log",
+    "pages": 628,
+    "readable": true,
+    "text_chars": 1443919,
+    "words": 220784,
+    "low_text_pages": 1,
+    "formula_layout_qa": "pending"
+  },
+  {
+    "sha256": "7a34b6f16a0680413ff032abe995b471f2723effcb1a9d3c2ab37eb7b60771d7",
+    "id": "mit_key",
+    "pages": 362,
+    "readable": true,
+    "text_chars": 628487,
+    "words": 109690,
+    "low_text_pages": 21,
+    "formula_layout_qa": "pending"
+  }
+]

@@ -1,0 +1,16 @@
+[
+  {
+    "id": "frappe_license",
+    "title": "Frappe documentation license",
+    "url": "https://docs.frappe.io/legal/others/license-and-trademark",
+    "topic": "license_evidence",
+    "rights_status": "CC_BY_SA_documentation_confirmed"
+  },
+  {
+    "id": "gs1_vocabulary",
+    "title": "GS1 Web Vocabulary",
+    "url": "https://ref.gs1.org/voc/",
+    "topic": "product_logistics_terminology",
+    "rights_status": "Apache_2.0_ontology_verify_artifact"
+  }
+]

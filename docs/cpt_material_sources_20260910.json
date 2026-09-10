@@ -1,0 +1,407 @@
+[
+  {
+    "id": "mit_logistics",
+    "title": "MIT Logistics Systems 2006",
+    "url": "https://ocw.mit.edu/courses/esd-260j-logistics-systems-fall-2006/pages/lecture-notes/",
+    "topic": "inventory_transport_network",
+    "crawl": "mit",
+    "rights_status": "CC_BY_NC_SA_with_third_party_exceptions",
+    "priority": 1,
+    "training_approved": false,
+    "rights_evidence_url": "https://ocw.mit.edu/pages/privacy-and-terms-of-use/",
+    "commercial_ai_training": "not_permitted_by_published_terms"
+  },
+  {
+    "id": "mit_scm",
+    "title": "MIT Logistics and Supply Chain Management 2009",
+    "url": "https://ocw.mit.edu/courses/esd-273j-logistics-and-supply-chain-management-fall-2009/download/",
+    "topic": "inventory_supply_chain",
+    "crawl": "mit",
+    "rights_status": "CC_BY_NC_SA_with_third_party_exceptions",
+    "priority": 1,
+    "training_approved": false,
+    "rights_evidence_url": "https://ocw.mit.edu/pages/privacy-and-terms-of-use/",
+    "commercial_ai_training": "not_permitted_by_published_terms"
+  },
+  {
+    "id": "mit_flow",
+    "title": "MIT Transportation Flow Systems",
+    "url": "https://ocw.mit.edu/courses/1-225j-transportation-flow-systems-fall-2002/resources/lecture-notes/",
+    "topic": "transport_flow_queueing",
+    "crawl": "mit",
+    "rights_status": "CC_BY_NC_SA_with_third_party_exceptions",
+    "priority": 1,
+    "training_approved": false,
+    "rights_evidence_url": "https://ocw.mit.edu/pages/privacy-and-terms-of-use/",
+    "commercial_ai_training": "not_permitted_by_published_terms"
+  },
+  {
+    "id": "mit_transport",
+    "title": "MIT Transportation Systems",
+    "url": "https://ocw.mit.edu/courses/1-221j-transportation-systems-fall-2004/resources/lecture-notes/",
+    "topic": "transport_systems",
+    "crawl": "mit",
+    "rights_status": "CC_BY_NC_SA_with_third_party_exceptions",
+    "priority": 1,
+    "training_approved": false,
+    "rights_evidence_url": "https://ocw.mit.edu/pages/privacy-and-terms-of-use/",
+    "commercial_ai_training": "not_permitted_by_published_terms"
+  },
+  {
+    "id": "mit_intro_transport",
+    "title": "MIT Introduction to Transportation Systems",
+    "url": "https://ocw.mit.edu/courses/1-201j-introduction-to-transportation-systems-fall-2006/resources/lecture-notes/",
+    "topic": "transport_systems",
+    "crawl": "mit",
+    "rights_status": "CC_BY_NC_SA_with_third_party_exceptions",
+    "priority": 1,
+    "training_approved": false,
+    "rights_evidence_url": "https://ocw.mit.edu/pages/privacy-and-terms-of-use/",
+    "commercial_ai_training": "not_permitted_by_published_terms"
+  },
+  {
+    "id": "mit_ops",
+    "title": "MIT Introduction to Operations Management",
+    "url": "https://ocw.mit.edu/courses/15-760b-introduction-to-operations-management-spring-2004/resources/lecture-notes/",
+    "topic": "capacity_inventory_quality",
+    "crawl": "mit",
+    "rights_status": "CC_BY_NC_SA_with_third_party_exceptions",
+    "priority": 1,
+    "training_approved": false,
+    "rights_evidence_url": "https://ocw.mit.edu/pages/privacy-and-terms-of-use/",
+    "commercial_ai_training": "not_permitted_by_published_terms"
+  },
+  {
+    "id": "mit_optimization",
+    "title": "MIT Systems Optimization",
+    "url": "https://ocw.mit.edu/courses/15-057-systems-optimization-spring-2003/resources/lecture-notes/",
+    "topic": "networks_optimization",
+    "crawl": "mit",
+    "rights_status": "CC_BY_NC_SA_with_third_party_exceptions",
+    "priority": 2,
+    "training_approved": false,
+    "rights_evidence_url": "https://ocw.mit.edu/pages/privacy-and-terms-of-use/",
+    "commercial_ai_training": "not_permitted_by_published_terms"
+  },
+  {
+    "id": "warehouse",
+    "title": "Warehouse and Distribution Science 0.98.1",
+    "url": "https://www.warehouse-science.com/book/editions/wh-sci-0.98.1.pdf",
+    "topic": "warehousing_material_handling",
+    "crawl": null,
+    "rights_status": "educational_access_not_training_authorization",
+    "priority": 1,
+    "training_approved": false
+  },
+  {
+    "id": "warehouse_portal",
+    "title": "Warehouse Science supplementary resources",
+    "url": "https://warehouse-science.com/book/index.html",
+    "topic": "warehousing_material_handling",
+    "crawl": null,
+    "rights_status": "public_access_license_review_required",
+    "priority": 2,
+    "training_approved": false
+  },
+  {
+    "id": "inventory_analytics",
+    "title": "Inventory Analytics Roberto Rossi",
+    "url": "https://books.openbookpublishers.com/10.11647/obp.0252.pdf",
+    "topic": "inventory_forecasting_multiechelon",
+    "crawl": null,
+    "rights_status": "CC_BY_4.0_publisher_confirmed",
+    "priority": 1,
+    "training_approved": false
+  },
+  {
+    "id": "inventory_license",
+    "title": "Inventory Analytics publisher license",
+    "url": "https://www.openbookpublishers.com/books/10.11647/obp.0252",
+    "topic": "license_evidence",
+    "crawl": null,
+    "rights_status": "CC_BY_4.0_publisher_confirmed",
+    "priority": 1,
+    "training_approved": false
+  },
+  {
+    "id": "transport_glossary5",
+    "title": "Glossary for Transport Statistics 2019",
+    "url": "https://unece.org/fileadmin/DAM/trans/main/wp6/pdfdocs/Glossary_for_Transport_Statistics_EN.pdf",
+    "topic": "transport_terminology",
+    "crawl": null,
+    "rights_status": "source_overlap_check_high_priority",
+    "priority": 1,
+    "training_approved": false,
+    "benchmark_source_linked": true
+  },
+  {
+    "id": "transport_glossary6",
+    "title": "Glossary for Transport Statistics 2026",
+    "url": "https://unece.org/info/Transport/pub/411667",
+    "topic": "transport_terminology",
+    "crawl": "pdf",
+    "rights_status": "public_access_license_review_required",
+    "priority": 1,
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide",
+    "url": "https://log.logcluster.org/en",
+    "topic": "procurement_warehousing_inventory_customs_transport",
+    "crawl": "log",
+    "rights_status": "public_access_license_review_required",
+    "priority": 1,
+    "training_approved": false
+  },
+  {
+    "id": "epcis",
+    "title": "GS1 EPCIS and CBV 2.0 artefacts",
+    "url": "https://ref.gs1.org/standards/epcis/2.0.0/artefacts",
+    "topic": "tracking_events_interoperability",
+    "crawl": "pdf",
+    "rights_status": "public_access_license_review_required",
+    "priority": 1,
+    "training_approved": false
+  },
+  {
+    "id": "gs1_label",
+    "title": "GS1 Logistic Label Guideline",
+    "url": "https://www.gs1.org/docs/tl/GS1_Logistic_Label_Guideline.pdf",
+    "topic": "sscc_labels_receiving_shipping",
+    "crawl": null,
+    "rights_status": "public_access_license_review_required",
+    "priority": 1,
+    "training_approved": false
+  },
+  {
+    "id": "gs1_guidelines",
+    "title": "GS1 guidelines repository",
+    "url": "https://ref.gs1.org/guidelines/",
+    "topic": "traceability_standards",
+    "crawl": "pdf",
+    "rights_status": "public_access_license_review_required",
+    "priority": 2,
+    "training_approved": false
+  },
+  {
+    "id": "ctu",
+    "title": "IMO ILO UNECE CTU Code portal",
+    "url": "https://unece.org/transport/intermodal-transport/imoilounece-code-practice-packing-cargo-transport-units-ctu-code",
+    "topic": "container_packing_securing",
+    "crawl": null,
+    "rights_status": "public_access_license_review_required",
+    "priority": 1,
+    "training_approved": false
+  },
+  {
+    "id": "ctu_wiki",
+    "title": "CTU Code official text index",
+    "url": "https://wiki.unece.org/pages/viewpage.action?pageId=343801894",
+    "topic": "container_packing_securing",
+    "crawl": null,
+    "rights_status": "public_access_license_review_required",
+    "priority": 1,
+    "training_approved": false
+  },
+  {
+    "id": "port_toolkit",
+    "title": "World Bank Port Reform Toolkit introduction",
+    "url": "https://openknowledge.worldbank.org/bitstreams/e4efb5b5-2e53-45d1-bfe0-885da9d1e71a/download",
+    "topic": "ports_terminal_operations",
+    "crawl": null,
+    "rights_status": "public_access_license_review_required",
+    "priority": 1,
+    "training_approved": false
+  },
+  {
+    "id": "maritime2025",
+    "title": "UNCTAD Review of Maritime Transport 2025",
+    "url": "https://unctad.org/publication/review-maritime-transport-2025",
+    "topic": "shipping_freight_ports",
+    "crawl": "pdf",
+    "rights_status": "public_access_license_review_required",
+    "priority": 1,
+    "training_approved": false
+  },
+  {
+    "id": "wco_hs",
+    "title": "WCO Harmonized System overview",
+    "url": "https://www.wcoomd.org/en/topics/nomenclature/overview/what-is-the-harmonized-system.aspx",
+    "topic": "customs_hs",
+    "crawl": null,
+    "rights_status": "public_access_license_review_required",
+    "priority": 1,
+    "training_approved": false
+  },
+  {
+    "id": "wco_faq",
+    "title": "WCO HS FAQ",
+    "url": "https://www.wcoomd.org/en/faq/harmonized_system_faq.aspx?p=1",
+    "topic": "customs_hs",
+    "crawl": null,
+    "rights_status": "public_access_license_review_required",
+    "priority": 1,
+    "training_approved": false
+  },
+  {
+    "id": "icc",
+    "title": "ICC Incoterms 2020 official overview",
+    "url": "https://iccwbo.org/business-solutions/incoterms-rules/incoterms-2020/",
+    "topic": "trade_terms_responsibility",
+    "crawl": null,
+    "rights_status": "copyrighted_reference_only",
+    "priority": 1,
+    "training_approved": false
+  },
+  {
+    "id": "icc_checklist",
+    "title": "ICC Incoterms 2020 checklist",
+    "url": "https://library.iccwbo.org/content/clp/Others/incoterms_2020_checklist_2024-update.pdf",
+    "topic": "trade_terms_responsibility",
+    "crawl": null,
+    "rights_status": "copyrighted_reference_only",
+    "priority": 1,
+    "training_approved": false
+  },
+  {
+    "id": "china_terms",
+    "title": "GB/T 18354-2021 Logistics terminology record",
+    "url": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=95E2AFD144491FE66FED6E14C38876AA&refer=outter",
+    "topic": "chinese_logistics_terminology",
+    "crawl": null,
+    "rights_status": "metadata_only_standard_reuse_review",
+    "priority": 1,
+    "training_approved": false
+  },
+  {
+    "id": "erp_delivery-note",
+    "title": "ERPNext delivery-note",
+    "url": "https://docs.frappe.io/erpnext/delivery-note",
+    "topic": "order_warehouse_procurement_workflows",
+    "crawl": null,
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "priority": 1,
+    "training_approved": false
+  },
+  {
+    "id": "erp_concepts-and-terms",
+    "title": "ERPNext concepts-and-terms",
+    "url": "https://docs.frappe.io/erpnext/concepts-and-terms",
+    "topic": "order_warehouse_procurement_workflows",
+    "crawl": null,
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "priority": 1,
+    "training_approved": false
+  },
+  {
+    "id": "erp_sales-order",
+    "title": "ERPNext sales-order",
+    "url": "https://docs.frappe.io/erpnext/sales-order",
+    "topic": "order_warehouse_procurement_workflows",
+    "crawl": null,
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "priority": 1,
+    "training_approved": false
+  },
+  {
+    "id": "erp_purchase-order",
+    "title": "ERPNext purchase-order",
+    "url": "https://docs.frappe.io/erpnext/purchase-order",
+    "topic": "order_warehouse_procurement_workflows",
+    "crawl": null,
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "priority": 1,
+    "training_approved": false
+  },
+  {
+    "id": "erp_pick-list",
+    "title": "ERPNext pick-list",
+    "url": "https://docs.frappe.io/erpnext/pick-list",
+    "topic": "order_warehouse_procurement_workflows",
+    "crawl": null,
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "priority": 1,
+    "training_approved": false
+  },
+  {
+    "id": "outbox",
+    "title": "AWS Transactional outbox",
+    "url": "https://docs.aws.amazon.com/prescriptive-guidance/latest/cloud-design-patterns/transactional-outbox.html",
+    "topic": "events_consistency_idempotency",
+    "crawl": null,
+    "rights_status": "public_access_license_review_required",
+    "priority": 1,
+    "training_approved": false
+  },
+  {
+    "id": "saga",
+    "title": "AWS Saga patterns",
+    "url": "https://docs.aws.amazon.com/prescriptive-guidance/latest/cloud-design-patterns/saga-patterns.html",
+    "topic": "order_compensation_cancellation",
+    "crawl": null,
+    "rights_status": "public_access_license_review_required",
+    "priority": 1,
+    "training_approved": false
+  },
+  {
+    "id": "aws_patterns",
+    "title": "AWS Cloud design patterns guide",
+    "url": "https://docs.aws.amazon.com/pdfs/prescriptive-guidance/latest/cloud-design-patterns/cloud-design-patterns.pdf",
+    "topic": "system_collaboration_patterns",
+    "crawl": null,
+    "rights_status": "public_access_license_review_required",
+    "priority": 2,
+    "training_approved": false
+  },
+  {
+    "id": "transport_geo",
+    "title": "Geography of Transport Systems ports",
+    "url": "https://transportgeography.org/contents/chapter6/port-terminals/",
+    "topic": "ports_terminals",
+    "crawl": null,
+    "rights_status": "copyrighted_reference_only",
+    "priority": 1,
+    "training_approved": false
+  },
+  {
+    "id": "transport_hinterland",
+    "title": "Geography of Transport Systems hinterlands",
+    "url": "https://transportgeography.org/contents/chapter6/transport-terminals-hinterlands/",
+    "topic": "ports_hinterlands",
+    "crawl": null,
+    "rights_status": "copyrighted_reference_only",
+    "priority": 1,
+    "training_approved": false
+  },
+  {
+    "id": "transport_intermodal",
+    "title": "Geography of Transport Systems intermodal terminals",
+    "url": "https://transportgeography.org/contents/chapter6/function-of-transport-terminals/types-intermodal-terminals/",
+    "topic": "intermodal_terminals",
+    "crawl": null,
+    "rights_status": "copyrighted_reference_only",
+    "priority": 1,
+    "training_approved": false
+  },
+  {
+    "id": "openstax_is",
+    "title": "OpenStax Foundations of Information Systems",
+    "url": "https://assets.openstax.org/oscms-prodcms/media/documents/Foundations_of_Information_Systems_-_WEB.pdf",
+    "topic": "erp_scm_information_systems",
+    "crawl": null,
+    "rights_status": "public_access_license_review_required",
+    "priority": 2,
+    "training_approved": false
+  },
+  {
+    "id": "openstax_scm",
+    "title": "OpenStax Supply Chain and Its Functions",
+    "url": "https://openstax.org/books/principles-marketing/pages/17-5-the-supply-chain-and-its-functions",
+    "topic": "supply_chain_basics",
+    "crawl": null,
+    "rights_status": "CC_BY_NC_SA_4.0",
+    "priority": 2,
+    "training_approved": false
+  }
+]

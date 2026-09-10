@@ -1,0 +1,362 @@
+[
+  {
+    "id": "erp_operations",
+    "title": "ERPNext auto-creation-of-material-request",
+    "url": "https://docs.frappe.io/erpnext/auto-creation-of-material-request",
+    "topic": "inventory_fulfillment_procurement_workflow",
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "training_approved": false
+  },
+  {
+    "id": "erp_operations",
+    "title": "ERPNext batch",
+    "url": "https://docs.frappe.io/erpnext/batch",
+    "topic": "inventory_fulfillment_procurement_workflow",
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "training_approved": false
+  },
+  {
+    "id": "erp_operations",
+    "title": "ERPNext batch-split",
+    "url": "https://docs.frappe.io/erpnext/batch-split",
+    "topic": "inventory_fulfillment_procurement_workflow",
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "training_approved": false
+  },
+  {
+    "id": "erp_operations",
+    "title": "ERPNext bom-stock-analysis",
+    "url": "https://docs.frappe.io/erpnext/bom-stock-analysis",
+    "topic": "inventory_fulfillment_procurement_workflow",
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "training_approved": false
+  },
+  {
+    "id": "erp_operations",
+    "title": "ERPNext bom-stock-report",
+    "url": "https://docs.frappe.io/erpnext/bom-stock-report",
+    "topic": "inventory_fulfillment_procurement_workflow",
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "training_approved": false
+  },
+  {
+    "id": "erp_operations",
+    "title": "ERPNext closing-stock-balance",
+    "url": "https://docs.frappe.io/erpnext/closing-stock-balance",
+    "topic": "inventory_fulfillment_procurement_workflow",
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "training_approved": false
+  },
+  {
+    "id": "erp_operations",
+    "title": "ERPNext delivery-note-stock-error",
+    "url": "https://docs.frappe.io/erpnext/delivery-note-stock-error",
+    "topic": "inventory_fulfillment_procurement_workflow",
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "training_approved": false
+  },
+  {
+    "id": "erp_operations",
+    "title": "ERPNext delivery-trip",
+    "url": "https://docs.frappe.io/erpnext/delivery-trip",
+    "topic": "inventory_fulfillment_procurement_workflow",
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "training_approved": false
+  },
+  {
+    "id": "erp_operations",
+    "title": "ERPNext import-advances-unallocated-payments-bank-stock-and-asset-balances",
+    "url": "https://docs.frappe.io/erpnext/import-advances-unallocated-payments-bank-stock-and-asset-balances",
+    "topic": "inventory_fulfillment_procurement_workflow",
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "training_approved": false
+  },
+  {
+    "id": "erp_operations",
+    "title": "ERPNext landed-cost-voucher",
+    "url": "https://docs.frappe.io/erpnext/landed-cost-voucher",
+    "topic": "inventory_fulfillment_procurement_workflow",
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "training_approved": false
+  },
+  {
+    "id": "erp_operations",
+    "title": "ERPNext maintain-stock-field-frozen-in-item-master",
+    "url": "https://docs.frappe.io/erpnext/maintain-stock-field-frozen-in-item-master",
+    "topic": "inventory_fulfillment_procurement_workflow",
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "training_approved": false
+  },
+  {
+    "id": "erp_operations",
+    "title": "ERPNext managing-batch-wise-inventory",
+    "url": "https://docs.frappe.io/erpnext/managing-batch-wise-inventory",
+    "topic": "inventory_fulfillment_procurement_workflow",
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "training_approved": false
+  },
+  {
+    "id": "erp_operations",
+    "title": "ERPNext material-request",
+    "url": "https://docs.frappe.io/erpnext/material-request",
+    "topic": "inventory_fulfillment_procurement_workflow",
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "training_approved": false
+  },
+  {
+    "id": "erp_operations",
+    "title": "ERPNext moving-asset-from-stock-item-to-fixed-asset-item",
+    "url": "https://docs.frappe.io/erpnext/moving-asset-from-stock-item-to-fixed-asset-item",
+    "topic": "inventory_fulfillment_procurement_workflow",
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "training_approved": false
+  },
+  {
+    "id": "erp_operations",
+    "title": "ERPNext not-able-to-select-has-serial-no-batch-option-in-item-list",
+    "url": "https://docs.frappe.io/erpnext/not-able-to-select-has-serial-no-batch-option-in-item-list",
+    "topic": "inventory_fulfillment_procurement_workflow",
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "training_approved": false
+  },
+  {
+    "id": "erp_operations",
+    "title": "ERPNext opening-stock-balance-entry-for-serialized-and-batch-item",
+    "url": "https://docs.frappe.io/erpnext/opening-stock-balance-entry-for-serialized-and-batch-item",
+    "topic": "inventory_fulfillment_procurement_workflow",
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "training_approved": false
+  },
+  {
+    "id": "erp_operations",
+    "title": "ERPNext perpetual-inventory-for-non-stock-item",
+    "url": "https://docs.frappe.io/erpnext/perpetual-inventory-for-non-stock-item",
+    "topic": "inventory_fulfillment_procurement_workflow",
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "training_approved": false
+  },
+  {
+    "id": "erp_operations",
+    "title": "ERPNext purchase-receipt",
+    "url": "https://docs.frappe.io/erpnext/purchase-receipt",
+    "topic": "inventory_fulfillment_procurement_workflow",
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "training_approved": false
+  },
+  {
+    "id": "erp_operations",
+    "title": "ERPNext purpose-of-stock-delivered-but-not-billed",
+    "url": "https://docs.frappe.io/erpnext/purpose-of-stock-delivered-but-not-billed",
+    "topic": "inventory_fulfillment_procurement_workflow",
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "training_approved": false
+  },
+  {
+    "id": "erp_operations",
+    "title": "ERPNext quality-inspection",
+    "url": "https://docs.frappe.io/erpnext/quality-inspection",
+    "topic": "inventory_fulfillment_procurement_workflow",
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "training_approved": false
+  },
+  {
+    "id": "erp_operations",
+    "title": "ERPNext quick-stock-balance",
+    "url": "https://docs.frappe.io/erpnext/quick-stock-balance",
+    "topic": "inventory_fulfillment_procurement_workflow",
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "training_approved": false
+  },
+  {
+    "id": "erp_operations",
+    "title": "ERPNext sales-return",
+    "url": "https://docs.frappe.io/erpnext/sales-return",
+    "topic": "inventory_fulfillment_procurement_workflow",
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "training_approved": false
+  },
+  {
+    "id": "erp_operations",
+    "title": "ERPNext serial-and-batch",
+    "url": "https://docs.frappe.io/erpnext/serial-and-batch",
+    "topic": "inventory_fulfillment_procurement_workflow",
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "training_approved": false
+  },
+  {
+    "id": "erp_operations",
+    "title": "ERPNext serial-and-batch-bundle",
+    "url": "https://docs.frappe.io/erpnext/serial-and-batch-bundle",
+    "topic": "inventory_fulfillment_procurement_workflow",
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "training_approved": false
+  },
+  {
+    "id": "erp_operations",
+    "title": "ERPNext serial-and-batch-traceability-report",
+    "url": "https://docs.frappe.io/erpnext/serial-and-batch-traceability-report",
+    "topic": "inventory_fulfillment_procurement_workflow",
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "training_approved": false
+  },
+  {
+    "id": "erp_operations",
+    "title": "ERPNext serial-no",
+    "url": "https://docs.frappe.io/erpnext/serial-no",
+    "topic": "inventory_fulfillment_procurement_workflow",
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "training_approved": false
+  },
+  {
+    "id": "erp_operations",
+    "title": "ERPNext serial-no-naming",
+    "url": "https://docs.frappe.io/erpnext/serial-no-naming",
+    "topic": "inventory_fulfillment_procurement_workflow",
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "training_approved": false
+  },
+  {
+    "id": "erp_operations",
+    "title": "ERPNext shipment",
+    "url": "https://docs.frappe.io/erpnext/shipment",
+    "topic": "inventory_fulfillment_procurement_workflow",
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "training_approved": false
+  },
+  {
+    "id": "erp_operations",
+    "title": "ERPNext stock-adjustment-cogs-with-negative-stock",
+    "url": "https://docs.frappe.io/erpnext/stock-adjustment-cogs-with-negative-stock",
+    "topic": "inventory_fulfillment_procurement_workflow",
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "training_approved": false
+  },
+  {
+    "id": "erp_operations",
+    "title": "ERPNext stock-balance-and-stock-account-balance-syncing",
+    "url": "https://docs.frappe.io/erpnext/stock-balance-and-stock-account-balance-syncing",
+    "topic": "inventory_fulfillment_procurement_workflow",
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "training_approved": false
+  },
+  {
+    "id": "erp_operations",
+    "title": "ERPNext stock-closing-entry",
+    "url": "https://docs.frappe.io/erpnext/stock-closing-entry",
+    "topic": "inventory_fulfillment_procurement_workflow",
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "training_approved": false
+  },
+  {
+    "id": "erp_operations",
+    "title": "ERPNext stock-entry",
+    "url": "https://docs.frappe.io/erpnext/stock-entry",
+    "topic": "inventory_fulfillment_procurement_workflow",
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "training_approved": false
+  },
+  {
+    "id": "erp_operations",
+    "title": "ERPNext stock-entry-purpose",
+    "url": "https://docs.frappe.io/erpnext/stock-entry-purpose",
+    "topic": "inventory_fulfillment_procurement_workflow",
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "training_approved": false
+  },
+  {
+    "id": "erp_operations",
+    "title": "ERPNext stock-inspection",
+    "url": "https://docs.frappe.io/erpnext/stock-inspection",
+    "topic": "inventory_fulfillment_procurement_workflow",
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "training_approved": false
+  },
+  {
+    "id": "erp_operations",
+    "title": "ERPNext stock-ledger",
+    "url": "https://docs.frappe.io/erpnext/stock-ledger",
+    "topic": "inventory_fulfillment_procurement_workflow",
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "training_approved": false
+  },
+  {
+    "id": "erp_operations",
+    "title": "ERPNext stock-level-report",
+    "url": "https://docs.frappe.io/erpnext/stock-level-report",
+    "topic": "inventory_fulfillment_procurement_workflow",
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "training_approved": false
+  },
+  {
+    "id": "erp_operations",
+    "title": "ERPNext stock-masters",
+    "url": "https://docs.frappe.io/erpnext/stock-masters",
+    "topic": "inventory_fulfillment_procurement_workflow",
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "training_approved": false
+  },
+  {
+    "id": "erp_operations",
+    "title": "ERPNext stock-received-but-not-billed",
+    "url": "https://docs.frappe.io/erpnext/stock-received-but-not-billed",
+    "topic": "inventory_fulfillment_procurement_workflow",
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "training_approved": false
+  },
+  {
+    "id": "erp_operations",
+    "title": "ERPNext stock-reconciliation",
+    "url": "https://docs.frappe.io/erpnext/stock-reconciliation",
+    "topic": "inventory_fulfillment_procurement_workflow",
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "training_approved": false
+  },
+  {
+    "id": "erp_operations",
+    "title": "ERPNext stock-reposting",
+    "url": "https://docs.frappe.io/erpnext/stock-reposting",
+    "topic": "inventory_fulfillment_procurement_workflow",
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "training_approved": false
+  },
+  {
+    "id": "erp_operations",
+    "title": "ERPNext stock-reposting-settings",
+    "url": "https://docs.frappe.io/erpnext/stock-reposting-settings",
+    "topic": "inventory_fulfillment_procurement_workflow",
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "training_approved": false
+  },
+  {
+    "id": "erp_operations",
+    "title": "ERPNext stock-reservation",
+    "url": "https://docs.frappe.io/erpnext/stock-reservation",
+    "topic": "inventory_fulfillment_procurement_workflow",
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "training_approved": false
+  },
+  {
+    "id": "erp_operations",
+    "title": "ERPNext stock-reservation-for-production-plan",
+    "url": "https://docs.frappe.io/erpnext/stock-reservation-for-production-plan",
+    "topic": "inventory_fulfillment_procurement_workflow",
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "training_approved": false
+  },
+  {
+    "id": "erp_operations",
+    "title": "ERPNext stock-reservation-for-work-order",
+    "url": "https://docs.frappe.io/erpnext/stock-reservation-for-work-order",
+    "topic": "inventory_fulfillment_procurement_workflow",
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "training_approved": false
+  },
+  {
+    "id": "erp_operations",
+    "title": "ERPNext stock-settings",
+    "url": "https://docs.frappe.io/erpnext/stock-settings",
+    "topic": "inventory_fulfillment_procurement_workflow",
+    "rights_status": "CC_BY_SA_documentation_confirmed_exclude_branding",
+    "training_approved": false
+  }
+]

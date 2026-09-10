@@ -1,0 +1,1018 @@
+[
+  {
+    "id": "risk_scm",
+    "title": "Risk Management Supply Chain and Operations Perspective",
+    "url": "https://openlibrary-repo.ecampusontario.ca/xmlui/bitstream/handle/123456789/2311/Risk-Management-Supply-Chain-and-Operations-Perspective-1724769986.pdf?isAllowed=y&sequence=1",
+    "topic": "risk_resilience",
+    "rights_status": "CC_BY_NC_SA_4.0",
+    "training_approved": false
+  },
+  {
+    "id": "intro_logistics",
+    "title": "Introduction to Logistics Conestoga",
+    "url": "https://openlibrary-repo.ecampusontario.ca/jspui/bitstream/123456789/1092/13/Introduction-to-Logistics-1731957317.html",
+    "topic": "logistics_basics",
+    "rights_status": "CC_BY_NC_SA_verify_book",
+    "training_approved": false
+  },
+  {
+    "id": "scm_vscht",
+    "title": "Supply Chain Management VSCHT",
+    "url": "https://vscht.futurebooks.cz/book/supply-chain-management/",
+    "topic": "supply_chain_basics",
+    "rights_status": "CC_BY_SA_4.0_verify_book",
+    "training_approved": false
+  },
+  {
+    "id": "gs1_cbv_text",
+    "title": "Core Business Vocabulary 2.0",
+    "url": "https://ref.gs1.org/standards/cbv/2.0.0/",
+    "topic": "events_vocabulary",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "gs1_epcis_text",
+    "title": "EPCIS 2.0 standard",
+    "url": "https://ref.gs1.org/standards/epcis/2.0.0/",
+    "topic": "events_traceability",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "glossary_itf",
+    "title": "Glossary for Transport Statistics ITF",
+    "url": "https://www.itf-oecd.org/sites/default/files/docs/glossary-transport-statistics.pdf",
+    "topic": "transport_terminology",
+    "rights_status": "benchmark_source_license_review",
+    "training_approved": false
+  },
+  {
+    "id": "inventory_oapen",
+    "title": "Inventory Analytics OAPEN",
+    "url": "https://library.oapen.org/bitstream/handle/20.500.12657/49414/9781800641778.pdf",
+    "topic": "inventory_analytics",
+    "rights_status": "CC_BY_4.0",
+    "training_approved": false
+  },
+  {
+    "id": "ports_pdf",
+    "title": "Ports and Waterways",
+    "url": "https://books.open.tudelft.nl/home/catalog/download/204/381/624?inline=1",
+    "topic": "ports_waterways",
+    "rights_status": "CC_BY_NC_SA_4.0_benchmark_source",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide about-log-project",
+    "url": "https://log.logcluster.org/en/about-log-project",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide air-transport",
+    "url": "https://log.logcluster.org/en/air-transport",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide all-books",
+    "url": "https://log.logcluster.org/en/all-books",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide alternatives-vehicle-fleet-management",
+    "url": "https://log.logcluster.org/en/alternatives-vehicle-fleet-management",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide assessment-cycle",
+    "url": "https://log.logcluster.org/en/assessment-cycle",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide assessment-tools-and-resources",
+    "url": "https://log.logcluster.org/en/assessment-tools-and-resources",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide assessment-types",
+    "url": "https://log.logcluster.org/en/assessment-types",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide battery-system",
+    "url": "https://log.logcluster.org/en/battery-system",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide cable-sizes-and-wiring",
+    "url": "https://log.logcluster.org/en/cable-sizes-and-wiring",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide cargo-capacity-calculator",
+    "url": "https://log.logcluster.org/en/cargo-capacity-calculator",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide cargo-dimension-calculator",
+    "url": "https://log.logcluster.org/en/cargo-dimension-calculator",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide closure-after-distribution",
+    "url": "https://log.logcluster.org/en/closure-after-distribution",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide cluster-approach",
+    "url": "https://log.logcluster.org/en/cluster-approach",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide common-concepts-customs",
+    "url": "https://log.logcluster.org/en/common-concepts-customs",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide common-dg-items-humanitarian-action",
+    "url": "https://log.logcluster.org/en/common-dg-items-humanitarian-action",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide common-issues-storage-and-transport-dangerous-goods",
+    "url": "https://log.logcluster.org/en/common-issues-storage-and-transport-dangerous-goods",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide computer-networking",
+    "url": "https://log.logcluster.org/en/computer-networking",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide contact-us",
+    "url": "https://log.logcluster.org/en/contact-us",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide customs",
+    "url": "https://log.logcluster.org/en/customs",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide customs-and-humanitarian-aid",
+    "url": "https://log.logcluster.org/en/customs-and-humanitarian-aid",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide customs-tools-and-resources",
+    "url": "https://log.logcluster.org/en/customs-tools-and-resources",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide dangerous-goods",
+    "url": "https://log.logcluster.org/en/dangerous-goods",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide dangerous-goods-lookup-tool",
+    "url": "https://log.logcluster.org/en/dangerous-goods-lookup-tool",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide dangerous-goods-tools-and-resources",
+    "url": "https://log.logcluster.org/en/dangerous-goods-tools-and-resources",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide dangersprecautions",
+    "url": "https://log.logcluster.org/en/dangersprecautions",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide day-distribution",
+    "url": "https://log.logcluster.org/en/day-distribution",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide distribtuion-planning",
+    "url": "https://log.logcluster.org/en/distribtuion-planning",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide distribution",
+    "url": "https://log.logcluster.org/en/distribution",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide distribution-0",
+    "url": "https://log.logcluster.org/en/distribution-0",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide distribution-community-involvement",
+    "url": "https://log.logcluster.org/en/distribution-community-involvement",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide distribution-tools-and-resources",
+    "url": "https://log.logcluster.org/en/distribution-tools-and-resources",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide documentation",
+    "url": "https://log.logcluster.org/en/documentation",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide electrical-basics",
+    "url": "https://log.logcluster.org/en/electrical-basics",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide electrical-installations-and-circuits",
+    "url": "https://log.logcluster.org/en/electrical-installations-and-circuits",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide electrical-power-generation",
+    "url": "https://log.logcluster.org/en/electrical-power-generation",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide energy-consumption-calculator",
+    "url": "https://log.logcluster.org/en/energy-consumption-calculator",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide energy-management",
+    "url": "https://log.logcluster.org/en/energy-management",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide energy-tools-and-resources",
+    "url": "https://log.logcluster.org/en/energy-tools-and-resources",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide ethics",
+    "url": "https://log.logcluster.org/en/ethics",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide evaluating-logistics-outcomes",
+    "url": "https://log.logcluster.org/en/evaluating-logistics-outcomes",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide finding-cargo-dimensions-0",
+    "url": "https://log.logcluster.org/en/finding-cargo-dimensions-0",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide fleet-management-process",
+    "url": "https://log.logcluster.org/en/fleet-management-process",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide fraud-prevention",
+    "url": "https://log.logcluster.org/en/fraud-prevention",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide fuel-dispensing",
+    "url": "https://log.logcluster.org/en/fuel-dispensing",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide fuel-storage",
+    "url": "https://log.logcluster.org/en/fuel-storage",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide fuel-storage-containers",
+    "url": "https://log.logcluster.org/en/fuel-storage-containers",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide fuel-storage-safety",
+    "url": "https://log.logcluster.org/en/fuel-storage-safety",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide fundamentals-distribution",
+    "url": "https://log.logcluster.org/en/fundamentals-distribution",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide general-concepts-health-supply-chain",
+    "url": "https://log.logcluster.org/en/general-concepts-health-supply-chain",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide general-customs-process",
+    "url": "https://log.logcluster.org/en/general-customs-process",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide generators-systems",
+    "url": "https://log.logcluster.org/en/generators-systems",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide gps-systems-and-devices",
+    "url": "https://log.logcluster.org/en/gps-systems-and-devices",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide grounding-and-protective-devices",
+    "url": "https://log.logcluster.org/en/grounding-and-protective-devices",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide hazardous-materials-and-dangerous-goods-types",
+    "url": "https://log.logcluster.org/en/hazardous-materials-and-dangerous-goods-types",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide health-supply-chain-tools-and-resources",
+    "url": "https://log.logcluster.org/en/health-supply-chain-tools-and-resources",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide hs-code-lookup-tool",
+    "url": "https://log.logcluster.org/en/hs-code-lookup-tool",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide humanitarian-architecture-tools-and-resources",
+    "url": "https://log.logcluster.org/en/humanitarian-architecture-tools-and-resources",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide humanitarian-operating-environment",
+    "url": "https://log.logcluster.org/en/humanitarian-operating-environment",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide humanitarian-response-architecture",
+    "url": "https://log.logcluster.org/en/humanitarian-response-architecture",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide information-and-communication-technology-ict",
+    "url": "https://log.logcluster.org/en/information-and-communication-technology-ict",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide inland-waterways-and-rivers",
+    "url": "https://log.logcluster.org/en/inland-waterways-and-rivers",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide inventory-control",
+    "url": "https://log.logcluster.org/en/inventory-control",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide inventory-planning-and-management",
+    "url": "https://log.logcluster.org/en/inventory-planning-and-management",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide key-performance-indicators-kpis-logistics",
+    "url": "https://log.logcluster.org/en/key-performance-indicators-kpis-logistics",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide logistics-assessment",
+    "url": "https://log.logcluster.org/en/logistics-assessment",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide logistics-assessments-and-planning",
+    "url": "https://log.logcluster.org/en/logistics-assessments-and-planning",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide logistics-cluster",
+    "url": "https://log.logcluster.org/en/logistics-cluster",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide main-types-kind-commodities",
+    "url": "https://log.logcluster.org/en/main-types-kind-commodities",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide managing-fuel",
+    "url": "https://log.logcluster.org/en/managing-fuel",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide managing-health-supply-chains",
+    "url": "https://log.logcluster.org/en/managing-health-supply-chains",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide managing-inventory-levels",
+    "url": "https://log.logcluster.org/en/managing-inventory-levels",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide managing-transport",
+    "url": "https://log.logcluster.org/en/managing-transport",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide market-analysis",
+    "url": "https://log.logcluster.org/en/market-analysis",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide methods-payment-importexport",
+    "url": "https://log.logcluster.org/en/methods-payment-importexport",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide minimising-negative-environmental-impacts",
+    "url": "https://log.logcluster.org/en/minimising-negative-environmental-impacts",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide monitoring-and-evaluation",
+    "url": "https://log.logcluster.org/en/monitoring-and-evaluation",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide monitoring-and-evaluation-tools-and-resources",
+    "url": "https://log.logcluster.org/en/monitoring-and-evaluation-tools-and-resources",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide monitoring-logistics-performance",
+    "url": "https://log.logcluster.org/en/monitoring-logistics-performance",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide other-logistics-considerations",
+    "url": "https://log.logcluster.org/en/other-logistics-considerations",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide pack-animals",
+    "url": "https://log.logcluster.org/en/pack-animals",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide physical-management-health-supplies",
+    "url": "https://log.logcluster.org/en/physical-management-health-supplies",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide physical-storage-guidelines",
+    "url": "https://log.logcluster.org/en/physical-storage-guidelines",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide procurement",
+    "url": "https://log.logcluster.org/en/procurement",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide procurement-principles",
+    "url": "https://log.logcluster.org/en/procurement-principles",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide procurement-procedures",
+    "url": "https://log.logcluster.org/en/procurement-procedures",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide procurement-process",
+    "url": "https://log.logcluster.org/en/procurement-process",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide procurement-tools-and-resources",
+    "url": "https://log.logcluster.org/en/procurement-tools-and-resources",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide quality-assurance",
+    "url": "https://log.logcluster.org/en/quality-assurance",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide quality-assurance-fuel",
+    "url": "https://log.logcluster.org/en/quality-assurance-fuel",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide radio-communications",
+    "url": "https://log.logcluster.org/en/radio-communications",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide rail-transport",
+    "url": "https://log.logcluster.org/en/rail-transport",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide regulatory-frameworks-health-supply-chain",
+    "url": "https://log.logcluster.org/en/regulatory-frameworks-health-supply-chain",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide reverse-logistics",
+    "url": "https://log.logcluster.org/en/reverse-logistics",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide road-transport",
+    "url": "https://log.logcluster.org/en/road-transport",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide safety-and-security",
+    "url": "https://log.logcluster.org/en/safety-and-security",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide satellite-communications",
+    "url": "https://log.logcluster.org/en/satellite-communications",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide sea-transport",
+    "url": "https://log.logcluster.org/en/sea-transport",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide separating-dg-transport-and-storage",
+    "url": "https://log.logcluster.org/en/separating-dg-transport-and-storage",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide solar-systems",
+    "url": "https://log.logcluster.org/en/solar-systems",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide storage-arrangements",
+    "url": "https://log.logcluster.org/en/storage-arrangements",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide storage-facilities-medical-items",
+    "url": "https://log.logcluster.org/en/storage-facilities-medical-items",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide supplier-management",
+    "url": "https://log.logcluster.org/en/supplier-management",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide supply-chain-strategies",
+    "url": "https://log.logcluster.org/en/supply-chain-strategies",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide sustainable-logistics",
+    "url": "https://log.logcluster.org/en/sustainable-logistics",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide sustainable-logistics-planning-and-monitoring",
+    "url": "https://log.logcluster.org/en/sustainable-logistics-planning-and-monitoring",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide sustainable-logistics-tools-and-resources",
+    "url": "https://log.logcluster.org/en/sustainable-logistics-tools-and-resources",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide tampere-convention",
+    "url": "https://log.logcluster.org/en/tampere-convention",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide terrestrial-connections",
+    "url": "https://log.logcluster.org/en/terrestrial-connections",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide transport-medical-items",
+    "url": "https://log.logcluster.org/en/transport-medical-items",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide transport-tools-and-resources",
+    "url": "https://log.logcluster.org/en/transport-tools-and-resources",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide transportation",
+    "url": "https://log.logcluster.org/en/transportation",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide transporting-fuel",
+    "url": "https://log.logcluster.org/en/transporting-fuel",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide vehicle-and-fleet-management",
+    "url": "https://log.logcluster.org/en/vehicle-and-fleet-management",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide vehicle-and-fleet-tools-and-resources",
+    "url": "https://log.logcluster.org/en/vehicle-and-fleet-tools-and-resources",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide warehouse-management",
+    "url": "https://log.logcluster.org/en/warehouse-management",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide warehousing-and-physical-stock-management",
+    "url": "https://log.logcluster.org/en/warehousing-and-physical-stock-management",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide warehousing-strategies",
+    "url": "https://log.logcluster.org/en/warehousing-strategies",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide warehousing-tools-and-resources",
+    "url": "https://log.logcluster.org/en/warehousing-tools-and-resources",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  },
+  {
+    "id": "log",
+    "title": "Logistics Operational Guide wireless-communications",
+    "url": "https://log.logcluster.org/en/wireless-communications",
+    "topic": "operational_logistics",
+    "rights_status": "license_review_required",
+    "training_approved": false
+  }
+]
