@@ -26,7 +26,8 @@ def test_checkpoint_requires_optimizer_extra_and_loader(tmp_path):
         target.mkdir(parents=True)
         (target / '.metadata').touch()
         (target / '__0_0.distcp').write_bytes(b'state')
-        manifest['contents'][key] = dict(path=f'{key}/dist_ckpt')
+        manifest['contents']['rng_state' if key == 'extra' else key] = dict(path=f'{key}/dist_ckpt')
+    manifest['contents']['lr_scheduler'] = dict(path='optimizer/dist_ckpt')
     (tmp_path / 'ckpt_contents.json').write_text(json.dumps(manifest))
     with pytest.raises(ValueError, match='dataloader'):
         checkpoint_gate(tmp_path)

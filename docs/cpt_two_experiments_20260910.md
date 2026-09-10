@@ -29,8 +29,9 @@
 - 容器：`/workspace/llin-verl-grpo/runs/cpt-controlled-storage-20260910/llin/cpt-controlled-20260910`。
 - 对应宿主机持久化路径：`/data4/llin/cpt-controlled-20260910`；数据盘在现有容器内额外挂载，容器重启后要先核实挂载。不得把未挂载目录误当空的新运行。
 - `status.safe.json`为原子状态；`training_8x.log`及`curve8x/torchrun_logs`为训练证据；`curve8x/curve.safe.json`完成后是全部曲线汇总。
-- 固定代码副本：`code/scripts`及`code_manifest.safe.json`。不要覆盖运行中的副本。先检查PID及状态再启动，禁止重复运行。
-- 当前启动PID（容器）：1585763；语料tokenization gate已通过，实测完成第一遍29/232步、336,702输入token；首个检查点正在写入，完整状态门禁待落盘后核验。
+- 固定训练代码副本：`code/scripts`及`code_manifest.safe.json`。不要覆盖运行中的副本。先检查PID及状态再启动，禁止重复运行。
+- 当前启动PID（容器）：1585763；语料tokenization gate已通过，实测完成第一遍29/232步、336,702输入token；首个检查点383,215,466,147 bytes，修正后的完整状态门禁实际通过。完整恢复等价性仍待实测。
+- 首个检查点真实清单使用`rng_state`、`lr_scheduler`，原衔接门禁误取`extra`路径。独立`code_v2/scripts`副本已修正并通过实物核验；等待接续进程PID 1607285，`launch_v2.sh --after-training`以阻塞资源锁等待原流水线自然退出。**不终止训练、不覆盖原代码、不重启优化器**。原流水线训练后预计在旧门禁处抛出KeyError，v2随后复核8个完整检查点并自动导出/评测。应检查v2状态而非把这个已识别的旧门禁异常误判为训练失败；若缺最终232步检查点，v2仍会报错停下。
 - 用户已明确授权每30分钟自动检查并接续第二阶段训练、验证及仓库提交推送。自动跟进ID为`cpt`，仅实质失败、需介入或全部完成时通知。
 - 第一阶段代码：[训练入口](../scripts/run_logistics_cpt_curve_8x.sh)、[训练/导出/评测流水线](../scripts/run_logistics_cpt_curve_8x.py)。3项定向测试覆盖缺失恢复状态、无效多数票、重复请求和配对身份不匹配；远端shell语法检查通过。
 

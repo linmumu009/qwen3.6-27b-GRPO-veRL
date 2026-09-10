@@ -41,7 +41,7 @@ def checkpoint_gate(path):
     manifest = json.loads((path / 'ckpt_contents.json').read_text())
     if not {'model', 'optimizer', 'extra'} <= set(manifest['save_contents']):
         raise ValueError('Incomplete training state')
-    for key in ('model', 'optimizer', 'extra'):
+    for key in ('model', 'optimizer', 'lr_scheduler', 'rng_state'):
         relative = Path(manifest['contents'][key]['path'])
         if relative.is_absolute() or '..' in relative.parts:
             raise ValueError('Unsafe checkpoint manifest')
@@ -109,17 +109,19 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--evaluate', type=Path)
     parser.add_argument('--output', type=Path)
+    parser.add_argument('--after-training', action='store_true',
+                        help='Attach to existing training; never restart or overwrite it')
     args = parser.parse_args()
     os.umask(0o077)
     if args.evaluate:
         return evaluate(args.evaluate, args.output)
     import fcntl
     with (ROOT / 'runs/.logistics-exam-cpt.lock').open('a') as lock:
-        fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        if RUN.exists():
+        fcntl.flock(lock, fcntl.LOCK_EX if args.after_training else fcntl.LOCK_EX | fcntl.LOCK_NB)
+        if RUN.exists() and not args.after_training:
             raise FileExistsError('Immutable run already exists; inspect before explicit recovery')
         # Eight model + fp32 Adam/master states, with conservative export/headroom.
-        if shutil.disk_usage(RUN.parent).free < 3_650_000_000_000:
+        if not args.after_training and shutil.disk_usage(RUN.parent).free < 3_650_000_000_000:
             raise RuntimeError('Less than 3.65 TB free on dedicated experiment disk')
         code = Path(__file__).resolve().parent
         status = RUN.parent / 'status.safe.json'
@@ -129,7 +131,15 @@ def main():
                 subprocess.run(command, check=True, stdout=log, stderr=subprocess.STDOUT, env=env)
         try:
             env = dict(os.environ, OUTPUT_DIR=str(RUN), RUN_NAME='logistics-cpt-book-exposure-curve-8x-20260910-01')
-            run(['bash', str(code / 'run_logistics_cpt_curve_8x.sh')], 'training_8x', env)
+            if args.after_training:
+                save(status, dict(status='waiting_for_existing_training'))
+                with (ROOT / 'runs/.logistics-cpt-book-exposure-curve.lock').open('a') as training_lock:
+                    fcntl.flock(training_lock, fcntl.LOCK_EX)
+                # An exited training process is not necessarily a successful one.
+                if not (RUN / 'checkpoints/global_step_232/ckpt_contents.json').exists():
+                    raise RuntimeError('Existing training exited without final checkpoint')
+            else:
+                run(['bash', str(code / 'run_logistics_cpt_curve_8x.sh')], 'training_8x', env)
             for epoch in range(1, 9):
                 checkpoint_gate(RUN / f'checkpoints/global_step_{epoch * 29}')
             eval_env = dict(os.environ, ASCEND_RT_VISIBLE_DEVICES='0,1,2,3,4,5,6,7')
