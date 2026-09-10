@@ -1,0 +1,113 @@
+{
+  "requests": 10032,
+  "cases_sha256": "b652b2108cb552346df11d005c15ff3137c50a756a7b24eb35302683ec33ed99",
+  "table": [
+    {
+      "dataset": "all",
+      "n": 1672,
+      "before": 1370,
+      "after": 1386,
+      "gains": 90,
+      "losses": 74,
+      "both_stable": {
+        "n": 1535,
+        "gains": 67,
+        "losses": 42
+      },
+      "original96": {
+        "repeat_correct": [
+          1369,
+          1369,
+          1370
+        ],
+        "truncated": 0,
+        "invalid": 0,
+        "output_tokens": 34945
+      },
+      "guided2048": {
+        "repeat_correct": [
+          1382,
+          1382,
+          1388
+        ],
+        "truncated": 178,
+        "invalid": 178,
+        "output_tokens": 2529693
+      }
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "n": 226,
+      "before": 191,
+      "after": 190,
+      "gains": 10,
+      "losses": 11,
+      "both_stable": {
+        "n": 207,
+        "gains": 7,
+        "losses": 4
+      },
+      "original96": {
+        "repeat_correct": [
+          191,
+          190,
+          190
+        ],
+        "truncated": 0,
+        "invalid": 0,
+        "output_tokens": 4922
+      },
+      "guided2048": {
+        "repeat_correct": [
+          188,
+          189,
+          191
+        ],
+        "truncated": 26,
+        "invalid": 26,
+        "output_tokens": 328519
+      }
+    },
+    {
+      "dataset": "LogistikaBench",
+      "n": 1446,
+      "before": 1179,
+      "after": 1196,
+      "gains": 80,
+      "losses": 63,
+      "both_stable": {
+        "n": 1328,
+        "gains": 60,
+        "losses": 38
+      },
+      "original96": {
+        "repeat_correct": [
+          1178,
+          1179,
+          1180
+        ],
+        "truncated": 0,
+        "invalid": 0,
+        "output_tokens": 30023
+      },
+      "guided2048": {
+        "repeat_correct": [
+          1194,
+          1193,
+          1197
+        ],
+        "truncated": 152,
+        "invalid": 152,
+        "output_tokens": 2201174
+      }
+    }
+  ],
+  "worker_batch_seconds": {
+    "original96": 511.1310857357457,
+    "guided2048": 16427.715860609896
+  },
+  "timing_note": "Sum of batch times across two workers, not end-to-end latency or per-item latency",
+  "training": false,
+  "api_calls": 0,
+  "decision": "No automatic promotion; paired uncertainty, cost and retention review still required"
+}
