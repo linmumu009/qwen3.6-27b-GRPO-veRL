@@ -18,6 +18,11 @@ BASELINE=ROOT/'runs/cpt-controlled-storage-20260910/llin/cpt-controlled-20260910
 TRAIN_SHA='f79c1cf5c7418f73fa6ca099c397a66915bec7366f010dbbb2366b3d02881c5e'
 
 
+def pinned_environment(environment,code):
+    bridge=ROOT/'reference/Megatron-Bridge-de93536e/src'
+    return dict(environment,PYTHONPATH=os.pathsep.join([str(code.parent),str(ROOT),str(bridge),str(ROOT/'runtime'),'/verl',environment.get('PYTHONPATH','')]))
+
+
 def audit_training(metrics, lengths):
     assert len(lengths)==3016 and sum(lengths)==1183197
     assert sorted(metrics)==list(range(1,378)), 'Missing or extra training steps'
@@ -47,7 +52,9 @@ def audit_evaluation(directory):
 def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--after-training',action='store_true',help='Continue from completed step377 without repeating training')
+    parser.add_argument('--retry-export',action='store_true',help='Use a separate export log; requires --after-training and a nonexistent model output')
     args=parser.parse_args()
+    if args.retry_export and not args.after_training:parser.error('--retry-export requires --after-training')
     import fcntl
     os.umask(0o077)
     code=Path(__file__).resolve().parent
@@ -60,7 +67,7 @@ def main():
             with (ROOT/'runs/.logistics-exam-cpt.lock').open('a') as resource:
                 fcntl.flock(resource,fcntl.LOCK_EX)
                 if shutil.disk_usage(OUT).free<550_000_000_000:raise RuntimeError('Need550GB checkpoint/export headroom')
-                env=dict(os.environ,TRAIN_FILE=str(CORPUS/'train.parquet'),EXPECTED_TRAIN_SHA=TRAIN_SHA,
+                env=dict(pinned_environment(os.environ,code),TRAIN_FILE=str(CORPUS/'train.parquet'),EXPECTED_TRAIN_SHA=TRAIN_SHA,
                     EXPECTED_CONTENT_TOKENS='1180181',OUTPUT_DIR=str(OUT/'llin-training'),RUN_NAME='llin-cpt-logists-one-epoch-20260910')
                 def run(label,command,environment):
                     save(status,dict(status=label))
@@ -77,7 +84,7 @@ def main():
                 save(OUT/'training_audit.safe.json',audit_training(parse_metrics(logs),lengths))
                 checkpoint=OUT/'llin-training/checkpoints/global_step_377'
                 checkpoint_gate(checkpoint)
-                run('export',[sys.executable,str(code/'export_megatron_dist_to_hf.py'),
+                run('export_retry' if args.retry_export else 'export',[sys.executable,str(code/'export_megatron_dist_to_hf.py'),
                     '--actor-checkpoint',str(checkpoint),'--base-model',str(BASE),'--output-dir',str(OUT/'llin-step120-logists-cpt-1epoch-20260910')],env)
                 run('evaluation',[sys.executable,str(code/'run_logistics_cpt_curve_8x.py'),
                     '--evaluate',str(OUT/'llin-step120-logists-cpt-1epoch-20260910'),'--output',str(OUT/'evaluation')],evaluation_env(env))

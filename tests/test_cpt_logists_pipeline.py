@@ -3,7 +3,7 @@ from pathlib import Path
 import pytest
 
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
-from run_cpt_logists_pipeline import audit_training
+from run_cpt_logists_pipeline import audit_training,pinned_environment
 
 
 def fixture():
@@ -25,3 +25,10 @@ def test_reject_missing_step():
 def test_reject_wrong_token_budget():
     metrics,lengths=fixture();metrics[1]['train/global_tokens']-=1
     with pytest.raises(AssertionError):audit_training(metrics,lengths)
+
+
+def test_export_keeps_pinned_bridge_ahead_of_inherited_libraries():
+    env=pinned_environment({'PYTHONPATH':'/old-bridge','KEEP':'yes'},Path('/snapshot/scripts'))
+    path=env['PYTHONPATH'].replace('\\','/')
+    assert path.index('Megatron-Bridge-de93536e/src')<path.index('/old-bridge')
+    assert env['KEEP']=='yes'

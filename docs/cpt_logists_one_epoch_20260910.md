@@ -4,7 +4,13 @@
 
 ## 当前状态
 
-协调进程 **2024446** 已启动，`status.safe.json=training`。真实训练前分词检查通过：3,016 条、1,180,181 监督 token、1,183,197 含 EOS 输入 token，全部 EOS 和损失掩码正确，无截断。16 进程训练已进入初始化；本记录尚不代表第一个优化步完成，也没有新评测成绩。
+**训练已完成，导出已修复并接续（2026-09-10 10:27 UTC）。** 377步与1,183,197输入token审核通过，平均逐步loss为1.762102729920051，最后一步loss为1.0951725244522095；完整第377步检查点门禁通过。尚无双评测结果，不能据训练loss推断收益。
+
+原协调进程2024446在导出阶段退出：训练脚本的固定版Megatron Bridge路径没有传给协调器的后续子进程，导出误用了系统安装版，不支持Qwen3_5ForConditionalGeneration。已为协调器显式固定依赖路径，在独立 `code_v2/` 快照中修复；按实际Ascend初始化顺序验证了固定版本AutoBridge可识别模型。首次依赖探针未加载Ascend适配器而失败，修正探针后通过；未重复训练。
+
+新协调进程 **2412119** 使用 `--after-training --retry-export`，只接续导出和双评测。`coordinator.pid`已指向新进程，原PID保存在`coordinator_v1.pid`。新日志为`coordinator_v2.log`及`export_retry.log`，原快照和失败日志保留，最终模型名称不变。重试前确认正式模型输出目录不存在；失败时产生的隐藏临时目录未删除。4项定向测试通过。
+
+历史启动记录：真实训练前分词检查通过3,016条、1,180,181监督token，全部EOS和损失掩码正确，无截断。
 
 - 服务器：`huawei-05`，容器 `llin-verl-trainer-m05-20260730`。
 - 运行目录：`/workspace/llin-verl-grpo/runs/cpt-stage2-storage-20260910/llin/llin-cpt-logists-one-epoch-20260910`。
