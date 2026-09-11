@@ -1,0 +1,75 @@
+{
+  "package": {
+    "version": "llin-knowledge-complete-v1",
+    "date": "2026-09-11",
+    "baseline_records": 4707,
+    "supplement_records": 205,
+    "records": 4912,
+    "exact_duplicates_removed": 0,
+    "original_source_families": 13,
+    "content_tokens": 1868012,
+    "sequence_tokens": 1872924,
+    "maximum_sequence_tokens": 4085,
+    "supplement_content_tokens": 23131,
+    "reviewed_topics": 61,
+    "supplemental_bodies_already_in_baseline": 8,
+    "overlap_policy": "Retain title/scope/evidence-restored units; no repeated sampling. Exact full-text dedup only; not semantic dedup.",
+    "benchmark_labels_imported_by_builder": false,
+    "benchmark_same_source_exclusion": false,
+    "training_started": false,
+    "all_300_cases_resolved": false,
+    "readiness": "Local data contract validated; factual review applies to selected supplement assertions, not every baseline sentence.",
+    "inputs": {
+      "baseline_parquet_sha256": "898dada4de8c7274ee0b18bf03f685998bd9cf25739af2502f1eed67c3cb9733",
+      "tokenizer_sha256": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523",
+      "core_parquet_sha256": "8d2325828b3d5e21ceb490d69fc4666956be16e9f3aec612e7e71eb54247f91d"
+    },
+    "checks": [
+      "13 source families retained",
+      "full retokenization without truncation",
+      "single EOS appended by text loader",
+      "provenance retained",
+      "Parquet round trip",
+      "reviewed-core evidence gate"
+    ],
+    "files": {
+      "baseline_provenance.private.jsonl": "ce514bb967e202f917f29ed6b36f79e4ceef41e5331dd4872af4f1a6b036a512",
+      "train.jsonl": "08f1c0ca412abc471b83227bf4795a70f205651c10611a1d6a43435060bf07de",
+      "train.parquet": "6ffa16684e617f657293918bf1d89ae8930ec24e0e08da346f175c4710c1f1c8"
+    }
+  },
+  "tensor_contract": {
+    "records": 4912,
+    "loss_tokens": 1868012,
+    "parquet_sha256": "6ffa16684e617f657293918bf1d89ae8930ec24e0e08da346f175c4710c1f1c8",
+    "tensor_function_file_sha256": "ed7900844c58da7ce3ba23c538e6b0c6aecc8d3d1665b1aeb92eb5159862f8ee",
+    "tokenizer_sha256": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523",
+    "single_eos": true,
+    "eos_target_supervised": true,
+    "wraparound_masked": true,
+    "full_verl_container_integration_checked": false,
+    "scope": "Actual tensor function body, real CPU torch, flat-list Rust-tokenizer adapter; no model or training started"
+  },
+  "case_disposition": {
+    "cases": 300,
+    "case_status_counts": {
+      "background_knowledge_available_not_full_case_proof": 141,
+      "enterprise_context_unavailable": 27,
+      "selected_related_assertions_reviewed_not_full_case_proof": 77,
+      "conflict_requires_original_adjudication": 9,
+      "scope_or_version_constraint": 14,
+      "missing_original_stem_or_diagram": 32
+    },
+    "cases_with_registered_issues": 82,
+    "topics": 62,
+    "topics_with_selected_units": 61,
+    "topics_unidentifiable": [
+      "malformed_item"
+    ],
+    "full_answer_coverage_claimed": false,
+    "enterprise_manual_location": "user_does_not_know",
+    "labels_modified": false
+  },
+  "tests_passed": 10,
+  "private_artifacts_committed": false
+}

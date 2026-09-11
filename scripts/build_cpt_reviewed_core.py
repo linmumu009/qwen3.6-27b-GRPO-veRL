@@ -48,7 +48,7 @@ def validate_unit(unit, sources, tokenizer):
     return text, ids + [EOS]
 
 
-def build(root, tokenizer_path):
+def build(root, tokenizer_path, version='llin-knowledge-core-v1'):
     if digest(tokenizer_path.read_bytes()) != TOKENIZER_SHA:
         raise ValueError('Unexpected tokenizer')
     tokenizer = Tokenizer.from_file(str(tokenizer_path))
@@ -75,7 +75,7 @@ def build(root, tokenizer_path):
                    '来源：'+'；'.join(s['label']+' '+s.get('url','') for s in refs), '',
                    '形式：'+unit['kind']+'；'+unit['review_note'], ''])
     (root / '核心知识文档.md').write_text('\n'.join(md), encoding='utf-8', newline='\n')
-    summary = dict(version='llin-knowledge-core-v1', records=len(rows),
+    summary = dict(version=version, records=len(rows),
                    content_tokens=sum(r['content_tokens'] for r in rows),
                    sequence_tokens=sum(r['token_count'] for r in rows),
                    max_sequence_tokens=max(r['token_count'] for r in rows),
@@ -94,5 +94,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--root', type=Path, required=True)
     parser.add_argument('--tokenizer', type=Path, required=True)
+    parser.add_argument('--version', default='llin-knowledge-core-v1')
     args = parser.parse_args()
-    print(json.dumps(build(args.root, args.tokenizer), ensure_ascii=False, indent=2))
+    print(json.dumps(build(args.root, args.tokenizer, args.version), ensure_ascii=False, indent=2))
