@@ -1,0 +1,83 @@
+{
+  "case_count": 300,
+  "topic_count": 62,
+  "sources_searched": 13,
+  "parsed_page_or_html_units_searched": 3834,
+  "candidate_units_collected": 402,
+  "candidate_units_by_source": {
+    "43_Book_Manuscript_398_1_10_20230209.pdf": 56,
+    "International Trade - Theory and Policy.pdf": 15,
+    "Managing supply chain risk (ManMohan S. Sodhi etc.) (z-library.sk, 1lib.sk, z-lib.sk).pdf": 9,
+    "Container terminals and automated transport systems  logistics control issues and quantitative decision support (Günther, Hans Otto Kim, Kap Hwan) (z-library.sk, 1lib.sk, z-lib.sk).pdf": 15,
+    "MITx_MicroMasters_SCM_KeyConcepts.pdf": 66,
+    "Distribution logistics  advanced solutions to practical problems (Fleischmann, Bernhard Klose, Andreas etc.) (z-library.sk, 1lib.sk, z-lib.sk).pdf": 41,
+    "JSI_LogisticHandbook_English_2019_combined_web.pdf": 34,
+    "wh-sci-0.98.1.pdf": 65,
+    "Beyond Lean_ Simulation in Practice Second Edition.pdf": 13,
+    "Knoop+-+Traffic+Flow+Theory.pdf": 2,
+    "Fundamentals of Global Strategy.pdf": 6,
+    "KS-GQ-19-004-EN-N.pdf": 79,
+    "challenges-and-opportunities-in-international-business.zip": 1
+  },
+  "warning": "Candidate retrieval is not exhaustive semantic coverage or training approval; formulas and visual dependencies remain explicitly flagged.",
+  "original_train_parquet_sha256": "898dada4de8c7274ee0b18bf03f685998bd9cf25739af2502f1eed67c3cb9733",
+  "wikipedia_requested_titles": 129,
+  "wikipedia_unique_valid_revisions": 127,
+  "authority_source_records": 23,
+  "cases_with_review_issues": 82,
+  "editorial_relation_records": 81,
+  "review_issue_counts": {
+    "enterprise_or_transaction_context_required": 28,
+    "answer_conflict_suspected": 5,
+    "terminology_scope": 2,
+    "missing_diagram_or_stem": 29,
+    "missing_diagram_mapping": 3,
+    "answer_conflict_confirmed_definition": 1,
+    "version_scope_required": 10,
+    "scope_or_causality_conflict": 1,
+    "answer_conflict_confirmed_formula": 1,
+    "answer_conflict_internal": 1,
+    "definition_dimension_required": 4
+  },
+  "deduplicated_research_candidates": 522,
+  "candidate_characters": 1270019,
+  "training_ready": false,
+  "training_launched": false,
+  "source_family_exclusions": false,
+  "benchmark_text_used_as_training_examples": false,
+  "all_300_cases_have_traceability": true,
+  "methodology": "Known-benchmark-targeted knowledge collection; these benchmarks cannot independently establish generalization after this targeting.",
+  "artifacts": {
+    "01_textbook_knowledge.md": {
+      "sha256": "a2a6321292eea1b1c61fed3a0576d178ca096c51e37c8704b3889c5f91a647fd",
+      "bytes": 1055912
+    },
+    "02_external_knowledge.md": {
+      "sha256": "c573f40518846e97b4afe858f31e181dcfb8bf3f3effb1075a7d05c38a1f8641",
+      "bytes": 527619
+    },
+    "03_conflicts_and_gaps.md": {
+      "sha256": "677ec150a3049b11793a27b879f464b6de856991463ed20ebc8f3dfbade58639",
+      "bytes": 46119
+    },
+    "candidate_knowledge.private.jsonl": {
+      "sha256": "b9e62946fd256b7543d845d446e446a398682ca91d201ec6d33dd5d255e61abd",
+      "bytes": 1938307
+    },
+    "case_knowledge_map.private.jsonl": {
+      "sha256": "41e6212af3cf3f2d0e10509a27ebbaec75ed04d9d40a97d658a175d7d68aa65b",
+      "bytes": 182048
+    }
+  },
+  "validation": {
+    "all_300_unique_case_maps": true,
+    "exact_deduplication": true,
+    "candidate_text_identical_to_source_snapshot": true,
+    "candidate_sha256": true,
+    "all_wiki_versions_valid": true,
+    "document_anchors_resolve": true,
+    "previously_lost_definition_examples_present": true,
+    "original_training_file_unchanged": true,
+    "all_candidates_explicitly_not_training_ready": true
+  }
+}
