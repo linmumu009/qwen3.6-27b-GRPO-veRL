@@ -161,6 +161,8 @@ def write_jsonl(path,rows):
 
 
 def build(args):
+    include_all=getattr(args,'all_materials',False)
+    version='llin-logists-v5-full' if include_all else VERSION
     if args.out.exists():raise FileExistsError('Immutable build: choose a new output directory')
     assert sha(args.tokenizer.read_bytes())==TOKENIZER_SHA
     tokenizer=Tokenizer.from_file(str(args.tokenizer));tokenizer.no_padding();tokenizer.no_truncation()
@@ -219,19 +221,19 @@ def build(args):
             text=render(current)
             if len(ws('\n'.join(b['text'] for b in current)))<40:
                 quarantine.append(dict(source_id=source_id,block_ids=[b['block_id'] for b in current],reasons=['short_context']))
-            elif fingerprint_hit(text,fp):
+            elif not include_all and fingerprint_hit(text,fp):
                 quarantine.append(dict(source_id=source_id,block_ids=[b['block_id'] for b in current],reasons=['benchmark_overlap_across_blocks']))
             else:
                 n=len(tokenizer.encode(text,add_special_tokens=False).ids)
                 source_records.append(dict(id=sha(source_id+'|'+text),text=text,text_sha256=sha(text),source_id=source_id,
                     source_file=path.name,source_pages=sorted({page for b in current for page in [b['page']]+b.get('additional_pages',[])}),group_id=current[0]['group_id'],
                     block_ids=[b['block_id'] for b in current],content_tokens=n,token_count=n+1,eos_token_id=248046,
-                    processor_version=VERSION,tokenizer_sha256=TOKENIZER_SHA))
+                    processor_version=version,tokenizer_sha256=TOKENIZER_SHA))
             current=[]
         for b in blocks:
             flags=b['flags'].copy()
-            if contaminated_family:flags.append('benchmark_source_family')
-            if fingerprint_hit(b['text'],fp):flags.append('benchmark_exact_overlap')
+            if contaminated_family and not include_all:flags.append('benchmark_source_family')
+            if not include_all and fingerprint_hit(b['text'],fp):flags.append('benchmark_exact_overlap')
             key=sha(' '.join(ws(b['text'])))
             if key in owned:flags.append('duplicate_block')
             if len(tokenizer.encode(render([b]),add_special_tokens=False).ids)>4095:flags.append('oversized_block')
@@ -246,14 +248,15 @@ def build(args):
         print(json.dumps(dict(source=path.name,pages=pages,blocks=len(blocks),records=len(source_records))),flush=True)
     # Split whole chapter/book groups. Never randomly split adjacent snippets.
     groups=sorted({r['group_id'] for r in released})
-    split={g:('validation' if int(g[:8],16)%10==0 else 'train') for g in groups}
+    split={g:('validation' if not include_all and int(g[:8],16)%10==0 else 'train') for g in groups}
     data={s:[r for r in released if split[r['group_id']]==s] for s in ('train','validation')}
-    assert all(data.values())
+    assert data['train'] and (include_all or data['validation'])
+    if include_all:assert {r['source_id'] for r in data['train']}==seen_sources and len(seen_sources)==13,'All 13 sources must contribute training text'
     write_jsonl(args.out/'sources.jsonl',sources);write_jsonl(args.out/'staging.jsonl',staging);write_jsonl(args.out/'quarantine.jsonl',quarantine)
     for name,rows in data.items():
         write_jsonl(args.out/(name+'.jsonl'),rows)
-        pq.write_table(pa.Table.from_pylist(rows),args.out/(name+'.parquet'),compression='zstd')
-    manifest=dict(version=VERSION,sources=sources,pages=sum(s['pages'] for s in sources),staging_blocks=len(staging),
+        pq.write_table(pa.Table.from_pylist(rows,schema=pa.Table.from_pylist(data['train']).schema),args.out/(name+'.parquet'),compression='zstd')
+    manifest=dict(version=version,all_materials_in_training=include_all,benchmark_overlap_policy='audit_only_source_inclusive' if include_all else 'exclude',sources=sources,pages=sum(s['pages'] for s in sources),staging_blocks=len(staging),
         quarantine_reasons=dict(Counter(f for r in quarantine for f in r['reasons'])),
         split_groups=split,splits={k:dict(records=len(v),sources=len({r['source_id'] for r in v}),content_tokens=sum(r['content_tokens'] for r in v),sequence_tokens=sum(r['token_count'] for r in v)) for k,v in data.items()},
         tokenizer_sha256=TOKENIZER_SHA,fingerprint_sha256=sha(args.fingerprints.read_bytes()),
@@ -274,5 +277,6 @@ if __name__=='__main__':
     p.add_argument('--tokenizer',type=Path,default=Path('CPT_resources/corpus_build_inputs_20260910/tokenizer.json'))
     p.add_argument('--fingerprints',type=Path,default=Path('CPT_resources/corpus_build_inputs_20260910/benchmark_fingerprints.json.gz'))
     p.add_argument('--mineru-dir',type=Path)
+    p.add_argument('--all-materials',action='store_true',help='User-authorized source-inclusive experiment: train all 13 supplied sources, including prior development split; benchmark overlap is not an exclusion')
     p.add_argument('--parts',type=Path,default=Path('CPT_resources/llin-mineru-input/parts_manifest.json'))
     build(p.parse_args())

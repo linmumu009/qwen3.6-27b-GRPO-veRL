@@ -1,0 +1,124 @@
+{
+  "date": "2026-09-11",
+  "status": "training",
+  "corpus_version": "llin-logists-v5-full",
+  "train_sha256": "898dada4de8c7274ee0b18bf03f685998bd9cf25739af2502f1eed67c3cb9733",
+  "all_materials_authorized": true,
+  "source_family_exclusions": 0,
+  "benchmark_overlap_exclusions": 0,
+  "development_holdout_records": 0,
+  "external_benchmark_data_added_to_train": false,
+  "verification": {
+    "status": "PASS",
+    "manifest_sha256": "f6628918c7a0cf2270fc1cbacbc5b071c43b755e5df65ced98128c02ee72fd6f",
+    "checks": [
+      "artifact and original-source hashes",
+      "JSONL/Parquet equality",
+      "actual tokenizer lengths and special tokens",
+      "single-source block provenance and page bounds",
+      "group separation and unique released blocks",
+      "1672-case overlap audit only (authorized source-inclusive experiment)",
+      "cross-split block 5-word Jaccard >=0.85 (>=40 words)"
+    ],
+    "splits": {
+      "train": {
+        "records": 4707,
+        "content_tokens": 1844881,
+        "max_sequence_tokens": 4085,
+        "median_sequence_tokens": 181,
+        "tables": 272,
+        "display_formulas": 240
+      },
+      "validation": {
+        "records": 0,
+        "content_tokens": 0,
+        "max_sequence_tokens": 0,
+        "median_sequence_tokens": 0,
+        "tables": 0,
+        "display_formulas": 0
+      }
+    },
+    "source_counts": {
+      "43_Book_Manuscript_398_1_10_20230209.pdf": {
+        "train_tokens": 109777,
+        "train_records": 504
+      },
+      "Beyond Lean_ Simulation in Practice Second Edition.pdf": {
+        "train_tokens": 186130,
+        "train_records": 238
+      },
+      "challenges-and-opportunities-in-international-business.zip": {
+        "train_tokens": 334645,
+        "train_records": 348
+      },
+      "Container terminals and automated transport systems  logistics control issues and quantitative decision support (Günther, Hans Otto Kim, Kap Hwan) (z-library.sk, 1lib.sk, z-lib.sk).pdf": {
+        "train_tokens": 211957,
+        "train_records": 294
+      },
+      "Distribution logistics  advanced solutions to practical problems (Fleischmann, Bernhard Klose, Andreas etc.) (z-library.sk, 1lib.sk, z-lib.sk).pdf": {
+        "train_tokens": 145816,
+        "train_records": 183
+      },
+      "Fundamentals of Global Strategy.pdf": {
+        "train_tokens": 91588,
+        "train_records": 543
+      },
+      "International Trade - Theory and Policy.pdf": {
+        "train_tokens": 159662,
+        "train_records": 1103
+      },
+      "JSI_LogisticHandbook_English_2019_combined_web.pdf": {
+        "train_tokens": 94717,
+        "train_records": 157
+      },
+      "Knoop+-+Traffic+Flow+Theory.pdf": {
+        "train_tokens": 116091,
+        "train_records": 233
+      },
+      "KS-GQ-19-004-EN-N.pdf": {
+        "train_tokens": 37032,
+        "train_records": 278
+      },
+      "Managing supply chain risk (ManMohan S. Sodhi etc.) (z-library.sk, 1lib.sk, z-lib.sk).pdf": {
+        "train_tokens": 171184,
+        "train_records": 219
+      },
+      "MITx_MicroMasters_SCM_KeyConcepts.pdf": {
+        "train_tokens": 63183,
+        "train_records": 400
+      },
+      "wh-sci-0.98.1.pdf": {
+        "train_tokens": 123099,
+        "train_records": 207
+      }
+    },
+    "cross_split_near_duplicate_pairs": 0,
+    "benchmark_overlap_records": 117,
+    "all_13_sources_in_training": true,
+    "benchmark_source_families_excluded": 0,
+    "training_started": false,
+    "limitations": [
+      "Sampled visual QA, not a proof that every OCR formula is correct",
+      "No semantic benchmark decontamination guarantee"
+    ]
+  },
+  "training": {
+    "start": "original Step120 model state, fresh Adam",
+    "epochs": 1,
+    "records": 4707,
+    "batch_size": 9,
+    "steps": 523,
+    "content_tokens": 1844881,
+    "sequence_tokens": 1849588,
+    "learning_rate": 5e-07,
+    "minimum_learning_rate": 1e-07,
+    "warmup_steps": 11
+  },
+  "model_name": "llin-step120-logists-full-cpt-1epoch-20260911",
+  "run_directory": "/workspace/llin-verl-grpo/runs/cpt-stage2-storage-20260910/llin/llin-cpt-logists-full-one-epoch-20260911",
+  "coordinator_pid": 2416944,
+  "formal_tokenization_gate": "PASS",
+  "tests_passed": 11,
+  "interpretation": "source-inclusive textbook learning experiment, not an independent held-out generalization test",
+  "observed_steps": 2
+}
