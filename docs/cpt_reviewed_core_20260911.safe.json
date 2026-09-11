@@ -1,0 +1,32 @@
+{
+  "version": "llin-knowledge-core-v1",
+  "records": 110,
+  "content_tokens": 9290,
+  "sequence_tokens": 9400,
+  "max_sequence_tokens": 411,
+  "topics_with_selected_units": 51,
+  "source_records": 67,
+  "tokenizer_sha256": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523",
+  "training_started": false,
+  "scope": "reviewed supplement, not exhaustive 300-case coverage",
+  "checks": [
+    "explicit assertion review",
+    "source fingerprints",
+    "exact excerpt membership",
+    "title and scope retained",
+    "unique prose",
+    "4096 token limit without truncation",
+    "single terminal EOS",
+    "JSONL/Parquet round trip"
+  ],
+  "files": {
+    "candidate_disposition.private.jsonl": "e685b4e43b8c169f6168c89c2126c7bdc39592f0119fa75be86b4705290455dc",
+    "reviewed_units.private.jsonl": "f3a000374af9dec590f33b7473322b0611c25f1200577deb91ad4fa7eba289ca",
+    "sources.private.jsonl": "858344eb35fe0494138487e3dab5e3c1b63134cd4e93ae69490819cf41fb14c1",
+    "START_HERE.md": "2c5c1e5398ee0501323bb35de61bcb4ac59ce1f0ceeb0a250d3b8f000af98740",
+    "topic_coverage.private.jsonl": "deeb30bbbd012cb054dafa40e1ba0497943443b48d9774e5ba4c1b24a24952b0",
+    "train.jsonl": "658e900795244600e900d78426b1b853f1a3f73a7c647d86bc86b20a46fbdb72",
+    "train.parquet": "c9de5ddd4adc46b78ebc877fa54b1838b273a5486e151edfb9cfef47cf16d606",
+    "核心知识文档.md": "36c8267a19dba46f5e809705b31e463d63a6e7e2c0492a9b0bd192d8f7454b21"
+  }
+}
