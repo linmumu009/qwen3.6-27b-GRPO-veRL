@@ -1,0 +1,46 @@
+# 新知识语料单遍CPT与双评测（2026-09-11）
+
+用户确认“开始”。已上传新语料、建立独立代码快照，实际训练容器全量加载门禁通过，并启动协调器；不代表训练或评测已经完成。每30分钟自动跟进`cpt`已更新为本轮并启用，仅完成、实质失败或需介入时通知。
+
+## 本轮位置
+
+- 服务器：`huawei-05`；容器：`llin-verl-trainer-m05-20260730`。
+- 运行目录：`/workspace/llin-verl-grpo/runs/cpt-stage2-storage-20260910/llin/llin-cpt-knowledge-complete-one-epoch-20260911`。
+- 协调器PID：`2662538`；状态与日志：`status.safe.json`、`coordinator.pid`、`coordinator.log`、`training.log`。
+- 专用脚本在独立`code/scripts/`快照内，依赖来自此前成功运行的完整材料实验快照；`code_manifest.safe.json`记录指纹。
+- 语料：`/workspace/llin-verl-grpo/runs/llin-knowledge-complete-20260911/train.parquet`。
+- SHA256：`6ffa16684e617f657293918bf1d89ae8930ec24e0e08da346f175c4710c1f1c8`。
+
+## 固定训练合同
+
+| 项目 | 设置 |
+| --- | --- |
+| 起点 | 原始Step120模型态，fresh Adam |
+| 输入 | 4,912条；全部13份材料加205条核对知识 |
+| 正文/含EOS token | 1,868,012 / 1,872,924 |
+| 全局batch / 步数 | 8 / 614，恰好一遍 |
+| 并行 | 16进程，TP4/PP2/CP2/DP1 |
+| 学习率 | 5e-7 → 1e-7，cosine，13步warmup |
+| 序列 | 4096，原始因果语言建模，禁止截断，无聊天模板 |
+| 检查点 | 第614步保存model、optimizer、extra及dataloader |
+| 导出名 | `llin-step120-knowledge-complete-cpt-1epoch-20260911` |
+
+模型导出在本轮运行目录下。不接在上一轮CPT产物上，不自动替换Step120，不追加遍数。资源锁和输出存在检查避免重复运行；保留旧实验。
+
+## 已通过的检查
+
+启动前NPU无运行进程，输出磁盘空闲约1.4 TB，超过550GB门槛。新语料指纹与本地一致。服务器`preflight.safe.json`确认使用实际Qwen36CausalLMDataset和模型分词器加载全部4,912条，监督token为1,868,012，含EOS为1,872,924，长度18–4,085，结束标记和损失掩码正确，无截断、无聊天模板。
+
+本地5项预算/异常测试通过：完整614步、缺尾步拒绝、错误token预算拒绝、非有限损失拒绝、分词器固定指纹。远端新脚本语法检查通过。协调器启动前重新核验快照文件指纹；训练脚本会再次运行真实数据门禁。
+
+## 自动接续与结果口径
+
+协调器训练后核对614步和完整token预算，验证完整检查点，使用固定Megatron Bridge导出环境生成HF模型，再运行SC-bench知识226题及LogistikaBench1446题各3轮，共5,016次请求。
+
+比较基线为原Step120的`runs/cpt-controlled-storage-20260910/llin/cpt-controlled-20260910/curve8x/eval_epoch_0`，成绩189/226与1180/1446。保持原提示、thinking关闭、temperature0、seed1024、最大输出96、上下文8192、TP8、并发32，核验案例和提示指纹一致，报告正确数及改对/改错。
+
+语料包含评测来源教材，成绩属于有针对性的学习实验，不能作为独立泛化证明。300题的知识缺口账本仍保留，训练启动不表示这些缺口已解决。
+
+发生异常时先检查状态、PID、检查点和日志，禁止盲目重复训练。只有完整第614步检查点通过时才使用专用协调器`--after-training`接续导出/评测；失败导出需保留日志并使用既有安全恢复流程。全部结束后独立核实训练、导出和5,016次请求，再更新结果与README并暂停自动跟进。
+
+私有训练正文、原书和评测题不提交Git。
