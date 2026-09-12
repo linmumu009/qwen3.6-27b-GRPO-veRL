@@ -1,0 +1,84 @@
+{
+  "version": "llin-cpt-sft-search-v1",
+  "date": "2026-09-12",
+  "status": "prepared_not_started",
+  "target": {
+    "SC-bench-knowledge": {
+      "baseline": 189,
+      "total": 226,
+      "required_correct": 196
+    },
+    "LogistikaBench": {
+      "baseline": 1180,
+      "total": 1446,
+      "required_correct": 1224
+    }
+  },
+  "baseline_protocol": "Original frozen prompts, thinking off, temperature 0, seed 1024, max output 96, context 8192, TP8, 3 repeats; never alter labels.",
+  "primary_benchmarks_are_adaptive_selection_sets": true,
+  "confirmation": "Fresh process rerun after candidate freeze plus separately reported general/Agent retention; three deterministic repeats are not independent training seeds.",
+  "experiments": [
+    {
+      "id": "S1",
+      "hypothesis": "Direct Step120 SFT with the old verified tasks can learn without the CPT starting-point assumption.",
+      "method": "SFT",
+      "initialization": "original_step120_model_only",
+      "data": "existing_reviewed_591_tasks",
+      "train_parquet_sha256": "2f10b42c9a8ad0bde49b2c1887a6216727352c4871d1afdc5e84145e70dd9051",
+      "learning_rate": 2e-07,
+      "batch_size": 3,
+      "epochs": 1,
+      "steps": 197
+    },
+    {
+      "id": "S2",
+      "hypothesis": "The same tasks are under-trained at 2e-7; changing only LR improves independent task development and benchmark scores.",
+      "method": "SFT",
+      "initialization": "original_step120_model_only",
+      "data": "same_as_S1",
+      "learning_rate": 1e-06,
+      "batch_size": 3,
+      "epochs": 1,
+      "steps": 197
+    },
+    {
+      "id": "S3",
+      "hypothesis": "Task coverage and conditions, rather than more repetitions of easy questions, limit transfer.",
+      "method": "SFT",
+      "status": "requires_generated_task_review_and_baseline_probes",
+      "data": "source_only_tasks_from_205_reviewed_units_plus_retention_examples"
+    },
+    {
+      "id": "C1",
+      "hypothesis": "Selected knowledge exposure is too diluted in full-book CPT.",
+      "method": "CPT",
+      "status": "freeze_exposure_and_background_token_budget_after_source_probes",
+      "keep_all_source_families_available": true
+    }
+  ],
+  "execution_gates": [
+    "SSH and storage/NPU availability",
+    "pin model and actual tokenizer",
+    "actual dataset loss-mask and complete 591-record token budget",
+    "source support and semantic grouping for new tasks",
+    "evaluate train/dev before updates",
+    "resource lock and immutable run directory"
+  ],
+  "decision_rules": [
+    "Compare S1/S2 with same initialization/data/order/steps and only different LR.",
+    "If reference likelihood improves but objective train/dev accuracy does not, do not simply increase epochs.",
+    "If train accuracy improves but dev does not, prioritize data coverage/generalization and retention.",
+    "If train and dev improve, freeze the next exposure test before viewing its results.",
+    "Retain all outcomes; no best-repeat reporting; do not train on official benchmark answers."
+  ],
+  "source_units": 205,
+  "source_evidence_groups": 115,
+  "request_splits": {
+    "train": 178,
+    "dev": 27
+  },
+  "generated_tasks": 0,
+  "training_started": false,
+  "source_manifest_sha256": "4f0cb4918debc2122d31e0d5d177eb889ff33a47406b5054cd049cb7dc982af2",
+  "requests_sha256": "5df7dc2b209938986cd7081aecdc9105fb989c9a872d572ce0a0c5a16dbbf8a4"
+}
