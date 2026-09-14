@@ -151,3 +151,15 @@ S3协调器3264229已退出，status=candidate_evaluated_review_pending。真实
 212题来源探针逐题核对问题/选项/标签与冻结输入并重新解析：训练条件11→43/44、基础训练123→130/135、同模板未见参数2→10/11、来源组开发21→21/22。局部学习和同模板迁移成立，不能推断广泛能力提高。官方Logistika分类：搬运571→574/696、仓储151→153/202、运输333→326/404。S3偏重运输统计边界，不能据此认定覆盖全部运输能力；评测类别与细知识主题也不是一一对应。
 
 下一步S4先做操作知识覆盖诊断，不增加S3曝光。已从既有13教材清洗块按操作主题关键词及600–5000字符筛出候选段落；私有目录CPT_resources/llin-s4-source-screen-20260914-01，安全统计cpt_s4_source_screen_20260914.safe.json。这只是候选索引，需排除习题/答案键/官方近似题、读上下文与公式完整性、映射冻结开发主题后才能制题；不能当作训练就绪。优先多种实际决策与计算任务，来源审核及原模型难度探针后才冻结新配方。未启动S4训练，所有旧进程均不重复启动。/opt剩余约439.8GB，低于当前完整检查点流水线550GB门槛；下一次训练前核实其他挂载可用空间或选保留产物的存储方案，不删旧产物。
+
+
+## 2026-09-14 用户授权开始 LoRA-CPT
+
+优先于S4制题，目标/官方协议不变。计划原Step120模型态、新LoRA及Adam，复用全参数CPT同一语料/workspace/llin-verl-grpo/runs/llin-knowledge-complete-20260911/train.parquet，SHA6ffa16684e617f657293918bf1d89ae8930ec24e0e08da346f175c4710c1f1c8。实际tokenization gate通过4912记录、1868012监督token、1872924输入token，无chat template、所有真实next-token目标监督。正式预算batch8、614步1遍。LoRA rank64、alpha128、dropout0、linear_qkv/proj/fc1/fc2；LR1e-5→1e-6为起始候选，尚未据有效学习校准，不能声称全参与LoRA只改变一个因素。
+
+当前是两步工程门禁，尚未正式训练。huawei-05容器llin-verl-trainer-m05-20260730，最新flock PID3291008，代码/opt/llin-lora-cpt-code-20260914-03/scripts，输出/opt/llin-lora-cpt-gate-20260914-03，bootstrap在代码目录。01失败于未先初始化mindspeed导致缺TransformerEngine，02失败于Hydra已有model.lora字段不能单+新增；两次均训练前退出，保留快照。旧PID3288031/3289477的Z状态只是僵尸，不代表运行。
+
+固定Bridge缺少新版引擎调用的create_peft/create_peft_hook等接口，采用进程内兼容：原生LoRA注入前调用既有Step120分布式加载，注入后跳过重复加载且断言前置加载发生；DDP/optimizer构建前基础权重冻结。所有参数逐rank训练前后哈希，要求基础不变且适配器变化；本次并未更改共享安装。新增export_lora_cpt_to_hf.py重建base+adapter并核验合并数学及HF完整性，尚待实机证明，不能仅凭语法检查启动正式训练。两步门禁与正式输出必须分开，正式训练应从新adapter重置开始；通过保存/导出/推理门禁后自动接续一遍双测。Python语法检查通过，正式流程及收益未验证。自动跟进已切换LoRA，保留S4候选但不同时占用机器。
+
+
+LoRA门禁继续修复：03在原生LoRA注入时不识别MindSpeed TERowParallelLinear，04进一步暴露融合归一化列层未识别，均未进入optimizer/训练。最新05快照/opt/llin-lora-cpt-code-20260914-05，输出/opt/llin-lora-cpt-gate-20260914-05，flock PID3297018。新增进程内lora_cpt_ascend_compat.py明确映射分片属性；融合层对adapter重算相同归一化，避免把未归一化输入误送适配器。目标限定language_model.*的四类线性层，视觉分支/MTP保持冻结，哈希审计拒绝视觉adapter。导出脚本使用同一映射，尚未实测；正式训练仍未启动。此前所有失败目录保留。
