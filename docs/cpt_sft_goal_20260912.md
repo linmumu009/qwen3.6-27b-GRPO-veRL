@@ -163,3 +163,13 @@ S3协调器3264229已退出，status=candidate_evaluated_review_pending。真实
 
 
 LoRA门禁继续修复：03在原生LoRA注入时不识别MindSpeed TERowParallelLinear，04进一步暴露融合归一化列层未识别，均未进入optimizer/训练。最新05快照/opt/llin-lora-cpt-code-20260914-05，输出/opt/llin-lora-cpt-gate-20260914-05，flock PID3297018。新增进程内lora_cpt_ascend_compat.py明确映射分片属性；融合层对adapter重算相同归一化，避免把未归一化输入误送适配器。目标限定language_model.*的四类线性层，视觉分支/MTP保持冻结，哈希审计拒绝视觉adapter。导出脚本使用同一映射，尚未实测；正式训练仍未启动。此前所有失败目录保留。
+
+
+### LoRA两步真实训练/保存门禁已通过（2026-09-14 15:00后）
+
+05首次实际反向失败于冻结base参数main_grad=None而融合梯度累积仍访问其dtype；06关闭gradient_accumulation_fusion，保持基础冻结。06门禁PID3312417已退出，/opt/llin-lora-cpt-gate-20260914-06完成2步、5808输入token，global_step_2检查点保存，16rank before/after审计全通过（基础SHA一致、adapter SHA变化），并验证指标有限。不是正式训练或收益证明。其他控制沿用前述数据、rank64/alpha128、语言层投影、TP4PP2CP2。
+
+自动接续协调器PID3331241，快照/opt/llin-lora-cpt-code-20260914-07/scripts，输出/opt/llin-lora-cpt-r64-20260914-01；首次检查状态gate_export，已独立读取2步指标与全部rank审计。接续CPU重建基础+适配器、逐模块合并数学检查、1199张量HF完整性、8道来源题推理烟测；全部通过才启动全新adapter/Adam的614步正式训练，随后同样审计基础冻结/adapter更新和实际1872924token，导出llin-step120-lora-cpt-r64-1epoch-hf，官方双评测及原始评分复核。两步模型不用于正式成绩。LR1e-5→1e-6冻结为首个LoRA候选而非已优化LR，保持原13步warmup；不能称已做超参数校准或单因素归因。注册快照training_started=false仅表示注册时状态。若某阶段失败，保留目录，从失败点修复恢复，不重复已完成训练。
+
+
+导出恢复记录：协调器07/输出r64-01在适配器state额外状态键与named_parameters不一致处失败；08/输出r64-02已通过键完整性及加载，原生LoRAMerge.transform在BF16先舍入增量，未通过FP32合并数学断言。保持严格检查，改用原生merge函数的FP32输入，完成后一次舍入BF16；不用放宽断言绕过错误。最新协调器PID3336086，代码/opt/llin-lora-cpt-code-20260914-09/scripts，输出/opt/llin-lora-cpt-r64-20260914-03，正在gate_export。此前两步门禁06已完成不重训，所有失败导出目录保留。正式训练仍受合并/推理门禁保护，未确认启动。

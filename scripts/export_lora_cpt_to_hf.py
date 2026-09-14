@@ -51,14 +51,15 @@ def main():
         loaded = load_dist_checkpointing(skeleton, str(adapter_path))
         state = loaded['model']
         assert state and all('.adapter.' in k for k in state), 'Non-adapter state in checkpoint'
-        expected = {n for n, _ in models[0].named_parameters() if '.adapter.' in n}
-        assert set(state) == expected, 'Adapter key set incomplete'
+        expected = {n for n in models[0].state_dict() if '.adapter.' in n}
+        assert set(state) == expected, dict(missing=sorted(expected-set(state)),extra=sorted(set(state)-expected))
         result = models[0].load_state_dict(state, strict=False)
         assert not result.unexpected_keys and not (set(result.missing_keys) & expected)
-        assert all(torch.isfinite(t).all() for t in state.values())
-        assert any(torch.count_nonzero(t) for k,t in state.items() if 'linear_out' in k)
+        assert all(torch.isfinite(t).all() if isinstance(t,torch.Tensor) else k.endswith('_extra_state') for k,t in state.items())
+        assert any(torch.count_nonzero(t) for k,t in state.items() if k.endswith('linear_out.weight'))
         merger = LoRAMerge(); merged = []
 
+        @torch.no_grad()
         def merge_children(module, prefix=''):
             for name, child in list(module.named_children()):
                 full = prefix+'.'+name
@@ -67,8 +68,12 @@ def main():
                     w = child.to_wrap.weight
                     expected_weight = (w.float() +
                         child.adapter.linear_out.weight.float() @ child.adapter.linear_in.weight.float() * 2).to(w.dtype)
-                    merger.transform(child)
-                    assert torch.equal(child.to_wrap.weight, expected_weight), 'Merge math mismatch'
+                    # Merge in FP32, then round once; native transform otherwise
+                    # rounds the low-rank product in BF16 before adding the base.
+                    merged_weight = merger.merge(w.float(),child.adapter.linear_out.weight.float(),
+                        child.adapter.linear_in.weight.float(),128,64).to(w.dtype)
+                    assert torch.equal(merged_weight, expected_weight), 'Merge math mismatch'
+                    w.copy_(merged_weight)
                     setattr(module, name, child.to_wrap)
                     merged.append(full)
                 else:
@@ -80,7 +85,7 @@ def main():
     verification = verify_exact_hf_export(a.base_model, staging)
     assert verification['valid'], verification
     (staging/'llin_export_manifest.json').write_text(json.dumps(dict(
-        conversion='Pinned Bridge LoRA rank64 alpha128 merged on CPU',
+        conversion='Pinned Bridge LoRA rank64 alpha128 merged in FP32 on CPU then rounded to BF16',
         adapter_checkpoint=str(adapter_path), base_model=str(a.base_model),
         base_dist=str(a.base_dist), merged_modules=merged, merge_math_verified=True,
         frozen_base_fallback_keys=fallback, verification=verification), indent=2))

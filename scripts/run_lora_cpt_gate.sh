@@ -159,6 +159,7 @@ torchrun --standalone --nnodes=1 --nproc_per_node="${NPROC}" \
   ++engine.override_transformer_config.recompute_num_layers=1 \
   ++engine.override_transformer_config.use_flash_attn=true \
   ++engine.override_transformer_config.sequence_parallel=true \
+  ++engine.override_transformer_config.gradient_accumulation_fusion=false \
   'checkpoint.load_contents=[]' \
   'checkpoint.save_contents=[model,optimizer,extra]' \
   "trainer.default_local_dir=${OUTPUT_DIR}/checkpoints" \
