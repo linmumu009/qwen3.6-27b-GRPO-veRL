@@ -1,0 +1,26 @@
+{
+  "arm": "S1",
+  "learning_rate": 0.0000002,
+  "steps": 197,
+  "sequence_tokens": 88819,
+  "records": 591,
+  "objective_train": {"before": 363, "after": 373, "n": 402},
+  "objective_dev": {"before": 65, "after": 65, "n": 74},
+  "table": [
+    {"dataset": "SC-bench-knowledge", "n": 226, "before": 189, "after": 190, "gains": 1, "losses": 0},
+    {"dataset": "LogistikaBench", "n": 1446, "before": 1180, "after": 1169, "gains": 8, "losses": 19}
+  ],
+  "candidate_requests": 5016,
+  "candidate_invalid": 0,
+  "candidate_truncated": 0,
+  "candidate_predictions_sha256": "618ab8f758c88e512e2b21d3dc1eb60a0d1e941ac672007e52212886f9d83dd9",
+  "baseline_predictions_sha256": "18f0e0524a0ff97c1e0345cd6192b16363a1fcec05405f3ad7c97fb70edad0f7",
+  "raw_outputs_reparsed": true,
+  "protocol_equal": true,
+  "s1_s2_loader_reports_equal": true,
+  "s1_s2_per_step_token_sequence_equal": true,
+  "baseline_probe_aggregate_equal": true,
+  "target_met": false,
+  "model_promoted": false,
+  "retention_evaluated": false
+}
