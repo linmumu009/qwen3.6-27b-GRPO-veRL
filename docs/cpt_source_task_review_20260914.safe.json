@@ -1,0 +1,20 @@
+{
+  "input_count": 194,
+  "held": 37,
+  "retained": 157,
+  "splits": {
+    "train": 135,
+    "dev": 22
+  },
+  "forms": {
+    "definition_discrimination": 101,
+    "application_with_new_entities": 17,
+    "boundary_or_counterexample": 39
+  },
+  "agent_source_review": true,
+  "human_review": false,
+  "training_ready": false,
+  "remaining_gate": "Independent closed-book difficulty probe; then freeze S3 design",
+  "source_sha256": "cb8085d17b6b0573964540b72d6e3a3991cd617df114ba271857161926f271eb",
+  "cases_sha256": "d896fd906a17c473d4ec9ef775f1ad0ed7138d9fbec431fec5efcab67a3856bd"
+}
