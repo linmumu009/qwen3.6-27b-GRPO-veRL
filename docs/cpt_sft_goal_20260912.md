@@ -185,3 +185,12 @@ r64-03协调器3336086已退出。正式训练rank9在2026-09-14 07:12 UTC报Inv
 修复按stage生成独立环境，推理配置不再写回共享env；formal_training清除三种设备可见性变量，shell也清除。新增2项环境切换回归测试；实际容器用真实evaluation_env验证8卡推理到16rank训练可见性清理及父环境不变，shell语法通过。恢复入口--passed-gate要求旧状态failed且无模型初始化/检查点，并检查已通过的门禁、导出报告和8条原始烟测再复用。
 
 新协调器PID3344468，快照/opt/llin-lora-cpt-code-20260914-10/scripts，输出/opt/llin-lora-cpt-r64-20260914-04，命令带--passed-gate /opt/llin-lora-cpt-r64-20260914-03。已进入formal_training；继续核实16rank完成初始化、实际训练指标后才称正常。原614步/4912记录/1872924token与LoRA配方不变，完成后自动导出双评测；不重跑两步或导出门禁，不删除旧结果。
+
+
+## 2026-09-14 18:23 LoRA-CPT完成，目标未达
+
+协调器3344468已退出，输出/opt/llin-lora-cpt-r64-20260914-04状态candidate_evaluated_review_pending。614步、4912记录、1872924真实输入token，16rank训练前后基础SHA一致、adapter均改变，全部loss/grad/lr有限；FP32合并160模块，HF1199张量/15分片完整。正式模型llin-step120-lora-cpt-r64-1epoch-hf保留未晋级。
+
+再次独立运行verify_sft_search_result.py重解析基线/候选共10032回答并重算三轮严格多数，协议除模型外一致，零无效/截断。SC189→190（改对3、改错2，+0.4425pp）；Logistika1180→1184（改对21、改错17，+0.2766pp）。门槛196/1224均未到。此前同语料全参数CPT为SC189（改对2/改错2）、Log1185（改对12/改错7），此次LoRA并未减少Log上的改错数量，净收益也无明显优势；LoRA和LR均不同，不能据此断言所有LoRA都较差或冻结基础就不会遗忘行为。保持能力尚未单测。安全结果cpt_lora_result_20260914.safe.json。
+
+已接续对最终LoRA模型做冻结212题来源探针（/opt/llin-s3-data-20260914-01/cases.private.jsonl），目录r64-04/source_probe，单轮相同8192/96/TP8协议，不训练不改变官方评分。与原Step120在S3前测的157/212及分组结果比较，先判断正文知识是否学到及不同任务的迁移；不将同模板检查当独立泛化。探针结束后按证据决定最小下一实验，原LoRA正式614步和双评测不能重复启动。
