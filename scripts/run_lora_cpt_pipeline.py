@@ -15,11 +15,22 @@ BASE = ROOT/'runs/llin-step120-opensource-20260825-02/hf_export_step120_opensour
 DIST = ROOT/'runs/llin-step120-opensource-20260825-02/checkpoints/global_step_120/actor/model/dist_ckpt'
 
 
+def stage_environment(environment, stage):
+    result=dict(environment)
+    for key in ('ASCEND_RT_VISIBLE_DEVICES','ASCEND_VISIBLE_DEVICES','CUDA_VISIBLE_DEVICES'):
+        result.pop(key,None)
+    if stage in ('gate_inference','official_evaluation'):
+        from run_logistics_cpt_curve_8x import evaluation_env
+        result=evaluation_env(result)
+    return result
+
+
 def main():
     p = argparse.ArgumentParser()
     p.add_argument('--gate', type=Path, required=True)
     p.add_argument('--gate-pid', type=int, required=True)
     p.add_argument('--out', type=Path, required=True)
+    p.add_argument('--passed-gate', type=Path, help='Reuse completed gate after a pre-training initialization failure')
     a = p.parse_args()
     assert a.out.parent == Path('/opt') and a.out.name.startswith('llin-lora-cpt-')
     code = Path(__file__).resolve().parent
@@ -45,7 +56,7 @@ def main():
         save('status.safe.json', dict(status=stage, promotion=False))
         with (a.out/(stage+'.log')).open('x') as log:
             subprocess.run(['bash','-c','source /usr/local/Ascend/ascend-toolkit/set_env.sh; exec "$@"','--',*command],
-                           env=dict(env,**(extra or {})),stdout=log,stderr=subprocess.STDOUT,check=True)
+                           env=stage_environment(dict(env,**(extra or {})),stage),stdout=log,stderr=subprocess.STDOUT,check=True)
 
     def audit_training(directory, steps):
         from summarize_logistics_cpt_run import parse_metrics
@@ -83,23 +94,36 @@ def main():
             fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
             save('gate_training_audit.safe.json',audit_training(a.gate,2))
             assert shutil.disk_usage(a.out).free>180_000_000_000, 'Insufficient export reserve'
-            gate_model=a.out/'llin-lora-cpt-gate-hf'
-            export('gate_export',a.gate/'checkpoints/global_step_2',gate_model)
-            source=Path('/opt/llin-s3-data-20260914-01/cases.private.jsonl')
-            smoke=a.out/'smoke_cases.private.jsonl'
-            smoke.write_text('\n'.join(source.read_text().splitlines()[:8])+'\n')
-            from run_logistics_cpt_curve_8x import evaluation_env
-            # Keep device selection identical to the existing evaluation engine.
-            env.update(evaluation_env(env))
-            run('gate_inference',[sys.executable,str(code/'run_vllm_logistics_mcq.py'),
-                '--model',str(gate_model),'--model-label','llin-lora-gate','--cases',str(smoke),
-                '--tensor-parallel-size','8','--max-model-len','8192','--max-num-seqs','32',
-                '--max-output-tokens','96','--gpu-memory-utilization','0.8','--seed','1024','--repeats','1',
-                '--private-output',str(a.out/'smoke.private.jsonl'),'--safe-output',str(a.out/'smoke.safe.json')])
-            rows=[json.loads(x) for x in (a.out/'smoke.private.jsonl').read_text().splitlines()]
-            assert len(rows)==8 and all(r['parse_ok'] and not r['error'] for r in rows)
-            save('gate_pass.safe.json',dict(training=True,base_frozen=True,adapter_updated=True,
-                export_verified=True,inference_smoke=True,official_score_claim=False))
+            if a.passed_gate:
+                previous=a.passed_gate
+                assert json.loads((previous/'status.safe.json').read_text())['status']=='failed'
+                assert not list((previous/'training/checkpoints').glob('global_step_*'))
+                assert not list((previous/'training/weight_audit').glob('*.before.safe.json')), 'Training initialized; use a proper resume instead'
+                gate=json.loads((previous/'gate_pass.safe.json').read_text())
+                assert all(gate.get(k) is True for k in ['training','base_frozen','adapter_updated','export_verified','inference_smoke'])
+                manifest=json.loads((previous/'llin-lora-cpt-gate-hf/llin_export_manifest.json').read_text())
+                assert manifest['verification']['valid'] and manifest['merge_math_verified']
+                rows=[json.loads(x) for x in (previous/'smoke.private.jsonl').read_text().splitlines()]
+                assert len(rows)==8 and all(r['parse_ok'] and not r['error'] for r in rows)
+                save('gate_pass.safe.json',dict(gate,reused_from=str(previous)))
+            else:
+                gate_model=a.out/'llin-lora-cpt-gate-hf'
+                export('gate_export',a.gate/'checkpoints/global_step_2',gate_model)
+                source=Path('/opt/llin-s3-data-20260914-01/cases.private.jsonl')
+                smoke=a.out/'smoke_cases.private.jsonl'
+                smoke.write_text('\n'.join(source.read_text().splitlines()[:8])+'\n')
+                from run_logistics_cpt_curve_8x import evaluation_env
+                # Keep device selection identical to the existing evaluation engine.
+                # Evaluation visibility is scoped by stage_environment; never mutate training env.
+                run('gate_inference',[sys.executable,str(code/'run_vllm_logistics_mcq.py'),
+                    '--model',str(gate_model),'--model-label','llin-lora-gate','--cases',str(smoke),
+                    '--tensor-parallel-size','8','--max-model-len','8192','--max-num-seqs','32',
+                    '--max-output-tokens','96','--gpu-memory-utilization','0.8','--seed','1024','--repeats','1',
+                    '--private-output',str(a.out/'smoke.private.jsonl'),'--safe-output',str(a.out/'smoke.safe.json')])
+                rows=[json.loads(x) for x in (a.out/'smoke.private.jsonl').read_text().splitlines()]
+                assert len(rows)==8 and all(r['parse_ok'] and not r['error'] for r in rows)
+                save('gate_pass.safe.json',dict(training=True,base_frozen=True,adapter_updated=True,
+                    export_verified=True,inference_smoke=True,official_score_claim=False))
             training=a.out/'training'
             run('formal_training',['bash',str(code/'run_lora_cpt_gate.sh')],dict(
                 TRAIN_FILE=str(ROOT/'runs/llin-knowledge-complete-20260911/train.parquet'),

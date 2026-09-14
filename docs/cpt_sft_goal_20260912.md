@@ -176,3 +176,12 @@ LoRA门禁继续修复：03在原生LoRA注入时不识别MindSpeed TERowParalle
 
 
 09/输出r64-03已完成gate_export：160适配模块合并数学核验通过，HF1199张量/15分片，形状类型一致；报告cpt_lora_gate_20260914.safe.json。实际覆盖64层MLP的两种投影及16个全注意力层的QKV/输出投影；混合模型的线性注意力专用投影未在本配方目标中，不能称全部线性层LoRA。协调器3336086已进入gate_inference，正式训练仍等待8题推理烟测通过。S4继续暂缓。
+
+
+## 2026-09-14 15:45 LoRA正式初始化失败修复
+
+r64-03协调器3336086已退出。正式训练rank9在2026-09-14 07:12 UTC报Invalid device ID：推理遗留ASCEND_RT_VISIBLE_DEVICES=0..7限制了16rank训练，模型尚未初始化，weight_audit为0、无检查点、无完成训练步。此前“正式已启动”仅指流程进入该阶段，未证明训练正常；现在明确纠正。与语料/LoRA能力无关。
+
+修复按stage生成独立环境，推理配置不再写回共享env；formal_training清除三种设备可见性变量，shell也清除。新增2项环境切换回归测试；实际容器用真实evaluation_env验证8卡推理到16rank训练可见性清理及父环境不变，shell语法通过。恢复入口--passed-gate要求旧状态failed且无模型初始化/检查点，并检查已通过的门禁、导出报告和8条原始烟测再复用。
+
+新协调器PID3344468，快照/opt/llin-lora-cpt-code-20260914-10/scripts，输出/opt/llin-lora-cpt-r64-20260914-04，命令带--passed-gate /opt/llin-lora-cpt-r64-20260914-03。已进入formal_training；继续核实16rank完成初始化、实际训练指标后才称正常。原614步/4912记录/1872924token与LoRA配方不变，完成后自动导出双评测；不重跑两步或导出门禁，不删除旧结果。
