@@ -10,6 +10,10 @@ import shutil
 import subprocess
 import sys
 
+# The coordinator itself also needs the immutable snapshot package root;
+# setting PYTHONPATH only on subprocesses does not affect this interpreter.
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+
 from run_logistics_cpt_curve_8x import BASE, ROOT, checkpoint_gate, evaluation_env, paired, save
 
 DATA = ROOT/'runs/supply-chain-task-training-data-20260909-01'
@@ -19,14 +23,22 @@ BASELINE = ROOT/'runs/cpt-controlled-storage-20260910/llin/cpt-controlled-202609
 def main():
     p = argparse.ArgumentParser()
     p.add_argument('--out', type=Path, required=True)
+    p.add_argument('--after-training', action='store_true', help='Resume audits/evaluation from a completed export; never retrain')
     a = p.parse_args()
     out = a.out.resolve()
     if out.parent != Path('/opt') or not out.name.startswith('llin-sft-search-s2-'):
         raise ValueError('expected independent /opt/llin-sft-search-s2-* output')
     code = Path(__file__).resolve().parent
     os.umask(0o077)
-    out.mkdir(exist_ok=False)
-    status = out/'status.safe.json'
+    if a.after_training:
+        previous = json.loads((out/'status.safe.json').read_text())
+        if previous.get('status') != 'failed' or not (out/'llin-training/llin-step120-s2-hf/model.safetensors.index.json').is_file():
+            raise ValueError('recovery requires a failed coordinator and completed export')
+    else:
+        out.mkdir(exist_ok=False)
+    status = out/('status_recovery.safe.json' if a.after_training else 'status.safe.json')
+    if status.exists() and a.after_training:
+        raise ValueError('recovery already attempted; inspect its process before any further action')
     save(status, dict(status='waiting_for_resource_lock', training_started=False))
     env = dict(os.environ, PYTHONPATH=os.pathsep.join([str(code.parent), str(ROOT),
         str(ROOT/'reference/Megatron-Bridge-de93536e/src'), str(ROOT/'runtime'), '/verl', os.environ.get('PYTHONPATH', '')]),
@@ -46,21 +58,27 @@ def main():
             fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
             if shutil.disk_usage(out).free < 550_000_000_000:
                 raise ValueError('insufficient checkpoint/export space')
-            save(out/'registration.safe.json', dict(arm='S2', lr=1e-6, batch=3, steps=197,
+            save(out/('recovery_registration.safe.json' if a.after_training else 'registration.safe.json'), dict(arm='S2', lr=1e-6, batch=3, steps=197,
                  epochs=1, starting_model=str(BASE), fresh_optimizer=True,
                  selection_reason='User prioritized fastest test; S2 precedes S1, conditions unchanged',
                  code_sha256={p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in code.iterdir() if p.is_file()}))
             for stage, script in [('data_audit', 'audit_cpt_sft_search_data.py'), ('loader_gate', 'gate_cpt_sft_search_loader.py')]:
-                run(stage, [sys.executable, str(code/script), '--data', str(DATA), '--model', str(BASE)])
+                run(stage+('_recovery' if a.after_training else ''), [sys.executable, str(code/script), '--data', str(DATA), '--model', str(BASE)])
             # Reuse source-built objective tasks, never official benchmark examples.
             task_files = [DATA/(s+'.cases.private.jsonl') for s in ('train', 'dev')]
             rows = [[json.loads(x) for x in f.read_text().splitlines()] for f in task_files]
             if [len(r) for r in rows] != [402, 74]:
                 raise ValueError('unexpected objective task counts')
-            (out/'tasks.private.jsonl').write_text(''.join(json.dumps(r)+'\n' for group in rows for r in group))
-            save(out/'task_inputs.safe.json', {f.name: hashlib.sha256(f.read_bytes()).hexdigest() for f in task_files})
-            task_probe('step120_tasks', BASE)
-            run('training', ['bash', str(code/'run_cpt_sft_search_s2.sh')])
+            task_text = ''.join(json.dumps(r)+'\n' for group in rows for r in group)
+            task_hashes = {f.name: hashlib.sha256(f.read_bytes()).hexdigest() for f in task_files}
+            if a.after_training:
+                if (out/'tasks.private.jsonl').read_text() != task_text or json.loads((out/'task_inputs.safe.json').read_text()) != task_hashes:
+                    raise ValueError('task inputs changed since baseline')
+            else:
+                (out/'tasks.private.jsonl').write_text(task_text)
+                save(out/'task_inputs.safe.json', task_hashes)
+                task_probe('step120_tasks', BASE)
+                run('training', ['bash', str(code/'run_cpt_sft_search_s2.sh')])
             checkpoint_gate(out/'llin-training/checkpoints/global_step_197')
             from summarize_logistics_cpt_run import parse_metrics
             metrics = parse_metrics('\n'.join(p.read_text(errors='replace') for p in
