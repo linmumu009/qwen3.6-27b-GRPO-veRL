@@ -1322,7 +1322,7 @@ ssh huawei-5 'ls /data/renjunxiang/coding/huawei_train/models/ms_swift_sft/v0-*/
 > **章节结构**：沿用第三章的端到端操作组织方式，两条路线分别阅读：
 > - **§4.1 路线与路径约定**：先明确模型、设备口径和两套入口。
 > - **§4.2 单机多卡 9B**：环境→数据→奖励接口→配置→资源→启动→验证→踩坑。
-> - **§4.3 多机多卡 27B**：环境→数据与工具→奖励→配置→Ray→恢复→启动→验证→导出。
+> - **§4.3 多机多卡 27B**：环境→数据与工具→奖励→配置→Ray→原始模型训练到 Step100→验证→继续训练到 Step120→导出。
 > - **§4.4 验收与路径速查**：区分训练完成、产物完整和能力提升。
 
 ### 4.1 路线与路径约定
@@ -1338,7 +1338,7 @@ ssh huawei-5 'ls /data/renjunxiang/coding/huawei_train/models/ms_swift_sft/v0-*/
 | Rollout | vLLM，TP4×DP2 | vLLM，TP8×DP2 |
 | veRL 入口 | `experimental.one_step_off_policy.main_ppo` | `experimental.fully_async_policy.fully_async_main` |
 | 权重同步 | 配置 backend 为 `nccl`，NPU 实际进入 HCCL 实现 | 同样使用 NPU checkpoint engine 同步 |
-| 验证状态 | 权重同步阶段失败，无完成训练步证据 | Step100→120 续训、保存与 HF 导出有记录 |
+| 验证状态 | 权重同步阶段失败，无完成训练步证据 | 原始模型→Step100→Step120 两阶段训练、保存与 HF 导出有记录 |
 
 **设备口径**：Atlas 800 A3 单机 8 个 NPU ID，每个包含 2 个计算 chip，共 16 chip，每 chip 64 GiB HBM。本章统一按 **chip** 计数，双机共 32 chip。FSDP 分片组不等于张量并行；推理 DP2 也不等于训练 DP2。
 
@@ -1604,9 +1604,20 @@ actor_update_weights
 
 ---
 
-### 4.3 多机多卡 GRPO：Qwen3.6-27B
+### 4.3 多机多卡 GRPO：Qwen3.6-27B 原始模型 → Step100 → Step120
 
-> 本节以 **Step100→120 的 dense-correctness 续训**作为可追溯实例，依次说明环境、数据、启动、检查点及导出。它从已有 Step100 开始，目标累计 Step120，新增更新预算 20 步；不是从基座新训 120 步。本项目跳过基座 SFT 的总体决策见 §3.3。
+> 本节按我们实际执行的完整路线组织：**原始 Qwen3.6-27B → 第一阶段 GRPO 到 Step100 → 第二阶段继续训练到 Step120 → HF 导出与评测**。第一阶段直接加载原始模型，没有先做基座 SFT；第二阶段加载第一阶段的模型产物，调整数据与奖励，新增更新预算 20 步。跳过基座 SFT 的决策见 §3.3。
+
+**完整训练时间线**：
+
+| 阶段 | 起点与终点 | 数据与奖励 | 历史产物 |
+|------|------|------|------|
+| 第一阶段 | 原始 Qwen3.6-27B → Step100 | train237，基础 `compute_score` 奖励 | 2026-08-06 完成，Step100 模型与 extra |
+| 第二阶段 | Step100 → Step120 | 修正为 train236，`compute_score_dense30` 加入 30% 稠密正确性 | 2026-08-10 完成，Step120 模型、optimizer 与 extra |
+| 导出 | Step120 分布式 checkpoint → HF | 完整模型重建与张量清单核验 | 2026-08-13 的 15 分片 HF 模型 |
+
+两阶段使用相同的双机拓扑。下面先准备公共环境，再分别给出从原始模型训练、验证 Step100、衔接 Step120 的操作。
+
 
 #### 4.3.1 步骤 1：环境准备（两机角色与挂载）
 
@@ -1650,7 +1661,14 @@ test -f configs/pi_agent_loops.yaml
 
 #### 4.3.2 步骤 2：准备正式任务与数据契约
 
-**本次配方数据目录**：
+**两阶段数据版本**：
+
+| 阶段 | 相对项目的数据目录 | train / val / test |
+|------|------|------|
+| 原始模型 → Step100 | `data/boss_v15_dwh_full277_20260804/dataset` | 237 / 20 / 20 |
+| Step100 → Step120 | `data/boss_v15_dwh_full276_20260806/dataset` | 236 / 20 / 20 |
+
+第一阶段旧目录和 237 条训练任务已由服务器数据契约及日志确认；第二阶段使用修正后的 236 条，不能把两个阶段写成同一份数据。以下展开第二阶段目录，第一阶段使用其对应目录和契约：
 
 ```text
 /workspace/llin-verl-grpo/data/boss_v15_dwh_full276_20260806/dataset/
@@ -1675,7 +1693,7 @@ python3 scripts/check_boss_alignment_contract.py \
 
 **预期**：`status: passed`，`selected` 为 train 236、val 20、test 20。检查器核对来源契约、样本隔离和训练/验证文件哈希；若发生漂移，应恢复目标版本，而不是删除检查步骤继续启动。
 
-数据目录与历史文件可用于复现实验。要重新生成新任务，走 `scripts/prepare_boss_aligned_dataset.py` 及人工审核流程，并产生新的契约；不能用新数据冒充此处 236 条历史训练集。
+复现第一阶段时，将上述检查命令的目录换为 `data/boss_v15_dwh_full277_20260804/dataset`，预期 train 为 237。两阶段均需使用各自匹配的来源契约。数据目录与历史文件可用于复现实验。要重新生成新任务，走 `scripts/prepare_boss_aligned_dataset.py` 及人工审核流程，并产生新的契约；不能用新数据冒充此处 236 条历史训练集。
 
 #### 4.3.3 步骤 3：配置多轮工具与奖励
 
@@ -1691,7 +1709,7 @@ python3 scripts/check_boss_alignment_contract.py \
 
 Rollout 执行“生成工具调用→执行工具→返回观察→继续生成→最终回答”。原始沙箱从 `/pi_sandbox` 读取，每条轨迹使用自己的工作区；新运行要检查工作区可写和任务间隔离。
 
-**本次奖励入口**：`compute_score_dense30`，固定加入 30% 的最终答案稠密正确性分数。按所核对实现，满足安全、工具协议、gold SQL 可验证条件时：
+**分阶段奖励入口**：第一阶段使用 `compute_score`，稠密正确性权重为 0；第二阶段改为 `compute_score_dense30`，固定加入 30% 的最终答案稠密正确性分数。按所核对实现，满足安全、工具协议、gold SQL 可验证条件时：
 
 ```text
 evidence_reward = 0.60 × 答案正确
@@ -1699,7 +1717,8 @@ evidence_reward = 0.60 × 答案正确
                 + 0.10 × 使用要求表
                 + 0.05 × 有最终回答
 base_score = 0.70 × boss_reward + 0.30 × evidence_reward
-最终奖励 = 0.70 × base_score + 0.30 × dense_final_answer_correctness
+第一阶段奖励 = base_score
+第二阶段奖励 = 0.70 × base_score + 0.30 × dense_final_answer_correctness
 不满足准入条件时：最终奖励为 0
 ```
 
@@ -1707,9 +1726,18 @@ base_score = 0.70 × boss_reward + 0.30 × evidence_reward
 
 第五章蒸馏的 LLM Judge **没有接入这条历史训练循环**。后续 banded/grounded 等奖励实验也不能倒填到本次 `dense30` 配方。
 
-#### 4.3.4 步骤 4：确认完整训练配置（通用入口与续训覆盖）
+#### 4.3.4 步骤 4：确认两阶段训练配置
 
-**调用链**：
+**第一阶段调用链**：
+
+```text
+launch_pi_formal_100step_12groups.sh（可选的运行包装）
+  → run_pi_formal_100step_12groups.sh
+    → run_pi_grpo_fully_async_tp4_pp2_cp2.sh
+      → verl.experimental.fully_async_policy.fully_async_main
+```
+
+**第二阶段调用链**：
 
 ```text
 launch_pi_dense_correctness_step100_to_step120.sh
@@ -1721,7 +1749,7 @@ launch_pi_dense_correctness_step100_to_step120.sh
 
 最内层使用 `fully_async_ppo_megatron_trainer.yaml`，显式设置 `actor.strategy=megatron`、`model.lora_rank=0`，为全参数训练。Bridge、分布式检查点、vLLM DP 权重同步、连续 token、多轮 agent 与异步队列补丁由入口脚本应用。
 
-**Step100→120 配方关键参数**：
+**第二阶段配方关键参数**（第一阶段的起点、数据、奖励与保存差异见步骤 6；公共拓扑相同）：
 
 | 参数 | 本次值 | 含义 |
 |------|------|------|
@@ -1743,7 +1771,7 @@ launch_pi_dense_correctness_step100_to_step120.sh
 | `PI_DENSE_CORRECTNESS_WEIGHT` | 0.30 | 对应固定 `compute_score_dense30` |
 | reward KL / actor KL loss | 均关闭 | 不是 KL 正则训练配方 |
 | 保存内容 | `[model,optimizer,extra]` | 支持续训所需的状态保存 |
-| 读取内容 | `[model,extra]` | 源 Step100 缺 optimizer，见步骤 6 |
+| 读取内容 | `[model,extra]` | 源 Step100 缺 optimizer，见步骤 8 |
 | 累计最终步 | 120 | 起点 100，新增更新预算 20 |
 
 **offload 要分层阅读**：通用脚本设置 Megatron 参数不 offload、梯度 offload、重计算和分布式优化器，并配置 CPU optimizer offload；续训脚本另外覆盖 `actor.megatron.optimizer_offload=False`。优化器配置中的 CPU offload 与 engine 层的 optimizer offload 不是同一个开关，不能只写一句“offload 全开/全关”。
@@ -1792,9 +1820,101 @@ ray status --address="$RAY_ADDRESS"
 
 确认两个存活节点、Trainer 与 Rollout 角色分别位于对应节点，设备预算各 16 chip。再对照各 worker 实际设备与通信日志；角色标签本身不是设备健康证明。
 
-#### 4.3.6 步骤 6：准备 Step100 恢复视图
+#### 4.3.6 步骤 6：从原始模型启动前 100 步训练
 
-**源检查点**：
+**训练起点**：`/models/Qwen3.6-27B`，原始 HF 基座。历史日志明确为 `resume_mode=disable`，没有加载 SFT 或已有 GRPO checkpoint。
+
+**完整入口**：`scripts/run_pi_formal_100step_12groups.sh`，底层仍调用 fully-async Megatron 入口。`scripts/launch_pi_formal_100step_12groups.sh` 是配套的日志和结束验收包装。
+
+**历史第一阶段关键配置**：
+
+| 项目 | 原始模型 → Step100 |
+|------|------|
+| 模型 | `/models/Qwen3.6-27B` |
+| 恢复策略 | `resume_mode=disable` |
+| 数据目录 | `data/boss_v15_dwh_full277_20260804/dataset` |
+| train / val / test | 237 / 20 / 20 |
+| 奖励入口 | `llin_verl/pi_reward.py::compute_score` |
+| 稠密正确性权重 | 0，基础奖励阶段 |
+| 学习率 | `1e-7`，日志中的 actor optimizer 配置与指标一致 |
+| 更新批次 | 4 组×4 条轨迹；目标并发 12 组 |
+| 总步目标 | 100；rollout group 预算 400 |
+| 保存产物 | `global_step_100`，历史实际为 `[model,extra]` |
+
+**按历史阶段设置启动参数**（5 号机容器；先完成前述环境、Ray 与数据契约检查）：
+
+```bash
+cd /workspace/llin-verl-grpo
+export MODEL_PATH=/models/Qwen3.6-27B
+export DATA_DIR=/workspace/llin-verl-grpo/data/boss_v15_dwh_full277_20260804/dataset
+export TRAIN_FILE="$DATA_DIR/boss_pi_train.parquet"
+export VAL_FILE="$DATA_DIR/boss_pi_val.parquet"
+export LEARNING_RATE=1e-7
+export PI_REWARD_MODE=blend
+export PI_DENSE_CORRECTNESS_WEIGHT=0
+export RUN_NAME="llin-pi-base-to-step100-repro-$(date +%Y%m%d-%H%M%S)"
+export OUTPUT_DIR="/workspace/llin-verl-grpo/runs/${RUN_NAME}"
+mkdir -p "$OUTPUT_DIR"
+bash scripts/run_pi_formal_100step_12groups.sh \
+  trainer.resume_mode=disable \
+  reward.custom_reward_function.name=compute_score \
+  'actor_rollout_ref.actor.checkpoint.save_contents=[model,extra]' \
+  > "$OUTPUT_DIR/driver.log" 2>&1
+```
+
+这段命令显式保留历史第一阶段的数据、奖励与保存口径。当前脚本已将默认数据改为 full276、默认保存改为包含 optimizer；因此不能直接用今天的默认值描述当时运行。重现旧实验还需匹配来源契约与运行时版本，若契约检查失败，应恢复对应资产，不能绕过检查。本次只读核验，没有重新执行上述训练。
+
+**新实验的选择**：若用修正后的 236 条从原始模型重新训练，并完整保存 optimizer，应使用新运行名，保留当前脚本的完整保存策略；这属于修正配方的新实验，不能冒充已有 Step100 的逐项复现。其后恢复时也不应照搬历史“缺 optimizer”的重置策略。
+
+#### 4.3.7 步骤 7：验证 Step100 并确定后续起点
+
+**历史运行目录**：
+
+```text
+runs/llin-v15-dwh-bossreward-12groups-100step-20260805-03/
+├── driver.log
+├── exit_code / finished_at
+├── checkpoint_integrity.json
+└── checkpoints/
+    ├── latest_checkpointed_iteration.txt
+    └── global_step_100/actor/
+        ├── ckpt_contents.json
+        ├── model/dist_ckpt/
+        └── extra/dist_ckpt/
+```
+
+**检查命令**：
+
+```bash
+RUN_DIR=/workspace/llin-verl-grpo/runs/llin-v15-dwh-bossreward-12groups-100step-20260805-03
+cat "$RUN_DIR/exit_code"
+cat "$RUN_DIR/finished_at"
+cat "$RUN_DIR/checkpoints/latest_checkpointed_iteration.txt"
+cat "$RUN_DIR/checkpoints/global_step_100/actor/ckpt_contents.json"
+cat "$RUN_DIR/checkpoint_integrity.json"
+grep 'self.current_param_version: 100' "$RUN_DIR/driver.log"
+grep 'step:100 ' "$RUN_DIR/driver.log"
+```
+
+**已核验结果**：
+
+| 验证点 | 历史记录 |
+|------|------|
+| 参数版本 | 同步到 `current_param_version:100`，该次同步 7.3653 秒 |
+| 保存步指针 / actor manifest | 均为 100 |
+| 模型完整性记录 | `valid=true`，32 个分片 |
+| 优化器状态 | actor manifest 未声明，保存内容为 model、extra |
+| 退出码 | 0 |
+| 完成时间 | 2026-08-06 12:39:11（北京时间） |
+
+**步数口径**：早期日志最后一行是 `step:100`，同一行 `training/global_step:99.0`；参数同步和检查点均记录 100。本报告以策略版本/产物名称称为 Step100，同时保留这一旧版日志编号差异，不伪造 `training/global_step:100.0`，也不单凭行号声称逐个 optimizer update 都已独立审计。
+
+至此得到后续训练使用的 Step100 模型。第二阶段沿用该模型权重，修正数据集、加入稠密正确性奖励，再将累计策略版本推进到 120。
+
+
+#### 4.3.8 步骤 8：从 Step100 准备第二阶段恢复视图
+
+**第二阶段源检查点**：即步骤 7 验证的第一阶段产物。以下路径为历史实例：
 
 ```text
 runs/llin-v15-dwh-bossreward-12groups-100step-20260805-03/
@@ -1830,7 +1950,7 @@ optimizer_state=reset_missing_from_source
 dataloader_state=reset_for_corrected_train236
 ```
 
-#### 4.3.7 步骤 7：启动训练与记录运行身份
+#### 4.3.9 步骤 9：继续训练到 Step120
 
 **5 号机容器内执行**，给新运行单独命名：
 
@@ -1853,7 +1973,7 @@ tail -f "$RUN_DIR/driver.log"
 
 **训练闭环观察顺序**：模型与 Bridge 加载→6 号机 Rollouter 启动→工具轨迹生成→同题组奖励与优势→Trainer 更新→参数版本同步→检查点保存。fully-async 调度还会受到队列等待、工具耗时和陈旧样本处理影响，不能从“双机”直接推出固定加速比。
 
-#### 4.3.8 步骤 8：验证历史训练结果
+#### 4.3.10 步骤 10：验证 Step120 训练结果
 
 **已核验的运行目录**：
 
@@ -1896,7 +2016,7 @@ grep '_fit_update_weights' "$RUN_DIR/driver.log" | tail -3
 
 **能力验收另行执行**：把 Step120 部署到与基座一致的工具环境，固定 prompt、采样、超时和评分口径，比较未见任务与通用 benchmark。不能由 reward mean、checkpoint 存在直接推出“Step120 能力最佳”。
 
-#### 4.3.9 步骤 9：Checkpoint 转 HF 与导出验证
+#### 4.3.11 步骤 11：Checkpoint 转 HF 与导出验证
 
 Megatron 分布式 actor checkpoint 不能直接作为普通 HF 模型交给 vLLM。本项目采用单 CPU/Gloo rank 恢复到 TP1/PP1/CP1，再由模型对应 Bridge 导出，以避免 PP2 在线导出只写出部分流水线层。
 
@@ -1940,7 +2060,7 @@ python3 scripts/export_megatron_dist_to_hf.py \
 
 8 月 13 日导出清单记录：1,199 个张量、15 个 safetensors 分片、语言层 0–63，缺失/额外张量与形状不匹配均为 0。另有 414 个张量 dtype 与基座不同，清单已记录；冻结的 MTP 参数从基座补入。不能把该产物描述为“每个张量都经过 GRPO 更新且全为 BF16”。导出后按第六章部署，以独立模型名标识 Step120，再按第七章评测。
 
-#### 4.3.10 踩坑记录与复现边界
+#### 4.3.12 踩坑记录与复现边界
 
 | 现象或误区 | 工程处理 |
 |------|------|
@@ -1965,8 +2085,8 @@ python3 scripts/export_megatron_dist_to_hf.py \
 | 环境、脚本与数据定位 | 已有 | 已有 |
 | 数据/奖励接口 | 已发现待修复项 | 历史链路已运行 |
 | 权重同步 | AllGather 超时，待定位 rank 0 阻塞 | 参数版本推进到 120 |
-| 实际训练完成记录 | 未获得 | 有 Step120 指标、梯度及退出记录 |
-| 检查点 | 未获得 | Step120 模型与 optimizer 完整性记录通过 |
+| 实际训练完成记录 | 未获得 | 原始模型启动、Step100 参数/产物记录及 Step120 指标、梯度、退出记录齐全 |
+| 检查点 | 未获得 | Step100 模型完整性记录通过；Step120 模型与 optimizer 完整性记录通过 |
 | HF 产物 | 未获得 | 1,199 张量 / 15 分片，已有导出清单 |
 | 能力提升 | 尚不能评价 | 需按独立评测结果判断，不由工程完成推出 |
 
@@ -1984,6 +2104,8 @@ python3 scripts/export_megatron_dist_to_hf.py \
 | `scripts/start_ray_m06.sh` | 6 号机 rollout 启动包装 |
 | `scripts/start_ray_rollout_node.sh` | Rollout 节点通用入口 |
 | `scripts/check_boss_alignment_contract.py` | 正式训练数据契约检查 |
+| `scripts/run_pi_formal_100step_12groups.sh` | 原始模型到 Step100 的正式训练入口 |
+| `scripts/launch_pi_formal_100step_12groups.sh` | 前 100 步的运行包装与结束验收 |
 | `scripts/prepare_pi_step100_resume_view.sh` | 构建 Step100 恢复视图 |
 | `scripts/launch_pi_dense_correctness_step100_to_step120.sh` | 续训包装与结束验收 |
 | `scripts/run_pi_dense_correctness_step100_to_step120.sh` | Step120 与 dense30 覆盖 |
@@ -1995,13 +2117,14 @@ python3 scripts/export_megatron_dist_to_hf.py \
 
 #### 4.4.3 本次核验来源
 
-2026-09-14 再次只读访问 5 号机，确认两条入口、Step120 续训包装、数据契约、恢复记录、最终步日志、检查点完整性记录、HF 清单和容器挂载。以下文件 SHA256 与既有核验报告一致：
+2026-09-14 再次只读访问 5 号机，确认单机与双机入口、原始模型到 Step100 及后续 Step120 两阶段记录、数据契约、恢复记录、最终步日志、检查点完整性记录、HF 清单和容器挂载。以下文件 SHA256 与既有核验报告一致：
 
 | 文件 | SHA256 |
 |------|------|
 | `scripts/run_math_grpo_smoke.sh` | `dd6c480b7d2fa08e258f8fc96ba70d1a9d9eb71a56e8c247f9d220660327ee66` |
 | `scripts/run_pi_grpo_fully_async_tp4_pp2_cp2.sh` | `65bfbe1c90d963844ab02e8847aa92f1b027706c7856c05f5c48cf52aa3b28af` |
 | `runs/math_grpo_smoke_v11.log` | `c63725e1681b0df8a443c385168e7fc42642b9dffac45c5f604ba93176097458` |
+| 原始模型→Step100 `driver.log` | `22396b850616699d37ddb7fdc53a94d219cacf785ccf86769bf62ece9f832cdb` |
 | Step100→120 `driver.log` | `d29189e71341741f32de88cc564e1b33892089d128fc3ef533f1ac6ed8d6c5b1` |
 
 更详细的历史故障与证据边界见[单机 9B 报告](../single_machine_9b_grpo_report_20260914.md)和[多机 27B 报告](../multi_machine_27b_grpo_report_20260914.md)。本章提供操作路径，不把尚未通过的单机尝试写成已完成结果。
