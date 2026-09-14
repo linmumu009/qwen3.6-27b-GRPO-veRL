@@ -23,12 +23,18 @@ BASELINE = ROOT/'runs/cpt-controlled-storage-20260910/llin/cpt-controlled-202609
 def main():
     p = argparse.ArgumentParser()
     p.add_argument('--out', type=Path, required=True)
-    p.add_argument('--arm', choices=['S1', 'S2'], default='S2')
+    p.add_argument('--arm', choices=['S1', 'S2', 'S3'], default='S2')
     p.add_argument('--after-training', action='store_true', help='Resume audits/evaluation from a completed export; never retrain')
     a = p.parse_args()
     out = a.out.resolve()
     arm = a.arm.lower()
-    lr = 2e-7 if a.arm == 'S1' else 1e-6
+    lr = {'S1':2e-7, 'S2':1e-6, 'S3':5e-7}[a.arm]
+    profile = 'S3' if a.arm == 'S3' else 'S1S2'
+    from audit_cpt_sft_search_data import expected_for
+    expected_budget = expected_for(profile)
+    records, sequence_tokens, _, train_sha = expected_budget['train']
+    steps = records // 3
+    data = Path('/opt/llin-s3-data-20260914-01') if a.arm == 'S3' else DATA
     model_name = 'llin-step120-'+arm+'-hf'
     if out.parent != Path('/opt') or not out.name.startswith('llin-sft-search-'+arm+'-'):
         raise ValueError('expected independent output matching registered arm')
@@ -47,7 +53,9 @@ def main():
     env = dict(os.environ, PYTHONPATH=os.pathsep.join([str(code.parent), str(ROOT),
         str(ROOT/'reference/Megatron-Bridge-de93536e/src'), str(ROOT/'runtime'), '/verl', os.environ.get('PYTHONPATH', '')]),
         LLIN_COORDINATOR_LOCKED='1', SFT_OUTPUT=str(out/'llin-training'),
-        SFT_LR=str(lr), SFT_ARM=a.arm, SFT_MODEL_NAME=model_name)
+        SFT_LR=str(lr), SFT_ARM=a.arm, SFT_MODEL_NAME=model_name,
+        SFT_DATA=str(data), SFT_STEPS=str(steps), SFT_TRAIN_SHA=train_sha,
+        SFT_DEV_SHA=expected_budget['dev'][3])
     def run(label, command, environment=env):
         save(status, dict(status=label))
         with (out/(label+'.log')).open('x') as log:
@@ -63,17 +71,19 @@ def main():
             fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
             if shutil.disk_usage(out).free < 550_000_000_000:
                 raise ValueError('insufficient checkpoint/export space')
-            save(out/('recovery_registration.safe.json' if a.after_training else 'registration.safe.json'), dict(arm=a.arm, lr=lr, batch=3, steps=197,
+            save(out/('recovery_registration.safe.json' if a.after_training else 'registration.safe.json'), dict(arm=a.arm, lr=lr, batch=3, steps=steps,
                  epochs=1, starting_model=str(BASE), fresh_optimizer=True,
-                 selection_reason='Registered fixed-data LR comparison; S2 executed first, S1 tests smaller update',
+                 selection_reason='S3 condition-exposure/data recipe (not a single-factor comparison)' if a.arm == 'S3' else 'Registered fixed-data LR comparison',
                  code_sha256={p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in code.iterdir() if p.is_file()}))
             for stage, script in [('data_audit', 'audit_cpt_sft_search_data.py'), ('loader_gate', 'gate_cpt_sft_search_loader.py')]:
-                run(stage+('_recovery' if a.after_training else ''), [sys.executable, str(code/script), '--data', str(DATA), '--model', str(BASE)])
+                run(stage+('_recovery' if a.after_training else ''), [sys.executable, str(code/script), '--data', str(data), '--model', str(BASE), '--profile', profile])
             # Reuse source-built objective tasks, never official benchmark examples.
-            task_files = [DATA/(s+'.cases.private.jsonl') for s in ('train', 'dev')]
+            task_files = [data/'cases.private.jsonl'] if a.arm == 'S3' else [data/(s+'.cases.private.jsonl') for s in ('train', 'dev')]
             rows = [[json.loads(x) for x in f.read_text().splitlines()] for f in task_files]
-            if [len(r) for r in rows] != [402, 74]:
+            if [len(r) for r in rows] != ([212] if a.arm == 'S3' else [402, 74]):
                 raise ValueError('unexpected objective task counts')
+            if a.arm == 'S3' and hashlib.sha256(task_files[0].read_bytes()).hexdigest() != 'e1146f32783a2839be6cb2577b9439d4b7d689fe7dedf5e93d36e0a6eaab060f':
+                raise ValueError('S3 source probes changed')
             task_text = ''.join(json.dumps(r)+'\n' for group in rows for r in group)
             task_hashes = {f.name: hashlib.sha256(f.read_bytes()).hexdigest() for f in task_files}
             if a.after_training:
@@ -84,18 +94,18 @@ def main():
                 save(out/'task_inputs.safe.json', task_hashes)
                 task_probe('step120_tasks', BASE)
                 run('training', ['bash', str(code/'run_cpt_sft_search_s2.sh')])
-            checkpoint_gate(out/'llin-training/checkpoints/global_step_197')
+            checkpoint_gate(out/f'llin-training/checkpoints/global_step_{steps}')
             from summarize_logistics_cpt_run import parse_metrics
             metrics = parse_metrics('\n'.join(p.read_text(errors='replace') for p in
                 (out/'llin-training/torchrun_logs').glob('*/attempt_0/*/stdout.log')))
-            if sorted(metrics) != list(range(1, 198)):
+            if sorted(metrics) != list(range(1, steps+1)):
                 raise ValueError('missing/extra training steps')
-            if sum(int(m['train/global_tokens']) for m in metrics.values()) != 88819:
+            if sum(int(m['train/global_tokens']) for m in metrics.values()) != sequence_tokens:
                 raise ValueError('actual training token budget mismatch')
             for m in metrics.values():
                 if not all(math.isfinite(m[k]) for k in ('train/loss', 'train/grad_norm', 'train/lr')):
                     raise ValueError('nonfinite training metric')
-            save(out/'training_audit.safe.json', dict(steps=197, sequence_tokens=88819, records=591))
+            save(out/'training_audit.safe.json', dict(steps=steps, sequence_tokens=sequence_tokens, records=records))
             model = out/'llin-training'/model_name
             task_probe(arm+'_tasks', model)
             run('official_evaluation', [sys.executable, str(code/'run_logistics_cpt_curve_8x.py'),

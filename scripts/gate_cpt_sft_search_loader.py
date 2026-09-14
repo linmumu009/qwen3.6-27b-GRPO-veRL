@@ -10,13 +10,15 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument('--data', type=Path, required=True)
     p.add_argument('--model', type=Path, required=True)
+    p.add_argument('--profile', choices=['S1S2', 'S3'], default='S1S2')
     a = p.parse_args()
     import torch_npu  # register the same device backend as training
     from omegaconf import OmegaConf
     from transformers import AutoTokenizer
     from verl.trainer.sft_trainer import SFTTrainer
     from qwen36_mcq_answer_dataset import Qwen36MCQAnswerDataset
-    from audit_cpt_sft_search_data import EXPECTED
+    from audit_cpt_sft_search_data import expected_for
+    expected_budget = expected_for(a.profile)
     config = OmegaConf.create(dict(data=dict(train_batch_size=3, num_workers=0,
                     pad_mode='no_padding', truncation='error', max_length=4096)))
     tok = AutoTokenizer.from_pretrained(a.model, local_files_only=True, trust_remote_code=True)
@@ -30,7 +32,7 @@ def main():
         sampler = getattr(holder, split+'_sampler' if split == 'train' else 'val_sampler')
         loader = getattr(holder, split+'_dataloader' if split == 'train' else 'val_dataloader')
         order = list(sampler)
-        count, tokens, loss, _ = EXPECTED[split]
+        count, tokens, loss, _ = expected_budget[split]
         if sorted(order) != list(range(count)):
             raise ValueError('sampler does not cover every row exactly once')
         seen = seq_total = loss_total = batches = 0

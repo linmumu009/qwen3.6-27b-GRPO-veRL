@@ -12,6 +12,15 @@ EXPECTED = {
 }
 TOKENIZER_SHA = '06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523'
 
+S3_EXPECTED = {
+    'train': (399, 72014, 6896, '349a19d47aee422bac6e6d52c77325d82e4fcca4800cc77e0e6d0cca64dff4dd'),
+    'dev': (33, 5622, 212, '3a35e5307cd46027b5e91f598917c70c0bc470175ba1de4ec534120edddc41f0'),
+}
+
+
+def expected_for(profile):
+    return S3_EXPECTED if profile == 'S3' else EXPECTED
+
 
 def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -55,6 +64,7 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--data', type=Path, required=True)
     p.add_argument('--model', type=Path, required=True)
+    p.add_argument('--profile', choices=['S1S2', 'S3'], default='S1S2')
     a = p.parse_args()
     import pyarrow.parquet as pq
     from transformers import AutoTokenizer
@@ -65,7 +75,7 @@ def main():
         raise ValueError('unexpected EOS')
     report = {}
     split_ids = {}
-    for split, (count, sequence, loss, sha) in EXPECTED.items():
+    for split, (count, sequence, loss, sha) in expected_for(a.profile).items():
         path = a.data/(split+'.parquet')
         if digest(path) != sha:
             raise ValueError('unexpected '+split+' parquet identity')

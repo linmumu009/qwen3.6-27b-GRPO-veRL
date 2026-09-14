@@ -3,21 +3,23 @@ set -Eeuo pipefail
 ROOT=/workspace/llin-verl-grpo
 OUT="${SFT_OUTPUT:?}"
 CODE=$(cd -- "$(dirname -- "$0")" && pwd)
-DATA="$ROOT/runs/supply-chain-task-training-data-20260909-01"
+DATA="${SFT_DATA:-$ROOT/runs/supply-chain-task-training-data-20260909-01}"
 BASE="$ROOT/runs/llin-step120-opensource-20260825-02/hf_export_step120_opensource"
 SOURCE="$ROOT/runs/llin-step120-opensource-20260825-02/checkpoints/global_step_120/actor/model/dist_ckpt"
 BRIDGE="$ROOT/reference/Megatron-Bridge-de93536e/src"
 # The coordinator holds the resource lock across probes, training and evaluation.
 [[ "${LLIN_COORDINATOR_LOCKED:-}" == 1 ]] || exit 3
 case "${SFT_ARM:-S2}:${SFT_LR:-1e-06}" in
-  S1:2e-07|S2:1e-06) ;;
+  S1:2e-07|S2:1e-06) STEPS=197 ;;
+  S3:5e-07) STEPS=133 ;;
   *) exit 4 ;;
 esac
+[[ "${SFT_STEPS:-197}" == "$STEPS" ]] || exit 4
 umask 077
 [[ ! -e "$OUT" && -f "$SOURCE/.metadata" ]] || exit 2
 [[ "$(df -B1 --output=avail /opt | tail -n 1 | tr -d ' ')" -ge 550000000000 ]] || exit 2
-python3 -c 'import hashlib,sys; assert hashlib.sha256(open(sys.argv[1],"rb").read()).hexdigest()==sys.argv[2]' "$DATA/train.parquet" 2f10b42c9a8ad0bde49b2c1887a6216727352c4871d1afdc5e84145e70dd9051
-python3 -c 'import hashlib,sys; assert hashlib.sha256(open(sys.argv[1],"rb").read()).hexdigest()==sys.argv[2]' "$DATA/dev.parquet" 54410c6d33db3cbbdcaa542a6a3a978f10d5acd4470dd8d132493629127c0e3a
+python3 -c 'import hashlib,sys; assert hashlib.sha256(open(sys.argv[1],"rb").read()).hexdigest()==sys.argv[2]' "$DATA/train.parquet" "${SFT_TRAIN_SHA:-2f10b42c9a8ad0bde49b2c1887a6216727352c4871d1afdc5e84145e70dd9051}"
+python3 -c 'import hashlib,sys; assert hashlib.sha256(open(sys.argv[1],"rb").read()).hexdigest()==sys.argv[2]' "$DATA/dev.parquet" "${SFT_DEV_SHA:-54410c6d33db3cbbdcaa542a6a3a978f10d5acd4470dd8d132493629127c0e3a}"
 mkdir "$OUT"
 exec >"$OUT/pipeline.log" 2>&1
 trap 'printf "failed_at_line_%s\n" "$LINENO" > "$OUT/status.txt"' ERR
@@ -49,9 +51,9 @@ torchrun --standalone --nnodes=1 --nproc_per_node=16 --log-dir="$OUT/torchrun_lo
  ++engine.override_transformer_config.sequence_parallel=true 'checkpoint.load_contents=[]' 'checkpoint.save_contents=[model,optimizer,extra]' \
  "trainer.default_local_dir=$OUT/checkpoints" trainer.project_name=llin-book-sft \
  "trainer.experiment_name=llin-step120-${SFT_ARM:-S2}" 'trainer.logger=["console"]' \
- trainer.total_epochs=1 trainer.total_training_steps=197 trainer.save_freq=197 trainer.test_freq=197 \
+ trainer.total_epochs=1 "trainer.total_training_steps=$STEPS" "trainer.save_freq=$STEPS" "trainer.test_freq=$STEPS" \
  trainer.resume_mode=disable trainer.max_ckpt_to_keep=1 trainer.nnodes=1 trainer.n_gpus_per_node=16
 printf 'exporting\n' > "$OUT/status.txt"
-python3 "$CODE/export_megatron_dist_to_hf.py" --actor-checkpoint "$OUT/checkpoints/global_step_197" \
+python3 "$CODE/export_megatron_dist_to_hf.py" --actor-checkpoint "$OUT/checkpoints/global_step_$STEPS" \
  --base-model "$BASE" --output-dir "$OUT/${SFT_MODEL_NAME:-llin-step120-s2-hf}" > "$OUT/export.log" 2>&1
 printf 'training_export_complete_validation_pending\n' > "$OUT/status.txt"

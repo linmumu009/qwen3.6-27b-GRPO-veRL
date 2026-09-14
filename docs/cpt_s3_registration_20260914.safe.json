@@ -1,0 +1,31 @@
+{
+  "arm": "S3",
+  "lr": 5e-07,
+  "batch_size": 3,
+  "steps": 133,
+  "epochs": 1,
+  "source_condition_templates": 11,
+  "condition_training_variants": 44,
+  "condition_exposures": 6,
+  "foundation_train_once": 135,
+  "unique_training_tasks": 179,
+  "validation_note": "22 source-group-held-out tasks plus 11 same-template unseen-parameter checks; latter are not independent generalization.",
+  "preservation_note": "135 previously reviewed source tasks serve as foundation retention; no claim of general/Agent preservation.",
+  "reviewed_sha256": "6ac62685258fc72815095ea13b2afbc8d96a58faf6464f0f8e955306af3b7a89",
+  "conditions_sha256": "8081d89ed444c5f70b3a159eb3388adfa69682ef1c365f36b981ec144c24257e",
+  "tokenizer_sha256": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523",
+  "training_started": false,
+  "train": {
+    "count": 399,
+    "sequence_tokens": 72014,
+    "loss_tokens": 6896,
+    "parquet_sha256": "349a19d47aee422bac6e6d52c77325d82e4fcca4800cc77e0e6d0cca64dff4dd"
+  },
+  "dev": {
+    "count": 33,
+    "sequence_tokens": 5622,
+    "loss_tokens": 212,
+    "parquet_sha256": "3a35e5307cd46027b5e91f598917c70c0bc470175ba1de4ec534120edddc41f0"
+  },
+  "cases_sha256": "e1146f32783a2839be6cb2577b9439d4b7d689fe7dedf5e93d36e0a6eaab060f"
+}
