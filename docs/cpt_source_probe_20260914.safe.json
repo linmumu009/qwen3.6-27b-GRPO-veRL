@@ -1,0 +1,29 @@
+{
+  "items": 157,
+  "correct": 144,
+  "train": {
+    "n": 135,
+    "correct": 123
+  },
+  "dev": {
+    "n": 22,
+    "correct": 21
+  },
+  "wrong_by_topic": {
+    "pipeline": 1,
+    "rail_vehicles": 3,
+    "vessel_classes": 4,
+    "rail_accidents": 1,
+    "transport_measurement": 1,
+    "road_vehicles": 1,
+    "rail_infrastructure": 1,
+    "handling_costs": 1
+  },
+  "all_rows_reparsed": true,
+  "remaining_errors_source_rechecked": 13,
+  "model": "original_Step120",
+  "repeats": 1,
+  "training_started": false,
+  "predictions_sha256": "4826f947a144a3692da717bab2257489dbe8c79fb1bccc3232cac368940cb8bd",
+  "cases_sha256": "d896fd906a17c473d4ec9ef775f1ad0ed7138d9fbec431fec5efcab67a3856bd"
+}
