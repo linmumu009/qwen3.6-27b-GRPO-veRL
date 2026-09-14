@@ -1315,7 +1315,7 @@ ssh huawei-5 'ls /data/renjunxiang/coding/huawei_train/models/ms_swift_sft/v0-*/
 
 > **本章目标**：复现我们负责的 GRPO 工程环节：单机多卡以 Qwen3.5-9B 做数学冒烟，多机多卡以 Qwen3.6-27B 做物流工具任务训练。
 >
-> **本章状态**：⏳ 单机 9B 已尝试，训练闭环尚未通过；✅ 双机 27B 有历史训练、权重同步、Step120 检查点及 HF 导出记录。
+> **本章状态**：⏳ 单机 9B 的历史通过方案待匹配原始归档，9 月 13 日复测未通过；✅ 双机 27B 有历史训练、权重同步、Step120 检查点及 HF 导出记录。
 >
 > **核验日期**：2026-09-14。本章根据 5 号机上的脚本、数据契约、历史日志和产物清单补齐；本次编写没有启动训练。6 号机的历史参与情况由 5 号机保存的远端 Rollouter 日志确认，不代表其当前运行状态。
 >
@@ -1338,7 +1338,7 @@ ssh huawei-5 'ls /data/renjunxiang/coding/huawei_train/models/ms_swift_sft/v0-*/
 | Rollout | vLLM，TP4×DP2 | vLLM，TP8×DP2 |
 | veRL 入口 | `experimental.one_step_off_policy.main_ppo` | `experimental.fully_async_policy.fully_async_main` |
 | 权重同步 | 配置 backend 为 `nccl`，NPU 实际进入 HCCL 实现 | 同样使用 NPU checkpoint engine 同步 |
-| 验证状态 | 权重同步阶段失败，无完成训练步证据 | 原始模型→Step100→Step120 两阶段训练、保存与 HF 导出有记录 |
+| 验证状态 | 9 月 13 日复测权重同步失败；此前通过方案待匹配归档 | 原始模型→Step100→Step120 两阶段训练、保存与 HF 导出有记录 |
 
 **设备口径**：Atlas 800 A3 单机 8 个 NPU ID，每个包含 2 个计算 chip，共 16 chip，每 chip 64 GiB HBM。本章统一按 **chip** 计数，双机共 32 chip。FSDP 分片组不等于张量并行；推理 DP2 也不等于训练 DP2。
 
@@ -1357,9 +1357,9 @@ ssh huawei-5 'ls /data/renjunxiang/coding/huawei_train/models/ms_swift_sft/v0-*/
 
 ---
 
-### 4.2 单机多卡 GRPO：Qwen3.5-9B
+### 4.2 单机多卡 GRPO：Qwen3.5-9B（现有材料为 9 月 13 日复测记录）
 
-> 本节记录 2026-09-13 的实际尝试与 9 月 14 日核验结果。8+8 是已有配置，**尚不是验证通过的训练配方**。步骤中的启动命令用于修复阻塞后的复测，不能把执行到模型加载视作 GRPO 已跑通。
+> **记录范围更正**：本节现有脚本和日志来自 2026-09-13 的单机复测，不代表我方此前单机 9B 的全部训练历史。项目负责人确认此前曾验证通过；截至 9 月 14 日此次检索，尚未将该次成功运行与原始脚本、日志和检查点对应起来。因此，下面的 8+8 配置仅作为这次复测记录，不能当作此前通过方案，也不能由此次失败推出“单机 9B 从未跑通”。成功配方需在匹配原始归档后替换到本节。
 
 #### 4.2.1 步骤 1：环境准备（硬件、容器与软件）
 
@@ -1600,7 +1600,7 @@ actor_update_weights
 | 导出超时 60000，worker 仍用 1836 秒 | plog 显示 worker 使用默认执行超时 | 检查 Ray 环境传递；延长等待不能修复阻塞本身 |
 | 奖励 manager 找不到字段/参数 | 数据结构与函数签名不匹配 | 同时修复 `reward_model.ground_truth` 与 `solution_str` |
 
-**产物状态**：当前没有可交付的 9B GRPO checkpoint，因此本节不提供虚构的 HF 导出结果。详细日志定位见[单机 9B 核验报告](../single_machine_9b_grpo_report_20260914.md)。
+**此次复测产物**：在本节所查 9 月 13 日运行目录中未找到 9B GRPO checkpoint。此前通过运行的产物尚未定位，本结论不覆盖其他历史运行。详细日志定位见[单机 9B 核验报告](../single_machine_9b_grpo_report_20260914.md)。
 
 ---
 
@@ -2080,7 +2080,7 @@ python3 scripts/export_megatron_dist_to_hf.py \
 
 #### 4.4.1 两条路线的交付状态
 
-| 验收项 | 9B 单机 | 27B 双机历史实例 |
+| 验收项 | 9B 单机：仅 9 月 13 日复测 | 27B 双机历史实例 |
 |------|------|------|
 | 环境、脚本与数据定位 | 已有 | 已有 |
 | 数据/奖励接口 | 已发现待修复项 | 历史链路已运行 |
@@ -2127,7 +2127,7 @@ python3 scripts/export_megatron_dist_to_hf.py \
 | 原始模型→Step100 `driver.log` | `22396b850616699d37ddb7fdc53a94d219cacf785ccf86769bf62ece9f832cdb` |
 | Step100→120 `driver.log` | `d29189e71341741f32de88cc564e1b33892089d128fc3ef533f1ac6ed8d6c5b1` |
 
-更详细的历史故障与证据边界见[单机 9B 报告](../single_machine_9b_grpo_report_20260914.md)和[多机 27B 报告](../multi_machine_27b_grpo_report_20260914.md)。本章提供操作路径，不把尚未通过的单机尝试写成已完成结果。
+更详细的历史故障与证据边界见[单机 9B 报告](../single_machine_9b_grpo_report_20260914.md)和[多机 27B 报告](../multi_machine_27b_grpo_report_20260914.md)。单机部分仅覆盖所引用复测记录，不能用它替代项目负责人所述的历史成功方案。
 
 ---
 
