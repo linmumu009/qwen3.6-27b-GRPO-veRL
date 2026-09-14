@@ -1,0 +1,24 @@
+{
+  "arm": "S2",
+  "starting_model": "original_Step120",
+  "learning_rate": 0.000001,
+  "batch_size": 3,
+  "steps": 197,
+  "sequence_tokens": 88819,
+  "training_records": 591,
+  "objective_train": {"before": 363, "after": 393, "n": 402},
+  "objective_dev": {"before": 65, "after": 68, "n": 74},
+  "table": [
+    {"dataset": "SC-bench-knowledge", "n": 226, "before": 189, "after": 186, "gains": 6, "losses": 9, "required_correct": 196},
+    {"dataset": "LogistikaBench", "n": 1446, "before": 1180, "after": 1175, "gains": 31, "losses": 36, "required_correct": 1224}
+  ],
+  "baseline_audit": {"requests": 5016, "invalid": 0, "truncated": 0, "predictions_sha256": "18f0e0524a0ff97c1e0345cd6192b16363a1fcec05405f3ad7c97fb70edad0f7"},
+  "candidate_audit": {"requests": 5016, "invalid": 0, "truncated": 0, "predictions_sha256": "82a98bd8a8f75b83db16a62a698e37ba78e753f5e67a2eb90f26c93b0b13ae96"},
+  "protocol_equal": true,
+  "raw_benchmark_outputs_reparsed": true,
+  "model_promoted": false,
+  "target_met": false,
+  "retention_evaluated": false,
+  "independent_generalization_test": false,
+  "interpretation": "Learning improved on source tasks, including a small development subset, without aggregate benefit on either frozen target benchmark. This does not establish a unique cause."
+}

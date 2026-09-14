@@ -1,4 +1,4 @@
-"""Run the registered higher-LR arm first; preserve every result, without promotion."""
+"""Run a registered fixed-data LR arm; preserve every result, without promotion."""
 import argparse
 import fcntl
 import hashlib
@@ -23,16 +23,20 @@ BASELINE = ROOT/'runs/cpt-controlled-storage-20260910/llin/cpt-controlled-202609
 def main():
     p = argparse.ArgumentParser()
     p.add_argument('--out', type=Path, required=True)
+    p.add_argument('--arm', choices=['S1', 'S2'], default='S2')
     p.add_argument('--after-training', action='store_true', help='Resume audits/evaluation from a completed export; never retrain')
     a = p.parse_args()
     out = a.out.resolve()
-    if out.parent != Path('/opt') or not out.name.startswith('llin-sft-search-s2-'):
-        raise ValueError('expected independent /opt/llin-sft-search-s2-* output')
+    arm = a.arm.lower()
+    lr = 2e-7 if a.arm == 'S1' else 1e-6
+    model_name = 'llin-step120-'+arm+'-hf'
+    if out.parent != Path('/opt') or not out.name.startswith('llin-sft-search-'+arm+'-'):
+        raise ValueError('expected independent output matching registered arm')
     code = Path(__file__).resolve().parent
     os.umask(0o077)
     if a.after_training:
         previous = json.loads((out/'status.safe.json').read_text())
-        if previous.get('status') != 'failed' or not (out/'llin-training/llin-step120-s2-hf/model.safetensors.index.json').is_file():
+        if previous.get('status') != 'failed' or not (out/'llin-training'/model_name/'model.safetensors.index.json').is_file():
             raise ValueError('recovery requires a failed coordinator and completed export')
     else:
         out.mkdir(exist_ok=False)
@@ -42,7 +46,8 @@ def main():
     save(status, dict(status='waiting_for_resource_lock', training_started=False))
     env = dict(os.environ, PYTHONPATH=os.pathsep.join([str(code.parent), str(ROOT),
         str(ROOT/'reference/Megatron-Bridge-de93536e/src'), str(ROOT/'runtime'), '/verl', os.environ.get('PYTHONPATH', '')]),
-        LLIN_COORDINATOR_LOCKED='1', SFT_OUTPUT=str(out/'llin-training'))
+        LLIN_COORDINATOR_LOCKED='1', SFT_OUTPUT=str(out/'llin-training'),
+        SFT_LR=str(lr), SFT_ARM=a.arm, SFT_MODEL_NAME=model_name)
     def run(label, command, environment=env):
         save(status, dict(status=label))
         with (out/(label+'.log')).open('x') as log:
@@ -58,9 +63,9 @@ def main():
             fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
             if shutil.disk_usage(out).free < 550_000_000_000:
                 raise ValueError('insufficient checkpoint/export space')
-            save(out/('recovery_registration.safe.json' if a.after_training else 'registration.safe.json'), dict(arm='S2', lr=1e-6, batch=3, steps=197,
+            save(out/('recovery_registration.safe.json' if a.after_training else 'registration.safe.json'), dict(arm=a.arm, lr=lr, batch=3, steps=197,
                  epochs=1, starting_model=str(BASE), fresh_optimizer=True,
-                 selection_reason='User prioritized fastest test; S2 precedes S1, conditions unchanged',
+                 selection_reason='Registered fixed-data LR comparison; S2 executed first, S1 tests smaller update',
                  code_sha256={p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in code.iterdir() if p.is_file()}))
             for stage, script in [('data_audit', 'audit_cpt_sft_search_data.py'), ('loader_gate', 'gate_cpt_sft_search_loader.py')]:
                 run(stage+('_recovery' if a.after_training else ''), [sys.executable, str(code/script), '--data', str(DATA), '--model', str(BASE)])
@@ -91,8 +96,8 @@ def main():
                 if not all(math.isfinite(m[k]) for k in ('train/loss', 'train/grad_norm', 'train/lr')):
                     raise ValueError('nonfinite training metric')
             save(out/'training_audit.safe.json', dict(steps=197, sequence_tokens=88819, records=591))
-            model = out/'llin-training/llin-step120-s2-hf'
-            task_probe('s2_tasks', model)
+            model = out/'llin-training'/model_name
+            task_probe(arm+'_tasks', model)
             run('official_evaluation', [sys.executable, str(code/'run_logistics_cpt_curve_8x.py'),
                  '--evaluate', str(model), '--output', str(out/'evaluation')], evaluation_env(env))
             from run_cpt_knowledge_complete_pipeline import audit_evaluation
