@@ -173,3 +173,6 @@ LoRA门禁继续修复：03在原生LoRA注入时不识别MindSpeed TERowParalle
 
 
 导出恢复记录：协调器07/输出r64-01在适配器state额外状态键与named_parameters不一致处失败；08/输出r64-02已通过键完整性及加载，原生LoRAMerge.transform在BF16先舍入增量，未通过FP32合并数学断言。保持严格检查，改用原生merge函数的FP32输入，完成后一次舍入BF16；不用放宽断言绕过错误。最新协调器PID3336086，代码/opt/llin-lora-cpt-code-20260914-09/scripts，输出/opt/llin-lora-cpt-r64-20260914-03，正在gate_export。此前两步门禁06已完成不重训，所有失败导出目录保留。正式训练仍受合并/推理门禁保护，未确认启动。
+
+
+09/输出r64-03已完成gate_export：160适配模块合并数学核验通过，HF1199张量/15分片，形状类型一致；报告cpt_lora_gate_20260914.safe.json。实际覆盖64层MLP的两种投影及16个全注意力层的QKV/输出投影；混合模型的线性注意力专用投影未在本配方目标中，不能称全部线性层LoRA。协调器3336086已进入gate_inference，正式训练仍等待8题推理烟测通过。S4继续暂缓。
