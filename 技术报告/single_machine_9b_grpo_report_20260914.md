@@ -26,7 +26,7 @@
 | 数据 | `data/math_smoke.parquet`，100 行；`data_source` 标记为 gsm8k 50、math 50 | 已确认条数与来源标签，未独立审核题目出处和答案正确性 |
 | 数据字段 | `data_source`、`prompt`、`ground_truth` | 与当前 naive reward 所需字段不匹配，见第三章 |
 | 启动脚本 | `scripts/run_math_grpo_smoke.sh` | 已确认存在，入口是 `one_step_off_policy.main_ppo` |
-| 实际配置 | v10/v11 日志展开值均为 Trainer 1×8、Rollout 1×8、FSDP size 8、Rollout TP4/DP2 | 已确认配置；没有保留下来的逐进程设备映射来证明历史运行的物理隔离 |
+| 实际配置 | v10/v11 日志展开值均为 Trainer 1×8、Rollout 1×8、FSDP size 8、Rollout TP4/DP2 | 已确认配置；再次核验补得 v11 训练组与权重接收组物理映射，见 3.3，尚缺全部 vLLM 进程快照 |
 | 完成状态 | 12 份日志均未检出 `training/global_step` 指标；`runs/math*/checkpoints/global_step_*` 未发现检查点 | 未获得实际训练步完成证据 |
 
 原报告“Ray 正确识别 16 NPU”“所有 NPU 健康 OK”“vLLM 服务成功启动”包含历史现场判断。本次确认设备枚举和 vLLM 初始化日志，但没有将当前设备枚举等同于 9 月 13 日的 Ray 可用资源，也没有将权重加载进度条等同于推理请求与权重更新均成功。
@@ -84,11 +84,38 @@ WorkerDict.actor_update_weights()
   → NPU RuntimeError；随后出现 507001 / EE9999
 ```
 
-因此优先检查 FSDP/DTensor 的 CPU→NPU 参数恢复、完整参数聚合、权重同步通信组和设备映射。异步设备错误可能延后显现，这条堆栈仍不能单独证明内存、通信、固件或框架哪一项是根因。原报告对五类原因的“概率排序”没有证据支撑，应改为待排查清单。
+因此优先检查 FSDP/DTensor 的 CPU→NPU 参数恢复、完整参数聚合、权重同步通信组和设备映射。异步设备错误可能延后显现，这条堆栈仍不能单独证明内存、通信、固件或框架哪一项是根因。原报告对五类原因的“概率排序”没有证据支撑，应改为待排查清单。下述再次核验从设备日志补充了更明确的通信超时证据。
 
 脚本虽配置 `checkpoint_engine.backend=nccl`，本次实际堆栈进入的是 `hccl_checkpoint_engine.py`，不能据字符串就判定“错误地使用 CUDA NCCL”。关闭 offload、减小同步 bucket 或调整 sleep/wake 都只能作为后续单变量诊断实验，不能写成已修复方案。
 
-### 3.3 核验新增发现：数据与奖励接口不匹配
+### 3.3 2026-09-14 再次现场核验：AllGather 超时及真实设备映射
+
+本次约 10:54 起再次只读登录五号机，重查 12 份日志、容器源码及保留的 CANN plog；没有重启服务、重置 NPU 或启动训练。启动脚本及 v10/v11 日志 SHA256 与附录一致。
+
+**直接失败原因已缩小为权重同步期间的 HCCL 集合通信超时。** v10 第 72307 行、v11 第 72459 行、debug 第 159962 行均明确记录 `Communication_Error_Timeout(EI0002)`，操作是 `AllGather_group_name_0ringAllGatherSmallCount_device`，等待对端 `remote rank:[0]`；随后的设备记录为 `timeout=1836s`，再出现 `rtMemcpyAsync` / 事件查询 `507001`。因此不是只有“未知 NPU 错误”可用，也不能把日志中 16 字节拷贝失败解释成模型显存不足。
+
+v11 的时间线（服务器北京时间）：
+
+| 时间 | 证据 |
+|------|------|
+| 14:08:16 | rank 0/1 plog 建立训练 AllGather 资源 |
+| 14:11:16 起 | rank 1 每三分钟记录同一 stream 46、task 2957 未完成 |
+| 14:26:33 | rank 0 首先被心跳标记 STUCK |
+| 14:28:52 / 14:28:54 | chip 15 / 8 随后被标记 STUCK |
+| 14:39:07 | 主日志报 EI0002，等待 rank 0，设备超时 1836 秒 |
+| 14:39:08 | 多个训练 worker 连带报 507001 |
+
+**脚本中的超时值没有在所查 worker 中生效。** `plog-3160854_20260913140515100.log:126–127` 和 rank 1 对应日志明确写出 `HCCL_CONNECT_TIMEOUT ... [7200]s`、`HCCL_EXEC_TIMEOUT set by default to [1836]s`。不能以 shell 中导出 60000 就宣称实际通信等待阈值为 60000 秒；具体是在 Ray 环境传递还是初始化覆盖时丢失，尚未定位。延长超时也不能修复停住的 rank。
+
+**历史设备分配已有部分直接证据。** rank 0 plog 第 373 行记录 FSDP 训练组 `0/0 ... 7/7`；`plog-3162498_20260913140608982.log:333` 记录权重同步组 `0/0; 1/8; 2/9; ...; 8/15`。这证明 v11 训练组在 chip 0–7，权重接收组在 chip 8–15；同步组包含 trainer rank 0 是实现设计，并非抢卡证据。它补充了前次核验缺失的历史映射，但仍不替代全部 vLLM 进程的设备快照。
+
+源码表明所有训练 rank 都要消费 DTensor 参数生成器以参与 AllGather，只有 rank 0 负责向 rollout 广播：`hccl_checkpoint_engine.py:242–245`、`:254–270`，`transformer_impl.py:971–978`。本次报错来自非零 rank 消费生成器的分支。优先排查 rank 0 在训练聚合与 rollout 通信之间的阻塞、执行顺序和同步；**现有 plog 没有给出 rank 0 当时的 Python 栈或逐算子完整轨迹，尚不能宣称已经证明某一行代码死锁、offload 缺陷或硬件故障。** 所查 rank 0 plog 最后保留的是 AllGather 建链、心跳 STUCK 和退出后的 socket 警告。
+
+华为对 [EI0002 的说明](https://www.hiascend.com/document/detail/zh/canncommercial/80RC2/developmentguide/hccl/hcclug/hcclug_000036.html)也要求追查未进入同步的 rank、任务序列和通信链路；错误本身不唯一指向硬件。
+
+现场 `npu-smi info` 显示 16 chip 均为 OK、AICore 利用率为 0、无运行中的 NPU 进程，HBM 约 2.8–3.1 GiB；宿主机 uptime 79 天。**确认训练失败，未发现机器当前持续故障或必须重启的证据；当前健康快照不能反证周末没有瞬时设备异常。**
+
+### 3.4 核验新增发现：数据与奖励接口不匹配
 
 **数据结构问题：** 当前数据仅有顶层 `ground_truth`，而容器的 `naive.py:121` 读取 `data_item.non_tensor_batch["reward_model"]["ground_truth"]`。所查 `RLHFDataset` 没有对应字段转换。需补齐框架要求的结构，例如保留顶层字段时额外生成：
 
@@ -112,7 +139,7 @@ TypeError: compute_score() missing 1 required positional argument: 'response'
 
 服务器的 `experimental/separation/utils.py` 按 `trainer.nnodes × trainer.n_gpus_per_node` 创建训练资源池；rollout replica 按 TP×DP×PP 计算设备数并创建资源池。本方案 Trainer 8，Rollout 4×2×1=8，在 16 chip 上设备数预算成立。
 
-但 Ray 的 `llin_trainer` / `llin_rollout` 是节点资源标签，不是指定 chip 0–7 或 8–15 的掩码。同一节点同时拥有两种标签，仍需要 Ray 设备分配、容器可见设备和进程实际设备映射共同保证不重叠。8+8 只是资源数量配置，不能省略映射验证。
+但 Ray 的 `llin_trainer` / `llin_rollout` 是节点资源标签，不是指定 chip 0–7 或 8–15 的掩码。同一节点同时拥有两种标签，仍需要 Ray 设备分配、容器可见设备和进程实际设备映射共同保证不重叠。8+8 只是资源数量配置，不能省略映射验证。再次核验已从 v11 plog 确认训练组与权重接收组的上述分配，详见 3.3。
 
 ### 4.2 与已验证双机方案的差异
 
@@ -122,7 +149,7 @@ TypeError: compute_score() missing 1 required positional argument: 'response'
 | 入口 | one-step-off-policy | fully-async-policy |
 | 训练后端 | FSDP2 | Megatron |
 | 训练并行 | FSDP size 8，未设置训练 TP | TP4×PP2×CP2，训练 DP1 |
-| 设备分配 | 同机 8+8，隔离映射待补证 | 5 号机 16 训练、6 号机 16 rollout |
+| 设备分配 | 同机 8+8，v11 训练组/权重接收组映射已从 plog 补证 | 5 号机 16 训练、6 号机 16 rollout |
 | rollout | TP4、DP2 | TP8、DP2 |
 | 证据状态 | 权重同步阶段失败，无完成步证据 | 有 Step120 日志、同步记录及检查点 |
 
