@@ -1,0 +1,208 @@
+{
+  "table": [
+    {
+      "dataset": "SC-bench-knowledge",
+      "n": 226,
+      "before": 189,
+      "after": 191,
+      "gains": 3,
+      "losses": 1
+    },
+    {
+      "dataset": "LogistikaBench",
+      "n": 1446,
+      "before": 1180,
+      "after": 1179,
+      "gains": 16,
+      "losses": 17
+    }
+  ],
+  "baseline": {
+    "requests": 5016,
+    "invalid": 0,
+    "truncated": 0,
+    "predictions_sha256": "18f0e0524a0ff97c1e0345cd6192b16363a1fcec05405f3ad7c97fb70edad0f7"
+  },
+  "candidate": {
+    "requests": 5016,
+    "invalid": 1,
+    "truncated": 0,
+    "predictions_sha256": "316341907077a0142e9444e735726c338c9ce8b3de38c01c4cf80043cb7266bd"
+  },
+  "protocol_equal": true,
+  "raw_outputs_reparsed": true,
+  "model_promoted": false,
+  "arm": "S3",
+  "steps": 133,
+  "records": 399,
+  "sequence_tokens": 72014,
+  "target_met": false,
+  "retention_evaluated": false,
+  "source_probes": {
+    "step120_tasks": {
+      "groups": {
+        "condition_training": {
+          "n": 44,
+          "correct": 11
+        },
+        "source_conditions_train": {
+          "n": 135,
+          "correct": 123
+        },
+        "condition_scenario_check": {
+          "n": 11,
+          "correct": 2
+        },
+        "source_conditions_dev": {
+          "n": 22,
+          "correct": 21
+        }
+      },
+      "predictions_sha256": "5e5d4f2fe0d1a0aaa32ecfd3e51450c5905fbdb88790fa625216741d24daa72d",
+      "raw_reparsed": true
+    },
+    "s3_tasks": {
+      "groups": {
+        "condition_training": {
+          "n": 44,
+          "correct": 43
+        },
+        "source_conditions_train": {
+          "n": 135,
+          "correct": 130
+        },
+        "condition_scenario_check": {
+          "n": 11,
+          "correct": 10
+        },
+        "source_conditions_dev": {
+          "n": 22,
+          "correct": 21
+        }
+      },
+      "predictions_sha256": "e53393206c6cc425345325e852c7dd0d462172deae3c8a5c694742ce77d87c99",
+      "raw_reparsed": true
+    }
+  },
+  "category_results": {
+    "LogistikaBench/transport": {
+      "n": 404,
+      "before": 333,
+      "after": 326,
+      "gains": 2,
+      "losses": 9
+    },
+    "LogistikaBench/material_handling": {
+      "n": 696,
+      "before": 571,
+      "after": 574,
+      "gains": 9,
+      "losses": 6
+    },
+    "LogistikaBench/procurement": {
+      "n": 42,
+      "before": 36,
+      "after": 36,
+      "gains": 0,
+      "losses": 0
+    },
+    "SC-bench-knowledge/Procurement": {
+      "n": 12,
+      "before": 8,
+      "after": 9,
+      "gains": 1,
+      "losses": 0
+    },
+    "LogistikaBench/supply_chain": {
+      "n": 102,
+      "before": 89,
+      "after": 90,
+      "gains": 1,
+      "losses": 0
+    },
+    "SC-bench-knowledge/Logistics Collaboration": {
+      "n": 73,
+      "before": 61,
+      "after": 62,
+      "gains": 1,
+      "losses": 0
+    },
+    "LogistikaBench/warehousing": {
+      "n": 202,
+      "before": 151,
+      "after": 153,
+      "gains": 4,
+      "losses": 2
+    },
+    "SC-bench-knowledge/Finance and Operations": {
+      "n": 20,
+      "before": 17,
+      "after": 17,
+      "gains": 0,
+      "losses": 0
+    },
+    "SC-bench-knowledge/Fulfillment": {
+      "n": 79,
+      "before": 66,
+      "after": 66,
+      "gains": 1,
+      "losses": 1
+    },
+    "SC-bench-knowledge/In-warehouse": {
+      "n": 12,
+      "before": 9,
+      "after": 9,
+      "gains": 0,
+      "losses": 0
+    },
+    "SC-bench-knowledge/Planning": {
+      "n": 14,
+      "before": 12,
+      "after": 12,
+      "gains": 0,
+      "losses": 0
+    },
+    "SC-bench-knowledge/Network": {
+      "n": 3,
+      "before": 3,
+      "after": 3,
+      "gains": 0,
+      "losses": 0
+    },
+    "SC-bench-knowledge/unknown": {
+      "n": 4,
+      "before": 4,
+      "after": 4,
+      "gains": 0,
+      "losses": 0
+    },
+    "SC-bench-knowledge/Other": {
+      "n": 3,
+      "before": 3,
+      "after": 3,
+      "gains": 0,
+      "losses": 0
+    },
+    "SC-bench-knowledge/Inventory": {
+      "n": 4,
+      "before": 4,
+      "after": 4,
+      "gains": 0,
+      "losses": 0
+    },
+    "SC-bench-knowledge/Merchandise": {
+      "n": 1,
+      "before": 1,
+      "after": 1,
+      "gains": 0,
+      "losses": 0
+    },
+    "SC-bench-knowledge/Returns and Waste": {
+      "n": 1,
+      "before": 1,
+      "after": 1,
+      "gains": 0,
+      "losses": 0
+    }
+  }
+}

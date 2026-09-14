@@ -1,0 +1,28 @@
+{
+  "status": "source_passages_screened_not_training_ready",
+  "source_train_sha256": "96e59ce79917493f5c853b2a4654c58585a06edbadf3800a8949cb22831562aa",
+  "total_source_chunks": 4707,
+  "candidate_passages": 265,
+  "candidate_by_source": {
+    "43_Book_Manuscript_398_1_10_20230209.pdf": 2,
+    "Beyond Lean_ Simulation in Practice Second Edition.pdf": 25,
+    "challenges-and-opportunities-in-international-business.zip": 2,
+    "Container terminals and automated transport systems  logistics control issues and quantitative decision support (Günther, Hans Otto Kim, Kap Hwan) (z-library.sk, 1lib.sk, z-lib.sk).pdf": 3,
+    "Distribution logistics  advanced solutions to practical problems (Fleischmann, Bernhard Klose, Andreas etc.) (z-library.sk, 1lib.sk, z-lib.sk).pdf": 25,
+    "Fundamentals of Global Strategy.pdf": 3,
+    "International Trade - Theory and Policy.pdf": 2,
+    "JSI_LogisticHandbook_English_2019_combined_web.pdf": 30,
+    "Knoop+-+Traffic+Flow+Theory.pdf": 1,
+    "Managing supply chain risk (ManMohan S. Sodhi etc.) (z-library.sk, 1lib.sk, z-lib.sk).pdf": 27,
+    "MITx_MicroMasters_SCM_KeyConcepts.pdf": 31,
+    "wh-sci-0.98.1.pdf": 114
+  },
+  "selection": "600-5000 characters and operational topic keywords; source text only; not quality or support certification",
+  "next_checks": [
+    "Exclude exercises, answer keys and benchmark-like questions from candidate passages",
+    "Read context, preserve source scope, verify complete rules/calculations and remove OCR noise",
+    "Map frozen source-topic development groups before generation; do not recycle dev errors",
+    "Build distinct operational scenario families; verify source support and baseline difficulty before freezing training"
+  ],
+  "training_started": false
+}
