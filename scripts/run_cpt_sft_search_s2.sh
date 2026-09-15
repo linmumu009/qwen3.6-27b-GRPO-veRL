@@ -12,13 +12,19 @@ BRIDGE="$ROOT/reference/Megatron-Bridge-de93536e/src"
 case "${SFT_ARM:-S2}:${SFT_LR:-1e-06}" in
   S1:2e-07|S2:1e-06) STEPS=197 ;;
   S3:5e-07) STEPS=133 ;;
-  S4:5e-07) STEPS=77 ;;
+  S4:5e-07|S5:5e-07) STEPS=77 ;;
   *) exit 4 ;;
 esac
 [[ "${SFT_STEPS:-197}" == "$STEPS" ]] || exit 4
+MIN_FREE=550000000000
+SAVE_CONTENTS="[model,optimizer,extra]"
+if [[ "${SFT_ARM:-S2}" == S5 ]]; then
+  MIN_FREE=180000000000
+  SAVE_CONTENTS="[model,extra]"
+fi
 umask 077
 [[ ! -e "$OUT" && -f "$SOURCE/.metadata" ]] || exit 2
-[[ "$(df -B1 --output=avail "$(dirname -- "$OUT")" | tail -n 1 | tr -d ' ')" -ge 550000000000 ]] || exit 2
+[[ "$(df -B1 --output=avail "$(dirname -- "$OUT")" | tail -n 1 | tr -d ' ')" -ge "$MIN_FREE" ]] || exit 2
 python3 -c 'import hashlib,sys; assert hashlib.sha256(open(sys.argv[1],"rb").read()).hexdigest()==sys.argv[2]' "$DATA/train.parquet" "${SFT_TRAIN_SHA:-2f10b42c9a8ad0bde49b2c1887a6216727352c4871d1afdc5e84145e70dd9051}"
 python3 -c 'import hashlib,sys; assert hashlib.sha256(open(sys.argv[1],"rb").read()).hexdigest()==sys.argv[2]' "$DATA/dev.parquet" "${SFT_DEV_SHA:-54410c6d33db3cbbdcaa542a6a3a978f10d5acd4470dd8d132493629127c0e3a}"
 mkdir "$OUT"
@@ -49,7 +55,7 @@ torchrun --standalone --nnodes=1 --nproc_per_node=16 --log-dir="$OUT/torchrun_lo
  ++engine.override_transformer_config.attention_backend=auto ++engine.override_transformer_config.context_parallel_algo=kvallgather_cp_algo \
  ++engine.override_transformer_config.recompute_method=uniform ++engine.override_transformer_config.recompute_granularity=full \
  ++engine.override_transformer_config.recompute_num_layers=1 ++engine.override_transformer_config.use_flash_attn=true \
- ++engine.override_transformer_config.sequence_parallel=true 'checkpoint.load_contents=[]' 'checkpoint.save_contents=[model,optimizer,extra]' \
+ ++engine.override_transformer_config.sequence_parallel=true 'checkpoint.load_contents=[]' "checkpoint.save_contents=$SAVE_CONTENTS" \
  "trainer.default_local_dir=$OUT/checkpoints" trainer.project_name=llin-book-sft \
  "trainer.experiment_name=llin-step120-${SFT_ARM:-S2}" 'trainer.logger=["console"]' \
  trainer.total_epochs=1 "trainer.total_training_steps=$STEPS" "trainer.save_freq=$STEPS" "trainer.test_freq=$STEPS" \

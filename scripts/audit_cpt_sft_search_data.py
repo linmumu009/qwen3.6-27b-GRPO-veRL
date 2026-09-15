@@ -24,8 +24,14 @@ S4_EXPECTED = {
 }
 
 
+S5_EXPECTED = {
+    'train': (231, 41429, 5104, '68e912b5a7b22d3fb22132c37f300deb017e14892c6e3d4b3abaa1e352c4d2f1'),
+    'dev': S3_EXPECTED['dev'],
+}
+
+
 def expected_for(profile):
-    return {'S1S2': EXPECTED, 'S3': S3_EXPECTED, 'S4': S4_EXPECTED}[profile]
+    return {'S1S2': EXPECTED, 'S3': S3_EXPECTED, 'S4': S4_EXPECTED, 'S5': S5_EXPECTED}[profile]
 
 
 def digest(path):
@@ -70,7 +76,7 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--data', type=Path, required=True)
     p.add_argument('--model', type=Path, required=True)
-    p.add_argument('--profile', choices=['S1S2', 'S3', 'S4'], default='S1S2')
+    p.add_argument('--profile', choices=['S1S2', 'S3', 'S4', 'S5'], default='S1S2')
     a = p.parse_args()
     import pyarrow.parquet as pq
     from transformers import AutoTokenizer
