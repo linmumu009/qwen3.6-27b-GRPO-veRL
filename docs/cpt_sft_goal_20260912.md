@@ -229,3 +229,12 @@ S4首批探针随后已完成：PID3479943为Zs；12/12全部正确，零无效�
 资源锁下原Step120单轮TP8/8192/96/temp0seed1024探针已完成，输出/opt/llin-s4-probe-20260915-02，启动PID3495070不得重复启动。9题答对5题，零无效；逐题问题/选项/标签及原始回答重解析通过。4项错误为negative_forward_benefit、square_root_allocation、weighted_square_root、uniform_space_not_sku。安全结果cpt_s4b_probe_20260915.safe.json。新题与官方题字面token Jaccard最大0.1636，但未据此宣称语义无污染。
 
 这是新来源小范围单轮缺口，不是官方评测提升或稳定错误证明。所有题仍unassigned_diagnostic_only、training_ready=false；下一步逐个核实错误和冻结开发主题语义重叠，开发相关只作诊断，不回流训练。确认可训练来源后，构造独立数值/条件任务及受控最小曝光配方；不要把这4个错误直接照抄进训练或重新划分开发主题。当前无新训练，旧LoRA和两批S4探针均结束。
+
+
+## 2026-09-15 四项错误语义核对及最小训练候选
+
+已实际读取原始错误选项：净收益选+30而正确为-30；普通平方根分配选按流量比例；成本加权分配也选按流量比例而忽略补货成本；均匀补货选倒数比例而非与分配空间同比例。它们不是JSON解析失败。重建原205来源的冻结主题组并阅读全部开发主题清单：此四类在固定流率下优化内部补货劳动，映射既有训练组llin-core-010eea3da282a23f6b6b的storage_assignment/warehouse_flow/handling_costs/warehouse_capacity，不涉及开发组ABC分类、需求不确定性、安全库存、预测再订货或运输量计量。此为Codex语义判断，有记录可复核；未改原分组。
+
+构造32个来源训练候选（4概念族各8个新数值/条件变体），私有CPT_resources/llin-s4-conditional-train-20260915-01。不同于已查看的9题题面；所有数值选项用独立成本计算验证、净收益包含正负情况、答案位置确定性打乱。32个变体不是32个独立知识点，9题原探针已用于选概念，不可再当独立泛化。保留source_review.private.json的开发语义判断及原错误解释。候选training_ready=false：尚待官方语义近似排查、真实分词/加载审核和执行注册。
+
+拟定最小曝光为32任务各3次+135既有训练来源保持各1次，共231记录/batch3/77步；尚未确定新训练LR或启动，不能把记录数等同真实token预算。存储检查发现必须看实际项目挂载点：/workspace/llin-verl-grpo位于/dev/nvme3n1，有559G可用，而父目录/workspace和/opt为overlay只有196G。因此下一次可在项目runs独立llin目录注册，启动前再读精确可用字节并满足550GB门槛，不删旧产物；现有S3协调器只允许/opt，需为新S4显式受限扩展而不是伪造旧S3输出。

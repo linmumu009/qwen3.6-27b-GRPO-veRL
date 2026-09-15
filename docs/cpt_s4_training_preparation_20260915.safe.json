@@ -1,0 +1,30 @@
+{
+  "tasks": 32,
+  "concept_families": 4,
+  "task_sha256": "663e76794901e0af31d759a027ab4ea1e300888fb55e1927691336e2e4f4916b",
+  "source_topic_mapping_reviewed": true,
+  "existing_train_group": "llin-core-010eea3da282a23f6b6b",
+  "training_ready": false,
+  "training_started": false,
+  "proposed_exposure": {
+    "condition_tasks": 32,
+    "repeats": 3,
+    "existing_source_train_retention": 135,
+    "total_records": 231,
+    "batch_size": 3,
+    "steps": 77
+  },
+  "pending": [
+    "official semantic near-question screen",
+    "training format/token audit",
+    "storage and execution registration"
+  ],
+  "limitation": "32 variants are four concept families; previously inspected source probe is not independent validation.",
+  "storage_observation": {
+    "project_mount": "/workspace/llin-verl-grpo",
+    "device": "/dev/nvme3n1",
+    "free_df_h": "559G",
+    "overlay_free_df_h": "196G",
+    "require_exact_free_bytes_before_launch": true
+  }
+}
