@@ -1,5 +1,7 @@
 # 五号机单机 9B GRPO 实际复现结果
 
+后续已修复并完成三步训练，见 [单机跑通记录与启动方法](single_machine_9b_grpo_success_20260915.md)。以下保留复现阶段的事实与边界。
+
 日期：2026-09-15。依据 [9 月 14 日核验报告](single_machine_9b_grpo_report_20260914.md)和 [9 月 13 日原报告](sources/single_machine_grpo_analysis_20260913.md)实际运行。
 
 ## 结论
