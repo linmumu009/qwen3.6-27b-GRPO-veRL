@@ -1,7 +1,7 @@
 {
   "date": "2026-09-15",
   "report": "reports/物流模型CPT与SFT实验汇总_20260915.docx",
-  "sha256": "4639211513777b2dbc0a893364bd59daf9715a94bd7e9bd62a8727bdb77d971c",
+  "sha256": "59ce0e27a7e112527292a3a5dcbbd6deafdf4a20bc0d99f2b6a56ca419cc7e58",
   "experiments": 22,
   "checkpoint_or_arm_results": 32,
   "pages": 26,
@@ -610,5 +610,16 @@
     ],
     "promotion": false,
     "note": "General/Agent retention and curve-peak confirmation remain required"
-  }
+  },
+  "formatting": {
+    "body_font": "宋体",
+    "body_size_pt": 12,
+    "heading_font": "黑体",
+    "table_font": "宋体",
+    "table_size_pt": 10.5,
+    "table_style": "three-line",
+    "table_count": 26,
+    "shading": false
+  },
+  "format_revision_content_unchanged": true
 }
