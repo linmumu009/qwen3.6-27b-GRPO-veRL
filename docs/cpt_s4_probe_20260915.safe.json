@@ -23,5 +23,15 @@
     "output_tokens": 96,
     "context": 8192,
     "tp": 8
+  },
+  "result": {
+    "cases": 12,
+    "correct": 12,
+    "invalid": 0,
+    "raw_reparsed": true,
+    "predictions_sha256": "2157b073d3ebf31205cdf5175ba1875b4f1d2423a0c0a2ad9a9ef532df493ac0",
+    "probe_completed": true,
+    "training_started": false,
+    "training_ready": false
   }
 }
