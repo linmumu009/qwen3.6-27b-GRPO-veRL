@@ -1,0 +1,799 @@
+{
+  "date": "2026-09-15",
+  "changed_items": 66,
+  "items": [
+    {
+      "item_hash": "00f7c50ed142e43d4c895b857c5042e6758d382d0b1cfdc66433fffedd2ddf70",
+      "dataset": "LogistikaBench",
+      "category": "transport",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": false,
+        "cpt16": true,
+        "s4": false,
+        "s5": false
+      }
+    },
+    {
+      "item_hash": "01d96f8f6721ca48741769c8f87ee49bab070253f357acb34554d6d3dacf948a",
+      "dataset": "LogistikaBench",
+      "category": "material_handling",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": true,
+        "cpt16": false,
+        "s4": true,
+        "s5": false
+      }
+    },
+    {
+      "item_hash": "02ad6ec0195b11eb5df0474ae683646bbae9a1e3c3213831d2ea33377a148491",
+      "dataset": "LogistikaBench",
+      "category": "supply_chain",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": true,
+        "cpt16": true,
+        "s4": true,
+        "s5": false
+      }
+    },
+    {
+      "item_hash": "034101e23b2c4d9db03e75188db1cb45ca1df11969da3798fabeefd616eb4a9e",
+      "dataset": "LogistikaBench",
+      "category": "material_handling",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": true,
+        "cpt16": true,
+        "s4": false,
+        "s5": true
+      }
+    },
+    {
+      "item_hash": "05709f26db9deb4bcfdcc429e5c029708733c7e447f2e55701320b2c4a3d1d59",
+      "dataset": "LogistikaBench",
+      "category": "supply_chain",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": false,
+        "cpt16": false,
+        "s4": true,
+        "s5": false
+      }
+    },
+    {
+      "item_hash": "0ac2e67afe89b27b2162837fecf69839e3a76b8f56f27de771f7cd53ec870237",
+      "dataset": "LogistikaBench",
+      "category": "procurement",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": true,
+        "cpt16": false,
+        "s4": false,
+        "s5": true
+      }
+    },
+    {
+      "item_hash": "0cc445c2ef831925ef1bd49776475ca16658428cd523ab6eaabd7ecec47e8c77",
+      "dataset": "SC-bench-knowledge",
+      "category": "Logistics Collaboration",
+      "question_type": "true_or_false",
+      "correct": {
+        "step120": true,
+        "cpt16": false,
+        "s4": true,
+        "s5": false
+      }
+    },
+    {
+      "item_hash": "1ee47cf153abd86af322e09942ebca94f8e7c760afb3b3780bfc05363784c9c6",
+      "dataset": "LogistikaBench",
+      "category": "transport",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": true,
+        "cpt16": true,
+        "s4": true,
+        "s5": false
+      }
+    },
+    {
+      "item_hash": "2b695db2e2973c166c921b5b36b681fe56c6f0b0a91b5f07ed7dfa93f2e1a358",
+      "dataset": "LogistikaBench",
+      "category": "warehousing",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": false,
+        "cpt16": true,
+        "s4": true,
+        "s5": true
+      }
+    },
+    {
+      "item_hash": "2ce0253f2879dc65d38b65a8dc51f7b6e26d534668391442c27aa147d15e4b56",
+      "dataset": "LogistikaBench",
+      "category": "transport",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": true,
+        "cpt16": true,
+        "s4": true,
+        "s5": false
+      }
+    },
+    {
+      "item_hash": "2efc457901a53781fbe39599677831ebe03c809db57502b4e1b892a2962d86ce",
+      "dataset": "LogistikaBench",
+      "category": "transport",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": false,
+        "cpt16": false,
+        "s4": true,
+        "s5": false
+      }
+    },
+    {
+      "item_hash": "34dc18e4d132faddc463a51517399a33c0c1a83fc295f908feca858dcef3a39a",
+      "dataset": "LogistikaBench",
+      "category": "material_handling",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": false,
+        "cpt16": true,
+        "s4": false,
+        "s5": false
+      }
+    },
+    {
+      "item_hash": "372393fd24dd3583c39b7fd468bb6cf58e18108f10ba7d7333d4a60cedb68c7b",
+      "dataset": "LogistikaBench",
+      "category": "material_handling",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": true,
+        "cpt16": false,
+        "s4": true,
+        "s5": true
+      }
+    },
+    {
+      "item_hash": "434df9aef812db4f55c9b48bf52393582037e1a25f7828a4ff6b827da8b4ae28",
+      "dataset": "LogistikaBench",
+      "category": "transport",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": false,
+        "cpt16": false,
+        "s4": true,
+        "s5": true
+      }
+    },
+    {
+      "item_hash": "44b4d8dabd23916845424e6673d6763c9995e470660041bfefb921e485009bfd",
+      "dataset": "LogistikaBench",
+      "category": "material_handling",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": false,
+        "cpt16": false,
+        "s4": true,
+        "s5": true
+      }
+    },
+    {
+      "item_hash": "4c1bf68e86c0393c382c435977f55a8cd1668e04898fc267947e6f80bb8abade",
+      "dataset": "LogistikaBench",
+      "category": "warehousing",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": false,
+        "cpt16": false,
+        "s4": true,
+        "s5": false
+      }
+    },
+    {
+      "item_hash": "4ece62536cce549e240e598dcaa50266d0a871e8ac168ef470ddaa8c33a9ef5d",
+      "dataset": "LogistikaBench",
+      "category": "material_handling",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": true,
+        "cpt16": true,
+        "s4": false,
+        "s5": false
+      }
+    },
+    {
+      "item_hash": "4f8049c6ca684223accb1375aa6b892de766d73786204768b18ce1f039661233",
+      "dataset": "LogistikaBench",
+      "category": "transport",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": false,
+        "cpt16": false,
+        "s4": true,
+        "s5": false
+      }
+    },
+    {
+      "item_hash": "54433980809c26816669ba04023f0151f9bed823d1a2d8f4a6e2bc379bb85b02",
+      "dataset": "LogistikaBench",
+      "category": "material_handling",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": false,
+        "cpt16": false,
+        "s4": false,
+        "s5": true
+      }
+    },
+    {
+      "item_hash": "554685784d33e7aa06fef1a33599a425df041146d360067ee3d40740399a47f1",
+      "dataset": "LogistikaBench",
+      "category": "material_handling",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": false,
+        "cpt16": false,
+        "s4": true,
+        "s5": false
+      }
+    },
+    {
+      "item_hash": "55baf1481a7313a0e12ce43b49c1101659d59e5696e3c37eb2ab6f7ec510ab74",
+      "dataset": "LogistikaBench",
+      "category": "material_handling",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": true,
+        "cpt16": false,
+        "s4": true,
+        "s5": true
+      }
+    },
+    {
+      "item_hash": "571c49bfa6b4d056762ecae983704c8308391848feff504cdfe14501336f4558",
+      "dataset": "LogistikaBench",
+      "category": "warehousing",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": false,
+        "cpt16": true,
+        "s4": false,
+        "s5": true
+      }
+    },
+    {
+      "item_hash": "5a186679aaaa95ed742b3f52e04964df1a04fae9b35a6c9272f5da3e57c2ea40",
+      "dataset": "LogistikaBench",
+      "category": "material_handling",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": false,
+        "cpt16": false,
+        "s4": true,
+        "s5": true
+      }
+    },
+    {
+      "item_hash": "5bbdbc9e033035e007ff21b9551c6ea0affa8c85f2428ec74d839e5fc397b4ef",
+      "dataset": "LogistikaBench",
+      "category": "transport",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": false,
+        "cpt16": false,
+        "s4": true,
+        "s5": true
+      }
+    },
+    {
+      "item_hash": "5e99a7a2095f295f56bb12d62f487c7462ccefd92f2f2aa6692d2ed918a971a3",
+      "dataset": "LogistikaBench",
+      "category": "material_handling",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": false,
+        "cpt16": false,
+        "s4": true,
+        "s5": true
+      }
+    },
+    {
+      "item_hash": "608db06a361a7b938d7f2ff9a396ca713de2dbad3c6dacb5aa2664a8cc9d42c9",
+      "dataset": "LogistikaBench",
+      "category": "transport",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": true,
+        "cpt16": true,
+        "s4": true,
+        "s5": false
+      }
+    },
+    {
+      "item_hash": "63e9b9ee1469f4c783f6d3a28e92b1c77ce8782165836b59e8d2121f74f9dd91",
+      "dataset": "LogistikaBench",
+      "category": "material_handling",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": false,
+        "cpt16": false,
+        "s4": true,
+        "s5": true
+      }
+    },
+    {
+      "item_hash": "674c8e54114d796e2e225ed588808e0257b9c597e6017e6f5055bf6a1538bee9",
+      "dataset": "LogistikaBench",
+      "category": "material_handling",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": false,
+        "cpt16": false,
+        "s4": true,
+        "s5": false
+      }
+    },
+    {
+      "item_hash": "7169136ea99cf91cd42749dea73d8d8f734b016684688d66cc616bf5e828809a",
+      "dataset": "LogistikaBench",
+      "category": "warehousing",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": true,
+        "cpt16": true,
+        "s4": false,
+        "s5": true
+      }
+    },
+    {
+      "item_hash": "7ec07ffdd7da962900e3468608fb4f169a3cf8fa60f5a83e642fe403d410e43b",
+      "dataset": "LogistikaBench",
+      "category": "transport",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": true,
+        "cpt16": true,
+        "s4": false,
+        "s5": true
+      }
+    },
+    {
+      "item_hash": "81a9053b747d5b85b5a74398d867175600441eb393481452b05e9ec179a5f20a",
+      "dataset": "LogistikaBench",
+      "category": "material_handling",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": true,
+        "cpt16": true,
+        "s4": false,
+        "s5": true
+      }
+    },
+    {
+      "item_hash": "824bbe41117158c78ba3f02023ad36b88928b21ac3f14ee8c790d07ad8eee14d",
+      "dataset": "LogistikaBench",
+      "category": "material_handling",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": false,
+        "cpt16": true,
+        "s4": false,
+        "s5": false
+      }
+    },
+    {
+      "item_hash": "84f275737cd610afa98081a342d9e648b73718ab994301e18ae702c97eacf2f8",
+      "dataset": "LogistikaBench",
+      "category": "transport",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": true,
+        "cpt16": true,
+        "s4": false,
+        "s5": true
+      }
+    },
+    {
+      "item_hash": "85ce70c520385b8c417d9bc8064d86cc2f2b0fad527cf6b6fb23e5e6a029e271",
+      "dataset": "LogistikaBench",
+      "category": "transport",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": false,
+        "cpt16": false,
+        "s4": false,
+        "s5": true
+      }
+    },
+    {
+      "item_hash": "8aff7d2d044786fb4174395b97651f4130fe011896921586224285be61abae90",
+      "dataset": "LogistikaBench",
+      "category": "material_handling",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": false,
+        "cpt16": true,
+        "s4": false,
+        "s5": true
+      }
+    },
+    {
+      "item_hash": "8e348c46d7b76912ce27ca5ceba68f3f78580a441681be314c95f16225814d4c",
+      "dataset": "LogistikaBench",
+      "category": "material_handling",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": false,
+        "cpt16": false,
+        "s4": false,
+        "s5": true
+      }
+    },
+    {
+      "item_hash": "8e5bf84edfc4b2292ff397ee9fcf5fa2275f8b2051d96cb7e2f8da5a4ff20ee6",
+      "dataset": "SC-bench-knowledge",
+      "category": "Fulfillment",
+      "question_type": "multiple_choices",
+      "correct": {
+        "step120": false,
+        "cpt16": true,
+        "s4": true,
+        "s5": true
+      }
+    },
+    {
+      "item_hash": "9116a6ca0f26fa9a365acae3083b799078ab9fe207191742d42f9b92e0383e6c",
+      "dataset": "LogistikaBench",
+      "category": "material_handling",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": false,
+        "cpt16": false,
+        "s4": true,
+        "s5": true
+      }
+    },
+    {
+      "item_hash": "931eff32d44442c706b2e6316c9c6d734703626e274c1bff09d69da2608e25a1",
+      "dataset": "LogistikaBench",
+      "category": "transport",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": false,
+        "cpt16": false,
+        "s4": true,
+        "s5": true
+      }
+    },
+    {
+      "item_hash": "942ae1a1b6299abd0acbfff276fdab23ffb1e2f97ba931a46793182e087a4330",
+      "dataset": "LogistikaBench",
+      "category": "material_handling",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": true,
+        "cpt16": true,
+        "s4": false,
+        "s5": true
+      }
+    },
+    {
+      "item_hash": "956fa3ebff517536da66024024ff7eaad2f23e4450fdee32450d0d2db0995a43",
+      "dataset": "LogistikaBench",
+      "category": "warehousing",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": false,
+        "cpt16": true,
+        "s4": false,
+        "s5": true
+      }
+    },
+    {
+      "item_hash": "986ae188dfbcc6768b003f9c2c19df8b5a64055a109cdd00739b0f4a29c9ccef",
+      "dataset": "SC-bench-knowledge",
+      "category": "In-warehouse",
+      "question_type": "multiple_choices",
+      "correct": {
+        "step120": false,
+        "cpt16": true,
+        "s4": true,
+        "s5": true
+      }
+    },
+    {
+      "item_hash": "99b5810a48c1241c3b0e855f433a9846e8eb5541d260ebd9171c73ea1ea0cb18",
+      "dataset": "LogistikaBench",
+      "category": "transport",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": true,
+        "cpt16": true,
+        "s4": true,
+        "s5": false
+      }
+    },
+    {
+      "item_hash": "99fa8ffb6b2e613148437b3e40723d130e1f73ab1125a4fb8f77d9b3aa0aa757",
+      "dataset": "SC-bench-knowledge",
+      "category": "Fulfillment",
+      "question_type": "true_or_false",
+      "correct": {
+        "step120": true,
+        "cpt16": true,
+        "s4": true,
+        "s5": false
+      }
+    },
+    {
+      "item_hash": "9d003eb846f6b34356cfbdd59f3407847a36a3d52b53b4dd6e711a0922fe5fef",
+      "dataset": "LogistikaBench",
+      "category": "warehousing",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": false,
+        "cpt16": true,
+        "s4": true,
+        "s5": true
+      }
+    },
+    {
+      "item_hash": "a8aed9a2b2760b295d053be2f7ccc9ebc850dcc283ca4ee05e36457735bd352a",
+      "dataset": "LogistikaBench",
+      "category": "material_handling",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": false,
+        "cpt16": true,
+        "s4": false,
+        "s5": false
+      }
+    },
+    {
+      "item_hash": "ab15e5543c92b53261effbb1fe45b34d54af973d31619b6e8fd9f02ad88444a7",
+      "dataset": "LogistikaBench",
+      "category": "warehousing",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": true,
+        "cpt16": false,
+        "s4": false,
+        "s5": true
+      }
+    },
+    {
+      "item_hash": "ac8d97a1f0d7780849902d32bc96a868fb2df489b0907a9f1619046876b47cb3",
+      "dataset": "LogistikaBench",
+      "category": "transport",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": false,
+        "cpt16": false,
+        "s4": true,
+        "s5": true
+      }
+    },
+    {
+      "item_hash": "b3bedb490155f65c5a9fc87b28a4a900daf0a9e8d5840b29d8d660bb363f6e73",
+      "dataset": "LogistikaBench",
+      "category": "transport",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": true,
+        "cpt16": true,
+        "s4": true,
+        "s5": false
+      }
+    },
+    {
+      "item_hash": "b510905534ab31f898c65944550994a24abd13379d03254ee0ee82550301e6ae",
+      "dataset": "SC-bench-knowledge",
+      "category": "Fulfillment",
+      "question_type": "single_choice",
+      "correct": {
+        "step120": true,
+        "cpt16": true,
+        "s4": false,
+        "s5": true
+      }
+    },
+    {
+      "item_hash": "b8ed3805b93f33c2fb7b59425f389eadb9ded9710b20a47fe1eb4c6a570f2a54",
+      "dataset": "LogistikaBench",
+      "category": "warehousing",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": false,
+        "cpt16": false,
+        "s4": true,
+        "s5": false
+      }
+    },
+    {
+      "item_hash": "be942222794e17134b74866f8764d9fe73bec364c88c07a7df38b86fd46d26a8",
+      "dataset": "SC-bench-knowledge",
+      "category": "Logistics Collaboration",
+      "question_type": "true_or_false",
+      "correct": {
+        "step120": true,
+        "cpt16": false,
+        "s4": true,
+        "s5": true
+      }
+    },
+    {
+      "item_hash": "c59363803f733b7a866fb852f4d3a9058fe3d43baaaf578de890686b4f090be7",
+      "dataset": "SC-bench-knowledge",
+      "category": "Fulfillment",
+      "question_type": "single_choice",
+      "correct": {
+        "step120": true,
+        "cpt16": true,
+        "s4": false,
+        "s5": true
+      }
+    },
+    {
+      "item_hash": "cc5d0a4d88f5174bd728b40a9544e633443147a43a88cf0183ec395ec269450d",
+      "dataset": "SC-bench-knowledge",
+      "category": "Logistics Collaboration",
+      "question_type": "multiple_choices",
+      "correct": {
+        "step120": false,
+        "cpt16": false,
+        "s4": true,
+        "s5": false
+      }
+    },
+    {
+      "item_hash": "d10653be834820fd52cc90a791e86f6e3d130ff62e90efba02c0b7920d866eaf",
+      "dataset": "LogistikaBench",
+      "category": "material_handling",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": false,
+        "cpt16": true,
+        "s4": false,
+        "s5": false
+      }
+    },
+    {
+      "item_hash": "dd4fc8a7a66d349862457a38d88e320b68df194b303d64ba8bace4be97738b9f",
+      "dataset": "LogistikaBench",
+      "category": "transport",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": true,
+        "cpt16": true,
+        "s4": false,
+        "s5": false
+      }
+    },
+    {
+      "item_hash": "de30439b9afdef3f465d1f02fb6d8dfc8a734bd1ddcf251a0aeb5d2375dcb668",
+      "dataset": "LogistikaBench",
+      "category": "transport",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": true,
+        "cpt16": true,
+        "s4": false,
+        "s5": false
+      }
+    },
+    {
+      "item_hash": "deaeba8a9ab5cccad67c71c9112f8f86a9a2ee14d895a489f16df4db7aadf517",
+      "dataset": "LogistikaBench",
+      "category": "warehousing",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": false,
+        "cpt16": true,
+        "s4": true,
+        "s5": true
+      }
+    },
+    {
+      "item_hash": "e52ad65dc4440f8350553a1748734deccc6623cfe721dcb437afdf38b7759526",
+      "dataset": "LogistikaBench",
+      "category": "supply_chain",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": false,
+        "cpt16": false,
+        "s4": true,
+        "s5": false
+      }
+    },
+    {
+      "item_hash": "e62733a6712162c68f9e4903f520c67c4dab34827a0d3367a2baf60ce3054944",
+      "dataset": "LogistikaBench",
+      "category": "transport",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": true,
+        "cpt16": true,
+        "s4": false,
+        "s5": false
+      }
+    },
+    {
+      "item_hash": "e720798fd7e31ac81d34239f1b9f65c99f827db6ef615f4465677b307f3a2b21",
+      "dataset": "LogistikaBench",
+      "category": "material_handling",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": true,
+        "cpt16": false,
+        "s4": true,
+        "s5": false
+      }
+    },
+    {
+      "item_hash": "efc5550b762f38d92e60ff1765d5774b0ce67e8bf5f0581133b2c37cd7b5f926",
+      "dataset": "LogistikaBench",
+      "category": "material_handling",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": true,
+        "cpt16": false,
+        "s4": false,
+        "s5": false
+      }
+    },
+    {
+      "item_hash": "f113ec38abb122071130c52aa44050d50761dbe62abc9f8cb4056f1504eaf859",
+      "dataset": "LogistikaBench",
+      "category": "transport",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": false,
+        "cpt16": false,
+        "s4": true,
+        "s5": true
+      }
+    },
+    {
+      "item_hash": "f42933c3712943b5479306e788896d6cc477dea06e28918d76817ed488be2ead",
+      "dataset": "LogistikaBench",
+      "category": "warehousing",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": true,
+        "cpt16": true,
+        "s4": false,
+        "s5": false
+      }
+    },
+    {
+      "item_hash": "f4e3f376671ed3583c93cf5e57ad07e5d5bb8ccfe5df5883480bb4357b22f3d3",
+      "dataset": "LogistikaBench",
+      "category": "material_handling",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": false,
+        "cpt16": false,
+        "s4": true,
+        "s5": true
+      }
+    },
+    {
+      "item_hash": "fe2b6f15e2dbf0b26ad43b953d6dd4ec7111c451188a8a5ce65048f3cb4466fd",
+      "dataset": "LogistikaBench",
+      "category": "transport",
+      "question_type": "multiple_choice",
+      "correct": {
+        "step120": false,
+        "cpt16": true,
+        "s4": false,
+        "s5": false
+      }
+    }
+  ],
+  "scope": "Only changes in majority correctness across the four models; no question or answer text."
+}

@@ -1,0 +1,42 @@
+{
+  "date": "2026-09-15",
+  "review_sample": 117,
+  "sc_sample": 37,
+  "logistika_sample": 80,
+  "question_text_triaged": 117,
+  "full_source_adjudication_complete": 13,
+  "counts": {
+    "source_adjudication_pending": 96,
+    "source_sufficient_unique_answer": 13,
+    "overlapping_single_choice_options": 1,
+    "duplicate_answer_label": 2,
+    "missing_visual_or_definition": 5
+  },
+  "evidence_pilot_cases": 13,
+  "evidence_pilot_requests": 37,
+  "evidence_packet_sha256": "1ed94d36e78b3e40bc8d6ac6d302bf7b09f7221b2694aebd507ca7969147d84d",
+  "evidence_review": "Codex checked exact source spans, source hashes and unique option match; two arithmetic cases checked from givens.",
+  "limitations": [
+    "Initial triage is not full evidence adjudication for all 117 cases.",
+    "Official scores and labels are unchanged.",
+    "No claim that unresolved cases are unlearnable.",
+    "11 glossary short evidence records exactly equal existing extracted units; this pilot cannot test information lost in non-extractive summaries."
+  ],
+  "remote": {
+    "output": "/opt/llin-transfer-evidence-20260915-03",
+    "code": "/opt/llin-transfer-evidence-code-20260915-03",
+    "pid": 3557646,
+    "last_observed": "completed_independently_reparsed",
+    "training_started": false
+  },
+  "evidence_pilot_result": "cpt_evidence_pilot_result_20260915.safe.json",
+  "section_control": {
+    "cases": 2,
+    "requests": 4,
+    "pid": 3560422,
+    "output": "/opt/llin-transfer-evidence-section-20260915-01",
+    "code": "/opt/llin-transfer-evidence-section-code-20260915-01",
+    "status": "completed_independently_reparsed",
+    "result": "cpt_evidence_section_control_20260915.safe.json"
+  }
+}

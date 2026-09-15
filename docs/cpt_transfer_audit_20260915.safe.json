@@ -1,0 +1,2839 @@
+{
+  "comparisons": [
+    {
+      "dataset": "LogistikaBench",
+      "model": "cpt16",
+      "n": 1446,
+      "before": 1180,
+      "after": 1185,
+      "gains": 12,
+      "losses": 7,
+      "delta_pp": 0.3457814661134163,
+      "mcnemar_exact_two_sided_p_unadjusted": 0.359283447265625,
+      "paired_item_bootstrap_95pct_pp": [
+        -0.2074688796680498,
+        0.9681881051175657
+      ]
+    },
+    {
+      "dataset": "LogistikaBench",
+      "model": "s4",
+      "n": 1446,
+      "before": 1180,
+      "after": 1188,
+      "gains": 22,
+      "losses": 14,
+      "delta_pp": 0.5532503457814661,
+      "mcnemar_exact_two_sided_p_unadjusted": 0.2429849540349096,
+      "paired_item_bootstrap_95pct_pp": [
+        -0.2074688796680498,
+        1.3831258644536653
+      ]
+    },
+    {
+      "dataset": "LogistikaBench",
+      "model": "s5",
+      "n": 1446,
+      "before": 1180,
+      "after": 1186,
+      "gains": 20,
+      "losses": 14,
+      "delta_pp": 0.4149377593360996,
+      "mcnemar_exact_two_sided_p_unadjusted": 0.39152830513194203,
+      "paired_item_bootstrap_95pct_pp": [
+        -0.3457814661134163,
+        1.2448132780082988
+      ]
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "cpt16",
+      "n": 226,
+      "before": 189,
+      "after": 189,
+      "gains": 2,
+      "losses": 2,
+      "delta_pp": 0.0,
+      "mcnemar_exact_two_sided_p_unadjusted": 1.0,
+      "paired_item_bootstrap_95pct_pp": [
+        -1.7699115044247788,
+        1.7699115044247788
+      ]
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s4",
+      "n": 226,
+      "before": 189,
+      "after": 190,
+      "gains": 3,
+      "losses": 2,
+      "delta_pp": 0.4424778761061947,
+      "mcnemar_exact_two_sided_p_unadjusted": 1.0,
+      "paired_item_bootstrap_95pct_pp": [
+        -1.3274336283185841,
+        2.2123893805309733
+      ]
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s5",
+      "n": 226,
+      "before": 189,
+      "after": 189,
+      "gains": 2,
+      "losses": 2,
+      "delta_pp": 0.0,
+      "mcnemar_exact_two_sided_p_unadjusted": 1.0,
+      "paired_item_bootstrap_95pct_pp": [
+        -1.7699115044247788,
+        1.7699115044247788
+      ]
+    }
+  ],
+  "by_stratum": [
+    {
+      "dataset": "LogistikaBench",
+      "model": "cpt16",
+      "stratum": [
+        "material_handling",
+        "multiple_choice",
+        "long_options",
+        "single_answer"
+      ],
+      "n": 305,
+      "before": 213,
+      "after": 216,
+      "gains": 4,
+      "losses": 1,
+      "delta_pp": 0.9836065573770492
+    },
+    {
+      "dataset": "LogistikaBench",
+      "model": "cpt16",
+      "stratum": [
+        "material_handling",
+        "multiple_choice",
+        "short_options",
+        "multi_answer"
+      ],
+      "n": 28,
+      "before": 16,
+      "after": 15,
+      "gains": 1,
+      "losses": 2,
+      "delta_pp": -3.5714285714285716
+    },
+    {
+      "dataset": "LogistikaBench",
+      "model": "cpt16",
+      "stratum": [
+        "material_handling",
+        "multiple_choice",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 363,
+      "before": 342,
+      "after": 340,
+      "gains": 0,
+      "losses": 2,
+      "delta_pp": -0.5509641873278237
+    },
+    {
+      "dataset": "LogistikaBench",
+      "model": "cpt16",
+      "stratum": [
+        "procurement",
+        "multiple_choice",
+        "short_options",
+        "multi_answer"
+      ],
+      "n": 1,
+      "before": 1,
+      "after": 1,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "LogistikaBench",
+      "model": "cpt16",
+      "stratum": [
+        "procurement",
+        "multiple_choice",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 41,
+      "before": 35,
+      "after": 34,
+      "gains": 0,
+      "losses": 1,
+      "delta_pp": -2.4390243902439024
+    },
+    {
+      "dataset": "LogistikaBench",
+      "model": "cpt16",
+      "stratum": [
+        "supply_chain",
+        "multiple_choice",
+        "short_options",
+        "multi_answer"
+      ],
+      "n": 5,
+      "before": 4,
+      "after": 4,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "LogistikaBench",
+      "model": "cpt16",
+      "stratum": [
+        "supply_chain",
+        "multiple_choice",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 97,
+      "before": 85,
+      "after": 85,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "LogistikaBench",
+      "model": "cpt16",
+      "stratum": [
+        "transport",
+        "multiple_choice",
+        "short_options",
+        "multi_answer"
+      ],
+      "n": 68,
+      "before": 50,
+      "after": 50,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "LogistikaBench",
+      "model": "cpt16",
+      "stratum": [
+        "transport",
+        "multiple_choice",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 336,
+      "before": 283,
+      "after": 285,
+      "gains": 2,
+      "losses": 0,
+      "delta_pp": 0.5952380952380952
+    },
+    {
+      "dataset": "LogistikaBench",
+      "model": "cpt16",
+      "stratum": [
+        "warehousing",
+        "multiple_choice",
+        "short_options",
+        "multi_answer"
+      ],
+      "n": 28,
+      "before": 19,
+      "after": 20,
+      "gains": 1,
+      "losses": 0,
+      "delta_pp": 3.5714285714285716
+    },
+    {
+      "dataset": "LogistikaBench",
+      "model": "cpt16",
+      "stratum": [
+        "warehousing",
+        "multiple_choice",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 174,
+      "before": 132,
+      "after": 135,
+      "gains": 4,
+      "losses": 1,
+      "delta_pp": 1.7241379310344827
+    },
+    {
+      "dataset": "LogistikaBench",
+      "model": "s4",
+      "stratum": [
+        "material_handling",
+        "multiple_choice",
+        "long_options",
+        "single_answer"
+      ],
+      "n": 305,
+      "before": 213,
+      "after": 216,
+      "gains": 4,
+      "losses": 1,
+      "delta_pp": 0.9836065573770492
+    },
+    {
+      "dataset": "LogistikaBench",
+      "model": "s4",
+      "stratum": [
+        "material_handling",
+        "multiple_choice",
+        "short_options",
+        "multi_answer"
+      ],
+      "n": 28,
+      "before": 16,
+      "after": 16,
+      "gains": 1,
+      "losses": 1,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "LogistikaBench",
+      "model": "s4",
+      "stratum": [
+        "material_handling",
+        "multiple_choice",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 363,
+      "before": 342,
+      "after": 342,
+      "gains": 3,
+      "losses": 3,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "LogistikaBench",
+      "model": "s4",
+      "stratum": [
+        "procurement",
+        "multiple_choice",
+        "short_options",
+        "multi_answer"
+      ],
+      "n": 1,
+      "before": 1,
+      "after": 1,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "LogistikaBench",
+      "model": "s4",
+      "stratum": [
+        "procurement",
+        "multiple_choice",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 41,
+      "before": 35,
+      "after": 34,
+      "gains": 0,
+      "losses": 1,
+      "delta_pp": -2.4390243902439024
+    },
+    {
+      "dataset": "LogistikaBench",
+      "model": "s4",
+      "stratum": [
+        "supply_chain",
+        "multiple_choice",
+        "short_options",
+        "multi_answer"
+      ],
+      "n": 5,
+      "before": 4,
+      "after": 4,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "LogistikaBench",
+      "model": "s4",
+      "stratum": [
+        "supply_chain",
+        "multiple_choice",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 97,
+      "before": 85,
+      "after": 87,
+      "gains": 2,
+      "losses": 0,
+      "delta_pp": 2.0618556701030926
+    },
+    {
+      "dataset": "LogistikaBench",
+      "model": "s4",
+      "stratum": [
+        "transport",
+        "multiple_choice",
+        "short_options",
+        "multi_answer"
+      ],
+      "n": 68,
+      "before": 50,
+      "after": 48,
+      "gains": 1,
+      "losses": 3,
+      "delta_pp": -2.9411764705882355
+    },
+    {
+      "dataset": "LogistikaBench",
+      "model": "s4",
+      "stratum": [
+        "transport",
+        "multiple_choice",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 336,
+      "before": 283,
+      "after": 287,
+      "gains": 6,
+      "losses": 2,
+      "delta_pp": 1.1904761904761905
+    },
+    {
+      "dataset": "LogistikaBench",
+      "model": "s4",
+      "stratum": [
+        "warehousing",
+        "multiple_choice",
+        "short_options",
+        "multi_answer"
+      ],
+      "n": 28,
+      "before": 19,
+      "after": 18,
+      "gains": 1,
+      "losses": 2,
+      "delta_pp": -3.5714285714285716
+    },
+    {
+      "dataset": "LogistikaBench",
+      "model": "s4",
+      "stratum": [
+        "warehousing",
+        "multiple_choice",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 174,
+      "before": 132,
+      "after": 135,
+      "gains": 4,
+      "losses": 1,
+      "delta_pp": 1.7241379310344827
+    },
+    {
+      "dataset": "LogistikaBench",
+      "model": "s5",
+      "stratum": [
+        "material_handling",
+        "multiple_choice",
+        "long_options",
+        "single_answer"
+      ],
+      "n": 305,
+      "before": 213,
+      "after": 216,
+      "gains": 4,
+      "losses": 1,
+      "delta_pp": 0.9836065573770492
+    },
+    {
+      "dataset": "LogistikaBench",
+      "model": "s5",
+      "stratum": [
+        "material_handling",
+        "multiple_choice",
+        "short_options",
+        "multi_answer"
+      ],
+      "n": 28,
+      "before": 16,
+      "after": 16,
+      "gains": 2,
+      "losses": 2,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "LogistikaBench",
+      "model": "s5",
+      "stratum": [
+        "material_handling",
+        "multiple_choice",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 363,
+      "before": 342,
+      "after": 344,
+      "gains": 3,
+      "losses": 1,
+      "delta_pp": 0.5509641873278237
+    },
+    {
+      "dataset": "LogistikaBench",
+      "model": "s5",
+      "stratum": [
+        "procurement",
+        "multiple_choice",
+        "short_options",
+        "multi_answer"
+      ],
+      "n": 1,
+      "before": 1,
+      "after": 1,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "LogistikaBench",
+      "model": "s5",
+      "stratum": [
+        "procurement",
+        "multiple_choice",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 41,
+      "before": 35,
+      "after": 35,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "LogistikaBench",
+      "model": "s5",
+      "stratum": [
+        "supply_chain",
+        "multiple_choice",
+        "short_options",
+        "multi_answer"
+      ],
+      "n": 5,
+      "before": 4,
+      "after": 4,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "LogistikaBench",
+      "model": "s5",
+      "stratum": [
+        "supply_chain",
+        "multiple_choice",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 97,
+      "before": 85,
+      "after": 84,
+      "gains": 0,
+      "losses": 1,
+      "delta_pp": -1.0309278350515463
+    },
+    {
+      "dataset": "LogistikaBench",
+      "model": "s5",
+      "stratum": [
+        "transport",
+        "multiple_choice",
+        "short_options",
+        "multi_answer"
+      ],
+      "n": 68,
+      "before": 50,
+      "after": 48,
+      "gains": 1,
+      "losses": 3,
+      "delta_pp": -2.9411764705882355
+    },
+    {
+      "dataset": "LogistikaBench",
+      "model": "s5",
+      "stratum": [
+        "transport",
+        "multiple_choice",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 336,
+      "before": 283,
+      "after": 283,
+      "gains": 5,
+      "losses": 5,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "LogistikaBench",
+      "model": "s5",
+      "stratum": [
+        "warehousing",
+        "multiple_choice",
+        "short_options",
+        "multi_answer"
+      ],
+      "n": 28,
+      "before": 19,
+      "after": 19,
+      "gains": 1,
+      "losses": 1,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "LogistikaBench",
+      "model": "s5",
+      "stratum": [
+        "warehousing",
+        "multiple_choice",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 174,
+      "before": 132,
+      "after": 136,
+      "gains": 4,
+      "losses": 0,
+      "delta_pp": 2.2988505747126435
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "cpt16",
+      "stratum": [
+        "Finance and Operations",
+        "multiple_choices",
+        "short_options",
+        "multi_answer"
+      ],
+      "n": 4,
+      "before": 4,
+      "after": 4,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "cpt16",
+      "stratum": [
+        "Finance and Operations",
+        "single_choice",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 4,
+      "before": 4,
+      "after": 4,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "cpt16",
+      "stratum": [
+        "Finance and Operations",
+        "true_or_false",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 12,
+      "before": 9,
+      "after": 9,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "cpt16",
+      "stratum": [
+        "Fulfillment",
+        "multiple_choices",
+        "short_options",
+        "multi_answer"
+      ],
+      "n": 25,
+      "before": 21,
+      "after": 22,
+      "gains": 1,
+      "losses": 0,
+      "delta_pp": 4.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "cpt16",
+      "stratum": [
+        "Fulfillment",
+        "single_choice",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 34,
+      "before": 30,
+      "after": 30,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "cpt16",
+      "stratum": [
+        "Fulfillment",
+        "true_or_false",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 20,
+      "before": 15,
+      "after": 15,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "cpt16",
+      "stratum": [
+        "In-warehouse",
+        "multiple_choices",
+        "short_options",
+        "multi_answer"
+      ],
+      "n": 4,
+      "before": 2,
+      "after": 3,
+      "gains": 1,
+      "losses": 0,
+      "delta_pp": 25.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "cpt16",
+      "stratum": [
+        "In-warehouse",
+        "single_choice",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 3,
+      "before": 3,
+      "after": 3,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "cpt16",
+      "stratum": [
+        "In-warehouse",
+        "true_or_false",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 5,
+      "before": 4,
+      "after": 4,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "cpt16",
+      "stratum": [
+        "Inventory",
+        "single_choice",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 2,
+      "before": 2,
+      "after": 2,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "cpt16",
+      "stratum": [
+        "Inventory",
+        "true_or_false",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 2,
+      "before": 2,
+      "after": 2,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "cpt16",
+      "stratum": [
+        "Logistics Collaboration",
+        "multiple_choices",
+        "short_options",
+        "multi_answer"
+      ],
+      "n": 18,
+      "before": 15,
+      "after": 15,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "cpt16",
+      "stratum": [
+        "Logistics Collaboration",
+        "single_choice",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 26,
+      "before": 22,
+      "after": 22,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "cpt16",
+      "stratum": [
+        "Logistics Collaboration",
+        "true_or_false",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 29,
+      "before": 24,
+      "after": 22,
+      "gains": 0,
+      "losses": 2,
+      "delta_pp": -6.896551724137931
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "cpt16",
+      "stratum": [
+        "Merchandise",
+        "true_or_false",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 1,
+      "before": 1,
+      "after": 1,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "cpt16",
+      "stratum": [
+        "Network",
+        "multiple_choices",
+        "short_options",
+        "multi_answer"
+      ],
+      "n": 2,
+      "before": 2,
+      "after": 2,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "cpt16",
+      "stratum": [
+        "Network",
+        "true_or_false",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 1,
+      "before": 1,
+      "after": 1,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "cpt16",
+      "stratum": [
+        "Other",
+        "single_choice",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 3,
+      "before": 3,
+      "after": 3,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "cpt16",
+      "stratum": [
+        "Planning",
+        "multiple_choices",
+        "short_options",
+        "multi_answer"
+      ],
+      "n": 1,
+      "before": 1,
+      "after": 1,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "cpt16",
+      "stratum": [
+        "Planning",
+        "multiple_choices",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 1,
+      "before": 1,
+      "after": 1,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "cpt16",
+      "stratum": [
+        "Planning",
+        "single_choice",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 5,
+      "before": 4,
+      "after": 4,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "cpt16",
+      "stratum": [
+        "Planning",
+        "true_or_false",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 7,
+      "before": 6,
+      "after": 6,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "cpt16",
+      "stratum": [
+        "Procurement",
+        "multiple_choices",
+        "short_options",
+        "multi_answer"
+      ],
+      "n": 4,
+      "before": 2,
+      "after": 2,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "cpt16",
+      "stratum": [
+        "Procurement",
+        "single_choice",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 4,
+      "before": 3,
+      "after": 3,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "cpt16",
+      "stratum": [
+        "Procurement",
+        "true_or_false",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 4,
+      "before": 3,
+      "after": 3,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "cpt16",
+      "stratum": [
+        "Returns and Waste",
+        "single_choice",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 1,
+      "before": 1,
+      "after": 1,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "cpt16",
+      "stratum": [
+        "unknown",
+        "multiple_choices",
+        "short_options",
+        "multi_answer"
+      ],
+      "n": 4,
+      "before": 4,
+      "after": 4,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s4",
+      "stratum": [
+        "Finance and Operations",
+        "multiple_choices",
+        "short_options",
+        "multi_answer"
+      ],
+      "n": 4,
+      "before": 4,
+      "after": 4,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s4",
+      "stratum": [
+        "Finance and Operations",
+        "single_choice",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 4,
+      "before": 4,
+      "after": 4,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s4",
+      "stratum": [
+        "Finance and Operations",
+        "true_or_false",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 12,
+      "before": 9,
+      "after": 9,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s4",
+      "stratum": [
+        "Fulfillment",
+        "multiple_choices",
+        "short_options",
+        "multi_answer"
+      ],
+      "n": 25,
+      "before": 21,
+      "after": 22,
+      "gains": 1,
+      "losses": 0,
+      "delta_pp": 4.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s4",
+      "stratum": [
+        "Fulfillment",
+        "single_choice",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 34,
+      "before": 30,
+      "after": 28,
+      "gains": 0,
+      "losses": 2,
+      "delta_pp": -5.882352941176471
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s4",
+      "stratum": [
+        "Fulfillment",
+        "true_or_false",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 20,
+      "before": 15,
+      "after": 15,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s4",
+      "stratum": [
+        "In-warehouse",
+        "multiple_choices",
+        "short_options",
+        "multi_answer"
+      ],
+      "n": 4,
+      "before": 2,
+      "after": 3,
+      "gains": 1,
+      "losses": 0,
+      "delta_pp": 25.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s4",
+      "stratum": [
+        "In-warehouse",
+        "single_choice",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 3,
+      "before": 3,
+      "after": 3,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s4",
+      "stratum": [
+        "In-warehouse",
+        "true_or_false",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 5,
+      "before": 4,
+      "after": 4,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s4",
+      "stratum": [
+        "Inventory",
+        "single_choice",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 2,
+      "before": 2,
+      "after": 2,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s4",
+      "stratum": [
+        "Inventory",
+        "true_or_false",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 2,
+      "before": 2,
+      "after": 2,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s4",
+      "stratum": [
+        "Logistics Collaboration",
+        "multiple_choices",
+        "short_options",
+        "multi_answer"
+      ],
+      "n": 18,
+      "before": 15,
+      "after": 16,
+      "gains": 1,
+      "losses": 0,
+      "delta_pp": 5.555555555555555
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s4",
+      "stratum": [
+        "Logistics Collaboration",
+        "single_choice",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 26,
+      "before": 22,
+      "after": 22,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s4",
+      "stratum": [
+        "Logistics Collaboration",
+        "true_or_false",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 29,
+      "before": 24,
+      "after": 24,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s4",
+      "stratum": [
+        "Merchandise",
+        "true_or_false",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 1,
+      "before": 1,
+      "after": 1,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s4",
+      "stratum": [
+        "Network",
+        "multiple_choices",
+        "short_options",
+        "multi_answer"
+      ],
+      "n": 2,
+      "before": 2,
+      "after": 2,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s4",
+      "stratum": [
+        "Network",
+        "true_or_false",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 1,
+      "before": 1,
+      "after": 1,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s4",
+      "stratum": [
+        "Other",
+        "single_choice",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 3,
+      "before": 3,
+      "after": 3,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s4",
+      "stratum": [
+        "Planning",
+        "multiple_choices",
+        "short_options",
+        "multi_answer"
+      ],
+      "n": 1,
+      "before": 1,
+      "after": 1,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s4",
+      "stratum": [
+        "Planning",
+        "multiple_choices",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 1,
+      "before": 1,
+      "after": 1,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s4",
+      "stratum": [
+        "Planning",
+        "single_choice",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 5,
+      "before": 4,
+      "after": 4,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s4",
+      "stratum": [
+        "Planning",
+        "true_or_false",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 7,
+      "before": 6,
+      "after": 6,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s4",
+      "stratum": [
+        "Procurement",
+        "multiple_choices",
+        "short_options",
+        "multi_answer"
+      ],
+      "n": 4,
+      "before": 2,
+      "after": 2,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s4",
+      "stratum": [
+        "Procurement",
+        "single_choice",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 4,
+      "before": 3,
+      "after": 3,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s4",
+      "stratum": [
+        "Procurement",
+        "true_or_false",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 4,
+      "before": 3,
+      "after": 3,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s4",
+      "stratum": [
+        "Returns and Waste",
+        "single_choice",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 1,
+      "before": 1,
+      "after": 1,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s4",
+      "stratum": [
+        "unknown",
+        "multiple_choices",
+        "short_options",
+        "multi_answer"
+      ],
+      "n": 4,
+      "before": 4,
+      "after": 4,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s5",
+      "stratum": [
+        "Finance and Operations",
+        "multiple_choices",
+        "short_options",
+        "multi_answer"
+      ],
+      "n": 4,
+      "before": 4,
+      "after": 4,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s5",
+      "stratum": [
+        "Finance and Operations",
+        "single_choice",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 4,
+      "before": 4,
+      "after": 4,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s5",
+      "stratum": [
+        "Finance and Operations",
+        "true_or_false",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 12,
+      "before": 9,
+      "after": 9,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s5",
+      "stratum": [
+        "Fulfillment",
+        "multiple_choices",
+        "short_options",
+        "multi_answer"
+      ],
+      "n": 25,
+      "before": 21,
+      "after": 22,
+      "gains": 1,
+      "losses": 0,
+      "delta_pp": 4.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s5",
+      "stratum": [
+        "Fulfillment",
+        "single_choice",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 34,
+      "before": 30,
+      "after": 30,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s5",
+      "stratum": [
+        "Fulfillment",
+        "true_or_false",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 20,
+      "before": 15,
+      "after": 14,
+      "gains": 0,
+      "losses": 1,
+      "delta_pp": -5.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s5",
+      "stratum": [
+        "In-warehouse",
+        "multiple_choices",
+        "short_options",
+        "multi_answer"
+      ],
+      "n": 4,
+      "before": 2,
+      "after": 3,
+      "gains": 1,
+      "losses": 0,
+      "delta_pp": 25.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s5",
+      "stratum": [
+        "In-warehouse",
+        "single_choice",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 3,
+      "before": 3,
+      "after": 3,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s5",
+      "stratum": [
+        "In-warehouse",
+        "true_or_false",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 5,
+      "before": 4,
+      "after": 4,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s5",
+      "stratum": [
+        "Inventory",
+        "single_choice",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 2,
+      "before": 2,
+      "after": 2,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s5",
+      "stratum": [
+        "Inventory",
+        "true_or_false",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 2,
+      "before": 2,
+      "after": 2,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s5",
+      "stratum": [
+        "Logistics Collaboration",
+        "multiple_choices",
+        "short_options",
+        "multi_answer"
+      ],
+      "n": 18,
+      "before": 15,
+      "after": 15,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s5",
+      "stratum": [
+        "Logistics Collaboration",
+        "single_choice",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 26,
+      "before": 22,
+      "after": 22,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s5",
+      "stratum": [
+        "Logistics Collaboration",
+        "true_or_false",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 29,
+      "before": 24,
+      "after": 23,
+      "gains": 0,
+      "losses": 1,
+      "delta_pp": -3.4482758620689653
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s5",
+      "stratum": [
+        "Merchandise",
+        "true_or_false",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 1,
+      "before": 1,
+      "after": 1,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s5",
+      "stratum": [
+        "Network",
+        "multiple_choices",
+        "short_options",
+        "multi_answer"
+      ],
+      "n": 2,
+      "before": 2,
+      "after": 2,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s5",
+      "stratum": [
+        "Network",
+        "true_or_false",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 1,
+      "before": 1,
+      "after": 1,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s5",
+      "stratum": [
+        "Other",
+        "single_choice",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 3,
+      "before": 3,
+      "after": 3,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s5",
+      "stratum": [
+        "Planning",
+        "multiple_choices",
+        "short_options",
+        "multi_answer"
+      ],
+      "n": 1,
+      "before": 1,
+      "after": 1,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s5",
+      "stratum": [
+        "Planning",
+        "multiple_choices",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 1,
+      "before": 1,
+      "after": 1,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s5",
+      "stratum": [
+        "Planning",
+        "single_choice",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 5,
+      "before": 4,
+      "after": 4,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s5",
+      "stratum": [
+        "Planning",
+        "true_or_false",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 7,
+      "before": 6,
+      "after": 6,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s5",
+      "stratum": [
+        "Procurement",
+        "multiple_choices",
+        "short_options",
+        "multi_answer"
+      ],
+      "n": 4,
+      "before": 2,
+      "after": 2,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s5",
+      "stratum": [
+        "Procurement",
+        "single_choice",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 4,
+      "before": 3,
+      "after": 3,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s5",
+      "stratum": [
+        "Procurement",
+        "true_or_false",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 4,
+      "before": 3,
+      "after": 3,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s5",
+      "stratum": [
+        "Returns and Waste",
+        "single_choice",
+        "short_options",
+        "single_answer"
+      ],
+      "n": 1,
+      "before": 1,
+      "after": 1,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "s5",
+      "stratum": [
+        "unknown",
+        "multiple_choices",
+        "short_options",
+        "multi_answer"
+      ],
+      "n": 4,
+      "before": 4,
+      "after": 4,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    }
+  ],
+  "overlaps": [
+    {
+      "dataset": "LogistikaBench",
+      "models": [
+        "cpt16",
+        "s4"
+      ],
+      "gain_intersection": 3,
+      "gain_union": 31,
+      "loss_intersection": 3,
+      "loss_union": 18,
+      "a_only_gains": 9,
+      "b_only_gains": 19
+    },
+    {
+      "dataset": "LogistikaBench",
+      "models": [
+        "cpt16",
+        "s5"
+      ],
+      "gain_intersection": 6,
+      "gain_union": 26,
+      "loss_intersection": 3,
+      "loss_union": 18,
+      "a_only_gains": 6,
+      "b_only_gains": 14
+    },
+    {
+      "dataset": "LogistikaBench",
+      "models": [
+        "s4",
+        "s5"
+      ],
+      "gain_intersection": 14,
+      "gain_union": 28,
+      "loss_intersection": 6,
+      "loss_union": 22,
+      "a_only_gains": 8,
+      "b_only_gains": 6
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "models": [
+        "cpt16",
+        "s4"
+      ],
+      "gain_intersection": 2,
+      "gain_union": 3,
+      "loss_intersection": 0,
+      "loss_union": 4,
+      "a_only_gains": 0,
+      "b_only_gains": 1
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "models": [
+        "cpt16",
+        "s5"
+      ],
+      "gain_intersection": 2,
+      "gain_union": 2,
+      "loss_intersection": 1,
+      "loss_union": 3,
+      "a_only_gains": 0,
+      "b_only_gains": 0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "models": [
+        "s4",
+        "s5"
+      ],
+      "gain_intersection": 2,
+      "gain_union": 3,
+      "loss_intersection": 0,
+      "loss_union": 4,
+      "a_only_gains": 1,
+      "b_only_gains": 0
+    }
+  ],
+  "baseline_counts": {
+    "LogistikaBench": 1180,
+    "SC-bench-knowledge": 189
+  },
+  "model_audits": {
+    "step120": {
+      "items": 1672,
+      "requests": 5016,
+      "invalid": 0,
+      "truncated": 0,
+      "repeat_unstable_items": 18
+    },
+    "cpt16": {
+      "items": 1672,
+      "requests": 5016,
+      "invalid": 0,
+      "truncated": 0,
+      "repeat_unstable_items": 8
+    },
+    "s4": {
+      "items": 1672,
+      "requests": 5016,
+      "invalid": 0,
+      "truncated": 0,
+      "repeat_unstable_items": 6
+    },
+    "s5": {
+      "items": 1672,
+      "requests": 5016,
+      "invalid": 0,
+      "truncated": 0,
+      "repeat_unstable_items": 12
+    }
+  },
+  "retrospective_repair_union": [
+    {
+      "dataset": "LogistikaBench",
+      "repairs": 34,
+      "common_repairs": 3,
+      "common_regressions": 1,
+      "interpretation": "Uses gold to select different models per item; not an ensemble score or achievable candidate."
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "repairs": 3,
+      "common_repairs": 2,
+      "common_regressions": 0,
+      "interpretation": "Uses gold to select different models per item; not an ensemble score or achievable candidate."
+    }
+  ],
+  "answer_content_audit": {
+    "normalization": "Whitespace collapse and casefold only; no semantic equivalence judgment.",
+    "official_scores_changed": false,
+    "datasets": [
+      {
+        "dataset": "LogistikaBench",
+        "items_with_option_text_collisions": 305,
+        "items_with_gold_option_text_collision": 6,
+        "models": {
+          "step120": {
+            "index_wrong_but_same_normalized_option_text": 1,
+            "wrong_answer_cardinality_on_explicit_single_choice": 0
+          },
+          "cpt16": {
+            "index_wrong_but_same_normalized_option_text": 1,
+            "wrong_answer_cardinality_on_explicit_single_choice": 0
+          },
+          "s4": {
+            "index_wrong_but_same_normalized_option_text": 1,
+            "wrong_answer_cardinality_on_explicit_single_choice": 0
+          },
+          "s5": {
+            "index_wrong_but_same_normalized_option_text": 1,
+            "wrong_answer_cardinality_on_explicit_single_choice": 0
+          }
+        }
+      },
+      {
+        "dataset": "SC-bench-knowledge",
+        "items_with_option_text_collisions": 0,
+        "items_with_gold_option_text_collision": 0,
+        "models": {
+          "step120": {
+            "index_wrong_but_same_normalized_option_text": 0,
+            "wrong_answer_cardinality_on_explicit_single_choice": 3
+          },
+          "cpt16": {
+            "index_wrong_but_same_normalized_option_text": 0,
+            "wrong_answer_cardinality_on_explicit_single_choice": 3
+          },
+          "s4": {
+            "index_wrong_but_same_normalized_option_text": 0,
+            "wrong_answer_cardinality_on_explicit_single_choice": 1
+          },
+          "s5": {
+            "index_wrong_but_same_normalized_option_text": 0,
+            "wrong_answer_cardinality_on_explicit_single_choice": 1
+          }
+        }
+      }
+    ]
+  },
+  "source_probe_audit": {
+    "raw_answers_reparsed": 1012,
+    "groups": {
+      "s4": [
+        {
+          "dataset": "condition_scenario_check",
+          "category": "handling_costs",
+          "n": 1,
+          "before": 1,
+          "after": 1,
+          "gains": 0,
+          "losses": 0,
+          "delta_pp": 0.0
+        },
+        {
+          "dataset": "condition_scenario_check",
+          "category": "pipeline",
+          "n": 1,
+          "before": 0,
+          "after": 0,
+          "gains": 0,
+          "losses": 0,
+          "delta_pp": 0.0
+        },
+        {
+          "dataset": "condition_scenario_check",
+          "category": "rail_accidents",
+          "n": 1,
+          "before": 0,
+          "after": 1,
+          "gains": 1,
+          "losses": 0,
+          "delta_pp": 100.0
+        },
+        {
+          "dataset": "condition_scenario_check",
+          "category": "rail_infrastructure",
+          "n": 1,
+          "before": 1,
+          "after": 1,
+          "gains": 0,
+          "losses": 0,
+          "delta_pp": 0.0
+        },
+        {
+          "dataset": "condition_scenario_check",
+          "category": "rail_vehicles",
+          "n": 2,
+          "before": 0,
+          "after": 0,
+          "gains": 0,
+          "losses": 0,
+          "delta_pp": 0.0
+        },
+        {
+          "dataset": "condition_scenario_check",
+          "category": "road_vehicles",
+          "n": 1,
+          "before": 0,
+          "after": 0,
+          "gains": 0,
+          "losses": 0,
+          "delta_pp": 0.0
+        },
+        {
+          "dataset": "condition_scenario_check",
+          "category": "vessel_classes",
+          "n": 4,
+          "before": 0,
+          "after": 1,
+          "gains": 1,
+          "losses": 0,
+          "delta_pp": 25.0
+        },
+        {
+          "dataset": "condition_training",
+          "category": "handling_costs",
+          "n": 4,
+          "before": 4,
+          "after": 4,
+          "gains": 0,
+          "losses": 0,
+          "delta_pp": 0.0
+        },
+        {
+          "dataset": "condition_training",
+          "category": "pipeline",
+          "n": 4,
+          "before": 0,
+          "after": 0,
+          "gains": 0,
+          "losses": 0,
+          "delta_pp": 0.0
+        },
+        {
+          "dataset": "condition_training",
+          "category": "rail_accidents",
+          "n": 4,
+          "before": 0,
+          "after": 1,
+          "gains": 1,
+          "losses": 0,
+          "delta_pp": 25.0
+        },
+        {
+          "dataset": "condition_training",
+          "category": "rail_infrastructure",
+          "n": 4,
+          "before": 4,
+          "after": 4,
+          "gains": 0,
+          "losses": 0,
+          "delta_pp": 0.0
+        },
+        {
+          "dataset": "condition_training",
+          "category": "rail_vehicles",
+          "n": 8,
+          "before": 3,
+          "after": 2,
+          "gains": 0,
+          "losses": 1,
+          "delta_pp": -12.5
+        },
+        {
+          "dataset": "condition_training",
+          "category": "road_vehicles",
+          "n": 4,
+          "before": 0,
+          "after": 0,
+          "gains": 0,
+          "losses": 0,
+          "delta_pp": 0.0
+        },
+        {
+          "dataset": "condition_training",
+          "category": "vessel_classes",
+          "n": 16,
+          "before": 0,
+          "after": 1,
+          "gains": 1,
+          "losses": 0,
+          "delta_pp": 6.25
+        },
+        {
+          "dataset": "llin-source-operations-conditions-probe",
+          "category": "equal_space_equal_time",
+          "n": 1,
+          "before": 1,
+          "after": 1,
+          "gains": 0,
+          "losses": 0,
+          "delta_pp": 0.0
+        },
+        {
+          "dataset": "llin-source-operations-conditions-probe",
+          "category": "forward_space_claim",
+          "n": 1,
+          "before": 1,
+          "after": 1,
+          "gains": 0,
+          "losses": 0,
+          "delta_pp": 0.0
+        },
+        {
+          "dataset": "llin-source-operations-conditions-probe",
+          "category": "full_pallet_trip_count",
+          "n": 1,
+          "before": 1,
+          "after": 1,
+          "gains": 0,
+          "losses": 0,
+          "delta_pp": 0.0
+        },
+        {
+          "dataset": "llin-source-operations-conditions-probe",
+          "category": "min_location_constraints",
+          "n": 1,
+          "before": 1,
+          "after": 1,
+          "gains": 0,
+          "losses": 0,
+          "delta_pp": 0.0
+        },
+        {
+          "dataset": "llin-source-operations-conditions-probe",
+          "category": "negative_forward_benefit",
+          "n": 1,
+          "before": 0,
+          "after": 0,
+          "gains": 0,
+          "losses": 0,
+          "delta_pp": 0.0
+        },
+        {
+          "dataset": "llin-source-operations-conditions-probe",
+          "category": "none_min_all",
+          "n": 1,
+          "before": 1,
+          "after": 1,
+          "gains": 0,
+          "losses": 0,
+          "delta_pp": 0.0
+        },
+        {
+          "dataset": "llin-source-operations-conditions-probe",
+          "category": "square_root_allocation",
+          "n": 1,
+          "before": 0,
+          "after": 0,
+          "gains": 0,
+          "losses": 0,
+          "delta_pp": 0.0
+        },
+        {
+          "dataset": "llin-source-operations-conditions-probe",
+          "category": "uniform_space_not_sku",
+          "n": 1,
+          "before": 0,
+          "after": 0,
+          "gains": 0,
+          "losses": 0,
+          "delta_pp": 0.0
+        },
+        {
+          "dataset": "llin-source-operations-conditions-probe",
+          "category": "weighted_square_root",
+          "n": 1,
+          "before": 0,
+          "after": 0,
+          "gains": 0,
+          "losses": 0,
+          "delta_pp": 0.0
+        },
+        {
+          "dataset": "s4_condition_training",
+          "category": "negative_forward_benefit",
+          "n": 8,
+          "before": 2,
+          "after": 5,
+          "gains": 3,
+          "losses": 0,
+          "delta_pp": 37.5
+        },
+        {
+          "dataset": "s4_condition_training",
+          "category": "square_root_allocation",
+          "n": 8,
+          "before": 3,
+          "after": 7,
+          "gains": 5,
+          "losses": 1,
+          "delta_pp": 50.0
+        },
+        {
+          "dataset": "s4_condition_training",
+          "category": "uniform_space_not_sku",
+          "n": 8,
+          "before": 7,
+          "after": 8,
+          "gains": 1,
+          "losses": 0,
+          "delta_pp": 12.5
+        },
+        {
+          "dataset": "s4_condition_training",
+          "category": "weighted_square_root",
+          "n": 8,
+          "before": 2,
+          "after": 8,
+          "gains": 6,
+          "losses": 0,
+          "delta_pp": 75.0
+        },
+        {
+          "dataset": "source_conditions_dev",
+          "category": "reviewed_source",
+          "n": 22,
+          "before": 21,
+          "after": 20,
+          "gains": 0,
+          "losses": 1,
+          "delta_pp": -4.545454545454546
+        },
+        {
+          "dataset": "source_conditions_train",
+          "category": "reviewed_source",
+          "n": 135,
+          "before": 123,
+          "after": 128,
+          "gains": 5,
+          "losses": 0,
+          "delta_pp": 3.7037037037037037
+        }
+      ],
+      "s5": [
+        {
+          "dataset": "condition_scenario_check",
+          "category": "handling_costs",
+          "n": 1,
+          "before": 1,
+          "after": 1,
+          "gains": 0,
+          "losses": 0,
+          "delta_pp": 0.0
+        },
+        {
+          "dataset": "condition_scenario_check",
+          "category": "pipeline",
+          "n": 1,
+          "before": 0,
+          "after": 0,
+          "gains": 0,
+          "losses": 0,
+          "delta_pp": 0.0
+        },
+        {
+          "dataset": "condition_scenario_check",
+          "category": "rail_accidents",
+          "n": 1,
+          "before": 0,
+          "after": 0,
+          "gains": 0,
+          "losses": 0,
+          "delta_pp": 0.0
+        },
+        {
+          "dataset": "condition_scenario_check",
+          "category": "rail_infrastructure",
+          "n": 1,
+          "before": 1,
+          "after": 1,
+          "gains": 0,
+          "losses": 0,
+          "delta_pp": 0.0
+        },
+        {
+          "dataset": "condition_scenario_check",
+          "category": "rail_vehicles",
+          "n": 2,
+          "before": 0,
+          "after": 0,
+          "gains": 0,
+          "losses": 0,
+          "delta_pp": 0.0
+        },
+        {
+          "dataset": "condition_scenario_check",
+          "category": "road_vehicles",
+          "n": 1,
+          "before": 0,
+          "after": 0,
+          "gains": 0,
+          "losses": 0,
+          "delta_pp": 0.0
+        },
+        {
+          "dataset": "condition_scenario_check",
+          "category": "vessel_classes",
+          "n": 4,
+          "before": 0,
+          "after": 1,
+          "gains": 1,
+          "losses": 0,
+          "delta_pp": 25.0
+        },
+        {
+          "dataset": "condition_training",
+          "category": "handling_costs",
+          "n": 4,
+          "before": 4,
+          "after": 4,
+          "gains": 0,
+          "losses": 0,
+          "delta_pp": 0.0
+        },
+        {
+          "dataset": "condition_training",
+          "category": "pipeline",
+          "n": 4,
+          "before": 0,
+          "after": 0,
+          "gains": 0,
+          "losses": 0,
+          "delta_pp": 0.0
+        },
+        {
+          "dataset": "condition_training",
+          "category": "rail_accidents",
+          "n": 4,
+          "before": 0,
+          "after": 1,
+          "gains": 1,
+          "losses": 0,
+          "delta_pp": 25.0
+        },
+        {
+          "dataset": "condition_training",
+          "category": "rail_infrastructure",
+          "n": 4,
+          "before": 4,
+          "after": 4,
+          "gains": 0,
+          "losses": 0,
+          "delta_pp": 0.0
+        },
+        {
+          "dataset": "condition_training",
+          "category": "rail_vehicles",
+          "n": 8,
+          "before": 3,
+          "after": 3,
+          "gains": 0,
+          "losses": 0,
+          "delta_pp": 0.0
+        },
+        {
+          "dataset": "condition_training",
+          "category": "road_vehicles",
+          "n": 4,
+          "before": 0,
+          "after": 0,
+          "gains": 0,
+          "losses": 0,
+          "delta_pp": 0.0
+        },
+        {
+          "dataset": "condition_training",
+          "category": "vessel_classes",
+          "n": 16,
+          "before": 0,
+          "after": 1,
+          "gains": 1,
+          "losses": 0,
+          "delta_pp": 6.25
+        },
+        {
+          "dataset": "llin-source-operations-conditions-probe",
+          "category": "equal_space_equal_time",
+          "n": 1,
+          "before": 1,
+          "after": 1,
+          "gains": 0,
+          "losses": 0,
+          "delta_pp": 0.0
+        },
+        {
+          "dataset": "llin-source-operations-conditions-probe",
+          "category": "forward_space_claim",
+          "n": 1,
+          "before": 1,
+          "after": 1,
+          "gains": 0,
+          "losses": 0,
+          "delta_pp": 0.0
+        },
+        {
+          "dataset": "llin-source-operations-conditions-probe",
+          "category": "full_pallet_trip_count",
+          "n": 1,
+          "before": 1,
+          "after": 1,
+          "gains": 0,
+          "losses": 0,
+          "delta_pp": 0.0
+        },
+        {
+          "dataset": "llin-source-operations-conditions-probe",
+          "category": "min_location_constraints",
+          "n": 1,
+          "before": 1,
+          "after": 1,
+          "gains": 0,
+          "losses": 0,
+          "delta_pp": 0.0
+        },
+        {
+          "dataset": "llin-source-operations-conditions-probe",
+          "category": "negative_forward_benefit",
+          "n": 1,
+          "before": 0,
+          "after": 0,
+          "gains": 0,
+          "losses": 0,
+          "delta_pp": 0.0
+        },
+        {
+          "dataset": "llin-source-operations-conditions-probe",
+          "category": "none_min_all",
+          "n": 1,
+          "before": 1,
+          "after": 1,
+          "gains": 0,
+          "losses": 0,
+          "delta_pp": 0.0
+        },
+        {
+          "dataset": "llin-source-operations-conditions-probe",
+          "category": "square_root_allocation",
+          "n": 1,
+          "before": 0,
+          "after": 0,
+          "gains": 0,
+          "losses": 0,
+          "delta_pp": 0.0
+        },
+        {
+          "dataset": "llin-source-operations-conditions-probe",
+          "category": "uniform_space_not_sku",
+          "n": 1,
+          "before": 0,
+          "after": 0,
+          "gains": 0,
+          "losses": 0,
+          "delta_pp": 0.0
+        },
+        {
+          "dataset": "llin-source-operations-conditions-probe",
+          "category": "weighted_square_root",
+          "n": 1,
+          "before": 0,
+          "after": 0,
+          "gains": 0,
+          "losses": 0,
+          "delta_pp": 0.0
+        },
+        {
+          "dataset": "s5_condition_training",
+          "category": "negative_forward_benefit",
+          "n": 8,
+          "before": 1,
+          "after": 6,
+          "gains": 5,
+          "losses": 0,
+          "delta_pp": 62.5
+        },
+        {
+          "dataset": "s5_condition_training",
+          "category": "square_root_allocation",
+          "n": 8,
+          "before": 0,
+          "after": 6,
+          "gains": 6,
+          "losses": 0,
+          "delta_pp": 75.0
+        },
+        {
+          "dataset": "s5_condition_training",
+          "category": "uniform_space_not_sku",
+          "n": 8,
+          "before": 0,
+          "after": 4,
+          "gains": 4,
+          "losses": 0,
+          "delta_pp": 50.0
+        },
+        {
+          "dataset": "s5_condition_training",
+          "category": "weighted_square_root",
+          "n": 8,
+          "before": 3,
+          "after": 7,
+          "gains": 4,
+          "losses": 0,
+          "delta_pp": 50.0
+        },
+        {
+          "dataset": "source_conditions_dev",
+          "category": "reviewed_source",
+          "n": 22,
+          "before": 21,
+          "after": 21,
+          "gains": 0,
+          "losses": 0,
+          "delta_pp": 0.0
+        },
+        {
+          "dataset": "source_conditions_train",
+          "category": "reviewed_source",
+          "n": 135,
+          "before": 123,
+          "after": 128,
+          "gains": 5,
+          "losses": 0,
+          "delta_pp": 3.7037037037037037
+        }
+      ]
+    },
+    "limitations": [
+      "Historical source runner did not save finish_reason; truncation cannot be independently excluded.",
+      "These source probes were used in development and are not independent generalization tests."
+    ]
+  },
+  "date": "2026-09-15",
+  "schema_version": 1,
+  "source_sha256": "b652b2108cb552346df11d005c15ff3137c50a756a7b24eb35302683ec33ed99",
+  "file_sha256": {
+    "step120": {
+      "predictions.private.jsonl": "18f0e0524a0ff97c1e0345cd6192b16363a1fcec05405f3ad7c97fb70edad0f7",
+      "protocol.safe.json": "5f5e725bbb7f582644e73793374cb6a80b54fa7fd0c50903d84643f2e06931fa",
+      "scores.safe.json": "a4798250b7fa514aafe9e9307d9b66c5e131c0fd6f4d1ded2e84683b2af8faba"
+    },
+    "cpt16": {
+      "predictions.private.jsonl": "2caa2826b24c4d2ffe586f8feb1b2bd871f1a264c381022b82279cd7c603be86",
+      "protocol.safe.json": "ca5e7cb067342751910c387af0f83827a71dc28c08a9487d7dc319096a139326",
+      "scores.safe.json": "960435e7f63942d6d9e7792a45d2b71e2ee54940226a11540763cf762a5b0831"
+    },
+    "s4": {
+      "predictions.private.jsonl": "d61a385e9e5f64929269093ddbd6ed77ba9193e1565b4327a36280ed4e52d4f0",
+      "protocol.safe.json": "53d20d30bd8c27237a96a45ae057d20b0382f047758a7091fd5265ca531cb79d",
+      "scores.safe.json": "b665cd57a0944f1761086a555727c8e04890d2b8a05021a00c9ec935c2383a1b"
+    },
+    "s5": {
+      "predictions.private.jsonl": "6ceacafa6fb58bff50d9d8781420dece4b0dc658c02367d266634869c33db506",
+      "protocol.safe.json": "d14a4a350253b358473482fe435fdfb72c11e08f50b6997c63695ea237fbaeb0",
+      "scores.safe.json": "9ec5029b89a2428748bda4d705bf30b66429a997c6ab7a5e8e138c747952a544"
+    }
+  },
+  "protocol_equal": true,
+  "raw_outputs_reparsed": true,
+  "review_selection": {
+    "sc_errors": 37,
+    "logistika_errors": 80,
+    "seed": 20260915,
+    "strata": [
+      {
+        "stratum": [
+          "material_handling",
+          "multiple_choice",
+          "long_options",
+          "single_answer"
+        ],
+        "available": 92,
+        "selected": 29
+      },
+      {
+        "stratum": [
+          "material_handling",
+          "multiple_choice",
+          "short_options",
+          "multi_answer"
+        ],
+        "available": 12,
+        "selected": 3
+      },
+      {
+        "stratum": [
+          "material_handling",
+          "multiple_choice",
+          "short_options",
+          "single_answer"
+        ],
+        "available": 21,
+        "selected": 6
+      },
+      {
+        "stratum": [
+          "procurement",
+          "multiple_choice",
+          "short_options",
+          "single_answer"
+        ],
+        "available": 6,
+        "selected": 1
+      },
+      {
+        "stratum": [
+          "supply_chain",
+          "multiple_choice",
+          "short_options",
+          "multi_answer"
+        ],
+        "available": 1,
+        "selected": 1
+      },
+      {
+        "stratum": [
+          "supply_chain",
+          "multiple_choice",
+          "short_options",
+          "single_answer"
+        ],
+        "available": 12,
+        "selected": 3
+      },
+      {
+        "stratum": [
+          "transport",
+          "multiple_choice",
+          "short_options",
+          "multi_answer"
+        ],
+        "available": 18,
+        "selected": 5
+      },
+      {
+        "stratum": [
+          "transport",
+          "multiple_choice",
+          "short_options",
+          "single_answer"
+        ],
+        "available": 53,
+        "selected": 17
+      },
+      {
+        "stratum": [
+          "warehousing",
+          "multiple_choice",
+          "short_options",
+          "multi_answer"
+        ],
+        "available": 9,
+        "selected": 2
+      },
+      {
+        "stratum": [
+          "warehousing",
+          "multiple_choice",
+          "short_options",
+          "single_answer"
+        ],
+        "available": 42,
+        "selected": 13
+      }
+    ]
+  },
+  "evidence_review_complete": false,
+  "training_started": false,
+  "limitations": [
+    "Repeated fixed-seed evaluations are not independent training seeds.",
+    "Bootstrap assumes exchangeable items; shared sources can violate this assumption.",
+    "Intervals and unadjusted tests are descriptive after repeated benchmark selection.",
+    "Review sampling is stratified; unweighted sample error rates do not estimate full-set rates.",
+    "No causal knowledge/application/format diagnosis without source and answer inspection.",
+    "Review packets are diagnostic-only; official questions and rewrites cannot enter training."
+  ]
+}

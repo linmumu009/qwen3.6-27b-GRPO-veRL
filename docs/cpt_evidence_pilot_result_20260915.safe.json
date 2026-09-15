@@ -1,0 +1,60 @@
+{
+  "date": "2026-09-15",
+  "status": "completed_independently_reparsed",
+  "requests": 37,
+  "unique_cases": 13,
+  "knowledge_groups": 12,
+  "totals": {
+    "LogistikaBench/closed": {
+      "n": 11,
+      "correct": 0,
+      "invalid": 0,
+      "truncated": 0
+    },
+    "LogistikaBench/short_evidence": {
+      "n": 11,
+      "correct": 10,
+      "invalid": 0,
+      "truncated": 0
+    },
+    "LogistikaBench/source_page": {
+      "n": 11,
+      "correct": 9,
+      "invalid": 0,
+      "truncated": 0
+    },
+    "SC-bench-knowledge/closed": {
+      "n": 2,
+      "correct": 0,
+      "invalid": 0,
+      "truncated": 0
+    },
+    "SC-bench-knowledge/short_evidence": {
+      "n": 2,
+      "correct": 1,
+      "invalid": 0,
+      "truncated": 0
+    }
+  },
+  "predictions_sha256": "98621e81a3ce4b0171892bafdeb44e391173857c16001b09e1664a0dc6d83490",
+  "packet_sha256": "1ed94d36e78b3e40bc8d6ac6d302bf7b09f7221b2694aebd507ca7969147d84d",
+  "no_evidence_prompt_hashes_match_frozen_baseline": true,
+  "official_score_changed": false,
+  "training_started": false,
+  "comparison": {
+    "short_correct_page_wrong": 2,
+    "short_wrong_page_correct": 1
+  },
+  "limitations": [
+    "13 selected baseline errors, not a representative sample or independent test.",
+    "Definitions contain the answer term; this tests evidence use, not closed-book learning.",
+    "11 glossary cases represent 10 knowledge groups; one rule appears with long and short option lists.",
+    "The short glossary evidence is identical to the historical extracted unit; no extraction loss is demonstrated.",
+    "Two arithmetic cases use a generic rule cue without the numerical answer; source-page arm not applicable.",
+    "Single deterministic round; no training-seed or general-Agent retention inference."
+  ],
+  "remote_output": "/opt/llin-transfer-evidence-20260915-03",
+  "code": "/opt/llin-transfer-evidence-code-20260915-03",
+  "pid": 3557646,
+  "independently_reconstructed_prompt_hashes_verified": 37
+}

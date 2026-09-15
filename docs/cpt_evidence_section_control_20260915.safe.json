@@ -1,0 +1,50 @@
+{
+  "date": "2026-09-15",
+  "status": "completed_independently_reparsed",
+  "requests": 4,
+  "unique_cases": 2,
+  "knowledge_groups": 2,
+  "totals": {
+    "LogistikaBench/source_page": {
+      "n": 2,
+      "correct": 0,
+      "invalid": 0,
+      "truncated": 0
+    },
+    "LogistikaBench/source_page_without_section_ids": {
+      "n": 2,
+      "correct": 2,
+      "invalid": 0,
+      "truncated": 0
+    }
+  },
+  "predictions_sha256": "200bc0546ce7ae27be33339932de4e369222546fa7669b77e77e6dee4f0d8557",
+  "packet_sha256": "eab4f902081c36ab7dc9713735c522529d58fe45f2538b47d81721e7b440e48b",
+  "no_evidence_prompt_hashes_match_frozen_baseline": false,
+  "section_id_control": true,
+  "official_score_changed": false,
+  "training_started": false,
+  "item_results": [
+    {
+      "item_hash": "7f92aa7682bf0e88765145bceb1279dcaa9f6403db3e3c3f611ac8b73cf4fb5f",
+      "conditions": {
+        "source_page": false,
+        "source_page_without_section_ids": true
+      }
+    },
+    {
+      "item_hash": "c363f5a1f0e5d6001468c158080ef6a0361d23ce28d10f4bec46ac87f29ba2ae",
+      "conditions": {
+        "source_page": false,
+        "source_page_without_section_ids": true
+      }
+    }
+  ],
+  "limitations": [
+    "Selected known errors, not a representative sample or independent test.",
+    "Answer-bearing definitions test evidence use, not closed-book learning.",
+    "Short glossary evidence equals the historical extracted unit; no extraction loss demonstrated.",
+    "Single deterministic round; no training-seed or general/Agent retention inference."
+  ],
+  "independently_reconstructed_prompt_hashes_verified": 4
+}
