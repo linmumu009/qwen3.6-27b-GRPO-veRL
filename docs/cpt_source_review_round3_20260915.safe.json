@@ -1,0 +1,20 @@
+{
+  "date": "2026-09-15",
+  "previous_sufficient_cases": 14,
+  "newly_examined": 4,
+  "new_sufficient_cases": 3,
+  "total_sufficient_cases": 17,
+  "remaining_without_sufficient_unique_proof": 92,
+  "temporal_provenance_pending": 1,
+  "source_files": 2,
+  "unique_source_pages_supporting_new_sufficient_cases": 2,
+  "review_sha256": "e7241a7e15b1ab851c643b7cef2ff5a52021b332fe068a3b9a7d60eeda112959",
+  "official_labels_changed": false,
+  "training_started": false,
+  "limitations": [
+    "Case count is not independent knowledge-unit or source-connected-group count.",
+    "Two rail cases share a glossary page and classification family.",
+    "No new evaluation or training gain; archived definitions are not assertions about current legal rules.",
+    "The 2020 status question remains unresolved despite related later-edition text."
+  ]
+}
