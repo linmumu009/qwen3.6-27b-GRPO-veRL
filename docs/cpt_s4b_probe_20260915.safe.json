@@ -1,0 +1,53 @@
+{
+  "date": "2026-09-15",
+  "cases": 9,
+  "cases_sha256": "2669e189e06b00c04a476be308a1d430eee65362d8cbe3bcdc9c4e77499035eb",
+  "probe_started": true,
+  "training_started": false,
+  "training_ready": false,
+  "split": "unassigned_diagnostic_only",
+  "launch_pid": 3495070,
+  "remote_output": "/opt/llin-s4-probe-20260915-02",
+  "source": "wh-sci-0.98.1, chapters 7 and 8",
+  "topics": [
+    "none-min-all pallet policy",
+    "minimum lanes",
+    "net forward benefit",
+    "equal space versus equal time",
+    "square root allocation",
+    "weighted restock costs",
+    "uniform restocking per volume"
+  ],
+  "review_limits": [
+    "extracted text review, not PDF visual audit",
+    "development-topic semantic mapping pending before any training",
+    "official semantic near-question review pending"
+  ],
+  "protocol": {
+    "model": "original Step120",
+    "repeats": 1,
+    "thinking": false,
+    "temperature": 0,
+    "seed": 1024,
+    "output_tokens": 96,
+    "context": 8192,
+    "tp": 8
+  },
+  "numerical_checks": "Exact rational equality for EQS/EQT; candidate option costs checked independently; minimum lanes and net benefit recomputed.",
+  "result": {
+    "cases": 9,
+    "correct": 5,
+    "invalid": 0,
+    "wrong_categories": [
+      "square_root_allocation",
+      "weighted_square_root",
+      "uniform_space_not_sku",
+      "negative_forward_benefit"
+    ],
+    "raw_reparsed": true,
+    "predictions_sha256": "c6fcb1865ac3f0ec6880c269e6428aca2a8295fb4db0d2cbe06b61558742194d",
+    "max_official_question_token_jaccard": 0.16363636363636364,
+    "probe_completed": true,
+    "training_started": false
+  }
+}
