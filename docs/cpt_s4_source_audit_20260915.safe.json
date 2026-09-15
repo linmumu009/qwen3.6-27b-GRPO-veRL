@@ -18,5 +18,6 @@
     "unique-answer scenario construction and review",
     "original Step120 baseline difficulty probe"
   ],
-  "private_units_sha256": "ed5a9b04d29d9f57cfbf5cf7a34346ced37c6372ab1676f7b83cc8ebde0b3a43"
+  "private_units_sha256": "ed5a9b04d29d9f57cfbf5cf7a34346ced37c6372ab1676f7b83cc8ebde0b3a43",
+  "repository_version": "v1.13.68"
 }
