@@ -1,0 +1,113 @@
+{
+  "hypothesis": "The four local S5 families cover enough registered error knowledge to account directly for both +3pp targets.",
+  "method": "Join existing case-to-unit registration to local task source group; no keyword guessing or official-label training.",
+  "cases": 300,
+  "local_unique_tasks": 32,
+  "local_source_groups": 1,
+  "local_families": {
+    "square_root_allocation": 8,
+    "weighted_square_root": 8,
+    "negative_forward_benefit": 8,
+    "uniform_space_not_sku": 8
+  },
+  "local_registered_case_links": {
+    "LogistikaBench": 4
+  },
+  "optimistic_direct_link_gain_pp": {
+    "SC-bench-knowledge": 0.0,
+    "LogistikaBench": 0.2766251728907331
+  },
+  "needed_net_correct_gain": {
+    "SC-bench-knowledge": 7,
+    "LogistikaBench": 44
+  },
+  "existing_broad_training_unit_links": {
+    "LogistikaBench": 149,
+    "SC-bench-knowledge": 28
+  },
+  "error_topic_counts": {
+    "mrp": 2,
+    "inventory_control": 5,
+    "cargo_package": 2,
+    "sphere": 1,
+    "transport_actors": 12,
+    "pest": 6,
+    "value_chain": 3,
+    "its": 1,
+    "rail_infrastructure": 5,
+    "pipeline": 7,
+    "storage_assignment": 4,
+    "air_codes": 10,
+    "rail_accidents": 3,
+    "warehouse_flow": 10,
+    "cost_graphs": 9,
+    "picking_methods": 13,
+    "enterprise_workflows": 19,
+    "picking_productivity": 3,
+    "vessel_classes": 14,
+    "aircraft_mechanics": 9,
+    "customs": 9,
+    "transport_measurement": 4,
+    "models": 4,
+    "cycles": 1,
+    "forecasting": 5,
+    "metrics": 4,
+    "trade_finance": 2,
+    "process_costs": 3,
+    "road_vehicles": 15,
+    "cargo_classes": 3,
+    "rail_vehicles": 7,
+    "warehouse_capacity": 3,
+    "capital_stock": 1,
+    "hazard_classes": 1,
+    "wms_technology": 6,
+    "outsourcing": 11,
+    "warehouse_layout": 3,
+    "picker_routing": 3,
+    "postponement": 3,
+    "inventory_demand": 5,
+    "order_window": 2,
+    "transport_service": 2,
+    "supply_echelons": 4,
+    "vessel_scale": 8,
+    "handling_costs": 7,
+    "unit_loads": 7,
+    "privacy": 1,
+    "abc": 1,
+    "public_warehouse": 2,
+    "emissions": 2,
+    "waterway_constraints": 2,
+    "volumetric_weight": 1,
+    "lifo": 1,
+    "scm_definition": 2,
+    "warehouse_receiving": 4,
+    "warehouse_missions": 5,
+    "malformed_item": 1,
+    "pallet_sizes": 5,
+    "transport_systems": 1,
+    "port_services": 3,
+    "transport_modes": 6,
+    "consolidation": 2
+  },
+  "case_status_counts": {
+    "background_knowledge_available_not_full_case_proof": 141,
+    "enterprise_context_unavailable": 27,
+    "selected_related_assertions_reviewed_not_full_case_proof": 77,
+    "conflict_requires_original_adjudication": 9,
+    "scope_or_version_constraint": 14,
+    "missing_original_stem_or_diagram": 32
+  },
+  "finding": "Direct registered scope is too narrow to justify another four-family-only training run as the main +3pp strategy.",
+  "limitations": [
+    "Links are historical partial knowledge registrations, not exhaustive semantic coverage or a hard bound on indirect transfer.",
+    "The 300 errors are the frozen historical cohort, not the latest S5 error set.",
+    "Baseline retention can change on other items; optimistic direct-link gain is not a performance prediction."
+  ],
+  "next_test": "Freeze a broader source-only transfer probe across multiple existing non-dev training topics, with novel applications and explanation-vs-answer-only paired inference. Review source support before running; exclude official QA/rewrites and frozen dev. Do not repeat the completed 22-case S5 diagnostic.",
+  "training_running": false,
+  "input_sha256": {
+    "cases": "617b6998f7fea07abd5fd20838d7effac4febae554eb0fcdeb1eecd0a1d562aa",
+    "local_tasks": "8d1f5e3ce9772fc2ddf99e16ee92630dcbf8aa6a1b58e558b5f397d33c616ea2",
+    "reviewed": "6ac62685258fc72815095ea13b2afbc8d96a58faf6464f0f8e955306af3b7a89"
+  }
+}
