@@ -1,0 +1,52 @@
+{
+  "date": "2026-09-15",
+  "hypothesis": "Across multiple source topics, answer-only versus brief-rule-then-answer prompting may expose a response-format limitation before further training.",
+  "cases": 6,
+  "requests": 12,
+  "knowledge_units": 6,
+  "source_connected_groups": 6,
+  "categories": [
+    "vessel_clearance",
+    "manufacturing",
+    "cost_accounting",
+    "freight_pricing",
+    "traffic_management",
+    "rail_traction"
+  ],
+  "source": "Existing reviewed non-dev source units; new contextual tasks, official QA excluded from construction input.",
+  "case_sha256": "5ad94124174c9209930323ff361b6f31ad02fce706d85f72c9b1cf9dc35b2114",
+  "review": "Source entailment, alternatives and unique answers checked; component counts, break-even and dimensional-weight calculations checked independently. Source groups disjoint from frozen dev.",
+  "training_allowed": false,
+  "training_running": false,
+  "official_protocol_changed": false,
+  "max_tokens_per_condition": 96,
+  "temperature": 0,
+  "seed": 1024,
+  "repeats": 1,
+  "model": "original Step120",
+  "output": "/opt/llin-broad-format-probe-20260915-01",
+  "code": "/opt/llin-broad-format-code-20260915-01",
+  "last_observed_status": "completed_independently_reparsed",
+  "initial_launch_failure": "Shell CRLF before Python execution; corrected only new launch script; original failure log retained.",
+  "limitations": [
+    "Six cases are an initial pipeline and difficulty check, not the 30-50-unit training gate.",
+    "Source-related diagnostic only; not independent generalization or official evaluation.",
+    "Equal 96-token budget can truncate explanations; finish reasons must be separately reported.",
+    "Do not train on this diagnostic packet or count it as a held-out confirmation set."
+  ],
+  "independently_reparsed_outputs": 12,
+  "result": {
+    "answer_only": {
+      "n": 6,
+      "correct": 5,
+      "truncated": 0
+    },
+    "explain_then_answer": {
+      "n": 6,
+      "correct": 6,
+      "truncated": 0
+    }
+  },
+  "predictions_sha256": "e9c2e1efc79d8bbfdc17c08ced7a82aa4b418ac2a5452ea301058a8132a05e99",
+  "finding": "Answer-only 5/6; explanation-then-answer 6/6. The sole repair is break-even calculation; no regressions or truncations. This one-case exploratory signal cannot justify changing the official protocol or training expansion. Freeze a broader, harder source-only application probe before choosing supervision format."
+}
