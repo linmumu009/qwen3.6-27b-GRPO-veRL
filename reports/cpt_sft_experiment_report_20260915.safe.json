@@ -1,7 +1,7 @@
 {
   "date": "2026-09-15",
   "report": "reports/物流模型CPT与SFT实验汇总_20260915.docx",
-  "sha256": "59ce0e27a7e112527292a3a5dcbbd6deafdf4a20bc0d99f2b6a56ca419cc7e58",
+  "sha256": "adf2dda3d1e21d1160d87da759c920b025eadbc531eb2f5dd2dbc5ea0b5d09f9",
   "experiments": 22,
   "checkpoint_or_arm_results": 32,
   "pages": 26,
@@ -619,7 +619,12 @@
     "table_size_pt": 10.5,
     "table_style": "three-line",
     "table_count": 26,
-    "shading": false
+    "shading": false,
+    "body_first_line_indent_characters": 2,
+    "line_spacing_multiple": 1.5,
+    "paragraph_space_before_pt": 0,
+    "paragraph_space_after_pt": 0,
+    "snap_to_grid": false
   },
   "format_revision_content_unchanged": true
 }
