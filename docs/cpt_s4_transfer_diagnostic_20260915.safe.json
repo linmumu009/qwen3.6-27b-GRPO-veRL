@@ -23,7 +23,7 @@
     "case_sha256": "0894adb053f55b0716ae3bf128bb91b21dd778ad48653342909a3125b2c473f9",
     "coordinator_pid": 3521682,
     "remote_output": "/opt/llin-s4-transfer-diagnostic-20260915-01",
-    "last_observed_stage": "step120",
+    "last_observed_stage": "completed",
     "training_started": false,
     "official_evaluation_changed": false
   },
@@ -31,5 +31,36 @@
     "Only source diagnostics; no official prompt changes.",
     "Net-saving wording explicitly clarifies sign, so this arm is not a pure paraphrase.",
     "Single deterministic round; not independent seeds or generalization."
-  ]
+  ],
+  "verified_result": {
+    "step120": {
+      "s4_transfer_rotate": {
+        "n": 9,
+        "correct": 6
+      },
+      "s4_transfer_original": {
+        "n": 9,
+        "correct": 5
+      },
+      "s4_transfer_wording": {
+        "n": 4,
+        "correct": 1
+      }
+    },
+    "s4": {
+      "s4_transfer_rotate": {
+        "n": 9,
+        "correct": 5
+      },
+      "s4_transfer_original": {
+        "n": 9,
+        "correct": 5
+      },
+      "s4_transfer_wording": {
+        "n": 4,
+        "correct": 1
+      }
+    }
+  },
+  "content_review": "Both models solve uniform restocking after rotation or wording; square-root allocation remains flow-proportional in all arms. Other S4 wrong selections vary, but no broad restoration of correct answers."
 }

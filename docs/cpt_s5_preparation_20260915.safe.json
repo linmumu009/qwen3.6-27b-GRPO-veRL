@@ -1,0 +1,20 @@
+{
+  "tasks": 32,
+  "concept_families": 4,
+  "sha256": "8d1f5e3ce9772fc2ddf99e16ee92630dcbf8aa6a1b58e558b5f397d33c616ea2",
+  "training_ready": false,
+  "training_started": false,
+  "reason": "S4 distractors omitted flow-proportional allocation; weighted training used only equal flows. S5 adds competing rules, unequal flows and costs, signed/zero benefit, and label-direction balance.",
+  "pending": [
+    "source arithmetic and official near-question review",
+    "token/loader gate",
+    "register save policy and immutable S5 pipeline"
+  ],
+  "storage": {
+    "s4_model_bytes": 54721286826,
+    "s4_optimizer_bytes": 328494036014,
+    "free_project_bytes": 159845752832,
+    "free_opt_bytes": 209382694912,
+    "proposal": "For a fresh one-epoch S5 experiment save model and extra only, retain all old artifacts. Must explicitly validate this distinct checkpoint contract; no optimizer-resume claim."
+  }
+}
