@@ -7,6 +7,8 @@
 
 # 单机多卡 GRPO 训练情况报告（Qwen3.5-9B）
 
+2026-09-15 后续：[实际复现报告](single_machine_9b_grpo_reproduction_20260915.md)已通过实时堆栈和同次运行地址映射干预，将阻塞定位到 IPC 物理/逻辑 rank 错配，并进一步暴露 3880 MiB 参数大于 2560 MiB 同步桶。以下保留 9 月 14 日只读核验的历史结论与边界。
+
 ## 一、背景
 
 目标是在 5 号机单台服务器上，以 Qwen3.5-9B 完成 GRPO 冒烟训练：16 个 Ascend 计算 chip 中，8 个用于 Trainer，8 个用于 vLLM Rollout。训练侧使用 FSDP2，推理侧使用 TP4、DP2。
