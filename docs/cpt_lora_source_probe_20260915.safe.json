@@ -1,0 +1,50 @@
+{
+  "base": {
+    "groups": {
+      "condition_training": {
+        "n": 44,
+        "correct": 11
+      },
+      "source_conditions_train": {
+        "n": 135,
+        "correct": 123
+      },
+      "condition_scenario_check": {
+        "n": 11,
+        "correct": 2
+      },
+      "source_conditions_dev": {
+        "n": 22,
+        "correct": 21
+      }
+    },
+    "correct": 157
+  },
+  "lora": {
+    "groups": {
+      "condition_training": {
+        "n": 44,
+        "correct": 12
+      },
+      "source_conditions_train": {
+        "n": 135,
+        "correct": 123
+      },
+      "condition_scenario_check": {
+        "n": 11,
+        "correct": 3
+      },
+      "source_conditions_dev": {
+        "n": 22,
+        "correct": 21
+      }
+    },
+    "correct": 159
+  },
+  "gains": 3,
+  "losses": 1,
+  "raw_reparsed": true,
+  "training_started": false,
+  "scope": "Frozen 212 source-task single-round probe; not official benchmark or independent generalization.",
+  "model": "llin-step120-lora-cpt-r64-1epoch-hf"
+}
