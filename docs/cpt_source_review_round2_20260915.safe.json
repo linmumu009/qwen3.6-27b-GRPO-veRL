@@ -1,0 +1,16 @@
+{
+  "date": "2026-09-15",
+  "initial_pending": 96,
+  "additional_cases_examined": 6,
+  "new_source_sufficient_cases": 1,
+  "scope_qualifier_omission": 1,
+  "retrieval_insufficient": 4,
+  "not_yet_examined_in_this_round": 90,
+  "remaining_without_sufficient_unique_proof": 95,
+  "total_source_sufficient_cases": 14,
+  "official_labels_changed": false,
+  "training_started": false,
+  "source_review_sha256": "29d49d68cec54e1d1c9d142cc69486f9bf82fe7bb4ebdc78ebfb4477301fda8d",
+  "limitation": "Four insufficient lexical retrievals are not claims of absent knowledge. The scope-omission case retains its official label. Historical 13-case pilot and summary remain unchanged.",
+  "next_action": "Continue the 95 unresolved items; use competing-definition and source-context search rather than lexical score as proof. Source-only new-task generation must not consume this official-question review packet."
+}
