@@ -10,7 +10,7 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument('--data', type=Path, required=True)
     p.add_argument('--model', type=Path, required=True)
-    p.add_argument('--profile', choices=['S1S2', 'S3'], default='S1S2')
+    p.add_argument('--profile', choices=['S1S2', 'S3', 'S4'], default='S1S2')
     a = p.parse_args()
     import torch_npu  # register the same device backend as training
     from omegaconf import OmegaConf

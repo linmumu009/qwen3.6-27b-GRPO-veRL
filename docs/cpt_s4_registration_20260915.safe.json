@@ -1,0 +1,33 @@
+{
+  "arm": "S4",
+  "lr": 5e-07,
+  "batch_size": 3,
+  "steps": 77,
+  "epochs": 1,
+  "train": {
+    "count": 231,
+    "sequence_tokens": 39887,
+    "loss_tokens": 4276,
+    "parquet_sha256": "b0f083fc3f15b128bcce6295d162f25fbfe02d191272944eb587110c9dea82f8"
+  },
+  "tasks_sha256": "663e76794901e0af31d759a027ab4ea1e300888fb55e1927691336e2e4f4916b",
+  "reviewed_sha256": "6ac62685258fc72815095ea13b2afbc8d96a58faf6464f0f8e955306af3b7a89",
+  "cases_sha256": "00c81e51911a4b3ebf2e17f339b708b4ff424f06ecbea1e7e0f0e6c4ed99c8fb",
+  "training_started": false,
+  "fresh_optimizer": true,
+  "independent_generalization_claim": false,
+  "dev": {
+    "count": 33,
+    "sequence_tokens": 5622,
+    "loss_tokens": 212,
+    "parquet_sha256": "3a35e5307cd46027b5e91f598917c70c0bc470175ba1de4ec534120edddc41f0"
+  },
+  "coordinator_pid": 3501566,
+  "code": "/opt/llin-s4-code-20260915-03/scripts",
+  "output": "/workspace/llin-verl-grpo/runs/llin-sft-search-s4-20260915-01",
+  "last_observed_stage": "loader_gate",
+  "offline_data_audit_passed": true,
+  "launch_snapshot": true,
+  "source_nearest_question_review": "Four family nearest lexical matches reviewed: different tasks about economies of scope, game theory, pick waves and line items; no copied question or answer. Lexical screening is not exhaustive semantic certification.",
+  "retention_note": "135 source tasks are not general or Agent retention; dev33 inherited from S3 includes 11 same-template condition checks."
+}

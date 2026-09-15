@@ -23,20 +23,22 @@ BASELINE = ROOT/'runs/cpt-controlled-storage-20260910/llin/cpt-controlled-202609
 def main():
     p = argparse.ArgumentParser()
     p.add_argument('--out', type=Path, required=True)
-    p.add_argument('--arm', choices=['S1', 'S2', 'S3'], default='S2')
+    p.add_argument('--arm', choices=['S1', 'S2', 'S3', 'S4'], default='S2')
     p.add_argument('--after-training', action='store_true', help='Resume audits/evaluation from a completed export; never retrain')
     a = p.parse_args()
     out = a.out.resolve()
     arm = a.arm.lower()
-    lr = {'S1':2e-7, 'S2':1e-6, 'S3':5e-7}[a.arm]
-    profile = 'S3' if a.arm == 'S3' else 'S1S2'
+    lr = {'S1':2e-7, 'S2':1e-6, 'S3':5e-7, 'S4':5e-7}[a.arm]
+    profile = a.arm if a.arm in ('S3', 'S4') else 'S1S2'
     from audit_cpt_sft_search_data import expected_for
     expected_budget = expected_for(profile)
     records, sequence_tokens, _, train_sha = expected_budget['train']
     steps = records // 3
-    data = Path('/opt/llin-s3-data-20260914-01') if a.arm == 'S3' else DATA
+    data = (ROOT/'runs/llin-s4-data-20260915-01' if a.arm == 'S4' else
+            Path('/opt/llin-s3-data-20260914-01') if a.arm == 'S3' else DATA)
     model_name = 'llin-step120-'+arm+'-hf'
-    if out.parent != Path('/opt') or not out.name.startswith('llin-sft-search-'+arm+'-'):
+    allowed_parent = ROOT/'runs' if a.arm == 'S4' else Path('/opt')
+    if out.parent != allowed_parent or not out.name.startswith('llin-sft-search-'+arm+'-'):
         raise ValueError('expected independent output matching registered arm')
     code = Path(__file__).resolve().parent
     os.umask(0o077)
@@ -73,15 +75,17 @@ def main():
                 raise ValueError('insufficient checkpoint/export space')
             save(out/('recovery_registration.safe.json' if a.after_training else 'registration.safe.json'), dict(arm=a.arm, lr=lr, batch=3, steps=steps,
                  epochs=1, starting_model=str(BASE), fresh_optimizer=True,
-                 selection_reason='S3 condition-exposure/data recipe (not a single-factor comparison)' if a.arm == 'S3' else 'Registered fixed-data LR comparison',
+                 selection_reason=a.arm+' condition-exposure/data recipe (not a single-factor comparison)' if a.arm in ('S3', 'S4') else 'Registered fixed-data LR comparison',
                  code_sha256={p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in code.iterdir() if p.is_file()}))
             for stage, script in [('data_audit', 'audit_cpt_sft_search_data.py'), ('loader_gate', 'gate_cpt_sft_search_loader.py')]:
                 run(stage+('_recovery' if a.after_training else ''), [sys.executable, str(code/script), '--data', str(data), '--model', str(BASE), '--profile', profile])
             # Reuse source-built objective tasks, never official benchmark examples.
-            task_files = [data/'cases.private.jsonl'] if a.arm == 'S3' else [data/(s+'.cases.private.jsonl') for s in ('train', 'dev')]
+            task_files = [data/'cases.private.jsonl'] if a.arm in ('S3', 'S4') else [data/(s+'.cases.private.jsonl') for s in ('train', 'dev')]
             rows = [[json.loads(x) for x in f.read_text().splitlines()] for f in task_files]
-            if [len(r) for r in rows] != ([212] if a.arm == 'S3' else [402, 74]):
+            if [len(r) for r in rows] != ([253] if a.arm == 'S4' else [212] if a.arm == 'S3' else [402, 74]):
                 raise ValueError('unexpected objective task counts')
+            if a.arm == 'S4' and hashlib.sha256(task_files[0].read_bytes()).hexdigest() != '00c81e51911a4b3ebf2e17f339b708b4ff424f06ecbea1e7e0f0e6c4ed99c8fb':
+                raise ValueError('S4 source probes changed')
             if a.arm == 'S3' and hashlib.sha256(task_files[0].read_bytes()).hexdigest() != 'e1146f32783a2839be6cb2577b9439d4b7d689fe7dedf5e93d36e0a6eaab060f':
                 raise ValueError('S3 source probes changed')
             task_text = ''.join(json.dumps(r)+'\n' for group in rows for r in group)

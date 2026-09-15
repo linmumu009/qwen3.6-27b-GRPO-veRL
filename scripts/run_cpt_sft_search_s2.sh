@@ -12,12 +12,13 @@ BRIDGE="$ROOT/reference/Megatron-Bridge-de93536e/src"
 case "${SFT_ARM:-S2}:${SFT_LR:-1e-06}" in
   S1:2e-07|S2:1e-06) STEPS=197 ;;
   S3:5e-07) STEPS=133 ;;
+  S4:5e-07) STEPS=77 ;;
   *) exit 4 ;;
 esac
 [[ "${SFT_STEPS:-197}" == "$STEPS" ]] || exit 4
 umask 077
 [[ ! -e "$OUT" && -f "$SOURCE/.metadata" ]] || exit 2
-[[ "$(df -B1 --output=avail /opt | tail -n 1 | tr -d ' ')" -ge 550000000000 ]] || exit 2
+[[ "$(df -B1 --output=avail "$(dirname -- "$OUT")" | tail -n 1 | tr -d ' ')" -ge 550000000000 ]] || exit 2
 python3 -c 'import hashlib,sys; assert hashlib.sha256(open(sys.argv[1],"rb").read()).hexdigest()==sys.argv[2]' "$DATA/train.parquet" "${SFT_TRAIN_SHA:-2f10b42c9a8ad0bde49b2c1887a6216727352c4871d1afdc5e84145e70dd9051}"
 python3 -c 'import hashlib,sys; assert hashlib.sha256(open(sys.argv[1],"rb").read()).hexdigest()==sys.argv[2]' "$DATA/dev.parquet" "${SFT_DEV_SHA:-54410c6d33db3cbbdcaa542a6a3a978f10d5acd4470dd8d132493629127c0e3a}"
 mkdir "$OUT"
@@ -26,7 +27,7 @@ trap 'printf "failed_at_line_%s\n" "$LINENO" > "$OUT/status.txt"' ERR
 source /usr/local/Ascend/ascend-toolkit/set_env.sh
 export PYTHONPATH="$ROOT:$BRIDGE:$ROOT/runtime:/verl:${PYTHONPATH:-}"
 export CUDA_DEVICE_MAX_CONNECTIONS=1 HYDRA_FULL_ERROR=1 TOKENIZERS_PARALLELISM=true
-unset ASCEND_RT_VISIBLE_DEVICES
+unset ASCEND_RT_VISIBLE_DEVICES ASCEND_VISIBLE_DEVICES CUDA_VISIBLE_DEVICES
 printf 'training\n' > "$OUT/status.txt"
 torchrun --standalone --nnodes=1 --nproc_per_node=16 --log-dir="$OUT/torchrun_logs" --redirects=3 --tee=0 \
  -m verl.trainer.sft_trainer \
