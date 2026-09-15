@@ -1,0 +1,22 @@
+{
+  "date": "2026-09-15",
+  "input_passages": 265,
+  "input_sha256": "3f1fd6c6aa5f42a03883ec53be5fc3366c709e3f240c1c8a7102bdcbea51da74",
+  "candidate_indices_examined": 21,
+  "fully_read": 19,
+  "truncated_not_reviewed": 2,
+  "scoped_knowledge_units": 14,
+  "development_overlap_held": 2,
+  "candidate_units": 12,
+  "training_ready": false,
+  "training_started": false,
+  "probe_started": false,
+  "review_scope": "Codex read extracted text; not visual PDF verification or expert certification.",
+  "pending": [
+    "source context and semantic topic overlap",
+    "official near-question exclusion",
+    "unique-answer scenario construction and review",
+    "original Step120 baseline difficulty probe"
+  ],
+  "private_units_sha256": "ed5a9b04d29d9f57cfbf5cf7a34346ced37c6372ab1676f7b83cc8ebde0b3a43"
+}
