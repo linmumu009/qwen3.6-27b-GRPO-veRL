@@ -1,0 +1,35 @@
+{
+  "date": "2026-09-15",
+  "source_training_errors": {
+    "negative_net_saving_wrong_positive": 3,
+    "allocation_direction_regression": 1
+  },
+  "original_nine": {
+    "correct_before": 5,
+    "correct_after": 5,
+    "correctness_flips": 0,
+    "answer_changed_but_still_wrong": 1
+  },
+  "diagnostic": {
+    "cases": 22,
+    "original": 9,
+    "option_rotation": 9,
+    "wording": 4,
+    "models": [
+      "original Step120",
+      "S4"
+    ],
+    "requests": 44,
+    "case_sha256": "0894adb053f55b0716ae3bf128bb91b21dd778ad48653342909a3125b2c473f9",
+    "coordinator_pid": 3521682,
+    "remote_output": "/opt/llin-s4-transfer-diagnostic-20260915-01",
+    "last_observed_stage": "step120",
+    "training_started": false,
+    "official_evaluation_changed": false
+  },
+  "limitations": [
+    "Only source diagnostics; no official prompt changes.",
+    "Net-saving wording explicitly clarifies sign, so this arm is not a pure paraphrase.",
+    "Single deterministic round; not independent seeds or generalization."
+  ]
+}
