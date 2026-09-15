@@ -1,0 +1,27 @@
+{
+  "date": "2026-09-15",
+  "cases": 12,
+  "cases_sha256": "63f652b85d28ddf1da5de67f0074f99e80b144c5b1ca4f6ec408a83b7ac78b19",
+  "source_review": "Codex source text, explicit assumptions, single correct choice, arithmetic checks",
+  "training_ready": false,
+  "training_started": false,
+  "probe_started": true,
+  "launch_pid": 3479943,
+  "remote_output": "/opt/llin-s4-probe-20260915-01",
+  "max_official_question_token_jaccard": 0.2,
+  "lexical_screen_is_not_semantic_clearance": true,
+  "pending": [
+    "raw probe verification",
+    "adjacent source context and semantic contamination review before training"
+  ],
+  "model": "original Step120",
+  "protocol": {
+    "repeats": 1,
+    "thinking": false,
+    "temperature": 0,
+    "seed": 1024,
+    "output_tokens": 96,
+    "context": 8192,
+    "tp": 8
+  }
+}
