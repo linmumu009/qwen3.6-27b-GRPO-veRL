@@ -1,0 +1,236 @@
+{
+  "table": [
+    {
+      "dataset": "SC-bench-knowledge",
+      "n": 226,
+      "before": 189,
+      "after": 189,
+      "gains": 2,
+      "losses": 2
+    },
+    {
+      "dataset": "LogistikaBench",
+      "n": 1446,
+      "before": 1180,
+      "after": 1186,
+      "gains": 20,
+      "losses": 14
+    }
+  ],
+  "baseline": {
+    "requests": 5016,
+    "invalid": 0,
+    "truncated": 0,
+    "predictions_sha256": "18f0e0524a0ff97c1e0345cd6192b16363a1fcec05405f3ad7c97fb70edad0f7"
+  },
+  "candidate": {
+    "requests": 5016,
+    "invalid": 0,
+    "truncated": 0,
+    "predictions_sha256": "6ceacafa6fb58bff50d9d8781420dece4b0dc658c02367d266634869c33db506"
+  },
+  "protocol_equal": true,
+  "raw_outputs_reparsed": true,
+  "model_promoted": false,
+  "training_audit": {
+    "steps": 77,
+    "sequence_tokens": 41429,
+    "records": 231
+  },
+  "source_probes": {
+    "step120_tasks": {
+      "correct": 166,
+      "items": 253,
+      "by_dataset": [
+        {
+          "dataset": "condition_scenario_check",
+          "items": 11,
+          "correct": 2,
+          "accuracy": 0.181818,
+          "parse_failures": 0,
+          "api_failures": 0
+        },
+        {
+          "dataset": "condition_training",
+          "items": 44,
+          "correct": 11,
+          "accuracy": 0.25,
+          "parse_failures": 0,
+          "api_failures": 0
+        },
+        {
+          "dataset": "llin-source-operations-conditions-probe",
+          "items": 9,
+          "correct": 5,
+          "accuracy": 0.555556,
+          "parse_failures": 0,
+          "api_failures": 0
+        },
+        {
+          "dataset": "s5_condition_training",
+          "items": 32,
+          "correct": 4,
+          "accuracy": 0.125,
+          "parse_failures": 0,
+          "api_failures": 0
+        },
+        {
+          "dataset": "source_conditions_dev",
+          "items": 22,
+          "correct": 21,
+          "accuracy": 0.954545,
+          "parse_failures": 0,
+          "api_failures": 0
+        },
+        {
+          "dataset": "source_conditions_train",
+          "items": 135,
+          "correct": 123,
+          "accuracy": 0.911111,
+          "parse_failures": 0,
+          "api_failures": 0
+        }
+      ],
+      "s5_families": [
+        {
+          "dataset": "s5_condition_training",
+          "category": "negative_forward_benefit",
+          "items": 8,
+          "correct": 1,
+          "accuracy": 0.125,
+          "parse_failures": 0,
+          "api_failures": 0
+        },
+        {
+          "dataset": "s5_condition_training",
+          "category": "square_root_allocation",
+          "items": 8,
+          "correct": 0,
+          "accuracy": 0.0,
+          "parse_failures": 0,
+          "api_failures": 0
+        },
+        {
+          "dataset": "s5_condition_training",
+          "category": "uniform_space_not_sku",
+          "items": 8,
+          "correct": 0,
+          "accuracy": 0.0,
+          "parse_failures": 0,
+          "api_failures": 0
+        },
+        {
+          "dataset": "s5_condition_training",
+          "category": "weighted_square_root",
+          "items": 8,
+          "correct": 3,
+          "accuracy": 0.375,
+          "parse_failures": 0,
+          "api_failures": 0
+        }
+      ]
+    },
+    "s5_tasks": {
+      "correct": 193,
+      "items": 253,
+      "by_dataset": [
+        {
+          "dataset": "condition_scenario_check",
+          "items": 11,
+          "correct": 3,
+          "accuracy": 0.272727,
+          "parse_failures": 0,
+          "api_failures": 0
+        },
+        {
+          "dataset": "condition_training",
+          "items": 44,
+          "correct": 13,
+          "accuracy": 0.295455,
+          "parse_failures": 0,
+          "api_failures": 0
+        },
+        {
+          "dataset": "llin-source-operations-conditions-probe",
+          "items": 9,
+          "correct": 5,
+          "accuracy": 0.555556,
+          "parse_failures": 0,
+          "api_failures": 0
+        },
+        {
+          "dataset": "s5_condition_training",
+          "items": 32,
+          "correct": 23,
+          "accuracy": 0.71875,
+          "parse_failures": 0,
+          "api_failures": 0
+        },
+        {
+          "dataset": "source_conditions_dev",
+          "items": 22,
+          "correct": 21,
+          "accuracy": 0.954545,
+          "parse_failures": 0,
+          "api_failures": 0
+        },
+        {
+          "dataset": "source_conditions_train",
+          "items": 135,
+          "correct": 128,
+          "accuracy": 0.948148,
+          "parse_failures": 0,
+          "api_failures": 0
+        }
+      ],
+      "s5_families": [
+        {
+          "dataset": "s5_condition_training",
+          "category": "negative_forward_benefit",
+          "items": 8,
+          "correct": 6,
+          "accuracy": 0.75,
+          "parse_failures": 0,
+          "api_failures": 0
+        },
+        {
+          "dataset": "s5_condition_training",
+          "category": "square_root_allocation",
+          "items": 8,
+          "correct": 6,
+          "accuracy": 0.75,
+          "parse_failures": 0,
+          "api_failures": 0
+        },
+        {
+          "dataset": "s5_condition_training",
+          "category": "uniform_space_not_sku",
+          "items": 8,
+          "correct": 4,
+          "accuracy": 0.5,
+          "parse_failures": 0,
+          "api_failures": 0
+        },
+        {
+          "dataset": "s5_condition_training",
+          "category": "weighted_square_root",
+          "items": 8,
+          "correct": 7,
+          "accuracy": 0.875,
+          "parse_failures": 0,
+          "api_failures": 0
+        }
+      ]
+    }
+  },
+  "free_bytes": {
+    "/opt": 97787883520,
+    "/workspace/llin-verl-grpo": 159838543872
+  },
+  "next_diagnostic": {
+    "pid": 3548932,
+    "output": "/opt/llin-s5-transfer-diagnostic-20260915-01",
+    "cases": 22,
+    "training_started": false
+  }
+}
