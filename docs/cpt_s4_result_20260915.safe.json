@@ -1,0 +1,95 @@
+{
+  "table": [
+    {
+      "dataset": "SC-bench-knowledge",
+      "n": 226,
+      "before": 189,
+      "after": 190,
+      "gains": 3,
+      "losses": 2
+    },
+    {
+      "dataset": "LogistikaBench",
+      "n": 1446,
+      "before": 1180,
+      "after": 1188,
+      "gains": 22,
+      "losses": 14
+    }
+  ],
+  "baseline": {
+    "requests": 5016,
+    "invalid": 0,
+    "truncated": 0,
+    "predictions_sha256": "18f0e0524a0ff97c1e0345cd6192b16363a1fcec05405f3ad7c97fb70edad0f7"
+  },
+  "candidate": {
+    "requests": 5016,
+    "invalid": 0,
+    "truncated": 0,
+    "predictions_sha256": "d61a385e9e5f64929269093ddbd6ed77ba9193e1565b4327a36280ed4e52d4f0"
+  },
+  "protocol_equal": true,
+  "raw_outputs_reparsed": true,
+  "model_promoted": false,
+  "source_probe": {
+    "step120": {
+      "condition_training": {
+        "n": 44,
+        "correct": 11
+      },
+      "source_conditions_train": {
+        "n": 135,
+        "correct": 123
+      },
+      "s4_condition_training": {
+        "n": 32,
+        "correct": 14
+      },
+      "llin-source-operations-conditions-probe": {
+        "n": 9,
+        "correct": 5
+      },
+      "condition_scenario_check": {
+        "n": 11,
+        "correct": 2
+      },
+      "source_conditions_dev": {
+        "n": 22,
+        "correct": 21
+      }
+    },
+    "s4": {
+      "condition_training": {
+        "n": 44,
+        "correct": 12
+      },
+      "source_conditions_train": {
+        "n": 135,
+        "correct": 128
+      },
+      "s4_condition_training": {
+        "n": 32,
+        "correct": 28
+      },
+      "llin-source-operations-conditions-probe": {
+        "n": 9,
+        "correct": 5
+      },
+      "condition_scenario_check": {
+        "n": 11,
+        "correct": 4
+      },
+      "source_conditions_dev": {
+        "n": 22,
+        "correct": 20
+      }
+    }
+  },
+  "training": {
+    "steps": 77,
+    "sequence_tokens": 39887,
+    "records": 231
+  },
+  "target_met": false
+}
