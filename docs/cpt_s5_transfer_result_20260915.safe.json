@@ -1,0 +1,50 @@
+{
+  "verified_models": {
+    "step120": {
+      "s4_transfer_rotate": {
+        "n": 9,
+        "correct": 6
+      },
+      "s4_transfer_original": {
+        "n": 9,
+        "correct": 5
+      },
+      "s4_transfer_wording": {
+        "n": 4,
+        "correct": 1
+      }
+    },
+    "s4": {
+      "s4_transfer_rotate": {
+        "n": 9,
+        "correct": 5
+      },
+      "s4_transfer_original": {
+        "n": 9,
+        "correct": 5
+      },
+      "s4_transfer_wording": {
+        "n": 4,
+        "correct": 1
+      }
+    },
+    "s5": {
+      "s4_transfer_rotate": {
+        "n": 9,
+        "correct": 6
+      },
+      "s4_transfer_original": {
+        "n": 9,
+        "correct": 5
+      },
+      "s4_transfer_wording": {
+        "n": 4,
+        "correct": 1
+      }
+    }
+  },
+  "raw_answers_reparsed": 66,
+  "official_protocol_changed": false,
+  "training_running": false,
+  "limitation": "Source diagnostics only; wording also clarifies sign. Equal totals do not establish identical per-item behavior."
+}
