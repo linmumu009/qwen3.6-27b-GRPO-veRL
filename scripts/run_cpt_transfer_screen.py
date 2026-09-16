@@ -106,6 +106,7 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument('--sources', type=Path, required=True)
     p.add_argument('--sha', required=True)
+    p.add_argument('--expected-source-count', type=int, default=64)
     p.add_argument('--out', type=Path, required=True)
     p.add_argument('--resume-generation', type=Path)
     p.add_argument('--resume-sha')
@@ -114,7 +115,7 @@ def main():
     if hashlib.sha256(a.sources.read_bytes()).hexdigest() != a.sha:
         raise ValueError('source fingerprint mismatch')
     rows = [json.loads(x) for x in a.sources.read_text(encoding='utf-8').splitlines()]
-    if len(rows) != 64 or len({r['id'] for r in rows}) != 64 or any(r['historical_split'] != 'train' or r['training_allowed'] is not False for r in rows):
+    if a.expected_source_count <= 0 or len(rows) != a.expected_source_count or len({r['id'] for r in rows}) != a.expected_source_count or any(r['historical_split'] != 'train' or r['training_allowed'] is not False for r in rows):
         raise ValueError('unregistered source selection')
     if bool(a.resume_generation) != bool(a.resume_sha):
         raise ValueError('resume file and fingerprint required together')

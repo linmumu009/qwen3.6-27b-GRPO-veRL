@@ -1,0 +1,10 @@
+{
+  "pid": 3667214,
+  "code": "/opt/llin-transfer-screen-code-20260916-03",
+  "output": "/opt/llin-transfer-screen-20260916-03",
+  "source_sha256": "30d9e9ffbfe2fb07945d5b9797caa8c6ec05aabc0568fbd3ab952854b5f277bb",
+  "status": "loading_model",
+  "training_running": false,
+  "devices_idle_before_launch": true,
+  "tests_passed": 13
+}
