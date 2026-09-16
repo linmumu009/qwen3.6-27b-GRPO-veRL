@@ -22,31 +22,21 @@
 
 ## 二 数据形态
 
-原始层使用 OpenAI messages，包含 assistant.reasoning_content、tool_calls 和 tool 消息。适配层由 prepare_trajectory_sft.py 转为 ms-swift 的 assistant、tool_call、tool_response 角色。
-
-| 字段或消息 | 作用 |
-| --- | --- |
-| messages | 按真实顺序保存完整交互 |
-| tools | bash、read、write、edit 的工具定义；实际保存为 JSON 字符串 |
-| assistant | 思考与回答；参与训练 |
-| tool_call | 工具名和参数；参与训练 |
-| tool_response | 工具执行结果；只提供上下文 |
-
-以下仅展示角色与字段，内容为演示；真实 tools 需包含完整参数定义。
+下面摘录实际训练文件第 23 条记录：模型查询 2026-06-19 运单轨迹事件的停留时长，工具返回 6639，模型据此作答。保留用户问题和最后一次查库至回答的完整连续片段。
 
 ```
-{"tools":"[完整工具 schema]", "messages":[
-  {"role":"user","content":"读取业务说明并回答问题。"},
-  {"role":"assistant","content":"先查阅说明。", "loss":true},
-  {"role":"tool_call",
-   "content":"{\"name\":\"read\",\"arguments\":{\"path\":\"rules.md\"}}",
-   "loss":true},
-  {"role":"tool_response","content":"业务说明正文", "loss":false},
-  {"role":"assistant","content":"依据说明得出的答案。", "loss":true}
+{"messages": [
+  {"role":"user","content":"我想查一下2026-06-19那天运单轨迹事件里所有停留时长（分钟）总共是多少。"},
+  {"role":"assistant","content":"<think>\nI can see the `fact_waybill_event` table has a `dwell_minutes` field. I need to query the total dwell_minutes for events on 2026-06-19\n</think>\n\n","loss":true},
+  {"role":"tool_call","content":"{\"name\":\"bash\",\"arguments\":{\"command\":\"sqlite3 /workspace/logistics.sqlite \\\"SELECT SUM(dwell_minutes) AS total_dwell_minutes FROM fact_waybill_event WHERE date(event_time) = '2026-06-19';\\\"\"}}","loss":true},
+  {"role":"tool_response","content":"6639\n"},
+  {"role":"assistant","content":"<think>\nThe total dwell time for all trajectory events on 2026-06-19 is 6639\n</think>\n\n2026-06-19 当天运单轨迹事件（`fact_waybill_event`）中所有 `dwell_minutes`（停留时长）的总和为 **6639 分钟**。","loss":true}
 ]}
 ```
 
-训练保留整条工具交互。推理写入 think 块，工具返回不作为模型应生成的答案。超出 16K 的记录不混入本次训练。
+本页省略了顶层 tools 定义、system 消息，以及前面的目录与表结构探索轮次；展示的消息内容及 loss 字段保持原样。原始 tool_response 未写 loss 字段，由训练配置排除工具返回的监督。
+
+样本来源：train_candidates_16k_2028.jsonl，第 23 行，属于文件前 27 条强验证子集。这里训练的是完整操作过程，而不只是最终的“6639 分钟”。
 
 ## 三 训练脚本运行指令
 

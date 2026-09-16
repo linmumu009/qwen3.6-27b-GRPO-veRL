@@ -24,36 +24,29 @@ RL 数据由任务、沙箱环境和评分依据组成。模型在沙箱中实�
 
 ## 二 数据形态
 
-训练器读取 Parquet。prompt 只包含系统要求和用户任务；评分所需答案与 SQL 放在 reward_model.ground_truth 中，不拼入模型可见问题。
-
-| 字段 | 含义 |
-| --- | --- |
-| data_source / agent_name | 数据来源标记；pi_agent 执行循环 |
-| prompt | system 与 user 消息 |
-| reward_model.<br>ground_truth | 任务、环境、答案类型、预期结果及参考 SQL |
-| extra_info | split、来源指纹、工具选择和环境创建参数 |
-
-以下为关键字段示意，省略完整工具参数和来源字段。
+下面摘录训练 Parquet 第 70 条记录，任务编号 task_000245。问题要求查询超时订单总数，记录同时保存数值型评分目标和参考 SQL。
 
 ```
 {
   "data_source":"boss_pi_aligned_v1",
   "agent_name":"pi_agent",
-  "prompt":[
-    {"role":"system","content":"沙箱操作要求"},
-    {"role":"user","content":"物流查询任务"}
-  ],
+  "prompt":[{"role": "user", "content": "时效分析汇总里，最近这一期超时订单的总数有多少？"}],
   "reward_model":{"style":"rule","ground_truth":{
-    "task_id":"任务编号", "environment_id":"环境编号",
-    "answer_type":"答案类型",
-    "expected_value_json":"序列化预期结果",
-    "verification_sql":"经核验的只读 SQL"
+    "task_id":"task_000245",
+    "environment_id":"sft/20260628_v15",
+    "answer_type":"numeric",
+    "expected_value_json":"481309",
+    "verification_sql":"SELECT SUM(exception_order_cnt) FROM fact_dws_timeliness_analysis"
   }},
   "extra_info":{"split":"train"}
 }
 ```
 
-SFT 学习已有回答；本路线则在 rollout 阶段生成新的回答与工具操作，再由评分器给出奖励。两个阶段的数据文件不能直接互换。
+节选省略 system 消息、user 前置沙箱布局，以及工具参数和来源指纹。任务句、SQL、评分值均保持原文；本页展示存储格式，不替代业务题意审核。
+
+prompt 中的任务交给模型；ground_truth 交给评分器，不能拼进模型提示。样本没有预先写好的 assistant 回答，回答和工具轨迹由训练时在线生成。
+
+样本来源：boss_v15_dwh_full276_20260806/dataset/boss_pi_train.parquet，第 70 条。
 
 ## 三 脚本运行指令
 

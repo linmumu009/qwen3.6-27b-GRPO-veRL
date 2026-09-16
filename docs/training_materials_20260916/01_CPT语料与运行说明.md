@@ -21,29 +21,19 @@
 
 ## 二 CPT 语料形态
 
-训练输入是连续知识文本，不是问答对。清洗后按完整文本块组织记录，去除无关版面内容并去重；表格保留结构，公式保留表达。正文不套聊天模板，不跨书混拼。
-
-| 语料版本 | 记录数 | 正文 token |
-| --- | --- | --- |
-| 全部 13 份教材 | 4,707 | 1,844,881 |
-| 新增知识单元 | 205 | 23,131 |
-| 合并训练集 | 4,912 | 1,868,012 |
-
-交付为同内容 JSONL 和 Parquet。训练器读取 text 字段；来源、章节及页码通过配套索引追踪。以下为字段示意，正文为演示文本。
+下面摘录实际 train.jsonl 的第 1 条记录。展示 text 字段全文，未改写正文；省略 id、指纹、token 数及来源索引等管理字段。
 
 ```
-{"text":"仓储知识示例：库存盘点需要核对账面数量与实物数量。"}
+{
+  "text": "Source: 43 Book Manuscript 398 1 10 20230209\nSection: I General introduction > 1 Ports and waterways systems > 1.1 On the importance of waterborne transport and its facilities\n\nPorts and waterways are parts of a coherent system enabling supply chains over water. Their functions, design, operation and maintenance influence the performance of these supply chains and the transport system as a whole. This chapter gives a general orientation, terminology and essential definitions, as well as an introduction into how the elements of the transport system interact."
+}
 ```
 
-| 读取规则 | 设置 |
-| --- | --- |
-| 数据入口 | train.parquet；text_key=text |
-| 结束标记 | 加载器追加一次 EOS，不在正文手工添加 |
-| 最大长度 | 4,096 token；本批最大 4,085 |
-| 超长处理 | 报错，不静默截断 |
-| 训练方式 | 原文下一 token 预测；无聊天模板 |
+这条数据是一段港口与水运知识正文，包含来源提示和章节标题，没有问题、标准答案或对话角色。CPT 直接学习这段连续文本。
 
-本版本包含评测来源教材，属于定向学习实验。评测题目和答案文件本身不进入该语料；相关基准成绩不能作为独立泛化证明。
+样本来源：CPT_resources/llin-knowledge-complete-20260911/release/train.jsonl，第 1 行。正式训练使用对应 Parquet 的 text 字段，每条追加一次 EOS，最大长度 4,096，不套用聊天模板。
+
+完整语料共 4,912 条，其中教材正文 4,707 条、补充知识 205 条。该版本包含评测来源教材，属于定向学习实验，相关成绩不代表独立泛化。
 
 ## 三 CPT 脚本运行指令
 

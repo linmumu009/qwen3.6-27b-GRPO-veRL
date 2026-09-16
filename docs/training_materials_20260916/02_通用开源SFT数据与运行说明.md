@@ -25,32 +25,29 @@ convert.py 根据配置中的 sft_selected 选择数据，按推理字段是否�
 
 ## 二 SFT 的训练数据形态
 
-中间层每行一条 JSON，四字段分别是系统要求、题目、推理和参考答案。以下使用演示题说明结构。
+下面摘录历史开源 SFT 文件的第 317 条记录。保留完整问题、选项、推理和答案，仅省略通用 system 消息。
 
 ```
 {
-  "system_prompt": "请解答数学问题。",
-  "task_input": "求解 2x + 3 = 7。",
-  "thinking": "两边减去 3，再除以 2。",
-  "golden_answer": "x = 2"
+  "messages": [
+    {
+      "role": "user",
+      "content": "王利发是老舍戏剧作品____中的主人公。\nA. 《茶馆》\nB. 《龙须沟》\nC. 《方珍珠》\nD. 《女店员》"
+    },
+    {
+      "role": "assistant",
+      "content": "<answer>\nA\n</answer>",
+      "reasoning_content": "1. 王利发是老舍的代表作《茶馆》中的主人公。"
+    }
+  ]
 }
 ```
 
-训练层为 OpenAI messages JSONL。有推理时，reasoning_content 保存推理，content 保存带 answer 标签的答案；无推理时，content 直接保存答案。
+一条样本对应一次问答：user 是问题和选项，assistant.reasoning_content 是已有参考推理，assistant.content 是最终答案。模型学习推理与答案，问题提供上下文。
 
-```
-{"messages": [
-  {"role":"system","content":"请解答数学问题。"},
-  {"role":"user","content":"求解 2x + 3 = 7。"},
-  {"role":"assistant",
-   "reasoning_content":"两边减去 3，再除以 2。",
-   "content":"<answer>\nx = 2\n</answer>"}
-]}
-```
+样本来源：20260702_openai.jsonl，第 317 行；宿主机目录为 /data3/llin/sft/datasets/open_source/huawei_train/。样本字段和值均来自该文件。
 
-MindSpeed-MM 的 Qwen3.6 模板负责合并推理。历史 ms-swift 另有 reasoning_merged 版本，将推理写入 content 的 think 块；该文件共 25,167 条，其中 25,153 条包含 think 块。两种文件不能不检查模板就互换。
-
-模型学习 assistant 的推理与答案，system 和 user 作为上下文。本路线没有沙箱工具轨迹，也不等同于 Step100 后的开源数据 GRPO 续训。
+MindSpeed-MM 模板读取分开的推理字段。历史 ms-swift 另有 reasoning_merged 版本，将推理放入 content 的 think 块，使用时须与模板匹配。
 
 ## 三 SFT 脚本运行指令
 

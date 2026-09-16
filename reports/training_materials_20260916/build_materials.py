@@ -32,22 +32,11 @@ p('在教材正文基础上，追加 205 条经核对的知识单元，来源包
 ],
 [
 h('二 CPT 语料形态'),
-p('训练输入是连续知识文本，不是问答对。清洗后按完整文本块组织记录，去除无关版面内容并去重；表格保留结构，公式保留表达。正文不套聊天模板，不跨书混拼。'),
-table(['语料版本','记录数','正文 token'],[
-['全部 13 份教材','4,707','1,844,881'],
-['新增知识单元','205','23,131'],
-['合并训练集','4,912','1,868,012'],
-]),
-p('交付为同内容 JSONL 和 Parquet。训练器读取 text 字段；来源、章节及页码通过配套索引追踪。以下为字段示意，正文为演示文本。'),
-code('''{"text":"仓储知识示例：库存盘点需要核对账面数量与实物数量。"}'''),
-table(['读取规则','设置'],[
-['数据入口','train.parquet；text_key=text'],
-['结束标记','加载器追加一次 EOS，不在正文手工添加'],
-['最大长度','4,096 token；本批最大 4,085'],
-['超长处理','报错，不静默截断'],
-['训练方式','原文下一 token 预测；无聊天模板'],
-]),
-p('本版本包含评测来源教材，属于定向学习实验。评测题目和答案文件本身不进入该语料；相关基准成绩不能作为独立泛化证明。'),
+p('下面摘录实际 train.jsonl 的第 1 条记录。展示 text 字段全文，未改写正文；省略 id、指纹、token 数及来源索引等管理字段。'),
+code('{\n  "text": "Source: 43 Book Manuscript 398 1 10 20230209\\nSection: I General introduction > 1 Ports and waterways systems > 1.1 On the importance of waterborne transport and its facilities\\n\\nPorts and waterways are parts of a coherent system enabling supply chains over water. Their functions, design, operation and maintenance influence the performance of these supply chains and the transport system as a whole. This chapter gives a general orientation, terminology and essential definitions, as well as an introduction into how the elements of the transport system interact."\n}'),
+p('这条数据是一段港口与水运知识正文，包含来源提示和章节标题，没有问题、标准答案或对话角色。CPT 直接学习这段连续文本。'),
+p('样本来源：CPT_resources/llin-knowledge-complete-20260911/release/train.jsonl，第 1 行。正式训练使用对应 Parquet 的 text 字段，每条追加一次 EOS，最大长度 4,096，不套用聊天模板。'),
+p('完整语料共 4,912 条，其中教材正文 4,707 条、补充知识 205 条。该版本包含评测来源教材，属于定向学习实验，相关成绩不代表独立泛化。'),
 ],
 [
 h('三 CPT 脚本运行指令'),
@@ -81,23 +70,11 @@ p('convert.py 根据配置中的 sft_selected 选择数据，按推理字段是�
 ],
 [
 h('二 SFT 的训练数据形态'),
-p('中间层每行一条 JSON，四字段分别是系统要求、题目、推理和参考答案。以下使用演示题说明结构。'),
-code('''{
-  "system_prompt": "请解答数学问题。",
-  "task_input": "求解 2x + 3 = 7。",
-  "thinking": "两边减去 3，再除以 2。",
-  "golden_answer": "x = 2"
-}'''),
-p('训练层为 OpenAI messages JSONL。有推理时，reasoning_content 保存推理，content 保存带 answer 标签的答案；无推理时，content 直接保存答案。'),
-code('''{"messages": [
-  {"role":"system","content":"请解答数学问题。"},
-  {"role":"user","content":"求解 2x + 3 = 7。"},
-  {"role":"assistant",
-   "reasoning_content":"两边减去 3，再除以 2。",
-   "content":"<answer>\\nx = 2\\n</answer>"}
-]}'''),
-p('MindSpeed-MM 的 Qwen3.6 模板负责合并推理。历史 ms-swift 另有 reasoning_merged 版本，将推理写入 content 的 think 块；该文件共 25,167 条，其中 25,153 条包含 think 块。两种文件不能不检查模板就互换。'),
-p('模型学习 assistant 的推理与答案，system 和 user 作为上下文。本路线没有沙箱工具轨迹，也不等同于 Step100 后的开源数据 GRPO 续训。'),
+p('下面摘录历史开源 SFT 文件的第 317 条记录。保留完整问题、选项、推理和答案，仅省略通用 system 消息。'),
+code('{\n  "messages": [\n    {\n      "role": "user",\n      "content": "王利发是老舍戏剧作品____中的主人公。\\nA. 《茶馆》\\nB. 《龙须沟》\\nC. 《方珍珠》\\nD. 《女店员》"\n    },\n    {\n      "role": "assistant",\n      "content": "<answer>\\nA\\n</answer>",\n      "reasoning_content": "1. 王利发是老舍的代表作《茶馆》中的主人公。"\n    }\n  ]\n}'),
+p('一条样本对应一次问答：user 是问题和选项，assistant.reasoning_content 是已有参考推理，assistant.content 是最终答案。模型学习推理与答案，问题提供上下文。'),
+p('样本来源：20260702_openai.jsonl，第 317 行；宿主机目录为 /data3/llin/sft/datasets/open_source/huawei_train/。样本字段和值均来自该文件。'),
+p('MindSpeed-MM 模板读取分开的推理字段。历史 ms-swift 另有 reasoning_merged 版本，将推理放入 content 的 think 块，使用时须与模板匹配。'),
 ],
 [
 h('三 SFT 脚本运行指令'),
@@ -151,25 +128,10 @@ p('2,028 条是历史实际使用的候选集，其中 27 条达到当时的强�
 ],
 [
 h('二 数据形态'),
-p('原始层使用 OpenAI messages，包含 assistant.reasoning_content、tool_calls 和 tool 消息。适配层由 prepare_trajectory_sft.py 转为 ms-swift 的 assistant、tool_call、tool_response 角色。'),
-table(['字段或消息','作用'],[
-['messages','按真实顺序保存完整交互'],
-['tools','bash、read、write、edit 的工具定义；实际保存为 JSON 字符串'],
-['assistant','思考与回答；参与训练'],
-['tool_call','工具名和参数；参与训练'],
-['tool_response','工具执行结果；只提供上下文'],
-]),
-p('以下仅展示角色与字段，内容为演示；真实 tools 需包含完整参数定义。'),
-code('''{"tools":"[完整工具 schema]", "messages":[
-  {"role":"user","content":"读取业务说明并回答问题。"},
-  {"role":"assistant","content":"先查阅说明。", "loss":true},
-  {"role":"tool_call",
-   "content":"{\\"name\\":\\"read\\",\\"arguments\\":{\\"path\\":\\"rules.md\\"}}",
-   "loss":true},
-  {"role":"tool_response","content":"业务说明正文", "loss":false},
-  {"role":"assistant","content":"依据说明得出的答案。", "loss":true}
-]}'''),
-p('训练保留整条工具交互。推理写入 think 块，工具返回不作为模型应生成的答案。超出 16K 的记录不混入本次训练。'),
+p('下面摘录实际训练文件第 23 条记录：模型查询 2026-06-19 运单轨迹事件的停留时长，工具返回 6639，模型据此作答。保留用户问题和最后一次查库至回答的完整连续片段。'),
+code('{"messages": [\n  {"role":"user","content":"我想查一下2026-06-19那天运单轨迹事件里所有停留时长（分钟）总共是多少。"},\n  {"role":"assistant","content":"<think>\\nI can see the `fact_waybill_event` table has a `dwell_minutes` field. I need to query the total dwell_minutes for events on 2026-06-19\\n</think>\\n\\n","loss":true},\n  {"role":"tool_call","content":"{\\"name\\":\\"bash\\",\\"arguments\\":{\\"command\\":\\"sqlite3 /workspace/logistics.sqlite \\\\\\"SELECT SUM(dwell_minutes) AS total_dwell_minutes FROM fact_waybill_event WHERE date(event_time) = \'2026-06-19\';\\\\\\"\\"}}","loss":true},\n  {"role":"tool_response","content":"6639\\n"},\n  {"role":"assistant","content":"<think>\\nThe total dwell time for all trajectory events on 2026-06-19 is 6639\\n</think>\\n\\n2026-06-19 当天运单轨迹事件（`fact_waybill_event`）中所有 `dwell_minutes`（停留时长）的总和为 **6639 分钟**。","loss":true}\n]}'),
+p('本页省略了顶层 tools 定义、system 消息，以及前面的目录与表结构探索轮次；展示的消息内容及 loss 字段保持原样。原始 tool_response 未写 loss 字段，由训练配置排除工具返回的监督。'),
+p('样本来源：train_candidates_16k_2028.jsonl，第 23 行，属于文件前 27 条强验证子集。这里训练的是完整操作过程，而不只是最终的“6639 分钟”。'),
 ],
 [
 h('三 训练脚本运行指令'),
@@ -209,30 +171,11 @@ p('修正版删除了一条相同指令绑定冲突答案的训练任务。276 �
 ],
 [
 h('二 数据形态'),
-p('训练器读取 Parquet。prompt 只包含系统要求和用户任务；评分所需答案与 SQL 放在 reward_model.ground_truth 中，不拼入模型可见问题。'),
-table(['字段','含义'],[
-['data_source / agent_name','数据来源标记；pi_agent 执行循环'],
-['prompt','system 与 user 消息'],
-['reward_model.\nground_truth','任务、环境、答案类型、预期结果及参考 SQL'],
-['extra_info','split、来源指纹、工具选择和环境创建参数'],
-]),
-p('以下为关键字段示意，省略完整工具参数和来源字段。'),
-code('''{
-  "data_source":"boss_pi_aligned_v1",
-  "agent_name":"pi_agent",
-  "prompt":[
-    {"role":"system","content":"沙箱操作要求"},
-    {"role":"user","content":"物流查询任务"}
-  ],
-  "reward_model":{"style":"rule","ground_truth":{
-    "task_id":"任务编号", "environment_id":"环境编号",
-    "answer_type":"答案类型",
-    "expected_value_json":"序列化预期结果",
-    "verification_sql":"经核验的只读 SQL"
-  }},
-  "extra_info":{"split":"train"}
-}'''),
-p('SFT 学习已有回答；本路线则在 rollout 阶段生成新的回答与工具操作，再由评分器给出奖励。两个阶段的数据文件不能直接互换。'),
+p('下面摘录训练 Parquet 第 70 条记录，任务编号 task_000245。问题要求查询超时订单总数，记录同时保存数值型评分目标和参考 SQL。'),
+code('{\n  "data_source":"boss_pi_aligned_v1",\n  "agent_name":"pi_agent",\n  "prompt":[{"role": "user", "content": "时效分析汇总里，最近这一期超时订单的总数有多少？"}],\n  "reward_model":{"style":"rule","ground_truth":{\n    "task_id":"task_000245",\n    "environment_id":"sft/20260628_v15",\n    "answer_type":"numeric",\n    "expected_value_json":"481309",\n    "verification_sql":"SELECT SUM(exception_order_cnt) FROM fact_dws_timeliness_analysis"\n  }},\n  "extra_info":{"split":"train"}\n}'),
+p('节选省略 system 消息、user 前置沙箱布局，以及工具参数和来源指纹。任务句、SQL、评分值均保持原文；本页展示存储格式，不替代业务题意审核。'),
+p('prompt 中的任务交给模型；ground_truth 交给评分器，不能拼进模型提示。样本没有预先写好的 assistant 回答，回答和工具轨迹由训练时在线生成。'),
+p('样本来源：boss_v15_dwh_full276_20260806/dataset/boss_pi_train.parquet，第 70 条。'),
 ],
 [
 h('三 脚本运行指令'),
@@ -292,6 +235,8 @@ for name,title,pages in materials:
             if b[0] in ('p','h'):
                 if b[0]=='h':source_mode=b[1]=='依据'
                 q=d.add_paragraph(b[1], 'Heading 1' if b[0]=='h' else 'Normal')
+                if b[0]=='h' and b[1] in ('三 CPT 脚本运行指令','三 SFT 脚本运行指令','三 训练脚本运行指令','三 脚本运行指令'):
+                    q.paragraph_format.page_break_before=True
                 if source_mode and b[0]=='p':
                     for r in q.runs:r.font.size=Pt(12)
                     q.paragraph_format.line_spacing=1.2
