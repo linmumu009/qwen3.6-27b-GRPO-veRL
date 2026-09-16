@@ -1,0 +1,18 @@
+{
+  "status": "recovery_prepared_waiting_for_shared_devices",
+  "failed_pid": 3620917,
+  "failure": "vLLM Worker-6 died unexpectedly; EngineDeadError. Exact cause not established by available log.",
+  "original_output": "/opt/llin-transfer-screen-20260916-01",
+  "completed_generation_records": 32,
+  "generation_sha256": "9fd7a50e61ef67270c0b2087bf0800d6198226ff2cfad90e3218db3567a74ecd",
+  "local_prefix_source_order_and_prompt_hashes_verified": true,
+  "resume_support": "New output directory; reuse unchanged completed generation prefix, revalidate token fingerprints on server, generate remaining sources and then run full blind review and baseline.",
+  "tests_passed": 13,
+  "blocking_task_observed": "math-single-host-20260916-030049-g1",
+  "blocking_pid_observed": 3642046,
+  "device_overlap_confirmed": "npu-smi lists its workers on devices 0-7; process visibility includes 0-15.",
+  "recovery_started": false,
+  "cpt_training_running": false,
+  "other_task_modified": false,
+  "next_action": "Recheck shared device use before uploading patched runner to a new code directory and resuming into a new output directory. Keep failed outputs and all rejected records; do not restart the first 32 generations."
+}

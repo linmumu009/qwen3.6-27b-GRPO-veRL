@@ -87,12 +87,28 @@ def baseline_prompt(task):
     return 'Return only a JSON object with key "answers" containing all correct zero-based option indices.\nQuestion:\n' + task['question'] + '\nOptions:\n' + '\n'.join(f'[{i}] {x}' for i, x in enumerate(task['options']))
 
 
+def load_generation_prefix(path, expected_sha, rows):
+    if hashlib.sha256(path.read_bytes()).hexdigest() != expected_sha:
+        raise ValueError('resume fingerprint mismatch')
+    cached = [json.loads(x) for x in path.read_text(encoding='utf-8').splitlines()]
+    if not cached or len(cached) > len(rows) or len(cached) % 8:
+        raise ValueError('resume requires completed generation batches')
+    for source, raw in zip(rows, cached):
+        if raw['source_id'] != source['id'] or raw['prompt_text_sha256'] != hashlib.sha256(generation_prompt(source).encode()).hexdigest():
+            raise ValueError('resume source order or prompt changed')
+        if not all(k in raw for k in ('text','finish_reason','output_tokens','prompt_token_sha256','prompt_tokens')):
+            raise ValueError('incomplete resume record')
+    return cached
+
+
 def main():
     import fcntl
     p = argparse.ArgumentParser()
     p.add_argument('--sources', type=Path, required=True)
     p.add_argument('--sha', required=True)
     p.add_argument('--out', type=Path, required=True)
+    p.add_argument('--resume-generation', type=Path)
+    p.add_argument('--resume-sha')
     a = p.parse_args()
     os.umask(0o077)
     if hashlib.sha256(a.sources.read_bytes()).hexdigest() != a.sha:
@@ -100,6 +116,9 @@ def main():
     rows = [json.loads(x) for x in a.sources.read_text(encoding='utf-8').splitlines()]
     if len(rows) != 64 or len({r['id'] for r in rows}) != 64 or any(r['historical_split'] != 'train' or r['training_allowed'] is not False for r in rows):
         raise ValueError('unregistered source selection')
+    if bool(a.resume_generation) != bool(a.resume_sha):
+        raise ValueError('resume file and fingerprint required together')
+    cached = load_generation_prefix(a.resume_generation, a.resume_sha, rows) if a.resume_generation else []
     a.out.mkdir(exist_ok=False)
     def save(name, value):
         (a.out / name).write_text(json.dumps(value, indent=2) + '\n', encoding='utf-8')
@@ -138,7 +157,8 @@ def main():
                 baseline=dict(max_tokens=96, seed=1024, temperature=0),
                 tp=8, max_model_len=8192, max_num_seqs=16, thinking=False, repeats=1,
                 official_protocol_changed=False, same_model_filter=True, training_ready=False,
-                screening_not_independent_generalization=True))
+                screening_not_independent_generalization=True,
+                reused_generation_records=len(cached), resume_generation_sha256=a.resume_sha))
             status('loading_model')
             llm = LLM(model=MODEL, tensor_parallel_size=8, dtype='bfloat16', trust_remote_code=True, max_model_len=8192, max_num_seqs=16, gpu_memory_utilization=.8, seed=20916, enforce_eager=True)
             candidates, accepted, predictions = [], [], []
@@ -148,7 +168,13 @@ def main():
             with (a.out / 'generation.private.jsonl').open('x', encoding='utf-8') as raw:
                 for start in range(0, len(rows), 8):
                     batch = rows[start:start+8]
-                    results = run([generation_prompt(r) for r in batch], 3072, 20916, .4)
+                    if start < len(cached):
+                        results = [{k:v for k,v in record.items() if k != 'source_id'} for record in cached[start:start+len(batch)]]
+                        for row, result in zip(batch, results):
+                            if result['prompt_token_sha256'] != digest(encode(generation_prompt(row),3072)['prompt_token_ids']):
+                                raise ValueError('resume token fingerprint mismatch')
+                    else:
+                        results = run([generation_prompt(r) for r in batch], 3072, 20916, .4)
                     for row, result in zip(batch, results):
                         raw.write(json.dumps(dict(source_id=row['id'], **result), ensure_ascii=False) + '\n')
                         try:
