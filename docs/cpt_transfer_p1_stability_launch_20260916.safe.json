@@ -3,10 +3,11 @@
   "code": "/workspace/llin-verl-grpo/runs/llin-transfer-p1-stability-code-20260916-01",
   "output": "/workspace/llin-verl-grpo/runs/llin-transfer-p1-stability-20260916-01",
   "training": false,
-  "status": "baseline_repeat",
+  "status": "failed_before_predictions",
   "requested_additional_runs_per_model": 1,
   "requested_predictions": 360,
   "tests_passed": 30,
-  "container_process_alive": true,
-  "resource_check": "No pre-existing repeat job, NPU processes absent, project volume about 1.1 TiB free; coordinator acquired shared lock."
+  "container_process_alive": false,
+  "resource_check": "No pre-existing repeat job, NPU processes absent, project volume about 1.1 TiB free; coordinator acquired shared lock.",
+  "recovery_record": "cpt_transfer_p1_stability_recovery_20260916.safe.json"
 }

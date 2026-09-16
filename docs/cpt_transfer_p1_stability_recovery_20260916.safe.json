@@ -1,0 +1,16 @@
+{
+  "pid": 3725437,
+  "code": "/workspace/llin-verl-grpo/runs/llin-transfer-p1-stability-code-20260916-02",
+  "output": "/workspace/llin-verl-grpo/runs/llin-transfer-p1-stability-20260916-02",
+  "status": "baseline_repeat",
+  "training": false,
+  "failed_attempt": "/workspace/llin-verl-grpo/runs/llin-transfer-p1-stability-20260916-01",
+  "failed_pid": 3723042,
+  "failed_before_any_predictions": true,
+  "cause": "Launch wrapper replaced Ascend toolkit PYTHONPATH; worker could not import acl.",
+  "fix": "Preserve sourced PYTHONPATH and preflight acl.rt.memcpy import.",
+  "requested_predictions": 360,
+  "additional_completed_runs_before_recovery": 0,
+  "acl_preflight_passed": true,
+  "container_process_alive": true
+}
