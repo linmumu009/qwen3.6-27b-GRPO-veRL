@@ -1,0 +1,14 @@
+{
+  "case_sha256": "d778181eae00dc8ed45496a81bead8d9f5f410970e7d28fa1f1354137eaaae09",
+  "cases": 6,
+  "requests": 12,
+  "source_units": 5,
+  "rule_families": 5,
+  "source_groups": 3,
+  "numeric_checks": "exact rational arithmetic passed",
+  "review_completed_before_inference": true,
+  "source_only_inputs": true,
+  "official_qa_used": false,
+  "training_allowed": false,
+  "limitations": "Two KPI scenarios overlap; six cases do not represent six independent rules or satisfy the broad-training gate. Author option audit is not a blinded external review. This paired format diagnostic uses the same 96-token budget; explanations may truncate. No source text is passed to baseline model."
+}

@@ -1,0 +1,9 @@
+{
+  "pid": 3680359,
+  "code": "/opt/llin-reviewed-scenario-code-20260916-01",
+  "output": "/opt/llin-reviewed-scenario-probe-20260916-01",
+  "status": "loading_model",
+  "training_running": false,
+  "devices_idle_before_launch": true,
+  "container_process_alive": true
+}
