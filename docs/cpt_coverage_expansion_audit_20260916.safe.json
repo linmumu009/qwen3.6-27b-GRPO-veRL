@@ -1,0 +1,33 @@
+{
+  "cases": 14,
+  "requests": 56,
+  "accepted_cases": 14,
+  "source_units": 21,
+  "source_groups": 9,
+  "arithmetic_checks": 25,
+  "closed_correct": 19,
+  "closed_requests": 28,
+  "evidence_correct": 25,
+  "evidence_requests": 28,
+  "invalid": 0,
+  "truncated": 0,
+  "new_candidate_families": 6,
+  "closed_both_wrong": 3,
+  "closed_both_wrong_evidence_both_right": 2,
+  "source_and_option_review": "All14 cases audited before inference and rechecked after outputs; exact rational numerical equalities verified. Codex authored review, not independent external certification.",
+  "consolidation_notes": {
+    "person_categories": "On-duty contractor versus off-duty passenger roles; distinct from accident severity. Correctness differs by option order even with evidence.",
+    "invoice_financing_basis": "Invoice collateral and financial-health basis; distinct from valuation and outsourcing responsibility. Both closed errors omit supplier-invoice collateral; both source orders correct.",
+    "facility_and_flow_joint_design": "Joint opening and allocation costs with capacity; distinct from component BOM netting. Exact four feasible configuration bounds establish minimum65; includes arithmetic/optimization rather than pure recall.",
+    "carrying_cost_boundary": "Annual holding-expense boundary and duplicate operating cost; distinct from IAS2 inventory balance-sheet valuation. One-order error omits the derived12% rate.",
+    "outsourcing_stage_dependencies": "Order of stages and separation of offer evaluation from service monitoring; distinct from retained management responsibility, which was not an old gap family.",
+    "hs_domestic_extensions": "International six-digit prefix versus Japan domestic suffix; neither source existed in the previous candidate registry. One-order error conflates different six-digit prefixes."
+  },
+  "token_prompt_hashes_verified": 56,
+  "all_token_hashes_matched": true,
+  "case_sha256": "b28c352852a2c78bc6659e6d2ee74adefb7e4cd2d688e1d8f1de3995efec0373",
+  "prediction_sha256": "adea10f85f213dc40c6a08263d3bb26980a59bcfaacc7d36e4fd057cbc0c1b2b",
+  "training_started": false,
+  "official_protocol_changed": false,
+  "limitations": "Archived frameworks and explicitly provided scenario assumptions, not current legal or financial advice. Two permutations are not independent seeds. Evidence scores are not training gains. Three one-order failures are position sensitive; do not infer stable deficits."
+}

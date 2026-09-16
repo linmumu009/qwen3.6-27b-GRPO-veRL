@@ -1,0 +1,53 @@
+{
+  "packet_sha256": "4e18b5b8100da4a780a8fe46ded61bce512d5d78e0d921d2f73838cc1cbffa9a",
+  "source_sha256": "5df7dc2b209938986cd7081aecdc9105fb989c9a872d572ce0a0c5a16dbbf8a4",
+  "registry_sha256": "02d7f0a6c3d601ec1e9456cdb8123a73cf1f9f4ff511f034f1190f10c1aeec63",
+  "generation_requests": 122,
+  "requested_tasks": {
+    "train": 168,
+    "dev": 84,
+    "sealed": 28,
+    "retention": 114
+  },
+  "candidate_units": 28,
+  "categories": {
+    "rail_technology": 4,
+    "rail_safety": 4,
+    "waterways": 3,
+    "pipeline": 2,
+    "warehouse": 6,
+    "planning": 2,
+    "business": 6,
+    "road_vehicles": 1
+  },
+  "retention_source_units": 38,
+  "source_groups": 24,
+  "frozen_dev_groups": 5,
+  "frozen_dev_topics": [
+    "abc",
+    "air_codes",
+    "aircraft_mechanics",
+    "capital_stock",
+    "cargo_classes",
+    "cargo_package",
+    "hazard_classes",
+    "inventory_demand",
+    "pallet_sizes",
+    "pest",
+    "postponement",
+    "transport_actors",
+    "transport_measurement",
+    "transport_modes",
+    "unit_loads"
+  ],
+  "generator_inputs": "source fields and abstract task-design assignments only",
+  "diagnostic_questions_in_generator": false,
+  "official_qa_in_generator": false,
+  "training_ready": false,
+  "training_allowed": false,
+  "limitations": "Requested counts are not produced or accepted counts. Check the current candidate count, category distribution and registered 30-50 rule gate separately. Generation and same-model blind review only produce drafts. Every item, cross-split reasoning structure and arithmetic still require independent audit. Retention excludes target topics but shared historical source groups and broad semantic relations remain possible. No output is a training release or certified independent holdout. The38 retention excerpts can still contain translations or semantic duplicates; they are not38 certified independent rules.",
+  "dispatch_allowed": false,
+  "reason": "Pilot semantic audit found unresolved errors; full generation has not been resumed.",
+  "retention_target": 120,
+  "requested_retention_shortfall": 6
+}

@@ -1,0 +1,177 @@
+[
+  {
+    "id": "llin-expansion-person_categories",
+    "category": "rail_safety",
+    "closed_correct_orders": 1,
+    "evidence_correct_orders": 1,
+    "closed_content_changes_with_order": true,
+    "evidence_content_changes_with_order": true,
+    "closed_both_wrong_evidence_both_right": false,
+    "source_ids": [
+      "llin-core-925b08308fc491113dad"
+    ]
+  },
+  {
+    "id": "llin-expansion-rolling_stock_fire_scope",
+    "category": "rail_safety",
+    "closed_correct_orders": 2,
+    "evidence_correct_orders": 1,
+    "closed_content_changes_with_order": false,
+    "evidence_content_changes_with_order": true,
+    "closed_both_wrong_evidence_both_right": false,
+    "source_ids": [
+      "llin-core-d63a7dc1b3925638b79b"
+    ]
+  },
+  {
+    "id": "llin-expansion-dangerous_goods_reportability",
+    "category": "rail_safety",
+    "closed_correct_orders": 2,
+    "evidence_correct_orders": 2,
+    "closed_content_changes_with_order": false,
+    "evidence_content_changes_with_order": false,
+    "closed_both_wrong_evidence_both_right": false,
+    "source_ids": [
+      "llin-core-647d516de2022f45c7d7"
+    ]
+  },
+  {
+    "id": "llin-expansion-road_combination_structure",
+    "category": "road_vehicles",
+    "closed_correct_orders": 2,
+    "evidence_correct_orders": 2,
+    "closed_content_changes_with_order": false,
+    "evidence_content_changes_with_order": false,
+    "closed_both_wrong_evidence_both_right": false,
+    "source_ids": [
+      "llin-core-0b9dac115800d368d209",
+      "llin-core-b15da40c324e799cd7f5",
+      "llin-core-4cc35447a0f74f5204c4",
+      "llin-core-e871863d2ad1f201239e",
+      "llin-core-9216d6581926333995cb",
+      "llin-core-2e90ba7b6278253c2c1b"
+    ]
+  },
+  {
+    "id": "llin-expansion-load_space_dimensions",
+    "category": "road_vehicles",
+    "closed_correct_orders": 2,
+    "evidence_correct_orders": 2,
+    "closed_content_changes_with_order": false,
+    "evidence_content_changes_with_order": false,
+    "closed_both_wrong_evidence_both_right": false,
+    "source_ids": [
+      "llin-core-f4a82709331b62865c80",
+      "llin-core-114fae23e05510647641"
+    ]
+  },
+  {
+    "id": "llin-expansion-pipeline_commodity_scope",
+    "category": "pipeline",
+    "closed_correct_orders": 2,
+    "evidence_correct_orders": 2,
+    "closed_content_changes_with_order": false,
+    "evidence_content_changes_with_order": false,
+    "closed_both_wrong_evidence_both_right": false,
+    "source_ids": [
+      "llin-core-68a803b013da11c293ce"
+    ]
+  },
+  {
+    "id": "llin-expansion-merchant_commercial_scope",
+    "category": "waterways",
+    "closed_correct_orders": 2,
+    "evidence_correct_orders": 2,
+    "closed_content_changes_with_order": false,
+    "evidence_content_changes_with_order": false,
+    "closed_both_wrong_evidence_both_right": false,
+    "source_ids": [
+      "llin-core-196a8b101f8618981601"
+    ]
+  },
+  {
+    "id": "llin-expansion-invoice_financing_basis",
+    "category": "business",
+    "closed_correct_orders": 0,
+    "evidence_correct_orders": 2,
+    "closed_content_changes_with_order": false,
+    "evidence_content_changes_with_order": false,
+    "closed_both_wrong_evidence_both_right": true,
+    "source_ids": [
+      "llin-core-468404e82233239a24e2"
+    ]
+  },
+  {
+    "id": "llin-expansion-facility_and_flow_joint_design",
+    "category": "planning",
+    "closed_correct_orders": 0,
+    "evidence_correct_orders": 1,
+    "closed_content_changes_with_order": true,
+    "evidence_content_changes_with_order": true,
+    "closed_both_wrong_evidence_both_right": false,
+    "source_ids": [
+      "llin-core-19afa54fce090ce327cf"
+    ]
+  },
+  {
+    "id": "llin-expansion-carrying_cost_boundary",
+    "category": "business",
+    "closed_correct_orders": 1,
+    "evidence_correct_orders": 2,
+    "closed_content_changes_with_order": true,
+    "evidence_content_changes_with_order": false,
+    "closed_both_wrong_evidence_both_right": false,
+    "source_ids": [
+      "llin-core-40b84532454e75b93680"
+    ]
+  },
+  {
+    "id": "llin-expansion-outsourcing_stage_dependencies",
+    "category": "business",
+    "closed_correct_orders": 0,
+    "evidence_correct_orders": 2,
+    "closed_content_changes_with_order": false,
+    "evidence_content_changes_with_order": false,
+    "closed_both_wrong_evidence_both_right": true,
+    "source_ids": [
+      "llin-core-d3eeb424676374325e30"
+    ]
+  },
+  {
+    "id": "llin-expansion-port_forecast_units_and_competition",
+    "category": "planning",
+    "closed_correct_orders": 2,
+    "evidence_correct_orders": 2,
+    "closed_content_changes_with_order": false,
+    "evidence_content_changes_with_order": false,
+    "closed_both_wrong_evidence_both_right": false,
+    "source_ids": [
+      "llin-core-136a011475a248e5ce6d"
+    ]
+  },
+  {
+    "id": "llin-expansion-drought_capacity_and_inventory",
+    "category": "waterways",
+    "closed_correct_orders": 2,
+    "evidence_correct_orders": 2,
+    "closed_content_changes_with_order": false,
+    "evidence_content_changes_with_order": false,
+    "closed_both_wrong_evidence_both_right": false,
+    "source_ids": [
+      "llin-core-7d672780ed96cbcd410f"
+    ]
+  },
+  {
+    "id": "llin-expansion-hs_domestic_extensions",
+    "category": "business",
+    "closed_correct_orders": 1,
+    "evidence_correct_orders": 2,
+    "closed_content_changes_with_order": true,
+    "evidence_content_changes_with_order": false,
+    "closed_both_wrong_evidence_both_right": false,
+    "source_ids": [
+      "llin-core-95f8392ba851bdf6ff8a",
+      "llin-core-79886a04bdf893365fc3"
+    ]
+  }
+]

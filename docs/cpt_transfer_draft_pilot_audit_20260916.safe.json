@@ -1,0 +1,33 @@
+{
+  "raw_generation_records": 8,
+  "raw_drafted_tasks": 48,
+  "original_strict_filter_candidates": 8,
+  "revised_format_filter_candidates": 22,
+  "semantic_reviewed": 22,
+  "verdicts": {
+    "hold": 14,
+    "reject": 5,
+    "accept_for_further_split_audit": 3
+  },
+  "training_ready": false,
+  "all_items_still_quarantined": true,
+  "plan_change": "Audit the eight-source pilot before scaling the remaining110 requests. No full-scale restart until scope/answer-quality problems are repaired.",
+  "raw_generation_sha256": "e86c2c7917b62b2be3109648e84cab74199af8bb305abd49c17c466018ec40dd",
+  "pilot_request_sha256": "8efeba8f318470bfe473423ad64c88c8c21ba7d623b7be4b81223900cc83586e",
+  "limitations": "Three items provisionally acceptable in this review; not a complete unit release, proof of split novelty, or independent expert certification. Arithmetic syntax and non-exact quotations still rejected; no permissive repair of raw answers.",
+  "mechanical_rejections": {
+    "unsupported_arithmetic_expression_syntax": 13,
+    "source_quote_not_exact": 13
+  },
+  "mechanical_rejection_note": "Unsupported syntax includes comparisons encoded as arithmetic expressions; these are not13 independently proven arithmetic mistakes.",
+  "second_scope_pass": "One provisional acceptance moved to hold because the statistical framework was unstated; final counts3 provisional,14 hold,5 reject.",
+  "same_model_blind_review_filtered": 18,
+  "independent_verdicts_within_model_filtered": {
+    "hold": 13,
+    "reject": 3,
+    "accept_for_further_split_audit": 2
+  },
+  "review_truncations": 1,
+  "complete_train_dev_sealed_units": 0,
+  "training_released_items": 0
+}

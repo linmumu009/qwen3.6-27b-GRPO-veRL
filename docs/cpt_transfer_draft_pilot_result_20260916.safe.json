@@ -1,0 +1,89 @@
+{
+  "packet_sha256": "8efeba8f318470bfe473423ad64c88c8c21ba7d623b7be4b81223900cc83586e",
+  "raw_files": {
+    "candidates.private.jsonl": "0bed756f04398c1bd810f05d95b7f360ba294bc60e5e06332ac5b2493a04338a",
+    "dev.draft.private.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "filtered.private.jsonl": "63fab9a457f0e6bcfd0dc2c42ca941de0662cb35a9b39c2e80d065a89305c973",
+    "generation.private.jsonl": "e86c2c7917b62b2be3109648e84cab74199af8bb305abd49c17c466018ec40dd",
+    "retention.draft.private.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "review.private.jsonl": "f841c1eb1af75d0802b2704039acb1a7c631279a4e833e2a5e5463d3fa7c1190",
+    "sealed.draft.private.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "train.draft.private.jsonl": "63fab9a457f0e6bcfd0dc2c42ca941de0662cb35a9b39c2e80d065a89305c973"
+  },
+  "generation_requests": 8,
+  "review_requests": 22,
+  "candidate_items": 22,
+  "filtered_items": 18,
+  "filtered_counts": {
+    "train": 18
+  },
+  "complete_6_3_1_units": 0,
+  "unit_counts": {
+    "unit-001": {
+      "train": 2
+    },
+    "unit-002": {
+      "train": 5
+    },
+    "unit-003": {
+      "train": 5
+    },
+    "unit-004": {
+      "train": 2
+    },
+    "unit-005": {
+      "train": 1
+    },
+    "unit-006": {
+      "train": 1
+    },
+    "unit-007": {
+      "train": 1
+    },
+    "unit-008": {
+      "train": 1
+    }
+  },
+  "generation_truncations": 0,
+  "review_truncations": 1,
+  "arithmetic_equalities_checked": 3,
+  "normalized_duplicate_groups": [],
+  "diagnostic_exact_or_number_normalized_matches": [],
+  "diagnostic_exclusion_inputs": [
+    {
+      "sha256": "ebc53dab7e305a4d34d00dc31eff70476d2612021855240762c29c8969c25328",
+      "rows": 32
+    },
+    {
+      "sha256": "d778181eae00dc8ed45496a81bead8d9f5f410970e7d28fa1f1354137eaaae09",
+      "rows": 6
+    },
+    {
+      "sha256": "b28c352852a2c78bc6659e6d2ee74adefb7e4cd2d688e1d8f1de3995efec0373",
+      "rows": 14
+    },
+    {
+      "sha256": "1237a2c060eae41a674a620864f08381ffe364de219accb7916555e849622a6e",
+      "rows": 134
+    },
+    {
+      "sha256": "f0452e42f78606cd7f942f5324f4d1f9c94ae32d60dfe978dbb85bb3d5ad2671",
+      "rows": 49
+    }
+  ],
+  "diagnostic_questions_checked": 235,
+  "raw_provenance_verified": true,
+  "training_ready": false,
+  "training_allowed": false,
+  "limitations": "Mechanical provenance, exact rational expressions and same-model reviewer decisions verified; scenario-to-equation correctness, semantic novelty, answer uniqueness, retention representativeness and split separation are not certified. Duplicate checks are a floor, never proof of semantic independence. Complete 6/3/1 counts are only counts of provisional drafts. No task is released for training.",
+  "token_prompt_hashes_verified": 30,
+  "all_token_hashes_matched": true,
+  "reused_generation_records": 8,
+  "new_generation_requests": 0,
+  "archived_code_sha256": {
+    "cpt_transfer_draft.py": "9ef336074ead855ea4cefb6b1811325fae6db91682ac3ea8f0cc9502faa6a392",
+    "run_cpt_transfer_draft.sh": "b25e7ccddc7c9cb9a6aef77d6df0d1a750bfeff7c0923578631c2316d1c238cf",
+    "run_cpt_transfer_screen.py": "5b736302a73e522b50f277f6d8c1a6ec650ccf1a79133ec2f41c517664d72beb",
+    "cpt_composed_probe.py": "ee6a3de96b98d8a4fccd3511cd14626f2a2a562d999443166a528d4bfaf577eb"
+  }
+}

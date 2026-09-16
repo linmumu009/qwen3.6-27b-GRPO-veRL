@@ -1,0 +1,25 @@
+{
+  "cases": 6,
+  "requests": 12,
+  "case_sha256": "d778181eae00dc8ed45496a81bead8d9f5f410970e7d28fa1f1354137eaaae09",
+  "predictions_sha256": "14519ab4a136bc52660b70fc7f994fa1f414dec8cb09ab27d47472573ae1f512",
+  "answer_only_correct": 5,
+  "invalid": 0,
+  "truncated": 0,
+  "explain_then_answer_correct": 6,
+  "independently_reparsed": true,
+  "numeric_keys_checked": true,
+  "repaired_cases": [
+    "llin-scenario-1"
+  ],
+  "explanation_audit": {
+    "llin-scenario-4": "Correct selected option, incorrect intermediate arithmetic: 48*9+12*29=780, not 756. The exact answer is 13, not 12.6 rounded to the nearest option."
+  },
+  "added_candidate_rules": 1,
+  "new_rule": "batching_total_cost",
+  "training_running": false,
+  "official_protocol_changed": false,
+  "limitations": "One repaired cost calculation does not establish a training-format advantage. Correct selected labels do not certify explanations. Five source units overlap older coverage; only the newly failing batching-cost rule is an added candidate, not a stable independent deficit.",
+  "token_prompt_hashes_verified": 12,
+  "all_token_hashes_matched": true
+}

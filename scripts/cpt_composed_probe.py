@@ -116,12 +116,13 @@ def parse(text,count):
 
 
 def main():
+    p=argparse.ArgumentParser();p.add_argument('--cases',type=Path,required=True);p.add_argument('--sha',required=True);p.add_argument('--out',type=Path,required=True)
+    p.add_argument('--expected-cases',type=int,default=32);a=p.parse_args()
     import fcntl
-    p=argparse.ArgumentParser();p.add_argument('--cases',type=Path,required=True);p.add_argument('--sha',required=True);p.add_argument('--out',type=Path,required=True);a=p.parse_args()
     os.umask(0o077)
     if sha(a.cases)!=a.sha: raise ValueError('packet fingerprint mismatch')
     cases=[json.loads(s) for s in a.cases.read_text(encoding='utf-8').splitlines()];validate(cases)
-    if len(cases)!=32: raise ValueError('registered batch requires 32 audited scenarios')
+    if len(cases)!=a.expected_cases: raise ValueError('registered scenario count mismatch')
     a.out.mkdir(exist_ok=False)
     def save(name,value): (a.out/name).write_text(json.dumps(value,indent=2)+'\n',encoding='utf-8')
     def status(value,**kwargs): save('status.safe.json',dict(status=value,training_running=False,**kwargs))

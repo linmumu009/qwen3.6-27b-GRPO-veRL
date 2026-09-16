@@ -1,0 +1,83 @@
+{
+  "status": "mechanically_verified",
+  "totals": {
+    "closed_book_requests": 28,
+    "closed_book_correct": 19,
+    "invalid": 0,
+    "truncated": 0,
+    "source_evidence_requests": 28,
+    "source_evidence_correct": 25,
+    "scenarios": 14,
+    "closed_both_correct": 8,
+    "closed_one_correct": 3,
+    "closed_both_wrong": 3,
+    "evidence_both_correct": 11,
+    "closed_both_wrong_evidence_both_right": 2,
+    "closed_content_changes_with_order": 4
+  },
+  "by_category": {
+    "rail_safety": {
+      "scenarios": 3,
+      "closed_both_correct": 2,
+      "closed_one_correct": 1,
+      "closed_both_wrong": 0,
+      "evidence_both_correct": 1,
+      "closed_both_wrong_evidence_both_right": 0,
+      "closed_content_changes_with_order": 1
+    },
+    "road_vehicles": {
+      "scenarios": 2,
+      "closed_both_correct": 2,
+      "closed_one_correct": 0,
+      "closed_both_wrong": 0,
+      "evidence_both_correct": 2,
+      "closed_both_wrong_evidence_both_right": 0,
+      "closed_content_changes_with_order": 0
+    },
+    "pipeline": {
+      "scenarios": 1,
+      "closed_both_correct": 1,
+      "closed_one_correct": 0,
+      "closed_both_wrong": 0,
+      "evidence_both_correct": 1,
+      "closed_both_wrong_evidence_both_right": 0,
+      "closed_content_changes_with_order": 0
+    },
+    "waterways": {
+      "scenarios": 2,
+      "closed_both_correct": 2,
+      "closed_one_correct": 0,
+      "closed_both_wrong": 0,
+      "evidence_both_correct": 2,
+      "closed_both_wrong_evidence_both_right": 0,
+      "closed_content_changes_with_order": 0
+    },
+    "business": {
+      "scenarios": 4,
+      "closed_both_correct": 0,
+      "closed_one_correct": 2,
+      "closed_both_wrong": 2,
+      "evidence_both_correct": 4,
+      "closed_both_wrong_evidence_both_right": 2,
+      "closed_content_changes_with_order": 2
+    },
+    "planning": {
+      "scenarios": 2,
+      "closed_both_correct": 1,
+      "closed_one_correct": 0,
+      "closed_both_wrong": 1,
+      "evidence_both_correct": 1,
+      "closed_both_wrong_evidence_both_right": 0,
+      "closed_content_changes_with_order": 1
+    }
+  },
+  "case_sha256": "b28c352852a2c78bc6659e6d2ee74adefb7e4cd2d688e1d8f1de3995efec0373",
+  "prediction_sha256": "adea10f85f213dc40c6a08263d3bb26980a59bcfaacc7d36e4fd057cbc0c1b2b",
+  "code_sha256": "ee6a3de96b98d8a4fccd3511cd14626f2a2a562d999443166a528d4bfaf577eb",
+  "raw_answers_independently_reparsed": true,
+  "text_prompts_reconstructed": true,
+  "token_hash_reconstruction": "56/56 reconstructed with archived tokenizer and matched",
+  "training_started": false,
+  "official_evaluation_changed": false,
+  "limitations": "Agent-authored screening scenarios, not independent generalization evaluation. Two option orders are not independent seeds. Cases combine and overlap source rules; gaps cannot be added to prior counts without semantic consolidation. Evidence-assisted scores are not closed-book learning gains."
+}
