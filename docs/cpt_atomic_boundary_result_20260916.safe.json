@@ -1,0 +1,39 @@
+{
+  "status": "mechanically_verified",
+  "cases": 31,
+  "requests": 372,
+  "by_condition": {
+    "closed_book": {
+      "claims": 186,
+      "claims_correct": 164,
+      "cases": 31,
+      "atomic_complete_correct": 16,
+      "joint_complete_correct": 17,
+      "joint_wrong_atomic_right": 4,
+      "joint_right_atomic_wrong": 5,
+      "invalid": 0,
+      "truncated": 0
+    },
+    "source_evidence": {
+      "claims": 186,
+      "claims_correct": 176,
+      "cases": 31,
+      "atomic_complete_correct": 22,
+      "joint_complete_correct": 25,
+      "joint_wrong_atomic_right": 1,
+      "joint_right_atomic_wrong": 4,
+      "invalid": 0,
+      "truncated": 0
+    }
+  },
+  "case_sha256": "ebc53dab7e305a4d34d00dc31eff70476d2612021855240762c29c8969c25328",
+  "semantic_review_sha256": "1f7b51a6b2ebbdd75b16efd25cd6a4290aad161ebe9ad69d182a34803c8d8417",
+  "prediction_sha256": "9c91f71ddd72dab6e2e116dc0d3b59356d10f1d0b6e2e064568584562b01794a",
+  "joint_prediction_sha256": "b47f1fc0ced7031eef1dfde0dc59e7ba8096431f3e872c43141df0c8bfe1c165",
+  "raw_answers_independently_reparsed": true,
+  "text_prompts_reconstructed": true,
+  "token_hash_reconstruction": "All372 actual token counts and SHA256 matched separate archived-Step120-tokenizer reconstruction on huawei-05.",
+  "training_started": false,
+  "official_evaluation_changed": false,
+  "limitations": "Diagnostic decomposition of the same source-based scenarios. Six16-token caps match one96-token output cap, but prompt input is repeated six times and computation differs. Not an independent benchmark or a training gain. Joint comparator uses only its first, preregistered option order."
+}

@@ -1,0 +1,103 @@
+{
+  "status": "mechanically_verified",
+  "totals": {
+    "closed_book_requests": 64,
+    "closed_book_correct": 35,
+    "invalid": 0,
+    "truncated": 0,
+    "source_evidence_requests": 64,
+    "source_evidence_correct": 53,
+    "scenarios": 32,
+    "closed_both_correct": 14,
+    "closed_one_correct": 7,
+    "closed_both_wrong": 11,
+    "evidence_both_correct": 24,
+    "closed_both_wrong_evidence_both_right": 5,
+    "closed_content_changes_with_order": 12
+  },
+  "by_category": {
+    "rail_technology": {
+      "scenarios": 4,
+      "closed_both_correct": 0,
+      "closed_one_correct": 1,
+      "closed_both_wrong": 3,
+      "evidence_both_correct": 3,
+      "closed_both_wrong_evidence_both_right": 2,
+      "closed_content_changes_with_order": 2
+    },
+    "rail_safety": {
+      "scenarios": 4,
+      "closed_both_correct": 1,
+      "closed_one_correct": 1,
+      "closed_both_wrong": 2,
+      "evidence_both_correct": 3,
+      "closed_both_wrong_evidence_both_right": 1,
+      "closed_content_changes_with_order": 3
+    },
+    "road_vehicles": {
+      "scenarios": 3,
+      "closed_both_correct": 3,
+      "closed_one_correct": 0,
+      "closed_both_wrong": 0,
+      "evidence_both_correct": 3,
+      "closed_both_wrong_evidence_both_right": 0,
+      "closed_content_changes_with_order": 0
+    },
+    "waterways": {
+      "scenarios": 4,
+      "closed_both_correct": 2,
+      "closed_one_correct": 0,
+      "closed_both_wrong": 2,
+      "evidence_both_correct": 4,
+      "closed_both_wrong_evidence_both_right": 2,
+      "closed_content_changes_with_order": 1
+    },
+    "pipeline": {
+      "scenarios": 3,
+      "closed_both_correct": 1,
+      "closed_one_correct": 1,
+      "closed_both_wrong": 1,
+      "evidence_both_correct": 2,
+      "closed_both_wrong_evidence_both_right": 0,
+      "closed_content_changes_with_order": 1
+    },
+    "warehouse": {
+      "scenarios": 5,
+      "closed_both_correct": 0,
+      "closed_one_correct": 2,
+      "closed_both_wrong": 3,
+      "evidence_both_correct": 2,
+      "closed_both_wrong_evidence_both_right": 0,
+      "closed_content_changes_with_order": 3
+    },
+    "planning": {
+      "scenarios": 4,
+      "closed_both_correct": 3,
+      "closed_one_correct": 1,
+      "closed_both_wrong": 0,
+      "evidence_both_correct": 2,
+      "closed_both_wrong_evidence_both_right": 0,
+      "closed_content_changes_with_order": 1
+    },
+    "business": {
+      "scenarios": 5,
+      "closed_both_correct": 4,
+      "closed_one_correct": 1,
+      "closed_both_wrong": 0,
+      "evidence_both_correct": 5,
+      "closed_both_wrong_evidence_both_right": 0,
+      "closed_content_changes_with_order": 1
+    }
+  },
+  "case_sha256": "ebc53dab7e305a4d34d00dc31eff70476d2612021855240762c29c8969c25328",
+  "prediction_sha256": "b47f1fc0ced7031eef1dfde0dc59e7ba8096431f3e872c43141df0c8bfe1c165",
+  "code_sha256": "757bf46ef9af64d08fe83cd56119fa9ebd9a84b393cc4306ec0cf59ec117bf53",
+  "raw_answers_independently_reparsed": true,
+  "text_prompts_reconstructed": true,
+  "token_hash_reconstruction": "All128 actual token counts and SHA256 matched independent archived-Step120-tokenizer reconstruction on huawei-05.",
+  "training_started": false,
+  "official_evaluation_changed": false,
+  "limitations": "Agent-authored screening scenarios, not independent generalization evaluation. Two option orders are not independent seeds. Cases combine and overlap source rules; gaps cannot be added to prior counts without semantic consolidation. Evidence-assisted scores are not closed-book learning gains.",
+  "contract_tests_passed": 17,
+  "semantic_audit": "cpt_composed_boundary_audit_20260916.safe.json"
+}

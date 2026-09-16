@@ -1,0 +1,27 @@
+{
+  "reviewed": 32,
+  "accepted": 31,
+  "held": 1,
+  "held_case": "llin-composed-reefer_criteria",
+  "hold_reason": "The observed maintained temperature does not explicitly bound lowest achievable temperature. Meeting the class-C capability requirement cannot be uniquely denied from a -12C observation alone. Clarify capability in a future independently authored scenario; do not edit this frozen packet.",
+  "closed_correct": 35,
+  "evidence_correct": 53,
+  "requests_per_condition": 62,
+  "closed_both_wrong": 10,
+  "closed_one_correct": 7,
+  "closed_both_correct": 14,
+  "evidence_both_correct": 24,
+  "closed_both_wrong_evidence_both_right": 5,
+  "closed_content_changes_with_order": 11,
+  "source_repaired_cases": [
+    "llin-composed-rail_speed",
+    "llin-composed-railcar_accounting",
+    "llin-composed-derailment_precedence",
+    "llin-composed-inland_capacity_design",
+    "llin-composed-self_propulsion"
+  ],
+  "semantic_review_sha256": "1f7b51a6b2ebbdd75b16efd25cd6a4290aad161ebe9ad69d182a34803c8d8417",
+  "post_output_review_disclosed": true,
+  "raw_key_and_outputs_unchanged": true,
+  "training_ready": false
+}

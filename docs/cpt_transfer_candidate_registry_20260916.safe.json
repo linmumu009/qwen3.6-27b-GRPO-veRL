@@ -1,0 +1,275 @@
+{
+  "date": "2026-09-16",
+  "candidate_rule_families": 21,
+  "categories": {
+    "rail_technology": 4,
+    "rail_safety": 3,
+    "waterways": 3,
+    "pipeline": 2,
+    "warehouse": 5,
+    "planning": 1,
+    "business": 2,
+    "road_vehicles": 1
+  },
+  "old_accepted_source_units": 7,
+  "new_accepted_scenarios_with_any_closed_error": 17,
+  "manual_overlap_merges": 3,
+  "closed_wrong_in_both_orders_new_cases": 10,
+  "closed_wrong_in_one_order_new_cases": 7,
+  "training_ready": false,
+  "source_overlap_merge_map": {
+    "llin-core-e18cbdfda5e0f7a00139": "llin-composed-rail_speed",
+    "llin-core-b5b62400c11c1cace1b4": "llin-composed-railcar_accounting",
+    "llin-core-79e0091b62852f467ee8": "llin-composed-significant_accident"
+  },
+  "families": [
+    {
+      "family_id": "llin-composed-rail_speed",
+      "category": "rail_technology",
+      "source_ids": [
+        "llin-core-e18cbdfda5e0f7a00139",
+        "llin-core-ed190bcb6b41b42da590"
+      ],
+      "new_composed_case": "llin-composed-rail_speed",
+      "closed_correct_orders": 0,
+      "evidence_correct_orders": 2,
+      "old_source_screen_units": [
+        "llin-core-e18cbdfda5e0f7a00139"
+      ]
+    },
+    {
+      "family_id": "llin-composed-rail_network_length",
+      "category": "rail_technology",
+      "source_ids": [
+        "llin-core-4325923911580698ac94",
+        "llin-core-4de2e9a3634198597945"
+      ],
+      "new_composed_case": "llin-composed-rail_network_length",
+      "closed_correct_orders": 1,
+      "evidence_correct_orders": 2,
+      "old_source_screen_units": []
+    },
+    {
+      "family_id": "llin-composed-railcar_accounting",
+      "category": "rail_technology",
+      "source_ids": [
+        "llin-core-b5b62400c11c1cace1b4"
+      ],
+      "new_composed_case": "llin-composed-railcar_accounting",
+      "closed_correct_orders": 0,
+      "evidence_correct_orders": 2,
+      "old_source_screen_units": [
+        "llin-core-b5b62400c11c1cace1b4"
+      ]
+    },
+    {
+      "family_id": "llin-composed-significant_accident",
+      "category": "rail_safety",
+      "source_ids": [
+        "llin-core-9a975bfe4851c977e3f2",
+        "llin-core-79e0091b62852f467ee8",
+        "llin-core-f7455d176f34868b2efd"
+      ],
+      "new_composed_case": "llin-composed-significant_accident",
+      "closed_correct_orders": 0,
+      "evidence_correct_orders": 1,
+      "old_source_screen_units": [
+        "llin-core-79e0091b62852f467ee8"
+      ]
+    },
+    {
+      "family_id": "llin-composed-serious_injury_duration",
+      "category": "rail_safety",
+      "source_ids": [
+        "llin-core-2a0c3a166cc4c53799b2"
+      ],
+      "new_composed_case": "llin-composed-serious_injury_duration",
+      "closed_correct_orders": 1,
+      "evidence_correct_orders": 2,
+      "old_source_screen_units": []
+    },
+    {
+      "family_id": "llin-composed-derailment_precedence",
+      "category": "rail_safety",
+      "source_ids": [
+        "llin-core-949d2b89ca53083dc82e",
+        "llin-core-13c5ab369e1068f067bc"
+      ],
+      "new_composed_case": "llin-composed-derailment_precedence",
+      "closed_correct_orders": 0,
+      "evidence_correct_orders": 2,
+      "old_source_screen_units": []
+    },
+    {
+      "family_id": "llin-composed-inland_capacity_design",
+      "category": "waterways",
+      "source_ids": [
+        "llin-core-e5b2962d0054bfeac3a0"
+      ],
+      "new_composed_case": "llin-composed-inland_capacity_design",
+      "closed_correct_orders": 0,
+      "evidence_correct_orders": 2,
+      "old_source_screen_units": []
+    },
+    {
+      "family_id": "llin-composed-self_propulsion",
+      "category": "waterways",
+      "source_ids": [
+        "llin-core-031182c8e97a128c8c31"
+      ],
+      "new_composed_case": "llin-composed-self_propulsion",
+      "closed_correct_orders": 0,
+      "evidence_correct_orders": 2,
+      "old_source_screen_units": []
+    },
+    {
+      "family_id": "llin-composed-pipeline_active_network",
+      "category": "pipeline",
+      "source_ids": [
+        "llin-core-f300fd947c2ed1da3538",
+        "llin-core-bff682970154c1118932"
+      ],
+      "new_composed_case": "llin-composed-pipeline_active_network",
+      "closed_correct_orders": 1,
+      "evidence_correct_orders": 2,
+      "old_source_screen_units": []
+    },
+    {
+      "family_id": "llin-composed-trunk_inclusion",
+      "category": "pipeline",
+      "source_ids": [
+        "llin-core-38d42cd372130f6c3576"
+      ],
+      "new_composed_case": "llin-composed-trunk_inclusion",
+      "closed_correct_orders": 0,
+      "evidence_correct_orders": 1,
+      "old_source_screen_units": []
+    },
+    {
+      "family_id": "llin-composed-parallel_flow_labor",
+      "category": "warehouse",
+      "source_ids": [
+        "llin-core-98928650cc767bf758a2"
+      ],
+      "new_composed_case": "llin-composed-parallel_flow_labor",
+      "closed_correct_orders": 0,
+      "evidence_correct_orders": 0,
+      "old_source_screen_units": []
+    },
+    {
+      "family_id": "llin-composed-warehouse_work_content",
+      "category": "warehouse",
+      "source_ids": [
+        "llin-core-f5342bfbc0d79cd2ae9c"
+      ],
+      "new_composed_case": "llin-composed-warehouse_work_content",
+      "closed_correct_orders": 0,
+      "evidence_correct_orders": 0,
+      "old_source_screen_units": []
+    },
+    {
+      "family_id": "llin-composed-wave_precedence",
+      "category": "warehouse",
+      "source_ids": [
+        "llin-core-1e2b9ad61b478e1de2bf"
+      ],
+      "new_composed_case": "llin-composed-wave_precedence",
+      "closed_correct_orders": 1,
+      "evidence_correct_orders": 2,
+      "old_source_screen_units": []
+    },
+    {
+      "family_id": "llin-composed-shared_storage_model",
+      "category": "warehouse",
+      "source_ids": [
+        "llin-core-541c96f5265060deed96"
+      ],
+      "new_composed_case": "llin-composed-shared_storage_model",
+      "closed_correct_orders": 1,
+      "evidence_correct_orders": 2,
+      "old_source_screen_units": []
+    },
+    {
+      "family_id": "llin-composed-space_vs_travel",
+      "category": "warehouse",
+      "source_ids": [
+        "llin-core-541c96f5265060deed96"
+      ],
+      "new_composed_case": "llin-composed-space_vs_travel",
+      "closed_correct_orders": 0,
+      "evidence_correct_orders": 1,
+      "old_source_screen_units": []
+    },
+    {
+      "family_id": "llin-composed-bom_net_components",
+      "category": "planning",
+      "source_ids": [
+        "llin-core-316cc39367cdc7fbce64"
+      ],
+      "new_composed_case": "llin-composed-bom_net_components",
+      "closed_correct_orders": 1,
+      "evidence_correct_orders": 1,
+      "old_source_screen_units": []
+    },
+    {
+      "family_id": "llin-composed-ias2_cost_boundary",
+      "category": "business",
+      "source_ids": [
+        "llin-core-dcfd608ba10673c831f5"
+      ],
+      "new_composed_case": "llin-composed-ias2_cost_boundary",
+      "closed_correct_orders": 1,
+      "evidence_correct_orders": 2,
+      "old_source_screen_units": []
+    },
+    {
+      "family_id": "llin-family-agricultural_design",
+      "category": "road_vehicles",
+      "source_ids": [
+        "llin-core-4ed9d25206de640422a5"
+      ],
+      "new_composed_case": null,
+      "old_source_screen_units": [
+        "llin-core-4ed9d25206de640422a5"
+      ],
+      "limitation": "Retained from prior accepted screen with its documented limitations. Not a newly stable failure; new composed reefer scenario remains excluded."
+    },
+    {
+      "family_id": "llin-family-passenger_ship_scope",
+      "category": "waterways",
+      "source_ids": [
+        "llin-core-9f534b17ef66e7ac5d66"
+      ],
+      "new_composed_case": null,
+      "old_source_screen_units": [
+        "llin-core-9f534b17ef66e7ac5d66"
+      ],
+      "limitation": "Retained from prior accepted screen with its documented limitations. Not a newly stable failure; new composed reefer scenario remains excluded."
+    },
+    {
+      "family_id": "llin-family-production_trajectories",
+      "category": "business",
+      "source_ids": [
+        "llin-core-a18da7d4bd91b5d74acd"
+      ],
+      "new_composed_case": null,
+      "old_source_screen_units": [
+        "llin-core-a18da7d4bd91b5d74acd"
+      ],
+      "limitation": "Retained from prior accepted screen with its documented limitations. Not a newly stable failure; new composed reefer scenario remains excluded."
+    },
+    {
+      "family_id": "llin-family-reefer_source_definition",
+      "category": "rail_technology",
+      "source_ids": [
+        "llin-core-d884c6d7e1ba978161ad"
+      ],
+      "new_composed_case": null,
+      "old_source_screen_units": [
+        "llin-core-d884c6d7e1ba978161ad"
+      ],
+      "limitation": "Retained from prior accepted screen with its documented limitations. Not a newly stable failure; new composed reefer scenario remains excluded."
+    }
+  ],
+  "limitations": "Candidate rule families with observed screening errors, not21 statistically independent or stable knowledge deficits. Some cases combine rules and many errors are order-sensitive. Existing older-case limitations persist. No screening question may enter training, transfer-dev, or sealed confirmation. Additional independent scenarios and at least30 consolidated units are still needed under the current registered gate."
+}

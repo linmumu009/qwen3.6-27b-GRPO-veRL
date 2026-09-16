@@ -1,0 +1,400 @@
+[
+  {
+    "id": "llin-composed-rail_speed",
+    "category": "rail_technology",
+    "closed_correct_orders": 0,
+    "evidence_correct_orders": 2,
+    "closed_content_changes_with_order": false,
+    "evidence_content_changes_with_order": false,
+    "closed_both_wrong_evidence_both_right": true,
+    "source_ids": [
+      "llin-core-e18cbdfda5e0f7a00139",
+      "llin-core-ed190bcb6b41b42da590"
+    ]
+  },
+  {
+    "id": "llin-composed-rail_network_length",
+    "category": "rail_technology",
+    "closed_correct_orders": 1,
+    "evidence_correct_orders": 2,
+    "closed_content_changes_with_order": true,
+    "evidence_content_changes_with_order": false,
+    "closed_both_wrong_evidence_both_right": false,
+    "source_ids": [
+      "llin-core-4325923911580698ac94",
+      "llin-core-4de2e9a3634198597945"
+    ]
+  },
+  {
+    "id": "llin-composed-railcar_accounting",
+    "category": "rail_technology",
+    "closed_correct_orders": 0,
+    "evidence_correct_orders": 2,
+    "closed_content_changes_with_order": false,
+    "evidence_content_changes_with_order": false,
+    "closed_both_wrong_evidence_both_right": true,
+    "source_ids": [
+      "llin-core-b5b62400c11c1cace1b4"
+    ]
+  },
+  {
+    "id": "llin-composed-reefer_criteria",
+    "category": "rail_technology",
+    "closed_correct_orders": 0,
+    "evidence_correct_orders": 0,
+    "closed_content_changes_with_order": true,
+    "evidence_content_changes_with_order": true,
+    "closed_both_wrong_evidence_both_right": false,
+    "source_ids": [
+      "llin-core-d884c6d7e1ba978161ad"
+    ]
+  },
+  {
+    "id": "llin-composed-significant_accident",
+    "category": "rail_safety",
+    "closed_correct_orders": 0,
+    "evidence_correct_orders": 1,
+    "closed_content_changes_with_order": true,
+    "evidence_content_changes_with_order": true,
+    "closed_both_wrong_evidence_both_right": false,
+    "source_ids": [
+      "llin-core-9a975bfe4851c977e3f2",
+      "llin-core-79e0091b62852f467ee8",
+      "llin-core-f7455d176f34868b2efd"
+    ]
+  },
+  {
+    "id": "llin-composed-fatality_window",
+    "category": "rail_safety",
+    "closed_correct_orders": 2,
+    "evidence_correct_orders": 2,
+    "closed_content_changes_with_order": false,
+    "evidence_content_changes_with_order": false,
+    "closed_both_wrong_evidence_both_right": false,
+    "source_ids": [
+      "llin-core-7afe049874fdde8d97a2"
+    ]
+  },
+  {
+    "id": "llin-composed-serious_injury_duration",
+    "category": "rail_safety",
+    "closed_correct_orders": 1,
+    "evidence_correct_orders": 2,
+    "closed_content_changes_with_order": true,
+    "evidence_content_changes_with_order": false,
+    "closed_both_wrong_evidence_both_right": false,
+    "source_ids": [
+      "llin-core-2a0c3a166cc4c53799b2"
+    ]
+  },
+  {
+    "id": "llin-composed-derailment_precedence",
+    "category": "rail_safety",
+    "closed_correct_orders": 0,
+    "evidence_correct_orders": 2,
+    "closed_content_changes_with_order": true,
+    "evidence_content_changes_with_order": false,
+    "closed_both_wrong_evidence_both_right": true,
+    "source_ids": [
+      "llin-core-949d2b89ca53083dc82e",
+      "llin-core-13c5ab369e1068f067bc"
+    ]
+  },
+  {
+    "id": "llin-composed-agricultural_design",
+    "category": "road_vehicles",
+    "closed_correct_orders": 2,
+    "evidence_correct_orders": 2,
+    "closed_content_changes_with_order": false,
+    "evidence_content_changes_with_order": false,
+    "closed_both_wrong_evidence_both_right": false,
+    "source_ids": [
+      "llin-core-eefae232c64800853da5",
+      "llin-core-4ed9d25206de640422a5"
+    ]
+  },
+  {
+    "id": "llin-composed-road_tractor_design",
+    "category": "road_vehicles",
+    "closed_correct_orders": 2,
+    "evidence_correct_orders": 2,
+    "closed_content_changes_with_order": false,
+    "evidence_content_changes_with_order": false,
+    "closed_both_wrong_evidence_both_right": false,
+    "source_ids": [
+      "llin-core-0b9dac115800d368d209",
+      "llin-core-4cc35447a0f74f5204c4"
+    ]
+  },
+  {
+    "id": "llin-composed-load_and_gross",
+    "category": "road_vehicles",
+    "closed_correct_orders": 2,
+    "evidence_correct_orders": 2,
+    "closed_content_changes_with_order": false,
+    "evidence_content_changes_with_order": false,
+    "closed_both_wrong_evidence_both_right": false,
+    "source_ids": [
+      "llin-core-9adae425cbbabbd2bf0c",
+      "llin-core-d2295c894a901dc68a89"
+    ]
+  },
+  {
+    "id": "llin-composed-inland_capacity_design",
+    "category": "waterways",
+    "closed_correct_orders": 0,
+    "evidence_correct_orders": 2,
+    "closed_content_changes_with_order": true,
+    "evidence_content_changes_with_order": false,
+    "closed_both_wrong_evidence_both_right": true,
+    "source_ids": [
+      "llin-core-e5b2962d0054bfeac3a0"
+    ]
+  },
+  {
+    "id": "llin-composed-self_propulsion",
+    "category": "waterways",
+    "closed_correct_orders": 0,
+    "evidence_correct_orders": 2,
+    "closed_content_changes_with_order": false,
+    "evidence_content_changes_with_order": false,
+    "closed_both_wrong_evidence_both_right": true,
+    "source_ids": [
+      "llin-core-031182c8e97a128c8c31"
+    ]
+  },
+  {
+    "id": "llin-composed-dumb_tanker_contents",
+    "category": "waterways",
+    "closed_correct_orders": 2,
+    "evidence_correct_orders": 2,
+    "closed_content_changes_with_order": false,
+    "evidence_content_changes_with_order": false,
+    "closed_both_wrong_evidence_both_right": false,
+    "source_ids": [
+      "llin-core-8a5b4da03932dc655021"
+    ]
+  },
+  {
+    "id": "llin-composed-river_tug_threshold",
+    "category": "waterways",
+    "closed_correct_orders": 2,
+    "evidence_correct_orders": 2,
+    "closed_content_changes_with_order": false,
+    "evidence_content_changes_with_order": false,
+    "closed_both_wrong_evidence_both_right": false,
+    "source_ids": [
+      "llin-core-05db8a7a420b9cc25b7f"
+    ]
+  },
+  {
+    "id": "llin-composed-pipeline_active_network",
+    "category": "pipeline",
+    "closed_correct_orders": 1,
+    "evidence_correct_orders": 2,
+    "closed_content_changes_with_order": true,
+    "evidence_content_changes_with_order": false,
+    "closed_both_wrong_evidence_both_right": false,
+    "source_ids": [
+      "llin-core-f300fd947c2ed1da3538",
+      "llin-core-bff682970154c1118932"
+    ]
+  },
+  {
+    "id": "llin-composed-trunk_inclusion",
+    "category": "pipeline",
+    "closed_correct_orders": 0,
+    "evidence_correct_orders": 1,
+    "closed_content_changes_with_order": false,
+    "evidence_content_changes_with_order": true,
+    "closed_both_wrong_evidence_both_right": false,
+    "source_ids": [
+      "llin-core-38d42cd372130f6c3576"
+    ]
+  },
+  {
+    "id": "llin-composed-pipeline_components",
+    "category": "pipeline",
+    "closed_correct_orders": 2,
+    "evidence_correct_orders": 2,
+    "closed_content_changes_with_order": false,
+    "evidence_content_changes_with_order": false,
+    "closed_both_wrong_evidence_both_right": false,
+    "source_ids": [
+      "llin-core-738f13bba688ca3febfa",
+      "llin-core-396a8043f3396684f703",
+      "llin-core-8d3660531bddc5481ce6"
+    ]
+  },
+  {
+    "id": "llin-composed-parallel_flow_labor",
+    "category": "warehouse",
+    "closed_correct_orders": 0,
+    "evidence_correct_orders": 0,
+    "closed_content_changes_with_order": false,
+    "evidence_content_changes_with_order": false,
+    "closed_both_wrong_evidence_both_right": false,
+    "source_ids": [
+      "llin-core-98928650cc767bf758a2"
+    ]
+  },
+  {
+    "id": "llin-composed-warehouse_work_content",
+    "category": "warehouse",
+    "closed_correct_orders": 0,
+    "evidence_correct_orders": 0,
+    "closed_content_changes_with_order": true,
+    "evidence_content_changes_with_order": false,
+    "closed_both_wrong_evidence_both_right": false,
+    "source_ids": [
+      "llin-core-f5342bfbc0d79cd2ae9c"
+    ]
+  },
+  {
+    "id": "llin-composed-wave_precedence",
+    "category": "warehouse",
+    "closed_correct_orders": 1,
+    "evidence_correct_orders": 2,
+    "closed_content_changes_with_order": true,
+    "evidence_content_changes_with_order": false,
+    "closed_both_wrong_evidence_both_right": false,
+    "source_ids": [
+      "llin-core-1e2b9ad61b478e1de2bf"
+    ]
+  },
+  {
+    "id": "llin-composed-shared_storage_model",
+    "category": "warehouse",
+    "closed_correct_orders": 1,
+    "evidence_correct_orders": 2,
+    "closed_content_changes_with_order": true,
+    "evidence_content_changes_with_order": false,
+    "closed_both_wrong_evidence_both_right": false,
+    "source_ids": [
+      "llin-core-541c96f5265060deed96"
+    ]
+  },
+  {
+    "id": "llin-composed-space_vs_travel",
+    "category": "warehouse",
+    "closed_correct_orders": 0,
+    "evidence_correct_orders": 1,
+    "closed_content_changes_with_order": false,
+    "evidence_content_changes_with_order": true,
+    "closed_both_wrong_evidence_both_right": false,
+    "source_ids": [
+      "llin-core-541c96f5265060deed96"
+    ]
+  },
+  {
+    "id": "llin-composed-forecast_error_aggregation",
+    "category": "planning",
+    "closed_correct_orders": 2,
+    "evidence_correct_orders": 1,
+    "closed_content_changes_with_order": false,
+    "evidence_content_changes_with_order": true,
+    "closed_both_wrong_evidence_both_right": false,
+    "source_ids": [
+      "llin-core-63b64cdd26a4ce58b79b",
+      "llin-core-a729478e585333135658"
+    ]
+  },
+  {
+    "id": "llin-composed-pooled_compliance",
+    "category": "planning",
+    "closed_correct_orders": 2,
+    "evidence_correct_orders": 2,
+    "closed_content_changes_with_order": false,
+    "evidence_content_changes_with_order": false,
+    "closed_both_wrong_evidence_both_right": false,
+    "source_ids": [
+      "llin-core-eb453d6e6cbf9fd5b623",
+      "llin-core-3e0fd5afa6664dc97053"
+    ]
+  },
+  {
+    "id": "llin-composed-mrp_timing_joint_cost",
+    "category": "planning",
+    "closed_correct_orders": 2,
+    "evidence_correct_orders": 2,
+    "closed_content_changes_with_order": false,
+    "evidence_content_changes_with_order": false,
+    "closed_both_wrong_evidence_both_right": false,
+    "source_ids": [
+      "llin-core-fe12c856b64d45a8baef"
+    ]
+  },
+  {
+    "id": "llin-composed-bom_net_components",
+    "category": "planning",
+    "closed_correct_orders": 1,
+    "evidence_correct_orders": 1,
+    "closed_content_changes_with_order": true,
+    "evidence_content_changes_with_order": true,
+    "closed_both_wrong_evidence_both_right": false,
+    "source_ids": [
+      "llin-core-316cc39367cdc7fbce64"
+    ]
+  },
+  {
+    "id": "llin-composed-ias2_cost_boundary",
+    "category": "business",
+    "closed_correct_orders": 1,
+    "evidence_correct_orders": 2,
+    "closed_content_changes_with_order": true,
+    "evidence_content_changes_with_order": false,
+    "closed_both_wrong_evidence_both_right": false,
+    "source_ids": [
+      "llin-core-dcfd608ba10673c831f5"
+    ]
+  },
+  {
+    "id": "llin-composed-lifo_cost_vs_physical",
+    "category": "business",
+    "closed_correct_orders": 2,
+    "evidence_correct_orders": 2,
+    "closed_content_changes_with_order": false,
+    "evidence_content_changes_with_order": false,
+    "closed_both_wrong_evidence_both_right": false,
+    "source_ids": [
+      "llin-core-e7ef875666970fc9f0e9"
+    ]
+  },
+  {
+    "id": "llin-composed-fuel_lifecycle",
+    "category": "business",
+    "closed_correct_orders": 2,
+    "evidence_correct_orders": 2,
+    "closed_content_changes_with_order": false,
+    "evidence_content_changes_with_order": false,
+    "closed_both_wrong_evidence_both_right": false,
+    "source_ids": [
+      "llin-core-07b41ff655965eff3f15"
+    ]
+  },
+  {
+    "id": "llin-composed-outsourcing_responsibility",
+    "category": "business",
+    "closed_correct_orders": 2,
+    "evidence_correct_orders": 2,
+    "closed_content_changes_with_order": false,
+    "evidence_content_changes_with_order": false,
+    "closed_both_wrong_evidence_both_right": false,
+    "source_ids": [
+      "llin-core-1be872685a3bf90f581a",
+      "llin-core-d3eeb424676374325e30"
+    ]
+  },
+  {
+    "id": "llin-composed-production_trajectories",
+    "category": "business",
+    "closed_correct_orders": 2,
+    "evidence_correct_orders": 2,
+    "closed_content_changes_with_order": false,
+    "evidence_content_changes_with_order": false,
+    "closed_both_wrong_evidence_both_right": false,
+    "source_ids": [
+      "llin-core-a18da7d4bd91b5d74acd"
+    ]
+  }
+]
