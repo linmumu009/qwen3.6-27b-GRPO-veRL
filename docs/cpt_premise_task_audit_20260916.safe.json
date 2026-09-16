@@ -1,0 +1,32 @@
+{
+  "date": "2026-09-16",
+  "packet": "CPT_resources\\llin-premise-tasks-20260916-02",
+  "tasks": 20,
+  "source_scope_and_premise_checks_pass": 20,
+  "option_proofs_checked": 80,
+  "format_only_dev_holds": 2,
+  "remaining_candidate_items": 18,
+  "train_candidates": 12,
+  "new_condition_candidates": 4,
+  "reserved_unqueried_candidates": 2,
+  "training_released": 0,
+  "complete_released_units": 0,
+  "candidate_rule_families_total": 28,
+  "categories_total": 8,
+  "new_rule_families_added": 0,
+  "retention_items_added": 0,
+  "tests_passed": 67,
+  "expert_independent_review": false,
+  "model_requests": 0,
+  "training_runs": 0,
+  "source_only_compiler": true,
+  "downstream_historical_audit_separate": true,
+  "remaining_work": [
+    "Replace the two format-only expression designs from source premises; preserve this packet.",
+    "Review historical operation overlap and the complete split contract before release.",
+    "Extend source-bound premise/truth-table construction to other candidate families; do not scale the failed free-form generator.",
+    "Expand genuine source-only rule coverage to 30-50 families and construct at least 120 independent retention evaluation items."
+  ],
+  "task_sha256": "49f8c1b40921a9dfc64ada81e667ab9c3908872070459ec1f7be90de82e087da",
+  "semantic_review_sha256": "756fc4c274714481b14e2781d02bd0d9c196fe5711c7ba0f9666fcb675da00b9"
+}

@@ -1,0 +1,40 @@
+{
+  "task_sha256": "49f8c1b40921a9dfc64ada81e667ab9c3908872070459ec1f7be90de82e087da",
+  "compiler_sha256": "2fa7642ec9d06d01878b639621e3b77398446566a19d58bb7cf7df5db372f442",
+  "verifier_sha256": "df69e709cc073666b4c8ca484acd086e4ebb4179756467e79d2ff98a3d493935",
+  "tasks_verified": 20,
+  "option_calculations_verified": 80,
+  "exact_source_bindings": 9,
+  "old_dev_group_or_topic_violations": 0,
+  "historical_exclusion_files": 14,
+  "historical_question_occurrences": 718,
+  "historical_unique_number_normalized_questions": 581,
+  "number_normalized_historical_matches": [],
+  "within_packet_number_normalized_duplicates": 0,
+  "per_unit_splits": {
+    "rail_speed": {
+      "train": 6,
+      "dev_expression": 1,
+      "dev_conditions": 2,
+      "sealed": 1
+    },
+    "rail_network_length": {
+      "train": 6,
+      "dev_expression": 1,
+      "dev_conditions": 2,
+      "sealed": 1
+    }
+  },
+  "training_allowed": false,
+  "released_training_items": 0,
+  "released_complete_units": 0,
+  "independent_human_expert_review": false,
+  "semantic_novelty_certified": false,
+  "caveats": [
+    "Two dev_expression items use a ledger instead of prose but retain the same aggregation operator and option template; format transfer only.",
+    "Train aggregation and historical railway probes share operations and rules; lexical nonmatching is not evidence of semantic independence.",
+    "Inverse and minimum-cost designs change the inference task; reserved branch policies remain unqueried. These are candidate strata, not measured transfer.",
+    "All items use four sources in one historical group. They add no new candidate rule families or broad retention items.",
+    "The verifier is separately implemented by the same author. It verifies arithmetic and reconstruction, not independent expert agreement."
+  ]
+}
