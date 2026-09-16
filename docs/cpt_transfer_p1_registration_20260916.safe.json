@@ -1,0 +1,47 @@
+{
+  "version": "P1",
+  "training_allowed": true,
+  "authorization": "User accepted prospective limited cross-category mechanism trial before broad-scale gate.",
+  "packet_sha256": "3a67530f12118c687ed1172f0f840f95aacb4a2308e75904c758d728660d332e",
+  "source_sha256": "5df7dc2b209938986cd7081aecdc9105fb989c9a872d572ce0a0c5a16dbbf8a4",
+  "reviewed_sha256": "6ac62685258fc72815095ea13b2afbc8d96a58faf6464f0f8e955306af3b7a89",
+  "builder_sha256": "b40c4d99e7cd83b901b366a0fd9885813b4e8051ddb49d8d1000172f3a6ffca1",
+  "verifier_sha256": "661e2cf2b88722d071b22c74f03467487060f359065512b4354c8aa9a2020e75",
+  "checked_tasks": 190,
+  "checked_options": 760,
+  "new_training_tasks": 60,
+  "new_training_exposures": 180,
+  "old_retention_training_tasks": 135,
+  "total_training_records": 315,
+  "steps": 105,
+  "lr": 5e-07,
+  "batch": 3,
+  "epochs": 1,
+  "fresh_optimizer": true,
+  "evaluation_counts": {
+    "train": 60,
+    "dev_expression": 20,
+    "dev_conditions": 20,
+    "retention": 80
+  },
+  "sealed_unqueried": 10,
+  "historical_exclusion_files": 14,
+  "historical_question_occurrences": 718,
+  "historical_exact_normalized_matches": [],
+  "old_dev_training_violations": 0,
+  "expert_independent_review": false,
+  "semantic_review": "Author source review plus separate reference calculations. Explicit scopes/causal premises reviewed; source concepts shared intentionally. Parameterized training variants are not distinct knowledge groups.",
+  "limits": [
+    "Pilot sentinel retention: 80 tasks/10 rules/3 historical development groups, not full broad independent confirmation.",
+    "Expression is near transfer with familiar fields and operator; conditions introduce inverse and least-cost selection. Both strata reported separately.",
+    "Family selection used prior diagnostic outcomes, so selection bias remains; no original diagnostic item enters training.",
+    "No official evaluation or C/D promotion is automatic from this pilot."
+  ],
+  "decision_rule": {
+    "training": "Report exact gains/losses and family changes; if no training improvement, inspect implementation and supervision.",
+    "transfer": "Advance to broader data work only if each 20-item transfer stratum improves by at least 2 items across at least 2 families.",
+    "retention": "Require no net decline overall; report every family loss. Any net decline holds advancement for retention repair.",
+    "negative": "If both transfer strata fail the prospective signal rule, do not enlarge this exact recipe. No automatic hyperparameter search.",
+    "scope": "Exploratory screen, not statistical significance or the final +3pp target."
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "date": "2026-09-16",
+  "version": "P1",
+  "status": "completed_and_independently_verified",
+  "coordinator_pid": 3708782,
+  "torchrun_pid": 3709028,
+  "package": "/workspace/llin-verl-grpo/runs/llin-transfer-p1-package-20260916-04",
+  "output": "/workspace/llin-verl-grpo/runs/llin-transfer-p1-run-20260916-02",
+  "initial_attempt": {
+    "output": "/workspace/llin-verl-grpo/runs/llin-transfer-p1-run-20260916-01",
+    "failed_before_training": true,
+    "reason": "Historical distributed Step120 checkpoint no longer exists at its old path; HF export used for baseline remains available."
+  },
+  "recovery": {
+    "previous": "/workspace/llin-verl-grpo/runs/llin-transfer-p1-run-20260916-01",
+    "baseline_predictions_sha256": "5d573d68de136dd3f704a466fe6a1a6e59604889ff1112f111e424530c035f83",
+    "reason": "Missing historical distributed checkpoint stopped the first run before model initialization; load the identical HF model used for baseline. Data/recipe/answers unchanged."
+  },
+  "initialization": "Installed engine HF-load branch with null distributed initialization path; fresh optimizer. Shared installation unchanged.",
+  "baseline": {
+    "cases_sha256": "b74ed230308e4d0da500263817280bf4222d1f5fabf38c315c22f4fc26f8ff3c",
+    "model": "/workspace/llin-verl-grpo/runs/llin-step120-opensource-20260825-02/hf_export_step120_opensource",
+    "items": 180,
+    "temperature": 0,
+    "seed": 1024,
+    "max_tokens": 96,
+    "max_model_len": 8192,
+    "tp": 8,
+    "max_num_seqs": 32,
+    "thinking": false,
+    "repeats": 1,
+    "invalid": 0,
+    "truncated": 0,
+    "correct": 83,
+    "purpose": "exploratory source-task pre/post; not formal benchmark or independent seed confirmation"
+  },
+  "baseline_strata": {
+    "p1_dev_conditions": {
+      "n": 20,
+      "correct": 7
+    },
+    "p1_dev_expression": {
+      "n": 20,
+      "correct": 6
+    },
+    "p1_retention": {
+      "n": 80,
+      "correct": 51
+    },
+    "p1_train": {
+      "n": 60,
+      "correct": 19
+    }
+  },
+  "baseline_prediction_sha256": "5d573d68de136dd3f704a466fe6a1a6e59604889ff1112f111e424530c035f83",
+  "data_audit": {
+    "budgets": {
+      "train": {
+        "records": 315,
+        "sequence_tokens": 87340,
+        "loss_tokens": 12202,
+        "sha256": "7779c2ba6137eb91aaf80e56b262b4a4ed2620001eafd9097d5ce46f1e63bdf0",
+        "max_length": 447,
+        "sampler_order_sha256": "7cb30dea9ced1f3ef645ae4c202a0cf6ff1f8a52cdeae9b9d9aec85834c926a2"
+      },
+      "dev": {
+        "records": 33,
+        "sequence_tokens": 5622,
+        "loss_tokens": 212,
+        "sha256": "3a35e5307cd46027b5e91f598917c70c0bc470175ba1de4ec534120edddc41f0",
+        "max_length": 237,
+        "sampler_order_sha256": "b0965236adaed190a6b0738c04a6991fb64e00d4c9bb89c7055bb07cffda6664"
+      }
+    },
+    "tokenizer_sha256": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523",
+    "release_sha256": "730fb7ba3bad428ed13dbd7b8ee0659f6335828c50fc50117c2df9961d86ab63",
+    "installed_loader_passed": true,
+    "data_parallel_size": 1,
+    "train_shuffle_seed": 20260916,
+    "validation_role": "33 legacy frozen development records monitor loss only; new 40 transfer and 80 retention tasks are inference-only.",
+    "steps": 105,
+    "lr": 5e-07,
+    "batch": 3,
+    "epochs": 1,
+    "save_contents": [
+      "model",
+      "extra"
+    ],
+    "optimizer_resume_available": false
+  },
+  "tests_passed": 84,
+  "formal_benchmark_evaluated": false,
+  "training_completed": true,
+  "training_steps": 105,
+  "current_job_running": false,
+  "source_of_final_status": "P1 run02 status completed_pending_review, followed by independent_verification.safe.json and local reparse.",
+  "results_file": "cpt_transfer_p1_result_20260916.safe.json"
+}
