@@ -1,0 +1,21 @@
+{
+  "generation_requests": 2,
+  "requested_designs": 12,
+  "mechanically_valid": 3,
+  "same_model_agreed": 3,
+  "independent_hold": 2,
+  "provisionally_accepted_for_split_audit": 1,
+  "training_released": 0,
+  "complete_6_3_1_units": 0,
+  "token_requests_verified": 5,
+  "all_token_hashes_match": true,
+  "semantic_review_sha256": "209faf6a81be4463c0ffbff0df74093018c64472f98bae97db795c7131c45f17",
+  "mechanical_rejections": {
+    "nonexact_source_quote": 4,
+    "unsupported_arithmetic_syntax": 2,
+    "missing_registered_scope": 3
+  },
+  "quality_gate_passed": false,
+  "limitations": "One provisional item still requires semantic exclusion checks against diagnostic tasks and cross-split novelty review. Required scope strings improved explicit context in surviving items but did not guarantee complete premises. No numerical correctness claim for unsupported expressions. Small nonmatched pilot is not a causal quality-effect estimate.",
+  "next_action": "Do not scale the same free-form generator. Author a small source-only task set with explicit premise tables and source-supported truth conditions for every option; validate these before rendering questions. Preserve old outputs and audit split novelty downstream. No automatic training or full batch restart."
+}

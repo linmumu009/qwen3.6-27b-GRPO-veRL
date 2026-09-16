@@ -1,0 +1,41 @@
+{
+  "packet_sha256": "0fc79141ce2e48d942edc503f5475f1245499ad6c42adbbd5db31cfeb9184c89",
+  "raw_files": {
+    "candidates.private.jsonl": "2cbce73246f70ec49ca23a3eb1e8b92d82aea6711983c38c201a5cb6781df83e",
+    "dev.draft.private.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "filtered.private.jsonl": "baaf79c836271a68af84880f6224601a003b8481268c6ddad5ad56fbfa46f723",
+    "generation.private.jsonl": "4c363ad057701e1e053effe68ea72bc8d34f683dfe6b6ebbc2d0286c5849ac1f",
+    "retention.draft.private.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "review.private.jsonl": "98dfc7ac7c84a568bdc10600794c26abd13a562db56170bc47d9650f37c5c706",
+    "sealed.draft.private.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "semantic_review.private.jsonl": "209faf6a81be4463c0ffbff0df74093018c64472f98bae97db795c7131c45f17",
+    "train.draft.private.jsonl": "baaf79c836271a68af84880f6224601a003b8481268c6ddad5ad56fbfa46f723"
+  },
+  "generation_requests": 2,
+  "review_requests": 3,
+  "candidate_items": 3,
+  "filtered_items": 3,
+  "filtered_counts": {
+    "train": 3
+  },
+  "complete_6_3_1_units": 0,
+  "unit_counts": {
+    "unit-001": {
+      "train": 1
+    },
+    "unit-002": {
+      "train": 2
+    }
+  },
+  "generation_truncations": 0,
+  "review_truncations": 0,
+  "arithmetic_equalities_checked": 0,
+  "normalized_duplicate_groups": [],
+  "diagnostic_exact_or_number_normalized_matches": [],
+  "diagnostic_exclusion_inputs": [],
+  "diagnostic_questions_checked": 0,
+  "raw_provenance_verified": true,
+  "training_ready": false,
+  "training_allowed": false,
+  "limitations": "Mechanical provenance, exact rational expressions and same-model reviewer decisions verified; scenario-to-equation correctness, semantic novelty, answer uniqueness, retention representativeness and split separation are not certified. Duplicate checks are a floor, never proof of semantic independence. Complete 6/3/1 counts are only counts of provisional drafts. No task is released for training."
+}

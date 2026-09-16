@@ -2,9 +2,9 @@
   "pid": 3697562,
   "code": "/opt/llin-transfer-constraint-code-20260916-01",
   "output": "/opt/llin-transfer-constraint-pilot-20260916-01",
-  "status": "loading_model",
+  "status": "completed_and_independently_audited",
   "training_running": false,
   "devices_idle_before_launch": true,
   "tests_passed": 14,
-  "container_process_alive": true
+  "container_process_alive": false
 }
