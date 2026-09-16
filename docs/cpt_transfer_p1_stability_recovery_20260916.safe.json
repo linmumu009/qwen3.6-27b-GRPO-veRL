@@ -2,7 +2,7 @@
   "pid": 3725437,
   "code": "/workspace/llin-verl-grpo/runs/llin-transfer-p1-stability-code-20260916-02",
   "output": "/workspace/llin-verl-grpo/runs/llin-transfer-p1-stability-20260916-02",
-  "status": "baseline_repeat",
+  "status": "completed_and_independently_verified",
   "training": false,
   "failed_attempt": "/workspace/llin-verl-grpo/runs/llin-transfer-p1-stability-20260916-01",
   "failed_pid": 3723042,
@@ -12,5 +12,7 @@
   "requested_predictions": 360,
   "additional_completed_runs_before_recovery": 0,
   "acl_preflight_passed": true,
-  "container_process_alive": true
+  "container_process_alive": false,
+  "verified_repeat_outputs": 360,
+  "token_prompts_rebuilt": 360
 }
