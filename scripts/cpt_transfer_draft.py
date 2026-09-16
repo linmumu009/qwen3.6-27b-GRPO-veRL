@@ -30,9 +30,35 @@ DESIGN_GUIDE = {
 }
 
 
+def source_constraints(request):
+    """Optional audited source rules; legacy prompts remain byte-for-byte stable."""
+    constraints = request.get('source_constraints')
+    if constraints is None:
+        return None
+    if set(constraints) != {'required_question_terms', 'rules'}:
+        raise ValueError('constraint_schema')
+    terms = constraints['required_question_terms']
+    if not isinstance(terms, list) or not terms or any(not isinstance(t, str) or not t.strip() for t in terms):
+        raise ValueError('constraint_terms')
+    by_id = {s['id']: s for s in request['sources']}
+    if not isinstance(constraints['rules'], list) or not constraints['rules']:
+        raise ValueError('constraint_rules')
+    for rule in constraints['rules']:
+        if set(rule) != {'source_id', 'quote', 'instruction'}:
+            raise ValueError('constraint_rule_schema')
+        if rule['source_id'] not in by_id or not isinstance(rule['quote'], str) or len(rule['quote']) < 20 or rule['quote'] not in by_id[rule['source_id']]['source_text']:
+            raise ValueError('constraint_quote')
+        if not isinstance(rule['instruction'], str) or not rule['instruction'].strip():
+            raise ValueError('constraint_instruction')
+    return constraints
+
+
 def generation_prompt(request):
     payload={'sources':[{k:s[k] for k in ('title','scope','source_text')} for s in request['sources']],
              'designs':{d:DESIGN_GUIDE[d] for d in request['designs']}}
+    constraints = source_constraints(request)
+    if constraints is not None:
+        payload['audited_source_constraints'] = constraints
     return '''Write one new multiple-choice logistics task for EACH assigned design using only SOURCE facts, plus explicitly given scenario assumptions. Follow each design literally; different wording or numbers alone is not a new reasoning structure. If the source cannot support a design without invented facts or ambiguous choices, SKIP that design and explain why. Do not force task counts.
 Preserve the named source framework and historical/statistical scope in the question. Do not present archived definitions as current law. No quoted governing rule or source evidence in the question; the question is closed book. Provide every scenario premise, unit, objective and boundary needed for a unique answer set. Never ask an undefined 'best' choice. Use 4 distinct plausible options and ask 'Select all correct statements.' Avoid all/none-of-the-above and redundant claims. Each distractor must violate a specific rule or scenario fact. Use English. Create genuinely new scenarios; no benchmark questions. Check every arithmetic step; if numerical, supply arithmetic_checks using exact rational expressions with integers and + - * / parentheses only. A fraction result is fine. Keep each question under 160 words, each option under 35 words, and rationales concise. Explanations are answer-key audit material, not model inputs.
 Return JSON only: {"tasks":[{"design":"assigned key","question":"... Select all correct statements.","options":["...","...","...","..."],"correct_indices":[0],"source_quote":"an exact contiguous source span","explanation":"short verified reasoning","option_reasons":["why true/false", "..."],"arithmetic_checks":[["integer expression","expected exact expression"]],"reasoning_structure":"conditions used and steps required"}],"skipped":[{"design":"assigned key","reason":"..."}]}.
@@ -44,6 +70,9 @@ def validate_task(task, request):
     from cpt_composed_probe import arithmetic
     if task.get('design') not in request['designs']: raise ValueError('unassigned_design')
     if not isinstance(task.get('question'),str) or not re.search(r'\bselect all correct\b',task['question'],re.I):raise ValueError('question_scope')
+    constraints = source_constraints(request)
+    if constraints is not None and any(term.casefold() not in task['question'].casefold() for term in constraints['required_question_terms']):
+        raise ValueError('missing_registered_scope')
     opts=task.get('options')
     if not isinstance(opts,list) or len(opts)!=4 or any(not isinstance(o,str) or not o.strip() for o in opts):raise ValueError('options')
     if len({o.strip().casefold() for o in opts})!=4:raise ValueError('duplicate_options')
@@ -63,6 +92,9 @@ def review_prompt(task, request):
     # No generated answer, rationale, quote, or calculation result goes to reviewer.
     payload={'sources':[{k:s[k] for k in ('title','scope','source_text')} for s in request['sources']],
              'task':{k:task[k] for k in ('question','options')},'required_design':DESIGN_GUIDE[task['design']]}
+    constraints = source_constraints(request)
+    if constraints is not None:
+        payload['audited_source_constraints'] = constraints
     return '''Independently solve and audit this task against its archived sources. You have no proposed key. Check all options and recompute numbers. Reject unsupported facts, missing premises, vague source scope, ambiguity, an answer given away in the question, and failure to implement the required reasoning design. Do not invent a source rule to make a question work. Return JSON only: {"correct_indices":[0],"supported":true,"unambiguous":true,"self_contained":true,"scope_preserved":true,"not_answer_leaking":true,"design_satisfied":true,"option_reasons":["reason for each option"],"arithmetic_audit":"exact calculation or not numerical","reason":"overall audit"}.
 INPUT:
 '''+json.dumps(payload,ensure_ascii=False)

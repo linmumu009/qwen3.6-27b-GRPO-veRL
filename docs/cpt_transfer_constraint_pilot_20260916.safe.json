@@ -1,0 +1,12 @@
+{
+  "packet_sha256": "0fc79141ce2e48d942edc503f5475f1245499ad6c42adbbd5db31cfeb9184c89",
+  "requests": 2,
+  "requested_train_drafts": 12,
+  "source_constraints": 11,
+  "source_quotes_exactly_verified": true,
+  "raw_prior_drafts_modified": false,
+  "prior_drafts_in_generator": false,
+  "training_allowed": false,
+  "training_ready": false,
+  "limitations": "Small source-constraint pilot only. Required scope terms are a mechanical gate, not semantic certification. Every generated option and cross-split design still require independent review. No dev/sealed/retention generation or full-plan restart."
+}

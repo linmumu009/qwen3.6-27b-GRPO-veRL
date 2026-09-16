@@ -36,6 +36,25 @@ def test_generator_allowlist(source_request):
     assert 'Operating cost includes' in text
 
 
+def test_source_constraints_bind_quote_and_scope(source_request, task):
+    source_request['sources'][0]['id'] = 'source-1'
+    source_request['source_constraints'] = {
+        'required_question_terms': ['Archived test scope'],
+        'rules': [{'source_id': 'source-1',
+                   'quote': source_request['sources'][0]['source_text'],
+                   'instruction': 'Name the scope and include every cost component.'}],
+    }
+    assert 'audited_source_constraints' in generation_prompt(source_request)
+    assert 'SECRET_KEY_' not in review_prompt(task, source_request)
+    with pytest.raises(ValueError, match='missing_registered_scope'):
+        validate_task(task, source_request)
+    task['question'] = 'Archived test scope: ' + task['question']
+    assert validate_task(task, source_request)['correct_indices'] == [0]
+    source_request['source_constraints']['rules'][0]['quote'] = 'Invented rule that is not in the source.'
+    with pytest.raises(ValueError, match='constraint_quote'):
+        generation_prompt(source_request)
+
+
 def test_reviewer_is_blind_to_generated_key(source_request,task):
     text=review_prompt(task,source_request)
     assert 'SECRET_KEY_' not in text
