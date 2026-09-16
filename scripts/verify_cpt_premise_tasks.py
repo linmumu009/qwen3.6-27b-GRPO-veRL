@@ -63,6 +63,16 @@ def verify_calculation(task):
         totals=reference_totals(family,spec['rows'])
         assert Counter((p['actual'],p['claimed'],p['true']) for p in task['option_proofs'])==Counter(
             (totals[k],v,totals[k]==v) for k,v in spec['claims'])
+    elif operation=='certificate':
+        actual={}
+        for row in spec['rows']:
+            counts=reference_totals(family,[row])
+            actual[row['name']]=(next(k for k in ('D','U','N') if counts[k]==1)
+                if family=='rail_speed' else ('included' if counts['included']==1 else 'excluded'))
+        assert Counter(json.dumps(p['claimed'],sort_keys=True) for p in task['option_proofs'])==Counter(
+            json.dumps(c,sort_keys=True) for c in spec['certificates'])
+        for p in task['option_proofs']:
+            assert p['actual']==actual and p['true']==(p['claimed']==actual)
     elif operation=='inverse':
         candidates=[]
         pos,field=spec['unknown']
@@ -162,7 +172,7 @@ def verify(packet,source,excluded_paths,group_script):
         per_unit_splits={f:dict(Counter(t['split'] for t in tasks if t['unit']==f)) for f in FAMILIES},
         training_allowed=False,released_training_items=0,released_complete_units=0,
         independent_human_expert_review=False,semantic_novelty_certified=False,
-        caveats=['Two dev_expression items use a ledger instead of prose but retain the same aggregation operator and option template; format transfer only.',
+        caveats=[('Two dev_expression items use asset-by-asset certificates instead of aggregate claims. Classification rules still overlap training; semantic separation remains subject to review.' if manifest.get('expression_design')=='certificate' else 'Two dev_expression items use a ledger instead of prose but retain the same aggregation operator and option template; format transfer only.'),
                  'Train aggregation and historical railway probes share operations and rules; lexical nonmatching is not evidence of semantic independence.',
                  'Inverse and minimum-cost designs change the inference task; reserved branch policies remain unqueried. These are candidate strata, not measured transfer.',
                  'All items use four sources in one historical group. They add no new candidate rule families or broad retention items.',

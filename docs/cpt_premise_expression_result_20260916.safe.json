@@ -1,0 +1,40 @@
+{
+  "task_sha256": "34d42aae16ca2a149eafdfe4c1b75dc9e597f7e658112475b9c92001b2f81f1d",
+  "compiler_sha256": "ce0232c80cbf470bd16b12981de38f1f66e2da9f914be5caafc66898f8e3bbfa",
+  "verifier_sha256": "ad11f6d9324e5cd8153d7ccb85d5f91af6b00267793d1c0fccf1d80149550493",
+  "tasks_verified": 20,
+  "option_calculations_verified": 80,
+  "exact_source_bindings": 9,
+  "old_dev_group_or_topic_violations": 0,
+  "historical_exclusion_files": 14,
+  "historical_question_occurrences": 718,
+  "historical_unique_number_normalized_questions": 581,
+  "number_normalized_historical_matches": [],
+  "within_packet_number_normalized_duplicates": 0,
+  "per_unit_splits": {
+    "rail_speed": {
+      "train": 6,
+      "dev_expression": 1,
+      "dev_conditions": 2,
+      "sealed": 1
+    },
+    "rail_network_length": {
+      "train": 6,
+      "dev_expression": 1,
+      "dev_conditions": 2,
+      "sealed": 1
+    }
+  },
+  "training_allowed": false,
+  "released_training_items": 0,
+  "released_complete_units": 0,
+  "independent_human_expert_review": false,
+  "semantic_novelty_certified": false,
+  "caveats": [
+    "Two dev_expression items use asset-by-asset certificates instead of aggregate claims. Classification rules still overlap training; semantic separation remains subject to review.",
+    "Train aggregation and historical railway probes share operations and rules; lexical nonmatching is not evidence of semantic independence.",
+    "Inverse and minimum-cost designs change the inference task; reserved branch policies remain unqueried. These are candidate strata, not measured transfer.",
+    "All items use four sources in one historical group. They add no new candidate rule families or broad retention items.",
+    "The verifier is separately implemented by the same author. It verifies arithmetic and reconstruction, not independent expert agreement."
+  ]
+}

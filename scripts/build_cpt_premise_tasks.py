@@ -115,6 +115,20 @@ def compile_task(spec):
         for metric,value in spec['claims']:
             options.append(f"The {METRICS[family][metric]} is {value}.")
             proof.append(dict(actual=metrics[metric],claimed=value,true=metrics[metric]==value,trace=trace))
+    elif operation=='certificate':
+        _,trace=measure(family,rows)
+        if family=='rail_speed':
+            actual={r['name']:r['category'] for r in trace}
+            labels={'D':'dedicated high-speed','U':'upgraded high-speed','N':'neither category'}
+        else:
+            actual={r['name']:('included' if r['included'] else 'excluded') for r in trace}
+            labels={'included':'include in the railway statistics','excluded':'exclude from the railway statistics'}
+        question+='An auditor must sign one complete asset-by-asset classification certificate. No aggregate totals are requested. The engineering records are:\n'+render_rows(family,rows)
+        question+='\nSelect each certificate whose classifications are correct for every asset.'
+        for certificate in spec['certificates']:
+            if set(certificate)!=set(actual):raise ValueError('incomplete certificate')
+            options.append('; '.join(name+': '+labels[value] for name,value in certificate.items())+'.')
+            proof.append(dict(actual=actual,claimed=certificate,true=actual==certificate,trace=trace))
     elif operation=='inverse':
         pos,field=spec['unknown']
         question+='One field in this register is unrecorded.\n'+render_rows(family,rows,missing=(pos,field))
@@ -156,7 +170,8 @@ def compile_task(spec):
         model_baseline_queried=False,semantic_review='pending downstream source and split audit')
 
 
-def specifications():
+def specifications(expression_design='ledger'):
+    if expression_design not in ('ledger','certificate'):raise ValueError('unknown expression design')
     specs=[]
     speed_catalog=[
         [speed_row('Aster','new_special',275,160,90),speed_row('Birch','upgraded_conventional',210,170,90),speed_row('Cedar','ordinary_conventional',270,170,90)],
@@ -214,10 +229,26 @@ def specifications():
         branches={'L':[track_row('Ecru',4,2),track_row('Fawn',6,1,built_installation=True,public=True)],
                   'R':[track_row('Ecru',4,2),track_row('Fawn',6,1,built_installation=True,public=False)]},
         policies=[dict(L=14,R=8),dict(L=10,R=4),dict(L=14,R=14),dict(L=8,R=14)]))
+    if expression_design=='certificate':
+        for spec in specs:
+            if spec['split']!='dev_expression':continue
+            spec['id']=spec['id'].replace('premise-v1-','premise-v2-')
+            spec['operation']='certificate'
+            del spec['claims']
+            if spec['family']=='rail_speed':
+                spec['certificates']=[dict(Upland='D',Vale='U',Willow='N',Yew='N'),
+                    dict(Upland='N',Vale='N',Willow='N',Yew='N'),
+                    dict(Upland='D',Vale='U',Willow='D',Yew='N'),
+                    dict(Upland='D',Vale='D',Willow='N',Yew='U')]
+            else:
+                spec['certificates']=[dict(Teal='included',Umber='included',Violet='excluded',White='excluded'),
+                    dict(Teal='included',Umber='excluded',Violet='excluded',White='excluded'),
+                    dict(Teal='included',Umber='included',Violet='included',White='excluded'),
+                    dict(Teal='included',Umber='included',Violet='excluded',White='included')]
     return specs
 
 
-def build(source,out,group_script):
+def build(source,out,group_script,expression_design='ledger'):
     assert sha(source)==SOURCE_SHA,'source snapshot mismatch'
     rows=[json.loads(s) for s in source.read_text(encoding='utf-8').splitlines()];by_id={r['id']:r for r in rows}
     groups=historical_groups(rows,group_script)
@@ -237,7 +268,7 @@ def build(source,out,group_script):
         ('rail_network_length',1,'A line is made up of one or more tracks'),
         ('rail_network_length',1,'Stretches of road or water even if rolling stock is conveyed over such routes')]
     for family,i,quote in bindings:assert quote in sources[family][i]['source_text']
-    specs=specifications();tasks=[compile_task(s) for s in specs]
+    specs=specifications(expression_design);tasks=[compile_task(s) for s in specs]
     out.mkdir(parents=True,exist_ok=False)
     for name,data in [('sources.private.json',sources),('source_bindings.private.json',bindings)]:
         (out/name).write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
@@ -249,7 +280,7 @@ def build(source,out,group_script):
         compiler_sha256=sha(Path(__file__)),units=2,source_units=4,historical_source_groups=len({groups[sid] for ids in FAMILIES.values() for sid in ids}),
         tasks=len(tasks),split_counts=dict(Counter(t['split'] for t in tasks)),option_truth_tables=sum(len(t['option_proofs']) for t in tasks),
         source_boundaries_checked=len(bindings),official_or_diagnostic_inputs=False,model_generation_requests=0,model_evaluation_requests=0,
-        structural_6_3_1_units=2,training_allowed=False,training_ready=False,
+        structural_6_3_1_units=2,training_allowed=False,training_ready=False,expression_design=expression_design,
         limitations='Source-bound two-family construction pilot. The program and its premises were authored by Codex, not an independent domain expert. Source semantics, excluded-topic checks, cross-split structure and historical task similarity require downstream audit. Structured counts are not released units; no new knowledge-gap families and no performance gain are claimed. Upgraded-line speed-adaptation exceptions and private/stand-alone network ambiguity are intentionally out of scope.')
     (out/'manifest.safe.json').write_text(json.dumps(manifest,indent=2)+'\n',encoding='utf-8')
     return manifest
@@ -257,5 +288,6 @@ def build(source,out,group_script):
 
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--source',type=Path,required=True);p.add_argument('--out',type=Path,required=True)
-    p.add_argument('--group-script',type=Path,default=Path('scripts/generate_source_condition_tasks.py'));a=p.parse_args()
-    print(json.dumps(build(a.source,a.out,a.group_script),indent=2))
+    p.add_argument('--group-script',type=Path,default=Path('scripts/generate_source_condition_tasks.py'))
+    p.add_argument('--expression-design',choices=('ledger','certificate'),default='ledger');a=p.parse_args()
+    print(json.dumps(build(a.source,a.out,a.group_script,a.expression_design),indent=2))

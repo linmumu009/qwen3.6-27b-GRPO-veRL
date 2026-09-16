@@ -98,6 +98,20 @@ def test_second_calculator_checks_every_registered_design():
     for spec in specifications():verify_calculation(compile_task(spec))
 
 
+def test_certificate_revision_preserves_other_splits():
+    old=specifications();new=specifications('certificate')
+    assert [s for s in old if s['split']!='dev_expression']==[s for s in new if s['split']!='dev_expression']
+    expected=[dict(Upland='D',Vale='U',Willow='N',Yew='N'),
+              dict(Teal='included',Umber='included',Violet='excluded',White='excluded')]
+    expressions=[s for s in new if s['split']=='dev_expression']
+    for spec,answer in zip(expressions,expected):
+        task=compile_task(spec);verify_calculation(task)
+        assert spec['operation']=='certificate'
+        assert [task['option_proofs'][i]['claimed'] for i in task['correct_indices']]==[answer]
+        broken=deepcopy(spec);broken['certificates'][0].pop(next(iter(answer)))
+        with pytest.raises(ValueError,match='incomplete certificate'):compile_task(broken)
+
+
 @pytest.mark.parametrize('field',['question','correct_indices','option_proofs'])
 def test_verifier_rejects_tampered_render_labels_and_proofs(field):
     task=compile_task(specifications()[0])
