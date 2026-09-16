@@ -1,0 +1,12 @@
+{
+  "pid": 3723042,
+  "code": "/workspace/llin-verl-grpo/runs/llin-transfer-p1-stability-code-20260916-01",
+  "output": "/workspace/llin-verl-grpo/runs/llin-transfer-p1-stability-20260916-01",
+  "training": false,
+  "status": "baseline_repeat",
+  "requested_additional_runs_per_model": 1,
+  "requested_predictions": 360,
+  "tests_passed": 30,
+  "container_process_alive": true,
+  "resource_check": "No pre-existing repeat job, NPU processes absent, project volume about 1.1 TiB free; coordinator acquired shared lock."
+}

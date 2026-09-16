@@ -29,7 +29,8 @@ def main():
     outputs=llm.generate(prompts,SamplingParams(temperature=0,max_tokens=96,seed=1024),use_tqdm=True)
     outputs=sorted(outputs,key=lambda o:int(o.request_id));assert len(outputs)==len(items)
     rows=[]
-    for item,output in zip(items,outputs):
+    for item,prompt,output in zip(items,prompts,outputs):
+        assert list(output.prompt_token_ids)==prompt['prompt_token_ids'],'actual prompt token mismatch'
         result=output.outputs[0];parsed,valid=parse_answers(result.text,len(item.options))
         row=dict(source_id=item.source_id,dataset=item.dataset,category=item.category,item_hash=item.item_hash,
             prediction=result.text,parsed=list(parsed),valid=valid,expected=list(item.expected),finish_reason=result.finish_reason,
