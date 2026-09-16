@@ -1,0 +1,13 @@
+{
+  "verified_token_requests": 119,
+  "all_token_hashes_match": true,
+  "semantic_error_tasks_reviewed": 2,
+  "held": 2,
+  "new_gap_units": 0,
+  "cumulative_gap_units": 7,
+  "cumulative_categories": 5,
+  "training_ready": false,
+  "quote_escape_recovery_candidates_across_batches": 0,
+  "limitations": "44 model-key-correct tasks have not all been semantically audited; 44/46 is provisional. Both errors omit the broad organizational WMS definition scope and one invents an integration requirement. Do not count as knowledge gaps. Source screening remains too easy and not all forms survive generation validation.",
+  "next_action": "Switch to manually specified multi-condition scenarios backed by complete source passages, with explicit framework and independent option/numerical checks before inference. Prioritize warehouse trade-offs and operational metrics; do not repeat broad definition-generation batches or count paraphrases as independent rules."
+}

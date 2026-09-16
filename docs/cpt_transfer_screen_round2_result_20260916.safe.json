@@ -1,0 +1,56 @@
+{
+  "source_units": 24,
+  "historical_source_groups": 11,
+  "candidate_tasks": 49,
+  "model_filtered_tasks": 46,
+  "baseline_requests": 46,
+  "provisional_correct": 44,
+  "invalid": 0,
+  "truncated": 0,
+  "provisional_gap_source_units": 1,
+  "category_results": {
+    "warehouse_operations": {
+      "screened": 5,
+      "provisional_correct": 5
+    },
+    "planning_and_quantitative_rules": {
+      "screened": 9,
+      "provisional_correct": 9
+    },
+    "supply_chain_management": {
+      "screened": 12,
+      "provisional_correct": 12
+    },
+    "enterprise_and_warehouse_systems": {
+      "screened": 7,
+      "provisional_correct": 5
+    },
+    "waterway_vessels_and_clearance": {
+      "screened": 5,
+      "provisional_correct": 5
+    },
+    "rail_infrastructure_and_safety": {
+      "screened": 8,
+      "provisional_correct": 8
+    }
+  },
+  "mechanically_reparsed": true,
+  "raw_lineage_and_text_prompt_hashes_verified": true,
+  "token_prompt_reconstruction": "requires archived tokenizer check on server",
+  "semantic_reviewed_tasks": 2,
+  "semantically_validated_gap_source_units": 0,
+  "rejected_or_held_error_tasks": 2,
+  "validated_gap_unit_ids": [],
+  "training_ready": false,
+  "official_evaluation_changed": false,
+  "limitations": "Source-unit counts require further semantic consolidation into independent operational rules. Same-model source review is not independent certification. No new training or generalization claim.",
+  "artifact_sha256": {
+    "sources.private.jsonl": "30d9e9ffbfe2fb07945d5b9797caa8c6ec05aabc0568fbd3ab952854b5f277bb",
+    "baseline.private.jsonl": "6f46f4da925467f7c350bd2bde178fb293995ed986cc1beeb52aeeaf771e070a",
+    "candidates.private.jsonl": "f0452e42f78606cd7f942f5324f4d1f9c94ae32d60dfe978dbb85bb3d5ad2671",
+    "filtered.private.jsonl": "499f870fb9168e8167c8467d341521716b77e0d9131f219fbaa8dc921b4dfa8f",
+    "generation.private.jsonl": "328b63104c7bbd2a8f468945c07d6bfa1da69a87fae5a594d09b29ef00ebe8a1",
+    "review.private.jsonl": "bde1a1527c29b37368e90ba7ec9a53b283f1bff4b0f6e5094b203601135e5479",
+    "semantic_review.private.jsonl": "f9ecf96c44af9f51f5c1549668cde3d29f349e0fff013c7f4005167da9939847"
+  }
+}
