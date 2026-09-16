@@ -1,5 +1,5 @@
 {
-  "status": "resumed_loading_model",
+  "status": "completed_and_semantically_reviewed",
   "failed_pid": 3620917,
   "failure": "vLLM Worker-6 died unexpectedly; EngineDeadError. Exact cause not established by available log.",
   "original_output": "/opt/llin-transfer-screen-20260916-01",
@@ -14,9 +14,10 @@
   "recovery_started": true,
   "cpt_training_running": false,
   "other_task_modified": false,
-  "next_action": "Monitor resumed generation, blind review and baseline; independently verify all outputs before identifying semantic knowledge gaps.",
+  "next_action": "Expand source-only coverage and redesign ambiguous probes; seven validated source units in five categories are below the frozen broad-training gate. Do not rerun this completed batch.",
   "recovery_pid": 3659070,
   "recovery_code": "/opt/llin-transfer-screen-code-20260916-02",
   "recovery_output": "/opt/llin-transfer-screen-20260916-02",
-  "devices_verified_idle_before_resume": true
+  "devices_verified_idle_before_resume": true,
+  "completed_requests": 316
 }

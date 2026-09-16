@@ -1,0 +1,13 @@
+{
+  "verified_requests": 316,
+  "all_token_hashes_match": true,
+  "method": "Reconstructed all generation, blind-review and baseline prompts with archived Step120 tokenizer on huawei-05; compared token count and SHA256.",
+  "thinking": false,
+  "semantic_review_accepted": 7,
+  "semantic_review_held": 7,
+  "semantic_review_rejected": 2,
+  "validated_categories": 5,
+  "independent_rule_count": 7,
+  "training_ready": false,
+  "limitations": "Seven different rules, but three belong to rail infrastructure and vehicles. Single-run screening errors are not proof of stable inability. Two accepted items are direct recognition; one has duplicate false distractors and one is conditional on a stipulated Ro-Ro classification. All screening tasks excluded from training and evaluation partitions."
+}

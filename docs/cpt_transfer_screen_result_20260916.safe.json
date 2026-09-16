@@ -1,0 +1,72 @@
+{
+  "source_units": 64,
+  "historical_source_groups": 18,
+  "candidate_tasks": 134,
+  "model_filtered_tasks": 118,
+  "baseline_requests": 118,
+  "provisional_correct": 102,
+  "invalid": 1,
+  "truncated": 0,
+  "provisional_gap_source_units": 13,
+  "category_results": {
+    "rail_infrastructure_and_vehicles": {
+      "screened": 15,
+      "provisional_correct": 9
+    },
+    "rail_safety": {
+      "screened": 19,
+      "provisional_correct": 16
+    },
+    "road_vehicles": {
+      "screened": 15,
+      "provisional_correct": 13
+    },
+    "waterway_vessels_and_clearance": {
+      "screened": 12,
+      "provisional_correct": 10
+    },
+    "pipeline": {
+      "screened": 15,
+      "provisional_correct": 14
+    },
+    "warehouse_operations": {
+      "screened": 13,
+      "provisional_correct": 12
+    },
+    "planning_and_quantitative_rules": {
+      "screened": 11,
+      "provisional_correct": 11
+    },
+    "supply_chain_management": {
+      "screened": 18,
+      "provisional_correct": 17
+    }
+  },
+  "mechanically_reparsed": true,
+  "raw_lineage_and_text_prompt_hashes_verified": true,
+  "token_prompt_reconstruction": "requires archived tokenizer check on server",
+  "semantic_reviewed_tasks": 16,
+  "semantically_validated_gap_source_units": 7,
+  "rejected_or_held_error_tasks": 9,
+  "validated_gap_unit_ids": [
+    "llin-core-4ed9d25206de640422a5",
+    "llin-core-79e0091b62852f467ee8",
+    "llin-core-9f534b17ef66e7ac5d66",
+    "llin-core-a18da7d4bd91b5d74acd",
+    "llin-core-b5b62400c11c1cace1b4",
+    "llin-core-d884c6d7e1ba978161ad",
+    "llin-core-e18cbdfda5e0f7a00139"
+  ],
+  "training_ready": false,
+  "official_evaluation_changed": false,
+  "limitations": "Source-unit counts require further semantic consolidation into independent operational rules. Same-model source review is not independent certification. No new training or generalization claim.",
+  "artifact_sha256": {
+    "sources.private.jsonl": "24a97f4a9444dea3fc4fc77a70b1606f743680226536279e5953f8b6cde16a07",
+    "baseline.private.jsonl": "4ae8a348d9da10eea344760fb6198d3f339ff46a509a06c2f53ff7ee03d3bd7d",
+    "candidates.private.jsonl": "1237a2c060eae41a674a620864f08381ffe364de219accb7916555e849622a6e",
+    "filtered.private.jsonl": "f719fc02d8eb54ff81cd6931188b5f45d6cc342b648d6caa12909713923ec818",
+    "generation.private.jsonl": "f7f1feb789d0fc5b62a2a2d2a708b28db8f7fdbb3e8543b57c9abe6a1a5dfea0",
+    "review.private.jsonl": "44d95face245db38cdca8fb6563456ba6f623be4be06121fce383c8b1bf6c3a5",
+    "semantic_review.private.jsonl": "4f91b65d4fc354c68507cb95ab468e5891e51eee75a55a035c150d24ee8a5e5d"
+  }
+}
