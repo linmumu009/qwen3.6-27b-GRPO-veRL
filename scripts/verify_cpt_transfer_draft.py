@@ -25,12 +25,12 @@ def parse(text):
 def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def review_accepts(record, task):
+def review_accepts(record, task, allow_all=False):
     try:
         review=parse(record['text']); answers=review['correct_indices']
         flags=('supported','unambiguous','self_contained','scope_preserved','not_answer_leaking','design_satisfied')
         return (record['finish_reason']=='stop' and all(review.get(k) is True for k in flags)
-            and isinstance(answers,list) and 0<len(answers)<4 and len(set(answers))==len(answers)
+            and isinstance(answers,list) and 0<len(answers)<=(4 if allow_all else 3) and len(set(answers))==len(answers)
             and all(type(v) is int and 0<=v<4 for v in answers)
             and sorted(answers)==task['correct_indices']
             and isinstance(review.get('option_reasons'),list) and len(review['option_reasons'])==4)
@@ -70,7 +70,7 @@ def verify(packet, base, excluded_paths=()):
         r=by_review[c['id']]
         assert r['prompt_text_sha256']==hashlib.sha256(review_prompt(c['task'],by_request[c['request_id']]).encode()).hexdigest()
         assert r['output_tokens']<=1536 and r['prompt_tokens']+1536<=8192
-        if review_accepts(r,c['task']):
+        if review_accepts(r,c['task'],by_request[c['request_id']].get('allow_all_correct',False)):
             accepted.append(dict(c,review=parse(r['text']),training_ready=False,review_status='same_model_filtered_only'))
     filtered=records(base/'filtered.private.jsonl');assert filtered==accepted
     for split in ('train','dev','sealed','retention'):

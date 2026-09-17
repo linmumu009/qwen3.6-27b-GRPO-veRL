@@ -1,0 +1,678 @@
+{
+  "cases": 1672,
+  "cases_sha256": "b652b2108cb552346df11d005c15ff3137c50a756a7b24eb35302683ec33ed99",
+  "historical_registry_rows": 300,
+  "transitions": [
+    {
+      "model": "p1",
+      "dataset": "SC-bench-knowledge",
+      "transition": "retained",
+      "n": 188,
+      "historical_registry_present": 2,
+      "unknown_topic_records": 186,
+      "stable_all_repeat_regressions": 0
+    },
+    {
+      "model": "p1",
+      "dataset": "SC-bench-knowledge",
+      "transition": "repaired",
+      "n": 4,
+      "historical_registry_present": 3,
+      "unknown_topic_records": 1,
+      "stable_all_repeat_regressions": 0
+    },
+    {
+      "model": "p1",
+      "dataset": "SC-bench-knowledge",
+      "transition": "regressed",
+      "n": 2,
+      "historical_registry_present": 0,
+      "unknown_topic_records": 2,
+      "stable_all_repeat_regressions": 2
+    },
+    {
+      "model": "p1",
+      "dataset": "SC-bench-knowledge",
+      "transition": "still_wrong",
+      "n": 32,
+      "historical_registry_present": 32,
+      "unknown_topic_records": 0,
+      "stable_all_repeat_regressions": 0
+    },
+    {
+      "model": "p1",
+      "dataset": "LogistikaBench",
+      "transition": "retained",
+      "n": 1157,
+      "historical_registry_present": 3,
+      "unknown_topic_records": 1154,
+      "stable_all_repeat_regressions": 0
+    },
+    {
+      "model": "p1",
+      "dataset": "LogistikaBench",
+      "transition": "repaired",
+      "n": 36,
+      "historical_registry_present": 32,
+      "unknown_topic_records": 4,
+      "stable_all_repeat_regressions": 0
+    },
+    {
+      "model": "p1",
+      "dataset": "LogistikaBench",
+      "transition": "regressed",
+      "n": 23,
+      "historical_registry_present": 2,
+      "unknown_topic_records": 21,
+      "stable_all_repeat_regressions": 21
+    },
+    {
+      "model": "p1",
+      "dataset": "LogistikaBench",
+      "transition": "still_wrong",
+      "n": 230,
+      "historical_registry_present": 226,
+      "unknown_topic_records": 4,
+      "stable_all_repeat_regressions": 0
+    },
+    {
+      "model": "p3",
+      "dataset": "SC-bench-knowledge",
+      "transition": "retained",
+      "n": 184,
+      "historical_registry_present": 2,
+      "unknown_topic_records": 182,
+      "stable_all_repeat_regressions": 0
+    },
+    {
+      "model": "p3",
+      "dataset": "SC-bench-knowledge",
+      "transition": "repaired",
+      "n": 5,
+      "historical_registry_present": 4,
+      "unknown_topic_records": 1,
+      "stable_all_repeat_regressions": 0
+    },
+    {
+      "model": "p3",
+      "dataset": "SC-bench-knowledge",
+      "transition": "regressed",
+      "n": 6,
+      "historical_registry_present": 0,
+      "unknown_topic_records": 6,
+      "stable_all_repeat_regressions": 6
+    },
+    {
+      "model": "p3",
+      "dataset": "SC-bench-knowledge",
+      "transition": "still_wrong",
+      "n": 31,
+      "historical_registry_present": 31,
+      "unknown_topic_records": 0,
+      "stable_all_repeat_regressions": 0
+    },
+    {
+      "model": "p3",
+      "dataset": "LogistikaBench",
+      "transition": "retained",
+      "n": 1145,
+      "historical_registry_present": 3,
+      "unknown_topic_records": 1142,
+      "stable_all_repeat_regressions": 0
+    },
+    {
+      "model": "p3",
+      "dataset": "LogistikaBench",
+      "transition": "repaired",
+      "n": 40,
+      "historical_registry_present": 35,
+      "unknown_topic_records": 5,
+      "stable_all_repeat_regressions": 0
+    },
+    {
+      "model": "p3",
+      "dataset": "LogistikaBench",
+      "transition": "regressed",
+      "n": 35,
+      "historical_registry_present": 2,
+      "unknown_topic_records": 33,
+      "stable_all_repeat_regressions": 34
+    },
+    {
+      "model": "p3",
+      "dataset": "LogistikaBench",
+      "transition": "still_wrong",
+      "n": 226,
+      "historical_registry_present": 223,
+      "unknown_topic_records": 3,
+      "stable_all_repeat_regressions": 0
+    }
+  ],
+  "by_category": [
+    {
+      "model": "p1",
+      "dataset": "SC-bench-knowledge",
+      "category": "Finance and Operations",
+      "n": 20,
+      "transitions": {
+        "retained": 17,
+        "still_wrong": 3
+      }
+    },
+    {
+      "model": "p1",
+      "dataset": "SC-bench-knowledge",
+      "category": "Fulfillment",
+      "n": 79,
+      "transitions": {
+        "retained": 65,
+        "still_wrong": 11,
+        "repaired": 1,
+        "regressed": 2
+      }
+    },
+    {
+      "model": "p1",
+      "dataset": "SC-bench-knowledge",
+      "category": "In-warehouse",
+      "n": 12,
+      "transitions": {
+        "still_wrong": 2,
+        "retained": 9,
+        "repaired": 1
+      }
+    },
+    {
+      "model": "p1",
+      "dataset": "SC-bench-knowledge",
+      "category": "Inventory",
+      "n": 4,
+      "transitions": {
+        "retained": 4
+      }
+    },
+    {
+      "model": "p1",
+      "dataset": "SC-bench-knowledge",
+      "category": "Logistics Collaboration",
+      "n": 73,
+      "transitions": {
+        "retained": 61,
+        "still_wrong": 11,
+        "repaired": 1
+      }
+    },
+    {
+      "model": "p1",
+      "dataset": "SC-bench-knowledge",
+      "category": "Merchandise",
+      "n": 1,
+      "transitions": {
+        "retained": 1
+      }
+    },
+    {
+      "model": "p1",
+      "dataset": "SC-bench-knowledge",
+      "category": "Network",
+      "n": 3,
+      "transitions": {
+        "retained": 3
+      }
+    },
+    {
+      "model": "p1",
+      "dataset": "SC-bench-knowledge",
+      "category": "Other",
+      "n": 3,
+      "transitions": {
+        "retained": 3
+      }
+    },
+    {
+      "model": "p1",
+      "dataset": "SC-bench-knowledge",
+      "category": "Planning",
+      "n": 14,
+      "transitions": {
+        "still_wrong": 2,
+        "retained": 12
+      }
+    },
+    {
+      "model": "p1",
+      "dataset": "SC-bench-knowledge",
+      "category": "Procurement",
+      "n": 12,
+      "transitions": {
+        "still_wrong": 3,
+        "retained": 8,
+        "repaired": 1
+      }
+    },
+    {
+      "model": "p1",
+      "dataset": "SC-bench-knowledge",
+      "category": "Returns and Waste",
+      "n": 1,
+      "transitions": {
+        "retained": 1
+      }
+    },
+    {
+      "model": "p1",
+      "dataset": "SC-bench-knowledge",
+      "category": "unknown",
+      "n": 4,
+      "transitions": {
+        "retained": 4
+      }
+    },
+    {
+      "model": "p1",
+      "dataset": "LogistikaBench",
+      "category": "material_handling",
+      "n": 696,
+      "transitions": {
+        "retained": 563,
+        "regressed": 8,
+        "still_wrong": 105,
+        "repaired": 20
+      }
+    },
+    {
+      "model": "p1",
+      "dataset": "LogistikaBench",
+      "category": "procurement",
+      "n": 42,
+      "transitions": {
+        "still_wrong": 6,
+        "retained": 36
+      }
+    },
+    {
+      "model": "p1",
+      "dataset": "LogistikaBench",
+      "category": "supply_chain",
+      "n": 102,
+      "transitions": {
+        "retained": 89,
+        "still_wrong": 12,
+        "repaired": 1
+      }
+    },
+    {
+      "model": "p1",
+      "dataset": "LogistikaBench",
+      "category": "transport",
+      "n": 404,
+      "transitions": {
+        "retained": 321,
+        "still_wrong": 60,
+        "regressed": 12,
+        "repaired": 11
+      }
+    },
+    {
+      "model": "p1",
+      "dataset": "LogistikaBench",
+      "category": "warehousing",
+      "n": 202,
+      "transitions": {
+        "retained": 148,
+        "still_wrong": 47,
+        "repaired": 4,
+        "regressed": 3
+      }
+    },
+    {
+      "model": "p3",
+      "dataset": "SC-bench-knowledge",
+      "category": "Finance and Operations",
+      "n": 20,
+      "transitions": {
+        "retained": 16,
+        "still_wrong": 3,
+        "regressed": 1
+      }
+    },
+    {
+      "model": "p3",
+      "dataset": "SC-bench-knowledge",
+      "category": "Fulfillment",
+      "n": 79,
+      "transitions": {
+        "retained": 64,
+        "still_wrong": 11,
+        "repaired": 1,
+        "regressed": 3
+      }
+    },
+    {
+      "model": "p3",
+      "dataset": "SC-bench-knowledge",
+      "category": "In-warehouse",
+      "n": 12,
+      "transitions": {
+        "still_wrong": 2,
+        "retained": 9,
+        "repaired": 1
+      }
+    },
+    {
+      "model": "p3",
+      "dataset": "SC-bench-knowledge",
+      "category": "Inventory",
+      "n": 4,
+      "transitions": {
+        "retained": 4
+      }
+    },
+    {
+      "model": "p3",
+      "dataset": "SC-bench-knowledge",
+      "category": "Logistics Collaboration",
+      "n": 73,
+      "transitions": {
+        "retained": 59,
+        "still_wrong": 11,
+        "regressed": 2,
+        "repaired": 1
+      }
+    },
+    {
+      "model": "p3",
+      "dataset": "SC-bench-knowledge",
+      "category": "Merchandise",
+      "n": 1,
+      "transitions": {
+        "retained": 1
+      }
+    },
+    {
+      "model": "p3",
+      "dataset": "SC-bench-knowledge",
+      "category": "Network",
+      "n": 3,
+      "transitions": {
+        "retained": 3
+      }
+    },
+    {
+      "model": "p3",
+      "dataset": "SC-bench-knowledge",
+      "category": "Other",
+      "n": 3,
+      "transitions": {
+        "retained": 3
+      }
+    },
+    {
+      "model": "p3",
+      "dataset": "SC-bench-knowledge",
+      "category": "Planning",
+      "n": 14,
+      "transitions": {
+        "still_wrong": 2,
+        "retained": 12
+      }
+    },
+    {
+      "model": "p3",
+      "dataset": "SC-bench-knowledge",
+      "category": "Procurement",
+      "n": 12,
+      "transitions": {
+        "still_wrong": 2,
+        "retained": 8,
+        "repaired": 2
+      }
+    },
+    {
+      "model": "p3",
+      "dataset": "SC-bench-knowledge",
+      "category": "Returns and Waste",
+      "n": 1,
+      "transitions": {
+        "retained": 1
+      }
+    },
+    {
+      "model": "p3",
+      "dataset": "SC-bench-knowledge",
+      "category": "unknown",
+      "n": 4,
+      "transitions": {
+        "retained": 4
+      }
+    },
+    {
+      "model": "p3",
+      "dataset": "LogistikaBench",
+      "category": "material_handling",
+      "n": 696,
+      "transitions": {
+        "retained": 558,
+        "regressed": 13,
+        "still_wrong": 103,
+        "repaired": 22
+      }
+    },
+    {
+      "model": "p3",
+      "dataset": "LogistikaBench",
+      "category": "procurement",
+      "n": 42,
+      "transitions": {
+        "still_wrong": 6,
+        "retained": 36
+      }
+    },
+    {
+      "model": "p3",
+      "dataset": "LogistikaBench",
+      "category": "supply_chain",
+      "n": 102,
+      "transitions": {
+        "retained": 88,
+        "still_wrong": 12,
+        "regressed": 1,
+        "repaired": 1
+      }
+    },
+    {
+      "model": "p3",
+      "dataset": "LogistikaBench",
+      "category": "transport",
+      "n": 404,
+      "transitions": {
+        "retained": 319,
+        "repaired": 12,
+        "still_wrong": 59,
+        "regressed": 14
+      }
+    },
+    {
+      "model": "p3",
+      "dataset": "LogistikaBench",
+      "category": "warehousing",
+      "n": 202,
+      "transitions": {
+        "retained": 144,
+        "still_wrong": 46,
+        "repaired": 5,
+        "regressed": 7
+      }
+    }
+  ],
+  "proposed_source_links": [
+    {
+      "model": "p1",
+      "dataset": "SC-bench-knowledge",
+      "transition": "retained",
+      "n": 188,
+      "selected_assertion_link_count": 0,
+      "broad_topic_link_count": 0,
+      "sufficient_answer_coverage_proven": 0
+    },
+    {
+      "model": "p1",
+      "dataset": "SC-bench-knowledge",
+      "transition": "repaired",
+      "n": 4,
+      "selected_assertion_link_count": 0,
+      "broad_topic_link_count": 2,
+      "sufficient_answer_coverage_proven": 0
+    },
+    {
+      "model": "p1",
+      "dataset": "SC-bench-knowledge",
+      "transition": "regressed",
+      "n": 2,
+      "selected_assertion_link_count": 0,
+      "broad_topic_link_count": 0,
+      "sufficient_answer_coverage_proven": 0
+    },
+    {
+      "model": "p1",
+      "dataset": "SC-bench-knowledge",
+      "transition": "still_wrong",
+      "n": 32,
+      "selected_assertion_link_count": 0,
+      "broad_topic_link_count": 7,
+      "sufficient_answer_coverage_proven": 0
+    },
+    {
+      "model": "p1",
+      "dataset": "LogistikaBench",
+      "transition": "retained",
+      "n": 1157,
+      "selected_assertion_link_count": 1,
+      "broad_topic_link_count": 2,
+      "sufficient_answer_coverage_proven": 0
+    },
+    {
+      "model": "p1",
+      "dataset": "LogistikaBench",
+      "transition": "repaired",
+      "n": 36,
+      "selected_assertion_link_count": 1,
+      "broad_topic_link_count": 11,
+      "sufficient_answer_coverage_proven": 0
+    },
+    {
+      "model": "p1",
+      "dataset": "LogistikaBench",
+      "transition": "regressed",
+      "n": 23,
+      "selected_assertion_link_count": 1,
+      "broad_topic_link_count": 1,
+      "sufficient_answer_coverage_proven": 0
+    },
+    {
+      "model": "p1",
+      "dataset": "LogistikaBench",
+      "transition": "still_wrong",
+      "n": 230,
+      "selected_assertion_link_count": 12,
+      "broad_topic_link_count": 104,
+      "sufficient_answer_coverage_proven": 0
+    },
+    {
+      "model": "p3",
+      "dataset": "SC-bench-knowledge",
+      "transition": "retained",
+      "n": 184,
+      "selected_assertion_link_count": 0,
+      "broad_topic_link_count": 0,
+      "sufficient_answer_coverage_proven": 0
+    },
+    {
+      "model": "p3",
+      "dataset": "SC-bench-knowledge",
+      "transition": "repaired",
+      "n": 5,
+      "selected_assertion_link_count": 0,
+      "broad_topic_link_count": 3,
+      "sufficient_answer_coverage_proven": 0
+    },
+    {
+      "model": "p3",
+      "dataset": "SC-bench-knowledge",
+      "transition": "regressed",
+      "n": 6,
+      "selected_assertion_link_count": 0,
+      "broad_topic_link_count": 0,
+      "sufficient_answer_coverage_proven": 0
+    },
+    {
+      "model": "p3",
+      "dataset": "SC-bench-knowledge",
+      "transition": "still_wrong",
+      "n": 31,
+      "selected_assertion_link_count": 0,
+      "broad_topic_link_count": 6,
+      "sufficient_answer_coverage_proven": 0
+    },
+    {
+      "model": "p3",
+      "dataset": "LogistikaBench",
+      "transition": "retained",
+      "n": 1145,
+      "selected_assertion_link_count": 1,
+      "broad_topic_link_count": 2,
+      "sufficient_answer_coverage_proven": 0
+    },
+    {
+      "model": "p3",
+      "dataset": "LogistikaBench",
+      "transition": "repaired",
+      "n": 40,
+      "selected_assertion_link_count": 1,
+      "broad_topic_link_count": 10,
+      "sufficient_answer_coverage_proven": 0
+    },
+    {
+      "model": "p3",
+      "dataset": "LogistikaBench",
+      "transition": "regressed",
+      "n": 35,
+      "selected_assertion_link_count": 1,
+      "broad_topic_link_count": 1,
+      "sufficient_answer_coverage_proven": 0
+    },
+    {
+      "model": "p3",
+      "dataset": "LogistikaBench",
+      "transition": "still_wrong",
+      "n": 226,
+      "selected_assertion_link_count": 12,
+      "broad_topic_link_count": 105,
+      "sufficient_answer_coverage_proven": 0
+    }
+  ],
+  "p1_regression_review_records": 25,
+  "p1_regression_unknown_topics": 23,
+  "p1_regression_answer_patterns": {
+    "substitution": 14,
+    "omission_only": 11
+  },
+  "no_training_data_emitted": true,
+  "model_calls": 0,
+  "source_packet_sha256": "b42fd573fbb9c740446bd3c9f020f8181967f2ac96b40fb0f27f261677743cde",
+  "source_links_are_not_sufficiency_proofs": true,
+  "warning": "Historical registry is incomplete. Missing links mean unknown, never source-irrelevant or unrepairable. Category counts do not identify a causal mechanism.",
+  "inputs": {
+    "registry_sha256": "617b6998f7fea07abd5fd20838d7effac4febae554eb0fcdeb1eecd0a1d562aa",
+    "formal_prediction_sha256": {
+      "step120_historical": "18f0e0524a0ff97c1e0345cd6192b16363a1fcec05405f3ad7c97fb70edad0f7",
+      "step120_current": "0a75f6d706bca79105c94dec85fc5727d58e40eda97c73509d893c346bbe995e",
+      "p1": "33c5fc7dcb64c0fba59c25c054b19cda7b2e07880ad62daf0d2debd6ece7bbb2",
+      "p3": "5ad52f3808e1cfab47bcc26023a9e231d9c76e6ac5cf46dd1c1a190195f8df94"
+    }
+  },
+  "files": {
+    "item_ledger.private.jsonl": "f9d7bf759c6715ff661de49631409e7a4cdb97e02e76ae266d141c7bd669191a",
+    "p1_regressions_review.private.jsonl": "e3ee0c108a542f0df50a01de7f865ab4216a13d2cb36077d7755195540e99c03"
+  }
+}

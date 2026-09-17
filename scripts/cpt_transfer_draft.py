@@ -30,6 +30,18 @@ DESIGN_GUIDE = {
 }
 
 
+def draft_indices(value, count, request):
+    """New packets may explicitly include all-correct tasks; legacy is unchanged."""
+    allow = request.get('allow_all_correct', False)
+    if type(allow) is not bool:
+        raise ValueError('allow_all_correct')
+    if allow and isinstance(value,list) and len(value)==count:
+        if all(type(x) is int and 0<=x<count for x in value) and len(set(value))==count:
+            return sorted(value)
+        raise ValueError('invalid all-answer indices')
+    return indices(value,count)
+
+
 def source_constraints(request):
     """Optional audited source rules; legacy prompts remain byte-for-byte stable."""
     constraints = request.get('source_constraints')
@@ -56,6 +68,16 @@ def source_constraints(request):
 def generation_prompt(request):
     payload={'sources':[{k:s[k] for k in ('title','scope','source_text')} for s in request['sources']],
              'designs':{d:DESIGN_GUIDE[d] for d in request['designs']}}
+    if 'authoring_scope' in request:
+        if not isinstance(request['authoring_scope'],str) or not request['authoring_scope'].strip():
+            raise ValueError('authoring_scope')
+        payload['authoring_scope']=request['authoring_scope']
+    if 'answer_cardinalities' in request:
+        counts=request['answer_cardinalities']
+        if (not isinstance(counts,dict) or set(counts)!=set(request['designs']) or
+                any(type(n) is not int or not 1<=n<=4 for n in counts.values())):
+            raise ValueError('answer_cardinalities')
+        payload['requested_correct_option_count_by_design']=counts
     constraints = source_constraints(request)
     if constraints is not None:
         payload['audited_source_constraints'] = constraints
@@ -76,7 +98,9 @@ def validate_task(task, request):
     opts=task.get('options')
     if not isinstance(opts,list) or len(opts)!=4 or any(not isinstance(o,str) or not o.strip() for o in opts):raise ValueError('options')
     if len({o.strip().casefold() for o in opts})!=4:raise ValueError('duplicate_options')
-    correct=indices(task.get('correct_indices'),4)
+    correct=draft_indices(task.get('correct_indices'),4,request)
+    if 'answer_cardinalities' in request and len(correct)!=request['answer_cardinalities'][task['design']]:
+        raise ValueError('answer_cardinality_mismatch')
     quote=task.get('source_quote')
     if not isinstance(quote,str) or len(quote)<20 or not any(quote in s['source_text'] for s in request['sources']):raise ValueError('source_quote')
     reasons=task.get('option_reasons')
@@ -92,6 +116,10 @@ def review_prompt(task, request):
     # No generated answer, rationale, quote, or calculation result goes to reviewer.
     payload={'sources':[{k:s[k] for k in ('title','scope','source_text')} for s in request['sources']],
              'task':{k:task[k] for k in ('question','options')},'required_design':DESIGN_GUIDE[task['design']]}
+    if 'authoring_scope' in request:
+        if not isinstance(request['authoring_scope'],str) or not request['authoring_scope'].strip():
+            raise ValueError('authoring_scope')
+        payload['authoring_scope']=request['authoring_scope']
     constraints = source_constraints(request)
     if constraints is not None:
         payload['audited_source_constraints'] = constraints
@@ -203,7 +231,7 @@ def main():
                         try:
                             review=parse_object(record['text'])
                             if record['finish_reason']!='stop' or any(review.get(k) is not True for k in ('supported','unambiguous','self_contained','scope_preserved','not_answer_leaking','design_satisfied')):raise ValueError('review_rejected')
-                            if indices(review.get('correct_indices'),4)!=c['task']['correct_indices']:raise ValueError('review_disagreement')
+                            if draft_indices(review.get('correct_indices'),4,by_id[c['request_id']])!=c['task']['correct_indices']:raise ValueError('review_disagreement')
                             if not isinstance(review.get('option_reasons'),list) or len(review['option_reasons'])!=4:raise ValueError('review_missing_options')
                             filtered.append(dict(c,review=review,training_ready=False,review_status='same_model_filtered_only'))
                         except (ValueError,KeyError,TypeError) as e:rejected[str(e)]+=1

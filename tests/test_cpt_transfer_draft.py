@@ -66,6 +66,49 @@ def test_valid_numeric_task(source_request,task):
     assert validate_task(task,source_request)['correct_indices']==[0]
 
 
+def test_expansion_all_correct_is_opt_in_and_reviewer_blind(source_request,task):
+    task['correct_indices']=[0,1,2,3]
+    with pytest.raises(ValueError):validate_task(task,source_request)
+    source_request.update(allow_all_correct=True,answer_cardinalities={'single_case_application':4},
+                          authoring_scope='ARCHIVED_SCOPE_CONSTRAINT')
+    assert validate_task(task,source_request)['correct_indices']==[0,1,2,3]
+    assert 'requested_correct_option_count_by_design' in generation_prompt(source_request)
+    blind=review_prompt(task,source_request)
+    assert 'ARCHIVED_SCOPE_CONSTRAINT' in blind
+    assert 'requested_correct_option_count_by_design' not in blind
+    assert 'answer_cardinalities' not in blind and 'SECRET_KEY_' not in blind
+    source_request['answer_cardinalities']['single_case_application']=3
+    with pytest.raises(ValueError,match='answer_cardinality_mismatch'):validate_task(task,source_request)
+
+
+def test_all_correct_still_rejects_duplicate_or_boolean_indices(source_request,task):
+    source_request['allow_all_correct']=True
+    for value in ([0,1,2,2],[0,1,2,True],[0,1,2,4]):
+        task['correct_indices']=value
+        with pytest.raises(ValueError):validate_task(task,source_request)
+
+
+def test_independent_review_verifier_all_correct_opt_in(task):
+    from verify_cpt_transfer_draft import review_accepts
+    task['correct_indices']=[0,1,2,3]
+    answer=dict(correct_indices=[0,1,2,3],option_reasons=['supported']*4,
+                **{k:True for k in ('supported','unambiguous','self_contained','scope_preserved','not_answer_leaking','design_satisfied')})
+    record=dict(text=json.dumps(answer),finish_reason='stop')
+    assert not review_accepts(record,task)
+    assert review_accepts(record,task,allow_all=True)
+    answer['correct_indices']=[0,1,2,True];record['text']=json.dumps(answer)
+    assert not review_accepts(record,task,allow_all=True)
+
+
+def test_source_scope_does_not_change_legacy_prompt(source_request,task):
+    before=generation_prompt(source_request)
+    source_request['authoring_scope']='KEEP_SOURCE_SCOPE'
+    assert 'KEEP_SOURCE_SCOPE' in generation_prompt(source_request)
+    assert 'KEEP_SOURCE_SCOPE' in review_prompt(task,source_request)
+    del source_request['authoring_scope']
+    assert generation_prompt(source_request)==before
+
+
 def test_embedded_select_all_instruction_keeps_original_text(source_request,task):
     task['question']='Under this archived scope, select all correct statements about these records.'
     assert validate_task(task,source_request)['question']==task['question']

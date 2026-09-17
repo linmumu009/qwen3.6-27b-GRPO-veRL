@@ -1,0 +1,599 @@
+{
+  "source_sha256": "5df7dc2b209938986cd7081aecdc9105fb989c9a872d572ce0a0c5a16dbbf8a4",
+  "evidence_sha256": "7da53a1a3246381181c5a28fabfb0b68223aed0ee76ff6242710bf257e5af4c2",
+  "replay_sha256": "6ac62685258fc72815095ea13b2afbc8d96a58faf6464f0f8e955306af3b7a89",
+  "evidence_check": {
+    "references": 212,
+    "references_without_excerpt": 58
+  },
+  "source_units": 205,
+  "source_groups": 29,
+  "historical_dev_units": 44,
+  "historical_dev_groups": 5,
+  "p1_domain_source_units": 13,
+  "p1_replay_source_units": 108,
+  "expansion_families": 21,
+  "expansion_source_units": 36,
+  "source_units_absent_from_p1_training": 17,
+  "source_units_already_in_p1_training": 19,
+  "expansion_groups": 8,
+  "categories": {
+    "warehouse_operations": 9,
+    "measurement_planning": 2,
+    "supply_planning": 2,
+    "business_governance": 2,
+    "transport_operations": 6
+  },
+  "cards": [
+    {
+      "id": "expand-warehouse_roles",
+      "category": "warehouse_operations",
+      "ability": "区分原料、在制品、履约、配送与混合中心的任务",
+      "source_ids": [
+        "llin-core-82687efa78d48d4baead"
+      ],
+      "source_groups": [
+        "llin-core-010eea3da282a23f6b6b"
+      ],
+      "source_titles": [
+        "Warehouse types and their functions"
+      ],
+      "topics": [
+        "warehouse_missions"
+      ],
+      "new_to_p1_source_ids": [],
+      "rule_scope": "Apply the cited warehouse-function distinctions to explicit flows and customers; do not claim that one real facility has only one role.",
+      "item_level_target_coverage_proven": false,
+      "semantic_scope_review": "agent review of archived source snapshot; not independent expert certification"
+    },
+    {
+      "id": "expand-handling_granularity",
+      "category": "warehouse_operations",
+      "ability": "区分搬运单位粒度与作业成本方向",
+      "source_ids": [
+        "llin-core-7292656c5310e162ab09"
+      ],
+      "source_groups": [
+        "llin-core-010eea3da282a23f6b6b"
+      ],
+      "source_titles": [
+        "Handling unit size and operating cost"
+      ],
+      "topics": [
+        "handling_costs"
+      ],
+      "new_to_p1_source_ids": [],
+      "rule_scope": "Treat smaller-unit handling cost as a general source tendency, not an exact universal ratio; hold throughput and other assumptions explicit.",
+      "item_level_target_coverage_proven": false,
+      "semantic_scope_review": "agent review of archived source snapshot; not independent expert certification"
+    },
+    {
+      "id": "expand-pick_lines",
+      "category": "warehouse_operations",
+      "ability": "区分拣选行、抓取次数、SKU密度及行走需求",
+      "source_ids": [
+        "llin-core-68eacc4454fc8a4d4bb3"
+      ],
+      "source_groups": [
+        "llin-core-010eea3da282a23f6b6b"
+      ],
+      "source_titles": [
+        "Pick lines, density and batching trade-offs"
+      ],
+      "topics": [
+        "picking_methods",
+        "picking_productivity",
+        "wms_technology"
+      ],
+      "new_to_p1_source_ids": [
+        "llin-core-68eacc4454fc8a4d4bb3"
+      ],
+      "rule_scope": "Do not equate a pick-line with one grab; distinguish SKU density from pick density and state any numerical workload assumptions.",
+      "item_level_target_coverage_proven": false,
+      "semantic_scope_review": "agent review of archived source snapshot; not independent expert certification"
+    },
+    {
+      "id": "expand-batch_tradeoff",
+      "category": "warehouse_operations",
+      "ability": "比较批量拣选节省行走与增加分拣空间的代价",
+      "source_ids": [
+        "llin-core-4abc2a4cad028703b936"
+      ],
+      "source_groups": [
+        "llin-core-010eea3da282a23f6b6b"
+      ],
+      "source_titles": [
+        "When batching saves work"
+      ],
+      "topics": [
+        "picking_methods"
+      ],
+      "new_to_p1_source_ids": [
+        "llin-core-4abc2a4cad028703b936"
+      ],
+      "rule_scope": "Batch only when stated separation and space costs are lower than avoided walking; do not make medium-order batching universally optimal.",
+      "item_level_target_coverage_proven": false,
+      "semantic_scope_review": "agent review of archived source snapshot; not independent expert certification"
+    },
+    {
+      "id": "expand-serial_parallel",
+      "category": "warehouse_operations",
+      "ability": "比较串行与并行拣选的流转时间和协调成本",
+      "source_ids": [
+        "llin-core-98928650cc767bf758a2"
+      ],
+      "source_groups": [
+        "llin-core-010eea3da282a23f6b6b"
+      ],
+      "source_titles": [
+        "Serial and parallel order picking"
+      ],
+      "topics": [
+        "picking_methods"
+      ],
+      "new_to_p1_source_ids": [
+        "llin-core-98928650cc767bf758a2"
+      ],
+      "rule_scope": "Keep flow-time and total person-work separate; serial picking avoids coordination but is not universally faster or cheaper.",
+      "item_level_target_coverage_proven": false,
+      "semantic_scope_review": "agent review of archived source snapshot; not independent expert certification"
+    },
+    {
+      "id": "expand-zone_work",
+      "category": "warehouse_operations",
+      "ability": "按工作量分工并处理分区平衡、汇合与发运完整性",
+      "source_ids": [
+        "llin-core-f5342bfbc0d79cd2ae9c"
+      ],
+      "source_groups": [
+        "llin-core-010eea3da282a23f6b6b"
+      ],
+      "source_titles": [
+        "Work sharing and zone picking"
+      ],
+      "topics": [
+        "picking_methods",
+        "warehouse_flow"
+      ],
+      "new_to_p1_source_ids": [
+        "llin-core-f5342bfbc0d79cd2ae9c"
+      ],
+      "rule_scope": "Preserve shipment integrity and consolidation cost; distinguish work content from elapsed completion time and state all throughput assumptions.",
+      "item_level_target_coverage_proven": false,
+      "semantic_scope_review": "agent review of archived source snapshot; not independent expert certification"
+    },
+    {
+      "id": "expand-shipping_controls",
+      "category": "warehouse_operations",
+      "ability": "区分复核、包装保护、集装与发运作业",
+      "source_ids": [
+        "llin-core-56134d4692f9d511d52b"
+      ],
+      "source_groups": [
+        "llin-core-010eea3da282a23f6b6b"
+      ],
+      "source_titles": [
+        "Checking, packing and shipping"
+      ],
+      "topics": [
+        "warehouse_flow"
+      ],
+      "new_to_p1_source_ids": [],
+      "rule_scope": "Distinguish checking labels/weight/cube, packing protection/unitization, and shipping dock/yard/loading activities; do not invent a compulsory enterprise SOP.",
+      "item_level_target_coverage_proven": false,
+      "semantic_scope_review": "agent review of archived source snapshot; not independent expert certification"
+    },
+    {
+      "id": "expand-activity_distribution",
+      "category": "warehouse_operations",
+      "ability": "用需求分布与峰谷补充平均作业量",
+      "source_ids": [
+        "llin-core-4b3722810d9fedad6ee2"
+      ],
+      "source_groups": [
+        "llin-core-010eea3da282a23f6b6b"
+      ],
+      "source_titles": [
+        "Warehouse activity profiling"
+      ],
+      "topics": [
+        "warehouse_capacity",
+        "warehouse_receiving"
+      ],
+      "new_to_p1_source_ids": [],
+      "rule_scope": "Use SKU, order and location records; identical means do not establish identical peaks or sufficient capacity.",
+      "item_level_target_coverage_proven": false,
+      "semantic_scope_review": "agent review of archived source snapshot; not independent expert certification"
+    },
+    {
+      "id": "expand-storage_tradeoffs",
+      "category": "warehouse_operations",
+      "ability": "比较固定共享库位、空间释放和行走距离目标",
+      "source_ids": [
+        "llin-core-ce294efb193b58161af9",
+        "llin-core-541c96f5265060deed96"
+      ],
+      "source_groups": [
+        "llin-core-010eea3da282a23f6b6b"
+      ],
+      "source_titles": [
+        "库位排序启发式",
+        "Dedicated and shared storage: space and labor trade-offs"
+      ],
+      "topics": [
+        "storage_assignment",
+        "warehouse_flow",
+        "warehouse_layout"
+      ],
+      "new_to_p1_source_ids": [
+        "llin-core-ce294efb193b58161af9",
+        "llin-core-541c96f5265060deed96"
+      ],
+      "rule_scope": "Separate the frequency-distance heuristic from a global optimum; reserve the harmonic utilization formula for its exact stated idealized model.",
+      "item_level_target_coverage_proven": false,
+      "semantic_scope_review": "agent review of archived source snapshot; not independent expert certification"
+    },
+    {
+      "id": "expand-metric_denominators",
+      "category": "measurement_planning",
+      "ability": "按口径和分母计算仓储指标及合并比率",
+      "source_ids": [
+        "llin-core-eb453d6e6cbf9fd5b623",
+        "llin-core-877f0c450b6c0778b562"
+      ],
+      "source_groups": [
+        "llin-core-3e0fd5afa6664dc97053"
+      ],
+      "source_titles": [
+        "Weighted means and pooled rates",
+        "Warehouse performance definitions and measurement scope"
+      ],
+      "topics": [
+        "inventory_control",
+        "metrics"
+      ],
+      "new_to_p1_source_ids": [
+        "llin-core-eb453d6e6cbf9fd5b623",
+        "llin-core-877f0c450b6c0778b562"
+      ],
+      "rule_scope": "State whether the denominator is items, lines, locations, orders or periods; combine rates only with matching definitions and nonoverlapping groups.",
+      "item_level_target_coverage_proven": false,
+      "semantic_scope_review": "agent review of archived source snapshot; not independent expert certification"
+    },
+    {
+      "id": "expand-mrp_coordination",
+      "category": "supply_planning",
+      "ability": "从物料清单和提前期安排需求并区分顺序与联合协调",
+      "source_ids": [
+        "llin-core-316cc39367cdc7fbce64",
+        "llin-core-fe12c856b64d45a8baef"
+      ],
+      "source_groups": [
+        "llin-core-2b371c17caeb0873b20b"
+      ],
+      "source_titles": [
+        "Bill of materials",
+        "MRP inputs, timing and supplier coordination"
+      ],
+      "topics": [
+        "mrp"
+      ],
+      "new_to_p1_source_ids": [
+        "llin-core-fe12c856b64d45a8baef"
+      ],
+      "rule_scope": "Do not claim deterministic MRP resolves uncertainty; include receipts, stock, yields or calendar conventions only when explicitly supplied.",
+      "item_level_target_coverage_proven": false,
+      "semantic_scope_review": "agent review of archived source snapshot; not independent expert certification"
+    },
+    {
+      "id": "expand-network_decisions",
+      "category": "supply_planning",
+      "ability": "把设施选址和网络流量作为不同决策",
+      "source_ids": [
+        "llin-core-19afa54fce090ce327cf"
+      ],
+      "source_groups": [
+        "llin-core-010eea3da282a23f6b6b"
+      ],
+      "source_titles": [
+        "Supply chain network design"
+      ],
+      "topics": [
+        "cost_graphs",
+        "models"
+      ],
+      "new_to_p1_source_ids": [
+        "llin-core-19afa54fce090ce327cf"
+      ],
+      "rule_scope": "A feasible network needs both locations and flows; numerical optimality requires fully supplied costs, capacities and demand, not source-invented values.",
+      "item_level_target_coverage_proven": false,
+      "semantic_scope_review": "agent review of archived source snapshot; not independent expert certification"
+    },
+    {
+      "id": "expand-outsourcing_governance",
+      "category": "business_governance",
+      "ability": "外包实施后仍承担合同、指标和供应链管理责任",
+      "source_ids": [
+        "llin-core-1be872685a3bf90f581a"
+      ],
+      "source_groups": [
+        "llin-core-1be872685a3bf90f581a"
+      ],
+      "source_titles": [
+        "Outsourcing preserves management responsibility"
+      ],
+      "topics": [
+        "outsourcing"
+      ],
+      "new_to_p1_source_ids": [
+        "llin-core-1be872685a3bf90f581a"
+      ],
+      "rule_scope": "Use the archived health-commodity framework; outsourcing does not remove management responsibility and is not automatically a cost saving.",
+      "item_level_target_coverage_proven": false,
+      "semantic_scope_review": "agent review of archived source snapshot; not independent expert certification"
+    },
+    {
+      "id": "expand-transport_capacity",
+      "category": "transport_operations",
+      "ability": "区分潜在需求、实现流量、时段容量及调整时滞",
+      "source_ids": [
+        "llin-core-9026b75d5b2d078be852"
+      ],
+      "source_groups": [
+        "llin-core-010eea3da282a23f6b6b"
+      ],
+      "source_titles": [
+        "Transport supply, demand and adjustment"
+      ],
+      "topics": [
+        "cost_graphs",
+        "transport_service",
+        "transport_systems"
+      ],
+      "new_to_p1_source_ids": [
+        "llin-core-9026b75d5b2d078be852"
+      ],
+      "rule_scope": "Do not equate unused capacity with zero potential demand or aggregate spare capacity with absence of peaks; do not assert equilibrium is impossible.",
+      "item_level_target_coverage_proven": false,
+      "semantic_scope_review": "agent review of archived source snapshot; not independent expert certification"
+    },
+    {
+      "id": "expand-bridge_access",
+      "category": "transport_operations",
+      "ability": "区分桥下净空、河流水位与开桥时窗",
+      "source_ids": [
+        "llin-core-2c3ecd2880fff468249e"
+      ],
+      "source_groups": [
+        "llin-core-01c1f0c1c031e67b1429"
+      ],
+      "source_titles": [
+        "Bridge clearance and water level"
+      ],
+      "topics": [
+        "port_services",
+        "waterway_constraints"
+      ],
+      "new_to_p1_source_ids": [],
+      "rule_scope": "Separate vessel air draft, available bridge clearance and draft below water; state safety margins and opening windows, never invent current local navigation rules.",
+      "item_level_target_coverage_proven": false,
+      "semantic_scope_review": "agent review of archived source snapshot; not independent expert certification"
+    },
+    {
+      "id": "expand-drought_response",
+      "category": "transport_operations",
+      "ability": "在水深约束下比较减载、替代运输和库存方案",
+      "source_ids": [
+        "llin-core-7d672780ed96cbcd410f"
+      ],
+      "source_groups": [
+        "llin-core-01c1f0c1c031e67b1429"
+      ],
+      "source_titles": [
+        "Drought response in inland waterway supply chains"
+      ],
+      "topics": [
+        "waterway_constraints"
+      ],
+      "new_to_p1_source_ids": [
+        "llin-core-7d672780ed96cbcd410f"
+      ],
+      "rule_scope": "Treat the 2018 Rhine account as historical; more trips need not restore system throughput, and every remedy needs explicit capacity and feasibility assumptions.",
+      "item_level_target_coverage_proven": false,
+      "semantic_scope_review": "agent review of archived source snapshot; not independent expert certification"
+    },
+    {
+      "id": "expand-road_combinations",
+      "category": "transport_operations",
+      "ability": "区分载货车、牵引车、挂车、半挂车及组合",
+      "source_ids": [
+        "llin-core-0b9dac115800d368d209",
+        "llin-core-4cc35447a0f74f5204c4",
+        "llin-core-eefae232c64800853da5",
+        "llin-core-e871863d2ad1f201239e",
+        "llin-core-9216d6581926333995cb",
+        "llin-core-2e90ba7b6278253c2c1b"
+      ],
+      "source_groups": [
+        "llin-core-0b9dac115800d368d209"
+      ],
+      "source_titles": [
+        "B.II-24 GOODS ROAD MOTOR VEHICLE",
+        "B.II-26 ROAD TRACTOR (SEMI-TRAILER TRACTOR)",
+        "B.II-28 TRAILER",
+        "SEMI-TRAILER",
+        "ARTICULATED VEHICLE",
+        "ROAD TRAIN"
+      ],
+      "topics": [
+        "road_vehicles"
+      ],
+      "new_to_p1_source_ids": [
+        "llin-core-0b9dac115800d368d209"
+      ],
+      "rule_scope": "Preserve the 2019 statistical classification and coupling/load-support conditions; distinguish complete vehicle combinations from their components.",
+      "item_level_target_coverage_proven": false,
+      "semantic_scope_review": "agent review of archived source snapshot; not independent expert certification"
+    },
+    {
+      "id": "expand-road_capacity",
+      "category": "transport_operations",
+      "ability": "区分载重量、容积与最大许可总重",
+      "source_ids": [
+        "llin-core-9adae425cbbabbd2bf0c",
+        "llin-core-f4a82709331b62865c80",
+        "llin-core-d2295c894a901dc68a89"
+      ],
+      "source_groups": [
+        "llin-core-0b9dac115800d368d209"
+      ],
+      "source_titles": [
+        "LOAD CAPACITY",
+        "B.II-36 LOAD VOLUME",
+        "B.II-38 GROSS VEHICLE WEIGHT (LEGALLY PERMISSIBLE MAXIMUM WEIGHT)"
+      ],
+      "topics": [
+        "road_vehicles"
+      ],
+      "new_to_p1_source_ids": [],
+      "rule_scope": "Keep mass and volume separate; legally permissible gross weight includes the vehicle, and numerical capacity requires explicit tare and load assumptions.",
+      "item_level_target_coverage_proven": false,
+      "semantic_scope_review": "agent review of archived source snapshot; not independent expert certification"
+    },
+    {
+      "id": "expand-rail_track_line",
+      "category": "transport_operations",
+      "ability": "区分轨道、线路、正线、侧线及专用侧线",
+      "source_ids": [
+        "llin-core-4325923911580698ac94",
+        "llin-core-79775db722871bddf071",
+        "llin-core-4de2e9a3634198597945",
+        "llin-core-dec033a5b0bc6267c44c",
+        "llin-core-0444782a114da239ebd2"
+      ],
+      "source_groups": [
+        "llin-core-0444782a114da239ebd2"
+      ],
+      "source_titles": [
+        "A.I-01 TRACK",
+        "A.I-01.1 MAIN/RUNNING TRACK",
+        "A.I-02 RAILWAY LINE",
+        "A.I-08 SIDINGS",
+        "A.I-09 PRIVATE SIDINGS"
+      ],
+      "topics": [
+        "rail_infrastructure"
+      ],
+      "new_to_p1_source_ids": [],
+      "rule_scope": "Use the 2019 statistical scope; track counts and railway-line length are different, and private sidings need their source exclusions.",
+      "item_level_target_coverage_proven": false,
+      "semantic_scope_review": "agent review of archived source snapshot; not independent expert certification"
+    },
+    {
+      "id": "expand-forecast_scope",
+      "category": "measurement_planning",
+      "ability": "比较预测误差口径、汇总方式与港口预测范围",
+      "source_ids": [
+        "llin-core-63b64cdd26a4ce58b79b",
+        "llin-core-136a011475a248e5ce6d"
+      ],
+      "source_groups": [
+        "llin-core-136a011475a248e5ce6d"
+      ],
+      "source_titles": [
+        "Forecast errors: MAE, MSE and MAPE",
+        "Top-down and bottom-up port forecasts"
+      ],
+      "topics": [
+        "forecasting"
+      ],
+      "new_to_p1_source_ids": [
+        "llin-core-63b64cdd26a4ce58b79b",
+        "llin-core-136a011475a248e5ce6d"
+      ],
+      "rule_scope": "Ordinary MAPE is undefined at zero actuals; keep units and aggregation explicit, and historical illustrative TEU factors must not become universal constants.",
+      "item_level_target_coverage_proven": false,
+      "semantic_scope_review": "agent review of archived source snapshot; not independent expert certification"
+    },
+    {
+      "id": "expand-holding_cost",
+      "category": "business_governance",
+      "ability": "按成本边界合并库存资本、运营和风险费用",
+      "source_ids": [
+        "llin-core-40b84532454e75b93680"
+      ],
+      "source_groups": [
+        "llin-core-010eea3da282a23f6b6b"
+      ],
+      "source_titles": [
+        "Inventory carrying cost components"
+      ],
+      "topics": [
+        "cost_graphs",
+        "handling_costs",
+        "lifo"
+      ],
+      "new_to_p1_source_ids": [
+        "llin-core-40b84532454e75b93680"
+      ],
+      "rule_scope": "Do not double-count costs or treat a fixed carrying-rate percentage as universal; identify explicitly provided costing boundaries.",
+      "item_level_target_coverage_proven": false,
+      "semantic_scope_review": "agent review of archived source snapshot; not independent expert certification"
+    }
+  ],
+  "generation_requests": 58,
+  "requested_tasks": {
+    "train": 126,
+    "dev": 63,
+    "retention": 48
+  },
+  "requested_train_answer_cardinalities": {
+    "1": 32,
+    "2": 32,
+    "3": 31,
+    "4": 31
+  },
+  "version": "expansion_sources_v2",
+  "answer_cardinality_assignment_hidden_from_reviewer": true,
+  "retention_source_units": 16,
+  "retention_source_groups": 5,
+  "retention_domains": {
+    "business_environment": 1,
+    "inventory_risk": 3,
+    "cargo_units": 2,
+    "transport_measurement": 2,
+    "capital_stock": 1,
+    "aircraft_operations": 3,
+    "postponement": 1,
+    "cargo_service": 3
+  },
+  "retention_limitations": [
+    "Known historical development pool; not untouched final holdout.",
+    "Warehouse/enterprise/Agent workflow retention still requires separately authored checks.",
+    "No new retention items exist until generation and review; source counts are not task counts."
+  ],
+  "p1_train_sha256": "bb016625aa2cb3477956c67b693dcc8c446c01dbcc165bf882aa02b453af1632",
+  "source_only_generator": true,
+  "official_questions_in_generator": false,
+  "training_allowed": false,
+  "release_status": "source_scoped_requests_only",
+  "prospective_training": {
+    "start": "Step120 HF, fresh optimizer",
+    "retain_p1_unique_tasks": 60,
+    "retain_legacy_replay": 135,
+    "new_tasks_requested": 126,
+    "domain_exposures_per_task": 3,
+    "answer_only_per_task": 1,
+    "explanation_per_task": 2,
+    "maximum_records": 693,
+    "maximum_steps_at_batch3": 231,
+    "lr": 5e-07,
+    "epochs": 1,
+    "exact_token_budget": "pending accepted task release; no truncation or filling rejected items"
+  },
+  "files": {
+    "cards.private.jsonl": "453126bb99dae6b23c3f2836dc5f03001b33d8abce6bd7cd0f44d3d63b69ce97",
+    "catalog.private.jsonl": "56eb6c321ca869c8aaa80cfcad6d749a6c4367434b28e0b77311e300d90f9ed7",
+    "requests.private.jsonl": "b42fd573fbb9c740446bd3c9f020f8181967f2ac96b40fb0f27f261677743cde"
+  }
+}

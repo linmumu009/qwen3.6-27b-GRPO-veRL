@@ -1,0 +1,50 @@
+{
+  "launch": {
+    "pid": 3833314,
+    "package": "/workspace/llin-verl-grpo/runs/llin-transfer-expansion-package-20260917-01",
+    "run": "/workspace/llin-verl-grpo/runs/llin-transfer-expansion-draft-20260917-01",
+    "packet_sha256": "b42fd573fbb9c740446bd3c9f020f8181967f2ac96b40fb0f27f261677743cde",
+    "generation_requests": 58,
+    "review_requests_ceiling": 237,
+    "training": false
+  },
+  "registration": {
+    "packet_sha256": "b42fd573fbb9c740446bd3c9f020f8181967f2ac96b40fb0f27f261677743cde",
+    "requests": 58,
+    "model": "/workspace/llin-verl-grpo/runs/llin-step120-opensource-20260825-02/hf_export_step120_opensource",
+    "source_only": true,
+    "thinking": false,
+    "tp": 8,
+    "max_model_len": 8192,
+    "max_num_seqs": 16,
+    "generation_seed": 20918,
+    "generation_temperature": 0.4,
+    "review_seed": 20919,
+    "generation_train_budget": 4096,
+    "generation_other_budget": 2560,
+    "review_budget": 1536,
+    "official_protocol_changed": false,
+    "training_allowed": false,
+    "reused_generation_records": 0,
+    "resume_generation_sha256": null
+  },
+  "status_at_capture": {
+    "status": "generating_drafts",
+    "training_running": false,
+    "training_ready": false,
+    "requests_completed": 0,
+    "requests": 58,
+    "candidate_items": 0
+  },
+  "upload": {
+    "tar_sha256": "fa6d3a02579f13248e57844d80efe33979a0c3c1c6a71d1f0b65ea211ea2a464",
+    "packet_sha256": "b42fd573fbb9c740446bd3c9f020f8181967f2ac96b40fb0f27f261677743cde",
+    "code_sha256": {
+      "cpt_transfer_draft.py": "287ccdb3e3f7835c758921ffbe9a557a33188402f7892ef6b5b58cdd3bb85e8b",
+      "run_cpt_transfer_screen.py": "5b736302a73e522b50f277f6d8c1a6ec650ccf1a79133ec2f41c517664d72beb",
+      "cpt_composed_probe.py": "ee6a3de96b98d8a4fccd3511cd14626f2a2a562d999443166a528d4bfaf577eb",
+      "verify_cpt_transfer_draft.py": "cd98feba694e338baf7d1456b1cc1831192a34bfa08d51ff7052ccc16f7971c6"
+    }
+  },
+  "tests_passed": 30
+}
