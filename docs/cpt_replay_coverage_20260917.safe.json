@@ -1,0 +1,245 @@
+{
+  "reviewed_sha256": "6ac62685258fc72815095ea13b2afbc8d96a58faf6464f0f8e955306af3b7a89",
+  "cases_sha256": "5e1473211a08fbfe04b339029b035acc4710e606d314f6a4f8cde0948773e11a",
+  "replay_p1": {
+    "exposures": 135,
+    "unique_tasks": 135,
+    "declared_forms": {
+      "definition_discrimination": 88,
+      "application_with_new_entities": 13,
+      "boundary_or_counterexample": 34
+    },
+    "numerical_calculation": 1,
+    "categorical_vehicle_count": 1,
+    "target_source_overlap": 11,
+    "retention_source_overlap": 0
+  },
+  "replay_p2": {
+    "exposures": 195,
+    "unique_tasks": 135,
+    "declared_forms": {
+      "definition_discrimination": 126,
+      "application_with_new_entities": 18,
+      "boundary_or_counterexample": 51
+    },
+    "numerical_calculation": 2,
+    "categorical_vehicle_count": 1,
+    "target_source_overlap": 16,
+    "retention_source_overlap": 0
+  },
+  "p2_added": {
+    "exposures": 60,
+    "unique_tasks": 60,
+    "declared_forms": {
+      "definition_discrimination": 38,
+      "boundary_or_counterexample": 17,
+      "application_with_new_entities": 5
+    },
+    "numerical_calculation": 1,
+    "categorical_vehicle_count": 0,
+    "target_source_overlap": 5,
+    "retention_source_overlap": 0
+  },
+  "arithmetic_annotation": {
+    "calculation_task": "llin-core-9adae425cbbabbd2bf0c-application_with_new_entities",
+    "counting_task": "llin-core-b5b62400c11c1cace1b4-application_with_new_entities",
+    "scope": "Agent operation review of all 135 questions; numeric thresholds and quoted quantities are not arithmetic exercises."
+  },
+  "retention": {
+    "n": 80,
+    "numeric_tasks": 72,
+    "families": {
+      "abc": {
+        "n": 3,
+        "correct": {
+          "base": 3,
+          "base_repeat": 3,
+          "p1": 3,
+          "p1_repeat": 3,
+          "p2": 3
+        }
+      },
+      "capital": {
+        "n": 10,
+        "correct": {
+          "base": 9,
+          "base_repeat": 10,
+          "p1": 9,
+          "p1_repeat": 9,
+          "p2": 8
+        }
+      },
+      "moment": {
+        "n": 6,
+        "correct": {
+          "base": 0,
+          "base_repeat": 0,
+          "p1": 0,
+          "p1_repeat": 0,
+          "p2": 0
+        }
+      },
+      "offered": {
+        "n": 10,
+        "correct": {
+          "base": 10,
+          "base_repeat": 10,
+          "p1": 10,
+          "p1_repeat": 10,
+          "p2": 9
+        }
+      },
+      "packages": {
+        "n": 5,
+        "correct": {
+          "base": 4,
+          "base_repeat": 4,
+          "p1": 4,
+          "p1_repeat": 4,
+          "p2": 4
+        }
+      },
+      "pallet": {
+        "n": 10,
+        "correct": {
+          "base": 10,
+          "base_repeat": 10,
+          "p1": 10,
+          "p1_repeat": 10,
+          "p2": 10
+        }
+      },
+      "payload": {
+        "n": 6,
+        "correct": {
+          "base": 6,
+          "base_repeat": 6,
+          "p1": 6,
+          "p1_repeat": 6,
+          "p2": 5
+        }
+      },
+      "reorder": {
+        "n": 10,
+        "correct": {
+          "base": 4,
+          "base_repeat": 4,
+          "p1": 3,
+          "p1_repeat": 4,
+          "p2": 3
+        }
+      },
+      "teu": {
+        "n": 10,
+        "correct": {
+          "base": 2,
+          "base_repeat": 2,
+          "p1": 2,
+          "p1_repeat": 2,
+          "p2": 2
+        }
+      },
+      "tkm": {
+        "n": 10,
+        "correct": {
+          "base": 3,
+          "base_repeat": 3,
+          "p1": 2,
+          "p1_repeat": 2,
+          "p2": 3
+        }
+      }
+    },
+    "changed_items": [
+      {
+        "id": "p1-retention-tkm-4",
+        "family": "tkm",
+        "correct": {
+          "base": true,
+          "base_repeat": true,
+          "p1": false,
+          "p1_repeat": false,
+          "p2": true
+        }
+      },
+      {
+        "id": "p1-retention-offered-7",
+        "family": "offered",
+        "correct": {
+          "base": true,
+          "base_repeat": true,
+          "p1": true,
+          "p1_repeat": true,
+          "p2": false
+        }
+      },
+      {
+        "id": "p1-retention-reorder-5",
+        "family": "reorder",
+        "correct": {
+          "base": true,
+          "base_repeat": true,
+          "p1": false,
+          "p1_repeat": true,
+          "p2": false
+        }
+      },
+      {
+        "id": "p1-retention-capital-5",
+        "family": "capital",
+        "correct": {
+          "base": false,
+          "base_repeat": true,
+          "p1": true,
+          "p1_repeat": true,
+          "p2": true
+        }
+      },
+      {
+        "id": "p1-retention-capital-7",
+        "family": "capital",
+        "correct": {
+          "base": true,
+          "base_repeat": true,
+          "p1": false,
+          "p1_repeat": false,
+          "p2": false
+        }
+      },
+      {
+        "id": "p1-retention-capital-9",
+        "family": "capital",
+        "correct": {
+          "base": true,
+          "base_repeat": true,
+          "p1": true,
+          "p1_repeat": true,
+          "p2": false
+        }
+      },
+      {
+        "id": "p1-retention-payload-1",
+        "family": "payload",
+        "correct": {
+          "base": true,
+          "base_repeat": true,
+          "p1": true,
+          "p1_repeat": true,
+          "p2": false
+        }
+      }
+    ]
+  },
+  "input_sha256": {
+    "base": "5d573d68de136dd3f704a466fe6a1a6e59604889ff1112f111e424530c035f83",
+    "base_repeat": "0938328517b0ead58fb5ee769de66ca6c4fbcdd6e73c26a9204931d33c22865c",
+    "p1": "cca5ae6d85d94739a41559f6292cfbf08478037a8d9b5f56d8f24e12f5b6cc78",
+    "p1_repeat": "7188fad3e905c5df599df0409fd4aea47dd291c2550970e262ae86bfb7bf248b",
+    "p2": "47d9683de79d0a819cecb68a0215fc811063ac8b13bb5c33b4790a129cb2472b"
+  },
+  "interpretation": "Coverage mismatch is a descriptive finding, not proof of gradient conflict or causal forgetting. Zero held-out source overlap is intentional, not a defect to repair by leaking these sources.",
+  "training": false,
+  "formal_evaluation": false,
+  "requests_planned": 405,
+  "prospective_probe": "All 135 original replay training tasks once per Step120/P1/P2; same prompts and labels as actual training. Report all, do not use fit as retention or promotion."
+}

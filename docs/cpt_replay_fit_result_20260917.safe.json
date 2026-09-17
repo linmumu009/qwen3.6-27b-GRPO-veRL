@@ -1,0 +1,85 @@
+{
+  "scores": {
+    "base": {
+      "correct": 123,
+      "invalid": 0,
+      "truncated": 0,
+      "forms": {
+        "application_with_new_entities": {
+          "n": 13,
+          "correct": 10
+        },
+        "boundary_or_counterexample": {
+          "n": 34,
+          "correct": 28
+        },
+        "definition_discrimination": {
+          "n": 88,
+          "correct": 85
+        }
+      },
+      "raw_sha256": "e4c16d1a074f2dda2d6e5865647648167a155c6103ba4ec524869407691c505a"
+    },
+    "p1": {
+      "correct": 128,
+      "invalid": 0,
+      "truncated": 0,
+      "forms": {
+        "application_with_new_entities": {
+          "n": 13,
+          "correct": 11
+        },
+        "boundary_or_counterexample": {
+          "n": 34,
+          "correct": 30
+        },
+        "definition_discrimination": {
+          "n": 88,
+          "correct": 87
+        }
+      },
+      "raw_sha256": "883f52f048b1af45d5a8ace11eedcb888fa7973d1a7684aed34eb5675ff186e6"
+    },
+    "p2": {
+      "correct": 131,
+      "invalid": 0,
+      "truncated": 0,
+      "forms": {
+        "application_with_new_entities": {
+          "n": 13,
+          "correct": 12
+        },
+        "boundary_or_counterexample": {
+          "n": 34,
+          "correct": 31
+        },
+        "definition_discrimination": {
+          "n": 88,
+          "correct": 88
+        }
+      },
+      "raw_sha256": "803acd457272c0bcc302ed96c667176df288fbe00de029913f7c97dba3f859db"
+    }
+  },
+  "changes_vs_base": {
+    "p1": {
+      "gains": 5,
+      "losses": 0
+    },
+    "p2": {
+      "gains": 8,
+      "losses": 0
+    }
+  },
+  "cases_sha256": "5e1473211a08fbfe04b339029b035acc4710e606d314f6a4f8cde0948773e11a",
+  "raw_answers_reparsed": 405,
+  "token_prompts_rebuilt": 405,
+  "actual_training_messages_matched": 135,
+  "training": false,
+  "formal_evaluation": false,
+  "interpretation": "Training-fit diagnosis only. These scores do not measure retained generalization or identify gradient conflict.",
+  "verifier_sha256": "2eee40018fb25cd07f2f9db8a26afbbad6c2d74ea983a28b8f138824803ab424",
+  "local_raw_reparse_matched": true,
+  "local_verifier_sha256": "8f0b8af6f3620bddf7ec7190ad0dd4535e171b143006e89c9a8aeae824730118",
+  "local_verifier_change": "Portable POSIX model path rendering for Windows; same answer parser and checks."
+}

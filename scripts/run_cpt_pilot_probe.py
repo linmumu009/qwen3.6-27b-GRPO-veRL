@@ -11,12 +11,16 @@ from evaluate_logistics_knowledge import build_messages,parse_answers
 def main():
     p=argparse.ArgumentParser()
     for k in ('model','cases','out'):p.add_argument('--'+k,type=Path,required=True)
+    p.add_argument('--replay-fit',action='store_true',help='Exactly the frozen 135 replay training tasks; training fit only.')
     a=p.parse_args();a.out.mkdir(exist_ok=False)
     from transformers import AutoTokenizer
     from vllm import LLM,SamplingParams
     tok=AutoTokenizer.from_pretrained(a.model,trust_remote_code=True,local_files_only=True)
     items=load_items(a.cases);prompts=[];provenance=[]
-    assert len(items)==180 and all(x.dataset!='p1_sealed' for x in items)
+    if a.replay_fit:
+        assert len(items)==135 and all(x.dataset=='replay_training_fit' for x in items)
+    else:
+        assert len(items)==180 and all(x.dataset!='p1_sealed' for x in items)
     for item in items:
         text=tok.apply_chat_template(build_messages(item),tokenize=False,add_generation_prompt=True,enable_thinking=False)
         ids=tok.encode(text,add_special_tokens=False);assert len(ids)+96<=8192
@@ -39,10 +43,10 @@ def main():
         assert row['output_tokens']<=96
         rows.append(row)
     (a.out/'predictions.private.jsonl').write_text(''.join(json.dumps(r,ensure_ascii=False)+'\n' for r in rows),encoding='utf-8')
-    protocol=dict(cases_sha256=hashlib.sha256(a.cases.read_bytes()).hexdigest(),model=str(a.model),items=180,
+    protocol=dict(cases_sha256=hashlib.sha256(a.cases.read_bytes()).hexdigest(),model=str(a.model),items=len(items),
         temperature=0,seed=1024,max_tokens=96,max_model_len=8192,tp=8,max_num_seqs=32,thinking=False,repeats=1,
         invalid=sum(not r['valid'] for r in rows),truncated=sum(r['finish_reason']!='stop' for r in rows),correct=sum(r['correct'] for r in rows),
-        purpose='exploratory source-task pre/post; not formal benchmark or independent seed confirmation')
+        purpose='historical training fit only; not retention or generalization' if a.replay_fit else 'exploratory source-task pre/post; not formal benchmark or independent seed confirmation')
     (a.out/'summary.safe.json').write_text(json.dumps(protocol,indent=2)+'\n')
 
 
