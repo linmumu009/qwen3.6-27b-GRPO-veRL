@@ -1,0 +1,66 @@
+{
+  "pick_merge": {
+    "bin_quantities": {
+      "A": 1,
+      "B": 2,
+      "C": 2,
+      "D": 1
+    },
+    "lines": 4,
+    "grabs": 6
+  },
+  "robust_cost_ranges": {
+    "combinations": 72,
+    "original_min": 19,
+    "original_max": 34,
+    "cap18_worst": 28,
+    "cap20_worst": 30
+  },
+  "shared_setup_net_savings": {
+    "00": 0,
+    "01": -9,
+    "10": -9,
+    "11": 4
+  },
+  "latest_release": 7,
+  "interrupted_completion": {
+    "pause_resume": 19,
+    "uninterrupted": 20,
+    "active_work": 22
+  },
+  "limited_flexible_served": [
+    11,
+    12,
+    13
+  ],
+  "uncertain_capacity_served": {
+    "4": 9,
+    "5": 10,
+    "6": 11,
+    "7": 12
+  },
+  "inverse_capacity": {
+    "enumerated_demands_per_departure": [
+      0,
+      30
+    ],
+    "solutions": [
+      [
+        8,
+        8
+      ]
+    ],
+    "unbounded_proof": "min(d,10)=8<10 implies d=8, so there are no additional solutions above the enumeration range."
+  },
+  "fourteen_instruction_grab_counts": {
+    "minimum": 14,
+    "maximum": 56,
+    "possible_totals": 43
+  },
+  "intervention_net_costs": {
+    "none": 5,
+    "I": -1,
+    "J": -2
+  },
+  "limitations": "Explicit finite-state checks for the listed constructions; source interpretation and premise sufficiency remain operator-audited."
+}

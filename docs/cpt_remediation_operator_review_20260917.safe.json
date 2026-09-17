@@ -1,0 +1,1391 @@
+{
+  "packet_sha256": "9d956b539b6f40a07e71ad4b925c681e49534c73e89873c80e825d7895a07848",
+  "reviewer": "Codex operator; source author plus explicit second-pass audit, not an external independent human expert",
+  "status": "completed",
+  "source_scope_notes": {
+    "pick_lines": "Instructions, unique bin locations, executed visits, physical grabs and area-normalized density are different quantities. The source gives travel tendencies, not an exact route length. Two completeness/location premises were clarified.",
+    "batch_tradeoff": "Compare avoided walking with every added cost, enforce space constraints, use a strict inequality for savings, and distinguish action fees from resulting total cost. Shared setup is charged once.",
+    "serial_parallel": "Respect release times, dependencies and worker unavailability. Completion follows the critical path; active labor sums work durations. A proposal is not assumed to satisfy the deadline and labor budget.",
+    "transport_capacity": "Apply capacity and request eligibility within each departure, distinguish cancelled requests, enforce connection times, and use the explicit work-conserving premise in inverse inference.",
+    "pest": "Use external political/economic/social/technological scope; internal staffing is not itself a macro-environment factor.",
+    "abc": "Apply the supplied source control-intensity definitions to already assigned classes; no unsupported numerical classification thresholds.",
+    "reorder": "Retain the named MITx forecast-error RMSE and strictly-below inventory-position trigger; do not substitute a universal standard-deviation or equality-trigger rule.",
+    "rail_transfer": "Retain the 2019 railway statistical scope: direct rail transfers and locomotive changes are excluded; an intervening road stage creates rail unloading/loading.",
+    "postponement": "Keep product differentiation separate from shipment consolidation. Allocation flexibility does not erase sequential customization and delivery time.",
+    "contracts": "Use the explicitly named Rodrigue/Slack vocabulary. Contracts, physical load-unit handling, carrier identity and transport mode are separate dimensions.",
+    "warehouse_roles": "Classify demonstrated functions; a facility may have more than one function. Do not infer cross-docking from customer proximity.",
+    "shipping_controls": "Map labels/weight/cube to Checking, protection/unitizing to Packing, and docks/loading optimization to Shipping. Repair only demonstrated defects.",
+    "outsourcing": "Retain health-commodity source scope and ongoing KPI/contract-management responsibilities; a low quote does not prove reliability.",
+    "holding_cost": "Avoid duplicate expenses; distinguish specified incremental and full-allocation cost boundaries, without claiming a universal carrying rate."
+  },
+  "wording_amendments": [
+    {
+      "id": "remediation-pick_lines-multi_instruction_reconciliation",
+      "field": "question",
+      "before": "A completed pick list has three separate instructions executed in order:",
+      "after": "R and S name two distinct physical bin locations. A completed pick list has three separate instructions executed in order:",
+      "reason": "The original symbols could denote SKUs rather than physical bins; unique locations must be stated explicitly.",
+      "answer_unchanged": true,
+      "trigger": "Operator premise audit and substantive reviewer objections, not closed-book score selection"
+    },
+    {
+      "id": "remediation-pick_lines-recover_instruction_count_from_events",
+      "field": "question",
+      "before": "Every completed instruction produced at least one event, and no event belongs to two instructions.",
+      "after": "Every recorded event belongs to exactly one completed instruction; no events from unfinished instructions are included. Every completed instruction produced at least one recorded event.",
+      "reason": "Completeness in the forward direction alone does not exclude events from unfinished instructions; distinct IDs must correspond exactly to completed instructions.",
+      "answer_unchanged": true,
+      "trigger": "Operator premise audit and substantive reviewer objections, not closed-book score selection"
+    },
+    {
+      "id": "remediation-batch_tradeoff-exclusive_interventions_with_fees",
+      "field": "options",
+      "before": "J is the cheaper of the two allowed interventions.",
+      "after": "Choosing J yields a lower total batching cost, including its fee, than choosing I.",
+      "reason": "Cheaper intervention could mean its fee alone; the intended comparison is the complete resulting batching cost.",
+      "answer_unchanged": true,
+      "trigger": "Operator premise audit and substantive reviewer objections, not closed-book score selection"
+    },
+    {
+      "id": "remediation-serial_parallel-deadline_and_labor_budget",
+      "field": "question",
+      "before": "Three feasible process designs start at 0.",
+      "after": "Three proposed process designs start at 0; their compliance with the deadline and labor budget must be checked.",
+      "reason": "Calling all designs feasible before checking the two constraints conflicts with the intended distinction between S, P and R.",
+      "answer_unchanged": true,
+      "trigger": "Operator premise audit and substantive reviewer objections, not closed-book score selection"
+    }
+  ],
+  "per_case": [
+    {
+      "id": "remediation-pick_lines-multi_instruction_reconciliation",
+      "unit": "pick_lines",
+      "split": "train",
+      "gold_indices": [
+        0,
+        1,
+        2
+      ],
+      "option_truth": [
+        true,
+        true,
+        true,
+        false
+      ],
+      "option_justifications": [
+        "Each of the three instructions is a line.",
+        "3+2+1=6.",
+        "R and S are two locations, although R is visited twice.",
+        "The execution visits R,S,R, three times."
+      ],
+      "source_body_sha256": [
+        "8024d9b9e47d8686c384dba9cf81d6b759cdb7de39ab06180b3319aee799fdd2"
+      ],
+      "operator_semantic_decision": "valid_after_registered_wording_amendments",
+      "arithmetic_equalities": 1
+    },
+    {
+      "id": "remediation-pick_lines-unequal_area_comparison",
+      "unit": "pick_lines",
+      "split": "train",
+      "gold_indices": [
+        2
+      ],
+      "option_truth": [
+        false,
+        false,
+        true,
+        false
+      ],
+      "option_justifications": [
+        "18/6=3 exceeds 24/12=2.",
+        "12/6=2 exceeds 18/12=1.5.",
+        "Both ratios are higher for A.",
+        "Combined density is (18+24)/(6+12)=7/3, not the unweighted mean."
+      ],
+      "source_body_sha256": [
+        "8024d9b9e47d8686c384dba9cf81d6b759cdb7de39ab06180b3319aee799fdd2"
+      ],
+      "operator_semantic_decision": "valid",
+      "arithmetic_equalities": 5
+    },
+    {
+      "id": "remediation-pick_lines-partial_grab_identifiability",
+      "unit": "pick_lines",
+      "split": "train",
+      "gold_indices": [
+        0,
+        1
+      ],
+      "option_truth": [
+        true,
+        true,
+        false,
+        false
+      ],
+      "option_justifications": [
+        "Completed instruction count is known.",
+        "Every completed instruction required at least one grab.",
+        "Some instructions could require two to four grabs.",
+        "Multiple instructions can visit the same location."
+      ],
+      "source_body_sha256": [
+        "8024d9b9e47d8686c384dba9cf81d6b759cdb7de39ab06180b3319aee799fdd2"
+      ],
+      "operator_semantic_decision": "valid",
+      "arithmetic_equalities": 2
+    },
+    {
+      "id": "remediation-pick_lines-layout_change_with_fixed_activity",
+      "unit": "pick_lines",
+      "split": "train",
+      "gold_indices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "option_truth": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "option_justifications": [
+        "6/3=2 and 6/2=3.",
+        "24/3=8 and 24/2=12.",
+        "Both shifts have 24 visits.",
+        "The source gives tendencies; the complete route and distances are absent."
+      ],
+      "source_body_sha256": [
+        "8024d9b9e47d8686c384dba9cf81d6b759cdb7de39ab06180b3319aee799fdd2"
+      ],
+      "operator_semantic_decision": "valid",
+      "arithmetic_equalities": 4
+    },
+    {
+      "id": "remediation-pick_lines-order_merge_and_separate",
+      "unit": "pick_lines",
+      "split": "dev",
+      "gold_indices": [
+        0
+      ],
+      "option_truth": [
+        true,
+        false,
+        false,
+        false
+      ],
+      "option_justifications": [
+        "Four bin instructions still retrieve six units.",
+        "Downstream separation remains explicitly required.",
+        "Six separate visits become four, a reduction of two.",
+        "B and C each require multiple grabs under one merged instruction."
+      ],
+      "source_body_sha256": [
+        "8024d9b9e47d8686c384dba9cf81d6b759cdb7de39ab06180b3319aee799fdd2"
+      ],
+      "operator_semantic_decision": "valid",
+      "arithmetic_equalities": 2
+    },
+    {
+      "id": "remediation-pick_lines-recover_instruction_count_from_events",
+      "unit": "pick_lines",
+      "split": "dev",
+      "gold_indices": [
+        0,
+        2,
+        3
+      ],
+      "option_truth": [
+        true,
+        false,
+        true,
+        true
+      ],
+      "option_justifications": [
+        "The stated completeness makes distinct IDs equal completed lines.",
+        "Units or grabs do not determine how many instructions they belong to.",
+        "This supplies the needed numerator directly.",
+        "Its row count supplies the numerator; area is already known."
+      ],
+      "source_body_sha256": [
+        "8024d9b9e47d8686c384dba9cf81d6b759cdb7de39ab06180b3319aee799fdd2"
+      ],
+      "operator_semantic_decision": "valid_after_registered_wording_amendments",
+      "arithmetic_equalities": 0
+    },
+    {
+      "id": "remediation-batch_tradeoff-duplicate_cost_ledger",
+      "unit": "batch_tradeoff",
+      "split": "train",
+      "gold_indices": [
+        0,
+        1
+      ],
+      "option_truth": [
+        true,
+        true,
+        false,
+        false
+      ],
+      "option_justifications": [
+        "30+12+8=50.",
+        "80-50=30.",
+        "It is the same expense, not additional work.",
+        "Ignoring eight units changes the saving from 30 to 38."
+      ],
+      "source_body_sha256": [
+        "fcdcee1b3ff08c38f01c3c9146e1c9234b759bb06bcbc49a1fa052aa6d83427c"
+      ],
+      "operator_semantic_decision": "valid",
+      "arithmetic_equalities": 2
+    },
+    {
+      "id": "remediation-batch_tradeoff-cost_with_space_feasibility",
+      "unit": "batch_tradeoff",
+      "split": "train",
+      "gold_indices": [
+        1
+      ],
+      "option_truth": [
+        false,
+        true,
+        false,
+        false
+      ],
+      "option_justifications": [
+        "Its five-square-metre requirement is infeasible.",
+        "30-17-5=8, with a feasible footprint.",
+        "Its incremental saving is positive eight.",
+        "B is feasible and cheaper by eight."
+      ],
+      "source_body_sha256": [
+        "fcdcee1b3ff08c38f01c3c9146e1c9234b759bb06bcbc49a1fa052aa6d83427c"
+      ],
+      "operator_semantic_decision": "valid",
+      "arithmetic_equalities": 2
+    },
+    {
+      "id": "remediation-batch_tradeoff-strict_break_even_boundary",
+      "unit": "batch_tradeoff",
+      "split": "train",
+      "gold_indices": [
+        0,
+        2,
+        3
+      ],
+      "option_truth": [
+        true,
+        false,
+        true,
+        true
+      ],
+      "option_justifications": [
+        "40-25-15=0.",
+        "Equality is not strict reduction.",
+        "25+16-40=1.",
+        "40-24-15=1."
+      ],
+      "source_body_sha256": [
+        "fcdcee1b3ff08c38f01c3c9146e1c9234b759bb06bcbc49a1fa052aa6d83427c"
+      ],
+      "operator_semantic_decision": "valid",
+      "arithmetic_equalities": 3
+    },
+    {
+      "id": "remediation-batch_tradeoff-exclusive_interventions_with_fees",
+      "unit": "batch_tradeoff",
+      "split": "train",
+      "gold_indices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "option_truth": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "option_justifications": [
+        "60-55=5.",
+        "55-(60-8+2)=1.",
+        "55-(60-10+3)=2.",
+        "Its net saving is two versus one."
+      ],
+      "source_body_sha256": [
+        "fcdcee1b3ff08c38f01c3c9146e1c9234b759bb06bcbc49a1fa052aa6d83427c"
+      ],
+      "operator_semantic_decision": "valid_after_registered_wording_amendments",
+      "arithmetic_equalities": 3
+    },
+    {
+      "id": "remediation-batch_tradeoff-robust_cost_ranges",
+      "unit": "batch_tradeoff",
+      "split": "dev",
+      "gold_indices": [
+        0,
+        2
+      ],
+      "option_truth": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "option_justifications": [
+        "12+7=19 is below 30.",
+        "20+14=34 exceeds 30.",
+        "The worst permitted total is 28, below 30.",
+        "Worst total 30 only breaks even."
+      ],
+      "source_body_sha256": [
+        "fcdcee1b3ff08c38f01c3c9146e1c9234b759bb06bcbc49a1fa052aa6d83427c"
+      ],
+      "operator_semantic_decision": "valid",
+      "arithmetic_equalities": 4
+    },
+    {
+      "id": "remediation-batch_tradeoff-shared_setup_across_waves",
+      "unit": "batch_tradeoff",
+      "split": "dev",
+      "gold_indices": [
+        1,
+        3
+      ],
+      "option_truth": [
+        false,
+        true,
+        false,
+        true
+      ],
+      "option_justifications": [
+        "25-12-22=-9.",
+        "50-24-22=4.",
+        "Setup is shared and paid once.",
+        "Each isolated choice loses nine; the joint choice saves four."
+      ],
+      "source_body_sha256": [
+        "fcdcee1b3ff08c38f01c3c9146e1c9234b759bb06bcbc49a1fa052aa6d83427c"
+      ],
+      "operator_semantic_decision": "valid",
+      "arithmetic_equalities": 2
+    },
+    {
+      "id": "remediation-serial_parallel-release_time_interaction",
+      "unit": "serial_parallel",
+      "split": "train",
+      "gold_indices": [
+        0,
+        1,
+        2
+      ],
+      "option_truth": [
+        true,
+        true,
+        true,
+        false
+      ],
+      "option_justifications": [
+        "A ends 6, B ends 10, loading ends 11.",
+        "B ends 9, then 2+1.",
+        "6+4+2+1=13.",
+        "Twelve is later than eleven."
+      ],
+      "source_body_sha256": [
+        "e8ad5e4571c0a1552e366a7d0f2667e32c219102a19f53174d5a0d3424334758"
+      ],
+      "operator_semantic_decision": "valid",
+      "arithmetic_equalities": 3
+    },
+    {
+      "id": "remediation-serial_parallel-deadline_and_labor_budget",
+      "unit": "serial_parallel",
+      "split": "train",
+      "gold_indices": [
+        2
+      ],
+      "option_truth": [
+        false,
+        false,
+        true,
+        false
+      ],
+      "option_justifications": [
+        "It finishes 15 but uses 21 person-minutes, exceeding 20.",
+        "S finishes 17.",
+        "R finishes 12 and uses 18 person-minutes.",
+        "Its active work is 17."
+      ],
+      "source_body_sha256": [
+        "e8ad5e4571c0a1552e366a7d0f2667e32c219102a19f53174d5a0d3424334758"
+      ],
+      "operator_semantic_decision": "valid_after_registered_wording_amendments",
+      "arithmetic_equalities": 5
+    },
+    {
+      "id": "remediation-serial_parallel-bottleneck_perturbation",
+      "unit": "serial_parallel",
+      "split": "train",
+      "gold_indices": [
+        0,
+        1
+      ],
+      "option_truth": [
+        true,
+        true,
+        false,
+        false
+      ],
+      "option_justifications": [
+        "A remains the 11-minute bottleneck.",
+        "Completion changes from 15 to 12.",
+        "Shortening a non-bottleneck here does not shorten elapsed completion.",
+        "The reduction is only three."
+      ],
+      "source_body_sha256": [
+        "e8ad5e4571c0a1552e366a7d0f2667e32c219102a19f53174d5a0d3424334758"
+      ],
+      "operator_semantic_decision": "valid",
+      "arithmetic_equalities": 3
+    },
+    {
+      "id": "remediation-serial_parallel-precedence_graph_report",
+      "unit": "serial_parallel",
+      "split": "train",
+      "gold_indices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "option_truth": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "option_justifications": [
+        "B starts after A at 6 and runs four minutes.",
+        "Last pick finishes 10; consolidation and loading add three.",
+        "6+4+8+2+1=21.",
+        "That dependency prevents simultaneous starts of A and B."
+      ],
+      "source_body_sha256": [
+        "e8ad5e4571c0a1552e366a7d0f2667e32c219102a19f53174d5a0d3424334758"
+      ],
+      "operator_semantic_decision": "valid",
+      "arithmetic_equalities": 3
+    },
+    {
+      "id": "remediation-serial_parallel-inverse_release_bound",
+      "unit": "serial_parallel",
+      "split": "dev",
+      "gold_indices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "option_truth": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "option_justifications": [
+        "B ends 11 and loading ends 16.",
+        "B ends 13 and loading ends 18.",
+        "B must finish by 12;7+5=12.",
+        "The work durations stay fixed; release time changes waiting."
+      ],
+      "source_body_sha256": [
+        "e8ad5e4571c0a1552e366a7d0f2667e32c219102a19f53174d5a0d3424334758"
+      ],
+      "operator_semantic_decision": "valid",
+      "arithmetic_equalities": 4
+    },
+    {
+      "id": "remediation-serial_parallel-interrupted_consolidation",
+      "unit": "serial_parallel",
+      "split": "dev",
+      "gold_indices": [
+        0,
+        2,
+        3
+      ],
+      "option_truth": [
+        true,
+        false,
+        true,
+        true
+      ],
+      "option_justifications": [
+        "One minute at 10, three at 14, then loading 17 to 19.",
+        "Earliest interval 14 to 18, loading ends 20.",
+        "6+10+4+2=22; unavailability is not active labor.",
+        "Consolidation 14 to 18 followed by two minutes loading."
+      ],
+      "source_body_sha256": [
+        "e8ad5e4571c0a1552e366a7d0f2667e32c219102a19f53174d5a0d3424334758"
+      ],
+      "operator_semantic_decision": "valid",
+      "arithmetic_equalities": 3
+    },
+    {
+      "id": "remediation-transport_capacity-cancellation_vs_rejection",
+      "unit": "transport_capacity",
+      "split": "train",
+      "gold_indices": [
+        0,
+        1,
+        2
+      ],
+      "option_truth": [
+        true,
+        true,
+        true,
+        false
+      ],
+      "option_justifications": [
+        "The remaining requests are 6 and 4.",
+        "Both remaining demands fit.",
+        "They are withdrawn before allocation.",
+        "Capacity 14 minus carriage 10 leaves four."
+      ],
+      "source_body_sha256": [
+        "5f59d1b79c2c93c1600628069004db19861831bcf1e25e5c38d871d731bf13e5"
+      ],
+      "operator_semantic_decision": "valid",
+      "arithmetic_equalities": 2
+    },
+    {
+      "id": "remediation-transport_capacity-limited_flexible_requests",
+      "unit": "transport_capacity",
+      "split": "train",
+      "gold_indices": [
+        1
+      ],
+      "option_truth": [
+        false,
+        true,
+        false,
+        false
+      ],
+      "option_justifications": [
+        "Even after shifting two, nine units still require morning capacity eight.",
+        "Morning 8 plus evening 5.",
+        "Evening uses five of eight spaces.",
+        "Morning capacity is only eight."
+      ],
+      "source_body_sha256": [
+        "5f59d1b79c2c93c1600628069004db19861831bcf1e25e5c38d871d731bf13e5"
+      ],
+      "operator_semantic_decision": "valid",
+      "arithmetic_equalities": 3
+    },
+    {
+      "id": "remediation-transport_capacity-partial_record_necessity",
+      "unit": "transport_capacity",
+      "split": "train",
+      "gold_indices": [
+        0,
+        1
+      ],
+      "option_truth": [
+        true,
+        true,
+        false,
+        false
+      ],
+      "option_justifications": [
+        "16-8=8.",
+        "Each carried fewer than 10 under the stated carry-up-to-capacity rule.",
+        "It would have carried 10, contradicting the recorded eight.",
+        "Observed carriage is 16, not total capacity 20."
+      ],
+      "source_body_sha256": [
+        "5f59d1b79c2c93c1600628069004db19861831bcf1e25e5c38d871d731bf13e5"
+      ],
+      "operator_semantic_decision": "valid",
+      "arithmetic_equalities": 2
+    },
+    {
+      "id": "remediation-transport_capacity-capacity_action_feasibility",
+      "unit": "transport_capacity",
+      "split": "train",
+      "gold_indices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "option_truth": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "option_justifications": [
+        "Capacities become 12/4.",
+        "Capacities 12/8 fit, at cost 6 versus 3.",
+        "Evening capacity becomes 3 against demand 4.",
+        "The cheaper move-five action fails the evening constraint."
+      ],
+      "source_body_sha256": [
+        "5f59d1b79c2c93c1600628069004db19861831bcf1e25e5c38d871d731bf13e5"
+      ],
+      "operator_semantic_decision": "valid",
+      "arithmetic_equalities": 3
+    },
+    {
+      "id": "remediation-transport_capacity-connection_path_capacity",
+      "unit": "transport_capacity",
+      "split": "dev",
+      "gold_indices": [
+        0
+      ],
+      "option_truth": [
+        true,
+        false,
+        false,
+        false
+      ],
+      "option_justifications": [
+        "Only the direct service is temporally feasible.",
+        "The first leg misses the second departure.",
+        "More spaces do not repair the missed departure.",
+        "A departed service cannot be stored."
+      ],
+      "source_body_sha256": [
+        "5f59d1b79c2c93c1600628069004db19861831bcf1e25e5c38d871d731bf13e5"
+      ],
+      "operator_semantic_decision": "valid",
+      "arithmetic_equalities": 0
+    },
+    {
+      "id": "remediation-transport_capacity-capacity_uncertainty_guarantee",
+      "unit": "transport_capacity",
+      "split": "dev",
+      "gold_indices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "option_truth": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "option_justifications": [
+        "Worst case A serves 4 and B serves 5.",
+        "A serves four and B five.",
+        "A serves 7 and B serves 5.",
+        "B receives five against capacity eight."
+      ],
+      "source_body_sha256": [
+        "5f59d1b79c2c93c1600628069004db19861831bcf1e25e5c38d871d731bf13e5"
+      ],
+      "operator_semantic_decision": "valid",
+      "arithmetic_equalities": 3
+    },
+    {
+      "id": "remediation-pest-external_vs_internal",
+      "unit": "pest",
+      "split": "retention",
+      "gold_indices": [
+        0,
+        1,
+        3
+      ],
+      "option_truth": [
+        true,
+        true,
+        false,
+        true
+      ],
+      "option_justifications": [
+        "It concerns the external economic environment.",
+        "It is an external demographic trend.",
+        "It is an internal operating arrangement.",
+        "They concern the technological environment."
+      ],
+      "source_body_sha256": [
+        "3f42177fa01c78e0bbcd4c99009fdc4fcc08d375baedb040075a857bdfa91c71"
+      ],
+      "operator_semantic_decision": "valid",
+      "arithmetic_equalities": 0
+    },
+    {
+      "id": "remediation-pest-review_scope_repair",
+      "unit": "pest",
+      "split": "retention",
+      "gold_indices": [
+        0,
+        2
+      ],
+      "option_truth": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "option_justifications": [
+        "Political macro-environment is within PEST.",
+        "That event is internal operations.",
+        "Technological macro-environment is in scope.",
+        "An internal budget does not remove external economic factors."
+      ],
+      "source_body_sha256": [
+        "3f42177fa01c78e0bbcd4c99009fdc4fcc08d375baedb040075a857bdfa91c71"
+      ],
+      "operator_semantic_decision": "valid",
+      "arithmetic_equalities": 0
+    },
+    {
+      "id": "remediation-abc-control_class_consistency",
+      "unit": "abc",
+      "split": "retention",
+      "gold_indices": [
+        0,
+        1,
+        2
+      ],
+      "option_truth": [
+        true,
+        true,
+        true,
+        false
+      ],
+      "option_justifications": [
+        "A requires very tight control and accurate records.",
+        "B is less tightly controlled with moderate records.",
+        "C uses the simplest controls and minimal records.",
+        "It expressly differentiates the groups."
+      ],
+      "source_body_sha256": [
+        "8b18c3b5ec9757147772ec94ae589bf5172deb52f767452104fe379f9c4fc207"
+      ],
+      "operator_semantic_decision": "valid",
+      "arithmetic_equalities": 0
+    },
+    {
+      "id": "remediation-abc-prioritize_control_repair",
+      "unit": "abc",
+      "split": "retention",
+      "gold_indices": [
+        0
+      ],
+      "option_truth": [
+        true,
+        false,
+        false,
+        false
+      ],
+      "option_justifications": [
+        "A is the stated mismatch to its required control level.",
+        "That moves A away from its definition.",
+        "Alphabet order does not imply tighter control.",
+        "That does not correct A and undermines the B standard."
+      ],
+      "source_body_sha256": [
+        "8b18c3b5ec9757147772ec94ae589bf5172deb52f767452104fe379f9c4fc207"
+      ],
+      "operator_semantic_decision": "valid",
+      "arithmetic_equalities": 0
+    },
+    {
+      "id": "remediation-reorder-error_vs_variability",
+      "unit": "reorder",
+      "split": "retention",
+      "gold_indices": [
+        0,
+        2
+      ],
+      "option_truth": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "option_justifications": [
+        "Expected demand plus safety factor times zero is 40.",
+        "The formula uses the specified zero forecast-error RMSE.",
+        "The source distinguishes the two measures.",
+        "The source explicitly rejects that identity."
+      ],
+      "source_body_sha256": [
+        "e8669bf0b4a2184da59373e3c2dd3351c585ffadb2b6f90dc3e81e3b94872a61"
+      ],
+      "operator_semantic_decision": "valid",
+      "arithmetic_equalities": 1
+    },
+    {
+      "id": "remediation-reorder-strict_trigger_scope",
+      "unit": "reorder",
+      "split": "retention",
+      "gold_indices": [
+        0,
+        2
+      ],
+      "option_truth": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "option_justifications": [
+        "Position is below s and quantity is Q.",
+        "Equality is not below.",
+        "The source uses falls below s.",
+        "Order quantity is Q=12, not current position."
+      ],
+      "source_body_sha256": [
+        "e8669bf0b4a2184da59373e3c2dd3351c585ffadb2b6f90dc3e81e3b94872a61"
+      ],
+      "operator_semantic_decision": "valid",
+      "arithmetic_equalities": 0
+    },
+    {
+      "id": "remediation-rail_transfer-direct_vs_other_mode",
+      "unit": "rail_transfer",
+      "split": "retention",
+      "gold_indices": [
+        1
+      ],
+      "option_truth": [
+        false,
+        true,
+        false,
+        false
+      ],
+      "option_justifications": [
+        "Direct rail-to-rail transfer is excluded.",
+        "An intervening other mode satisfies the cited distinction.",
+        "The source explicitly excludes a tractive-vehicle change.",
+        "The source distinguishes rail from road and inland waterway rules."
+      ],
+      "source_body_sha256": [
+        "81958c8531d1778887353a6fe1aa8fd01c358b508c2106a099821aac462ac0cb",
+        "a1366889561bd2a33b64032290081b4890d3283b97d53e9bbf7e782efb8c120b"
+      ],
+      "operator_semantic_decision": "valid",
+      "arithmetic_equalities": 0
+    },
+    {
+      "id": "remediation-rail_transfer-event_sequence_audit",
+      "unit": "rail_transfer",
+      "split": "retention",
+      "gold_indices": [
+        0,
+        1,
+        3
+      ],
+      "option_truth": [
+        true,
+        true,
+        false,
+        true
+      ],
+      "option_justifications": [
+        "Only the transfer through the road vehicle qualifies.",
+        "The subsequent rail entry after the road stage qualifies.",
+        "The first two are explicitly excluded.",
+        "Locomotive and direct rail transfers remain."
+      ],
+      "source_body_sha256": [
+        "81958c8531d1778887353a6fe1aa8fd01c358b508c2106a099821aac462ac0cb",
+        "a1366889561bd2a33b64032290081b4890d3283b97d53e9bbf7e782efb8c120b"
+      ],
+      "operator_semantic_decision": "valid",
+      "arithmetic_equalities": 0
+    },
+    {
+      "id": "remediation-postponement-preserve_allocation_flexibility",
+      "unit": "postponement",
+      "split": "retention",
+      "gold_indices": [
+        0
+      ],
+      "option_truth": [
+        true,
+        false,
+        false,
+        false
+      ],
+      "option_justifications": [
+        "Differentiation has not yet committed it to one end product.",
+        "The scenario explicitly removes conversion to B.",
+        "The source makes benefits conditional on demand and lead times.",
+        "The source distinguishes shipment delay from product differentiation."
+      ],
+      "source_body_sha256": [
+        "2e577561fac548dcd0838b7e03b24a9f87d3a2a86dfc6d3a4c7d7e2163e18d49"
+      ],
+      "operator_semantic_decision": "valid",
+      "arithmetic_equalities": 0
+    },
+    {
+      "id": "remediation-postponement-customization_deadline_limit",
+      "unit": "postponement",
+      "split": "retention",
+      "gold_indices": [
+        0,
+        2
+      ],
+      "option_truth": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "option_justifications": [
+        "Two plus one is three days, exceeding two.",
+        "The remaining stages exceed the deadline.",
+        "Flexibility does not eliminate stage duration.",
+        "Waiting only leaves less time."
+      ],
+      "source_body_sha256": [
+        "2e577561fac548dcd0838b7e03b24a9f87d3a2a86dfc6d3a4c7d7e2163e18d49"
+      ],
+      "operator_semantic_decision": "valid",
+      "arithmetic_equalities": 1
+    },
+    {
+      "id": "remediation-contracts-contract_and_container_dimensions",
+      "unit": "contracts",
+      "split": "retention",
+      "gold_indices": [
+        0,
+        2
+      ],
+      "option_truth": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "option_justifications": [
+        "The named vocabulary defines contract integration this way.",
+        "Physical unit handling and contracts are different dimensions.",
+        "This is the cited physical role of a transferable load unit.",
+        "Transmodal connects services within the same mode."
+      ],
+      "source_body_sha256": [
+        "07ca495a2d2c6230b84aa6b4c63ec2bed8dff7f15bad5e1c0be95bd7516a6b89"
+      ],
+      "operator_semantic_decision": "valid",
+      "arithmetic_equalities": 0
+    },
+    {
+      "id": "remediation-contracts-same_mode_multiple_carriers",
+      "unit": "contracts",
+      "split": "retention",
+      "gold_indices": [
+        0
+      ],
+      "option_truth": [
+        true,
+        false,
+        false,
+        false
+      ],
+      "option_justifications": [
+        "The relevant condition is same mode.",
+        "Carrier identity is not transport mode.",
+        "No road leg occurs.",
+        "Contracts do not establish physical handling."
+      ],
+      "source_body_sha256": [
+        "07ca495a2d2c6230b84aa6b4c63ec2bed8dff7f15bad5e1c0be95bd7516a6b89"
+      ],
+      "operator_semantic_decision": "valid",
+      "arithmetic_equalities": 0
+    },
+    {
+      "id": "remediation-warehouse_roles-mixed_wip_and_fulfillment",
+      "unit": "warehouse_roles",
+      "split": "retention",
+      "gold_indices": [
+        0,
+        1
+      ],
+      "option_truth": [
+        true,
+        true,
+        false,
+        false
+      ],
+      "option_justifications": [
+        "Partly completed assemblies are WIP.",
+        "It sends small orders to individual consumers.",
+        "The source distinctions do not impose mutually exclusive facilities.",
+        "Some are partly assembled and the other stream fulfills orders."
+      ],
+      "source_body_sha256": [
+        "b868e0f5abcc05d8a9fe3e97aaede432068028102fe146e3367c3b11ba6f1120"
+      ],
+      "operator_semantic_decision": "valid",
+      "arithmetic_equalities": 0
+    },
+    {
+      "id": "remediation-warehouse_roles-location_and_inventory_roles",
+      "unit": "warehouse_roles",
+      "split": "retention",
+      "gold_indices": [
+        0,
+        1
+      ],
+      "option_truth": [
+        true,
+        true,
+        false,
+        false
+      ],
+      "option_justifications": [
+        "Both material state and source proximity are specified.",
+        "It is near customers for rapid response.",
+        "Raw material is specified, not partial assemblies.",
+        "Those mixing-center facts are not supplied."
+      ],
+      "source_body_sha256": [
+        "b868e0f5abcc05d8a9fe3e97aaede432068028102fe146e3367c3b11ba6f1120"
+      ],
+      "operator_semantic_decision": "valid",
+      "arithmetic_equalities": 0
+    },
+    {
+      "id": "remediation-shipping_controls-stage_event_mapping",
+      "unit": "shipping_controls",
+      "split": "retention",
+      "gold_indices": [
+        0,
+        1,
+        2
+      ],
+      "option_truth": [
+        true,
+        true,
+        true,
+        false
+      ],
+      "option_justifications": [
+        "Label and weight/cube verification is Checking.",
+        "Protection and unitizing are Packing.",
+        "Dock and loading optimization are Shipping activities.",
+        "The stated C actions are different."
+      ],
+      "source_body_sha256": [
+        "4448162d15e2f295eadb74f82b4882c694d5bb16ba36c62033c59ccb4b3f5a15"
+      ],
+      "operator_semantic_decision": "valid",
+      "arithmetic_equalities": 0
+    },
+    {
+      "id": "remediation-shipping_controls-fix_the_demonstrated_defect",
+      "unit": "shipping_controls",
+      "split": "retention",
+      "gold_indices": [
+        0,
+        1
+      ],
+      "option_truth": [
+        true,
+        true,
+        false,
+        false
+      ],
+      "option_justifications": [
+        "Checking includes creating and verifying labels.",
+        "Both are included in that function.",
+        "Loading optimization does not fix the identified label content.",
+        "Packing is already complete and no packing defect is stated."
+      ],
+      "source_body_sha256": [
+        "4448162d15e2f295eadb74f82b4882c694d5bb16ba36c62033c59ccb4b3f5a15"
+      ],
+      "operator_semantic_decision": "valid",
+      "arithmetic_equalities": 0
+    },
+    {
+      "id": "remediation-outsourcing-responsibility_after_contract",
+      "unit": "outsourcing",
+      "split": "retention",
+      "gold_indices": [
+        0,
+        1,
+        2
+      ],
+      "option_truth": [
+        true,
+        true,
+        true,
+        false
+      ],
+      "option_justifications": [
+        "Outsourcing does not remove management responsibility.",
+        "The source expressly requires KPI monitoring.",
+        "Managing external implementation requires these skills.",
+        "The source rejects outsourcing as an automatic cure."
+      ],
+      "source_body_sha256": [
+        "5d83353ff47561947ac35d43ff6edd623a7a8e89bed64e12f0ee94fb706956ba"
+      ],
+      "operator_semantic_decision": "valid",
+      "arithmetic_equalities": 0
+    },
+    {
+      "id": "remediation-outsourcing-provider_quality_and_governance",
+      "unit": "outsourcing",
+      "split": "retention",
+      "gold_indices": [
+        0,
+        1
+      ],
+      "option_truth": [
+        true,
+        true,
+        false,
+        false
+      ],
+      "option_justifications": [
+        "Availability and reliability of quality options matter.",
+        "The organization must possess or develop this skill.",
+        "Quality and management capability remain unresolved.",
+        "Constant involvement and KPI monitoring remain required."
+      ],
+      "source_body_sha256": [
+        "5d83353ff47561947ac35d43ff6edd623a7a8e89bed64e12f0ee94fb706956ba"
+      ],
+      "operator_semantic_decision": "valid",
+      "arithmetic_equalities": 0
+    },
+    {
+      "id": "remediation-holding_cost-duplicate_holding_component",
+      "unit": "holding_cost",
+      "split": "retention",
+      "gold_indices": [
+        0,
+        2
+      ],
+      "option_truth": [
+        true,
+        false,
+        true,
+        false
+      ],
+      "option_justifications": [
+        "30+40+10=80.",
+        "That counts the same expense twice.",
+        "The source includes relevant warehouse operating expenses.",
+        "A fixed rate is a scenario assumption, not a universal identity."
+      ],
+      "source_body_sha256": [
+        "ef89bcef5fc521f89feb3ad837b39ffd8c194a7ec05196650a4ead7d4873ae79"
+      ],
+      "operator_semantic_decision": "valid",
+      "arithmetic_equalities": 2
+    },
+    {
+      "id": "remediation-holding_cost-allocated_vs_incremental_boundary",
+      "unit": "holding_cost",
+      "split": "retention",
+      "gold_indices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "option_truth": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "option_justifications": [
+        "Only changed costs 10+3 are included.",
+        "It additionally assigns 20 rent.",
+        "The full report allocates an unchanged expense.",
+        "No universal rate follows from one specified costing example."
+      ],
+      "source_body_sha256": [
+        "ef89bcef5fc521f89feb3ad837b39ffd8c194a7ec05196650a4ead7d4873ae79"
+      ],
+      "operator_semantic_decision": "valid",
+      "arithmetic_equalities": 2
+    }
+  ],
+  "model_review_used_as": "Diagnostic objection source; not automatic authority or training rationale",
+  "training_allowed": false,
+  "model_review_passed": 36,
+  "model_review_total": 44,
+  "model_review_failures": [
+    {
+      "id": "remediation-pick_lines-order_merge_and_separate",
+      "accepted": false,
+      "internally_consistent": false,
+      "review_indices": [
+        0
+      ],
+      "flags_pass": true,
+      "parse_valid": true,
+      "truncated": false,
+      "judgment_indices": [
+        2
+      ],
+      "false_flags": [],
+      "operator_resolution": "retain_author_key_after_explicit_source_and_reference_check",
+      "operator_reason": "Separate orders contain A,B,C and B,C,D: quantities are 1,2,2,1, totaling six grabs and four merged bin instructions. The reduction is two visits. Reviewer text corrects its initial count but leaves stale truth booleans."
+    },
+    {
+      "id": "remediation-batch_tradeoff-strict_break_even_boundary",
+      "accepted": false,
+      "internally_consistent": false,
+      "review_indices": [
+        0,
+        2,
+        3
+      ],
+      "flags_pass": true,
+      "parse_valid": true,
+      "truncated": false,
+      "judgment_indices": [
+        2,
+        3
+      ],
+      "false_flags": [],
+      "operator_resolution": "retain_author_key_after_explicit_source_and_reference_check",
+      "operator_reason": "40-25-15=0, so break-even is true and strictly cheaper is false; +1 space gives one extra cost and -1 separation gives one saving. The reviewer final indices agree but the break-even boolean remains false."
+    },
+    {
+      "id": "remediation-batch_tradeoff-exclusive_interventions_with_fees",
+      "accepted": false,
+      "internally_consistent": false,
+      "review_indices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "flags_pass": true,
+      "parse_valid": true,
+      "truncated": false,
+      "judgment_indices": [
+        0,
+        1,
+        3
+      ],
+      "false_flags": [],
+      "operator_resolution": "retain_author_key_after_explicit_source_and_reference_check",
+      "operator_reason": "Net costs relative to separate picking are +5, -1 and -2 for none, I and J. The revised fourth option explicitly compares total cost. Reviewer rationale and final indices accept all four, but the J-saving boolean remains false."
+    },
+    {
+      "id": "remediation-batch_tradeoff-shared_setup_across_waves",
+      "accepted": false,
+      "internally_consistent": true,
+      "review_indices": [
+        0,
+        1,
+        3
+      ],
+      "flags_pass": true,
+      "parse_valid": true,
+      "truncated": false,
+      "judgment_indices": [
+        0,
+        1,
+        3
+      ],
+      "false_flags": [],
+      "operator_resolution": "retain_author_key_after_explicit_source_and_reference_check",
+      "operator_reason": "One wave saves 25-12-22=-9, not +13. Two waves save 50-24-22=4. Exhaustive enumeration gives 0,-9,-9,4. Reviewer option 0 omits setup and contradicts its own option 3 explanation."
+    },
+    {
+      "id": "remediation-serial_parallel-bottleneck_perturbation",
+      "accepted": false,
+      "internally_consistent": false,
+      "review_indices": [
+        0,
+        1
+      ],
+      "flags_pass": true,
+      "parse_valid": true,
+      "truncated": false,
+      "judgment_indices": [
+        0
+      ],
+      "false_flags": [],
+      "operator_resolution": "retain_author_key_after_explicit_source_and_reference_check",
+      "operator_reason": "Completion is max(11,7)+4=15; X leaves max(11,3)+4=15 and Y gives max(8,7)+4=12. Reviewer reasoning and final indices correct the reduction to three but keep a false boolean on that true statement."
+    },
+    {
+      "id": "remediation-serial_parallel-interrupted_consolidation",
+      "accepted": false,
+      "internally_consistent": false,
+      "review_indices": [
+        0,
+        2,
+        3
+      ],
+      "flags_pass": true,
+      "parse_valid": true,
+      "truncated": false,
+      "judgment_indices": [
+        0,
+        3
+      ],
+      "false_flags": [],
+      "operator_resolution": "retain_author_key_after_explicit_source_and_reference_check",
+      "operator_reason": "Time-step reference gives pause/resume completion 19 and uninterrupted completion 20. Active work is 6+10+4+2=22 for both. Reviewer reasoning and final indices accept 22 but leave its boolean false."
+    },
+    {
+      "id": "remediation-transport_capacity-partial_record_necessity",
+      "accepted": false,
+      "internally_consistent": true,
+      "review_indices": [
+        0
+      ],
+      "flags_pass": true,
+      "parse_valid": true,
+      "truncated": false,
+      "judgment_indices": [
+        0
+      ],
+      "false_flags": [],
+      "operator_resolution": "retain_author_key_after_explicit_source_and_reference_check",
+      "operator_reason": "Each departure carries eight under carry-every-eligible-request-up-to-ten with no other restrictions. min(d,10)=8<10 implies d=8, hence no capacity rejection. Reviewer denies this implication while correctly using it to reject demand twelve."
+    },
+    {
+      "id": "remediation-transport_capacity-capacity_uncertainty_guarantee",
+      "accepted": false,
+      "internally_consistent": false,
+      "review_indices": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "flags_pass": true,
+      "parse_valid": true,
+      "truncated": false,
+      "judgment_indices": [
+        1,
+        2,
+        3
+      ],
+      "false_flags": [],
+      "operator_resolution": "retain_author_key_after_explicit_source_and_reference_check",
+      "operator_reason": "After shifting two, A needs seven and B needs five. A capacities 4,5,6,7 yield totals 9,10,11,12; B always leaves three places. All four claims hold. Reviewer final indices agree but the at-least-nine boolean remains false."
+    }
+  ],
+  "internally_inconsistent_reviews": 6,
+  "internally_consistent_but_wrong_reviews": 2,
+  "no_automatic_pass_relabeling": true,
+  "no_model_rationale_used_as_training_target": true,
+  "quality_released": true,
+  "training_scope": "The separate release authorizes only the sixteen train IDs. The complete 44-case audit file is not a training set."
+}

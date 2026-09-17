@@ -1,0 +1,6444 @@
+{
+  "packet_sha256": "9d956b539b6f40a07e71ad4b925c681e49534c73e89873c80e825d7895a07848",
+  "parent_packet_sha256": "9f764dd3c60e4cefac8319be2d48a80bfe6d3a6df41eb048fd919fb0d06bafde",
+  "new_model_calls": 240,
+  "final_paired_calls": 176,
+  "final_review_calls": 44,
+  "remote_and_local_summaries_agree": true,
+  "independent_closed_json_parsing_passed": true,
+  "all_final_paired_prompt_tokens_match": true,
+  "amendment_only_replacement_verified": true,
+  "versions": {
+    "p1": {
+      "original": {
+        "model_label": "p1",
+        "cases": 44,
+        "closed_calls": 88,
+        "review_calls": 44,
+        "counts": {
+          "train_correct": 11,
+          "invalid": 0,
+          "truncated": 0,
+          "dev_correct": 9,
+          "retention_correct": 39,
+          "historical_dev_sources_correct": 24,
+          "shared_train_groups_correct": 15
+        },
+        "both_orders_correct_by_split": {
+          "train": 4,
+          "dev": 3,
+          "retention": 19
+        },
+        "option_order_changed_answer_ids": [
+          "remediation-pick_lines-multi_instruction_reconciliation",
+          "remediation-batch_tradeoff-duplicate_cost_ledger",
+          "remediation-batch_tradeoff-robust_cost_ranges",
+          "remediation-serial_parallel-deadline_and_labor_budget",
+          "remediation-serial_parallel-bottleneck_perturbation",
+          "remediation-serial_parallel-precedence_graph_report",
+          "remediation-serial_parallel-interrupted_consolidation",
+          "remediation-transport_capacity-capacity_action_feasibility",
+          "remediation-transport_capacity-connection_path_capacity",
+          "remediation-holding_cost-allocated_vs_incremental_boundary"
+        ],
+        "per_call": [
+          {
+            "id": "remediation-pick_lines-multi_instruction_reconciliation",
+            "variant": 0,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              0,
+              1
+            ]
+          },
+          {
+            "id": "remediation-pick_lines-multi_instruction_reconciliation",
+            "variant": 1,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              1
+            ]
+          },
+          {
+            "id": "remediation-pick_lines-unequal_area_comparison",
+            "variant": 0,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              2,
+              3
+            ]
+          },
+          {
+            "id": "remediation-pick_lines-unequal_area_comparison",
+            "variant": 1,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              2,
+              3
+            ]
+          },
+          {
+            "id": "remediation-pick_lines-partial_grab_identifiability",
+            "variant": 0,
+            "split": "train",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1
+            ]
+          },
+          {
+            "id": "remediation-pick_lines-partial_grab_identifiability",
+            "variant": 1,
+            "split": "train",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1
+            ]
+          },
+          {
+            "id": "remediation-pick_lines-layout_change_with_fixed_activity",
+            "variant": 0,
+            "split": "train",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1,
+              2,
+              3
+            ]
+          },
+          {
+            "id": "remediation-pick_lines-layout_change_with_fixed_activity",
+            "variant": 1,
+            "split": "train",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1,
+              2,
+              3
+            ]
+          },
+          {
+            "id": "remediation-pick_lines-order_merge_and_separate",
+            "variant": 0,
+            "split": "dev",
+            "correct": true,
+            "original_order_prediction": [
+              0
+            ]
+          },
+          {
+            "id": "remediation-pick_lines-order_merge_and_separate",
+            "variant": 1,
+            "split": "dev",
+            "correct": true,
+            "original_order_prediction": [
+              0
+            ]
+          },
+          {
+            "id": "remediation-pick_lines-recover_instruction_count_from_events",
+            "variant": 0,
+            "split": "dev",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              2,
+              3
+            ]
+          },
+          {
+            "id": "remediation-pick_lines-recover_instruction_count_from_events",
+            "variant": 1,
+            "split": "dev",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              2,
+              3
+            ]
+          },
+          {
+            "id": "remediation-batch_tradeoff-duplicate_cost_ledger",
+            "variant": 0,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              0,
+              1,
+              2,
+              3
+            ]
+          },
+          {
+            "id": "remediation-batch_tradeoff-duplicate_cost_ledger",
+            "variant": 1,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              0,
+              1,
+              3
+            ]
+          },
+          {
+            "id": "remediation-batch_tradeoff-cost_with_space_feasibility",
+            "variant": 0,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              2
+            ]
+          },
+          {
+            "id": "remediation-batch_tradeoff-cost_with_space_feasibility",
+            "variant": 1,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              2
+            ]
+          },
+          {
+            "id": "remediation-batch_tradeoff-strict_break_even_boundary",
+            "variant": 0,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              1,
+              2,
+              3
+            ]
+          },
+          {
+            "id": "remediation-batch_tradeoff-strict_break_even_boundary",
+            "variant": 1,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              1,
+              2,
+              3
+            ]
+          },
+          {
+            "id": "remediation-batch_tradeoff-exclusive_interventions_with_fees",
+            "variant": 0,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              0,
+              3
+            ]
+          },
+          {
+            "id": "remediation-batch_tradeoff-exclusive_interventions_with_fees",
+            "variant": 1,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              0,
+              3
+            ]
+          },
+          {
+            "id": "remediation-batch_tradeoff-robust_cost_ranges",
+            "variant": 0,
+            "split": "dev",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              2
+            ]
+          },
+          {
+            "id": "remediation-batch_tradeoff-robust_cost_ranges",
+            "variant": 1,
+            "split": "dev",
+            "correct": false,
+            "original_order_prediction": [
+              0,
+              3
+            ]
+          },
+          {
+            "id": "remediation-batch_tradeoff-shared_setup_across_waves",
+            "variant": 0,
+            "split": "dev",
+            "correct": false,
+            "original_order_prediction": [
+              0,
+              1,
+              3
+            ]
+          },
+          {
+            "id": "remediation-batch_tradeoff-shared_setup_across_waves",
+            "variant": 1,
+            "split": "dev",
+            "correct": false,
+            "original_order_prediction": [
+              0,
+              1,
+              3
+            ]
+          },
+          {
+            "id": "remediation-serial_parallel-release_time_interaction",
+            "variant": 0,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              0,
+              2,
+              3
+            ]
+          },
+          {
+            "id": "remediation-serial_parallel-release_time_interaction",
+            "variant": 1,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              0,
+              2,
+              3
+            ]
+          },
+          {
+            "id": "remediation-serial_parallel-deadline_and_labor_budget",
+            "variant": 0,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              0,
+              1,
+              2
+            ]
+          },
+          {
+            "id": "remediation-serial_parallel-deadline_and_labor_budget",
+            "variant": 1,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              2,
+              3
+            ]
+          },
+          {
+            "id": "remediation-serial_parallel-bottleneck_perturbation",
+            "variant": 0,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              0,
+              2
+            ]
+          },
+          {
+            "id": "remediation-serial_parallel-bottleneck_perturbation",
+            "variant": 1,
+            "split": "train",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1
+            ]
+          },
+          {
+            "id": "remediation-serial_parallel-precedence_graph_report",
+            "variant": 0,
+            "split": "train",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1,
+              2,
+              3
+            ]
+          },
+          {
+            "id": "remediation-serial_parallel-precedence_graph_report",
+            "variant": 1,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              1,
+              2,
+              3
+            ]
+          },
+          {
+            "id": "remediation-serial_parallel-inverse_release_bound",
+            "variant": 0,
+            "split": "dev",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1,
+              2,
+              3
+            ]
+          },
+          {
+            "id": "remediation-serial_parallel-inverse_release_bound",
+            "variant": 1,
+            "split": "dev",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1,
+              2,
+              3
+            ]
+          },
+          {
+            "id": "remediation-serial_parallel-interrupted_consolidation",
+            "variant": 0,
+            "split": "dev",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              2,
+              3
+            ]
+          },
+          {
+            "id": "remediation-serial_parallel-interrupted_consolidation",
+            "variant": 1,
+            "split": "dev",
+            "correct": false,
+            "original_order_prediction": [
+              0,
+              2
+            ]
+          },
+          {
+            "id": "remediation-transport_capacity-cancellation_vs_rejection",
+            "variant": 0,
+            "split": "train",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1,
+              2
+            ]
+          },
+          {
+            "id": "remediation-transport_capacity-cancellation_vs_rejection",
+            "variant": 1,
+            "split": "train",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1,
+              2
+            ]
+          },
+          {
+            "id": "remediation-transport_capacity-limited_flexible_requests",
+            "variant": 0,
+            "split": "train",
+            "correct": true,
+            "original_order_prediction": [
+              1
+            ]
+          },
+          {
+            "id": "remediation-transport_capacity-limited_flexible_requests",
+            "variant": 1,
+            "split": "train",
+            "correct": true,
+            "original_order_prediction": [
+              1
+            ]
+          },
+          {
+            "id": "remediation-transport_capacity-partial_record_necessity",
+            "variant": 0,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              0
+            ]
+          },
+          {
+            "id": "remediation-transport_capacity-partial_record_necessity",
+            "variant": 1,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              0
+            ]
+          },
+          {
+            "id": "remediation-transport_capacity-capacity_action_feasibility",
+            "variant": 0,
+            "split": "train",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1,
+              2,
+              3
+            ]
+          },
+          {
+            "id": "remediation-transport_capacity-capacity_action_feasibility",
+            "variant": 1,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              0,
+              1,
+              3
+            ]
+          },
+          {
+            "id": "remediation-transport_capacity-connection_path_capacity",
+            "variant": 0,
+            "split": "dev",
+            "correct": true,
+            "original_order_prediction": [
+              0
+            ]
+          },
+          {
+            "id": "remediation-transport_capacity-connection_path_capacity",
+            "variant": 1,
+            "split": "dev",
+            "correct": false,
+            "original_order_prediction": [
+              2
+            ]
+          },
+          {
+            "id": "remediation-transport_capacity-capacity_uncertainty_guarantee",
+            "variant": 0,
+            "split": "dev",
+            "correct": false,
+            "original_order_prediction": [
+              0,
+              2
+            ]
+          },
+          {
+            "id": "remediation-transport_capacity-capacity_uncertainty_guarantee",
+            "variant": 1,
+            "split": "dev",
+            "correct": false,
+            "original_order_prediction": [
+              0,
+              2
+            ]
+          },
+          {
+            "id": "remediation-pest-external_vs_internal",
+            "variant": 0,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1,
+              3
+            ]
+          },
+          {
+            "id": "remediation-pest-external_vs_internal",
+            "variant": 1,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1,
+              3
+            ]
+          },
+          {
+            "id": "remediation-pest-review_scope_repair",
+            "variant": 0,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              2
+            ]
+          },
+          {
+            "id": "remediation-pest-review_scope_repair",
+            "variant": 1,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              2
+            ]
+          },
+          {
+            "id": "remediation-abc-control_class_consistency",
+            "variant": 0,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1,
+              2
+            ]
+          },
+          {
+            "id": "remediation-abc-control_class_consistency",
+            "variant": 1,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1,
+              2
+            ]
+          },
+          {
+            "id": "remediation-abc-prioritize_control_repair",
+            "variant": 0,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0
+            ]
+          },
+          {
+            "id": "remediation-abc-prioritize_control_repair",
+            "variant": 1,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0
+            ]
+          },
+          {
+            "id": "remediation-reorder-error_vs_variability",
+            "variant": 0,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              2
+            ]
+          },
+          {
+            "id": "remediation-reorder-error_vs_variability",
+            "variant": 1,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              2
+            ]
+          },
+          {
+            "id": "remediation-reorder-strict_trigger_scope",
+            "variant": 0,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              2
+            ]
+          },
+          {
+            "id": "remediation-reorder-strict_trigger_scope",
+            "variant": 1,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              2
+            ]
+          },
+          {
+            "id": "remediation-rail_transfer-direct_vs_other_mode",
+            "variant": 0,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              1
+            ]
+          },
+          {
+            "id": "remediation-rail_transfer-direct_vs_other_mode",
+            "variant": 1,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              1
+            ]
+          },
+          {
+            "id": "remediation-rail_transfer-event_sequence_audit",
+            "variant": 0,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1,
+              3
+            ]
+          },
+          {
+            "id": "remediation-rail_transfer-event_sequence_audit",
+            "variant": 1,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1,
+              3
+            ]
+          },
+          {
+            "id": "remediation-postponement-preserve_allocation_flexibility",
+            "variant": 0,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0
+            ]
+          },
+          {
+            "id": "remediation-postponement-preserve_allocation_flexibility",
+            "variant": 1,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0
+            ]
+          },
+          {
+            "id": "remediation-postponement-customization_deadline_limit",
+            "variant": 0,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              2
+            ]
+          },
+          {
+            "id": "remediation-postponement-customization_deadline_limit",
+            "variant": 1,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              2
+            ]
+          },
+          {
+            "id": "remediation-contracts-contract_and_container_dimensions",
+            "variant": 0,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              2
+            ]
+          },
+          {
+            "id": "remediation-contracts-contract_and_container_dimensions",
+            "variant": 1,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              2
+            ]
+          },
+          {
+            "id": "remediation-contracts-same_mode_multiple_carriers",
+            "variant": 0,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0
+            ]
+          },
+          {
+            "id": "remediation-contracts-same_mode_multiple_carriers",
+            "variant": 1,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0
+            ]
+          },
+          {
+            "id": "remediation-warehouse_roles-mixed_wip_and_fulfillment",
+            "variant": 0,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1
+            ]
+          },
+          {
+            "id": "remediation-warehouse_roles-mixed_wip_and_fulfillment",
+            "variant": 1,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1
+            ]
+          },
+          {
+            "id": "remediation-warehouse_roles-location_and_inventory_roles",
+            "variant": 0,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1
+            ]
+          },
+          {
+            "id": "remediation-warehouse_roles-location_and_inventory_roles",
+            "variant": 1,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1
+            ]
+          },
+          {
+            "id": "remediation-shipping_controls-stage_event_mapping",
+            "variant": 0,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1,
+              2
+            ]
+          },
+          {
+            "id": "remediation-shipping_controls-stage_event_mapping",
+            "variant": 1,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1,
+              2
+            ]
+          },
+          {
+            "id": "remediation-shipping_controls-fix_the_demonstrated_defect",
+            "variant": 0,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1
+            ]
+          },
+          {
+            "id": "remediation-shipping_controls-fix_the_demonstrated_defect",
+            "variant": 1,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1
+            ]
+          },
+          {
+            "id": "remediation-outsourcing-responsibility_after_contract",
+            "variant": 0,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1,
+              2
+            ]
+          },
+          {
+            "id": "remediation-outsourcing-responsibility_after_contract",
+            "variant": 1,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1,
+              2
+            ]
+          },
+          {
+            "id": "remediation-outsourcing-provider_quality_and_governance",
+            "variant": 0,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1
+            ]
+          },
+          {
+            "id": "remediation-outsourcing-provider_quality_and_governance",
+            "variant": 1,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1
+            ]
+          },
+          {
+            "id": "remediation-holding_cost-duplicate_holding_component",
+            "variant": 0,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              2
+            ]
+          },
+          {
+            "id": "remediation-holding_cost-duplicate_holding_component",
+            "variant": 1,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              2
+            ]
+          },
+          {
+            "id": "remediation-holding_cost-allocated_vs_incremental_boundary",
+            "variant": 0,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1,
+              2,
+              3
+            ]
+          },
+          {
+            "id": "remediation-holding_cost-allocated_vs_incremental_boundary",
+            "variant": 1,
+            "split": "retention",
+            "correct": false,
+            "original_order_prediction": [
+              0,
+              2,
+              3
+            ]
+          }
+        ],
+        "review_decisions": [
+          {
+            "id": "remediation-pick_lines-multi_instruction_reconciliation",
+            "accepted": false,
+            "internally_consistent": false,
+            "review_indices": null,
+            "flags_pass": false,
+            "parse_valid": false,
+            "truncated": true
+          },
+          {
+            "id": "remediation-pick_lines-unequal_area_comparison",
+            "accepted": true,
+            "internally_consistent": true,
+            "review_indices": [
+              2
+            ],
+            "flags_pass": true,
+            "parse_valid": true,
+            "truncated": false,
+            "judgment_indices": [
+              2
+            ],
+            "false_flags": []
+          },
+          {
+            "id": "remediation-pick_lines-partial_grab_identifiability",
+            "accepted": true,
+            "internally_consistent": true,
+            "review_indices": [
+              0,
+              1
+            ],
+            "flags_pass": true,
+            "parse_valid": true,
+            "truncated": false,
+            "judgment_indices": [
+              0,
+              1
+            ],
+            "false_flags": []
+          },
+          {
+            "id": "remediation-pick_lines-layout_change_with_fixed_activity",
+            "accepted": true,
+            "internally_consistent": true,
+            "review_indices": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "flags_pass": true,
+            "parse_valid": true,
+            "truncated": false,
+            "judgment_indices": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "false_flags": []
+          },
+          {
+            "id": "remediation-pick_lines-order_merge_and_separate",
+            "accepted": false,
+            "internally_consistent": false,
+            "review_indices": [
+              0
+            ],
+            "flags_pass": true,
+            "parse_valid": true,
+            "truncated": false,
+            "judgment_indices": [
+              2
+            ],
+            "false_flags": []
+          },
+          {
+            "id": "remediation-pick_lines-recover_instruction_count_from_events",
+            "accepted": true,
+            "internally_consistent": true,
+            "review_indices": [
+              0,
+              2,
+              3
+            ],
+            "flags_pass": true,
+            "parse_valid": true,
+            "truncated": false,
+            "judgment_indices": [
+              0,
+              2,
+              3
+            ],
+            "false_flags": []
+          },
+          {
+            "id": "remediation-batch_tradeoff-duplicate_cost_ledger",
+            "accepted": true,
+            "internally_consistent": true,
+            "review_indices": [
+              0,
+              1
+            ],
+            "flags_pass": true,
+            "parse_valid": true,
+            "truncated": false,
+            "judgment_indices": [
+              0,
+              1
+            ],
+            "false_flags": []
+          },
+          {
+            "id": "remediation-batch_tradeoff-cost_with_space_feasibility",
+            "accepted": true,
+            "internally_consistent": true,
+            "review_indices": [
+              1
+            ],
+            "flags_pass": true,
+            "parse_valid": true,
+            "truncated": false,
+            "judgment_indices": [
+              1
+            ],
+            "false_flags": []
+          },
+          {
+            "id": "remediation-batch_tradeoff-strict_break_even_boundary",
+            "accepted": false,
+            "internally_consistent": false,
+            "review_indices": [
+              0,
+              2,
+              3
+            ],
+            "flags_pass": true,
+            "parse_valid": true,
+            "truncated": false,
+            "judgment_indices": [
+              2,
+              3
+            ],
+            "false_flags": []
+          },
+          {
+            "id": "remediation-batch_tradeoff-exclusive_interventions_with_fees",
+            "accepted": false,
+            "internally_consistent": false,
+            "review_indices": [
+              0,
+              1,
+              2
+            ],
+            "flags_pass": true,
+            "parse_valid": true,
+            "truncated": false,
+            "judgment_indices": [
+              0,
+              1
+            ],
+            "false_flags": []
+          },
+          {
+            "id": "remediation-batch_tradeoff-robust_cost_ranges",
+            "accepted": true,
+            "internally_consistent": true,
+            "review_indices": [
+              0,
+              2
+            ],
+            "flags_pass": true,
+            "parse_valid": true,
+            "truncated": false,
+            "judgment_indices": [
+              0,
+              2
+            ],
+            "false_flags": []
+          },
+          {
+            "id": "remediation-batch_tradeoff-shared_setup_across_waves",
+            "accepted": false,
+            "internally_consistent": true,
+            "review_indices": [
+              0,
+              1,
+              3
+            ],
+            "flags_pass": true,
+            "parse_valid": true,
+            "truncated": false,
+            "judgment_indices": [
+              0,
+              1,
+              3
+            ],
+            "false_flags": []
+          },
+          {
+            "id": "remediation-serial_parallel-release_time_interaction",
+            "accepted": true,
+            "internally_consistent": true,
+            "review_indices": [
+              0,
+              1,
+              2
+            ],
+            "flags_pass": true,
+            "parse_valid": true,
+            "truncated": false,
+            "judgment_indices": [
+              0,
+              1,
+              2
+            ],
+            "false_flags": []
+          },
+          {
+            "id": "remediation-serial_parallel-deadline_and_labor_budget",
+            "accepted": true,
+            "internally_consistent": true,
+            "review_indices": [
+              2
+            ],
+            "flags_pass": true,
+            "parse_valid": true,
+            "truncated": false,
+            "judgment_indices": [
+              2
+            ],
+            "false_flags": []
+          },
+          {
+            "id": "remediation-serial_parallel-bottleneck_perturbation",
+            "accepted": false,
+            "internally_consistent": false,
+            "review_indices": [
+              0,
+              1
+            ],
+            "flags_pass": true,
+            "parse_valid": true,
+            "truncated": false,
+            "judgment_indices": [
+              0
+            ],
+            "false_flags": []
+          },
+          {
+            "id": "remediation-serial_parallel-precedence_graph_report",
+            "accepted": true,
+            "internally_consistent": true,
+            "review_indices": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "flags_pass": true,
+            "parse_valid": true,
+            "truncated": false,
+            "judgment_indices": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "false_flags": []
+          },
+          {
+            "id": "remediation-serial_parallel-inverse_release_bound",
+            "accepted": true,
+            "internally_consistent": true,
+            "review_indices": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "flags_pass": true,
+            "parse_valid": true,
+            "truncated": false,
+            "judgment_indices": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "false_flags": []
+          },
+          {
+            "id": "remediation-serial_parallel-interrupted_consolidation",
+            "accepted": false,
+            "internally_consistent": false,
+            "review_indices": [
+              0,
+              2,
+              3
+            ],
+            "flags_pass": true,
+            "parse_valid": true,
+            "truncated": false,
+            "judgment_indices": [
+              0,
+              3
+            ],
+            "false_flags": []
+          },
+          {
+            "id": "remediation-transport_capacity-cancellation_vs_rejection",
+            "accepted": true,
+            "internally_consistent": true,
+            "review_indices": [
+              0,
+              1,
+              2
+            ],
+            "flags_pass": true,
+            "parse_valid": true,
+            "truncated": false,
+            "judgment_indices": [
+              0,
+              1,
+              2
+            ],
+            "false_flags": []
+          },
+          {
+            "id": "remediation-transport_capacity-limited_flexible_requests",
+            "accepted": true,
+            "internally_consistent": true,
+            "review_indices": [
+              1
+            ],
+            "flags_pass": true,
+            "parse_valid": true,
+            "truncated": false,
+            "judgment_indices": [
+              1
+            ],
+            "false_flags": []
+          },
+          {
+            "id": "remediation-transport_capacity-partial_record_necessity",
+            "accepted": false,
+            "internally_consistent": true,
+            "review_indices": [
+              0
+            ],
+            "flags_pass": true,
+            "parse_valid": true,
+            "truncated": false,
+            "judgment_indices": [
+              0
+            ],
+            "false_flags": []
+          },
+          {
+            "id": "remediation-transport_capacity-capacity_action_feasibility",
+            "accepted": true,
+            "internally_consistent": true,
+            "review_indices": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "flags_pass": true,
+            "parse_valid": true,
+            "truncated": false,
+            "judgment_indices": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "false_flags": []
+          },
+          {
+            "id": "remediation-transport_capacity-connection_path_capacity",
+            "accepted": true,
+            "internally_consistent": true,
+            "review_indices": [
+              0
+            ],
+            "flags_pass": true,
+            "parse_valid": true,
+            "truncated": false,
+            "judgment_indices": [
+              0
+            ],
+            "false_flags": []
+          },
+          {
+            "id": "remediation-transport_capacity-capacity_uncertainty_guarantee",
+            "accepted": false,
+            "internally_consistent": false,
+            "review_indices": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "flags_pass": true,
+            "parse_valid": true,
+            "truncated": false,
+            "judgment_indices": [
+              1,
+              2,
+              3
+            ],
+            "false_flags": []
+          },
+          {
+            "id": "remediation-pest-external_vs_internal",
+            "accepted": true,
+            "internally_consistent": true,
+            "review_indices": [
+              0,
+              1,
+              3
+            ],
+            "flags_pass": true,
+            "parse_valid": true,
+            "truncated": false,
+            "judgment_indices": [
+              0,
+              1,
+              3
+            ],
+            "false_flags": []
+          },
+          {
+            "id": "remediation-pest-review_scope_repair",
+            "accepted": true,
+            "internally_consistent": true,
+            "review_indices": [
+              0,
+              2
+            ],
+            "flags_pass": true,
+            "parse_valid": true,
+            "truncated": false,
+            "judgment_indices": [
+              0,
+              2
+            ],
+            "false_flags": []
+          },
+          {
+            "id": "remediation-abc-control_class_consistency",
+            "accepted": true,
+            "internally_consistent": true,
+            "review_indices": [
+              0,
+              1,
+              2
+            ],
+            "flags_pass": true,
+            "parse_valid": true,
+            "truncated": false,
+            "judgment_indices": [
+              0,
+              1,
+              2
+            ],
+            "false_flags": []
+          },
+          {
+            "id": "remediation-abc-prioritize_control_repair",
+            "accepted": true,
+            "internally_consistent": true,
+            "review_indices": [
+              0
+            ],
+            "flags_pass": true,
+            "parse_valid": true,
+            "truncated": false,
+            "judgment_indices": [
+              0
+            ],
+            "false_flags": []
+          },
+          {
+            "id": "remediation-reorder-error_vs_variability",
+            "accepted": true,
+            "internally_consistent": true,
+            "review_indices": [
+              0,
+              2
+            ],
+            "flags_pass": true,
+            "parse_valid": true,
+            "truncated": false,
+            "judgment_indices": [
+              0,
+              2
+            ],
+            "false_flags": []
+          },
+          {
+            "id": "remediation-reorder-strict_trigger_scope",
+            "accepted": true,
+            "internally_consistent": true,
+            "review_indices": [
+              0,
+              2
+            ],
+            "flags_pass": true,
+            "parse_valid": true,
+            "truncated": false,
+            "judgment_indices": [
+              0,
+              2
+            ],
+            "false_flags": []
+          },
+          {
+            "id": "remediation-rail_transfer-direct_vs_other_mode",
+            "accepted": true,
+            "internally_consistent": true,
+            "review_indices": [
+              1
+            ],
+            "flags_pass": true,
+            "parse_valid": true,
+            "truncated": false,
+            "judgment_indices": [
+              1
+            ],
+            "false_flags": []
+          },
+          {
+            "id": "remediation-rail_transfer-event_sequence_audit",
+            "accepted": true,
+            "internally_consistent": true,
+            "review_indices": [
+              0,
+              1,
+              3
+            ],
+            "flags_pass": true,
+            "parse_valid": true,
+            "truncated": false,
+            "judgment_indices": [
+              0,
+              1,
+              3
+            ],
+            "false_flags": []
+          },
+          {
+            "id": "remediation-postponement-preserve_allocation_flexibility",
+            "accepted": true,
+            "internally_consistent": true,
+            "review_indices": [
+              0
+            ],
+            "flags_pass": true,
+            "parse_valid": true,
+            "truncated": false,
+            "judgment_indices": [
+              0
+            ],
+            "false_flags": []
+          },
+          {
+            "id": "remediation-postponement-customization_deadline_limit",
+            "accepted": true,
+            "internally_consistent": true,
+            "review_indices": [
+              0,
+              2
+            ],
+            "flags_pass": true,
+            "parse_valid": true,
+            "truncated": false,
+            "judgment_indices": [
+              0,
+              2
+            ],
+            "false_flags": []
+          },
+          {
+            "id": "remediation-contracts-contract_and_container_dimensions",
+            "accepted": true,
+            "internally_consistent": true,
+            "review_indices": [
+              0,
+              2
+            ],
+            "flags_pass": true,
+            "parse_valid": true,
+            "truncated": false,
+            "judgment_indices": [
+              0,
+              2
+            ],
+            "false_flags": []
+          },
+          {
+            "id": "remediation-contracts-same_mode_multiple_carriers",
+            "accepted": true,
+            "internally_consistent": true,
+            "review_indices": [
+              0
+            ],
+            "flags_pass": true,
+            "parse_valid": true,
+            "truncated": false,
+            "judgment_indices": [
+              0
+            ],
+            "false_flags": []
+          },
+          {
+            "id": "remediation-warehouse_roles-mixed_wip_and_fulfillment",
+            "accepted": true,
+            "internally_consistent": true,
+            "review_indices": [
+              0,
+              1
+            ],
+            "flags_pass": true,
+            "parse_valid": true,
+            "truncated": false,
+            "judgment_indices": [
+              0,
+              1
+            ],
+            "false_flags": []
+          },
+          {
+            "id": "remediation-warehouse_roles-location_and_inventory_roles",
+            "accepted": true,
+            "internally_consistent": true,
+            "review_indices": [
+              0,
+              1
+            ],
+            "flags_pass": true,
+            "parse_valid": true,
+            "truncated": false,
+            "judgment_indices": [
+              0,
+              1
+            ],
+            "false_flags": []
+          },
+          {
+            "id": "remediation-shipping_controls-stage_event_mapping",
+            "accepted": true,
+            "internally_consistent": true,
+            "review_indices": [
+              0,
+              1,
+              2
+            ],
+            "flags_pass": true,
+            "parse_valid": true,
+            "truncated": false,
+            "judgment_indices": [
+              0,
+              1,
+              2
+            ],
+            "false_flags": []
+          },
+          {
+            "id": "remediation-shipping_controls-fix_the_demonstrated_defect",
+            "accepted": true,
+            "internally_consistent": true,
+            "review_indices": [
+              0,
+              1
+            ],
+            "flags_pass": true,
+            "parse_valid": true,
+            "truncated": false,
+            "judgment_indices": [
+              0,
+              1
+            ],
+            "false_flags": []
+          },
+          {
+            "id": "remediation-outsourcing-responsibility_after_contract",
+            "accepted": true,
+            "internally_consistent": true,
+            "review_indices": [
+              0,
+              1,
+              2
+            ],
+            "flags_pass": true,
+            "parse_valid": true,
+            "truncated": false,
+            "judgment_indices": [
+              0,
+              1,
+              2
+            ],
+            "false_flags": []
+          },
+          {
+            "id": "remediation-outsourcing-provider_quality_and_governance",
+            "accepted": true,
+            "internally_consistent": true,
+            "review_indices": [
+              0,
+              1
+            ],
+            "flags_pass": true,
+            "parse_valid": true,
+            "truncated": false,
+            "judgment_indices": [
+              0,
+              1
+            ],
+            "false_flags": []
+          },
+          {
+            "id": "remediation-holding_cost-duplicate_holding_component",
+            "accepted": true,
+            "internally_consistent": true,
+            "review_indices": [
+              0,
+              2
+            ],
+            "flags_pass": true,
+            "parse_valid": true,
+            "truncated": false,
+            "judgment_indices": [
+              0,
+              2
+            ],
+            "false_flags": []
+          },
+          {
+            "id": "remediation-holding_cost-allocated_vs_incremental_boundary",
+            "accepted": true,
+            "internally_consistent": true,
+            "review_indices": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "flags_pass": true,
+            "parse_valid": true,
+            "truncated": false,
+            "judgment_indices": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "false_flags": []
+          }
+        ],
+        "review_accepted": 35,
+        "training_allowed": false,
+        "limitations": "Fixed source-authored development candidates, not an independent final test. Reviewer is a model and cannot release data. Eight retention items share historical training groups."
+      },
+      "amendment": {
+        "model_label": "p1",
+        "cases": 4,
+        "closed_calls": 8,
+        "review_calls": 4,
+        "counts": {
+          "train_correct": 1,
+          "invalid": 0,
+          "truncated": 0,
+          "dev_correct": 2
+        },
+        "both_orders_correct_by_split": {
+          "train": 0,
+          "dev": 1
+        },
+        "option_order_changed_answer_ids": [
+          "remediation-pick_lines-multi_instruction_reconciliation"
+        ],
+        "per_call": [
+          {
+            "id": "remediation-pick_lines-multi_instruction_reconciliation",
+            "variant": 0,
+            "split": "train",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1,
+              2
+            ]
+          },
+          {
+            "id": "remediation-pick_lines-multi_instruction_reconciliation",
+            "variant": 1,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              1,
+              2
+            ]
+          },
+          {
+            "id": "remediation-pick_lines-recover_instruction_count_from_events",
+            "variant": 0,
+            "split": "dev",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              2,
+              3
+            ]
+          },
+          {
+            "id": "remediation-pick_lines-recover_instruction_count_from_events",
+            "variant": 1,
+            "split": "dev",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              2,
+              3
+            ]
+          },
+          {
+            "id": "remediation-batch_tradeoff-exclusive_interventions_with_fees",
+            "variant": 0,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              0,
+              3
+            ]
+          },
+          {
+            "id": "remediation-batch_tradeoff-exclusive_interventions_with_fees",
+            "variant": 1,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              0,
+              3
+            ]
+          },
+          {
+            "id": "remediation-serial_parallel-deadline_and_labor_budget",
+            "variant": 0,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              2,
+              3
+            ]
+          },
+          {
+            "id": "remediation-serial_parallel-deadline_and_labor_budget",
+            "variant": 1,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              2,
+              3
+            ]
+          }
+        ],
+        "review_decisions": [
+          {
+            "id": "remediation-pick_lines-multi_instruction_reconciliation",
+            "accepted": true,
+            "internally_consistent": true,
+            "review_indices": [
+              0,
+              1,
+              2
+            ],
+            "flags_pass": true,
+            "parse_valid": true,
+            "truncated": false,
+            "judgment_indices": [
+              0,
+              1,
+              2
+            ],
+            "false_flags": []
+          },
+          {
+            "id": "remediation-pick_lines-recover_instruction_count_from_events",
+            "accepted": true,
+            "internally_consistent": true,
+            "review_indices": [
+              0,
+              2,
+              3
+            ],
+            "flags_pass": true,
+            "parse_valid": true,
+            "truncated": false,
+            "judgment_indices": [
+              0,
+              2,
+              3
+            ],
+            "false_flags": []
+          },
+          {
+            "id": "remediation-batch_tradeoff-exclusive_interventions_with_fees",
+            "accepted": false,
+            "internally_consistent": false,
+            "review_indices": [
+              0,
+              1,
+              2,
+              3
+            ],
+            "flags_pass": true,
+            "parse_valid": true,
+            "truncated": false,
+            "judgment_indices": [
+              0,
+              1,
+              3
+            ],
+            "false_flags": []
+          },
+          {
+            "id": "remediation-serial_parallel-deadline_and_labor_budget",
+            "accepted": true,
+            "internally_consistent": true,
+            "review_indices": [
+              2
+            ],
+            "flags_pass": true,
+            "parse_valid": true,
+            "truncated": false,
+            "judgment_indices": [
+              2
+            ],
+            "false_flags": []
+          }
+        ],
+        "review_accepted": 3,
+        "training_allowed": false,
+        "limitations": "Fixed source-authored development candidates, not an independent final test. Reviewer is a model and cannot release data. Eight retention items share historical training groups."
+      }
+    },
+    "step120_current": {
+      "original": {
+        "model_label": "step120_current",
+        "cases": 44,
+        "closed_calls": 88,
+        "review_calls": 0,
+        "counts": {
+          "train_correct": 11,
+          "invalid": 1,
+          "truncated": 0,
+          "dev_correct": 6,
+          "retention_correct": 36,
+          "historical_dev_sources_correct": 20,
+          "shared_train_groups_correct": 16
+        },
+        "both_orders_correct_by_split": {
+          "train": 4,
+          "dev": 2,
+          "retention": 16
+        },
+        "option_order_changed_answer_ids": [
+          "remediation-batch_tradeoff-duplicate_cost_ledger",
+          "remediation-batch_tradeoff-robust_cost_ranges",
+          "remediation-serial_parallel-bottleneck_perturbation",
+          "remediation-serial_parallel-interrupted_consolidation",
+          "remediation-transport_capacity-partial_record_necessity",
+          "remediation-transport_capacity-capacity_action_feasibility",
+          "remediation-transport_capacity-connection_path_capacity",
+          "remediation-transport_capacity-capacity_uncertainty_guarantee",
+          "remediation-rail_transfer-direct_vs_other_mode",
+          "remediation-rail_transfer-event_sequence_audit",
+          "remediation-postponement-customization_deadline_limit",
+          "remediation-contracts-same_mode_multiple_carriers"
+        ],
+        "per_call": [
+          {
+            "id": "remediation-pick_lines-multi_instruction_reconciliation",
+            "variant": 0,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              0,
+              1
+            ]
+          },
+          {
+            "id": "remediation-pick_lines-multi_instruction_reconciliation",
+            "variant": 1,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              0,
+              1
+            ]
+          },
+          {
+            "id": "remediation-pick_lines-unequal_area_comparison",
+            "variant": 0,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              2,
+              3
+            ]
+          },
+          {
+            "id": "remediation-pick_lines-unequal_area_comparison",
+            "variant": 1,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              2,
+              3
+            ]
+          },
+          {
+            "id": "remediation-pick_lines-partial_grab_identifiability",
+            "variant": 0,
+            "split": "train",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1
+            ]
+          },
+          {
+            "id": "remediation-pick_lines-partial_grab_identifiability",
+            "variant": 1,
+            "split": "train",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1
+            ]
+          },
+          {
+            "id": "remediation-pick_lines-layout_change_with_fixed_activity",
+            "variant": 0,
+            "split": "train",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1,
+              2,
+              3
+            ]
+          },
+          {
+            "id": "remediation-pick_lines-layout_change_with_fixed_activity",
+            "variant": 1,
+            "split": "train",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1,
+              2,
+              3
+            ]
+          },
+          {
+            "id": "remediation-pick_lines-order_merge_and_separate",
+            "variant": 0,
+            "split": "dev",
+            "correct": false,
+            "original_order_prediction": [
+              0,
+              2
+            ]
+          },
+          {
+            "id": "remediation-pick_lines-order_merge_and_separate",
+            "variant": 1,
+            "split": "dev",
+            "correct": false,
+            "original_order_prediction": [
+              0,
+              2
+            ]
+          },
+          {
+            "id": "remediation-pick_lines-recover_instruction_count_from_events",
+            "variant": 0,
+            "split": "dev",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              2,
+              3
+            ]
+          },
+          {
+            "id": "remediation-pick_lines-recover_instruction_count_from_events",
+            "variant": 1,
+            "split": "dev",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              2,
+              3
+            ]
+          },
+          {
+            "id": "remediation-batch_tradeoff-duplicate_cost_ledger",
+            "variant": 0,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              0,
+              1,
+              2,
+              3
+            ]
+          },
+          {
+            "id": "remediation-batch_tradeoff-duplicate_cost_ledger",
+            "variant": 1,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              0,
+              1,
+              3
+            ]
+          },
+          {
+            "id": "remediation-batch_tradeoff-cost_with_space_feasibility",
+            "variant": 0,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              1,
+              2
+            ]
+          },
+          {
+            "id": "remediation-batch_tradeoff-cost_with_space_feasibility",
+            "variant": 1,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              1,
+              2
+            ]
+          },
+          {
+            "id": "remediation-batch_tradeoff-strict_break_even_boundary",
+            "variant": 0,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              1,
+              2,
+              3
+            ]
+          },
+          {
+            "id": "remediation-batch_tradeoff-strict_break_even_boundary",
+            "variant": 1,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              1,
+              2,
+              3
+            ]
+          },
+          {
+            "id": "remediation-batch_tradeoff-exclusive_interventions_with_fees",
+            "variant": 0,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              0,
+              3
+            ]
+          },
+          {
+            "id": "remediation-batch_tradeoff-exclusive_interventions_with_fees",
+            "variant": 1,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              0,
+              3
+            ]
+          },
+          {
+            "id": "remediation-batch_tradeoff-robust_cost_ranges",
+            "variant": 0,
+            "split": "dev",
+            "correct": false,
+            "original_order_prediction": [
+              0,
+              2,
+              3
+            ]
+          },
+          {
+            "id": "remediation-batch_tradeoff-robust_cost_ranges",
+            "variant": 1,
+            "split": "dev",
+            "correct": false,
+            "original_order_prediction": [
+              0,
+              3
+            ]
+          },
+          {
+            "id": "remediation-batch_tradeoff-shared_setup_across_waves",
+            "variant": 0,
+            "split": "dev",
+            "correct": false,
+            "original_order_prediction": [
+              0,
+              1,
+              3
+            ]
+          },
+          {
+            "id": "remediation-batch_tradeoff-shared_setup_across_waves",
+            "variant": 1,
+            "split": "dev",
+            "correct": false,
+            "original_order_prediction": [
+              0,
+              1,
+              3
+            ]
+          },
+          {
+            "id": "remediation-serial_parallel-release_time_interaction",
+            "variant": 0,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              0,
+              2,
+              3
+            ]
+          },
+          {
+            "id": "remediation-serial_parallel-release_time_interaction",
+            "variant": 1,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              0,
+              2,
+              3
+            ]
+          },
+          {
+            "id": "remediation-serial_parallel-deadline_and_labor_budget",
+            "variant": 0,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              0,
+              1,
+              2
+            ]
+          },
+          {
+            "id": "remediation-serial_parallel-deadline_and_labor_budget",
+            "variant": 1,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              0,
+              1,
+              2
+            ]
+          },
+          {
+            "id": "remediation-serial_parallel-bottleneck_perturbation",
+            "variant": 0,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              1,
+              2
+            ]
+          },
+          {
+            "id": "remediation-serial_parallel-bottleneck_perturbation",
+            "variant": 1,
+            "split": "train",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1
+            ]
+          },
+          {
+            "id": "remediation-serial_parallel-precedence_graph_report",
+            "variant": 0,
+            "split": "train",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1,
+              2,
+              3
+            ]
+          },
+          {
+            "id": "remediation-serial_parallel-precedence_graph_report",
+            "variant": 1,
+            "split": "train",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1,
+              2,
+              3
+            ]
+          },
+          {
+            "id": "remediation-serial_parallel-inverse_release_bound",
+            "variant": 0,
+            "split": "dev",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1,
+              2,
+              3
+            ]
+          },
+          {
+            "id": "remediation-serial_parallel-inverse_release_bound",
+            "variant": 1,
+            "split": "dev",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1,
+              2,
+              3
+            ]
+          },
+          {
+            "id": "remediation-serial_parallel-interrupted_consolidation",
+            "variant": 0,
+            "split": "dev",
+            "correct": false,
+            "original_order_prediction": [
+              0,
+              2
+            ]
+          },
+          {
+            "id": "remediation-serial_parallel-interrupted_consolidation",
+            "variant": 1,
+            "split": "dev",
+            "correct": false,
+            "original_order_prediction": [
+              0,
+              1,
+              2
+            ]
+          },
+          {
+            "id": "remediation-transport_capacity-cancellation_vs_rejection",
+            "variant": 0,
+            "split": "train",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1,
+              2
+            ]
+          },
+          {
+            "id": "remediation-transport_capacity-cancellation_vs_rejection",
+            "variant": 1,
+            "split": "train",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1,
+              2
+            ]
+          },
+          {
+            "id": "remediation-transport_capacity-limited_flexible_requests",
+            "variant": 0,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              1,
+              2
+            ]
+          },
+          {
+            "id": "remediation-transport_capacity-limited_flexible_requests",
+            "variant": 1,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              1,
+              2
+            ]
+          },
+          {
+            "id": "remediation-transport_capacity-partial_record_necessity",
+            "variant": 0,
+            "split": "train",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1
+            ]
+          },
+          {
+            "id": "remediation-transport_capacity-partial_record_necessity",
+            "variant": 1,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              0,
+              2
+            ]
+          },
+          {
+            "id": "remediation-transport_capacity-capacity_action_feasibility",
+            "variant": 0,
+            "split": "train",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1,
+              2,
+              3
+            ]
+          },
+          {
+            "id": "remediation-transport_capacity-capacity_action_feasibility",
+            "variant": 1,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              0,
+              1,
+              3
+            ]
+          },
+          {
+            "id": "remediation-transport_capacity-connection_path_capacity",
+            "variant": 0,
+            "split": "dev",
+            "correct": true,
+            "original_order_prediction": [
+              0
+            ]
+          },
+          {
+            "id": "remediation-transport_capacity-connection_path_capacity",
+            "variant": 1,
+            "split": "dev",
+            "correct": false,
+            "original_order_prediction": [
+              0,
+              2
+            ]
+          },
+          {
+            "id": "remediation-transport_capacity-capacity_uncertainty_guarantee",
+            "variant": 0,
+            "split": "dev",
+            "correct": false,
+            "original_order_prediction": [
+              0,
+              1,
+              2
+            ]
+          },
+          {
+            "id": "remediation-transport_capacity-capacity_uncertainty_guarantee",
+            "variant": 1,
+            "split": "dev",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1,
+              2,
+              3
+            ]
+          },
+          {
+            "id": "remediation-pest-external_vs_internal",
+            "variant": 0,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1,
+              3
+            ]
+          },
+          {
+            "id": "remediation-pest-external_vs_internal",
+            "variant": 1,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1,
+              3
+            ]
+          },
+          {
+            "id": "remediation-pest-review_scope_repair",
+            "variant": 0,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              2
+            ]
+          },
+          {
+            "id": "remediation-pest-review_scope_repair",
+            "variant": 1,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              2
+            ]
+          },
+          {
+            "id": "remediation-abc-control_class_consistency",
+            "variant": 0,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1,
+              2
+            ]
+          },
+          {
+            "id": "remediation-abc-control_class_consistency",
+            "variant": 1,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1,
+              2
+            ]
+          },
+          {
+            "id": "remediation-abc-prioritize_control_repair",
+            "variant": 0,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0
+            ]
+          },
+          {
+            "id": "remediation-abc-prioritize_control_repair",
+            "variant": 1,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0
+            ]
+          },
+          {
+            "id": "remediation-reorder-error_vs_variability",
+            "variant": 0,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              2
+            ]
+          },
+          {
+            "id": "remediation-reorder-error_vs_variability",
+            "variant": 1,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              2
+            ]
+          },
+          {
+            "id": "remediation-reorder-strict_trigger_scope",
+            "variant": 0,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              2
+            ]
+          },
+          {
+            "id": "remediation-reorder-strict_trigger_scope",
+            "variant": 1,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              2
+            ]
+          },
+          {
+            "id": "remediation-rail_transfer-direct_vs_other_mode",
+            "variant": 0,
+            "split": "retention",
+            "correct": false,
+            "original_order_prediction": [
+              0,
+              1
+            ]
+          },
+          {
+            "id": "remediation-rail_transfer-direct_vs_other_mode",
+            "variant": 1,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              1
+            ]
+          },
+          {
+            "id": "remediation-rail_transfer-event_sequence_audit",
+            "variant": 0,
+            "split": "retention",
+            "correct": false,
+            "original_order_prediction": [
+              0,
+              1
+            ]
+          },
+          {
+            "id": "remediation-rail_transfer-event_sequence_audit",
+            "variant": 1,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1,
+              3
+            ]
+          },
+          {
+            "id": "remediation-postponement-preserve_allocation_flexibility",
+            "variant": 0,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0
+            ]
+          },
+          {
+            "id": "remediation-postponement-preserve_allocation_flexibility",
+            "variant": 1,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0
+            ]
+          },
+          {
+            "id": "remediation-postponement-customization_deadline_limit",
+            "variant": 0,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              2
+            ]
+          },
+          {
+            "id": "remediation-postponement-customization_deadline_limit",
+            "variant": 1,
+            "split": "retention",
+            "correct": false,
+            "original_order_prediction": [
+              0,
+              1,
+              2
+            ]
+          },
+          {
+            "id": "remediation-contracts-contract_and_container_dimensions",
+            "variant": 0,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              2
+            ]
+          },
+          {
+            "id": "remediation-contracts-contract_and_container_dimensions",
+            "variant": 1,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              2
+            ]
+          },
+          {
+            "id": "remediation-contracts-same_mode_multiple_carriers",
+            "variant": 0,
+            "split": "retention",
+            "correct": false,
+            "original_order_prediction": null
+          },
+          {
+            "id": "remediation-contracts-same_mode_multiple_carriers",
+            "variant": 1,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0
+            ]
+          },
+          {
+            "id": "remediation-warehouse_roles-mixed_wip_and_fulfillment",
+            "variant": 0,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1
+            ]
+          },
+          {
+            "id": "remediation-warehouse_roles-mixed_wip_and_fulfillment",
+            "variant": 1,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1
+            ]
+          },
+          {
+            "id": "remediation-warehouse_roles-location_and_inventory_roles",
+            "variant": 0,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1
+            ]
+          },
+          {
+            "id": "remediation-warehouse_roles-location_and_inventory_roles",
+            "variant": 1,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1
+            ]
+          },
+          {
+            "id": "remediation-shipping_controls-stage_event_mapping",
+            "variant": 0,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1,
+              2
+            ]
+          },
+          {
+            "id": "remediation-shipping_controls-stage_event_mapping",
+            "variant": 1,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1,
+              2
+            ]
+          },
+          {
+            "id": "remediation-shipping_controls-fix_the_demonstrated_defect",
+            "variant": 0,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1
+            ]
+          },
+          {
+            "id": "remediation-shipping_controls-fix_the_demonstrated_defect",
+            "variant": 1,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1
+            ]
+          },
+          {
+            "id": "remediation-outsourcing-responsibility_after_contract",
+            "variant": 0,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1,
+              2
+            ]
+          },
+          {
+            "id": "remediation-outsourcing-responsibility_after_contract",
+            "variant": 1,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1,
+              2
+            ]
+          },
+          {
+            "id": "remediation-outsourcing-provider_quality_and_governance",
+            "variant": 0,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1
+            ]
+          },
+          {
+            "id": "remediation-outsourcing-provider_quality_and_governance",
+            "variant": 1,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1
+            ]
+          },
+          {
+            "id": "remediation-holding_cost-duplicate_holding_component",
+            "variant": 0,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              2
+            ]
+          },
+          {
+            "id": "remediation-holding_cost-duplicate_holding_component",
+            "variant": 1,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              2
+            ]
+          },
+          {
+            "id": "remediation-holding_cost-allocated_vs_incremental_boundary",
+            "variant": 0,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1,
+              2,
+              3
+            ]
+          },
+          {
+            "id": "remediation-holding_cost-allocated_vs_incremental_boundary",
+            "variant": 1,
+            "split": "retention",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1,
+              2,
+              3
+            ]
+          }
+        ],
+        "review_decisions": [],
+        "review_accepted": 0,
+        "training_allowed": false,
+        "limitations": "Fixed source-authored development candidates, not an independent final test. Reviewer is a model and cannot release data. Eight retention items share historical training groups."
+      },
+      "amendment": {
+        "model_label": "step120_current",
+        "cases": 4,
+        "closed_calls": 8,
+        "review_calls": 0,
+        "counts": {
+          "train_correct": 3,
+          "invalid": 0,
+          "truncated": 0,
+          "dev_correct": 2
+        },
+        "both_orders_correct_by_split": {
+          "train": 1,
+          "dev": 1
+        },
+        "option_order_changed_answer_ids": [
+          "remediation-batch_tradeoff-exclusive_interventions_with_fees"
+        ],
+        "per_call": [
+          {
+            "id": "remediation-pick_lines-multi_instruction_reconciliation",
+            "variant": 0,
+            "split": "train",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1,
+              2
+            ]
+          },
+          {
+            "id": "remediation-pick_lines-multi_instruction_reconciliation",
+            "variant": 1,
+            "split": "train",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1,
+              2
+            ]
+          },
+          {
+            "id": "remediation-pick_lines-recover_instruction_count_from_events",
+            "variant": 0,
+            "split": "dev",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              2,
+              3
+            ]
+          },
+          {
+            "id": "remediation-pick_lines-recover_instruction_count_from_events",
+            "variant": 1,
+            "split": "dev",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              2,
+              3
+            ]
+          },
+          {
+            "id": "remediation-batch_tradeoff-exclusive_interventions_with_fees",
+            "variant": 0,
+            "split": "train",
+            "correct": true,
+            "original_order_prediction": [
+              0,
+              1,
+              2,
+              3
+            ]
+          },
+          {
+            "id": "remediation-batch_tradeoff-exclusive_interventions_with_fees",
+            "variant": 1,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              0,
+              3
+            ]
+          },
+          {
+            "id": "remediation-serial_parallel-deadline_and_labor_budget",
+            "variant": 0,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              2,
+              3
+            ]
+          },
+          {
+            "id": "remediation-serial_parallel-deadline_and_labor_budget",
+            "variant": 1,
+            "split": "train",
+            "correct": false,
+            "original_order_prediction": [
+              2,
+              3
+            ]
+          }
+        ],
+        "review_decisions": [],
+        "review_accepted": 0,
+        "training_allowed": false,
+        "limitations": "Fixed source-authored development candidates, not an independent final test. Reviewer is a model and cannot release data. Eight retention items share historical training groups."
+      }
+    }
+  },
+  "final": {
+    "p1": {
+      "model_label": "p1",
+      "cases": 44,
+      "closed_calls": 88,
+      "review_calls": 44,
+      "counts": {
+        "train_correct": 12,
+        "invalid": 0,
+        "truncated": 0,
+        "dev_correct": 9,
+        "retention_correct": 39,
+        "historical_dev_sources_correct": 24,
+        "shared_train_groups_correct": 15
+      },
+      "both_orders_correct_by_split": {
+        "train": 4,
+        "dev": 3,
+        "retention": 19
+      },
+      "option_order_changed_answer_ids": [
+        "remediation-pick_lines-multi_instruction_reconciliation",
+        "remediation-batch_tradeoff-duplicate_cost_ledger",
+        "remediation-batch_tradeoff-robust_cost_ranges",
+        "remediation-serial_parallel-bottleneck_perturbation",
+        "remediation-serial_parallel-precedence_graph_report",
+        "remediation-serial_parallel-interrupted_consolidation",
+        "remediation-transport_capacity-capacity_action_feasibility",
+        "remediation-transport_capacity-connection_path_capacity",
+        "remediation-holding_cost-allocated_vs_incremental_boundary"
+      ],
+      "per_call": [
+        {
+          "id": "remediation-pick_lines-multi_instruction_reconciliation",
+          "variant": 0,
+          "split": "train",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1,
+            2
+          ]
+        },
+        {
+          "id": "remediation-pick_lines-multi_instruction_reconciliation",
+          "variant": 1,
+          "split": "train",
+          "correct": false,
+          "original_order_prediction": [
+            1,
+            2
+          ]
+        },
+        {
+          "id": "remediation-pick_lines-unequal_area_comparison",
+          "variant": 0,
+          "split": "train",
+          "correct": false,
+          "original_order_prediction": [
+            2,
+            3
+          ]
+        },
+        {
+          "id": "remediation-pick_lines-unequal_area_comparison",
+          "variant": 1,
+          "split": "train",
+          "correct": false,
+          "original_order_prediction": [
+            2,
+            3
+          ]
+        },
+        {
+          "id": "remediation-pick_lines-partial_grab_identifiability",
+          "variant": 0,
+          "split": "train",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1
+          ]
+        },
+        {
+          "id": "remediation-pick_lines-partial_grab_identifiability",
+          "variant": 1,
+          "split": "train",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1
+          ]
+        },
+        {
+          "id": "remediation-pick_lines-layout_change_with_fixed_activity",
+          "variant": 0,
+          "split": "train",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "id": "remediation-pick_lines-layout_change_with_fixed_activity",
+          "variant": 1,
+          "split": "train",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "id": "remediation-pick_lines-order_merge_and_separate",
+          "variant": 0,
+          "split": "dev",
+          "correct": true,
+          "original_order_prediction": [
+            0
+          ]
+        },
+        {
+          "id": "remediation-pick_lines-order_merge_and_separate",
+          "variant": 1,
+          "split": "dev",
+          "correct": true,
+          "original_order_prediction": [
+            0
+          ]
+        },
+        {
+          "id": "remediation-pick_lines-recover_instruction_count_from_events",
+          "variant": 0,
+          "split": "dev",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            2,
+            3
+          ]
+        },
+        {
+          "id": "remediation-pick_lines-recover_instruction_count_from_events",
+          "variant": 1,
+          "split": "dev",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            2,
+            3
+          ]
+        },
+        {
+          "id": "remediation-batch_tradeoff-duplicate_cost_ledger",
+          "variant": 0,
+          "split": "train",
+          "correct": false,
+          "original_order_prediction": [
+            0,
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "id": "remediation-batch_tradeoff-duplicate_cost_ledger",
+          "variant": 1,
+          "split": "train",
+          "correct": false,
+          "original_order_prediction": [
+            0,
+            1,
+            3
+          ]
+        },
+        {
+          "id": "remediation-batch_tradeoff-cost_with_space_feasibility",
+          "variant": 0,
+          "split": "train",
+          "correct": false,
+          "original_order_prediction": [
+            2
+          ]
+        },
+        {
+          "id": "remediation-batch_tradeoff-cost_with_space_feasibility",
+          "variant": 1,
+          "split": "train",
+          "correct": false,
+          "original_order_prediction": [
+            2
+          ]
+        },
+        {
+          "id": "remediation-batch_tradeoff-strict_break_even_boundary",
+          "variant": 0,
+          "split": "train",
+          "correct": false,
+          "original_order_prediction": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "id": "remediation-batch_tradeoff-strict_break_even_boundary",
+          "variant": 1,
+          "split": "train",
+          "correct": false,
+          "original_order_prediction": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "id": "remediation-batch_tradeoff-exclusive_interventions_with_fees",
+          "variant": 0,
+          "split": "train",
+          "correct": false,
+          "original_order_prediction": [
+            0,
+            3
+          ]
+        },
+        {
+          "id": "remediation-batch_tradeoff-exclusive_interventions_with_fees",
+          "variant": 1,
+          "split": "train",
+          "correct": false,
+          "original_order_prediction": [
+            0,
+            3
+          ]
+        },
+        {
+          "id": "remediation-batch_tradeoff-robust_cost_ranges",
+          "variant": 0,
+          "split": "dev",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            2
+          ]
+        },
+        {
+          "id": "remediation-batch_tradeoff-robust_cost_ranges",
+          "variant": 1,
+          "split": "dev",
+          "correct": false,
+          "original_order_prediction": [
+            0,
+            3
+          ]
+        },
+        {
+          "id": "remediation-batch_tradeoff-shared_setup_across_waves",
+          "variant": 0,
+          "split": "dev",
+          "correct": false,
+          "original_order_prediction": [
+            0,
+            1,
+            3
+          ]
+        },
+        {
+          "id": "remediation-batch_tradeoff-shared_setup_across_waves",
+          "variant": 1,
+          "split": "dev",
+          "correct": false,
+          "original_order_prediction": [
+            0,
+            1,
+            3
+          ]
+        },
+        {
+          "id": "remediation-serial_parallel-release_time_interaction",
+          "variant": 0,
+          "split": "train",
+          "correct": false,
+          "original_order_prediction": [
+            0,
+            2,
+            3
+          ]
+        },
+        {
+          "id": "remediation-serial_parallel-release_time_interaction",
+          "variant": 1,
+          "split": "train",
+          "correct": false,
+          "original_order_prediction": [
+            0,
+            2,
+            3
+          ]
+        },
+        {
+          "id": "remediation-serial_parallel-deadline_and_labor_budget",
+          "variant": 0,
+          "split": "train",
+          "correct": false,
+          "original_order_prediction": [
+            2,
+            3
+          ]
+        },
+        {
+          "id": "remediation-serial_parallel-deadline_and_labor_budget",
+          "variant": 1,
+          "split": "train",
+          "correct": false,
+          "original_order_prediction": [
+            2,
+            3
+          ]
+        },
+        {
+          "id": "remediation-serial_parallel-bottleneck_perturbation",
+          "variant": 0,
+          "split": "train",
+          "correct": false,
+          "original_order_prediction": [
+            0,
+            2
+          ]
+        },
+        {
+          "id": "remediation-serial_parallel-bottleneck_perturbation",
+          "variant": 1,
+          "split": "train",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1
+          ]
+        },
+        {
+          "id": "remediation-serial_parallel-precedence_graph_report",
+          "variant": 0,
+          "split": "train",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "id": "remediation-serial_parallel-precedence_graph_report",
+          "variant": 1,
+          "split": "train",
+          "correct": false,
+          "original_order_prediction": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "id": "remediation-serial_parallel-inverse_release_bound",
+          "variant": 0,
+          "split": "dev",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "id": "remediation-serial_parallel-inverse_release_bound",
+          "variant": 1,
+          "split": "dev",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "id": "remediation-serial_parallel-interrupted_consolidation",
+          "variant": 0,
+          "split": "dev",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            2,
+            3
+          ]
+        },
+        {
+          "id": "remediation-serial_parallel-interrupted_consolidation",
+          "variant": 1,
+          "split": "dev",
+          "correct": false,
+          "original_order_prediction": [
+            0,
+            2
+          ]
+        },
+        {
+          "id": "remediation-transport_capacity-cancellation_vs_rejection",
+          "variant": 0,
+          "split": "train",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1,
+            2
+          ]
+        },
+        {
+          "id": "remediation-transport_capacity-cancellation_vs_rejection",
+          "variant": 1,
+          "split": "train",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1,
+            2
+          ]
+        },
+        {
+          "id": "remediation-transport_capacity-limited_flexible_requests",
+          "variant": 0,
+          "split": "train",
+          "correct": true,
+          "original_order_prediction": [
+            1
+          ]
+        },
+        {
+          "id": "remediation-transport_capacity-limited_flexible_requests",
+          "variant": 1,
+          "split": "train",
+          "correct": true,
+          "original_order_prediction": [
+            1
+          ]
+        },
+        {
+          "id": "remediation-transport_capacity-partial_record_necessity",
+          "variant": 0,
+          "split": "train",
+          "correct": false,
+          "original_order_prediction": [
+            0
+          ]
+        },
+        {
+          "id": "remediation-transport_capacity-partial_record_necessity",
+          "variant": 1,
+          "split": "train",
+          "correct": false,
+          "original_order_prediction": [
+            0
+          ]
+        },
+        {
+          "id": "remediation-transport_capacity-capacity_action_feasibility",
+          "variant": 0,
+          "split": "train",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "id": "remediation-transport_capacity-capacity_action_feasibility",
+          "variant": 1,
+          "split": "train",
+          "correct": false,
+          "original_order_prediction": [
+            0,
+            1,
+            3
+          ]
+        },
+        {
+          "id": "remediation-transport_capacity-connection_path_capacity",
+          "variant": 0,
+          "split": "dev",
+          "correct": true,
+          "original_order_prediction": [
+            0
+          ]
+        },
+        {
+          "id": "remediation-transport_capacity-connection_path_capacity",
+          "variant": 1,
+          "split": "dev",
+          "correct": false,
+          "original_order_prediction": [
+            2
+          ]
+        },
+        {
+          "id": "remediation-transport_capacity-capacity_uncertainty_guarantee",
+          "variant": 0,
+          "split": "dev",
+          "correct": false,
+          "original_order_prediction": [
+            0,
+            2
+          ]
+        },
+        {
+          "id": "remediation-transport_capacity-capacity_uncertainty_guarantee",
+          "variant": 1,
+          "split": "dev",
+          "correct": false,
+          "original_order_prediction": [
+            0,
+            2
+          ]
+        },
+        {
+          "id": "remediation-pest-external_vs_internal",
+          "variant": 0,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1,
+            3
+          ]
+        },
+        {
+          "id": "remediation-pest-external_vs_internal",
+          "variant": 1,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1,
+            3
+          ]
+        },
+        {
+          "id": "remediation-pest-review_scope_repair",
+          "variant": 0,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            2
+          ]
+        },
+        {
+          "id": "remediation-pest-review_scope_repair",
+          "variant": 1,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            2
+          ]
+        },
+        {
+          "id": "remediation-abc-control_class_consistency",
+          "variant": 0,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1,
+            2
+          ]
+        },
+        {
+          "id": "remediation-abc-control_class_consistency",
+          "variant": 1,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1,
+            2
+          ]
+        },
+        {
+          "id": "remediation-abc-prioritize_control_repair",
+          "variant": 0,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0
+          ]
+        },
+        {
+          "id": "remediation-abc-prioritize_control_repair",
+          "variant": 1,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0
+          ]
+        },
+        {
+          "id": "remediation-reorder-error_vs_variability",
+          "variant": 0,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            2
+          ]
+        },
+        {
+          "id": "remediation-reorder-error_vs_variability",
+          "variant": 1,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            2
+          ]
+        },
+        {
+          "id": "remediation-reorder-strict_trigger_scope",
+          "variant": 0,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            2
+          ]
+        },
+        {
+          "id": "remediation-reorder-strict_trigger_scope",
+          "variant": 1,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            2
+          ]
+        },
+        {
+          "id": "remediation-rail_transfer-direct_vs_other_mode",
+          "variant": 0,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            1
+          ]
+        },
+        {
+          "id": "remediation-rail_transfer-direct_vs_other_mode",
+          "variant": 1,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            1
+          ]
+        },
+        {
+          "id": "remediation-rail_transfer-event_sequence_audit",
+          "variant": 0,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1,
+            3
+          ]
+        },
+        {
+          "id": "remediation-rail_transfer-event_sequence_audit",
+          "variant": 1,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1,
+            3
+          ]
+        },
+        {
+          "id": "remediation-postponement-preserve_allocation_flexibility",
+          "variant": 0,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0
+          ]
+        },
+        {
+          "id": "remediation-postponement-preserve_allocation_flexibility",
+          "variant": 1,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0
+          ]
+        },
+        {
+          "id": "remediation-postponement-customization_deadline_limit",
+          "variant": 0,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            2
+          ]
+        },
+        {
+          "id": "remediation-postponement-customization_deadline_limit",
+          "variant": 1,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            2
+          ]
+        },
+        {
+          "id": "remediation-contracts-contract_and_container_dimensions",
+          "variant": 0,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            2
+          ]
+        },
+        {
+          "id": "remediation-contracts-contract_and_container_dimensions",
+          "variant": 1,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            2
+          ]
+        },
+        {
+          "id": "remediation-contracts-same_mode_multiple_carriers",
+          "variant": 0,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0
+          ]
+        },
+        {
+          "id": "remediation-contracts-same_mode_multiple_carriers",
+          "variant": 1,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0
+          ]
+        },
+        {
+          "id": "remediation-warehouse_roles-mixed_wip_and_fulfillment",
+          "variant": 0,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1
+          ]
+        },
+        {
+          "id": "remediation-warehouse_roles-mixed_wip_and_fulfillment",
+          "variant": 1,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1
+          ]
+        },
+        {
+          "id": "remediation-warehouse_roles-location_and_inventory_roles",
+          "variant": 0,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1
+          ]
+        },
+        {
+          "id": "remediation-warehouse_roles-location_and_inventory_roles",
+          "variant": 1,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1
+          ]
+        },
+        {
+          "id": "remediation-shipping_controls-stage_event_mapping",
+          "variant": 0,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1,
+            2
+          ]
+        },
+        {
+          "id": "remediation-shipping_controls-stage_event_mapping",
+          "variant": 1,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1,
+            2
+          ]
+        },
+        {
+          "id": "remediation-shipping_controls-fix_the_demonstrated_defect",
+          "variant": 0,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1
+          ]
+        },
+        {
+          "id": "remediation-shipping_controls-fix_the_demonstrated_defect",
+          "variant": 1,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1
+          ]
+        },
+        {
+          "id": "remediation-outsourcing-responsibility_after_contract",
+          "variant": 0,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1,
+            2
+          ]
+        },
+        {
+          "id": "remediation-outsourcing-responsibility_after_contract",
+          "variant": 1,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1,
+            2
+          ]
+        },
+        {
+          "id": "remediation-outsourcing-provider_quality_and_governance",
+          "variant": 0,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1
+          ]
+        },
+        {
+          "id": "remediation-outsourcing-provider_quality_and_governance",
+          "variant": 1,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1
+          ]
+        },
+        {
+          "id": "remediation-holding_cost-duplicate_holding_component",
+          "variant": 0,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            2
+          ]
+        },
+        {
+          "id": "remediation-holding_cost-duplicate_holding_component",
+          "variant": 1,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            2
+          ]
+        },
+        {
+          "id": "remediation-holding_cost-allocated_vs_incremental_boundary",
+          "variant": 0,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "id": "remediation-holding_cost-allocated_vs_incremental_boundary",
+          "variant": 1,
+          "split": "retention",
+          "correct": false,
+          "original_order_prediction": [
+            0,
+            2,
+            3
+          ]
+        }
+      ],
+      "review_decisions": [
+        {
+          "id": "remediation-pick_lines-multi_instruction_reconciliation",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            1,
+            2
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1,
+            2
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "remediation-pick_lines-unequal_area_comparison",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            2
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            2
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "remediation-pick_lines-partial_grab_identifiability",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            1
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "remediation-pick_lines-layout_change_with_fixed_activity",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "remediation-pick_lines-order_merge_and_separate",
+          "accepted": false,
+          "internally_consistent": false,
+          "review_indices": [
+            0
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            2
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "remediation-pick_lines-recover_instruction_count_from_events",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            2,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            2,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "remediation-batch_tradeoff-duplicate_cost_ledger",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            1
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "remediation-batch_tradeoff-cost_with_space_feasibility",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            1
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            1
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "remediation-batch_tradeoff-strict_break_even_boundary",
+          "accepted": false,
+          "internally_consistent": false,
+          "review_indices": [
+            0,
+            2,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            2,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "remediation-batch_tradeoff-exclusive_interventions_with_fees",
+          "accepted": false,
+          "internally_consistent": false,
+          "review_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "remediation-batch_tradeoff-robust_cost_ranges",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            2
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            2
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "remediation-batch_tradeoff-shared_setup_across_waves",
+          "accepted": false,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            1,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "remediation-serial_parallel-release_time_interaction",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            1,
+            2
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1,
+            2
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "remediation-serial_parallel-deadline_and_labor_budget",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            2
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            2
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "remediation-serial_parallel-bottleneck_perturbation",
+          "accepted": false,
+          "internally_consistent": false,
+          "review_indices": [
+            0,
+            1
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "remediation-serial_parallel-precedence_graph_report",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "remediation-serial_parallel-inverse_release_bound",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "remediation-serial_parallel-interrupted_consolidation",
+          "accepted": false,
+          "internally_consistent": false,
+          "review_indices": [
+            0,
+            2,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "remediation-transport_capacity-cancellation_vs_rejection",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            1,
+            2
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1,
+            2
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "remediation-transport_capacity-limited_flexible_requests",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            1
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            1
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "remediation-transport_capacity-partial_record_necessity",
+          "accepted": false,
+          "internally_consistent": true,
+          "review_indices": [
+            0
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "remediation-transport_capacity-capacity_action_feasibility",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "remediation-transport_capacity-connection_path_capacity",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "remediation-transport_capacity-capacity_uncertainty_guarantee",
+          "accepted": false,
+          "internally_consistent": false,
+          "review_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            1,
+            2,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "remediation-pest-external_vs_internal",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            1,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "remediation-pest-review_scope_repair",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            2
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            2
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "remediation-abc-control_class_consistency",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            1,
+            2
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1,
+            2
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "remediation-abc-prioritize_control_repair",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "remediation-reorder-error_vs_variability",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            2
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            2
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "remediation-reorder-strict_trigger_scope",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            2
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            2
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "remediation-rail_transfer-direct_vs_other_mode",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            1
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            1
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "remediation-rail_transfer-event_sequence_audit",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            1,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "remediation-postponement-preserve_allocation_flexibility",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "remediation-postponement-customization_deadline_limit",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            2
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            2
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "remediation-contracts-contract_and_container_dimensions",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            2
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            2
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "remediation-contracts-same_mode_multiple_carriers",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "remediation-warehouse_roles-mixed_wip_and_fulfillment",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            1
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "remediation-warehouse_roles-location_and_inventory_roles",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            1
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "remediation-shipping_controls-stage_event_mapping",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            1,
+            2
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1,
+            2
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "remediation-shipping_controls-fix_the_demonstrated_defect",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            1
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "remediation-outsourcing-responsibility_after_contract",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            1,
+            2
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1,
+            2
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "remediation-outsourcing-provider_quality_and_governance",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            1
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "remediation-holding_cost-duplicate_holding_component",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            2
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            2
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "remediation-holding_cost-allocated_vs_incremental_boundary",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "false_flags": []
+        }
+      ],
+      "review_accepted": 36,
+      "training_allowed": false,
+      "limitations": "Fixed source-authored development candidates, not an independent final test. Reviewer is a model and cannot release data. Eight retention items share historical training groups."
+    },
+    "step120_current": {
+      "model_label": "step120_current",
+      "cases": 44,
+      "closed_calls": 88,
+      "review_calls": 0,
+      "counts": {
+        "train_correct": 14,
+        "invalid": 1,
+        "truncated": 0,
+        "dev_correct": 6,
+        "retention_correct": 36,
+        "historical_dev_sources_correct": 20,
+        "shared_train_groups_correct": 16
+      },
+      "both_orders_correct_by_split": {
+        "train": 5,
+        "dev": 2,
+        "retention": 16
+      },
+      "option_order_changed_answer_ids": [
+        "remediation-batch_tradeoff-duplicate_cost_ledger",
+        "remediation-batch_tradeoff-exclusive_interventions_with_fees",
+        "remediation-batch_tradeoff-robust_cost_ranges",
+        "remediation-serial_parallel-bottleneck_perturbation",
+        "remediation-serial_parallel-interrupted_consolidation",
+        "remediation-transport_capacity-partial_record_necessity",
+        "remediation-transport_capacity-capacity_action_feasibility",
+        "remediation-transport_capacity-connection_path_capacity",
+        "remediation-transport_capacity-capacity_uncertainty_guarantee",
+        "remediation-rail_transfer-direct_vs_other_mode",
+        "remediation-rail_transfer-event_sequence_audit",
+        "remediation-postponement-customization_deadline_limit",
+        "remediation-contracts-same_mode_multiple_carriers"
+      ],
+      "per_call": [
+        {
+          "id": "remediation-pick_lines-multi_instruction_reconciliation",
+          "variant": 0,
+          "split": "train",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1,
+            2
+          ]
+        },
+        {
+          "id": "remediation-pick_lines-multi_instruction_reconciliation",
+          "variant": 1,
+          "split": "train",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1,
+            2
+          ]
+        },
+        {
+          "id": "remediation-pick_lines-unequal_area_comparison",
+          "variant": 0,
+          "split": "train",
+          "correct": false,
+          "original_order_prediction": [
+            2,
+            3
+          ]
+        },
+        {
+          "id": "remediation-pick_lines-unequal_area_comparison",
+          "variant": 1,
+          "split": "train",
+          "correct": false,
+          "original_order_prediction": [
+            2,
+            3
+          ]
+        },
+        {
+          "id": "remediation-pick_lines-partial_grab_identifiability",
+          "variant": 0,
+          "split": "train",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1
+          ]
+        },
+        {
+          "id": "remediation-pick_lines-partial_grab_identifiability",
+          "variant": 1,
+          "split": "train",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1
+          ]
+        },
+        {
+          "id": "remediation-pick_lines-layout_change_with_fixed_activity",
+          "variant": 0,
+          "split": "train",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "id": "remediation-pick_lines-layout_change_with_fixed_activity",
+          "variant": 1,
+          "split": "train",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "id": "remediation-pick_lines-order_merge_and_separate",
+          "variant": 0,
+          "split": "dev",
+          "correct": false,
+          "original_order_prediction": [
+            0,
+            2
+          ]
+        },
+        {
+          "id": "remediation-pick_lines-order_merge_and_separate",
+          "variant": 1,
+          "split": "dev",
+          "correct": false,
+          "original_order_prediction": [
+            0,
+            2
+          ]
+        },
+        {
+          "id": "remediation-pick_lines-recover_instruction_count_from_events",
+          "variant": 0,
+          "split": "dev",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            2,
+            3
+          ]
+        },
+        {
+          "id": "remediation-pick_lines-recover_instruction_count_from_events",
+          "variant": 1,
+          "split": "dev",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            2,
+            3
+          ]
+        },
+        {
+          "id": "remediation-batch_tradeoff-duplicate_cost_ledger",
+          "variant": 0,
+          "split": "train",
+          "correct": false,
+          "original_order_prediction": [
+            0,
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "id": "remediation-batch_tradeoff-duplicate_cost_ledger",
+          "variant": 1,
+          "split": "train",
+          "correct": false,
+          "original_order_prediction": [
+            0,
+            1,
+            3
+          ]
+        },
+        {
+          "id": "remediation-batch_tradeoff-cost_with_space_feasibility",
+          "variant": 0,
+          "split": "train",
+          "correct": false,
+          "original_order_prediction": [
+            1,
+            2
+          ]
+        },
+        {
+          "id": "remediation-batch_tradeoff-cost_with_space_feasibility",
+          "variant": 1,
+          "split": "train",
+          "correct": false,
+          "original_order_prediction": [
+            1,
+            2
+          ]
+        },
+        {
+          "id": "remediation-batch_tradeoff-strict_break_even_boundary",
+          "variant": 0,
+          "split": "train",
+          "correct": false,
+          "original_order_prediction": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "id": "remediation-batch_tradeoff-strict_break_even_boundary",
+          "variant": 1,
+          "split": "train",
+          "correct": false,
+          "original_order_prediction": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "id": "remediation-batch_tradeoff-exclusive_interventions_with_fees",
+          "variant": 0,
+          "split": "train",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "id": "remediation-batch_tradeoff-exclusive_interventions_with_fees",
+          "variant": 1,
+          "split": "train",
+          "correct": false,
+          "original_order_prediction": [
+            0,
+            3
+          ]
+        },
+        {
+          "id": "remediation-batch_tradeoff-robust_cost_ranges",
+          "variant": 0,
+          "split": "dev",
+          "correct": false,
+          "original_order_prediction": [
+            0,
+            2,
+            3
+          ]
+        },
+        {
+          "id": "remediation-batch_tradeoff-robust_cost_ranges",
+          "variant": 1,
+          "split": "dev",
+          "correct": false,
+          "original_order_prediction": [
+            0,
+            3
+          ]
+        },
+        {
+          "id": "remediation-batch_tradeoff-shared_setup_across_waves",
+          "variant": 0,
+          "split": "dev",
+          "correct": false,
+          "original_order_prediction": [
+            0,
+            1,
+            3
+          ]
+        },
+        {
+          "id": "remediation-batch_tradeoff-shared_setup_across_waves",
+          "variant": 1,
+          "split": "dev",
+          "correct": false,
+          "original_order_prediction": [
+            0,
+            1,
+            3
+          ]
+        },
+        {
+          "id": "remediation-serial_parallel-release_time_interaction",
+          "variant": 0,
+          "split": "train",
+          "correct": false,
+          "original_order_prediction": [
+            0,
+            2,
+            3
+          ]
+        },
+        {
+          "id": "remediation-serial_parallel-release_time_interaction",
+          "variant": 1,
+          "split": "train",
+          "correct": false,
+          "original_order_prediction": [
+            0,
+            2,
+            3
+          ]
+        },
+        {
+          "id": "remediation-serial_parallel-deadline_and_labor_budget",
+          "variant": 0,
+          "split": "train",
+          "correct": false,
+          "original_order_prediction": [
+            2,
+            3
+          ]
+        },
+        {
+          "id": "remediation-serial_parallel-deadline_and_labor_budget",
+          "variant": 1,
+          "split": "train",
+          "correct": false,
+          "original_order_prediction": [
+            2,
+            3
+          ]
+        },
+        {
+          "id": "remediation-serial_parallel-bottleneck_perturbation",
+          "variant": 0,
+          "split": "train",
+          "correct": false,
+          "original_order_prediction": [
+            1,
+            2
+          ]
+        },
+        {
+          "id": "remediation-serial_parallel-bottleneck_perturbation",
+          "variant": 1,
+          "split": "train",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1
+          ]
+        },
+        {
+          "id": "remediation-serial_parallel-precedence_graph_report",
+          "variant": 0,
+          "split": "train",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "id": "remediation-serial_parallel-precedence_graph_report",
+          "variant": 1,
+          "split": "train",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "id": "remediation-serial_parallel-inverse_release_bound",
+          "variant": 0,
+          "split": "dev",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "id": "remediation-serial_parallel-inverse_release_bound",
+          "variant": 1,
+          "split": "dev",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "id": "remediation-serial_parallel-interrupted_consolidation",
+          "variant": 0,
+          "split": "dev",
+          "correct": false,
+          "original_order_prediction": [
+            0,
+            2
+          ]
+        },
+        {
+          "id": "remediation-serial_parallel-interrupted_consolidation",
+          "variant": 1,
+          "split": "dev",
+          "correct": false,
+          "original_order_prediction": [
+            0,
+            1,
+            2
+          ]
+        },
+        {
+          "id": "remediation-transport_capacity-cancellation_vs_rejection",
+          "variant": 0,
+          "split": "train",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1,
+            2
+          ]
+        },
+        {
+          "id": "remediation-transport_capacity-cancellation_vs_rejection",
+          "variant": 1,
+          "split": "train",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1,
+            2
+          ]
+        },
+        {
+          "id": "remediation-transport_capacity-limited_flexible_requests",
+          "variant": 0,
+          "split": "train",
+          "correct": false,
+          "original_order_prediction": [
+            1,
+            2
+          ]
+        },
+        {
+          "id": "remediation-transport_capacity-limited_flexible_requests",
+          "variant": 1,
+          "split": "train",
+          "correct": false,
+          "original_order_prediction": [
+            1,
+            2
+          ]
+        },
+        {
+          "id": "remediation-transport_capacity-partial_record_necessity",
+          "variant": 0,
+          "split": "train",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1
+          ]
+        },
+        {
+          "id": "remediation-transport_capacity-partial_record_necessity",
+          "variant": 1,
+          "split": "train",
+          "correct": false,
+          "original_order_prediction": [
+            0,
+            2
+          ]
+        },
+        {
+          "id": "remediation-transport_capacity-capacity_action_feasibility",
+          "variant": 0,
+          "split": "train",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "id": "remediation-transport_capacity-capacity_action_feasibility",
+          "variant": 1,
+          "split": "train",
+          "correct": false,
+          "original_order_prediction": [
+            0,
+            1,
+            3
+          ]
+        },
+        {
+          "id": "remediation-transport_capacity-connection_path_capacity",
+          "variant": 0,
+          "split": "dev",
+          "correct": true,
+          "original_order_prediction": [
+            0
+          ]
+        },
+        {
+          "id": "remediation-transport_capacity-connection_path_capacity",
+          "variant": 1,
+          "split": "dev",
+          "correct": false,
+          "original_order_prediction": [
+            0,
+            2
+          ]
+        },
+        {
+          "id": "remediation-transport_capacity-capacity_uncertainty_guarantee",
+          "variant": 0,
+          "split": "dev",
+          "correct": false,
+          "original_order_prediction": [
+            0,
+            1,
+            2
+          ]
+        },
+        {
+          "id": "remediation-transport_capacity-capacity_uncertainty_guarantee",
+          "variant": 1,
+          "split": "dev",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "id": "remediation-pest-external_vs_internal",
+          "variant": 0,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1,
+            3
+          ]
+        },
+        {
+          "id": "remediation-pest-external_vs_internal",
+          "variant": 1,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1,
+            3
+          ]
+        },
+        {
+          "id": "remediation-pest-review_scope_repair",
+          "variant": 0,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            2
+          ]
+        },
+        {
+          "id": "remediation-pest-review_scope_repair",
+          "variant": 1,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            2
+          ]
+        },
+        {
+          "id": "remediation-abc-control_class_consistency",
+          "variant": 0,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1,
+            2
+          ]
+        },
+        {
+          "id": "remediation-abc-control_class_consistency",
+          "variant": 1,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1,
+            2
+          ]
+        },
+        {
+          "id": "remediation-abc-prioritize_control_repair",
+          "variant": 0,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0
+          ]
+        },
+        {
+          "id": "remediation-abc-prioritize_control_repair",
+          "variant": 1,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0
+          ]
+        },
+        {
+          "id": "remediation-reorder-error_vs_variability",
+          "variant": 0,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            2
+          ]
+        },
+        {
+          "id": "remediation-reorder-error_vs_variability",
+          "variant": 1,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            2
+          ]
+        },
+        {
+          "id": "remediation-reorder-strict_trigger_scope",
+          "variant": 0,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            2
+          ]
+        },
+        {
+          "id": "remediation-reorder-strict_trigger_scope",
+          "variant": 1,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            2
+          ]
+        },
+        {
+          "id": "remediation-rail_transfer-direct_vs_other_mode",
+          "variant": 0,
+          "split": "retention",
+          "correct": false,
+          "original_order_prediction": [
+            0,
+            1
+          ]
+        },
+        {
+          "id": "remediation-rail_transfer-direct_vs_other_mode",
+          "variant": 1,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            1
+          ]
+        },
+        {
+          "id": "remediation-rail_transfer-event_sequence_audit",
+          "variant": 0,
+          "split": "retention",
+          "correct": false,
+          "original_order_prediction": [
+            0,
+            1
+          ]
+        },
+        {
+          "id": "remediation-rail_transfer-event_sequence_audit",
+          "variant": 1,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1,
+            3
+          ]
+        },
+        {
+          "id": "remediation-postponement-preserve_allocation_flexibility",
+          "variant": 0,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0
+          ]
+        },
+        {
+          "id": "remediation-postponement-preserve_allocation_flexibility",
+          "variant": 1,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0
+          ]
+        },
+        {
+          "id": "remediation-postponement-customization_deadline_limit",
+          "variant": 0,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            2
+          ]
+        },
+        {
+          "id": "remediation-postponement-customization_deadline_limit",
+          "variant": 1,
+          "split": "retention",
+          "correct": false,
+          "original_order_prediction": [
+            0,
+            1,
+            2
+          ]
+        },
+        {
+          "id": "remediation-contracts-contract_and_container_dimensions",
+          "variant": 0,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            2
+          ]
+        },
+        {
+          "id": "remediation-contracts-contract_and_container_dimensions",
+          "variant": 1,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            2
+          ]
+        },
+        {
+          "id": "remediation-contracts-same_mode_multiple_carriers",
+          "variant": 0,
+          "split": "retention",
+          "correct": false,
+          "original_order_prediction": null
+        },
+        {
+          "id": "remediation-contracts-same_mode_multiple_carriers",
+          "variant": 1,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0
+          ]
+        },
+        {
+          "id": "remediation-warehouse_roles-mixed_wip_and_fulfillment",
+          "variant": 0,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1
+          ]
+        },
+        {
+          "id": "remediation-warehouse_roles-mixed_wip_and_fulfillment",
+          "variant": 1,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1
+          ]
+        },
+        {
+          "id": "remediation-warehouse_roles-location_and_inventory_roles",
+          "variant": 0,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1
+          ]
+        },
+        {
+          "id": "remediation-warehouse_roles-location_and_inventory_roles",
+          "variant": 1,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1
+          ]
+        },
+        {
+          "id": "remediation-shipping_controls-stage_event_mapping",
+          "variant": 0,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1,
+            2
+          ]
+        },
+        {
+          "id": "remediation-shipping_controls-stage_event_mapping",
+          "variant": 1,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1,
+            2
+          ]
+        },
+        {
+          "id": "remediation-shipping_controls-fix_the_demonstrated_defect",
+          "variant": 0,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1
+          ]
+        },
+        {
+          "id": "remediation-shipping_controls-fix_the_demonstrated_defect",
+          "variant": 1,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1
+          ]
+        },
+        {
+          "id": "remediation-outsourcing-responsibility_after_contract",
+          "variant": 0,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1,
+            2
+          ]
+        },
+        {
+          "id": "remediation-outsourcing-responsibility_after_contract",
+          "variant": 1,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1,
+            2
+          ]
+        },
+        {
+          "id": "remediation-outsourcing-provider_quality_and_governance",
+          "variant": 0,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1
+          ]
+        },
+        {
+          "id": "remediation-outsourcing-provider_quality_and_governance",
+          "variant": 1,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1
+          ]
+        },
+        {
+          "id": "remediation-holding_cost-duplicate_holding_component",
+          "variant": 0,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            2
+          ]
+        },
+        {
+          "id": "remediation-holding_cost-duplicate_holding_component",
+          "variant": 1,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            2
+          ]
+        },
+        {
+          "id": "remediation-holding_cost-allocated_vs_incremental_boundary",
+          "variant": 0,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "id": "remediation-holding_cost-allocated_vs_incremental_boundary",
+          "variant": 1,
+          "split": "retention",
+          "correct": true,
+          "original_order_prediction": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      ],
+      "review_decisions": [],
+      "review_accepted": 0,
+      "training_allowed": false,
+      "limitations": "Fixed source-authored development candidates, not an independent final test. Reviewer is a model and cannot release data. Eight retention items share historical training groups."
+    }
+  },
+  "paired_counts": {
+    "calls": 88,
+    "p1_correct": 60,
+    "step120_correct": 56,
+    "gains": 10,
+    "losses": 6
+  },
+  "unit_counts": {
+    "pick_lines/train": {
+      "calls": 8,
+      "p1_correct": 5,
+      "step120_correct": 6,
+      "gains": 0,
+      "losses": 1
+    },
+    "pick_lines/dev": {
+      "calls": 4,
+      "p1_correct": 4,
+      "step120_correct": 2,
+      "gains": 2,
+      "losses": 0
+    },
+    "batch_tradeoff/train": {
+      "calls": 8,
+      "p1_correct": 0,
+      "step120_correct": 1,
+      "gains": 0,
+      "losses": 1
+    },
+    "batch_tradeoff/dev": {
+      "calls": 4,
+      "p1_correct": 1,
+      "step120_correct": 0,
+      "gains": 1,
+      "losses": 0
+    },
+    "serial_parallel/train": {
+      "calls": 8,
+      "p1_correct": 2,
+      "step120_correct": 3,
+      "gains": 0,
+      "losses": 1
+    },
+    "serial_parallel/dev": {
+      "calls": 4,
+      "p1_correct": 3,
+      "step120_correct": 2,
+      "gains": 1,
+      "losses": 0
+    },
+    "transport_capacity/train": {
+      "calls": 8,
+      "p1_correct": 5,
+      "step120_correct": 4,
+      "gains": 2,
+      "losses": 1
+    },
+    "transport_capacity/dev": {
+      "calls": 4,
+      "p1_correct": 1,
+      "step120_correct": 2,
+      "gains": 0,
+      "losses": 1
+    },
+    "pest/retention": {
+      "calls": 4,
+      "p1_correct": 4,
+      "step120_correct": 4,
+      "gains": 0,
+      "losses": 0
+    },
+    "abc/retention": {
+      "calls": 4,
+      "p1_correct": 4,
+      "step120_correct": 4,
+      "gains": 0,
+      "losses": 0
+    },
+    "reorder/retention": {
+      "calls": 4,
+      "p1_correct": 4,
+      "step120_correct": 4,
+      "gains": 0,
+      "losses": 0
+    },
+    "rail_transfer/retention": {
+      "calls": 4,
+      "p1_correct": 4,
+      "step120_correct": 2,
+      "gains": 2,
+      "losses": 0
+    },
+    "postponement/retention": {
+      "calls": 4,
+      "p1_correct": 4,
+      "step120_correct": 3,
+      "gains": 1,
+      "losses": 0
+    },
+    "contracts/retention": {
+      "calls": 4,
+      "p1_correct": 4,
+      "step120_correct": 3,
+      "gains": 1,
+      "losses": 0
+    },
+    "warehouse_roles/retention": {
+      "calls": 4,
+      "p1_correct": 4,
+      "step120_correct": 4,
+      "gains": 0,
+      "losses": 0
+    },
+    "shipping_controls/retention": {
+      "calls": 4,
+      "p1_correct": 4,
+      "step120_correct": 4,
+      "gains": 0,
+      "losses": 0
+    },
+    "outsourcing/retention": {
+      "calls": 4,
+      "p1_correct": 4,
+      "step120_correct": 4,
+      "gains": 0,
+      "losses": 0
+    },
+    "holding_cost/retention": {
+      "calls": 4,
+      "p1_correct": 3,
+      "step120_correct": 4,
+      "gains": 0,
+      "losses": 1
+    }
+  },
+  "retention_strata": {
+    "historical_dev_sources": {
+      "calls": 24,
+      "p1_correct": 24,
+      "step120_correct": 20,
+      "gains": 4,
+      "losses": 0
+    },
+    "shared_train_groups": {
+      "calls": 16,
+      "p1_correct": 15,
+      "step120_correct": 16,
+      "gains": 0,
+      "losses": 1
+    }
+  },
+  "paired_calls": [
+    {
+      "id": "remediation-pick_lines-multi_instruction_reconciliation",
+      "variant": 0,
+      "split": "train",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-pick_lines-multi_instruction_reconciliation",
+      "variant": 1,
+      "split": "train",
+      "p1_correct": false,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-pick_lines-unequal_area_comparison",
+      "variant": 0,
+      "split": "train",
+      "p1_correct": false,
+      "step120_correct": false
+    },
+    {
+      "id": "remediation-pick_lines-unequal_area_comparison",
+      "variant": 1,
+      "split": "train",
+      "p1_correct": false,
+      "step120_correct": false
+    },
+    {
+      "id": "remediation-pick_lines-partial_grab_identifiability",
+      "variant": 0,
+      "split": "train",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-pick_lines-partial_grab_identifiability",
+      "variant": 1,
+      "split": "train",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-pick_lines-layout_change_with_fixed_activity",
+      "variant": 0,
+      "split": "train",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-pick_lines-layout_change_with_fixed_activity",
+      "variant": 1,
+      "split": "train",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-pick_lines-order_merge_and_separate",
+      "variant": 0,
+      "split": "dev",
+      "p1_correct": true,
+      "step120_correct": false
+    },
+    {
+      "id": "remediation-pick_lines-order_merge_and_separate",
+      "variant": 1,
+      "split": "dev",
+      "p1_correct": true,
+      "step120_correct": false
+    },
+    {
+      "id": "remediation-pick_lines-recover_instruction_count_from_events",
+      "variant": 0,
+      "split": "dev",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-pick_lines-recover_instruction_count_from_events",
+      "variant": 1,
+      "split": "dev",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-batch_tradeoff-duplicate_cost_ledger",
+      "variant": 0,
+      "split": "train",
+      "p1_correct": false,
+      "step120_correct": false
+    },
+    {
+      "id": "remediation-batch_tradeoff-duplicate_cost_ledger",
+      "variant": 1,
+      "split": "train",
+      "p1_correct": false,
+      "step120_correct": false
+    },
+    {
+      "id": "remediation-batch_tradeoff-cost_with_space_feasibility",
+      "variant": 0,
+      "split": "train",
+      "p1_correct": false,
+      "step120_correct": false
+    },
+    {
+      "id": "remediation-batch_tradeoff-cost_with_space_feasibility",
+      "variant": 1,
+      "split": "train",
+      "p1_correct": false,
+      "step120_correct": false
+    },
+    {
+      "id": "remediation-batch_tradeoff-strict_break_even_boundary",
+      "variant": 0,
+      "split": "train",
+      "p1_correct": false,
+      "step120_correct": false
+    },
+    {
+      "id": "remediation-batch_tradeoff-strict_break_even_boundary",
+      "variant": 1,
+      "split": "train",
+      "p1_correct": false,
+      "step120_correct": false
+    },
+    {
+      "id": "remediation-batch_tradeoff-exclusive_interventions_with_fees",
+      "variant": 0,
+      "split": "train",
+      "p1_correct": false,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-batch_tradeoff-exclusive_interventions_with_fees",
+      "variant": 1,
+      "split": "train",
+      "p1_correct": false,
+      "step120_correct": false
+    },
+    {
+      "id": "remediation-batch_tradeoff-robust_cost_ranges",
+      "variant": 0,
+      "split": "dev",
+      "p1_correct": true,
+      "step120_correct": false
+    },
+    {
+      "id": "remediation-batch_tradeoff-robust_cost_ranges",
+      "variant": 1,
+      "split": "dev",
+      "p1_correct": false,
+      "step120_correct": false
+    },
+    {
+      "id": "remediation-batch_tradeoff-shared_setup_across_waves",
+      "variant": 0,
+      "split": "dev",
+      "p1_correct": false,
+      "step120_correct": false
+    },
+    {
+      "id": "remediation-batch_tradeoff-shared_setup_across_waves",
+      "variant": 1,
+      "split": "dev",
+      "p1_correct": false,
+      "step120_correct": false
+    },
+    {
+      "id": "remediation-serial_parallel-release_time_interaction",
+      "variant": 0,
+      "split": "train",
+      "p1_correct": false,
+      "step120_correct": false
+    },
+    {
+      "id": "remediation-serial_parallel-release_time_interaction",
+      "variant": 1,
+      "split": "train",
+      "p1_correct": false,
+      "step120_correct": false
+    },
+    {
+      "id": "remediation-serial_parallel-deadline_and_labor_budget",
+      "variant": 0,
+      "split": "train",
+      "p1_correct": false,
+      "step120_correct": false
+    },
+    {
+      "id": "remediation-serial_parallel-deadline_and_labor_budget",
+      "variant": 1,
+      "split": "train",
+      "p1_correct": false,
+      "step120_correct": false
+    },
+    {
+      "id": "remediation-serial_parallel-bottleneck_perturbation",
+      "variant": 0,
+      "split": "train",
+      "p1_correct": false,
+      "step120_correct": false
+    },
+    {
+      "id": "remediation-serial_parallel-bottleneck_perturbation",
+      "variant": 1,
+      "split": "train",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-serial_parallel-precedence_graph_report",
+      "variant": 0,
+      "split": "train",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-serial_parallel-precedence_graph_report",
+      "variant": 1,
+      "split": "train",
+      "p1_correct": false,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-serial_parallel-inverse_release_bound",
+      "variant": 0,
+      "split": "dev",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-serial_parallel-inverse_release_bound",
+      "variant": 1,
+      "split": "dev",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-serial_parallel-interrupted_consolidation",
+      "variant": 0,
+      "split": "dev",
+      "p1_correct": true,
+      "step120_correct": false
+    },
+    {
+      "id": "remediation-serial_parallel-interrupted_consolidation",
+      "variant": 1,
+      "split": "dev",
+      "p1_correct": false,
+      "step120_correct": false
+    },
+    {
+      "id": "remediation-transport_capacity-cancellation_vs_rejection",
+      "variant": 0,
+      "split": "train",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-transport_capacity-cancellation_vs_rejection",
+      "variant": 1,
+      "split": "train",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-transport_capacity-limited_flexible_requests",
+      "variant": 0,
+      "split": "train",
+      "p1_correct": true,
+      "step120_correct": false
+    },
+    {
+      "id": "remediation-transport_capacity-limited_flexible_requests",
+      "variant": 1,
+      "split": "train",
+      "p1_correct": true,
+      "step120_correct": false
+    },
+    {
+      "id": "remediation-transport_capacity-partial_record_necessity",
+      "variant": 0,
+      "split": "train",
+      "p1_correct": false,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-transport_capacity-partial_record_necessity",
+      "variant": 1,
+      "split": "train",
+      "p1_correct": false,
+      "step120_correct": false
+    },
+    {
+      "id": "remediation-transport_capacity-capacity_action_feasibility",
+      "variant": 0,
+      "split": "train",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-transport_capacity-capacity_action_feasibility",
+      "variant": 1,
+      "split": "train",
+      "p1_correct": false,
+      "step120_correct": false
+    },
+    {
+      "id": "remediation-transport_capacity-connection_path_capacity",
+      "variant": 0,
+      "split": "dev",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-transport_capacity-connection_path_capacity",
+      "variant": 1,
+      "split": "dev",
+      "p1_correct": false,
+      "step120_correct": false
+    },
+    {
+      "id": "remediation-transport_capacity-capacity_uncertainty_guarantee",
+      "variant": 0,
+      "split": "dev",
+      "p1_correct": false,
+      "step120_correct": false
+    },
+    {
+      "id": "remediation-transport_capacity-capacity_uncertainty_guarantee",
+      "variant": 1,
+      "split": "dev",
+      "p1_correct": false,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-pest-external_vs_internal",
+      "variant": 0,
+      "split": "retention",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-pest-external_vs_internal",
+      "variant": 1,
+      "split": "retention",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-pest-review_scope_repair",
+      "variant": 0,
+      "split": "retention",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-pest-review_scope_repair",
+      "variant": 1,
+      "split": "retention",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-abc-control_class_consistency",
+      "variant": 0,
+      "split": "retention",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-abc-control_class_consistency",
+      "variant": 1,
+      "split": "retention",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-abc-prioritize_control_repair",
+      "variant": 0,
+      "split": "retention",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-abc-prioritize_control_repair",
+      "variant": 1,
+      "split": "retention",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-reorder-error_vs_variability",
+      "variant": 0,
+      "split": "retention",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-reorder-error_vs_variability",
+      "variant": 1,
+      "split": "retention",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-reorder-strict_trigger_scope",
+      "variant": 0,
+      "split": "retention",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-reorder-strict_trigger_scope",
+      "variant": 1,
+      "split": "retention",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-rail_transfer-direct_vs_other_mode",
+      "variant": 0,
+      "split": "retention",
+      "p1_correct": true,
+      "step120_correct": false
+    },
+    {
+      "id": "remediation-rail_transfer-direct_vs_other_mode",
+      "variant": 1,
+      "split": "retention",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-rail_transfer-event_sequence_audit",
+      "variant": 0,
+      "split": "retention",
+      "p1_correct": true,
+      "step120_correct": false
+    },
+    {
+      "id": "remediation-rail_transfer-event_sequence_audit",
+      "variant": 1,
+      "split": "retention",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-postponement-preserve_allocation_flexibility",
+      "variant": 0,
+      "split": "retention",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-postponement-preserve_allocation_flexibility",
+      "variant": 1,
+      "split": "retention",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-postponement-customization_deadline_limit",
+      "variant": 0,
+      "split": "retention",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-postponement-customization_deadline_limit",
+      "variant": 1,
+      "split": "retention",
+      "p1_correct": true,
+      "step120_correct": false
+    },
+    {
+      "id": "remediation-contracts-contract_and_container_dimensions",
+      "variant": 0,
+      "split": "retention",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-contracts-contract_and_container_dimensions",
+      "variant": 1,
+      "split": "retention",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-contracts-same_mode_multiple_carriers",
+      "variant": 0,
+      "split": "retention",
+      "p1_correct": true,
+      "step120_correct": false
+    },
+    {
+      "id": "remediation-contracts-same_mode_multiple_carriers",
+      "variant": 1,
+      "split": "retention",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-warehouse_roles-mixed_wip_and_fulfillment",
+      "variant": 0,
+      "split": "retention",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-warehouse_roles-mixed_wip_and_fulfillment",
+      "variant": 1,
+      "split": "retention",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-warehouse_roles-location_and_inventory_roles",
+      "variant": 0,
+      "split": "retention",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-warehouse_roles-location_and_inventory_roles",
+      "variant": 1,
+      "split": "retention",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-shipping_controls-stage_event_mapping",
+      "variant": 0,
+      "split": "retention",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-shipping_controls-stage_event_mapping",
+      "variant": 1,
+      "split": "retention",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-shipping_controls-fix_the_demonstrated_defect",
+      "variant": 0,
+      "split": "retention",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-shipping_controls-fix_the_demonstrated_defect",
+      "variant": 1,
+      "split": "retention",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-outsourcing-responsibility_after_contract",
+      "variant": 0,
+      "split": "retention",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-outsourcing-responsibility_after_contract",
+      "variant": 1,
+      "split": "retention",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-outsourcing-provider_quality_and_governance",
+      "variant": 0,
+      "split": "retention",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-outsourcing-provider_quality_and_governance",
+      "variant": 1,
+      "split": "retention",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-holding_cost-duplicate_holding_component",
+      "variant": 0,
+      "split": "retention",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-holding_cost-duplicate_holding_component",
+      "variant": 1,
+      "split": "retention",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-holding_cost-allocated_vs_incremental_boundary",
+      "variant": 0,
+      "split": "retention",
+      "p1_correct": true,
+      "step120_correct": true
+    },
+    {
+      "id": "remediation-holding_cost-allocated_vs_incremental_boundary",
+      "variant": 1,
+      "split": "retention",
+      "p1_correct": false,
+      "step120_correct": true
+    }
+  ],
+  "raw_file_sha256": {
+    "llin-remediation-packet-20260917-01/results/p1/closed.private.jsonl": "b5a616e2eefe95e3f621d2d1bda08a40ac0d7092a17fabb7837086074b30d8dd",
+    "llin-remediation-packet-20260917-01/results/p1/registration.safe.json": "fe5287c6448989d94938f38775fd4599774e721518a948bfb11b8aab038d3d50",
+    "llin-remediation-packet-20260917-01/results/p1/review.private.jsonl": "3e21f3b59542b0b20f59b162be172c41c1603669ce2b0fa5bababe99526bb242",
+    "llin-remediation-packet-20260917-01/results/p1/status.safe.json": "0782748618d07b2a4ee8bf140a61f71dcf6a472240ace4ff770cd7e833a884ee",
+    "llin-remediation-packet-20260917-01/results/p1/summary.safe.json": "222492823692e920a73853022e9023a3ee4656b0999dc62487611eff209281ed",
+    "llin-remediation-packet-20260917-03/results/p1/closed.private.jsonl": "bdfc9c96192a67ed06ca00950e1e6b40df244eaeac5c2e1e73fc07586e8d5bd6",
+    "llin-remediation-packet-20260917-03/results/p1/registration.safe.json": "ec89a7d9d2359d91dc622b3e43d5943a7162e1f17aa59f081cf82a183edf1743",
+    "llin-remediation-packet-20260917-03/results/p1/review.private.jsonl": "1b1d9ae0df1ed4e37c95a9a584d0365a5f6d6c24f420f7856640144d283dcfc3",
+    "llin-remediation-packet-20260917-03/results/p1/status.safe.json": "0782748618d07b2a4ee8bf140a61f71dcf6a472240ace4ff770cd7e833a884ee",
+    "llin-remediation-packet-20260917-03/results/p1/summary.safe.json": "faa68b5b9242b258a870eceaacb93d5850f8c9b848b6d552187647ff80f7c049",
+    "llin-remediation-packet-20260917-01/results/step120_current/closed.private.jsonl": "afdba2dc3c80330526e84027f0ce093bd6de3ad4e05d4d64e21110e725039510",
+    "llin-remediation-packet-20260917-01/results/step120_current/registration.safe.json": "78ca1099791ad230786e18233666a8bb431211defbf7d343b853469f312f391e",
+    "llin-remediation-packet-20260917-01/results/step120_current/review.private.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "llin-remediation-packet-20260917-01/results/step120_current/status.safe.json": "0782748618d07b2a4ee8bf140a61f71dcf6a472240ace4ff770cd7e833a884ee",
+    "llin-remediation-packet-20260917-01/results/step120_current/summary.safe.json": "bc80b4461c67c7859c128200be2d5d747232f8bb91761c0dc34360667338c52b",
+    "llin-remediation-packet-20260917-03/results/step120_current/closed.private.jsonl": "39153f16cef53d425b7381d8d4c3c5e5d1d7bc38f8548228b8d91aed4f6d382c",
+    "llin-remediation-packet-20260917-03/results/step120_current/registration.safe.json": "315f2c152ac4c4be2e69bc382244898a99eda7e8e77f12048eaa200aee66c5fb",
+    "llin-remediation-packet-20260917-03/results/step120_current/review.private.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "llin-remediation-packet-20260917-03/results/step120_current/status.safe.json": "0782748618d07b2a4ee8bf140a61f71dcf6a472240ace4ff770cd7e833a884ee",
+    "llin-remediation-packet-20260917-03/results/step120_current/summary.safe.json": "b79ca06fbb49469d0286b9d6043bb17bd64a625ecb2345e9dd1aacc1648d252b"
+  },
+  "training_allowed": false,
+  "limitation": "Model reviews require operator adjudication; this verifier does not release data. Two orders are correlated, development shares source rules, and eight retention cases share historical training source groups."
+}

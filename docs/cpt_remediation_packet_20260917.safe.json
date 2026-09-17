@@ -1,0 +1,300 @@
+{
+  "manifest": {
+    "source_snapshot_sha256": "5df7dc2b209938986cd7081aecdc9105fb989c9a872d572ce0a0c5a16dbbf8a4",
+    "archive_sha256": "7da53a1a3246381181c5a28fabfb0b68223aed0ee76ff6242710bf257e5af4c2",
+    "evidence_check": {
+      "references": 212,
+      "references_without_excerpt": 58
+    },
+    "cases": 44,
+    "splits": {
+      "train": 16,
+      "dev": 8,
+      "retention": 20
+    },
+    "retention_strata": {
+      "historical_dev_sources": 12,
+      "shared_train_groups": 8
+    },
+    "answer_cardinalities": {
+      "train": {
+        "3": 4,
+        "1": 4,
+        "2": 4,
+        "4": 4
+      },
+      "dev": {
+        "1": 2,
+        "3": 2,
+        "2": 2,
+        "4": 2
+      },
+      "retention": {
+        "3": 5,
+        "2": 10,
+        "1": 4,
+        "4": 1
+      }
+    },
+    "arithmetic_equalities": 70,
+    "source_units": 15,
+    "train_source_groups": 1,
+    "historical_dev_retention_groups": 4,
+    "source_group_separation_verified": true,
+    "training_allowed": false,
+    "author": "Codex operator, source-authored; not external expert certification",
+    "limits": [
+      "Only four remediation capabilities in one historical training source group.",
+      "Training and development share source rules; their task constructions are distinct, not independent source domains.",
+      "Eight warehouse/business regression checks use training-partition sources; report separately from the twelve source-separated checks.",
+      "Known-source retention can include past P1 exposure; it is not an unseen-knowledge test.",
+      "No real Agent tool-use or process-execution capability is measured. That separate task is not a gate for freezing this knowledge-MCQ candidate packet.",
+      "No dataset release or training is implied until the downstream audit is complete."
+    ],
+    "files": {
+      "amended_cases.private.jsonl": "c314bb5afed8bdaf71d774b89c58a9649459e7e1cfc2f8000715ed4642564a6d",
+      "cases.private.jsonl": "9d956b539b6f40a07e71ad4b925c681e49534c73e89873c80e825d7895a07848",
+      "dev.private.jsonl": "d214e0d4a9ab8b101ae10797e67add88c179e78adf9d7c498b2ed112393925ab",
+      "retention.private.jsonl": "4c52860093697decaa9e728dbd66cab3bfa7aec342c4e0b3f2def4e527808ee9",
+      "train.private.jsonl": "b2f0b062afa4cd34798e085b4b98a159269265829d896e60733d26d2364e85dc"
+    },
+    "authoring_code_sha256": {
+      "prepare_cpt_remediation_packet.py": "1d6b237aac01ee01422238368da509c7ab2f80bf8763164e64a1ae20afdf4a5c",
+      "cpt_remediation_domain_tasks.py": "69a945a3985895e9b41b03ab5b5c0d7bdbcfc634934d5dc11d382b023d35bff7",
+      "cpt_remediation_retention_tasks.py": "8642ec7f9c4dc1525e87ba6ba6375000459e44f41bf6636bcf7028d5025bf959"
+    },
+    "parent_packet_sha256": "9f764dd3c60e4cefac8319be2d48a80bfe6d3a6df41eb048fd919fb0d06bafde",
+    "revision": "v3_explicit_premises_and_cost_boundary",
+    "amendments": [
+      {
+        "id": "remediation-pick_lines-multi_instruction_reconciliation",
+        "field": "question",
+        "before": "A completed pick list has three separate instructions executed in order:",
+        "after": "R and S name two distinct physical bin locations. A completed pick list has three separate instructions executed in order:",
+        "reason": "The original symbols could denote SKUs rather than physical bins; unique locations must be stated explicitly.",
+        "answer_unchanged": true,
+        "trigger": "Operator premise audit and substantive reviewer objections, not closed-book score selection"
+      },
+      {
+        "id": "remediation-pick_lines-recover_instruction_count_from_events",
+        "field": "question",
+        "before": "Every completed instruction produced at least one event, and no event belongs to two instructions.",
+        "after": "Every recorded event belongs to exactly one completed instruction; no events from unfinished instructions are included. Every completed instruction produced at least one recorded event.",
+        "reason": "Completeness in the forward direction alone does not exclude events from unfinished instructions; distinct IDs must correspond exactly to completed instructions.",
+        "answer_unchanged": true,
+        "trigger": "Operator premise audit and substantive reviewer objections, not closed-book score selection"
+      },
+      {
+        "id": "remediation-batch_tradeoff-exclusive_interventions_with_fees",
+        "field": "options",
+        "before": "J is the cheaper of the two allowed interventions.",
+        "after": "Choosing J yields a lower total batching cost, including its fee, than choosing I.",
+        "reason": "Cheaper intervention could mean its fee alone; the intended comparison is the complete resulting batching cost.",
+        "answer_unchanged": true,
+        "trigger": "Operator premise audit and substantive reviewer objections, not closed-book score selection"
+      },
+      {
+        "id": "remediation-serial_parallel-deadline_and_labor_budget",
+        "field": "question",
+        "before": "Three feasible process designs start at 0.",
+        "after": "Three proposed process designs start at 0; their compliance with the deadline and labor budget must be checked.",
+        "reason": "Calling all designs feasible before checking the two constraints conflicts with the intended distinction between S, P and R.",
+        "answer_unchanged": true,
+        "trigger": "Operator premise audit and substantive reviewer objections, not closed-book score selection"
+      }
+    ],
+    "revision_code_sha256": "dac4709dc9065392f15408cdc3246f63ef18336ca51eafad60cac4bd5344d71e"
+  },
+  "exclusion_audit": {
+    "packet_sha256": "9d956b539b6f40a07e71ad4b925c681e49534c73e89873c80e825d7895a07848",
+    "cases": 44,
+    "arithmetic_equalities_checked": 70,
+    "split_files_reconstructed": true,
+    "source_and_option_schema_verified": true,
+    "excluded_normalized_questions": 2353,
+    "exact_or_number_normalized_matches": [],
+    "internal_duplicates": 0,
+    "exclusion_inputs": [
+      {
+        "path": "llin-composed-boundaries-20260916-01/cases.private.jsonl",
+        "sha256": "ebc53dab7e305a4d34d00dc31eff70476d2612021855240762c29c8969c25328"
+      },
+      {
+        "path": "llin-coverage-expansion-20260916-01/cases.private.jsonl",
+        "sha256": "b28c352852a2c78bc6659e6d2ee74adefb7e4cd2d688e1d8f1de3995efec0373"
+      },
+      {
+        "path": "llin-reviewed-scenario-probe-20260916-01/cases.private.jsonl",
+        "sha256": "d778181eae00dc8ed45496a81bead8d9f5f410970e7d28fa1f1354137eaaae09"
+      },
+      {
+        "path": "llin-transfer-screen-20260916-02/candidates.private.jsonl",
+        "sha256": "1237a2c060eae41a674a620864f08381ffe364de219accb7916555e849622a6e"
+      },
+      {
+        "path": "llin-transfer-screen-20260916-03/candidates.private.jsonl",
+        "sha256": "f0452e42f78606cd7f942f5324f4d1f9c94ae32d60dfe978dbb85bb3d5ad2671"
+      },
+      {
+        "path": "llin-transfer-draft-20260916-01/pilot_result/candidates.private.jsonl",
+        "sha256": "0bed756f04398c1bd810f05d95b7f360ba294bc60e5e06332ac5b2493a04338a"
+      },
+      {
+        "path": "llin-transfer-constraint-pilot-20260916-01/result/candidates.private.jsonl",
+        "sha256": "2cbce73246f70ec49ca23a3eb1e8b92d82aea6711983c38c201a5cb6781df83e"
+      },
+      {
+        "path": "llin-s4-probe-20260915-01/cases.private.jsonl",
+        "sha256": "63f652b85d28ddf1da5de67f0074f99e80b144c5b1ca4f6ec408a83b7ac78b19"
+      },
+      {
+        "path": "llin-s4-probe-20260915-02/cases.private.jsonl",
+        "sha256": "2669e189e06b00c04a476be308a1d430eee65362d8cbe3bcdc9c4e77499035eb"
+      },
+      {
+        "path": "llin-s4-transfer-diagnostic-20260915-01/cases.private.jsonl",
+        "sha256": "0894adb053f55b0716ae3bf128bb91b21dd778ad48653342909a3125b2c473f9"
+      },
+      {
+        "path": "llin-s4-conditional-train-20260915-01/tasks.private.jsonl",
+        "sha256": "663e76794901e0af31d759a027ab4ea1e300888fb55e1927691336e2e4f4916b"
+      },
+      {
+        "path": "llin-s5-contrast-20260915-01/tasks.private.jsonl",
+        "sha256": "8d1f5e3ce9772fc2ddf99e16ee92630dcbf8aa6a1b58e558b5f397d33c616ea2"
+      },
+      {
+        "path": "llin-source-reviewed-20260914-01/cases.private.jsonl",
+        "sha256": "d896fd906a17c473d4ec9ef775f1ad0ed7138d9fbec431fec5efcab67a3856bd"
+      },
+      {
+        "path": "llin-source-expansion-20260914-01/filtered_tasks.private.jsonl",
+        "sha256": "cb8085d17b6b0573964540b72d6e3a3991cd617df114ba271857161926f271eb"
+      },
+      {
+        "path": "llin-transfer-p1-20260916-03/cases.private.jsonl",
+        "sha256": "b74ed230308e4d0da500263817280bf4222d1f5fabf38c315c22f4fc26f8ff3c"
+      },
+      {
+        "path": "llin-transfer-audit-20260915-01/frozen_cases.private.jsonl",
+        "sha256": "b652b2108cb552346df11d005c15ff3137c50a756a7b24eb35302683ec33ed99"
+      },
+      {
+        "path": "llin-transfer-expansion-draft-20260917-01/filtered.private.jsonl",
+        "sha256": "d0a2717405f85fd867956a712316fe1fa0ce6dc4b4416a2acbd6364d4612cb82"
+      },
+      {
+        "path": "llin-source-authoring-pilot-20260917-01/cases.private.jsonl",
+        "sha256": "fdb9fb716f226fd5c2b6531521ef84e990fca83fae65a29da3f295418e674b26"
+      }
+    ],
+    "development_structure_ledger": [
+      {
+        "dev_id": "remediation-pick_lines-order_merge_and_separate",
+        "nearest_train_id": "remediation-pick_lines-multi_instruction_reconciliation",
+        "word_jaccard": 0.1429,
+        "intended_distinction": "Held-out construction: coalesce two order graphs and preserve downstream separation, not a rescaled single instruction.",
+        "scope": "Shared source rules and arithmetic primitives; held-out construction, not independent knowledge."
+      },
+      {
+        "dev_id": "remediation-pick_lines-recover_instruction_count_from_events",
+        "nearest_train_id": "remediation-pick_lines-partial_grab_identifiability",
+        "word_jaccard": 0.1379,
+        "intended_distinction": "Held-out construction: choose sufficient recovery evidence for a lost grouping key; no claim of an independent source domain.",
+        "scope": "Shared source rules and arithmetic primitives; held-out construction, not independent knowledge."
+      },
+      {
+        "dev_id": "remediation-batch_tradeoff-robust_cost_ranges",
+        "nearest_train_id": "remediation-batch_tradeoff-strict_break_even_boundary",
+        "word_jaccard": 0.2927,
+        "intended_distinction": "Held-out construction: existential versus universal guarantees over joint cost ranges.",
+        "scope": "Shared source rules and arithmetic primitives; held-out construction, not independent knowledge."
+      },
+      {
+        "dev_id": "remediation-batch_tradeoff-shared_setup_across_waves",
+        "nearest_train_id": "remediation-batch_tradeoff-strict_break_even_boundary",
+        "word_jaccard": 0.2353,
+        "intended_distinction": "Held-out construction: non-additive shared setup and joint decisions across waves.",
+        "scope": "Shared source rules and arithmetic primitives; held-out construction, not independent knowledge."
+      },
+      {
+        "dev_id": "remediation-serial_parallel-inverse_release_bound",
+        "nearest_train_id": "remediation-serial_parallel-precedence_graph_report",
+        "word_jaccard": 0.2889,
+        "intended_distinction": "Held-out construction: infer a latest release bound, rather than forward-score known schedules.",
+        "scope": "Shared source rules and arithmetic primitives; held-out construction, not independent knowledge."
+      },
+      {
+        "dev_id": "remediation-serial_parallel-interrupted_consolidation",
+        "nearest_train_id": "remediation-serial_parallel-deadline_and_labor_budget",
+        "word_jaccard": 0.2182,
+        "intended_distinction": "Held-out construction: preemption, unavailability and active-work versus wall-clock time.",
+        "scope": "Shared source rules and arithmetic primitives; held-out construction, not independent knowledge."
+      },
+      {
+        "dev_id": "remediation-transport_capacity-connection_path_capacity",
+        "nearest_train_id": "remediation-transport_capacity-partial_record_necessity",
+        "word_jaccard": 0.2182,
+        "intended_distinction": "Held-out construction: temporal path feasibility across legs, rather than one-period totals.",
+        "scope": "Shared source rules and arithmetic primitives; held-out construction, not independent knowledge."
+      },
+      {
+        "dev_id": "remediation-transport_capacity-capacity_uncertainty_guarantee",
+        "nearest_train_id": "remediation-transport_capacity-cancellation_vs_rejection",
+        "word_jaccard": 0.2,
+        "intended_distinction": "Held-out construction: worst-case guarantees under uncertain capacity and eligibility constraints.",
+        "scope": "Shared source rules and arithmetic primitives; held-out construction, not independent knowledge."
+      }
+    ],
+    "training_allowed": false,
+    "limitations": "Mechanical checks and a construction ledger do not alone certify semantic independence. Current16 diagnostic tasks remain excluded from training. No sealed pilot items read. Labels still require source-by-source operator review."
+  },
+  "original_launch": {
+    "pid": 3851123,
+    "package": "/workspace/llin-verl-grpo/runs/llin-remediation-review-package-20260917-01",
+    "run": "/workspace/llin-verl-grpo/runs/llin-remediation-review-20260917-01",
+    "files": {
+      "cases.private.jsonl": "9f764dd3c60e4cefac8319be2d48a80bfe6d3a6df41eb048fd919fb0d06bafde",
+      "p1.model.safe.json": "e1c37f66fb6de3632044c898185631e105ecc288b2c1f7e6096d22847d65b270",
+      "step120_current.model.safe.json": "387f104f00e1095fd07a262d71b0702a61b0d2ddc57004eb39fc432e46cf31e2",
+      "run_cpt_remediation_review.py": "509f6d2d8192f5a3c69c98f51fb027215306c46e88e624a9f7904bbe9ba0a883",
+      "run_cpt_source_authoring_pilot.py": "97fa17e9c1dd33ed4d2718a3e92353dc721ffe3012afba1cbc534c4e07c64303",
+      "cpt_transfer_draft.py": "287ccdb3e3f7835c758921ffbe9a557a33188402f7892ef6b5b58cdd3bb85e8b",
+      "run_cpt_transfer_screen.py": "5b736302a73e522b50f277f6d8c1a6ec650ccf1a79133ec2f41c517664d72beb"
+    },
+    "training_allowed": false,
+    "closed_calls": 176,
+    "source_review_calls": 44,
+    "total_calls": 220,
+    "order": [
+      "p1",
+      "step120_current"
+    ]
+  },
+  "amendment_launch": {
+    "pid": 3856881,
+    "package": "/workspace/llin-verl-grpo/runs/llin-remediation-amendment-package-20260917-02",
+    "run": "/workspace/llin-verl-grpo/runs/llin-remediation-amendment-20260917-02",
+    "files": {
+      "cases.private.jsonl": "c314bb5afed8bdaf71d774b89c58a9649459e7e1cfc2f8000715ed4642564a6d",
+      "p1.model.safe.json": "e1c37f66fb6de3632044c898185631e105ecc288b2c1f7e6096d22847d65b270",
+      "step120_current.model.safe.json": "387f104f00e1095fd07a262d71b0702a61b0d2ddc57004eb39fc432e46cf31e2",
+      "run_cpt_remediation_amendment.py": "f9764d8a0e4f346bfa0e31cf77f1ad286b841dc83e4aaebd50e3add16bf2cc7b",
+      "run_cpt_remediation_review.py": "624291f764ee73d66427b92e968a1319957f1cc27180e59a34b438026f080298",
+      "run_cpt_source_authoring_pilot.py": "97fa17e9c1dd33ed4d2718a3e92353dc721ffe3012afba1cbc534c4e07c64303",
+      "cpt_transfer_draft.py": "287ccdb3e3f7835c758921ffbe9a557a33188402f7892ef6b5b58cdd3bb85e8b",
+      "run_cpt_transfer_screen.py": "5b736302a73e522b50f277f6d8c1a6ec650ccf1a79133ec2f41c517664d72beb",
+      "launch.py": "47162c108d44435175c81982e3f13e4a111370eb93195d4fb13bf642f60acd01",
+      "launch.sh": "9a514e8ccf88193929c659ee0031221725e4b4d4959a791d5181c9a370dcd9d6"
+    },
+    "training_allowed": false,
+    "total_calls": 20,
+    "parent_wait": true,
+    "cancelled_prior_queue_model_calls": 0,
+    "startup_failure_before_model": "Missing result parent; no model calls",
+    "retry_log": "/workspace/llin-verl-grpo/runs/llin-remediation-amendment-package-20260917-02/retry.log"
+  },
+  "release_sha256": "e01714578ed198a27069c54d8179adaae3b3974634249671d10e4a7d7749d834",
+  "completed_model_calls": 240,
+  "training_started": false
+}
