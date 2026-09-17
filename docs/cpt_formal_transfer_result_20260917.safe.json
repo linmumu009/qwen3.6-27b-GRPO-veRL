@@ -1,0 +1,921 @@
+{
+  "cases_sha256": "b652b2108cb552346df11d005c15ff3137c50a756a7b24eb35302683ec33ed99",
+  "new_requests": 15048,
+  "training": false,
+  "promotion": false,
+  "p3_original_gate_passed": false,
+  "independent_holdout": false,
+  "all_models_reported": true,
+  "table": [
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "step120_current",
+      "target": 196,
+      "target_met": false,
+      "versus_historical": {
+        "n": 226,
+        "before": 189,
+        "after": 190,
+        "gains": 1,
+        "losses": 0,
+        "delta_pp": 0.4424778761061947,
+        "mcnemar_exact_two_sided_p_unadjusted": 1.0,
+        "paired_item_bootstrap_95pct_pp": [
+          0.0,
+          1.3274336283185841
+        ]
+      },
+      "versus_current": {
+        "n": 226,
+        "before": 190,
+        "after": 190,
+        "gains": 0,
+        "losses": 0,
+        "delta_pp": 0.0,
+        "mcnemar_exact_two_sided_p_unadjusted": 1.0,
+        "paired_item_bootstrap_95pct_pp": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "p1",
+      "target": 196,
+      "target_met": false,
+      "versus_historical": {
+        "n": 226,
+        "before": 189,
+        "after": 192,
+        "gains": 5,
+        "losses": 2,
+        "delta_pp": 1.3274336283185841,
+        "mcnemar_exact_two_sided_p_unadjusted": 0.453125,
+        "paired_item_bootstrap_95pct_pp": [
+          -0.8849557522123894,
+          3.5398230088495577
+        ]
+      },
+      "versus_current": {
+        "n": 226,
+        "before": 190,
+        "after": 192,
+        "gains": 4,
+        "losses": 2,
+        "delta_pp": 0.8849557522123894,
+        "mcnemar_exact_two_sided_p_unadjusted": 0.6875,
+        "paired_item_bootstrap_95pct_pp": [
+          -1.3274336283185841,
+          3.0973451327433628
+        ]
+      }
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "p3",
+      "target": 196,
+      "target_met": false,
+      "versus_historical": {
+        "n": 226,
+        "before": 189,
+        "after": 189,
+        "gains": 6,
+        "losses": 6,
+        "delta_pp": 0.0,
+        "mcnemar_exact_two_sided_p_unadjusted": 1.0,
+        "paired_item_bootstrap_95pct_pp": [
+          -2.6548672566371683,
+          3.0973451327433628
+        ]
+      },
+      "versus_current": {
+        "n": 226,
+        "before": 190,
+        "after": 189,
+        "gains": 5,
+        "losses": 6,
+        "delta_pp": -0.4424778761061947,
+        "mcnemar_exact_two_sided_p_unadjusted": 1.0,
+        "paired_item_bootstrap_95pct_pp": [
+          -3.5398230088495577,
+          2.2123893805309733
+        ]
+      }
+    },
+    {
+      "dataset": "LogistikaBench",
+      "model": "step120_current",
+      "target": 1224,
+      "target_met": false,
+      "versus_historical": {
+        "n": 1446,
+        "before": 1180,
+        "after": 1180,
+        "gains": 0,
+        "losses": 0,
+        "delta_pp": 0.0,
+        "mcnemar_exact_two_sided_p_unadjusted": 1.0,
+        "paired_item_bootstrap_95pct_pp": [
+          0.0,
+          0.0
+        ]
+      },
+      "versus_current": {
+        "n": 1446,
+        "before": 1180,
+        "after": 1180,
+        "gains": 0,
+        "losses": 0,
+        "delta_pp": 0.0,
+        "mcnemar_exact_two_sided_p_unadjusted": 1.0,
+        "paired_item_bootstrap_95pct_pp": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    {
+      "dataset": "LogistikaBench",
+      "model": "p1",
+      "target": 1224,
+      "target_met": false,
+      "versus_historical": {
+        "n": 1446,
+        "before": 1180,
+        "after": 1193,
+        "gains": 36,
+        "losses": 23,
+        "delta_pp": 0.8990318118948825,
+        "mcnemar_exact_two_sided_p_unadjusted": 0.11747735024505848,
+        "paired_item_bootstrap_95pct_pp": [
+          -0.13831258644536654,
+          1.9363762102351314
+        ]
+      },
+      "versus_current": {
+        "n": 1446,
+        "before": 1180,
+        "after": 1193,
+        "gains": 36,
+        "losses": 23,
+        "delta_pp": 0.8990318118948825,
+        "mcnemar_exact_two_sided_p_unadjusted": 0.11747735024505848,
+        "paired_item_bootstrap_95pct_pp": [
+          -0.13831258644536654,
+          1.9363762102351314
+        ]
+      }
+    },
+    {
+      "dataset": "LogistikaBench",
+      "model": "p3",
+      "target": 1224,
+      "target_met": false,
+      "versus_historical": {
+        "n": 1446,
+        "before": 1180,
+        "after": 1185,
+        "gains": 40,
+        "losses": 35,
+        "delta_pp": 0.3457814661134163,
+        "mcnemar_exact_two_sided_p_unadjusted": 0.644463913894226,
+        "paired_item_bootstrap_95pct_pp": [
+          -0.8298755186721992,
+          1.590594744121715
+        ]
+      },
+      "versus_current": {
+        "n": 1446,
+        "before": 1180,
+        "after": 1185,
+        "gains": 40,
+        "losses": 35,
+        "delta_pp": 0.3457814661134163,
+        "mcnemar_exact_two_sided_p_unadjusted": 0.644463913894226,
+        "paired_item_bootstrap_95pct_pp": [
+          -0.8298755186721992,
+          1.590594744121715
+        ]
+      }
+    }
+  ],
+  "by_category": [
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Finance and Operations",
+      "model": "step120_current",
+      "n": 20,
+      "before": 17,
+      "after": 17,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Fulfillment",
+      "model": "step120_current",
+      "n": 79,
+      "before": 67,
+      "after": 67,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "In-warehouse",
+      "model": "step120_current",
+      "n": 12,
+      "before": 9,
+      "after": 9,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Inventory",
+      "model": "step120_current",
+      "n": 4,
+      "before": 4,
+      "after": 4,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Logistics Collaboration",
+      "model": "step120_current",
+      "n": 73,
+      "before": 61,
+      "after": 61,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Merchandise",
+      "model": "step120_current",
+      "n": 1,
+      "before": 1,
+      "after": 1,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Network",
+      "model": "step120_current",
+      "n": 3,
+      "before": 3,
+      "after": 3,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Other",
+      "model": "step120_current",
+      "n": 3,
+      "before": 3,
+      "after": 3,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Planning",
+      "model": "step120_current",
+      "n": 14,
+      "before": 12,
+      "after": 12,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Procurement",
+      "model": "step120_current",
+      "n": 12,
+      "before": 8,
+      "after": 8,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Returns and Waste",
+      "model": "step120_current",
+      "n": 1,
+      "before": 1,
+      "after": 1,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "unknown",
+      "model": "step120_current",
+      "n": 4,
+      "before": 4,
+      "after": 4,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Finance and Operations",
+      "model": "p1",
+      "n": 20,
+      "before": 17,
+      "after": 17,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Fulfillment",
+      "model": "p1",
+      "n": 79,
+      "before": 67,
+      "after": 66,
+      "gains": 1,
+      "losses": 2,
+      "delta_pp": -1.2658227848101267
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "In-warehouse",
+      "model": "p1",
+      "n": 12,
+      "before": 9,
+      "after": 10,
+      "gains": 1,
+      "losses": 0,
+      "delta_pp": 8.333333333333334
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Inventory",
+      "model": "p1",
+      "n": 4,
+      "before": 4,
+      "after": 4,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Logistics Collaboration",
+      "model": "p1",
+      "n": 73,
+      "before": 61,
+      "after": 62,
+      "gains": 1,
+      "losses": 0,
+      "delta_pp": 1.36986301369863
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Merchandise",
+      "model": "p1",
+      "n": 1,
+      "before": 1,
+      "after": 1,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Network",
+      "model": "p1",
+      "n": 3,
+      "before": 3,
+      "after": 3,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Other",
+      "model": "p1",
+      "n": 3,
+      "before": 3,
+      "after": 3,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Planning",
+      "model": "p1",
+      "n": 14,
+      "before": 12,
+      "after": 12,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Procurement",
+      "model": "p1",
+      "n": 12,
+      "before": 8,
+      "after": 9,
+      "gains": 1,
+      "losses": 0,
+      "delta_pp": 8.333333333333334
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Returns and Waste",
+      "model": "p1",
+      "n": 1,
+      "before": 1,
+      "after": 1,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "unknown",
+      "model": "p1",
+      "n": 4,
+      "before": 4,
+      "after": 4,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Finance and Operations",
+      "model": "p3",
+      "n": 20,
+      "before": 17,
+      "after": 16,
+      "gains": 0,
+      "losses": 1,
+      "delta_pp": -5.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Fulfillment",
+      "model": "p3",
+      "n": 79,
+      "before": 67,
+      "after": 65,
+      "gains": 1,
+      "losses": 3,
+      "delta_pp": -2.5316455696202533
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "In-warehouse",
+      "model": "p3",
+      "n": 12,
+      "before": 9,
+      "after": 10,
+      "gains": 1,
+      "losses": 0,
+      "delta_pp": 8.333333333333334
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Inventory",
+      "model": "p3",
+      "n": 4,
+      "before": 4,
+      "after": 4,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Logistics Collaboration",
+      "model": "p3",
+      "n": 73,
+      "before": 61,
+      "after": 60,
+      "gains": 1,
+      "losses": 2,
+      "delta_pp": -1.36986301369863
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Merchandise",
+      "model": "p3",
+      "n": 1,
+      "before": 1,
+      "after": 1,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Network",
+      "model": "p3",
+      "n": 3,
+      "before": 3,
+      "after": 3,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Other",
+      "model": "p3",
+      "n": 3,
+      "before": 3,
+      "after": 3,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Planning",
+      "model": "p3",
+      "n": 14,
+      "before": 12,
+      "after": 12,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Procurement",
+      "model": "p3",
+      "n": 12,
+      "before": 8,
+      "after": 10,
+      "gains": 2,
+      "losses": 0,
+      "delta_pp": 16.666666666666668
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Returns and Waste",
+      "model": "p3",
+      "n": 1,
+      "before": 1,
+      "after": 1,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "unknown",
+      "model": "p3",
+      "n": 4,
+      "before": 4,
+      "after": 4,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "LogistikaBench",
+      "category": "material_handling",
+      "model": "step120_current",
+      "n": 696,
+      "before": 571,
+      "after": 571,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "LogistikaBench",
+      "category": "procurement",
+      "model": "step120_current",
+      "n": 42,
+      "before": 36,
+      "after": 36,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "LogistikaBench",
+      "category": "supply_chain",
+      "model": "step120_current",
+      "n": 102,
+      "before": 89,
+      "after": 89,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "LogistikaBench",
+      "category": "transport",
+      "model": "step120_current",
+      "n": 404,
+      "before": 333,
+      "after": 333,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "LogistikaBench",
+      "category": "warehousing",
+      "model": "step120_current",
+      "n": 202,
+      "before": 151,
+      "after": 151,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "LogistikaBench",
+      "category": "material_handling",
+      "model": "p1",
+      "n": 696,
+      "before": 571,
+      "after": 583,
+      "gains": 20,
+      "losses": 8,
+      "delta_pp": 1.7241379310344827
+    },
+    {
+      "dataset": "LogistikaBench",
+      "category": "procurement",
+      "model": "p1",
+      "n": 42,
+      "before": 36,
+      "after": 36,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "LogistikaBench",
+      "category": "supply_chain",
+      "model": "p1",
+      "n": 102,
+      "before": 89,
+      "after": 90,
+      "gains": 1,
+      "losses": 0,
+      "delta_pp": 0.9803921568627451
+    },
+    {
+      "dataset": "LogistikaBench",
+      "category": "transport",
+      "model": "p1",
+      "n": 404,
+      "before": 333,
+      "after": 332,
+      "gains": 11,
+      "losses": 12,
+      "delta_pp": -0.24752475247524752
+    },
+    {
+      "dataset": "LogistikaBench",
+      "category": "warehousing",
+      "model": "p1",
+      "n": 202,
+      "before": 151,
+      "after": 152,
+      "gains": 4,
+      "losses": 3,
+      "delta_pp": 0.49504950495049505
+    },
+    {
+      "dataset": "LogistikaBench",
+      "category": "material_handling",
+      "model": "p3",
+      "n": 696,
+      "before": 571,
+      "after": 580,
+      "gains": 22,
+      "losses": 13,
+      "delta_pp": 1.293103448275862
+    },
+    {
+      "dataset": "LogistikaBench",
+      "category": "procurement",
+      "model": "p3",
+      "n": 42,
+      "before": 36,
+      "after": 36,
+      "gains": 0,
+      "losses": 0,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "LogistikaBench",
+      "category": "supply_chain",
+      "model": "p3",
+      "n": 102,
+      "before": 89,
+      "after": 89,
+      "gains": 1,
+      "losses": 1,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "LogistikaBench",
+      "category": "transport",
+      "model": "p3",
+      "n": 404,
+      "before": 333,
+      "after": 331,
+      "gains": 12,
+      "losses": 14,
+      "delta_pp": -0.49504950495049505
+    },
+    {
+      "dataset": "LogistikaBench",
+      "category": "warehousing",
+      "model": "p3",
+      "n": 202,
+      "before": 151,
+      "after": 149,
+      "gains": 5,
+      "losses": 7,
+      "delta_pp": -0.9900990099009901
+    }
+  ],
+  "p1_to_p3": [
+    {
+      "dataset": "SC-bench-knowledge",
+      "n": 226,
+      "before": 192,
+      "after": 189,
+      "gains": 1,
+      "losses": 4,
+      "delta_pp": -1.3274336283185841,
+      "both_correct": 188
+    },
+    {
+      "dataset": "LogistikaBench",
+      "n": 1446,
+      "before": 1193,
+      "after": 1185,
+      "gains": 13,
+      "losses": 21,
+      "delta_pp": -0.5532503457814661,
+      "both_correct": 1172
+    }
+  ],
+  "audits": {
+    "step120_historical": {
+      "requests": 5016,
+      "predictions_sha256": "18f0e0524a0ff97c1e0345cd6192b16363a1fcec05405f3ad7c97fb70edad0f7",
+      "protocol_sha256": "5f5e725bbb7f582644e73793374cb6a80b54fa7fd0c50903d84643f2e06931fa",
+      "invalid": 0,
+      "truncated": 0,
+      "unstable_items": 18,
+      "per_repeat": {
+        "0": {
+          "SC-bench-knowledge": 189,
+          "LogistikaBench": 1179
+        },
+        "1": {
+          "SC-bench-knowledge": 189,
+          "LogistikaBench": 1181
+        },
+        "2": {
+          "SC-bench-knowledge": 189,
+          "LogistikaBench": 1180
+        }
+      }
+    },
+    "step120_current": {
+      "requests": 5016,
+      "predictions_sha256": "0a75f6d706bca79105c94dec85fc5727d58e40eda97c73509d893c346bbe995e",
+      "protocol_sha256": "5f5e725bbb7f582644e73793374cb6a80b54fa7fd0c50903d84643f2e06931fa",
+      "invalid": 0,
+      "truncated": 0,
+      "unstable_items": 10,
+      "per_repeat": {
+        "0": {
+          "SC-bench-knowledge": 189,
+          "LogistikaBench": 1181
+        },
+        "1": {
+          "SC-bench-knowledge": 190,
+          "LogistikaBench": 1180
+        },
+        "2": {
+          "SC-bench-knowledge": 190,
+          "LogistikaBench": 1181
+        }
+      }
+    },
+    "p1": {
+      "requests": 5016,
+      "predictions_sha256": "33c5fc7dcb64c0fba59c25c054b19cda7b2e07880ad62daf0d2debd6ece7bbb2",
+      "protocol_sha256": "da8366e930b6d8bf1a8be58981be12998fd82c61979e7987f394821f85292e17",
+      "invalid": 1,
+      "truncated": 0,
+      "unstable_items": 7,
+      "per_repeat": {
+        "0": {
+          "SC-bench-knowledge": 192,
+          "LogistikaBench": 1195
+        },
+        "1": {
+          "SC-bench-knowledge": 191,
+          "LogistikaBench": 1194
+        },
+        "2": {
+          "SC-bench-knowledge": 192,
+          "LogistikaBench": 1191
+        }
+      }
+    },
+    "p3": {
+      "requests": 5016,
+      "predictions_sha256": "5ad52f3808e1cfab47bcc26023a9e231d9c76e6ac5cf46dd1c1a190195f8df94",
+      "protocol_sha256": "41394b37ff0bc0f8d9675f62816b1095292221d8bf4cafc7ccde614dca502fca",
+      "invalid": 0,
+      "truncated": 0,
+      "unstable_items": 6,
+      "per_repeat": {
+        "0": {
+          "SC-bench-knowledge": 189,
+          "LogistikaBench": 1185
+        },
+        "1": {
+          "SC-bench-knowledge": 188,
+          "LogistikaBench": 1185
+        },
+        "2": {
+          "SC-bench-knowledge": 189,
+          "LogistikaBench": 1185
+        }
+      }
+    }
+  },
+  "caveat": "Engineering targets previously used for selection; deterministic repeats are not independent training seeds.",
+  "local_verification": {
+    "remote_aggregate_identical": true,
+    "independent_parser": {
+      "step120_current": {
+        "raw_answers": 5016,
+        "independent_parser_passed": true,
+        "summary_matched": true
+      },
+      "p1": {
+        "raw_answers": 5016,
+        "independent_parser_passed": true,
+        "summary_matched": true
+      },
+      "p3": {
+        "raw_answers": 5016,
+        "independent_parser_passed": true,
+        "summary_matched": true
+      }
+    },
+    "new_raw_answers": 15048,
+    "historical_raw_answers": 5016,
+    "token_prompt_preflight": {
+      "step120_current": {
+        "prompts": 1672,
+        "historical_match": true,
+        "maximum_tokens": 3026
+      },
+      "p1": {
+        "prompts": 1672,
+        "historical_match": true,
+        "maximum_tokens": 3026
+      },
+      "p3": {
+        "prompts": 1672,
+        "historical_match": true,
+        "maximum_tokens": 3026
+      }
+    },
+    "verifier_sha256": "cea1de02b72965a0ba2bc1e020a1f3d861a5016b9e1f9fa362a7120182419ad2"
+  },
+  "status": "completed_verified_both_sides",
+  "launch_registration": "cpt_formal_transfer_launch_20260917.safe.json"
+}

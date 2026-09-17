@@ -65,9 +65,9 @@ def verify(out, cases_path, history):
     protocols = {k: json.loads((d/'protocol.safe.json').read_text()) for k,d in directories.items()}
     verify_protocols(protocols, CASE_SHA, 1672)
     for label, model in MODELS.items():
-        if protocols[label]['model'] != str(model):
+        if protocols[label]['model'] != model.as_posix():
             raise ValueError('model identity mismatch: '+label)
-    if protocols['step120_historical']['model'] != str(BASE):
+    if protocols['step120_historical']['model'] != BASE.as_posix():
         raise ValueError('historical model mismatch')
     results = {}; audits = {}
     for label, directory in directories.items():
