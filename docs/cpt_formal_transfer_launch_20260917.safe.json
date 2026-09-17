@@ -1,0 +1,303 @@
+{
+  "registered_at_utc": "2026-09-17T05:41:20.342064+00:00",
+  "order": [
+    "step120_current",
+    "p1",
+    "p3"
+  ],
+  "models": {
+    "step120_current": {
+      "path": "/workspace/llin-verl-grpo/runs/llin-step120-opensource-20260825-02/hf_export_step120_opensource",
+      "metadata_sha256": {
+        "config.json": "43eee23b0489ed1769bf2d49438015728ad686bef55d4aecb18a3a1ce840d6da",
+        "generation_config.json": "37d76f2abc68b3ee64884fb8e5cf542f07d132bec299e366dae1a560af6cf5af",
+        "tokenizer.json": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523",
+        "tokenizer_config.json": "792fa3f0cb88b111e54ef3134c873531008c4df471d108da17903426e308aa7b",
+        "model.safetensors.index.json": "b802be538e897a71922daacf7d7998e6930449475e878c70096cc512ff924ea1"
+      },
+      "shards_stat": {
+        "model-00001-of-00015.safetensors": {
+          "bytes": 3968861320,
+          "mtime_ns": 1787647417580141242
+        },
+        "model-00002-of-00015.safetensors": {
+          "bytes": 3921677104,
+          "mtime_ns": 1787647421124167250
+        },
+        "model-00003-of-00015.safetensors": {
+          "bytes": 3921677096,
+          "mtime_ns": 1787647424904194989
+        },
+        "model-00004-of-00015.safetensors": {
+          "bytes": 3921677096,
+          "mtime_ns": 1787647428600222113
+        },
+        "model-00005-of-00015.safetensors": {
+          "bytes": 3921677080,
+          "mtime_ns": 1787647431848245948
+        },
+        "model-00006-of-00015.safetensors": {
+          "bytes": 3900710856,
+          "mtime_ns": 1787647439032298668
+        },
+        "model-00007-of-00015.safetensors": {
+          "bytes": 4675269872,
+          "mtime_ns": 1787647435736274481
+        },
+        "model-00008-of-00015.safetensors": {
+          "bytes": 4119814712,
+          "mtime_ns": 1787647442628325058
+        },
+        "model-00009-of-00015.safetensors": {
+          "bytes": 3921677104,
+          "mtime_ns": 1787647445460345841
+        },
+        "model-00010-of-00015.safetensors": {
+          "bytes": 3921677096,
+          "mtime_ns": 1787647448216366066
+        },
+        "model-00011-of-00015.safetensors": {
+          "bytes": 3921677104,
+          "mtime_ns": 1787647451356389109
+        },
+        "model-00012-of-00015.safetensors": {
+          "bytes": 3921677104,
+          "mtime_ns": 1787647457688435576
+        },
+        "model-00013-of-00015.safetensors": {
+          "bytes": 3995081816,
+          "mtime_ns": 1787647460452455860
+        },
+        "model-00014-of-00015.safetensors": {
+          "bytes": 3942652920,
+          "mtime_ns": 1787647454684413531
+        },
+        "model-00015-of-00015.safetensors": {
+          "bytes": 508694824,
+          "mtime_ns": 1787647460848458766
+        }
+      },
+      "weight_content_hashed": false
+    },
+    "p1": {
+      "path": "/workspace/llin-verl-grpo/runs/llin-transfer-p1-run-20260916-02/training/llin-step120-p1-hf",
+      "metadata_sha256": {
+        "config.json": "43eee23b0489ed1769bf2d49438015728ad686bef55d4aecb18a3a1ce840d6da",
+        "generation_config.json": "37d76f2abc68b3ee64884fb8e5cf542f07d132bec299e366dae1a560af6cf5af",
+        "tokenizer.json": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523",
+        "tokenizer_config.json": "792fa3f0cb88b111e54ef3134c873531008c4df471d108da17903426e308aa7b",
+        "model.safetensors.index.json": "c38d4938aae8f0c1d3438f4135273606883561a17349446b4f05f1126f9120ed"
+      },
+      "shards_stat": {
+        "model-00001-of-00015.safetensors": {
+          "bytes": 3968861320,
+          "mtime_ns": 1789551450919584453
+        },
+        "model-00002-of-00015.safetensors": {
+          "bytes": 3921677104,
+          "mtime_ns": 1789551455195616663
+        },
+        "model-00003-of-00015.safetensors": {
+          "bytes": 3921677096,
+          "mtime_ns": 1789551459459648781
+        },
+        "model-00004-of-00015.safetensors": {
+          "bytes": 3921677096,
+          "mtime_ns": 1789551463347678068
+        },
+        "model-00005-of-00015.safetensors": {
+          "bytes": 3921677080,
+          "mtime_ns": 1789551466699703317
+        },
+        "model-00006-of-00015.safetensors": {
+          "bytes": 3900710856,
+          "mtime_ns": 1789551474567762584
+        },
+        "model-00007-of-00015.safetensors": {
+          "bytes": 4675269872,
+          "mtime_ns": 1789551470811734291
+        },
+        "model-00008-of-00015.safetensors": {
+          "bytes": 4119814712,
+          "mtime_ns": 1789551478079789038
+        },
+        "model-00009-of-00015.safetensors": {
+          "bytes": 3921677104,
+          "mtime_ns": 1789551480647808386
+        },
+        "model-00010-of-00015.safetensors": {
+          "bytes": 3921677096,
+          "mtime_ns": 1789551484519837564
+        },
+        "model-00011-of-00015.safetensors": {
+          "bytes": 3921677104,
+          "mtime_ns": 1789551487759861979
+        },
+        "model-00012-of-00015.safetensors": {
+          "bytes": 3921677104,
+          "mtime_ns": 1789551495487920213
+        },
+        "model-00013-of-00015.safetensors": {
+          "bytes": 3995081816,
+          "mtime_ns": 1789551499431949933
+        },
+        "model-00014-of-00015.safetensors": {
+          "bytes": 3942652920,
+          "mtime_ns": 1789551491823892603
+        },
+        "model-00015-of-00015.safetensors": {
+          "bytes": 508694824,
+          "mtime_ns": 1789551499999954213
+        }
+      },
+      "weight_content_hashed": false
+    },
+    "p3": {
+      "path": "/workspace/llin-verl-grpo/runs/llin-transfer-p3-run-20260917-01/training/llin-step120-p3-hf",
+      "metadata_sha256": {
+        "config.json": "43eee23b0489ed1769bf2d49438015728ad686bef55d4aecb18a3a1ce840d6da",
+        "generation_config.json": "37d76f2abc68b3ee64884fb8e5cf542f07d132bec299e366dae1a560af6cf5af",
+        "tokenizer.json": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523",
+        "tokenizer_config.json": "792fa3f0cb88b111e54ef3134c873531008c4df471d108da17903426e308aa7b",
+        "model.safetensors.index.json": "66783bb146f063353f1fddf97256f2d06b1d75abe0f5311cb5f08701b0acb2da"
+      },
+      "shards_stat": {
+        "model-00001-of-00015.safetensors": {
+          "bytes": 3968861320,
+          "mtime_ns": 1789615175775319158
+        },
+        "model-00002-of-00015.safetensors": {
+          "bytes": 3921677104,
+          "mtime_ns": 1789615179619348343
+        },
+        "model-00003-of-00015.safetensors": {
+          "bytes": 3921677096,
+          "mtime_ns": 1789615182883373124
+        },
+        "model-00004-of-00015.safetensors": {
+          "bytes": 3921677096,
+          "mtime_ns": 1789615185979396629
+        },
+        "model-00005-of-00015.safetensors": {
+          "bytes": 3921677080,
+          "mtime_ns": 1789615188607416581
+        },
+        "model-00006-of-00015.safetensors": {
+          "bytes": 3900710856,
+          "mtime_ns": 1789615194051457913
+        },
+        "model-00007-of-00015.safetensors": {
+          "bytes": 4675269872,
+          "mtime_ns": 1789615191643439631
+        },
+        "model-00008-of-00015.safetensors": {
+          "bytes": 4119814712,
+          "mtime_ns": 1789615196635477531
+        },
+        "model-00009-of-00015.safetensors": {
+          "bytes": 3921677104,
+          "mtime_ns": 1789615200187504499
+        },
+        "model-00010-of-00015.safetensors": {
+          "bytes": 3921677096,
+          "mtime_ns": 1789615203947533045
+        },
+        "model-00011-of-00015.safetensors": {
+          "bytes": 3921677104,
+          "mtime_ns": 1789615207739561835
+        },
+        "model-00012-of-00015.safetensors": {
+          "bytes": 3921677104,
+          "mtime_ns": 1789615214015609484
+        },
+        "model-00013-of-00015.safetensors": {
+          "bytes": 3995081816,
+          "mtime_ns": 1789615217271634204
+        },
+        "model-00014-of-00015.safetensors": {
+          "bytes": 3942652920,
+          "mtime_ns": 1789615211379589471
+        },
+        "model-00015-of-00015.safetensors": {
+          "bytes": 508694824,
+          "mtime_ns": 1789615217727637666
+        }
+      },
+      "weight_content_hashed": false
+    }
+  },
+  "token_checks": {
+    "step120_current": {
+      "prompts": 1672,
+      "historical_match": true,
+      "maximum_tokens": 3026
+    },
+    "p1": {
+      "prompts": 1672,
+      "historical_match": true,
+      "maximum_tokens": 3026
+    },
+    "p3": {
+      "prompts": 1672,
+      "historical_match": true,
+      "maximum_tokens": 3026
+    }
+  },
+  "cases_sha256": "b652b2108cb552346df11d005c15ff3137c50a756a7b24eb35302683ec33ed99",
+  "new_requests": 15048,
+  "historical_runtime_fingerprint_available": false,
+  "current_control_required": true,
+  "historical_protocol_sha256": "5f5e725bbb7f582644e73793374cb6a80b54fa7fd0c50903d84643f2e06931fa",
+  "targets": {
+    "SC-bench-knowledge": 196,
+    "LogistikaBench": 1224
+  },
+  "protocol": {
+    "cases_sha256": "b652b2108cb552346df11d005c15ff3137c50a756a7b24eb35302683ec33ed99",
+    "cases": 1672,
+    "repeats": 3,
+    "temperature": 0,
+    "seed": 1024,
+    "max_tokens": 96,
+    "max_model_len": 8192,
+    "tp": 8,
+    "max_num_seqs": 32,
+    "prompt": "original"
+  },
+  "generation_chunk_size": 128,
+  "dtype": "bfloat16",
+  "gpu_memory_utilization": 0.8,
+  "enforce_eager": true,
+  "python": "3.11.15 (main, May 13 2026, 09:39:24) [GCC 11.4.0]",
+  "platform": "Linux-5.10.0-136.12.0.96.2.ctl3.aarch64-aarch64-with-glibc2.35",
+  "versions": {
+    "torch": "2.9.0",
+    "torch-npu": "2.9.0.post2",
+    "vllm": "0.18.0+empty",
+    "vllm-ascend": "0.18.1.dev44+ga43c8cc80",
+    "transformers": "5.10.4",
+    "tokenizers": "0.22.2"
+  },
+  "source_refs": {
+    "/vllm": "bcf2be96120005e9aea171927f85055a6a5c0cf6",
+    "/vllm-ascend": "a43c8cc8057f490ed1df2c6ed66253e2d7817da4",
+    "/verl": "bc72e38edba78e778bfbd462638f9634b9140a76"
+  },
+  "torch_path": "/usr/local/python3.11.15/lib/python3.11/site-packages/torch/__init__.py",
+  "vllm_path": "/vllm/vllm/__init__.py",
+  "code_sha256": {
+    "__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "audit_cpt_transfer.py": "4bcd64ac3dc13abb72625a89413da34af926112768d59270b352bcfd5cdb206b",
+    "evaluate_logistics_knowledge.py": "8cee1c90a17771860b26b2e01f919bf3730c4ac2fefb21be3fd0dee222c8f949",
+    "run_cpt_formal_transfer.py": "fa32f439b891c6284e0832d580a69c07ec4b148338436279b2aae5495ff732f6",
+    "run_logistics_cpt_curve_8x.py": "2d13cec58c65c34f9e821bdcb40a6a160cd5ab23dd24e989ff1a413097f08c8a",
+    "run_logistics_strategy_diagnostic.py": "8934be47378afc48052de5e42f09459aa94bb7078355469b75aac9c6dfab652a"
+  },
+  "training": false,
+  "promotion": false,
+  "retries": 0,
+  "status": "running_step120_current",
+  "coordinator_pid": 3822385,
+  "run_directory": "/workspace/llin-verl-grpo/runs/llin-transfer-formal-20260917-01",
+  "local_tests_passed": 29
+}
