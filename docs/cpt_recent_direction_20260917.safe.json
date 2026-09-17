@@ -1,0 +1,503 @@
+{
+  "date": "2026-09-17",
+  "formal": [
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "step120_current",
+      "n": 226,
+      "correct": 190,
+      "target": 196,
+      "remaining_gap": 6,
+      "gains": 0,
+      "losses": 0,
+      "hypothetical_baseline_plus_all_observed_repairs": 190,
+      "item_bootstrap_95pct_pp": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "p1",
+      "n": 226,
+      "correct": 192,
+      "target": 196,
+      "remaining_gap": 4,
+      "gains": 4,
+      "losses": 2,
+      "hypothetical_baseline_plus_all_observed_repairs": 194,
+      "item_bootstrap_95pct_pp": [
+        -1.3274336283185841,
+        3.0973451327433628
+      ]
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "model": "p3",
+      "n": 226,
+      "correct": 189,
+      "target": 196,
+      "remaining_gap": 7,
+      "gains": 5,
+      "losses": 6,
+      "hypothetical_baseline_plus_all_observed_repairs": 195,
+      "item_bootstrap_95pct_pp": [
+        -3.5398230088495577,
+        2.2123893805309733
+      ]
+    },
+    {
+      "dataset": "LogistikaBench",
+      "model": "step120_current",
+      "n": 1446,
+      "correct": 1180,
+      "target": 1224,
+      "remaining_gap": 44,
+      "gains": 0,
+      "losses": 0,
+      "hypothetical_baseline_plus_all_observed_repairs": 1180,
+      "item_bootstrap_95pct_pp": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "dataset": "LogistikaBench",
+      "model": "p1",
+      "n": 1446,
+      "correct": 1193,
+      "target": 1224,
+      "remaining_gap": 31,
+      "gains": 36,
+      "losses": 23,
+      "hypothetical_baseline_plus_all_observed_repairs": 1216,
+      "item_bootstrap_95pct_pp": [
+        -0.13831258644536654,
+        1.9363762102351314
+      ]
+    },
+    {
+      "dataset": "LogistikaBench",
+      "model": "p3",
+      "n": 1446,
+      "correct": 1185,
+      "target": 1224,
+      "remaining_gap": 39,
+      "gains": 40,
+      "losses": 35,
+      "hypothetical_baseline_plus_all_observed_repairs": 1220,
+      "item_bootstrap_95pct_pp": [
+        -0.8298755186721992,
+        1.590594744121715
+      ]
+    }
+  ],
+  "pilots": {
+    "p1": {
+      "post": {
+        "p1_dev_conditions": {
+          "n": 20,
+          "correct": 11
+        },
+        "p1_dev_expression": {
+          "n": 20,
+          "correct": 11
+        },
+        "p1_retention": {
+          "n": 80,
+          "correct": 49
+        },
+        "p1_train": {
+          "n": 60,
+          "correct": 51
+        }
+      },
+      "steps": 105,
+      "sequence_tokens": 87340
+    },
+    "p2": {
+      "post": {
+        "p1_dev_conditions": {
+          "n": 20,
+          "correct": 11
+        },
+        "p1_dev_expression": {
+          "n": 20,
+          "correct": 10
+        },
+        "p1_retention": {
+          "n": 80,
+          "correct": 47
+        },
+        "p1_train": {
+          "n": 60,
+          "correct": 42
+        }
+      },
+      "steps": 105,
+      "sequence_tokens": 78602
+    },
+    "p3": {
+      "post": {
+        "p1_dev_conditions": {
+          "n": 20,
+          "correct": 12
+        },
+        "p1_dev_expression": {
+          "n": 20,
+          "correct": 10
+        },
+        "p1_retention": {
+          "n": 80,
+          "correct": 52
+        },
+        "p1_train": {
+          "n": 60,
+          "correct": 47
+        }
+      },
+      "steps": 105,
+      "sequence_tokens": 74573
+    }
+  },
+  "new_packet_errors": {
+    "p1": {
+      "target24": {
+        "calls": 48,
+        "correct": 21,
+        "omission_only": 10,
+        "extra_only": 8,
+        "substitution": 9
+      },
+      "retention20": {
+        "calls": 40,
+        "correct": 39,
+        "omission_only": 1
+      }
+    },
+    "step120_current": {
+      "target24": {
+        "calls": 48,
+        "correct": 20,
+        "extra_only": 16,
+        "substitution": 8,
+        "omission_only": 4
+      },
+      "retention20": {
+        "calls": 40,
+        "correct": 36,
+        "extra_only": 2,
+        "omission_only": 1,
+        "invalid": 1
+      }
+    }
+  },
+  "new_packet_by_answer_cardinality": {
+    "p1": [
+      {
+        "group": "retention20",
+        "correct_option_count": 1,
+        "calls": 8,
+        "correct": 8
+      },
+      {
+        "group": "retention20",
+        "correct_option_count": 2,
+        "calls": 20,
+        "correct": 20
+      },
+      {
+        "group": "retention20",
+        "correct_option_count": 3,
+        "calls": 10,
+        "correct": 10
+      },
+      {
+        "group": "retention20",
+        "correct_option_count": 4,
+        "calls": 2,
+        "correct": 1
+      },
+      {
+        "group": "target24",
+        "correct_option_count": 1,
+        "calls": 12,
+        "correct": 5
+      },
+      {
+        "group": "target24",
+        "correct_option_count": 2,
+        "calls": 12,
+        "correct": 4
+      },
+      {
+        "group": "target24",
+        "correct_option_count": 3,
+        "calls": 12,
+        "correct": 6
+      },
+      {
+        "group": "target24",
+        "correct_option_count": 4,
+        "calls": 12,
+        "correct": 6
+      }
+    ],
+    "step120_current": [
+      {
+        "group": "retention20",
+        "correct_option_count": 1,
+        "calls": 8,
+        "correct": 6
+      },
+      {
+        "group": "retention20",
+        "correct_option_count": 2,
+        "calls": 20,
+        "correct": 19
+      },
+      {
+        "group": "retention20",
+        "correct_option_count": 3,
+        "calls": 10,
+        "correct": 9
+      },
+      {
+        "group": "retention20",
+        "correct_option_count": 4,
+        "calls": 2,
+        "correct": 2
+      },
+      {
+        "group": "target24",
+        "correct_option_count": 1,
+        "calls": 12,
+        "correct": 1
+      },
+      {
+        "group": "target24",
+        "correct_option_count": 2,
+        "calls": 12,
+        "correct": 4
+      },
+      {
+        "group": "target24",
+        "correct_option_count": 3,
+        "calls": 12,
+        "correct": 6
+      },
+      {
+        "group": "target24",
+        "correct_option_count": 4,
+        "calls": 12,
+        "correct": 9
+      }
+    ]
+  },
+  "remaining_error_concentration": {
+    "SC-bench-knowledge": {
+      "remaining_errors": 34,
+      "priority_errors": 24,
+      "priority_error_share": 0.7058823529411765,
+      "categories": [
+        {
+          "category": "Fulfillment",
+          "n": 79,
+          "correct": 66,
+          "remaining_errors": 13,
+          "gains": 1,
+          "losses": 2
+        },
+        {
+          "category": "Logistics Collaboration",
+          "n": 73,
+          "correct": 62,
+          "remaining_errors": 11,
+          "gains": 1,
+          "losses": 0
+        },
+        {
+          "category": "Finance and Operations",
+          "n": 20,
+          "correct": 17,
+          "remaining_errors": 3,
+          "gains": 0,
+          "losses": 0
+        },
+        {
+          "category": "Procurement",
+          "n": 12,
+          "correct": 9,
+          "remaining_errors": 3,
+          "gains": 1,
+          "losses": 0
+        },
+        {
+          "category": "In-warehouse",
+          "n": 12,
+          "correct": 10,
+          "remaining_errors": 2,
+          "gains": 1,
+          "losses": 0
+        },
+        {
+          "category": "Planning",
+          "n": 14,
+          "correct": 12,
+          "remaining_errors": 2,
+          "gains": 0,
+          "losses": 0
+        },
+        {
+          "category": "Inventory",
+          "n": 4,
+          "correct": 4,
+          "remaining_errors": 0,
+          "gains": 0,
+          "losses": 0
+        },
+        {
+          "category": "Merchandise",
+          "n": 1,
+          "correct": 1,
+          "remaining_errors": 0,
+          "gains": 0,
+          "losses": 0
+        },
+        {
+          "category": "Network",
+          "n": 3,
+          "correct": 3,
+          "remaining_errors": 0,
+          "gains": 0,
+          "losses": 0
+        },
+        {
+          "category": "Other",
+          "n": 3,
+          "correct": 3,
+          "remaining_errors": 0,
+          "gains": 0,
+          "losses": 0
+        },
+        {
+          "category": "Returns and Waste",
+          "n": 1,
+          "correct": 1,
+          "remaining_errors": 0,
+          "gains": 0,
+          "losses": 0
+        },
+        {
+          "category": "unknown",
+          "n": 4,
+          "correct": 4,
+          "remaining_errors": 0,
+          "gains": 0,
+          "losses": 0
+        }
+      ],
+      "caveat": "Remaining errors are an audit priority, not a count of source-supported repairable items."
+    },
+    "LogistikaBench": {
+      "remaining_errors": 253,
+      "priority_errors": 235,
+      "priority_error_share": 0.9288537549407114,
+      "categories": [
+        {
+          "category": "material_handling",
+          "n": 696,
+          "correct": 583,
+          "remaining_errors": 113,
+          "gains": 20,
+          "losses": 8
+        },
+        {
+          "category": "transport",
+          "n": 404,
+          "correct": 332,
+          "remaining_errors": 72,
+          "gains": 11,
+          "losses": 12
+        },
+        {
+          "category": "warehousing",
+          "n": 202,
+          "correct": 152,
+          "remaining_errors": 50,
+          "gains": 4,
+          "losses": 3
+        },
+        {
+          "category": "supply_chain",
+          "n": 102,
+          "correct": 90,
+          "remaining_errors": 12,
+          "gains": 1,
+          "losses": 0
+        },
+        {
+          "category": "procurement",
+          "n": 42,
+          "correct": 36,
+          "remaining_errors": 6,
+          "gains": 0,
+          "losses": 0
+        }
+      ],
+      "caveat": "Remaining errors are an audit priority, not a count of source-supported repairable items."
+    }
+  },
+  "new_packet_scope": {
+    "cases": 44,
+    "splits": {
+      "train": 16,
+      "dev": 8,
+      "retention": 20
+    },
+    "source_units": 15,
+    "train_source_groups": 1,
+    "historical_dev_retention_groups": 4
+  },
+  "training_cardinality": {
+    "old_unique_domain": {
+      "2": 20,
+      "1": 20,
+      "3": 20
+    },
+    "new_unique_domain": {
+      "3": 4,
+      "1": 4,
+      "2": 4,
+      "4": 4
+    }
+  },
+  "recommendation": {
+    "reference_model": "P1; current point estimate leader, not a promoted model",
+    "next_candidate": "One cumulative Step120 SFT with original P1 records plus released 16 tasks; measure/freeze tokens first.",
+    "purpose": "Bounded test of cumulative transfer, not broad coverage completion or CPT increment.",
+    "evaluation": "Freeze old and new diagnostics plus one complete two-benchmark measurement before training; do not let one small subgroup point block the engineering measurement.",
+    "broad_priority": "Source-sufficient coverage and retention for SC fulfillment/collaboration and Logistika handling/transport/warehousing.",
+    "subsequent_cpt": "Only after a useful stable SFT corpus, compare identical SFT from Step120 and CPT16.",
+    "execution_status": "Recommendation only; no new training or model calls this turn; previous gates unchanged."
+  },
+  "caveats": [
+    "Two option orders are correlated; answer-cardinality effects are not controlled causal contrasts.",
+    "P1/P3 formal differences cannot isolate replay arithmetic: exposure mix and sequence-token budgets differ.",
+    "Old 80-item and new 20-item retention populations differ; 49/80 to 39/40 is not a temporal improvement.",
+    "Formal benchmarks have informed selection; the results are engineering targets, not a fresh holdout.",
+    "P2 formal scores remain unmeasured; no interpolation or inferred score is supplied."
+  ],
+  "input_sha256": {
+    "docs/cpt_formal_transfer_result_20260917.safe.json": "199835d795c7fb394bdf4716909e7a839fab802a7eb30863a505f65b7d669c9d",
+    "docs/cpt_transfer_p1_result_20260916.safe.json": "0d45ef09c866ec3b6892a1342f27335ce5559f01237035152d07c643c1c554ac",
+    "docs/cpt_transfer_p2_result_20260917.safe.json": "26627c938279611c8fa71ef432c950c6319b3f9751e2918d481f661f0915ca53",
+    "docs/cpt_transfer_p3_result_20260917.safe.json": "6f1e59284039e1f962294619751784b4f6725993b57304e0ee2b3c97c7c56692",
+    "docs/cpt_remediation_result_20260917.safe.json": "2921a0cccc795eb528bae1c6871596f2b0fc5d9edf9833110023f666cc7874b3",
+    "CPT_resources/llin-remediation-packet-20260917-03/cases.private.jsonl": "9d956b539b6f40a07e71ad4b925c681e49534c73e89873c80e825d7895a07848",
+    "CPT_resources/llin-remediation-packet-20260917-03/manifest.safe.json": "bb657a61f4c564bd9d02882ed15a479d423edc6969500c8073c40971db135c50",
+    "CPT_resources/llin-transfer-p1-20260916-03/train.private.jsonl": "bb016625aa2cb3477956c67b693dcc8c446c01dbcc165bf882aa02b453af1632"
+  },
+  "new_model_calls": 0,
+  "new_training": false
+}
