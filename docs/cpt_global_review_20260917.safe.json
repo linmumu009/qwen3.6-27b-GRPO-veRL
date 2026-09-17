@@ -1,0 +1,178 @@
+{
+  "date": "2026-09-17",
+  "formal": [
+    {
+      "model": "step120",
+      "dataset": "LogistikaBench",
+      "n": 1446,
+      "correct": 1180,
+      "gains": 0,
+      "losses": 0
+    },
+    {
+      "model": "step120",
+      "dataset": "SC-bench-knowledge",
+      "n": 226,
+      "correct": 189,
+      "gains": 0,
+      "losses": 0
+    },
+    {
+      "model": "cpt16",
+      "dataset": "LogistikaBench",
+      "n": 1446,
+      "correct": 1185,
+      "gains": 12,
+      "losses": 7
+    },
+    {
+      "model": "cpt16",
+      "dataset": "SC-bench-knowledge",
+      "n": 226,
+      "correct": 189,
+      "gains": 2,
+      "losses": 2
+    },
+    {
+      "model": "s4",
+      "dataset": "LogistikaBench",
+      "n": 1446,
+      "correct": 1188,
+      "gains": 22,
+      "losses": 14
+    },
+    {
+      "model": "s4",
+      "dataset": "SC-bench-knowledge",
+      "n": 226,
+      "correct": 190,
+      "gains": 3,
+      "losses": 2
+    },
+    {
+      "model": "s5",
+      "dataset": "LogistikaBench",
+      "n": 1446,
+      "correct": 1186,
+      "gains": 20,
+      "losses": 14
+    },
+    {
+      "model": "s5",
+      "dataset": "SC-bench-knowledge",
+      "n": 226,
+      "correct": 189,
+      "gains": 2,
+      "losses": 2
+    }
+  ],
+  "historical_repair_union": {
+    "LogistikaBench": 34,
+    "SC-bench-knowledge": 3
+  },
+  "pilots": {
+    "p1": {
+      "p1_dev_conditions": {
+        "n": 20,
+        "correct": 11
+      },
+      "p1_dev_expression": {
+        "n": 20,
+        "correct": 11
+      },
+      "p1_retention": {
+        "n": 80,
+        "correct": 49
+      },
+      "p1_train": {
+        "n": 60,
+        "correct": 51
+      }
+    },
+    "p2": {
+      "p1_dev_conditions": {
+        "n": 20,
+        "correct": 11
+      },
+      "p1_dev_expression": {
+        "n": 20,
+        "correct": 10
+      },
+      "p1_retention": {
+        "n": 80,
+        "correct": 47
+      },
+      "p1_train": {
+        "n": 60,
+        "correct": 42
+      }
+    },
+    "p3": {
+      "p1_dev_conditions": {
+        "n": 20,
+        "correct": 12
+      },
+      "p1_dev_expression": {
+        "n": 20,
+        "correct": 10
+      },
+      "p1_retention": {
+        "n": 80,
+        "correct": 52
+      },
+      "p1_train": {
+        "n": 60,
+        "correct": 47
+      }
+    }
+  },
+  "arithmetic_scores": {
+    "arithmetic_base": 44,
+    "arithmetic_p2": 47,
+    "arithmetic_post": 46
+  },
+  "arithmetic_p3_vs_p2": {
+    "before": 47,
+    "after": 46,
+    "gains": 4,
+    "losses": 5
+  },
+  "training_scope": {
+    "families": 10,
+    "source_units": 13,
+    "unique_new_tasks": 60
+  },
+  "historical_case_links": {
+    "selected_assertion_units": {
+      "counts": {
+        "LogistikaBench": 12
+      },
+      "full_answer_coverage_verified": 0
+    },
+    "topic_related_units": {
+      "counts": {
+        "LogistikaBench": 64,
+        "SC-bench-knowledge": 19
+      },
+      "full_answer_coverage_verified": 0
+    }
+  },
+  "scope_warning": "Historical 300-error registration is incomplete; links are not sufficient answer proofs or bounds on future generalization.",
+  "official_new_candidates_evaluated": [],
+  "new_model_calls": 0,
+  "training": false,
+  "input_sha256": {
+    "llin-transfer-audit-20260915-01/step120/predictions.private.jsonl": "18f0e0524a0ff97c1e0345cd6192b16363a1fcec05405f3ad7c97fb70edad0f7",
+    "llin-transfer-audit-20260915-01/cpt16/predictions.private.jsonl": "2caa2826b24c4d2ffe586f8feb1b2bd871f1a264c381022b82279cd7c603be86",
+    "llin-transfer-audit-20260915-01/s4/predictions.private.jsonl": "d61a385e9e5f64929269093ddbd6ed77ba9193e1565b4327a36280ed4e52d4f0",
+    "llin-transfer-audit-20260915-01/s5/predictions.private.jsonl": "6ceacafa6fb58bff50d9d8781420dece4b0dc658c02367d266634869c33db506",
+    "llin-transfer-p1-20260916-03/complete_result/post/predictions.private.jsonl": "cca5ae6d85d94739a41559f6292cfbf08478037a8d9b5f56d8f24e12f5b6cc78",
+    "llin-transfer-p2-result-20260917-01/post/predictions.private.jsonl": "47d9683de79d0a819cecb68a0215fc811063ac8b13bb5c33b4790a129cb2472b",
+    "llin-transfer-p3-result-20260917-01/post/predictions.private.jsonl": "670cbcee6ecc4be83a89193a3ed913cf6950f34db6246c6a085eef540c097c3f",
+    "llin-transfer-p3-result-20260917-01/arithmetic_base/predictions.private.jsonl": "8e0548583a53bbc96d40428b2a12d9f8737b9090f589cf14a1392d744dc84f95",
+    "llin-transfer-p3-result-20260917-01/arithmetic_p2/predictions.private.jsonl": "6840a5bd44c254b8b82ede48b3637b9f4c72e18e4829a55d82f91e31af77633c",
+    "llin-transfer-p3-result-20260917-01/arithmetic_post/predictions.private.jsonl": "66cbac3ce123b062072f4682e8f7903639af2e88c5ad7b5d512c71b3144a2e71",
+    "llin-transfer-p1-20260916-03/train.private.jsonl": "bb016625aa2cb3477956c67b693dcc8c446c01dbcc165bf882aa02b453af1632",
+    "llin-knowledge-complete-20260911/case_disposition.private.jsonl": "617b6998f7fea07abd5fd20838d7effac4febae554eb0fcdeb1eecd0a1d562aa"
+  }
+}
