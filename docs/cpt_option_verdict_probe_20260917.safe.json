@@ -1,0 +1,457 @@
+{
+  "counts": {
+    "baseline_correct": 25,
+    "consistent_correct": 26,
+    "index_correct_regardless_consistency": 26,
+    "invalid_or_inconsistent": 0,
+    "truncated": 0,
+    "train_correct": 14,
+    "gains": 2,
+    "losses": 1,
+    "dev_correct": 4,
+    "retention_correct": 8
+  },
+  "per_case": [
+    {
+      "id": "authored-pick_lines-train-0",
+      "variant": 0,
+      "baseline_correct": true,
+      "correct": true,
+      "consistent": true,
+      "valid": true,
+      "original_order_prediction": [
+        1
+      ]
+    },
+    {
+      "id": "authored-pick_lines-train-0",
+      "variant": 1,
+      "baseline_correct": false,
+      "correct": true,
+      "consistent": true,
+      "valid": true,
+      "original_order_prediction": [
+        1
+      ]
+    },
+    {
+      "id": "authored-pick_lines-train-1",
+      "variant": 0,
+      "baseline_correct": true,
+      "correct": true,
+      "consistent": true,
+      "valid": true,
+      "original_order_prediction": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "id": "authored-pick_lines-train-1",
+      "variant": 1,
+      "baseline_correct": true,
+      "correct": false,
+      "consistent": true,
+      "valid": true,
+      "original_order_prediction": [
+        0,
+        1,
+        3
+      ]
+    },
+    {
+      "id": "authored-pick_lines-dev-0",
+      "variant": 0,
+      "baseline_correct": true,
+      "correct": true,
+      "consistent": true,
+      "valid": true,
+      "original_order_prediction": [
+        0
+      ]
+    },
+    {
+      "id": "authored-pick_lines-dev-0",
+      "variant": 1,
+      "baseline_correct": false,
+      "correct": false,
+      "consistent": true,
+      "valid": true,
+      "original_order_prediction": [
+        0,
+        2
+      ]
+    },
+    {
+      "id": "authored-batch_tradeoff-train-0",
+      "variant": 0,
+      "baseline_correct": true,
+      "correct": true,
+      "consistent": true,
+      "valid": true,
+      "original_order_prediction": [
+        0,
+        1
+      ]
+    },
+    {
+      "id": "authored-batch_tradeoff-train-0",
+      "variant": 1,
+      "baseline_correct": true,
+      "correct": true,
+      "consistent": true,
+      "valid": true,
+      "original_order_prediction": [
+        0,
+        1
+      ]
+    },
+    {
+      "id": "authored-batch_tradeoff-train-1",
+      "variant": 0,
+      "baseline_correct": true,
+      "correct": true,
+      "consistent": true,
+      "valid": true,
+      "original_order_prediction": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "id": "authored-batch_tradeoff-train-1",
+      "variant": 1,
+      "baseline_correct": true,
+      "correct": true,
+      "consistent": true,
+      "valid": true,
+      "original_order_prediction": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "id": "authored-batch_tradeoff-dev-0",
+      "variant": 0,
+      "baseline_correct": false,
+      "correct": false,
+      "consistent": true,
+      "valid": true,
+      "original_order_prediction": [
+        0
+      ]
+    },
+    {
+      "id": "authored-batch_tradeoff-dev-0",
+      "variant": 1,
+      "baseline_correct": false,
+      "correct": false,
+      "consistent": true,
+      "valid": true,
+      "original_order_prediction": [
+        2
+      ]
+    },
+    {
+      "id": "authored-serial_parallel-train-0",
+      "variant": 0,
+      "baseline_correct": true,
+      "correct": true,
+      "consistent": true,
+      "valid": true,
+      "original_order_prediction": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "id": "authored-serial_parallel-train-0",
+      "variant": 1,
+      "baseline_correct": true,
+      "correct": true,
+      "consistent": true,
+      "valid": true,
+      "original_order_prediction": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "id": "authored-serial_parallel-train-1",
+      "variant": 0,
+      "baseline_correct": false,
+      "correct": false,
+      "consistent": true,
+      "valid": true,
+      "original_order_prediction": [
+        0,
+        1,
+        3
+      ]
+    },
+    {
+      "id": "authored-serial_parallel-train-1",
+      "variant": 1,
+      "baseline_correct": false,
+      "correct": true,
+      "consistent": true,
+      "valid": true,
+      "original_order_prediction": [
+        1,
+        3
+      ]
+    },
+    {
+      "id": "authored-serial_parallel-dev-0",
+      "variant": 0,
+      "baseline_correct": true,
+      "correct": true,
+      "consistent": true,
+      "valid": true,
+      "original_order_prediction": [
+        0,
+        1
+      ]
+    },
+    {
+      "id": "authored-serial_parallel-dev-0",
+      "variant": 1,
+      "baseline_correct": true,
+      "correct": true,
+      "consistent": true,
+      "valid": true,
+      "original_order_prediction": [
+        0,
+        1
+      ]
+    },
+    {
+      "id": "authored-transport_capacity-train-0",
+      "variant": 0,
+      "baseline_correct": true,
+      "correct": true,
+      "consistent": true,
+      "valid": true,
+      "original_order_prediction": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "id": "authored-transport_capacity-train-0",
+      "variant": 1,
+      "baseline_correct": true,
+      "correct": true,
+      "consistent": true,
+      "valid": true,
+      "original_order_prediction": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "id": "authored-transport_capacity-train-1",
+      "variant": 0,
+      "baseline_correct": true,
+      "correct": true,
+      "consistent": true,
+      "valid": true,
+      "original_order_prediction": [
+        2
+      ]
+    },
+    {
+      "id": "authored-transport_capacity-train-1",
+      "variant": 1,
+      "baseline_correct": true,
+      "correct": true,
+      "consistent": true,
+      "valid": true,
+      "original_order_prediction": [
+        2
+      ]
+    },
+    {
+      "id": "authored-transport_capacity-dev-0",
+      "variant": 0,
+      "baseline_correct": true,
+      "correct": true,
+      "consistent": true,
+      "valid": true,
+      "original_order_prediction": [
+        0,
+        3
+      ]
+    },
+    {
+      "id": "authored-transport_capacity-dev-0",
+      "variant": 1,
+      "baseline_correct": false,
+      "correct": false,
+      "consistent": true,
+      "valid": true,
+      "original_order_prediction": [
+        0,
+        2,
+        3
+      ]
+    },
+    {
+      "id": "authored-retain-32-retention-0",
+      "variant": 0,
+      "baseline_correct": true,
+      "correct": true,
+      "consistent": true,
+      "valid": true,
+      "original_order_prediction": [
+        0,
+        2
+      ]
+    },
+    {
+      "id": "authored-retain-32-retention-0",
+      "variant": 1,
+      "baseline_correct": true,
+      "correct": true,
+      "consistent": true,
+      "valid": true,
+      "original_order_prediction": [
+        0,
+        2
+      ]
+    },
+    {
+      "id": "authored-retain-93-retention-0",
+      "variant": 0,
+      "baseline_correct": true,
+      "correct": true,
+      "consistent": true,
+      "valid": true,
+      "original_order_prediction": [
+        0,
+        1,
+        3
+      ]
+    },
+    {
+      "id": "authored-retain-93-retention-0",
+      "variant": 1,
+      "baseline_correct": true,
+      "correct": true,
+      "consistent": true,
+      "valid": true,
+      "original_order_prediction": [
+        0,
+        1,
+        3
+      ]
+    },
+    {
+      "id": "authored-retain-198-retention-0",
+      "variant": 0,
+      "baseline_correct": true,
+      "correct": true,
+      "consistent": true,
+      "valid": true,
+      "original_order_prediction": [
+        0,
+        2
+      ]
+    },
+    {
+      "id": "authored-retain-198-retention-0",
+      "variant": 1,
+      "baseline_correct": true,
+      "correct": true,
+      "consistent": true,
+      "valid": true,
+      "original_order_prediction": [
+        0,
+        2
+      ]
+    },
+    {
+      "id": "authored-retain-0-retention-0",
+      "variant": 0,
+      "baseline_correct": true,
+      "correct": true,
+      "consistent": true,
+      "valid": true,
+      "original_order_prediction": [
+        0
+      ]
+    },
+    {
+      "id": "authored-retain-0-retention-0",
+      "variant": 1,
+      "baseline_correct": true,
+      "correct": true,
+      "consistent": true,
+      "valid": true,
+      "original_order_prediction": [
+        0
+      ]
+    }
+  ],
+  "option_order_changed_answer_ids": [
+    "authored-pick_lines-train-1",
+    "authored-pick_lines-dev-0",
+    "authored-batch_tradeoff-dev-0",
+    "authored-serial_parallel-train-1",
+    "authored-transport_capacity-dev-0"
+  ],
+  "both_orders_correct": 11,
+  "training_allowed": false,
+  "official_protocol_changed": false,
+  "limits": "Post-hoc development contrast on 16 previously inspected tasks. Prompt/output structure changes, not weights. Same 96-token cap and seed; actual input/output lengths differ. No formal-performance claim or causal isolation of a cognitive mechanism.",
+  "remote_token_reconstruction_verified": true,
+  "local_reconstruction_verified": true,
+  "independent_json_consistency_verified": true,
+  "files_sha256": {
+    "predictions.private.jsonl": "96cf443ebc8036e6a0c23e6c738be223e84f50324fa4a2c832699227bdcd1d5c",
+    "registration.safe.json": "760102a0286548573c0bc753556fa7f17f71945e792623d3b9ba0472bdf3e0f0",
+    "status.safe.json": "29a6c38c4eceb327dc9343a6572f9a765478fecf46d80dd064f32683548b926d",
+    "summary.safe.json": "7f5b89d14b0bed79ad75513ce8aea32bfce58ae6fe32f5f3e1f9c2b60d824629"
+  },
+  "registration": {
+    "cases_sha256": "fdb9fb716f226fd5c2b6531521ef84e990fca83fae65a29da3f295418e674b26",
+    "baseline_sha256": "a6dc2781563b88e519f266ac91c0cfb7f65c6feb1baabb1b32ad4b5e1cb98f46",
+    "model": "/workspace/llin-verl-grpo/runs/llin-step120-opensource-20260825-02/hf_export_step120_opensource",
+    "calls": 32,
+    "max_tokens": 96,
+    "seed": 20920,
+    "temperature": 0,
+    "thinking": false,
+    "tp": 8,
+    "max_model_len": 8192,
+    "max_num_seqs": 16,
+    "code_sha256": "98179ca4811aa06d534fed8de7a7fe8114e6846c94f57761ae35fad9ed73de25",
+    "training_allowed": false,
+    "acceptance": "Both final indices and option booleans must agree with the frozen answer; invalid/inconsistent outputs count wrong. Original baseline unchanged."
+  },
+  "launch": {
+    "pid": 3841878,
+    "package": "/workspace/llin-verl-grpo/runs/llin-option-verdict-package-20260917-01",
+    "run": "/workspace/llin-verl-grpo/runs/llin-option-verdict-run-20260917-01",
+    "files": {
+      "cases.private.jsonl": "fdb9fb716f226fd5c2b6531521ef84e990fca83fae65a29da3f295418e674b26",
+      "baseline.private.jsonl": "a6dc2781563b88e519f266ac91c0cfb7f65c6feb1baabb1b32ad4b5e1cb98f46",
+      "run_cpt_option_verdict_probe.py": "98179ca4811aa06d534fed8de7a7fe8114e6846c94f57761ae35fad9ed73de25",
+      "run_cpt_source_authoring_pilot.py": "97fa17e9c1dd33ed4d2718a3e92353dc721ffe3012afba1cbc534c4e07c64303",
+      "cpt_transfer_draft.py": "287ccdb3e3f7835c758921ffbe9a557a33188402f7892ef6b5b58cdd3bb85e8b",
+      "run_cpt_transfer_screen.py": "5b736302a73e522b50f277f6d8c1a6ec650ccf1a79133ec2f41c517664d72beb"
+    },
+    "training_allowed": false,
+    "planned_calls": 32
+  }
+}

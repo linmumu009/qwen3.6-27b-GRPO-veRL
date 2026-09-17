@@ -1,0 +1,374 @@
+{
+  "packet_sha256": "b42fd573fbb9c740446bd3c9f020f8181967f2ac96b40fb0f27f261677743cde",
+  "raw_files": {
+    "candidates.private.jsonl": "2fd7aef6205adb7e4936cac65dba03f1d51ed398def5bcfa0e8b3c7617dfa912",
+    "dev.draft.private.jsonl": "2acb8466188555aa28b41c6459fced894cbccf02c22c22f623147bb984103710",
+    "filtered.private.jsonl": "d0a2717405f85fd867956a712316fe1fa0ce6dc4b4416a2acbd6364d4612cb82",
+    "generation.private.jsonl": "f3a8293a4b419fe0bc44552941ee17943a6d9d0fd1b36ab74151c553587c4d97",
+    "retention.draft.private.jsonl": "0ecad3f400f07cf3caead4ae47a89fc72fe73e239c52a68602bc336d017fbc61",
+    "review.private.jsonl": "b2cb756cee4d16b476af9ec16f2abc84c81cd68d651d9d5c8da672af9863de49",
+    "sealed.draft.private.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "train.draft.private.jsonl": "c1d2ab1d83d0bcc5590d3049498da155d0342a6ef5255555fe33d8e508dc8eda"
+  },
+  "generation_requests": 58,
+  "review_requests": 32,
+  "candidate_items": 32,
+  "filtered_items": 23,
+  "filtered_counts": {
+    "train": 16,
+    "dev": 1,
+    "retention": 6
+  },
+  "complete_6_3_1_units": 0,
+  "unit_counts": {
+    "expand-warehouse_roles": {
+      "train": 2
+    },
+    "expand-handling_granularity": {
+      "train": 3
+    },
+    "expand-shipping_controls": {
+      "train": 2
+    },
+    "expand-activity_distribution": {
+      "train": 1
+    },
+    "expand-mrp_coordination": {
+      "train": 1
+    },
+    "expand-network_decisions": {
+      "train": 2
+    },
+    "expand-bridge_access": {
+      "train": 1
+    },
+    "expand-drought_response": {
+      "train": 1
+    },
+    "expand-road_combinations": {
+      "train": 1
+    },
+    "expand-road_capacity": {
+      "train": 1,
+      "dev": 1
+    },
+    "expand-rail_track_line": {
+      "train": 1
+    },
+    "expand-retain-32": {
+      "retention": 2
+    },
+    "expand-retain-93": {
+      "retention": 1
+    },
+    "expand-retain-198": {
+      "retention": 1
+    },
+    "expand-retain-0": {
+      "retention": 2
+    }
+  },
+  "generation_truncations": 1,
+  "review_truncations": 0,
+  "arithmetic_equalities_checked": 8,
+  "normalized_duplicate_groups": [],
+  "diagnostic_exact_or_number_normalized_matches": [],
+  "diagnostic_exclusion_inputs": [
+    {
+      "sha256": "ebc53dab7e305a4d34d00dc31eff70476d2612021855240762c29c8969c25328",
+      "rows": 32
+    },
+    {
+      "sha256": "b28c352852a2c78bc6659e6d2ee74adefb7e4cd2d688e1d8f1de3995efec0373",
+      "rows": 14
+    },
+    {
+      "sha256": "d778181eae00dc8ed45496a81bead8d9f5f410970e7d28fa1f1354137eaaae09",
+      "rows": 6
+    },
+    {
+      "sha256": "1237a2c060eae41a674a620864f08381ffe364de219accb7916555e849622a6e",
+      "rows": 134
+    },
+    {
+      "sha256": "f0452e42f78606cd7f942f5324f4d1f9c94ae32d60dfe978dbb85bb3d5ad2671",
+      "rows": 49
+    },
+    {
+      "sha256": "0bed756f04398c1bd810f05d95b7f360ba294bc60e5e06332ac5b2493a04338a",
+      "rows": 22
+    },
+    {
+      "sha256": "2cbce73246f70ec49ca23a3eb1e8b92d82aea6711983c38c201a5cb6781df83e",
+      "rows": 3
+    },
+    {
+      "sha256": "63f652b85d28ddf1da5de67f0074f99e80b144c5b1ca4f6ec408a83b7ac78b19",
+      "rows": 12
+    },
+    {
+      "sha256": "2669e189e06b00c04a476be308a1d430eee65362d8cbe3bcdc9c4e77499035eb",
+      "rows": 9
+    },
+    {
+      "sha256": "0894adb053f55b0716ae3bf128bb91b21dd778ad48653342909a3125b2c473f9",
+      "rows": 22
+    },
+    {
+      "sha256": "663e76794901e0af31d759a027ab4ea1e300888fb55e1927691336e2e4f4916b",
+      "rows": 32
+    },
+    {
+      "sha256": "8d1f5e3ce9772fc2ddf99e16ee92630dcbf8aa6a1b58e558b5f397d33c616ea2",
+      "rows": 32
+    },
+    {
+      "sha256": "d896fd906a17c473d4ec9ef775f1ad0ed7138d9fbec431fec5efcab67a3856bd",
+      "rows": 157
+    },
+    {
+      "sha256": "cb8085d17b6b0573964540b72d6e3a3991cd617df114ba271857161926f271eb",
+      "rows": 194
+    },
+    {
+      "sha256": "b74ed230308e4d0da500263817280bf4222d1f5fabf38c315c22f4fc26f8ff3c",
+      "rows": 180
+    },
+    {
+      "sha256": "bb016625aa2cb3477956c67b693dcc8c446c01dbcc165bf882aa02b453af1632",
+      "rows": 60
+    },
+    {
+      "sha256": "b652b2108cb552346df11d005c15ff3137c50a756a7b24eb35302683ec33ed99",
+      "rows": 1672
+    }
+  ],
+  "diagnostic_questions_checked": 2314,
+  "raw_provenance_verified": true,
+  "training_ready": false,
+  "training_allowed": false,
+  "limitations": "Mechanical provenance, exact rational expressions and same-model reviewer decisions verified; scenario-to-equation correctness, semantic novelty, answer uniqueness, retention representativeness and split separation are not certified. Duplicate checks are a floor, never proof of semantic independence. Complete 6/3/1 counts are only counts of provisional drafts. No task is released for training.",
+  "semantic_review": {
+    "reviewer": "Codex operator source-by-source review; not a human or external expert adjudication",
+    "decisions": [
+      {
+        "id": "expand-warehouse_roles-train-single_case_application",
+        "split": "train",
+        "decision": "revise_or_reject",
+        "reason": "把混合中心和配送中心误设为互斥；来源允许同一设施同时完成混合与集配，选项1不能据此判错。",
+        "training_allowed": false
+      },
+      {
+        "id": "expand-warehouse_roles-train-boundary_pair",
+        "split": "train",
+        "decision": "revise_or_reject",
+        "reason": "在制造点附近不排除同时靠近客户，题目未限定只按明确任务分类；来源框架也未命名，排他分类需改写。",
+        "training_allowed": false
+      },
+      {
+        "id": "expand-handling_granularity-train-single_case_application",
+        "split": "train",
+        "decision": "revise_or_reject",
+        "reason": "题干直接给出搬运规则；将一般成本趋势写成必然总成本排序，缺少其余成本条件。",
+        "training_allowed": false
+      },
+      {
+        "id": "expand-handling_granularity-train-correct_a_report",
+        "split": "train",
+        "decision": "revise_or_reject",
+        "reason": "题干给出规则；选项0对变化方向的描述与解释相矛盾，原答案集合不可靠；成本观测也不能仅凭一般趋势否定。",
+        "training_allowed": false
+      },
+      {
+        "id": "expand-handling_granularity-train-compare_two_actions",
+        "split": "train",
+        "decision": "revise_or_reject",
+        "reason": "题干给出核心规则；选项0、1、3为同一比较的重复表达，总成本排序缺少其余条件。",
+        "training_allowed": false
+      },
+      {
+        "id": "expand-shipping_controls-train-single_case_application",
+        "split": "train",
+        "decision": "revise_or_reject",
+        "reason": "装载动作不能单独证明执行了装载优化；需明确优化动作并限定所用教材职能框架。",
+        "training_allowed": false
+      },
+      {
+        "id": "expand-shipping_controls-train-compare_two_actions",
+        "split": "train",
+        "decision": "revise_or_reject",
+        "reason": "使用both/neither元选项且仅做定义归类，不满足原动作取舍设计；需给出真正的共同目标和作业约束。",
+        "training_allowed": false
+      },
+      {
+        "id": "expand-activity_distribution-train-single_case_application",
+        "split": "train",
+        "decision": "retain_seed",
+        "reason": "来源支持均值不足以保证峰值容量，现有答案可保留为事实种子；三个正确选项接近同义，任务仍较浅。",
+        "training_allowed": false
+      },
+      {
+        "id": "expand-mrp_coordination-train-boundary_pair",
+        "split": "train",
+        "decision": "revise_or_reject",
+        "reason": "题干直接解释顺序与联合优化及成本结果，违反闭卷规则要求；需改成具体排程与双方成本约束。",
+        "training_allowed": false
+      },
+      {
+        "id": "expand-network_decisions-train-single_case_application",
+        "split": "train",
+        "decision": "revise_or_reject",
+        "reason": "题干逐项给出设施与流量两个决策维度，选项仅复述答案，不是闭卷应用。",
+        "training_allowed": false
+      },
+      {
+        "id": "expand-network_decisions-train-correct_a_report",
+        "split": "train",
+        "decision": "revise_or_reject",
+        "reason": "未限定MITx所述位置与流量联合模型，现实中固定位置的流量优化也成立；两个正确项重复，管理决策选项含糊。",
+        "training_allowed": false
+      },
+      {
+        "id": "expand-bridge_access-train-boundary_pair",
+        "split": "train",
+        "decision": "revise_or_reject",
+        "reason": "将未限定的draught当作air draught；缺少关闭状态净空及必须开桥才能通过的前提，不能断言B必须等待。",
+        "training_allowed": false
+      },
+      {
+        "id": "expand-drought_response-train-single_case_application",
+        "split": "train",
+        "decision": "revise_or_reject",
+        "reason": "把需要增加航次与已经恢复吞吐混淆，选项2的必要条件读法不能判错；固定班次导致下降也不能证明所有可行措施已达极限。",
+        "training_allowed": false
+      },
+      {
+        "id": "expand-road_combinations-train-compare_two_actions",
+        "split": "train",
+        "decision": "revise_or_reject",
+        "reason": "带附加挂车的铰接车辆可为公路列车，解释中一概以半挂车排除公路列车不成立；动作比较实际只是定义分类，前轴选项也含糊。",
+        "training_allowed": false
+      },
+      {
+        "id": "expand-road_capacity-train-boundary_pair",
+        "split": "train",
+        "decision": "revise_or_reject",
+        "reason": "负载容量计算成立，但未命名2019统计范围且所要求的边界对照变成等量例子；应明确许可总重与实际总重。",
+        "training_allowed": false
+      },
+      {
+        "id": "expand-rail_track_line-train-boundary_pair",
+        "split": "train",
+        "decision": "retain_seed",
+        "reason": "2019范围、公用受管与私用专线的边界和答案均有直接来源支持；可作事实种子，删除重复作答指令后仍需独立迁移设计。",
+        "training_allowed": false
+      },
+      {
+        "id": "expand-road_capacity-dev-dev_expression_ledger",
+        "split": "dev",
+        "decision": "revise_or_reject",
+        "reason": "未限定2019统计范围；所谓日志只是两个数字相加，与训练负载容量题同一结构，不能作为新表达迁移证据。",
+        "training_allowed": false
+      },
+      {
+        "id": "expand-retain-32-retention_application",
+        "split": "retention",
+        "decision": "retain_seed",
+        "reason": "专门用于预测或供应不确定性的库存缓冲符合来源，答案0可保留为事实种子；属于较浅分类，不能代表广域保持。",
+        "training_allowed": false
+      },
+      {
+        "id": "expand-retain-32-retention_boundary",
+        "split": "retention",
+        "decision": "revise_or_reject",
+        "reason": "选项2混淆设置目的与库存后来被消耗的用途，安全库存被动用不自动改变初始分类，必须把反事实条件写清。",
+        "training_allowed": false
+      },
+      {
+        "id": "expand-retain-93-retention_application",
+        "split": "retention",
+        "decision": "revise_or_reject",
+        "reason": "普通塑料箱或铝板加网且上飞机，并不足以建立航空集装器身份；题干应明确其为航空货柜或航空托盘。",
+        "training_allowed": false
+      },
+      {
+        "id": "expand-retain-198-retention_application",
+        "split": "retention",
+        "decision": "retain_seed",
+        "reason": "已给定客机配置，来源支持客货并存与通常的腹舱运输；可保留为事实种子，不能据此建立机型载荷或法规结论。",
+        "training_allowed": false
+      },
+      {
+        "id": "expand-retain-0-retention_application",
+        "split": "retention",
+        "decision": "retain_seed",
+        "reason": "来源明确包含拟由航空器运输的货物，题面已给定运输计划，答案0可保留为事实种子；难度仅为时间边界归类。",
+        "training_allowed": false
+      },
+      {
+        "id": "expand-retain-0-retention_decision",
+        "split": "retention",
+        "decision": "revise_or_reject",
+        "reason": "去机场的车辆是否随后空运未知；还把一般术语扩成监管分类并无来源支持，列出四项却称三项，不能保留原判定。",
+        "training_allowed": false
+      }
+    ],
+    "counts": {
+      "revise_or_reject": 18,
+      "retain_seed": 5
+    },
+    "seed_meaning": "Factually usable starting material only; not a training release or a validated transfer test."
+  },
+  "rejection_accounting": {
+    "parsed_requests": 51,
+    "parse_failures": 6,
+    "truncated_requests": 1,
+    "parsed_tasks": 189,
+    "first_failure_per_parsed_task": {
+      "answer_cardinality_mismatch": 73,
+      "source_quote": 47,
+      "option_rationale": 2,
+      "question_scope": 27,
+      "unsupported arithmetic": 6,
+      "arithmetic_failed": 2
+    },
+    "cardinality_only_structural_failures": 26,
+    "cardinality_only_ids": [
+      "expand-warehouse_roles-train-explicit_exclusion",
+      "expand-warehouse_roles-train-correct_a_report",
+      "expand-warehouse_roles-train-conditional_counterexample",
+      "expand-handling_granularity-train-boundary_pair",
+      "expand-handling_granularity-train-conditional_counterexample",
+      "expand-shipping_controls-train-explicit_exclusion",
+      "expand-activity_distribution-train-boundary_pair",
+      "expand-activity_distribution-train-compare_two_actions",
+      "expand-activity_distribution-train-conditional_counterexample",
+      "expand-mrp_coordination-train-conditional_counterexample",
+      "expand-network_decisions-train-compare_two_actions",
+      "expand-network_decisions-train-conditional_counterexample",
+      "expand-transport_capacity-train-boundary_pair",
+      "expand-transport_capacity-train-compare_two_actions",
+      "expand-forecast_scope-train-conditional_counterexample",
+      "expand-warehouse_roles-dev-dev_conditions_minimal_change",
+      "expand-handling_granularity-dev-dev_expression_ledger",
+      "expand-shipping_controls-dev-dev_conditions_minimal_change",
+      "expand-storage_tradeoffs-dev-dev_expression_ledger",
+      "expand-drought_response-dev-dev_expression_ledger",
+      "expand-holding_cost-dev-dev_conditions_minimal_change",
+      "expand-retain-32-retention_decision",
+      "expand-retain-93-retention_boundary",
+      "expand-retain-93-retention_decision",
+      "expand-retain-172-retention_boundary",
+      "expand-retain-195-retention_application"
+    ],
+    "note": "First failures partition parsed tasks only. The original skipped_or_missing_designs overlaps failures. Removing cardinality is a counterfactual structural diagnostic, not acceptance."
+  },
+  "filtered_train_answer_cardinalities": {
+    "1": 4,
+    "2": 6,
+    "3": 5,
+    "4": 1
+  },
+  "decision": "Do not train this run. Keep all original decisions. Qualify a small source-authored replacement packet before any larger expansion.",
+  "semantic_review_input_sha256": "d0a2717405f85fd867956a712316fe1fa0ce6dc4b4416a2acbd6364d4612cb82"
+}

@@ -1,0 +1,643 @@
+{
+  "cases": 16,
+  "closed_book_calls": 32,
+  "review_calls": 16,
+  "counts": {
+    "train_correct": 13,
+    "invalid": 0,
+    "truncated": 0,
+    "dev_correct": 4,
+    "retention_correct": 8
+  },
+  "both_orders_correct": 11,
+  "both_orders_correct_ids": [
+    "authored-pick_lines-train-1",
+    "authored-batch_tradeoff-train-0",
+    "authored-batch_tradeoff-train-1",
+    "authored-serial_parallel-train-0",
+    "authored-serial_parallel-dev-0",
+    "authored-transport_capacity-train-0",
+    "authored-transport_capacity-train-1",
+    "authored-retain-32-retention-0",
+    "authored-retain-93-retention-0",
+    "authored-retain-198-retention-0",
+    "authored-retain-0-retention-0"
+  ],
+  "option_order_changed_answer_ids": [
+    "authored-pick_lines-train-0",
+    "authored-pick_lines-dev-0",
+    "authored-batch_tradeoff-dev-0",
+    "authored-transport_capacity-dev-0"
+  ],
+  "blind_review_agrees": 14,
+  "review_decisions": [
+    {
+      "id": "authored-pick_lines-train-0",
+      "blind_review_agrees": true
+    },
+    {
+      "id": "authored-pick_lines-train-1",
+      "blind_review_agrees": true
+    },
+    {
+      "id": "authored-pick_lines-dev-0",
+      "blind_review_agrees": true
+    },
+    {
+      "id": "authored-batch_tradeoff-train-0",
+      "blind_review_agrees": true
+    },
+    {
+      "id": "authored-batch_tradeoff-train-1",
+      "blind_review_agrees": true
+    },
+    {
+      "id": "authored-batch_tradeoff-dev-0",
+      "blind_review_agrees": false
+    },
+    {
+      "id": "authored-serial_parallel-train-0",
+      "blind_review_agrees": true
+    },
+    {
+      "id": "authored-serial_parallel-train-1",
+      "blind_review_agrees": false
+    },
+    {
+      "id": "authored-serial_parallel-dev-0",
+      "blind_review_agrees": true
+    },
+    {
+      "id": "authored-transport_capacity-train-0",
+      "blind_review_agrees": true
+    },
+    {
+      "id": "authored-transport_capacity-train-1",
+      "blind_review_agrees": true
+    },
+    {
+      "id": "authored-transport_capacity-dev-0",
+      "blind_review_agrees": true
+    },
+    {
+      "id": "authored-retain-32-retention-0",
+      "blind_review_agrees": true
+    },
+    {
+      "id": "authored-retain-93-retention-0",
+      "blind_review_agrees": true
+    },
+    {
+      "id": "authored-retain-198-retention-0",
+      "blind_review_agrees": true
+    },
+    {
+      "id": "authored-retain-0-retention-0",
+      "blind_review_agrees": true
+    }
+  ],
+  "per_case": [
+    {
+      "id": "authored-pick_lines-train-0",
+      "variant": 0,
+      "correct": true,
+      "original_order_prediction": [
+        1
+      ]
+    },
+    {
+      "id": "authored-pick_lines-train-0",
+      "variant": 1,
+      "correct": false,
+      "original_order_prediction": [
+        0,
+        1
+      ]
+    },
+    {
+      "id": "authored-pick_lines-train-1",
+      "variant": 0,
+      "correct": true,
+      "original_order_prediction": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "id": "authored-pick_lines-train-1",
+      "variant": 1,
+      "correct": true,
+      "original_order_prediction": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "id": "authored-pick_lines-dev-0",
+      "variant": 0,
+      "correct": true,
+      "original_order_prediction": [
+        0
+      ]
+    },
+    {
+      "id": "authored-pick_lines-dev-0",
+      "variant": 1,
+      "correct": false,
+      "original_order_prediction": [
+        0,
+        2
+      ]
+    },
+    {
+      "id": "authored-batch_tradeoff-train-0",
+      "variant": 0,
+      "correct": true,
+      "original_order_prediction": [
+        0,
+        1
+      ]
+    },
+    {
+      "id": "authored-batch_tradeoff-train-0",
+      "variant": 1,
+      "correct": true,
+      "original_order_prediction": [
+        0,
+        1
+      ]
+    },
+    {
+      "id": "authored-batch_tradeoff-train-1",
+      "variant": 0,
+      "correct": true,
+      "original_order_prediction": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "id": "authored-batch_tradeoff-train-1",
+      "variant": 1,
+      "correct": true,
+      "original_order_prediction": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "id": "authored-batch_tradeoff-dev-0",
+      "variant": 0,
+      "correct": false,
+      "original_order_prediction": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "id": "authored-batch_tradeoff-dev-0",
+      "variant": 1,
+      "correct": false,
+      "original_order_prediction": [
+        2,
+        3
+      ]
+    },
+    {
+      "id": "authored-serial_parallel-train-0",
+      "variant": 0,
+      "correct": true,
+      "original_order_prediction": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "id": "authored-serial_parallel-train-0",
+      "variant": 1,
+      "correct": true,
+      "original_order_prediction": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "id": "authored-serial_parallel-train-1",
+      "variant": 0,
+      "correct": false,
+      "original_order_prediction": [
+        0,
+        1,
+        3
+      ]
+    },
+    {
+      "id": "authored-serial_parallel-train-1",
+      "variant": 1,
+      "correct": false,
+      "original_order_prediction": [
+        0,
+        1,
+        3
+      ]
+    },
+    {
+      "id": "authored-serial_parallel-dev-0",
+      "variant": 0,
+      "correct": true,
+      "original_order_prediction": [
+        0,
+        1
+      ]
+    },
+    {
+      "id": "authored-serial_parallel-dev-0",
+      "variant": 1,
+      "correct": true,
+      "original_order_prediction": [
+        0,
+        1
+      ]
+    },
+    {
+      "id": "authored-transport_capacity-train-0",
+      "variant": 0,
+      "correct": true,
+      "original_order_prediction": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "id": "authored-transport_capacity-train-0",
+      "variant": 1,
+      "correct": true,
+      "original_order_prediction": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "id": "authored-transport_capacity-train-1",
+      "variant": 0,
+      "correct": true,
+      "original_order_prediction": [
+        2
+      ]
+    },
+    {
+      "id": "authored-transport_capacity-train-1",
+      "variant": 1,
+      "correct": true,
+      "original_order_prediction": [
+        2
+      ]
+    },
+    {
+      "id": "authored-transport_capacity-dev-0",
+      "variant": 0,
+      "correct": true,
+      "original_order_prediction": [
+        0,
+        3
+      ]
+    },
+    {
+      "id": "authored-transport_capacity-dev-0",
+      "variant": 1,
+      "correct": false,
+      "original_order_prediction": [
+        0,
+        2,
+        3
+      ]
+    },
+    {
+      "id": "authored-retain-32-retention-0",
+      "variant": 0,
+      "correct": true,
+      "original_order_prediction": [
+        0,
+        2
+      ]
+    },
+    {
+      "id": "authored-retain-32-retention-0",
+      "variant": 1,
+      "correct": true,
+      "original_order_prediction": [
+        0,
+        2
+      ]
+    },
+    {
+      "id": "authored-retain-93-retention-0",
+      "variant": 0,
+      "correct": true,
+      "original_order_prediction": [
+        0,
+        1,
+        3
+      ]
+    },
+    {
+      "id": "authored-retain-93-retention-0",
+      "variant": 1,
+      "correct": true,
+      "original_order_prediction": [
+        0,
+        1,
+        3
+      ]
+    },
+    {
+      "id": "authored-retain-198-retention-0",
+      "variant": 0,
+      "correct": true,
+      "original_order_prediction": [
+        0,
+        2
+      ]
+    },
+    {
+      "id": "authored-retain-198-retention-0",
+      "variant": 1,
+      "correct": true,
+      "original_order_prediction": [
+        0,
+        2
+      ]
+    },
+    {
+      "id": "authored-retain-0-retention-0",
+      "variant": 0,
+      "correct": true,
+      "original_order_prediction": [
+        0
+      ]
+    },
+    {
+      "id": "authored-retain-0-retention-0",
+      "variant": 1,
+      "correct": true,
+      "original_order_prediction": [
+        0
+      ]
+    }
+  ],
+  "training_allowed": false,
+  "limits": "Small source-authored development diagnostic. Same student is source reviewer and closed-book solver. No training occurred, no improvement claim, no independent transfer or broad retention certification.",
+  "remote_token_reconstruction_verified": true,
+  "local_reconstruction_verified": true,
+  "files_sha256": {
+    "closed.private.jsonl": "a6dc2781563b88e519f266ac91c0cfb7f65c6feb1baabb1b32ad4b5e1cb98f46",
+    "registration.safe.json": "c964f2ad41bbfd9d04b52826a36acef9b1d88a1863232235da25b79ec2effcdc",
+    "review.private.jsonl": "1f8e8844bd15d38792447d20e59c4dcfe2d2dc15e0f32f047356eb21301421e1",
+    "status.safe.json": "cb92e8e244254cfccfc704aae17b00316f9eca0d0924c90cdfc69a726873a91f",
+    "summary.safe.json": "a544fe0b145bd7026a7744299b7fff3bc4ca65d97fc7d2413a1533aea4d87128"
+  },
+  "registration": {
+    "cases_sha256": "fdb9fb716f226fd5c2b6531521ef84e990fca83fae65a29da3f295418e674b26",
+    "model": "/workspace/llin-verl-grpo/runs/llin-step120-opensource-20260825-02/hf_export_step120_opensource",
+    "closed_calls": 32,
+    "review_calls": 16,
+    "seed": 20920,
+    "temperature": 0,
+    "closed_max_tokens": 96,
+    "review_max_tokens": 1536,
+    "thinking": false,
+    "tp": 8,
+    "max_model_len": 8192,
+    "max_num_seqs": 16,
+    "training_allowed": false,
+    "code_sha256": "97fa17e9c1dd33ed4d2718a3e92353dc721ffe3012afba1cbc534c4e07c64303"
+  },
+  "coverage": {
+    "source_units": 8,
+    "train_dev_source_groups": 1,
+    "retention_source_groups": 2,
+    "train_retention_groups_disjoint": true,
+    "source_units_absent_from_p1_training": 4,
+    "sources": [
+      {
+        "id": "llin-core-68eacc4454fc8a4d4bb3",
+        "title": "Pick lines, density and batching trade-offs",
+        "group": "llin-core-010eea3da282a23f6b6b",
+        "historical_split": "train",
+        "p1_domain": false,
+        "p1_replay": false
+      },
+      {
+        "id": "llin-core-4abc2a4cad028703b936",
+        "title": "When batching saves work",
+        "group": "llin-core-010eea3da282a23f6b6b",
+        "historical_split": "train",
+        "p1_domain": false,
+        "p1_replay": false
+      },
+      {
+        "id": "llin-core-98928650cc767bf758a2",
+        "title": "Serial and parallel order picking",
+        "group": "llin-core-010eea3da282a23f6b6b",
+        "historical_split": "train",
+        "p1_domain": false,
+        "p1_replay": false
+      },
+      {
+        "id": "llin-core-9026b75d5b2d078be852",
+        "title": "Transport supply, demand and adjustment",
+        "group": "llin-core-010eea3da282a23f6b6b",
+        "historical_split": "train",
+        "p1_domain": false,
+        "p1_replay": false
+      },
+      {
+        "id": "llin-core-749083f96fb66656aada",
+        "title": "Safety stock",
+        "group": "llin-core-26f3697b59af0e73d5f8",
+        "historical_split": "dev",
+        "p1_domain": false,
+        "p1_replay": false
+      },
+      {
+        "id": "llin-core-f3434848ccb0f303692c",
+        "title": "IATA ULD definition",
+        "group": "llin-core-082fe7810104262f1a4b",
+        "historical_split": "dev",
+        "p1_domain": false,
+        "p1_replay": false
+      },
+      {
+        "id": "llin-core-b5786cfc56559cc97a5f",
+        "title": "Passenger aircraft and belly cargo",
+        "group": "llin-core-082fe7810104262f1a4b",
+        "historical_split": "dev",
+        "p1_domain": false,
+        "p1_replay": false
+      },
+      {
+        "id": "llin-core-d032c99b0a1efb028830",
+        "title": "Air cargo",
+        "group": "llin-core-082fe7810104262f1a4b",
+        "historical_split": "dev",
+        "p1_domain": false,
+        "p1_replay": false
+      }
+    ],
+    "training_allowed": false
+  },
+  "exclusion": {
+    "questions_checked": 2337,
+    "normalized_matches": [],
+    "internal_duplicates": 0,
+    "inputs": [
+      {
+        "path": "llin-composed-boundaries-20260916-01\\cases.private.jsonl",
+        "sha256": "ebc53dab7e305a4d34d00dc31eff70476d2612021855240762c29c8969c25328"
+      },
+      {
+        "path": "llin-coverage-expansion-20260916-01\\cases.private.jsonl",
+        "sha256": "b28c352852a2c78bc6659e6d2ee74adefb7e4cd2d688e1d8f1de3995efec0373"
+      },
+      {
+        "path": "llin-reviewed-scenario-probe-20260916-01\\cases.private.jsonl",
+        "sha256": "d778181eae00dc8ed45496a81bead8d9f5f410970e7d28fa1f1354137eaaae09"
+      },
+      {
+        "path": "llin-transfer-screen-20260916-02\\candidates.private.jsonl",
+        "sha256": "1237a2c060eae41a674a620864f08381ffe364de219accb7916555e849622a6e"
+      },
+      {
+        "path": "llin-transfer-screen-20260916-03\\candidates.private.jsonl",
+        "sha256": "f0452e42f78606cd7f942f5324f4d1f9c94ae32d60dfe978dbb85bb3d5ad2671"
+      },
+      {
+        "path": "llin-transfer-draft-20260916-01\\pilot_result\\candidates.private.jsonl",
+        "sha256": "0bed756f04398c1bd810f05d95b7f360ba294bc60e5e06332ac5b2493a04338a"
+      },
+      {
+        "path": "llin-transfer-constraint-pilot-20260916-01\\result\\candidates.private.jsonl",
+        "sha256": "2cbce73246f70ec49ca23a3eb1e8b92d82aea6711983c38c201a5cb6781df83e"
+      },
+      {
+        "path": "llin-s4-probe-20260915-01\\cases.private.jsonl",
+        "sha256": "63f652b85d28ddf1da5de67f0074f99e80b144c5b1ca4f6ec408a83b7ac78b19"
+      },
+      {
+        "path": "llin-s4-probe-20260915-02\\cases.private.jsonl",
+        "sha256": "2669e189e06b00c04a476be308a1d430eee65362d8cbe3bcdc9c4e77499035eb"
+      },
+      {
+        "path": "llin-s4-transfer-diagnostic-20260915-01\\cases.private.jsonl",
+        "sha256": "0894adb053f55b0716ae3bf128bb91b21dd778ad48653342909a3125b2c473f9"
+      },
+      {
+        "path": "llin-s4-conditional-train-20260915-01\\tasks.private.jsonl",
+        "sha256": "663e76794901e0af31d759a027ab4ea1e300888fb55e1927691336e2e4f4916b"
+      },
+      {
+        "path": "llin-s5-contrast-20260915-01\\tasks.private.jsonl",
+        "sha256": "8d1f5e3ce9772fc2ddf99e16ee92630dcbf8aa6a1b58e558b5f397d33c616ea2"
+      },
+      {
+        "path": "llin-source-reviewed-20260914-01\\cases.private.jsonl",
+        "sha256": "d896fd906a17c473d4ec9ef775f1ad0ed7138d9fbec431fec5efcab67a3856bd"
+      },
+      {
+        "path": "llin-source-expansion-20260914-01\\filtered_tasks.private.jsonl",
+        "sha256": "cb8085d17b6b0573964540b72d6e3a3991cd617df114ba271857161926f271eb"
+      },
+      {
+        "path": "llin-transfer-p1-20260916-03\\cases.private.jsonl",
+        "sha256": "b74ed230308e4d0da500263817280bf4222d1f5fabf38c315c22f4fc26f8ff3c"
+      },
+      {
+        "path": "llin-transfer-audit-20260915-01\\frozen_cases.private.jsonl",
+        "sha256": "b652b2108cb552346df11d005c15ff3137c50a756a7b24eb35302683ec33ed99"
+      },
+      {
+        "path": "llin-transfer-expansion-draft-20260917-01\\filtered.private.jsonl",
+        "sha256": "d0a2717405f85fd867956a712316fe1fa0ce6dc4b4416a2acbd6364d4612cb82"
+      }
+    ],
+    "training_allowed": false,
+    "limit": "Exact/number-normalized wording check only; rules and some task structures are shared development material."
+  },
+  "launch": {
+    "pid": 3838921,
+    "package": "/workspace/llin-verl-grpo/runs/llin-source-authoring-package-20260917-01",
+    "run": "/workspace/llin-verl-grpo/runs/llin-source-authoring-run-20260917-01",
+    "files": {
+      "cases.private.jsonl": "fdb9fb716f226fd5c2b6531521ef84e990fca83fae65a29da3f295418e674b26",
+      "run_cpt_source_authoring_pilot.py": "97fa17e9c1dd33ed4d2718a3e92353dc721ffe3012afba1cbc534c4e07c64303",
+      "cpt_transfer_draft.py": "287ccdb3e3f7835c758921ffbe9a557a33188402f7892ef6b5b58cdd3bb85e8b",
+      "run_cpt_transfer_screen.py": "5b736302a73e522b50f277f6d8c1a6ec650ccf1a79133ec2f41c517664d72beb"
+    },
+    "training_allowed": false,
+    "planned_calls": 48
+  },
+  "operator_review": {
+    "all_16_keys_rechecked": true,
+    "blind_review_pass_count_unchanged": 14,
+    "training_allowed": false,
+    "review_disagreements": [
+      {
+        "id": "authored-batch_tradeoff-dev-0",
+        "author_indices": [
+          0,
+          2
+        ],
+        "review_indices": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "finding": "Reviewer calculations and option reasons support only X and Z: costs 78,82,78 against 80; no intervention costs90. Front-loaded indices contradict its own conclusions."
+      },
+      {
+        "id": "authored-serial_parallel-train-1",
+        "author_indices": [
+          1,
+          3
+        ],
+        "review_indices": [
+          0,
+          1,
+          3
+        ],
+        "finding": "Reviewer computes serial17>deadline16 and parallel16, work23 versus17, yet includes the false serial-meets-deadline option in initial indices."
+      }
+    ],
+    "limitation": "Operator adjudication preserves original model rejection and never rewrites reviewer output or grants a training release."
+  },
+  "paired_error_summary": {
+    "incorrect_calls": 7,
+    "both_orders_wrong_ids": [
+      "authored-batch_tradeoff-dev-0",
+      "authored-serial_parallel-train-1"
+    ],
+    "only_one_order_wrong_ids": [
+      "authored-pick_lines-train-0",
+      "authored-pick_lines-dev-0",
+      "authored-transport_capacity-dev-0"
+    ],
+    "stable_wrong_answer_ids": [
+      "authored-serial_parallel-train-1"
+    ]
+  }
+}
