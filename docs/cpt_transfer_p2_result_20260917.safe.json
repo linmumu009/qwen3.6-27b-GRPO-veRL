@@ -1,0 +1,768 @@
+{
+  "baseline": {
+    "correct": 83,
+    "invalid": 0,
+    "truncated": 0,
+    "strata": {
+      "p1_dev_conditions": {
+        "n": 20,
+        "correct": 7
+      },
+      "p1_dev_expression": {
+        "n": 20,
+        "correct": 6
+      },
+      "p1_retention": {
+        "n": 80,
+        "correct": 51
+      },
+      "p1_train": {
+        "n": 60,
+        "correct": 19
+      }
+    },
+    "predictions_sha256": "5d573d68de136dd3f704a466fe6a1a6e59604889ff1112f111e424530c035f83",
+    "prompts_sha256": "2bebb4959e0bbf84630b4b362867d837b61873360dbb6a71df25ee6c5b019221"
+  },
+  "baseline_repeat": {
+    "correct": 83,
+    "invalid": 0,
+    "truncated": 0,
+    "strata": {
+      "p1_dev_conditions": {
+        "n": 20,
+        "correct": 7
+      },
+      "p1_dev_expression": {
+        "n": 20,
+        "correct": 6
+      },
+      "p1_retention": {
+        "n": 80,
+        "correct": 52
+      },
+      "p1_train": {
+        "n": 60,
+        "correct": 18
+      }
+    },
+    "predictions_sha256": "0938328517b0ead58fb5ee769de66ca6c4fbcdd6e73c26a9204931d33c22865c",
+    "prompts_sha256": "2bebb4959e0bbf84630b4b362867d837b61873360dbb6a71df25ee6c5b019221"
+  },
+  "post": {
+    "correct": 110,
+    "invalid": 0,
+    "truncated": 0,
+    "strata": {
+      "p1_dev_conditions": {
+        "n": 20,
+        "correct": 11
+      },
+      "p1_dev_expression": {
+        "n": 20,
+        "correct": 10
+      },
+      "p1_retention": {
+        "n": 80,
+        "correct": 47
+      },
+      "p1_train": {
+        "n": 60,
+        "correct": 42
+      }
+    },
+    "predictions_sha256": "47d9683de79d0a819cecb68a0215fc811063ac8b13bb5c33b4790a129cb2472b",
+    "prompts_sha256": "2bebb4959e0bbf84630b4b362867d837b61873360dbb6a71df25ee6c5b019221"
+  },
+  "comparison": {
+    "versus_main": {
+      "strata": {
+        "p1_train": {
+          "n": 60,
+          "before": 19,
+          "after": 42,
+          "gains": 26,
+          "losses": 3
+        },
+        "p1_dev_expression": {
+          "n": 20,
+          "before": 6,
+          "after": 10,
+          "gains": 6,
+          "losses": 2
+        },
+        "p1_dev_conditions": {
+          "n": 20,
+          "before": 7,
+          "after": 11,
+          "gains": 4,
+          "losses": 0
+        },
+        "p1_retention": {
+          "n": 80,
+          "before": 51,
+          "after": 47,
+          "gains": 1,
+          "losses": 5
+        }
+      },
+      "families": {
+        "p1_train": {
+          "speed": {
+            "n": 6,
+            "before": 2,
+            "after": 3,
+            "gains": 1,
+            "losses": 0
+          },
+          "railcar": {
+            "n": 6,
+            "before": 1,
+            "after": 2,
+            "gains": 2,
+            "losses": 1
+          },
+          "derailment": {
+            "n": 6,
+            "before": 0,
+            "after": 6,
+            "gains": 6,
+            "losses": 0
+          },
+          "injury": {
+            "n": 6,
+            "before": 0,
+            "after": 5,
+            "gains": 5,
+            "losses": 0
+          },
+          "capacity": {
+            "n": 6,
+            "before": 0,
+            "after": 3,
+            "gains": 3,
+            "losses": 0
+          },
+          "propulsion": {
+            "n": 6,
+            "before": 3,
+            "after": 6,
+            "gains": 3,
+            "losses": 0
+          },
+          "finance": {
+            "n": 6,
+            "before": 4,
+            "after": 5,
+            "gains": 1,
+            "losses": 0
+          },
+          "outsourcing": {
+            "n": 6,
+            "before": 2,
+            "after": 4,
+            "gains": 2,
+            "losses": 0
+          },
+          "pipeline": {
+            "n": 6,
+            "before": 5,
+            "after": 5,
+            "gains": 1,
+            "losses": 1
+          },
+          "wave": {
+            "n": 6,
+            "before": 2,
+            "after": 3,
+            "gains": 2,
+            "losses": 1
+          }
+        },
+        "p1_dev_expression": {
+          "speed": {
+            "n": 2,
+            "before": 0,
+            "after": 0,
+            "gains": 0,
+            "losses": 0
+          },
+          "railcar": {
+            "n": 2,
+            "before": 0,
+            "after": 0,
+            "gains": 0,
+            "losses": 0
+          },
+          "derailment": {
+            "n": 2,
+            "before": 0,
+            "after": 2,
+            "gains": 2,
+            "losses": 0
+          },
+          "injury": {
+            "n": 2,
+            "before": 0,
+            "after": 2,
+            "gains": 2,
+            "losses": 0
+          },
+          "capacity": {
+            "n": 2,
+            "before": 1,
+            "after": 1,
+            "gains": 0,
+            "losses": 0
+          },
+          "propulsion": {
+            "n": 2,
+            "before": 0,
+            "after": 1,
+            "gains": 1,
+            "losses": 0
+          },
+          "finance": {
+            "n": 2,
+            "before": 2,
+            "after": 1,
+            "gains": 0,
+            "losses": 1
+          },
+          "outsourcing": {
+            "n": 2,
+            "before": 0,
+            "after": 0,
+            "gains": 0,
+            "losses": 0
+          },
+          "pipeline": {
+            "n": 2,
+            "before": 2,
+            "after": 2,
+            "gains": 0,
+            "losses": 0
+          },
+          "wave": {
+            "n": 2,
+            "before": 1,
+            "after": 1,
+            "gains": 1,
+            "losses": 1
+          }
+        },
+        "p1_dev_conditions": {
+          "speed": {
+            "n": 2,
+            "before": 0,
+            "after": 1,
+            "gains": 1,
+            "losses": 0
+          },
+          "railcar": {
+            "n": 2,
+            "before": 1,
+            "after": 1,
+            "gains": 0,
+            "losses": 0
+          },
+          "derailment": {
+            "n": 2,
+            "before": 2,
+            "after": 2,
+            "gains": 0,
+            "losses": 0
+          },
+          "injury": {
+            "n": 2,
+            "before": 1,
+            "after": 2,
+            "gains": 1,
+            "losses": 0
+          },
+          "capacity": {
+            "n": 2,
+            "before": 0,
+            "after": 1,
+            "gains": 1,
+            "losses": 0
+          },
+          "propulsion": {
+            "n": 2,
+            "before": 0,
+            "after": 0,
+            "gains": 0,
+            "losses": 0
+          },
+          "finance": {
+            "n": 2,
+            "before": 1,
+            "after": 2,
+            "gains": 1,
+            "losses": 0
+          },
+          "outsourcing": {
+            "n": 2,
+            "before": 0,
+            "after": 0,
+            "gains": 0,
+            "losses": 0
+          },
+          "pipeline": {
+            "n": 2,
+            "before": 1,
+            "after": 1,
+            "gains": 0,
+            "losses": 0
+          },
+          "wave": {
+            "n": 2,
+            "before": 1,
+            "after": 1,
+            "gains": 0,
+            "losses": 0
+          }
+        },
+        "p1_retention": {
+          "teu": {
+            "n": 10,
+            "before": 2,
+            "after": 2,
+            "gains": 0,
+            "losses": 0
+          },
+          "tkm": {
+            "n": 10,
+            "before": 3,
+            "after": 3,
+            "gains": 0,
+            "losses": 0
+          },
+          "offered": {
+            "n": 10,
+            "before": 10,
+            "after": 9,
+            "gains": 0,
+            "losses": 1
+          },
+          "pallet": {
+            "n": 10,
+            "before": 10,
+            "after": 10,
+            "gains": 0,
+            "losses": 0
+          },
+          "reorder": {
+            "n": 10,
+            "before": 4,
+            "after": 3,
+            "gains": 0,
+            "losses": 1
+          },
+          "capital": {
+            "n": 10,
+            "before": 9,
+            "after": 8,
+            "gains": 1,
+            "losses": 2
+          },
+          "abc": {
+            "n": 3,
+            "before": 3,
+            "after": 3,
+            "gains": 0,
+            "losses": 0
+          },
+          "packages": {
+            "n": 5,
+            "before": 4,
+            "after": 4,
+            "gains": 0,
+            "losses": 0
+          },
+          "moment": {
+            "n": 6,
+            "before": 0,
+            "after": 0,
+            "gains": 0,
+            "losses": 0
+          },
+          "payload": {
+            "n": 6,
+            "before": 6,
+            "after": 5,
+            "gains": 0,
+            "losses": 1
+          }
+        }
+      },
+      "prospective_signal_gates": {
+        "p1_dev_expression": true,
+        "p1_dev_conditions": true,
+        "retention": false
+      },
+      "next_action": "stop_mixture_route_review",
+      "formal_benchmark_evaluated": false,
+      "promotion": false,
+      "sealed_evaluated": false,
+      "independent_training_seeds": 1
+    },
+    "versus_repeat": {
+      "strata": {
+        "p1_train": {
+          "n": 60,
+          "before": 18,
+          "after": 42,
+          "gains": 27,
+          "losses": 3
+        },
+        "p1_dev_expression": {
+          "n": 20,
+          "before": 6,
+          "after": 10,
+          "gains": 6,
+          "losses": 2
+        },
+        "p1_dev_conditions": {
+          "n": 20,
+          "before": 7,
+          "after": 11,
+          "gains": 4,
+          "losses": 0
+        },
+        "p1_retention": {
+          "n": 80,
+          "before": 52,
+          "after": 47,
+          "gains": 0,
+          "losses": 5
+        }
+      },
+      "families": {
+        "p1_train": {
+          "speed": {
+            "n": 6,
+            "before": 2,
+            "after": 3,
+            "gains": 1,
+            "losses": 0
+          },
+          "railcar": {
+            "n": 6,
+            "before": 1,
+            "after": 2,
+            "gains": 2,
+            "losses": 1
+          },
+          "derailment": {
+            "n": 6,
+            "before": 0,
+            "after": 6,
+            "gains": 6,
+            "losses": 0
+          },
+          "injury": {
+            "n": 6,
+            "before": 0,
+            "after": 5,
+            "gains": 5,
+            "losses": 0
+          },
+          "capacity": {
+            "n": 6,
+            "before": 0,
+            "after": 3,
+            "gains": 3,
+            "losses": 0
+          },
+          "propulsion": {
+            "n": 6,
+            "before": 3,
+            "after": 6,
+            "gains": 3,
+            "losses": 0
+          },
+          "finance": {
+            "n": 6,
+            "before": 3,
+            "after": 5,
+            "gains": 2,
+            "losses": 0
+          },
+          "outsourcing": {
+            "n": 6,
+            "before": 2,
+            "after": 4,
+            "gains": 2,
+            "losses": 0
+          },
+          "pipeline": {
+            "n": 6,
+            "before": 5,
+            "after": 5,
+            "gains": 1,
+            "losses": 1
+          },
+          "wave": {
+            "n": 6,
+            "before": 2,
+            "after": 3,
+            "gains": 2,
+            "losses": 1
+          }
+        },
+        "p1_dev_expression": {
+          "speed": {
+            "n": 2,
+            "before": 0,
+            "after": 0,
+            "gains": 0,
+            "losses": 0
+          },
+          "railcar": {
+            "n": 2,
+            "before": 0,
+            "after": 0,
+            "gains": 0,
+            "losses": 0
+          },
+          "derailment": {
+            "n": 2,
+            "before": 0,
+            "after": 2,
+            "gains": 2,
+            "losses": 0
+          },
+          "injury": {
+            "n": 2,
+            "before": 0,
+            "after": 2,
+            "gains": 2,
+            "losses": 0
+          },
+          "capacity": {
+            "n": 2,
+            "before": 1,
+            "after": 1,
+            "gains": 0,
+            "losses": 0
+          },
+          "propulsion": {
+            "n": 2,
+            "before": 0,
+            "after": 1,
+            "gains": 1,
+            "losses": 0
+          },
+          "finance": {
+            "n": 2,
+            "before": 2,
+            "after": 1,
+            "gains": 0,
+            "losses": 1
+          },
+          "outsourcing": {
+            "n": 2,
+            "before": 0,
+            "after": 0,
+            "gains": 0,
+            "losses": 0
+          },
+          "pipeline": {
+            "n": 2,
+            "before": 2,
+            "after": 2,
+            "gains": 0,
+            "losses": 0
+          },
+          "wave": {
+            "n": 2,
+            "before": 1,
+            "after": 1,
+            "gains": 1,
+            "losses": 1
+          }
+        },
+        "p1_dev_conditions": {
+          "speed": {
+            "n": 2,
+            "before": 0,
+            "after": 1,
+            "gains": 1,
+            "losses": 0
+          },
+          "railcar": {
+            "n": 2,
+            "before": 1,
+            "after": 1,
+            "gains": 0,
+            "losses": 0
+          },
+          "derailment": {
+            "n": 2,
+            "before": 2,
+            "after": 2,
+            "gains": 0,
+            "losses": 0
+          },
+          "injury": {
+            "n": 2,
+            "before": 1,
+            "after": 2,
+            "gains": 1,
+            "losses": 0
+          },
+          "capacity": {
+            "n": 2,
+            "before": 0,
+            "after": 1,
+            "gains": 1,
+            "losses": 0
+          },
+          "propulsion": {
+            "n": 2,
+            "before": 0,
+            "after": 0,
+            "gains": 0,
+            "losses": 0
+          },
+          "finance": {
+            "n": 2,
+            "before": 1,
+            "after": 2,
+            "gains": 1,
+            "losses": 0
+          },
+          "outsourcing": {
+            "n": 2,
+            "before": 0,
+            "after": 0,
+            "gains": 0,
+            "losses": 0
+          },
+          "pipeline": {
+            "n": 2,
+            "before": 1,
+            "after": 1,
+            "gains": 0,
+            "losses": 0
+          },
+          "wave": {
+            "n": 2,
+            "before": 1,
+            "after": 1,
+            "gains": 0,
+            "losses": 0
+          }
+        },
+        "p1_retention": {
+          "teu": {
+            "n": 10,
+            "before": 2,
+            "after": 2,
+            "gains": 0,
+            "losses": 0
+          },
+          "tkm": {
+            "n": 10,
+            "before": 3,
+            "after": 3,
+            "gains": 0,
+            "losses": 0
+          },
+          "offered": {
+            "n": 10,
+            "before": 10,
+            "after": 9,
+            "gains": 0,
+            "losses": 1
+          },
+          "pallet": {
+            "n": 10,
+            "before": 10,
+            "after": 10,
+            "gains": 0,
+            "losses": 0
+          },
+          "reorder": {
+            "n": 10,
+            "before": 4,
+            "after": 3,
+            "gains": 0,
+            "losses": 1
+          },
+          "capital": {
+            "n": 10,
+            "before": 10,
+            "after": 8,
+            "gains": 0,
+            "losses": 2
+          },
+          "abc": {
+            "n": 3,
+            "before": 3,
+            "after": 3,
+            "gains": 0,
+            "losses": 0
+          },
+          "packages": {
+            "n": 5,
+            "before": 4,
+            "after": 4,
+            "gains": 0,
+            "losses": 0
+          },
+          "moment": {
+            "n": 6,
+            "before": 0,
+            "after": 0,
+            "gains": 0,
+            "losses": 0
+          },
+          "payload": {
+            "n": 6,
+            "before": 6,
+            "after": 5,
+            "gains": 0,
+            "losses": 1
+          }
+        }
+      },
+      "prospective_signal_gates": {
+        "p1_dev_expression": true,
+        "p1_dev_conditions": true,
+        "retention": false
+      },
+      "next_action": "stop_mixture_route_review",
+      "formal_benchmark_evaluated": false,
+      "promotion": false,
+      "sealed_evaluated": false,
+      "independent_training_seeds": 1
+    },
+    "retention_floor": 52,
+    "next_action": "stop_mixture_route_review",
+    "formal_benchmark_evaluated": false,
+    "sealed_evaluated": false,
+    "promotion": false
+  },
+  "training_audit": {
+    "steps": 105,
+    "sequence_tokens": 78602,
+    "loss_first": 1.3858284950256348,
+    "loss_last": 0.11669237911701202,
+    "checkpoint_passed": true,
+    "optimizer_resume_available": false
+  },
+  "packet_sha256": "3a67530f12118c687ed1172f0f840f95aacb4a2308e75904c758d728660d332e",
+  "cases_sha256": "b74ed230308e4d0da500263817280bf4222d1f5fabf38c315c22f4fc26f8ff3c",
+  "raw_outputs_verified": 540,
+  "token_prompts_independently_rebuilt": 540,
+  "verifier_sha256": "ff3c5bde92522b3c889dd2f5a86ce1adfb5e481bfc32be1b5355b6f8b1245f98",
+  "formal_benchmark_evaluated": false,
+  "local_raw_outputs_verified": 540,
+  "new_post_outputs": 180,
+  "existing_baseline_outputs_reused": 360,
+  "checkpoint_and_metrics_independently_rechecked": true,
+  "hf_tensors": 1199,
+  "hf_shards": 15
+}
