@@ -1,6 +1,6 @@
 {
   "date": "2026-09-17",
-  "status": "arithmetic_baseline_running",
+  "status": "completed_and_independently_verified",
   "container_pid": 3795778,
   "code": "/workspace/llin-verl-grpo/runs/llin-transfer-p3-package-20260917-01",
   "data": "/workspace/llin-verl-grpo/runs/llin-transfer-p3-data-20260917-01",
@@ -26,5 +26,12 @@
   "retention_floor": 52,
   "formal_evaluation": false,
   "sealed_evaluation": false,
-  "recurring_automation_active": false
+  "recurring_automation_active": false,
+  "initial_status": "arithmetic_baseline_running",
+  "training_completed": true,
+  "actual_training_steps": 105,
+  "current_job_running": false,
+  "final_result": "cpt_transfer_p3_result_20260917.safe.json",
+  "arithmetic_floor": 47,
+  "decision": "stop_content_replacement_route_review"
 }
