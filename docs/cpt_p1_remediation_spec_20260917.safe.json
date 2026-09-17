@@ -1,0 +1,144 @@
+{
+  "status": "source_authoring_specification_only",
+  "training_allowed": false,
+  "basis": "P1 fixed 32-call comparison; current16 are development diagnostics and excluded from new training.",
+  "source_packet_sha256": "b42fd573fbb9c740446bd3c9f020f8181967f2ac96b40fb0f27f261677743cde",
+  "max_new_train_candidates": 16,
+  "max_new_dev_candidates": 8,
+  "counts_are_ceilings_not_acceptance_targets": true,
+  "units": {
+    "pick_lines": {
+      "priority": 2,
+      "gap": "Distinguish instructions, physical grabs, assortment density and realized pick density; keep numerical conclusions in the complete answer set.",
+      "designs": [
+        "Reconcile a multi-location pick list with repeated physical grabs.",
+        "Compare SKU density and demand-driven activity with different area denominators.",
+        "Diagnose which conclusions remain identified when order-level records are missing.",
+        "Select a feasible reorganization under explicit assortment and visit constraints."
+      ],
+      "source_ids": [
+        "llin-core-68eacc4454fc8a4d4bb3"
+      ],
+      "evidence": [
+        {
+          "id": "authored-pick_lines-train-1",
+          "variant": 0,
+          "baseline_correct": true,
+          "p1_correct": false
+        },
+        {
+          "id": "authored-pick_lines-dev-0",
+          "variant": 1,
+          "baseline_correct": false,
+          "p1_correct": false
+        }
+      ]
+    },
+    "batch_tradeoff": {
+      "priority": 1,
+      "gap": "Combine walking avoided, separation cost, space cost and feasible interventions; require strict versus non-strict boundary handling.",
+      "designs": [
+        "Reconcile a cost report with a duplicated or missing incremental component.",
+        "Choose an action under both a capacity limit and complete incremental cost accounting.",
+        "Audit scenario-dependent break-even claims without treating medium order size as a universal rule.",
+        "Compare mutually exclusive intervention bundles with explicit implementation costs."
+      ],
+      "source_ids": [
+        "llin-core-4abc2a4cad028703b936"
+      ],
+      "evidence": [
+        {
+          "id": "authored-batch_tradeoff-train-0",
+          "variant": 0,
+          "baseline_correct": true,
+          "p1_correct": false
+        },
+        {
+          "id": "authored-batch_tradeoff-dev-0",
+          "variant": 0,
+          "baseline_correct": false,
+          "p1_correct": false
+        },
+        {
+          "id": "authored-batch_tradeoff-dev-0",
+          "variant": 1,
+          "baseline_correct": false,
+          "p1_correct": false
+        }
+      ]
+    },
+    "serial_parallel": {
+      "priority": 1,
+      "gap": "Separate elapsed time from total active person-work and evaluate all deadline claims consistently.",
+      "designs": [
+        "Compare sequential and overlapping work with explicit release times.",
+        "Choose staffing under both a loading deadline and person-work budget.",
+        "Identify the bottleneck after one task duration changes and consolidation remains required.",
+        "Audit a report that incorrectly adds overlapping durations or omits consolidation."
+      ],
+      "source_ids": [
+        "llin-core-98928650cc767bf758a2"
+      ],
+      "evidence": [
+        {
+          "id": "authored-serial_parallel-train-1",
+          "variant": 0,
+          "baseline_correct": false,
+          "p1_correct": false
+        },
+        {
+          "id": "authored-serial_parallel-train-1",
+          "variant": 1,
+          "baseline_correct": false,
+          "p1_correct": false
+        }
+      ]
+    },
+    "transport_capacity": {
+      "priority": 1,
+      "gap": "Find all countermodels consistent with aggregate records and per-period constraints; reject countermodels that violate observed totals.",
+      "designs": [
+        "Reconcile realized movements, rejected requests and remaining capacity over multiple periods.",
+        "Choose feasible reallocation when only some requests may shift departure.",
+        "Judge existence versus necessity of unmet demand under partial records.",
+        "Compare capacity changes under peak and off-peak service constraints."
+      ],
+      "source_ids": [
+        "llin-core-9026b75d5b2d078be852"
+      ],
+      "evidence": [
+        {
+          "id": "authored-transport_capacity-dev-0",
+          "variant": 0,
+          "baseline_correct": true,
+          "p1_correct": false
+        },
+        {
+          "id": "authored-transport_capacity-dev-0",
+          "variant": 1,
+          "baseline_correct": false,
+          "p1_correct": false
+        }
+      ]
+    }
+  },
+  "development_design_requirements": [
+    "Two held-out task constructions per capability, frozen before any training.",
+    "Change inference structure and interacting conditions, not just names, numbers or option order.",
+    "Check semantic overlap with current16 and proposed training tasks; document shared source rules."
+  ],
+  "authoring_method": [
+    "One source-authored candidate at a time, with separate option-level truth and exact numerical reasoning.",
+    "Answer indices derived from verified option truths; mismatched generated indices remain recorded as failures.",
+    "Cover answer-set sizes1/2/3/4 without forcing an unsupported option or question.",
+    "No formal question, option, gold answer or prediction enters source authoring."
+  ],
+  "release_gates": [
+    "Operator source verification of each answer and scope, separate from model scoring; retain model-review disagreements. This does not claim an external independent reviewer.",
+    "New training tasks must not copy or simply re-number the current16 diagnostic cases.",
+    "Exclude all historical diagnostic/formal questions downstream and audit cross-split semantic overlap.",
+    "Expand source-separated retention beyond the four current checks; warehouse, enterprise process and practical Agent coverage remain unresolved.",
+    "Freeze actual data count and supervised token budget under the existing expansion plan before launching any training."
+  ],
+  "limitations": "Prioritized development work based on a small selected pilot; no proof of coverage of the formal target gap. Four capability sources are one historical connected group. This file contains task specifications, not accepted tasks or a training release."
+}
