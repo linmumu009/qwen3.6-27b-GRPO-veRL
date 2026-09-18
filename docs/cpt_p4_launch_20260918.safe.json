@@ -1,0 +1,287 @@
+{
+  "registered_at_utc": "2026-09-18T02:02:59.991847+00:00",
+  "starting_model": "/workspace/llin-verl-grpo/runs/llin-step120-opensource-20260825-02/hf_export_step120_opensource",
+  "initialization": "Strict HF initialization from Step120, no optimizer/checkpoint resume",
+  "data_audit": {
+    "budgets": {
+      "train": {
+        "records": 363,
+        "sequence_tokens": 99038,
+        "loss_tokens": 14710,
+        "sha256": "a0554092a0530729e8e3730eed8ebfc1a9c4f4afefec883f4b6ab8bd389247be",
+        "sampler_order_sha256": "8091b8845f7e88d77adc4333be68203dca30c1f40eb77631f0dc4d8fe1852dbf"
+      },
+      "dev": {
+        "records": 33,
+        "sequence_tokens": 5622,
+        "loss_tokens": 212,
+        "sha256": "3a35e5307cd46027b5e91f598917c70c0bc470175ba1de4ec534120edddc41f0",
+        "sampler_order_sha256": "b0965236adaed190a6b0738c04a6991fb64e00d4c9bb89c7055bb07cffda6664"
+      }
+    },
+    "installed_loader_passed": true,
+    "original_315_messages_and_tokens_unchanged": true,
+    "tokenizer_sha256": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523",
+    "release_sha256": "e01714578ed198a27069c54d8179adaae3b3974634249671d10e4a7d7749d834",
+    "train_file_sha256": "b2f0b062afa4cd34798e085b4b98a159269265829d896e60733d26d2364e85dc",
+    "train_messages_sha256": "1f67f334845f2ac84f9515a38612135b6238645f763c8b142a466303452884b7",
+    "steps": 121,
+    "batch": 3,
+    "lr": 5e-07,
+    "epochs": 1,
+    "new_tasks": 16,
+    "new_exposures": 48,
+    "new_answer_only": 16,
+    "new_explanation_answer": 32,
+    "option_order": "Original author order, unchanged across exposures; same policy as P1.",
+    "explanation_source": "Released author option_reasons, no model-review answers.",
+    "evaluation_inputs_read": false,
+    "training_started": false,
+    "exact_token_budget_matched": false,
+    "sequence_token_delta": 11698,
+    "supervised_token_delta": 2508
+  },
+  "new_requests": 5284,
+  "order": [
+    "training_export",
+    "post_old180",
+    "post_new88",
+    "formal5016"
+  ],
+  "formal_evaluation_mandatory_after_valid_training": true,
+  "score_dependent_gating": false,
+  "independent_training_seeds": 1,
+  "additional_training_arms": 0,
+  "retries": 0,
+  "promotion": false,
+  "reused_formal_controls": [
+    "step120_current",
+    "p1"
+  ],
+  "versions": {
+    "torch": "2.9.0",
+    "torch-npu": "2.9.0.post2",
+    "vllm": "0.18.0+empty",
+    "vllm-ascend": "0.18.1.dev44+ga43c8cc80",
+    "transformers": "5.10.4",
+    "tokenizers": "0.22.2"
+  },
+  "source_refs": {
+    "/vllm": "bcf2be96120005e9aea171927f85055a6a5c0cf6",
+    "/vllm-ascend": "a43c8cc8057f490ed1df2c6ed66253e2d7817da4",
+    "/verl": "bc72e38edba78e778bfbd462638f9634b9140a76"
+  },
+  "control_model_identities": {
+    "step120_current": {
+      "path": "/workspace/llin-verl-grpo/runs/llin-step120-opensource-20260825-02/hf_export_step120_opensource",
+      "metadata_sha256": {
+        "config.json": "43eee23b0489ed1769bf2d49438015728ad686bef55d4aecb18a3a1ce840d6da",
+        "generation_config.json": "37d76f2abc68b3ee64884fb8e5cf542f07d132bec299e366dae1a560af6cf5af",
+        "tokenizer.json": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523",
+        "tokenizer_config.json": "792fa3f0cb88b111e54ef3134c873531008c4df471d108da17903426e308aa7b",
+        "model.safetensors.index.json": "b802be538e897a71922daacf7d7998e6930449475e878c70096cc512ff924ea1"
+      },
+      "shards_stat": {
+        "model-00001-of-00015.safetensors": {
+          "bytes": 3968861320,
+          "mtime_ns": 1787647417580141242
+        },
+        "model-00002-of-00015.safetensors": {
+          "bytes": 3921677104,
+          "mtime_ns": 1787647421124167250
+        },
+        "model-00003-of-00015.safetensors": {
+          "bytes": 3921677096,
+          "mtime_ns": 1787647424904194989
+        },
+        "model-00004-of-00015.safetensors": {
+          "bytes": 3921677096,
+          "mtime_ns": 1787647428600222113
+        },
+        "model-00005-of-00015.safetensors": {
+          "bytes": 3921677080,
+          "mtime_ns": 1787647431848245948
+        },
+        "model-00006-of-00015.safetensors": {
+          "bytes": 3900710856,
+          "mtime_ns": 1787647439032298668
+        },
+        "model-00007-of-00015.safetensors": {
+          "bytes": 4675269872,
+          "mtime_ns": 1787647435736274481
+        },
+        "model-00008-of-00015.safetensors": {
+          "bytes": 4119814712,
+          "mtime_ns": 1787647442628325058
+        },
+        "model-00009-of-00015.safetensors": {
+          "bytes": 3921677104,
+          "mtime_ns": 1787647445460345841
+        },
+        "model-00010-of-00015.safetensors": {
+          "bytes": 3921677096,
+          "mtime_ns": 1787647448216366066
+        },
+        "model-00011-of-00015.safetensors": {
+          "bytes": 3921677104,
+          "mtime_ns": 1787647451356389109
+        },
+        "model-00012-of-00015.safetensors": {
+          "bytes": 3921677104,
+          "mtime_ns": 1787647457688435576
+        },
+        "model-00013-of-00015.safetensors": {
+          "bytes": 3995081816,
+          "mtime_ns": 1787647460452455860
+        },
+        "model-00014-of-00015.safetensors": {
+          "bytes": 3942652920,
+          "mtime_ns": 1787647454684413531
+        },
+        "model-00015-of-00015.safetensors": {
+          "bytes": 508694824,
+          "mtime_ns": 1787647460848458766
+        }
+      },
+      "weight_content_hashed": false
+    },
+    "p1": {
+      "path": "/workspace/llin-verl-grpo/runs/llin-transfer-p1-run-20260916-02/training/llin-step120-p1-hf",
+      "metadata_sha256": {
+        "config.json": "43eee23b0489ed1769bf2d49438015728ad686bef55d4aecb18a3a1ce840d6da",
+        "generation_config.json": "37d76f2abc68b3ee64884fb8e5cf542f07d132bec299e366dae1a560af6cf5af",
+        "tokenizer.json": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523",
+        "tokenizer_config.json": "792fa3f0cb88b111e54ef3134c873531008c4df471d108da17903426e308aa7b",
+        "model.safetensors.index.json": "c38d4938aae8f0c1d3438f4135273606883561a17349446b4f05f1126f9120ed"
+      },
+      "shards_stat": {
+        "model-00001-of-00015.safetensors": {
+          "bytes": 3968861320,
+          "mtime_ns": 1789551450919584453
+        },
+        "model-00002-of-00015.safetensors": {
+          "bytes": 3921677104,
+          "mtime_ns": 1789551455195616663
+        },
+        "model-00003-of-00015.safetensors": {
+          "bytes": 3921677096,
+          "mtime_ns": 1789551459459648781
+        },
+        "model-00004-of-00015.safetensors": {
+          "bytes": 3921677096,
+          "mtime_ns": 1789551463347678068
+        },
+        "model-00005-of-00015.safetensors": {
+          "bytes": 3921677080,
+          "mtime_ns": 1789551466699703317
+        },
+        "model-00006-of-00015.safetensors": {
+          "bytes": 3900710856,
+          "mtime_ns": 1789551474567762584
+        },
+        "model-00007-of-00015.safetensors": {
+          "bytes": 4675269872,
+          "mtime_ns": 1789551470811734291
+        },
+        "model-00008-of-00015.safetensors": {
+          "bytes": 4119814712,
+          "mtime_ns": 1789551478079789038
+        },
+        "model-00009-of-00015.safetensors": {
+          "bytes": 3921677104,
+          "mtime_ns": 1789551480647808386
+        },
+        "model-00010-of-00015.safetensors": {
+          "bytes": 3921677096,
+          "mtime_ns": 1789551484519837564
+        },
+        "model-00011-of-00015.safetensors": {
+          "bytes": 3921677104,
+          "mtime_ns": 1789551487759861979
+        },
+        "model-00012-of-00015.safetensors": {
+          "bytes": 3921677104,
+          "mtime_ns": 1789551495487920213
+        },
+        "model-00013-of-00015.safetensors": {
+          "bytes": 3995081816,
+          "mtime_ns": 1789551499431949933
+        },
+        "model-00014-of-00015.safetensors": {
+          "bytes": 3942652920,
+          "mtime_ns": 1789551491823892603
+        },
+        "model-00015-of-00015.safetensors": {
+          "bytes": 508694824,
+          "mtime_ns": 1789551499999954213
+        }
+      },
+      "weight_content_hashed": false
+    }
+  },
+  "control_registration_sha256": "a5c875b79b85f15ee24094b7c73daa3223a2c54a2f1bbf5b2c1b60bdb6c47b3b",
+  "formal_prompt_tokens_match": true,
+  "targets": {
+    "SC-bench-knowledge": 196,
+    "LogistikaBench": 1224
+  },
+  "inputs_sha256": {
+    "old_cases.private.jsonl": "b74ed230308e4d0da500263817280bf4222d1f5fabf38c315c22f4fc26f8ff3c",
+    "p1.closed.private.jsonl": "e8528653d84467efe33dafc54a18cbf6de3df52679e1c5258301bfc56aa9071a",
+    "package.safe.json": "3055a6712e53e4dcb5fd8b6054832b439fba5f6d7e23f33d36f0223935c474ea",
+    "step120_current.closed.private.jsonl": "ff8ae0b9d186174e4d9e612ef152bfdd92a597422c7bd0b75dba20398f007e9c",
+    "packet/cases.private.jsonl": "9d956b539b6f40a07e71ad4b925c681e49534c73e89873c80e825d7895a07848",
+    "packet/release.safe.json": "e01714578ed198a27069c54d8179adaae3b3974634249671d10e4a7d7749d834",
+    "packet/train.private.jsonl": "b2f0b062afa4cd34798e085b4b98a159269265829d896e60733d26d2364e85dc"
+  },
+  "code_sha256": {
+    "audit_cpt_p3_arithmetic.py": "91085c7eb861c03494dd698df017f431d380a29a9cd0cec78e725d8facc72450",
+    "audit_cpt_sft_search_data.py": "2e22059cbd3f5b6b05d3fa866ed73a7541ab261b68b804460be04155a89706bc",
+    "audit_cpt_transfer.py": "4bcd64ac3dc13abb72625a89413da34af926112768d59270b352bcfd5cdb206b",
+    "build_cpt_transfer_pilot.py": "b40c4d99e7cd83b901b366a0fd9885813b4e8051ddb49d8d1000172f3a6ffca1",
+    "cpt_composed_probe.py": "ee6a3de96b98d8a4fccd3511cd14626f2a2a562d999443166a528d4bfaf577eb",
+    "cpt_remediation_domain_tasks.py": "69a945a3985895e9b41b03ab5b5c0d7bdbcfc634934d5dc11d382b023d35bff7",
+    "cpt_remediation_retention_tasks.py": "8642ec7f9c4dc1525e87ba6ba6375000459e44f41bf6636bcf7028d5025bf959",
+    "cpt_transfer_draft.py": "287ccdb3e3f7835c758921ffbe9a557a33188402f7892ef6b5b58cdd3bb85e8b",
+    "evaluate_logistics_knowledge.py": "8cee1c90a17771860b26b2e01f919bf3730c4ac2fefb21be3fd0dee222c8f949",
+    "export_megatron_dist_to_hf.py": "a116db370557577970da429eff98a56ab45197069923ee382db61e82e00acfa5",
+    "prepare_cpt_expansion_sources.py": "1d671ba74737192237bf87593fd39818214685f0a4c70e62f8ab05635564bd4f",
+    "prepare_cpt_p4_cumulative.py": "ddc04877827073655435f790c08b7b7acee3e8504e9a88d3675bddca5222392b",
+    "prepare_cpt_remediation_packet.py": "1d6b237aac01ee01422238368da509c7ab2f80bf8763164e64a1ae20afdf4a5c",
+    "prepare_cpt_transfer_screen.py": "5c1209e384b71e2e6d19c093bf48b23ed05310451dc93a9ea2d79fdb21a02240",
+    "qwen36_mcq_answer_dataset.py": "ed38f1696b7438ce2d4c399d471d34c4ca79661b0383d7b0d3c33419c6b93aa9",
+    "revise_cpt_remediation_packet.py": "dac4709dc9065392f15408cdc3246f63ef18336ca51eafad60cac4bd5344d71e",
+    "run_cpt_formal_transfer.py": "40a1016f7439089ab58c00b97343f3b88962e03c4a79b3ff8869a44fe727fbd3",
+    "run_cpt_p4_remediation_probe.py": "6e8827c42f0a73d7dbf610e0f91ff0ee9dee6882d15da9e7e2cb5496935b6806",
+    "run_cpt_pilot_probe.py": "79aced685c7f1f3483657c695225459014cb005b16cdb753f06945abe9db07f0",
+    "run_cpt_remediation_review.py": "624291f764ee73d66427b92e968a1319957f1cc27180e59a34b438026f080298",
+    "run_cpt_source_authoring_pilot.py": "97fa17e9c1dd33ed4d2718a3e92353dc721ffe3012afba1cbc534c4e07c64303",
+    "run_cpt_transfer_p3.py": "b92e29816fbf3ac54da97bee295740fb62abe2105bf987fbf4f59f23edc5a794",
+    "run_cpt_transfer_p4.py": "e29cbcf09a2874e60f0ea3488c8935cd2a133dbcc0cb6ff471418c5a764b7c17",
+    "run_cpt_transfer_p4.sh": "f803a3c4ac4111b4a7b927e2db3b3d6801ef7f2c69a02db2c92a12601d5567ff",
+    "run_cpt_transfer_pilot.py": "3f49826888166cb55e41ae840386412bc54231bb07cfee0fc2b6c4837c3c5d4f",
+    "run_cpt_transfer_screen.py": "5b736302a73e522b50f277f6d8c1a6ec650ccf1a79133ec2f41c517664d72beb",
+    "run_logistics_cpt_curve_8x.py": "2d13cec58c65c34f9e821bdcb40a6a160cd5ab23dd24e989ff1a413097f08c8a",
+    "run_logistics_strategy_diagnostic.py": "8934be47378afc48052de5e42f09459aa94bb7078355469b75aac9c6dfab652a",
+    "run_vllm_logistics_mcq.py": "a635534e8ea345070ef3f9abc65b20dd7dee71e065e5264c82d493e50db19cfb",
+    "summarize_logistics_cpt_run.py": "1fcffec99b750048f2d7fb433daa152655a34809ba68a827598a36692822e5f5",
+    "verify_checkpoint_integrity.py": "da33c6bc46bee3bbe07fcfc345624872fd37f45091970c960b8193cdf49269c4",
+    "verify_cpt_pilot_result.py": "58839e0fb7f81dc99c55b0cb8d46922dcb384a6c1606ab9d362710b27bf57c2b",
+    "verify_cpt_remediation_result.py": "886067f018315970aef87c4e92791230f577374e7a980c505a2927128a6f7789",
+    "__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "limitations": [
+    "One training run, not independent-seed confirmation.",
+    "Additional steps/tokens versus P1; not equal-budget causal attribution.",
+    "Two option orders are correlated.",
+    "Formal sets have been used for selection, not fresh holdouts.",
+    "New coverage is sixteen tasks in four capabilities, not broad coverage."
+  ],
+  "local_data_review": {
+    "local_token_reconstruction_passed": true,
+    "old315_messages_sha256": "78a4e8a4f0acf95c7a2e69aa342855ac60a1334a3f57fdb4677609363f2a4304",
+    "train_records": 363,
+    "loss_monitor_records": 33,
+    "source_tokenizer_sha256": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523"
+  }
+}
