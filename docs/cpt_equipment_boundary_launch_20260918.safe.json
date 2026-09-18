@@ -1,0 +1,195 @@
+{
+  "status": "launched_pending_results",
+  "run": "/workspace/llin-verl-grpo/runs/llin-equipment-run-20260918-01",
+  "coordinator_pid": 3941740,
+  "manifest": {
+    "packet_sha256": "7ecaf7a9ceee6686d4aae8c249cfbeb6695c5689041b0668e0b66505bb814081",
+    "source_hashes": {
+      "conveyors": "e4e14d427db751f60c0709be41de7ae38925a79d5d5cdd833bcb71f66518d804",
+      "trucks": "4ebbc3dd7763ad84a9c8efa897fe1043386c0a9af01be728fe54dcb8d5109252",
+      "storage": "c231838c5eab7773a9dbc9ff34c8a8edfe83ea999352ac248f38aa95720492d2",
+      "cranes": "3ad5fd866b48c20c2819173c6758241c47a0ef2d21e7f74f1bc2c4afc2204e4f"
+    },
+    "cases": 16,
+    "unique_prompts_per_model": 128,
+    "calls_per_model": 256,
+    "total_calls": 768,
+    "sizes": [
+      4,
+      16
+    ],
+    "repeats": 2,
+    "authoring_script_sha256": "ce6a4a319b1707951e0ab878bfc24846c1f744e3aa9107c147523452c16505a0",
+    "training_allowed": false,
+    "limitations": [
+      "Equipment names follow the cited CICMHE taxonomy, not all contemporary vendor terminology.",
+      "Newly authored without formal item text; neither unseen pretraining nor semantic independence from benchmarks is established.",
+      "Sixteen cases in four related source pages; contrasts are paired descriptions, not sixteen independent domains.",
+      "Only first/last positions and 4/16 options; this does not recreate the formal 269-option vocabulary.",
+      "Long lists add other equipment families; the short list already contains all four same-family competitors.",
+      "Two identical-batch repeats within a model process do not estimate cross-restart or cross-hardware variation.",
+      "Exact-label control deliberately gives the target term. All cases remain evaluation-only.",
+      "Scenario contrasts are source-grounded alternatives, not controlled single-feature causal interventions."
+    ]
+  },
+  "audit": {
+    "packet_sha256": "7ecaf7a9ceee6686d4aae8c249cfbeb6695c5689041b0668e0b66505bb814081",
+    "rows": 16,
+    "source_pages": 4,
+    "all_sources_hash_verified": true,
+    "exclusion_inputs": [
+      {
+        "path": "llin-composed-boundaries-20260916-01/cases.private.jsonl",
+        "sha256": "ebc53dab7e305a4d34d00dc31eff70476d2612021855240762c29c8969c25328"
+      },
+      {
+        "path": "llin-coverage-expansion-20260916-01/cases.private.jsonl",
+        "sha256": "b28c352852a2c78bc6659e6d2ee74adefb7e4cd2d688e1d8f1de3995efec0373"
+      },
+      {
+        "path": "llin-reviewed-scenario-probe-20260916-01/cases.private.jsonl",
+        "sha256": "d778181eae00dc8ed45496a81bead8d9f5f410970e7d28fa1f1354137eaaae09"
+      },
+      {
+        "path": "llin-transfer-screen-20260916-02/candidates.private.jsonl",
+        "sha256": "1237a2c060eae41a674a620864f08381ffe364de219accb7916555e849622a6e"
+      },
+      {
+        "path": "llin-transfer-screen-20260916-03/candidates.private.jsonl",
+        "sha256": "f0452e42f78606cd7f942f5324f4d1f9c94ae32d60dfe978dbb85bb3d5ad2671"
+      },
+      {
+        "path": "llin-transfer-draft-20260916-01/pilot_result/candidates.private.jsonl",
+        "sha256": "0bed756f04398c1bd810f05d95b7f360ba294bc60e5e06332ac5b2493a04338a"
+      },
+      {
+        "path": "llin-transfer-constraint-pilot-20260916-01/result/candidates.private.jsonl",
+        "sha256": "2cbce73246f70ec49ca23a3eb1e8b92d82aea6711983c38c201a5cb6781df83e"
+      },
+      {
+        "path": "llin-s4-probe-20260915-01/cases.private.jsonl",
+        "sha256": "63f652b85d28ddf1da5de67f0074f99e80b144c5b1ca4f6ec408a83b7ac78b19"
+      },
+      {
+        "path": "llin-s4-probe-20260915-02/cases.private.jsonl",
+        "sha256": "2669e189e06b00c04a476be308a1d430eee65362d8cbe3bcdc9c4e77499035eb"
+      },
+      {
+        "path": "llin-s4-transfer-diagnostic-20260915-01/cases.private.jsonl",
+        "sha256": "0894adb053f55b0716ae3bf128bb91b21dd778ad48653342909a3125b2c473f9"
+      },
+      {
+        "path": "llin-s4-conditional-train-20260915-01/tasks.private.jsonl",
+        "sha256": "663e76794901e0af31d759a027ab4ea1e300888fb55e1927691336e2e4f4916b"
+      },
+      {
+        "path": "llin-s5-contrast-20260915-01/tasks.private.jsonl",
+        "sha256": "8d1f5e3ce9772fc2ddf99e16ee92630dcbf8aa6a1b58e558b5f397d33c616ea2"
+      },
+      {
+        "path": "llin-source-reviewed-20260914-01/cases.private.jsonl",
+        "sha256": "d896fd906a17c473d4ec9ef775f1ad0ed7138d9fbec431fec5efcab67a3856bd"
+      },
+      {
+        "path": "llin-source-expansion-20260914-01/filtered_tasks.private.jsonl",
+        "sha256": "cb8085d17b6b0573964540b72d6e3a3991cd617df114ba271857161926f271eb"
+      },
+      {
+        "path": "llin-transfer-p1-20260916-03/cases.private.jsonl",
+        "sha256": "b74ed230308e4d0da500263817280bf4222d1f5fabf38c315c22f4fc26f8ff3c"
+      },
+      {
+        "path": "llin-transfer-audit-20260915-01/frozen_cases.private.jsonl",
+        "sha256": "b652b2108cb552346df11d005c15ff3137c50a756a7b24eb35302683ec33ed99"
+      },
+      {
+        "path": "llin-transfer-expansion-draft-20260917-01/filtered.private.jsonl",
+        "sha256": "d0a2717405f85fd867956a712316fe1fa0ce6dc4b4416a2acbd6364d4612cb82"
+      },
+      {
+        "path": "llin-source-authoring-pilot-20260917-01/cases.private.jsonl",
+        "sha256": "fdb9fb716f226fd5c2b6531521ef84e990fca83fae65a29da3f295418e674b26"
+      },
+      {
+        "path": "llin-remediation-packet-20260917-01/cases.private.jsonl",
+        "sha256": "9f764dd3c60e4cefac8319be2d48a80bfe6d3a6df41eb048fd919fb0d06bafde"
+      },
+      {
+        "path": "llin-remediation-packet-20260917-03/cases.private.jsonl",
+        "sha256": "9d956b539b6f40a07e71ad4b925c681e49534c73e89873c80e825d7895a07848"
+      },
+      {
+        "path": "llin-broad-packet-20260918-02/cases.private.jsonl",
+        "sha256": "42fa58cd1f04db8448bf8c3a8a6dfb600a5b909425e7c8da2b1a088fdce160e6"
+      },
+      {
+        "path": "llin-list-probe-20260918-01/packet.private.json",
+        "sha256": "c9307d105972d37b77424ddaf19fd719b133723485b005ca6a020ac2e6bd4ea0"
+      }
+    ],
+    "excluded_question_signatures": 2496,
+    "normalized_matches": 0,
+    "prompt_token_ranges": {
+      "16": [
+        200,
+        224
+      ],
+      "4": [
+        96,
+        130
+      ]
+    },
+    "tokenizer_sha256": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523",
+    "tests_passed": 8,
+    "training_allowed": false,
+    "semantic_review": "Codex author reviewed all four source pages and all 16 labels. Questions explicitly use taxonomy categories; no independent human or model semantic certification.",
+    "limits": "Exact exclusion is not semantic independence. Newly retrieved pages can already be in model pretraining or benchmark source material. All items are evaluation-only."
+  },
+  "sources": {
+    "conveyors": {
+      "url": "https://og.mhi.org/learning/cicmhe/resources/taxonomy/TransEq/Conv/index.htm",
+      "resolved_url": "https://og.mhi.org/learning/cicmhe/resources/taxonomy/TransEq/Conv/index.htm",
+      "sha256": "e4e14d427db751f60c0709be41de7ae38925a79d5d5cdd833bcb71f66518d804",
+      "bytes": 38915,
+      "retrieved_at_utc": "2026-09-18T05:39:59.468483+00:00"
+    },
+    "trucks": {
+      "url": "https://og.mhi.org/learning/cicmhe/resources/taxonomy/TransEq/IndusTr/index.htm",
+      "resolved_url": "https://og.mhi.org/learning/cicmhe/resources/taxonomy/TransEq/IndusTr/index.htm",
+      "sha256": "4ebbc3dd7763ad84a9c8efa897fe1043386c0a9af01be728fe54dcb8d5109252",
+      "bytes": 37861,
+      "retrieved_at_utc": "2026-09-18T05:40:01.112405+00:00"
+    },
+    "storage": {
+      "url": "https://og.mhi.org/learning/cicmhe/resources/taxonomy/StorEq/index.htm",
+      "resolved_url": "https://og.mhi.org/learning/cicmhe/resources/taxonomy/StorEq/index.htm",
+      "sha256": "c231838c5eab7773a9dbc9ff34c8a8edfe83ea999352ac248f38aa95720492d2",
+      "bytes": 31206,
+      "retrieved_at_utc": "2026-09-18T05:40:02.541146+00:00"
+    },
+    "cranes": {
+      "url": "https://og.mhi.org/learning/cicmhe/resources/taxonomy/TransEq/Crane/index.htm",
+      "resolved_url": "https://og.mhi.org/learning/cicmhe/resources/taxonomy/TransEq/Crane/index.htm",
+      "sha256": "3ad5fd866b48c20c2819173c6758241c47a0ef2d21e7f74f1bc2c4afc2204e4f",
+      "bytes": 23237,
+      "retrieved_at_utc": "2026-09-18T05:40:04.167914+00:00"
+    }
+  },
+  "package": {
+    "files": {
+      "launch.sh": "cd927bfe5bfe90483dd2e870cf50c32614330518272165fbde34ee4117a72246",
+      "p1.model.safe.json": "e1c37f66fb6de3632044c898185631e105ecc288b2c1f7e6096d22847d65b270",
+      "p4.model.safe.json": "7a5cde5b696134a9a5f0c05b981645745c0ed2e99523a19d8084b7feb1ad1b76",
+      "packet/audit.safe.json": "10b69aac1b4602faab3a4a8c75afb3da470c1975532898d2588c965a1fc20b0d",
+      "packet/manifest.safe.json": "de19ec69dc94c7fc464e4836941914ea8f5b1a438a0c9ee39c7c0c5c37cb0447",
+      "packet/packet.private.json": "7ecaf7a9ceee6686d4aae8c249cfbeb6695c5689041b0668e0b66505bb814081",
+      "scripts/cpt_equipment_boundary.py": "ce6a4a319b1707951e0ab878bfc24846c1f744e3aa9107c147523452c16505a0",
+      "scripts/cpt_list_probe.py": "17afddfc101473eb31706f1ec9a5c1c508561b3185232a63ec0e4e21ec77b149",
+      "scripts/run_cpt_equipment_boundary.py": "57c7f8c2e6e716915743cada4e80bd6a92e72cfa2b60b5532830924bd4bf1397",
+      "step120_current.model.safe.json": "387f104f00e1095fd07a262d71b0702a61b0d2ddc57004eb39fc432e46cf31e2"
+    },
+    "total_calls": 768,
+    "training_allowed": false
+  },
+  "training_allowed": false
+}
