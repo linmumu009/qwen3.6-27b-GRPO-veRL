@@ -1,0 +1,789 @@
+{
+  "status": "completed_verified_local",
+  "new_calls": 1728,
+  "packet_sha256": "c9307d105972d37b77424ddaf19fd719b133723485b005ca6a020ac2e6bd4ea0",
+  "models": {
+    "step120_current": {
+      "calls": 576,
+      "groups": {
+        "exact_label/128": {
+          "calls": 96,
+          "correct": 96,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/128/position2": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/128": {
+          "calls": 96,
+          "correct": 96,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/128/position2": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/128/position1": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/4": {
+          "calls": 96,
+          "correct": 96,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/4/position1": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/32": {
+          "calls": 96,
+          "correct": 96,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/32/position0": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/4/position0": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/4/position2": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/32": {
+          "calls": 96,
+          "correct": 96,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/32/position1": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/32/position3": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/128/position0": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/32/position2": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/128/position1": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/4": {
+          "calls": 96,
+          "correct": 96,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/4/position0": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/32/position3": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/32/position0": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/128/position3": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/4/position2": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/32/position2": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/128/position3": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/4/position3": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/128/position0": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/4/position3": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/32/position1": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/4/position1": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        }
+      },
+      "identical_prompt_groups": 192,
+      "unstable_identical_prompts": 0,
+      "training_allowed": false,
+      "all_three_correct_prompt_groups": 192
+    },
+    "p1": {
+      "calls": 576,
+      "groups": {
+        "exact_label/128": {
+          "calls": 96,
+          "correct": 96,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/128/position2": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/128": {
+          "calls": 96,
+          "correct": 96,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/128/position2": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/128/position1": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/4": {
+          "calls": 96,
+          "correct": 96,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/4/position1": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/32": {
+          "calls": 96,
+          "correct": 96,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/32/position0": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/4/position0": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/4/position2": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/32": {
+          "calls": 96,
+          "correct": 96,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/32/position1": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/32/position3": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/128/position0": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/32/position2": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/128/position1": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/4": {
+          "calls": 96,
+          "correct": 96,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/4/position0": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/32/position3": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/32/position0": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/128/position3": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/4/position2": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/32/position2": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/128/position3": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/4/position3": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/128/position0": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/4/position3": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/32/position1": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/4/position1": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        }
+      },
+      "identical_prompt_groups": 192,
+      "unstable_identical_prompts": 0,
+      "training_allowed": false,
+      "all_three_correct_prompt_groups": 192
+    },
+    "p4": {
+      "calls": 576,
+      "groups": {
+        "exact_label/128": {
+          "calls": 96,
+          "correct": 96,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/128/position2": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/128": {
+          "calls": 96,
+          "correct": 96,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/128/position2": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/128/position1": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/4": {
+          "calls": 96,
+          "correct": 96,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/4/position1": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/32": {
+          "calls": 96,
+          "correct": 96,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/32/position0": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/4/position0": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/4/position2": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/32": {
+          "calls": 96,
+          "correct": 96,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/32/position1": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/32/position3": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/128/position0": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/32/position2": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/128/position1": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/4": {
+          "calls": 96,
+          "correct": 96,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/4/position0": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/32/position3": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/32/position0": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/128/position3": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/4/position2": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/32/position2": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/128/position3": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/4/position3": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/128/position0": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/4/position3": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/32/position1": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/4/position1": {
+          "calls": 24,
+          "correct": 24,
+          "invalid": 0,
+          "truncated": 0
+        }
+      },
+      "identical_prompt_groups": 192,
+      "unstable_identical_prompts": 0,
+      "training_allowed": false,
+      "all_three_correct_prompt_groups": 192
+    }
+  },
+  "within_model_short_long": {
+    "step120_current": {
+      "exact_label/4_to_128": {
+        "pairs": 96,
+        "short_correct": 96,
+        "long_correct": 96,
+        "losses": 0,
+        "gains": 0
+      },
+      "concept/4_to_128": {
+        "pairs": 96,
+        "short_correct": 96,
+        "long_correct": 96,
+        "losses": 0,
+        "gains": 0
+      },
+      "concept/4_to_32": {
+        "pairs": 96,
+        "short_correct": 96,
+        "long_correct": 96,
+        "losses": 0,
+        "gains": 0
+      },
+      "exact_label/4_to_32": {
+        "pairs": 96,
+        "short_correct": 96,
+        "long_correct": 96,
+        "losses": 0,
+        "gains": 0
+      }
+    },
+    "p1": {
+      "exact_label/4_to_128": {
+        "pairs": 96,
+        "short_correct": 96,
+        "long_correct": 96,
+        "losses": 0,
+        "gains": 0
+      },
+      "concept/4_to_128": {
+        "pairs": 96,
+        "short_correct": 96,
+        "long_correct": 96,
+        "losses": 0,
+        "gains": 0
+      },
+      "concept/4_to_32": {
+        "pairs": 96,
+        "short_correct": 96,
+        "long_correct": 96,
+        "losses": 0,
+        "gains": 0
+      },
+      "exact_label/4_to_32": {
+        "pairs": 96,
+        "short_correct": 96,
+        "long_correct": 96,
+        "losses": 0,
+        "gains": 0
+      }
+    },
+    "p4": {
+      "exact_label/4_to_128": {
+        "pairs": 96,
+        "short_correct": 96,
+        "long_correct": 96,
+        "losses": 0,
+        "gains": 0
+      },
+      "concept/4_to_128": {
+        "pairs": 96,
+        "short_correct": 96,
+        "long_correct": 96,
+        "losses": 0,
+        "gains": 0
+      },
+      "concept/4_to_32": {
+        "pairs": 96,
+        "short_correct": 96,
+        "long_correct": 96,
+        "losses": 0,
+        "gains": 0
+      },
+      "exact_label/4_to_32": {
+        "pairs": 96,
+        "short_correct": 96,
+        "long_correct": 96,
+        "losses": 0,
+        "gains": 0
+      }
+    }
+  },
+  "between_models": {
+    "step120_current_to_p1": {
+      "exact_label/128": {
+        "pairs": 96,
+        "before_correct": 96,
+        "after_correct": 96,
+        "gains": 0,
+        "losses": 0
+      },
+      "concept/128": {
+        "pairs": 96,
+        "before_correct": 96,
+        "after_correct": 96,
+        "gains": 0,
+        "losses": 0
+      },
+      "exact_label/4": {
+        "pairs": 96,
+        "before_correct": 96,
+        "after_correct": 96,
+        "gains": 0,
+        "losses": 0
+      },
+      "concept/32": {
+        "pairs": 96,
+        "before_correct": 96,
+        "after_correct": 96,
+        "gains": 0,
+        "losses": 0
+      },
+      "exact_label/32": {
+        "pairs": 96,
+        "before_correct": 96,
+        "after_correct": 96,
+        "gains": 0,
+        "losses": 0
+      },
+      "concept/4": {
+        "pairs": 96,
+        "before_correct": 96,
+        "after_correct": 96,
+        "gains": 0,
+        "losses": 0
+      }
+    },
+    "p1_to_p4": {
+      "exact_label/128": {
+        "pairs": 96,
+        "before_correct": 96,
+        "after_correct": 96,
+        "gains": 0,
+        "losses": 0
+      },
+      "concept/128": {
+        "pairs": 96,
+        "before_correct": 96,
+        "after_correct": 96,
+        "gains": 0,
+        "losses": 0
+      },
+      "exact_label/4": {
+        "pairs": 96,
+        "before_correct": 96,
+        "after_correct": 96,
+        "gains": 0,
+        "losses": 0
+      },
+      "concept/32": {
+        "pairs": 96,
+        "before_correct": 96,
+        "after_correct": 96,
+        "gains": 0,
+        "losses": 0
+      },
+      "exact_label/32": {
+        "pairs": 96,
+        "before_correct": 96,
+        "after_correct": 96,
+        "gains": 0,
+        "losses": 0
+      },
+      "concept/4": {
+        "pairs": 96,
+        "before_correct": 96,
+        "after_correct": 96,
+        "gains": 0,
+        "losses": 0
+      }
+    }
+  },
+  "raw_sha256": {
+    "step120_current/predictions.private.jsonl": "9fb290ffa313ed6bce19ba82b96428281a1329be07fe38309d0769eaf38516b3",
+    "step120_current/registration.safe.json": "4ec94c7bc03284fa64f1020e65204b6b3386a52415588084d38573a271701114",
+    "step120_current/summary.safe.json": "ef37fe7181cfc1635c7cacfba7d274ad47d8d16cbb9216b8ad64dfbb3ea8a1b2",
+    "step120_current/status.safe.json": "7b0a2ef267692bc41a9c0bf5efea0658464b8532f609c5b9d0a3d70588e04705",
+    "p1/predictions.private.jsonl": "95ecdb3d7c030c49499963c911e592f89ac4199e2375d1c3f5056b847a758c3f",
+    "p1/registration.safe.json": "efa78f8026e8a1052ff1f9734262c83cc69ffd040f618918e28d72a52d1eef62",
+    "p1/summary.safe.json": "ef37fe7181cfc1635c7cacfba7d274ad47d8d16cbb9216b8ad64dfbb3ea8a1b2",
+    "p1/status.safe.json": "7b0a2ef267692bc41a9c0bf5efea0658464b8532f609c5b9d0a3d70588e04705",
+    "p4/predictions.private.jsonl": "95ecdb3d7c030c49499963c911e592f89ac4199e2375d1c3f5056b847a758c3f",
+    "p4/registration.safe.json": "ca353a79944b8de8cc145c0e0a8a6e0590a2005ff3ce9471069e073d29b25433",
+    "p4/summary.safe.json": "ef37fe7181cfc1635c7cacfba7d274ad47d8d16cbb9216b8ad64dfbb3ea8a1b2",
+    "p4/status.safe.json": "7b0a2ef267692bc41a9c0bf5efea0658464b8532f609c5b9d0a3d70588e04705"
+  },
+  "all_token_fingerprints_verified": true,
+  "all_paired_prompts_identical": true,
+  "independent_prediction_reparse": true,
+  "verifier_sha256": "f67036798a3b7cd1b1580520fb80eb0a70fdf3e5153985b08a32a020bd16a76c",
+  "training_allowed": false,
+  "limitations": [
+    "Eight familiar concepts and one heterogeneous bilingual vocabulary, not population-level evidence.",
+    "Source-authored questions; sources may have appeared in earlier training. No knowledge novelty claim.",
+    "Nested distractor sets change length and interference together; this is not pure token-length isolation.",
+    "Relative answer positions are matched, absolute indices differ by size except position zero.",
+    "128 options do not reproduce the formal 269-option material-handling vocabulary.",
+    "Exact-label mode deliberately supplies the answer term; diagnostic control only, never training.",
+    "All cases are evaluation-only; no formal question or label is used for authoring."
+  ],
+  "full_private_verification_sha256": "a9e41ebfc87e1f021dfdc91ca374d0a1e6e8b7485d4dec054bf7c6565357254f",
+  "public_projection": "All aggregate groups, paired contrasts and raw hashes retained; 576 per-prompt records omitted, full local verification identified by hash.",
+  "post_run_model_identities_unchanged": true,
+  "experiment_lock_released": true,
+  "decision": "No gap reproduced in this eight-concept pilot. No index training or model promotion. Next investigate independently sourced close concepts and boundary conditions; not started."
+}

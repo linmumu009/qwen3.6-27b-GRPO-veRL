@@ -35,7 +35,7 @@ def verify(packet_dir,package,run,tokenizer):
     for label in MODELS:
         folder=run/label;reg=json.loads((folder/'registration.safe.json').read_text())
         assert json.loads((folder/'status.safe.json').read_text())['status']=='completed_pending_local_verification'
-        checks=dict(model_label=label,model=str(MODELS[label]),model_manifest_sha256=sha(package/(label+'.model.safe.json')),
+        checks=dict(model_label=label,model=MODELS[label].as_posix(),model_manifest_sha256=sha(package/(label+'.model.safe.json')),
             packet_sha256=sha(packet_file),runner_sha256=sha(package/'scripts/run_cpt_list_probe.py'),protocol_sha256=sha(package/'scripts/cpt_list_probe.py'),
             seed=SEED,temperature=0,thinking=False,tp=8,max_model_len=8192,max_tokens=96,max_num_seqs=16,chunk=8,calls=576,repeats=3,identical_batches_repeated=True,training_allowed=False)
         assert reg==checks
