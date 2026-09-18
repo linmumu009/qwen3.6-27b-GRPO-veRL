@@ -1,0 +1,139 @@
+{
+  "snapshot_date": "2026-09-18",
+  "hosts": {
+    "huawei-05": "5号机",
+    "huawei-00": "0号机"
+  },
+  "archived": [
+    {
+      "id": "h05-llm-raw-first-19",
+      "source": "huawei-05:/data/datasets/llm/raw/",
+      "size_source": "5.2G",
+      "archive_name": "llm_raw_20260918.tar.gz",
+      "size_archive": "1.34GB",
+      "sha256": "48950BE0590363A2FC70A87AD64DCC8D9E744383903E3A55743C5559FA9087FE",
+      "baidu_path": "全部文件/新建文开源数据集_5号机件夹/llm_raw_20260918.tar.gz",
+      "status": "uploaded_verified_local_copy_removed"
+    }
+  ],
+  "priority_assets": [
+    {
+      "priority": "P0",
+      "id": "h05-open-source-master",
+      "path": "huawei-05:/data/renjunxiang/coding/huawei_train/datasets/open_source/",
+      "size": "40G",
+      "composition": "raw 32G; processed 7.4G",
+      "reason": "包含原始数据、统一格式转换和团队加工结果；首批19类RAW只是其子集",
+      "recommended_action": "archive_entire_directory"
+    },
+    {
+      "priority": "P0",
+      "id": "h05-safety-tool-eval-curated",
+      "path": "huawei-05:/data1/yehairui/eval_datasets/",
+      "size": "111M",
+      "reason": "包含9类安全/工具评测数据、人工清单和确定性判分核验报告",
+      "recommended_action": "archive_entire_directory"
+    },
+    {
+      "priority": "P0",
+      "id": "h05-agentic-thinking",
+      "path": "huawei-05:/data1/yehairui/agentic_sft_thinking_dataset/",
+      "size": "114G",
+      "composition": "code 68G; instruction 20G; tool 17G; chinese 8.7G; multiturn 1.3G",
+      "reason": "包含下载manifest、teacher核验、授权数据及未来可能无法重新取得的上游",
+      "recommended_action": "archive_manifest_first_then_split_by_domain"
+    },
+    {
+      "priority": "P0",
+      "id": "h05-sft-quality-split",
+      "path": "huawei-05:/data3/llin/sft/datasets/open_source/huawei_train/",
+      "size": "119M",
+      "reason": "OpenAI格式、reasoning合并版及团队质量分层结果",
+      "recommended_action": "archive_entire_directory"
+    },
+    {
+      "priority": "P0",
+      "id": "h05-supply-chain-package",
+      "paths": [
+        "huawei-05:/data1/yehairui/Mianyan-Ascend-LLM/supply_chain_continued_pretraining/",
+        "huawei-05:/data/zzl/mianyang-ldm/data/benchmark/",
+        "huawei-05:/data/zzl/mianyang-ldm/data/benchmark2hfvrp/",
+        "huawei-05:/data3/llin/qwen3.6-27b-verl-grpo/runs/cpt-corpus-v1.0.2-20260910/",
+        "huawei-05:/data3/llin/qwen3.6-27b-verl-grpo/data/step120_opensource_20260824/"
+      ],
+      "size": "about 137M",
+      "reason": "物流知识、供应链问答、车辆路径规划、CPT语料和团队方法文档",
+      "recommended_action": "archive_as_one_logistics_open_data_package"
+    },
+    {
+      "priority": "P1",
+      "id": "h00-fev",
+      "path": "huawei-00:/data/datasets/fev_datasets/",
+      "size": "653M",
+      "reason": "覆盖约50类标准时序任务",
+      "recommended_action": "archive_entire_directory"
+    },
+    {
+      "priority": "P1",
+      "id": "h00-gifteval",
+      "path": "huawei-00:/data/datasets/GiftEval/",
+      "size": "1.1G",
+      "reason": "时序预测与世界状态演化评测集",
+      "recommended_action": "archive_entire_directory"
+    },
+    {
+      "priority": "P1",
+      "id": "h05-specialized-domain-collection",
+      "path": "huawei-05:/data/liuxr/datasetscom/",
+      "size": "37G",
+      "reason": "法律、医疗、金融、长上下文、工具调用与BIRD SQL等专项数据",
+      "recommended_action": "archive_non_bird_subset_first_and_audit_licenses"
+    }
+  ],
+  "catalog_only": [
+    {
+      "id": "h05-pile-uncopyrighted",
+      "path": "huawei-05:/data/liuxr/datasets/pile-uncopyrighted/",
+      "size": "337G"
+    },
+    {
+      "id": "h00-chronos",
+      "path": "huawei-00:/data/datasets/chronos_datasets/",
+      "size": "124G"
+    },
+    {
+      "id": "h00-gifteval-pretrain",
+      "path": "huawei-00:/data/datasets/GiftEvalPretrain/",
+      "size": "114G"
+    },
+    {
+      "id": "h00-gifteval-climate-append",
+      "path": "huawei-00:/data/datasets/GiftEvalPretrain_Append/",
+      "size": "252G"
+    },
+    {
+      "id": "h00-alpaca-cot",
+      "path": "huawei-00:/data/datasets/nlp/datasets/Alpaca-CoT/",
+      "size": "240G"
+    },
+    {
+      "id": "h00-wiki-clickstream",
+      "path": "huawei-00:/data2/wiki-clickstream/",
+      "size": "87G"
+    },
+    {
+      "id": "h00-wiki-pageviews-raw",
+      "path": "huawei-00:/data2/wiki-pageviews/",
+      "size": "715G"
+    },
+    {
+      "id": "h00-wiki-pageviews-processed",
+      "path": "huawei-00:/data3/datasets/wiki_pageviews_daily/",
+      "size": "258G"
+    }
+  ],
+  "restricted_not_for_personal_cloud_without_approval": [
+    "huawei-05:/data3/llin/qwen3.6-27b-verl-grpo/data/boss_v15_dwh_full276_20260806/dataset/",
+    "huawei-05:/data3/llin/qwen3.6-27b-verl-grpo/data/boss_v15_dwh_full277_20260804/dataset/"
+  ]
+}
