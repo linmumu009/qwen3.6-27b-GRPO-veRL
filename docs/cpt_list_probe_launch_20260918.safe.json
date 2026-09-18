@@ -1,0 +1,159 @@
+{
+  "status": "launched_pending_results",
+  "run": "/workspace/llin-verl-grpo/runs/llin-list-run-20260918-01",
+  "coordinator_pid": 3930250,
+  "manifest": {
+    "packet_sha256": "c9307d105972d37b77424ddaf19fd719b133723485b005ca6a020ac2e6bd4ea0",
+    "source_sha256": "5df7dc2b209938986cd7081aecdc9105fb989c9a872d572ce0a0c5a16dbbf8a4",
+    "concepts": 8,
+    "unique_prompts_per_model": 192,
+    "calls_per_model": 576,
+    "total_calls": 1728,
+    "sizes": [
+      4,
+      32,
+      128
+    ],
+    "repeats": 3,
+    "authoring_script_sha256": "17afddfc101473eb31706f1ec9a5c1c508561b3185232a63ec0e4e21ec77b149",
+    "training_allowed": false,
+    "limitations": [
+      "Eight familiar concepts and one heterogeneous bilingual vocabulary, not population-level evidence.",
+      "Source-authored questions; sources may have appeared in earlier training. No knowledge novelty claim.",
+      "Nested distractor sets change length and interference together; this is not pure token-length isolation.",
+      "Relative answer positions are matched, absolute indices differ by size except position zero.",
+      "128 options do not reproduce the formal 269-option material-handling vocabulary.",
+      "Exact-label mode deliberately supplies the answer term; diagnostic control only, never training.",
+      "All cases are evaluation-only; no formal question or label is used for authoring."
+    ]
+  },
+  "audit": {
+    "packet_sha256": "c9307d105972d37b77424ddaf19fd719b133723485b005ca6a020ac2e6bd4ea0",
+    "source_archive_sha256": "7da53a1a3246381181c5a28fabfb0b68223aed0ee76ff6242710bf257e5af4c2",
+    "source_excerpts_verified": 8,
+    "excluded_question_signatures": 2488,
+    "normalized_matches": 0,
+    "exclusion_inputs": [
+      {
+        "path": "llin-composed-boundaries-20260916-01/cases.private.jsonl",
+        "sha256": "ebc53dab7e305a4d34d00dc31eff70476d2612021855240762c29c8969c25328"
+      },
+      {
+        "path": "llin-coverage-expansion-20260916-01/cases.private.jsonl",
+        "sha256": "b28c352852a2c78bc6659e6d2ee74adefb7e4cd2d688e1d8f1de3995efec0373"
+      },
+      {
+        "path": "llin-reviewed-scenario-probe-20260916-01/cases.private.jsonl",
+        "sha256": "d778181eae00dc8ed45496a81bead8d9f5f410970e7d28fa1f1354137eaaae09"
+      },
+      {
+        "path": "llin-transfer-screen-20260916-02/candidates.private.jsonl",
+        "sha256": "1237a2c060eae41a674a620864f08381ffe364de219accb7916555e849622a6e"
+      },
+      {
+        "path": "llin-transfer-screen-20260916-03/candidates.private.jsonl",
+        "sha256": "f0452e42f78606cd7f942f5324f4d1f9c94ae32d60dfe978dbb85bb3d5ad2671"
+      },
+      {
+        "path": "llin-transfer-draft-20260916-01/pilot_result/candidates.private.jsonl",
+        "sha256": "0bed756f04398c1bd810f05d95b7f360ba294bc60e5e06332ac5b2493a04338a"
+      },
+      {
+        "path": "llin-transfer-constraint-pilot-20260916-01/result/candidates.private.jsonl",
+        "sha256": "2cbce73246f70ec49ca23a3eb1e8b92d82aea6711983c38c201a5cb6781df83e"
+      },
+      {
+        "path": "llin-s4-probe-20260915-01/cases.private.jsonl",
+        "sha256": "63f652b85d28ddf1da5de67f0074f99e80b144c5b1ca4f6ec408a83b7ac78b19"
+      },
+      {
+        "path": "llin-s4-probe-20260915-02/cases.private.jsonl",
+        "sha256": "2669e189e06b00c04a476be308a1d430eee65362d8cbe3bcdc9c4e77499035eb"
+      },
+      {
+        "path": "llin-s4-transfer-diagnostic-20260915-01/cases.private.jsonl",
+        "sha256": "0894adb053f55b0716ae3bf128bb91b21dd778ad48653342909a3125b2c473f9"
+      },
+      {
+        "path": "llin-s4-conditional-train-20260915-01/tasks.private.jsonl",
+        "sha256": "663e76794901e0af31d759a027ab4ea1e300888fb55e1927691336e2e4f4916b"
+      },
+      {
+        "path": "llin-s5-contrast-20260915-01/tasks.private.jsonl",
+        "sha256": "8d1f5e3ce9772fc2ddf99e16ee92630dcbf8aa6a1b58e558b5f397d33c616ea2"
+      },
+      {
+        "path": "llin-source-reviewed-20260914-01/cases.private.jsonl",
+        "sha256": "d896fd906a17c473d4ec9ef775f1ad0ed7138d9fbec431fec5efcab67a3856bd"
+      },
+      {
+        "path": "llin-source-expansion-20260914-01/filtered_tasks.private.jsonl",
+        "sha256": "cb8085d17b6b0573964540b72d6e3a3991cd617df114ba271857161926f271eb"
+      },
+      {
+        "path": "llin-transfer-p1-20260916-03/cases.private.jsonl",
+        "sha256": "b74ed230308e4d0da500263817280bf4222d1f5fabf38c315c22f4fc26f8ff3c"
+      },
+      {
+        "path": "llin-transfer-audit-20260915-01/frozen_cases.private.jsonl",
+        "sha256": "b652b2108cb552346df11d005c15ff3137c50a756a7b24eb35302683ec33ed99"
+      },
+      {
+        "path": "llin-transfer-expansion-draft-20260917-01/filtered.private.jsonl",
+        "sha256": "d0a2717405f85fd867956a712316fe1fa0ce6dc4b4416a2acbd6364d4612cb82"
+      },
+      {
+        "path": "llin-source-authoring-pilot-20260917-01/cases.private.jsonl",
+        "sha256": "fdb9fb716f226fd5c2b6531521ef84e990fca83fae65a29da3f295418e674b26"
+      },
+      {
+        "path": "llin-remediation-packet-20260917-01/cases.private.jsonl",
+        "sha256": "9f764dd3c60e4cefac8319be2d48a80bfe6d3a6df41eb048fd919fb0d06bafde"
+      },
+      {
+        "path": "llin-remediation-packet-20260917-03/cases.private.jsonl",
+        "sha256": "9d956b539b6f40a07e71ad4b925c681e49534c73e89873c80e825d7895a07848"
+      },
+      {
+        "path": "llin-broad-packet-20260918-02/cases.private.jsonl",
+        "sha256": "42fa58cd1f04db8448bf8c3a8a6dfb600a5b909425e7c8da2b1a088fdce160e6"
+      }
+    ],
+    "prompt_token_ranges": {
+      "128": [
+        1516,
+        1550
+      ],
+      "4": [
+        83,
+        119
+      ],
+      "32": [
+        371,
+        449
+      ]
+    },
+    "tokenizer_sha256": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523",
+    "nested_sets_and_position_mappings_checked": true,
+    "all_repetitions_identical": true,
+    "tests_passed": 2,
+    "operator_review": "Codex checked all 128 displayed titles against eight intended targets: no target synonym duplicate; generic/specific distinctions stated. Author self-review, not independent human expert review.",
+    "training_allowed": false
+  },
+  "package": {
+    "files": {
+      "launch.sh": "bd805ce05b0ee13a6d220b2496a1ee671fdae52e9d1b97ef88cd111c2f9d7855",
+      "p1.model.safe.json": "e1c37f66fb6de3632044c898185631e105ecc288b2c1f7e6096d22847d65b270",
+      "p4.model.safe.json": "7a5cde5b696134a9a5f0c05b981645745c0ed2e99523a19d8084b7feb1ad1b76",
+      "packet/audit.safe.json": "62619022b1ae370a476bc5bc494c2571c60a645e0f52c737c60a890424b09660",
+      "packet/manifest.safe.json": "7756b74e846d45d2b1293f9634fb2f00d579c6f95b0f4dd7563082c4d6037a2d",
+      "packet/packet.private.json": "c9307d105972d37b77424ddaf19fd719b133723485b005ca6a020ac2e6bd4ea0",
+      "scripts/cpt_list_probe.py": "17afddfc101473eb31706f1ec9a5c1c508561b3185232a63ec0e4e21ec77b149",
+      "scripts/run_cpt_list_probe.py": "d598c573f7d195fe7311f08b24d34394ae26e762ed1216a91db21bc744c52f38",
+      "step120_current.model.safe.json": "387f104f00e1095fd07a262d71b0702a61b0d2ddc57004eb39fc432e46cf31e2"
+    },
+    "total_calls": 1728,
+    "training_allowed": false
+  },
+  "training_allowed": false
+}
