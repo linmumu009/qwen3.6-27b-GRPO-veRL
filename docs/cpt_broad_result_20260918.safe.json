@@ -1,0 +1,2695 @@
+{
+  "status": "completed_verified_local",
+  "packet_sha256": "42fa58cd1f04db8448bf8c3a8a6dfb600a5b909425e7c8da2b1a088fdce160e6",
+  "new_calls": 792,
+  "closed_calls": 704,
+  "blind_review_calls": 88,
+  "independent_closed_json_parsing_passed": true,
+  "all_prompt_tokens_rebuilt": true,
+  "all_paired_prompts_match": true,
+  "remote_summaries_rebuilt": true,
+  "models": {
+    "step120_current": {
+      "model_label": "step120_current",
+      "counts": {
+        "train_correct": 180,
+        "invalid": 0,
+        "truncated": 0,
+        "dev_correct": 85,
+        "retention_correct": 61
+      },
+      "all_orders_correct": {
+        "train": 40,
+        "dev": 18,
+        "retention": 13
+      },
+      "invariant_answer_tasks": 71,
+      "review_decisions": [],
+      "review_accepted": 0,
+      "closed_calls": 352,
+      "review_calls": 0,
+      "training_allowed": false
+    },
+    "p1": {
+      "model_label": "p1",
+      "counts": {
+        "train_correct": 176,
+        "invalid": 0,
+        "truncated": 0,
+        "dev_correct": 83,
+        "retention_correct": 59
+      },
+      "all_orders_correct": {
+        "train": 40,
+        "dev": 18,
+        "retention": 13
+      },
+      "invariant_answer_tasks": 73,
+      "review_decisions": [
+        {
+          "id": "broad-warehouse_roles-two_stream_assignment",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            1
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            1
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-warehouse_roles-manufacturing_buffers",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            1
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-warehouse_roles-crossdock_scope",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            1,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-warehouse_roles-classification_dimensions",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-warehouse_roles-missing_activity_evidence",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            1,
+            2
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            1,
+            2
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-warehouse_roles-function_change_over_time",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-handling_granularity-same_throughput",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            1
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            1
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-handling_granularity-explicit_exception_costs",
+          "accepted": false,
+          "internally_consistent": false,
+          "review_indices": null,
+          "flags_pass": false,
+          "parse_valid": false,
+          "truncated": false
+        },
+        {
+          "id": "broad-handling_granularity-downstream_design",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            1,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-handling_granularity-event_count_and_cost",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-handling_granularity-mixed_granularity_ledger",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            1,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            1,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-handling_granularity-inverse_cost_identifiability",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            2
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            2
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-shipping_controls-defect_to_control",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-shipping_controls-paired_control_failures",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            1,
+            2
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            1,
+            2
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-shipping_controls-process_evidence",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            1,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-shipping_controls-separate_completion_records",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-shipping_controls-unobserved_completion",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            2,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            2,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-shipping_controls-control_after_repack",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            1
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            1
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-activity_distribution-same_average_different_peak",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            1
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            1
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-activity_distribution-data_source_selection",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            1,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            1,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-activity_distribution-units_and_lines",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            2,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            2,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-activity_distribution-profile_dimensions",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-activity_distribution-inverse_peak_requirement",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            2
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            2
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-activity_distribution-aggregation_hides_burst",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-storage_tradeoffs-frequency_distance_assignment",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            2
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            2
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-storage_tradeoffs-empty_location_reassignment",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            2,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            2,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-storage_tradeoffs-space_vs_nearest",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            1,
+            2
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1,
+            2
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-storage_tradeoffs-idealized_utilization_scope",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-storage_tradeoffs-compatibility_breaks_universal_claim",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            1,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            1,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-storage_tradeoffs-joint_order_frees_location",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            1
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            1
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-metric_denominators-pooled_line_accuracy",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            1
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            1
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-metric_denominators-locations_vs_periods",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-metric_denominators-processing_time_boundary",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            1,
+            2,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            1,
+            2,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-metric_denominators-consistent_rate_units",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-metric_denominators-overlapping_audits",
+          "accepted": false,
+          "internally_consistent": false,
+          "review_indices": [
+            2,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-metric_denominators-inverse_rate_target",
+          "accepted": false,
+          "internally_consistent": false,
+          "review_indices": [
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            2,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-mrp_coordination-bom_shared_component",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-mrp_coordination-lead_time_release",
+          "accepted": false,
+          "internally_consistent": false,
+          "review_indices": [
+            0,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-mrp_coordination-joint_cost_tradeoff",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            1,
+            2,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            1,
+            2,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-mrp_coordination-coordination_scope",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-mrp_coordination-receipt_netting_and_timing",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            1,
+            2
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1,
+            2
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-mrp_coordination-cost_transfer_identifiability",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-network_decisions-locations_without_flows",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-network_decisions-capacity_and_demand",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            1,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            1,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-network_decisions-fixed_and_flow_cost",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            1,
+            2,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            1,
+            2,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-network_decisions-model_components",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-network_decisions-cut_capacity",
+          "accepted": false,
+          "internally_consistent": false,
+          "review_indices": null,
+          "flags_pass": false,
+          "parse_valid": false,
+          "truncated": false
+        },
+        {
+          "id": "broad-network_decisions-opening_condition_counterfactual",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-outsourcing_governance-delegation_boundary",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            1
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            1
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-outsourcing_governance-provider_and_oversight",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            1,
+            2
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            1,
+            2
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-outsourcing_governance-explicit_total_cost",
+          "accepted": false,
+          "internally_consistent": false,
+          "review_indices": [
+            1,
+            2,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-outsourcing_governance-managed_external_execution",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-outsourcing_governance-mixed_kpi_interpretation",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            2,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            2,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-outsourcing_governance-handover_responsibility",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-holding_cost-rate_boundary",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            1
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            1
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-holding_cost-overlapping_operating_charge",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            1
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-holding_cost-different_costing_purposes",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            2,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            2,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-holding_cost-component_scope",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-holding_cost-inventory_mix_rate",
+          "accepted": false,
+          "internally_consistent": false,
+          "review_indices": null,
+          "flags_pass": false,
+          "parse_valid": false,
+          "truncated": false
+        },
+        {
+          "id": "broad-holding_cost-break_even_overlapping_fee",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-road_capacity-mass_volume_binding",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            2
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            2
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-road_capacity-gross_vs_goods",
+          "accepted": false,
+          "internally_consistent": false,
+          "review_indices": null,
+          "flags_pass": false,
+          "parse_valid": false,
+          "truncated": false
+        },
+        {
+          "id": "broad-road_capacity-road_train_definition",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            1,
+            2,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            1,
+            2,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-road_capacity-four_distinct_measurements",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-road_capacity-integer_parcel_capacity",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            1,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-road_capacity-volume_only_change",
+          "accepted": false,
+          "internally_consistent": false,
+          "review_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1,
+            2
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-rail_track_line-line_and_parallel_tracks",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-rail_track_line-siding_scope",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            1,
+            2
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            1,
+            2
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-rail_track_line-excluded_links",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            1,
+            2
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1,
+            2
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-rail_track_line-classification_records",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-rail_track_line-partial_double_tracking",
+          "accepted": false,
+          "internally_consistent": false,
+          "review_indices": [
+            0,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-rail_track_line-urban_scope_counterexample",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-retain_pest-external_change_scan",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            1,
+            2
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            1,
+            2
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-retain_safety-risk_not_guarantee",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            1,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            1,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-retain_abc-control_swap_audit",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            1,
+            2
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            1,
+            2
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-retain_uld-container_only_catalog",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            1
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-retain_epal-dimension_conversion",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            2,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            2,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-retain_reorder-error_term_change",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            1,
+            2
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            1,
+            2
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-retain_tkm-territorial_partition",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            1,
+            2
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            1,
+            2
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-retain_capital-stock_flow_boundary",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            2
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            2
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-retain_outgoing_rail-origin_transit_distinction",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            2
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            2
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-retain_aircraft_moment-signed_moment",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            1,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            1,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-retain_postponement-allocation_after_information",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            2,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            2,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-retain_packages-aggregation_and_roles",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            1,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            1,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-retain_contracts-missing_contract_dimension",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-retain_belly-configuration_vs_cargo",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            0,
+            2
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            0,
+            2
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-retain_payload-fixed_limit_fuel_tradeoff",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            1,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            1,
+            3
+          ],
+          "false_flags": []
+        },
+        {
+          "id": "broad-retain_air_cargo-carried_or_planned",
+          "accepted": true,
+          "internally_consistent": true,
+          "review_indices": [
+            2,
+            3
+          ],
+          "flags_pass": true,
+          "parse_valid": true,
+          "truncated": false,
+          "judgment_indices": [
+            2,
+            3
+          ],
+          "false_flags": []
+        }
+      ],
+      "review_accepted": 78,
+      "closed_calls": 352,
+      "review_calls": 88,
+      "training_allowed": false
+    }
+  },
+  "paired": {
+    "train": {
+      "calls": 192,
+      "step120_correct": 180,
+      "p1_correct": 176,
+      "gains": 5,
+      "losses": 9
+    },
+    "dev": {
+      "calls": 96,
+      "step120_correct": 85,
+      "p1_correct": 83,
+      "gains": 2,
+      "losses": 4
+    },
+    "retention": {
+      "calls": 64,
+      "step120_correct": 61,
+      "p1_correct": 59,
+      "gains": 0,
+      "losses": 2
+    }
+  },
+  "units": {
+    "warehouse_roles/train": {
+      "calls": 16,
+      "step120_correct": 16,
+      "p1_correct": 16,
+      "gains": 0,
+      "losses": 0
+    },
+    "warehouse_roles/dev": {
+      "calls": 8,
+      "step120_correct": 8,
+      "p1_correct": 8,
+      "gains": 0,
+      "losses": 0
+    },
+    "handling_granularity/train": {
+      "calls": 16,
+      "step120_correct": 16,
+      "p1_correct": 16,
+      "gains": 0,
+      "losses": 0
+    },
+    "handling_granularity/dev": {
+      "calls": 8,
+      "step120_correct": 7,
+      "p1_correct": 8,
+      "gains": 1,
+      "losses": 0
+    },
+    "shipping_controls/train": {
+      "calls": 16,
+      "step120_correct": 14,
+      "p1_correct": 13,
+      "gains": 0,
+      "losses": 1
+    },
+    "shipping_controls/dev": {
+      "calls": 8,
+      "step120_correct": 8,
+      "p1_correct": 8,
+      "gains": 0,
+      "losses": 0
+    },
+    "activity_distribution/train": {
+      "calls": 16,
+      "step120_correct": 16,
+      "p1_correct": 16,
+      "gains": 0,
+      "losses": 0
+    },
+    "activity_distribution/dev": {
+      "calls": 8,
+      "step120_correct": 8,
+      "p1_correct": 8,
+      "gains": 0,
+      "losses": 0
+    },
+    "storage_tradeoffs/train": {
+      "calls": 16,
+      "step120_correct": 14,
+      "p1_correct": 12,
+      "gains": 1,
+      "losses": 3
+    },
+    "storage_tradeoffs/dev": {
+      "calls": 8,
+      "step120_correct": 6,
+      "p1_correct": 7,
+      "gains": 1,
+      "losses": 0
+    },
+    "metric_denominators/train": {
+      "calls": 16,
+      "step120_correct": 14,
+      "p1_correct": 13,
+      "gains": 0,
+      "losses": 1
+    },
+    "metric_denominators/dev": {
+      "calls": 8,
+      "step120_correct": 5,
+      "p1_correct": 4,
+      "gains": 0,
+      "losses": 1
+    },
+    "mrp_coordination/train": {
+      "calls": 16,
+      "step120_correct": 16,
+      "p1_correct": 15,
+      "gains": 0,
+      "losses": 1
+    },
+    "mrp_coordination/dev": {
+      "calls": 8,
+      "step120_correct": 8,
+      "p1_correct": 8,
+      "gains": 0,
+      "losses": 0
+    },
+    "network_decisions/train": {
+      "calls": 16,
+      "step120_correct": 15,
+      "p1_correct": 15,
+      "gains": 0,
+      "losses": 0
+    },
+    "network_decisions/dev": {
+      "calls": 8,
+      "step120_correct": 8,
+      "p1_correct": 8,
+      "gains": 0,
+      "losses": 0
+    },
+    "outsourcing_governance/train": {
+      "calls": 16,
+      "step120_correct": 13,
+      "p1_correct": 15,
+      "gains": 2,
+      "losses": 0
+    },
+    "outsourcing_governance/dev": {
+      "calls": 8,
+      "step120_correct": 7,
+      "p1_correct": 7,
+      "gains": 0,
+      "losses": 0
+    },
+    "holding_cost/train": {
+      "calls": 16,
+      "step120_correct": 15,
+      "p1_correct": 15,
+      "gains": 1,
+      "losses": 1
+    },
+    "holding_cost/dev": {
+      "calls": 8,
+      "step120_correct": 8,
+      "p1_correct": 8,
+      "gains": 0,
+      "losses": 0
+    },
+    "road_capacity/train": {
+      "calls": 16,
+      "step120_correct": 16,
+      "p1_correct": 14,
+      "gains": 0,
+      "losses": 2
+    },
+    "road_capacity/dev": {
+      "calls": 8,
+      "step120_correct": 5,
+      "p1_correct": 4,
+      "gains": 0,
+      "losses": 1
+    },
+    "rail_track_line/train": {
+      "calls": 16,
+      "step120_correct": 15,
+      "p1_correct": 16,
+      "gains": 1,
+      "losses": 0
+    },
+    "rail_track_line/dev": {
+      "calls": 8,
+      "step120_correct": 7,
+      "p1_correct": 5,
+      "gains": 0,
+      "losses": 2
+    },
+    "retain_pest/retention": {
+      "calls": 4,
+      "step120_correct": 4,
+      "p1_correct": 4,
+      "gains": 0,
+      "losses": 0
+    },
+    "retain_safety/retention": {
+      "calls": 4,
+      "step120_correct": 4,
+      "p1_correct": 4,
+      "gains": 0,
+      "losses": 0
+    },
+    "retain_abc/retention": {
+      "calls": 4,
+      "step120_correct": 3,
+      "p1_correct": 2,
+      "gains": 0,
+      "losses": 1
+    },
+    "retain_uld/retention": {
+      "calls": 4,
+      "step120_correct": 4,
+      "p1_correct": 4,
+      "gains": 0,
+      "losses": 0
+    },
+    "retain_epal/retention": {
+      "calls": 4,
+      "step120_correct": 3,
+      "p1_correct": 2,
+      "gains": 0,
+      "losses": 1
+    },
+    "retain_reorder/retention": {
+      "calls": 4,
+      "step120_correct": 4,
+      "p1_correct": 4,
+      "gains": 0,
+      "losses": 0
+    },
+    "retain_tkm/retention": {
+      "calls": 4,
+      "step120_correct": 3,
+      "p1_correct": 3,
+      "gains": 0,
+      "losses": 0
+    },
+    "retain_capital/retention": {
+      "calls": 4,
+      "step120_correct": 4,
+      "p1_correct": 4,
+      "gains": 0,
+      "losses": 0
+    },
+    "retain_outgoing_rail/retention": {
+      "calls": 4,
+      "step120_correct": 4,
+      "p1_correct": 4,
+      "gains": 0,
+      "losses": 0
+    },
+    "retain_aircraft_moment/retention": {
+      "calls": 4,
+      "step120_correct": 4,
+      "p1_correct": 4,
+      "gains": 0,
+      "losses": 0
+    },
+    "retain_postponement/retention": {
+      "calls": 4,
+      "step120_correct": 4,
+      "p1_correct": 4,
+      "gains": 0,
+      "losses": 0
+    },
+    "retain_packages/retention": {
+      "calls": 4,
+      "step120_correct": 4,
+      "p1_correct": 4,
+      "gains": 0,
+      "losses": 0
+    },
+    "retain_contracts/retention": {
+      "calls": 4,
+      "step120_correct": 4,
+      "p1_correct": 4,
+      "gains": 0,
+      "losses": 0
+    },
+    "retain_belly/retention": {
+      "calls": 4,
+      "step120_correct": 4,
+      "p1_correct": 4,
+      "gains": 0,
+      "losses": 0
+    },
+    "retain_payload/retention": {
+      "calls": 4,
+      "step120_correct": 4,
+      "p1_correct": 4,
+      "gains": 0,
+      "losses": 0
+    },
+    "retain_air_cargo/retention": {
+      "calls": 4,
+      "step120_correct": 4,
+      "p1_correct": 4,
+      "gains": 0,
+      "losses": 0
+    }
+  },
+  "by_answer_cardinality": {
+    "train/1": {
+      "calls": 48,
+      "step120_correct": 46,
+      "p1_correct": 48,
+      "gains": 2,
+      "losses": 0
+    },
+    "train/2": {
+      "calls": 48,
+      "step120_correct": 47,
+      "p1_correct": 44,
+      "gains": 1,
+      "losses": 4
+    },
+    "train/3": {
+      "calls": 48,
+      "step120_correct": 42,
+      "p1_correct": 43,
+      "gains": 2,
+      "losses": 1
+    },
+    "train/4": {
+      "calls": 48,
+      "step120_correct": 45,
+      "p1_correct": 41,
+      "gains": 0,
+      "losses": 4
+    },
+    "dev/2": {
+      "calls": 24,
+      "step120_correct": 24,
+      "p1_correct": 23,
+      "gains": 0,
+      "losses": 1
+    },
+    "dev/1": {
+      "calls": 24,
+      "step120_correct": 18,
+      "p1_correct": 20,
+      "gains": 2,
+      "losses": 0
+    },
+    "dev/3": {
+      "calls": 24,
+      "step120_correct": 23,
+      "p1_correct": 21,
+      "gains": 0,
+      "losses": 2
+    },
+    "dev/4": {
+      "calls": 24,
+      "step120_correct": 20,
+      "p1_correct": 19,
+      "gains": 0,
+      "losses": 1
+    },
+    "retention/2": {
+      "calls": 60,
+      "step120_correct": 57,
+      "p1_correct": 55,
+      "gains": 0,
+      "losses": 2
+    },
+    "retention/3": {
+      "calls": 4,
+      "step120_correct": 4,
+      "p1_correct": 4,
+      "gains": 0,
+      "losses": 0
+    }
+  },
+  "per_task_comparison": [
+    {
+      "id": "broad-warehouse_roles-two_stream_assignment",
+      "split": "train",
+      "unit": "warehouse_roles",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-warehouse_roles-manufacturing_buffers",
+      "split": "train",
+      "unit": "warehouse_roles",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-warehouse_roles-crossdock_scope",
+      "split": "train",
+      "unit": "warehouse_roles",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-warehouse_roles-classification_dimensions",
+      "split": "train",
+      "unit": "warehouse_roles",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-warehouse_roles-missing_activity_evidence",
+      "split": "dev",
+      "unit": "warehouse_roles",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-warehouse_roles-function_change_over_time",
+      "split": "dev",
+      "unit": "warehouse_roles",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-handling_granularity-same_throughput",
+      "split": "train",
+      "unit": "handling_granularity",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-handling_granularity-explicit_exception_costs",
+      "split": "train",
+      "unit": "handling_granularity",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-handling_granularity-downstream_design",
+      "split": "train",
+      "unit": "handling_granularity",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-handling_granularity-event_count_and_cost",
+      "split": "train",
+      "unit": "handling_granularity",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-handling_granularity-mixed_granularity_ledger",
+      "split": "dev",
+      "unit": "handling_granularity",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-handling_granularity-inverse_cost_identifiability",
+      "split": "dev",
+      "unit": "handling_granularity",
+      "step120_correct_orders": 3,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-shipping_controls-defect_to_control",
+      "split": "train",
+      "unit": "shipping_controls",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-shipping_controls-paired_control_failures",
+      "split": "train",
+      "unit": "shipping_controls",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-shipping_controls-process_evidence",
+      "split": "train",
+      "unit": "shipping_controls",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-shipping_controls-separate_completion_records",
+      "split": "train",
+      "unit": "shipping_controls",
+      "step120_correct_orders": 2,
+      "p1_correct_orders": 1,
+      "p1_answer_invariant": false
+    },
+    {
+      "id": "broad-shipping_controls-unobserved_completion",
+      "split": "dev",
+      "unit": "shipping_controls",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-shipping_controls-control_after_repack",
+      "split": "dev",
+      "unit": "shipping_controls",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-activity_distribution-same_average_different_peak",
+      "split": "train",
+      "unit": "activity_distribution",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-activity_distribution-data_source_selection",
+      "split": "train",
+      "unit": "activity_distribution",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-activity_distribution-units_and_lines",
+      "split": "train",
+      "unit": "activity_distribution",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-activity_distribution-profile_dimensions",
+      "split": "train",
+      "unit": "activity_distribution",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-activity_distribution-inverse_peak_requirement",
+      "split": "dev",
+      "unit": "activity_distribution",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-activity_distribution-aggregation_hides_burst",
+      "split": "dev",
+      "unit": "activity_distribution",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-storage_tradeoffs-frequency_distance_assignment",
+      "split": "train",
+      "unit": "storage_tradeoffs",
+      "step120_correct_orders": 3,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-storage_tradeoffs-empty_location_reassignment",
+      "split": "train",
+      "unit": "storage_tradeoffs",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-storage_tradeoffs-space_vs_nearest",
+      "split": "train",
+      "unit": "storage_tradeoffs",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-storage_tradeoffs-idealized_utilization_scope",
+      "split": "train",
+      "unit": "storage_tradeoffs",
+      "step120_correct_orders": 3,
+      "p1_correct_orders": 0,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-storage_tradeoffs-compatibility_breaks_universal_claim",
+      "split": "dev",
+      "unit": "storage_tradeoffs",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-storage_tradeoffs-joint_order_frees_location",
+      "split": "dev",
+      "unit": "storage_tradeoffs",
+      "step120_correct_orders": 2,
+      "p1_correct_orders": 3,
+      "p1_answer_invariant": false
+    },
+    {
+      "id": "broad-metric_denominators-pooled_line_accuracy",
+      "split": "train",
+      "unit": "metric_denominators",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-metric_denominators-locations_vs_periods",
+      "split": "train",
+      "unit": "metric_denominators",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-metric_denominators-processing_time_boundary",
+      "split": "train",
+      "unit": "metric_denominators",
+      "step120_correct_orders": 2,
+      "p1_correct_orders": 1,
+      "p1_answer_invariant": false
+    },
+    {
+      "id": "broad-metric_denominators-consistent_rate_units",
+      "split": "train",
+      "unit": "metric_denominators",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-metric_denominators-overlapping_audits",
+      "split": "dev",
+      "unit": "metric_denominators",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 3,
+      "p1_answer_invariant": false
+    },
+    {
+      "id": "broad-metric_denominators-inverse_rate_target",
+      "split": "dev",
+      "unit": "metric_denominators",
+      "step120_correct_orders": 1,
+      "p1_correct_orders": 1,
+      "p1_answer_invariant": false
+    },
+    {
+      "id": "broad-mrp_coordination-bom_shared_component",
+      "split": "train",
+      "unit": "mrp_coordination",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-mrp_coordination-lead_time_release",
+      "split": "train",
+      "unit": "mrp_coordination",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 3,
+      "p1_answer_invariant": false
+    },
+    {
+      "id": "broad-mrp_coordination-joint_cost_tradeoff",
+      "split": "train",
+      "unit": "mrp_coordination",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-mrp_coordination-coordination_scope",
+      "split": "train",
+      "unit": "mrp_coordination",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-mrp_coordination-receipt_netting_and_timing",
+      "split": "dev",
+      "unit": "mrp_coordination",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-mrp_coordination-cost_transfer_identifiability",
+      "split": "dev",
+      "unit": "mrp_coordination",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-network_decisions-locations_without_flows",
+      "split": "train",
+      "unit": "network_decisions",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-network_decisions-capacity_and_demand",
+      "split": "train",
+      "unit": "network_decisions",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-network_decisions-fixed_and_flow_cost",
+      "split": "train",
+      "unit": "network_decisions",
+      "step120_correct_orders": 3,
+      "p1_correct_orders": 3,
+      "p1_answer_invariant": false
+    },
+    {
+      "id": "broad-network_decisions-model_components",
+      "split": "train",
+      "unit": "network_decisions",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-network_decisions-cut_capacity",
+      "split": "dev",
+      "unit": "network_decisions",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-network_decisions-opening_condition_counterfactual",
+      "split": "dev",
+      "unit": "network_decisions",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-outsourcing_governance-delegation_boundary",
+      "split": "train",
+      "unit": "outsourcing_governance",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-outsourcing_governance-provider_and_oversight",
+      "split": "train",
+      "unit": "outsourcing_governance",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-outsourcing_governance-explicit_total_cost",
+      "split": "train",
+      "unit": "outsourcing_governance",
+      "step120_correct_orders": 1,
+      "p1_correct_orders": 3,
+      "p1_answer_invariant": false
+    },
+    {
+      "id": "broad-outsourcing_governance-managed_external_execution",
+      "split": "train",
+      "unit": "outsourcing_governance",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-outsourcing_governance-mixed_kpi_interpretation",
+      "split": "dev",
+      "unit": "outsourcing_governance",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-outsourcing_governance-handover_responsibility",
+      "split": "dev",
+      "unit": "outsourcing_governance",
+      "step120_correct_orders": 3,
+      "p1_correct_orders": 3,
+      "p1_answer_invariant": false
+    },
+    {
+      "id": "broad-holding_cost-rate_boundary",
+      "split": "train",
+      "unit": "holding_cost",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-holding_cost-overlapping_operating_charge",
+      "split": "train",
+      "unit": "holding_cost",
+      "step120_correct_orders": 3,
+      "p1_correct_orders": 3,
+      "p1_answer_invariant": false
+    },
+    {
+      "id": "broad-holding_cost-different_costing_purposes",
+      "split": "train",
+      "unit": "holding_cost",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-holding_cost-component_scope",
+      "split": "train",
+      "unit": "holding_cost",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-holding_cost-inventory_mix_rate",
+      "split": "dev",
+      "unit": "holding_cost",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-holding_cost-break_even_overlapping_fee",
+      "split": "dev",
+      "unit": "holding_cost",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-road_capacity-mass_volume_binding",
+      "split": "train",
+      "unit": "road_capacity",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-road_capacity-gross_vs_goods",
+      "split": "train",
+      "unit": "road_capacity",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 2,
+      "p1_answer_invariant": false
+    },
+    {
+      "id": "broad-road_capacity-road_train_definition",
+      "split": "train",
+      "unit": "road_capacity",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-road_capacity-four_distinct_measurements",
+      "split": "train",
+      "unit": "road_capacity",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-road_capacity-integer_parcel_capacity",
+      "split": "dev",
+      "unit": "road_capacity",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-road_capacity-volume_only_change",
+      "split": "dev",
+      "unit": "road_capacity",
+      "step120_correct_orders": 1,
+      "p1_correct_orders": 0,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-rail_track_line-line_and_parallel_tracks",
+      "split": "train",
+      "unit": "rail_track_line",
+      "step120_correct_orders": 3,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-rail_track_line-siding_scope",
+      "split": "train",
+      "unit": "rail_track_line",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-rail_track_line-excluded_links",
+      "split": "train",
+      "unit": "rail_track_line",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-rail_track_line-classification_records",
+      "split": "train",
+      "unit": "rail_track_line",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-rail_track_line-partial_double_tracking",
+      "split": "dev",
+      "unit": "rail_track_line",
+      "step120_correct_orders": 3,
+      "p1_correct_orders": 1,
+      "p1_answer_invariant": false
+    },
+    {
+      "id": "broad-rail_track_line-urban_scope_counterexample",
+      "split": "dev",
+      "unit": "rail_track_line",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-retain_pest-external_change_scan",
+      "split": "retention",
+      "unit": "retain_pest",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-retain_safety-risk_not_guarantee",
+      "split": "retention",
+      "unit": "retain_safety",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-retain_abc-control_swap_audit",
+      "split": "retention",
+      "unit": "retain_abc",
+      "step120_correct_orders": 3,
+      "p1_correct_orders": 2,
+      "p1_answer_invariant": false
+    },
+    {
+      "id": "broad-retain_uld-container_only_catalog",
+      "split": "retention",
+      "unit": "retain_uld",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-retain_epal-dimension_conversion",
+      "split": "retention",
+      "unit": "retain_epal",
+      "step120_correct_orders": 3,
+      "p1_correct_orders": 2,
+      "p1_answer_invariant": false
+    },
+    {
+      "id": "broad-retain_reorder-error_term_change",
+      "split": "retention",
+      "unit": "retain_reorder",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-retain_tkm-territorial_partition",
+      "split": "retention",
+      "unit": "retain_tkm",
+      "step120_correct_orders": 3,
+      "p1_correct_orders": 3,
+      "p1_answer_invariant": false
+    },
+    {
+      "id": "broad-retain_capital-stock_flow_boundary",
+      "split": "retention",
+      "unit": "retain_capital",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-retain_outgoing_rail-origin_transit_distinction",
+      "split": "retention",
+      "unit": "retain_outgoing_rail",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-retain_aircraft_moment-signed_moment",
+      "split": "retention",
+      "unit": "retain_aircraft_moment",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-retain_postponement-allocation_after_information",
+      "split": "retention",
+      "unit": "retain_postponement",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-retain_packages-aggregation_and_roles",
+      "split": "retention",
+      "unit": "retain_packages",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-retain_contracts-missing_contract_dimension",
+      "split": "retention",
+      "unit": "retain_contracts",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-retain_belly-configuration_vs_cargo",
+      "split": "retention",
+      "unit": "retain_belly",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-retain_payload-fixed_limit_fuel_tradeoff",
+      "split": "retention",
+      "unit": "retain_payload",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    },
+    {
+      "id": "broad-retain_air_cargo-carried_or_planned",
+      "split": "retention",
+      "unit": "retain_air_cargo",
+      "step120_correct_orders": 4,
+      "p1_correct_orders": 4,
+      "p1_answer_invariant": true
+    }
+  ],
+  "raw_file_sha256": {
+    "step120_current/closed.private.jsonl": "94b081d271a0b769f09e5f427eb970ab7261f38c82fe0c42f5695f74bec62b21",
+    "step120_current/review.private.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "step120_current/registration.safe.json": "6001e7d01e2313a1541106b6711e484d1bb7a924701f390a4761d9a16e0dfb17",
+    "step120_current/summary.safe.json": "7add569d3d2e49f4a498d27ae3cba3df10b4252b3c93584f16dd31cd17396cda",
+    "step120_current/status.safe.json": "0782748618d07b2a4ee8bf140a61f71dcf6a472240ace4ff770cd7e833a884ee",
+    "p1/closed.private.jsonl": "ddc8411647097c5c71c631466911cd49791e482b2b380d3efd2b56e6fb6fa4ba",
+    "p1/review.private.jsonl": "151928302e4bf78e59581ea270bc7b2e83d66dd2d3bdebb692f67e056f1ba160",
+    "p1/registration.safe.json": "6189a68f4d0a40c5aeb979a882c95f509d598c9cf58c39fed0fb1dc3b5a6b108",
+    "p1/summary.safe.json": "a16c81b7faa06e0343b1a47f3129066565e516145c94911671f3bd13edae4f79",
+    "p1/status.safe.json": "0782748618d07b2a4ee8bf140a61f71dcf6a472240ace4ff770cd7e833a884ee"
+  },
+  "verifier_sha256": "d2aba581d77b503c690a6da0171cf6a38f78fc156240da278e310cc8f3410f42",
+  "training_allowed": false,
+  "limitations": [
+    "Source units and connected groups are not independent samples.",
+    "Development shares training source rules but reserves distinct task constructions.",
+    "Retention uses the known historical development source pool, not a fresh holdout.",
+    "Source-authored and operator-reviewed, not external expert certification.",
+    "Four cyclic orders are correlated and do not exhaust all twenty-four permutations.",
+    "No training recipe is released by this build."
+  ],
+  "full_private_verification_sha256": "a0179924a0cac97b1a5b4f0a466335d664a578888768219cad3a49b208e60b52",
+  "public_projection": "All aggregates and per-task comparisons retained; per-call rows and duplicate per-task rows omitted. Full local verification hash identifies the complete file."
+}

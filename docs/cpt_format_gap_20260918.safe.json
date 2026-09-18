@@ -1,0 +1,159 @@
+{
+  "analysis": "posthoc format audit; not causal identification",
+  "formal_cases_sha256": "b652b2108cb552346df11d005c15ff3137c50a756a7b24eb35302683ec33ed99",
+  "packet_sha256": "42fa58cd1f04db8448bf8c3a8a6dfb600a5b909425e7c8da2b1a088fdce160e6",
+  "candidate_counts": {
+    "cases": 88,
+    "option_counts": {
+      "4": 88
+    }
+  },
+  "formal_counts": {
+    "LogistikaBench": {
+      "cases": 1446,
+      "option_counts": {
+        "5": 312,
+        "8": 87,
+        "4": 123,
+        "10": 30,
+        "9": 18,
+        "3": 205,
+        "269": 305,
+        "2": 84,
+        "7": 73,
+        "6": 146,
+        "11": 36,
+        "12": 24,
+        "14": 1,
+        "20": 1,
+        "1": 1
+      },
+      "answer_cardinalities": {
+        "1": 1316,
+        "3": 49,
+        "4": 39,
+        "5": 18,
+        "2": 14,
+        "8": 3,
+        "7": 3,
+        "6": 3,
+        "10": 1
+      }
+    },
+    "SC-bench-knowledge": {
+      "cases": 226,
+      "option_counts": {
+        "4": 145,
+        "2": 81
+      },
+      "answer_cardinalities": {
+        "1": 164,
+        "4": 16,
+        "2": 8,
+        "3": 38
+      }
+    }
+  },
+  "p1_to_p4_by_format": [
+    {
+      "dataset": "LogistikaBench",
+      "option_group": "269_options",
+      "answer_group": "single",
+      "n": 305,
+      "before": 224,
+      "after": 217,
+      "gains": 0,
+      "losses": 7,
+      "delta_pp": -2.2950819672131146
+    },
+    {
+      "dataset": "LogistikaBench",
+      "option_group": "5to20",
+      "answer_group": "multiple",
+      "n": 119,
+      "before": 76,
+      "after": 76,
+      "gains": 5,
+      "losses": 5,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "LogistikaBench",
+      "option_group": "5to20",
+      "answer_group": "single",
+      "n": 609,
+      "before": 537,
+      "after": 533,
+      "gains": 5,
+      "losses": 9,
+      "delta_pp": -0.6568144499178982
+    },
+    {
+      "dataset": "LogistikaBench",
+      "option_group": "up_to4",
+      "answer_group": "multiple",
+      "n": 11,
+      "before": 6,
+      "after": 8,
+      "gains": 2,
+      "losses": 0,
+      "delta_pp": 18.181818181818183
+    },
+    {
+      "dataset": "LogistikaBench",
+      "option_group": "up_to4",
+      "answer_group": "single",
+      "n": 402,
+      "before": 350,
+      "after": 353,
+      "gains": 4,
+      "losses": 1,
+      "delta_pp": 0.746268656716418
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "option_group": "up_to4",
+      "answer_group": "multiple",
+      "n": 62,
+      "before": 54,
+      "after": 54,
+      "gains": 1,
+      "losses": 1,
+      "delta_pp": 0.0
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "option_group": "up_to4",
+      "answer_group": "single",
+      "n": 164,
+      "before": 138,
+      "after": 137,
+      "gains": 1,
+      "losses": 2,
+      "delta_pp": -0.6097560975609756
+    }
+  ],
+  "long_list": {
+    "cases": 305,
+    "categories": {
+      "material_handling": 305
+    },
+    "distinct_option_lists": 1,
+    "gains": 0,
+    "losses": 7,
+    "all_three_stable_losses": 6,
+    "p4_all_three_same_wrong_losses": 7
+  },
+  "raw_sha256": {
+    "p1": "33c5fc7dcb64c0fba59c25c054b19cda7b2e07880ad62daf0d2debd6ece7bbb2",
+    "p4": "bf0cc4fcc14d00e190bbd35ddc56a1719c73c309bfda29f92f3f894391cb436f"
+  },
+  "new_inference_calls": 0,
+  "formal_item_content_exposed_to_authoring": false,
+  "limits": [
+    "Task format is confounded with content/category; this audit does not prove why P4 regressed.",
+    "The 269-choice records reuse one vocabulary; item-level statistics do not represent independent vocabularies.",
+    "The broad packet has four options throughout and cannot certify long-list selection or high-index binding.",
+    "A controlled source-authored short/long candidate comparison with unchanged semantics and repeated identical prompts is needed before selecting a format remedy."
+  ]
+}
