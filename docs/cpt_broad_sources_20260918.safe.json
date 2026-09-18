@@ -1,0 +1,407 @@
+{
+  "version": "broad-v2",
+  "cases": 88,
+  "splits": {
+    "train": 48,
+    "dev": 24,
+    "retention": 16
+  },
+  "capabilities": [
+    "warehouse_roles",
+    "handling_granularity",
+    "shipping_controls",
+    "activity_distribution",
+    "storage_tradeoffs",
+    "metric_denominators",
+    "mrp_coordination",
+    "network_decisions",
+    "outsourcing_governance",
+    "holding_cost",
+    "road_capacity",
+    "rail_track_line"
+  ],
+  "train_source_units": 21,
+  "train_source_groups": 6,
+  "new_to_p1_source_units": 8,
+  "retention_source_units": 16,
+  "retention_source_groups": 5,
+  "source_group_separation_verified": true,
+  "source_snapshot_sha256": "5df7dc2b209938986cd7081aecdc9105fb989c9a872d572ce0a0c5a16dbbf8a4",
+  "archive_sha256": "7da53a1a3246381181c5a28fabfb0b68223aed0ee76ff6242710bf257e5af4c2",
+  "evidence_check": {
+    "references": 212,
+    "references_without_excerpt": 58
+  },
+  "answer_cardinalities": {
+    "train": {
+      "1": 12,
+      "2": 12,
+      "3": 12,
+      "4": 12
+    },
+    "dev": {
+      "2": 6,
+      "1": 6,
+      "3": 6,
+      "4": 6
+    },
+    "retention": {
+      "2": 15,
+      "3": 1
+    }
+  },
+  "arithmetic_equalities": 69,
+  "training_allowed": false,
+  "prospective_measurement": {
+    "models": [
+      "step120_current",
+      "p1"
+    ],
+    "closed_option_orders": 4,
+    "closed_calls_per_model": 352,
+    "p1_blind_source_reviews": 88,
+    "total_new_calls": 792,
+    "closed_seed": 20922,
+    "review_seed": 20922,
+    "temperature": 0,
+    "max_closed_tokens": 96,
+    "max_review_tokens": 1536,
+    "thinking": false,
+    "tp": 8,
+    "max_num_seqs": 16,
+    "max_model_len": 8192,
+    "chunk": 8
+  },
+  "limitations": [
+    "Source units and connected groups are not independent samples.",
+    "Development shares training source rules but reserves distinct task constructions.",
+    "Retention uses the known historical development source pool, not a fresh holdout.",
+    "Source-authored and operator-reviewed, not external expert certification.",
+    "Four cyclic orders are correlated and do not exhaust all twenty-four permutations.",
+    "No training recipe is released by this build."
+  ],
+  "files": {
+    "cases.private.jsonl": "42fa58cd1f04db8448bf8c3a8a6dfb600a5b909425e7c8da2b1a088fdce160e6",
+    "dev.private.jsonl": "2310a78ffe67a2b4e87e09726971b2953f812f657ee5c5a9ab95924d4cad827b",
+    "retention.private.jsonl": "5afa399bbfba270a5d5cda71a1139d3458eea92633c24e8c99b8455b36e10df1",
+    "train.private.jsonl": "b751fd89dd7d411267ad3705c738bedff97fab4105f868b33d4ebf6055b760f2"
+  },
+  "authoring_code_sha256": {
+    "prepare_cpt_broad_packet.py": "32253c44b0f81d76bac5cac9c6b2acca7f3baa5de4f062de3ea7da2c4685c935",
+    "cpt_broad_planning_tasks.py": "81cd4a51e248a4bdd81aa483b2fc7b590946a8063e4cbbad2fe60e4a6e3d8b5d",
+    "cpt_broad_retention_tasks.py": "e1d9ba7625671cac42e0e3295f9c87abd580c92dcd459424ded69e9250ecd206",
+    "cpt_broad_transport_tasks.py": "eabecf3a727a936ab5df2875832532be0a5c80d332cb890f197ed01545e15608",
+    "cpt_broad_warehouse_tasks.py": "47763e025eb4be8c181c95d164db505783d8e6b1ae2dfcc2e140e0c52160f075"
+  },
+  "exclusion_audit": {
+    "packet_sha256": "42fa58cd1f04db8448bf8c3a8a6dfb600a5b909425e7c8da2b1a088fdce160e6",
+    "cases": 88,
+    "arithmetic_equalities_checked": 69,
+    "split_files_reconstructed": true,
+    "source_and_option_schema_verified": true,
+    "excluded_normalized_questions": 2400,
+    "exact_or_number_normalized_matches": [],
+    "internal_duplicates": 0,
+    "exclusion_inputs": [
+      {
+        "path": "llin-composed-boundaries-20260916-01/cases.private.jsonl",
+        "sha256": "ebc53dab7e305a4d34d00dc31eff70476d2612021855240762c29c8969c25328"
+      },
+      {
+        "path": "llin-coverage-expansion-20260916-01/cases.private.jsonl",
+        "sha256": "b28c352852a2c78bc6659e6d2ee74adefb7e4cd2d688e1d8f1de3995efec0373"
+      },
+      {
+        "path": "llin-reviewed-scenario-probe-20260916-01/cases.private.jsonl",
+        "sha256": "d778181eae00dc8ed45496a81bead8d9f5f410970e7d28fa1f1354137eaaae09"
+      },
+      {
+        "path": "llin-transfer-screen-20260916-02/candidates.private.jsonl",
+        "sha256": "1237a2c060eae41a674a620864f08381ffe364de219accb7916555e849622a6e"
+      },
+      {
+        "path": "llin-transfer-screen-20260916-03/candidates.private.jsonl",
+        "sha256": "f0452e42f78606cd7f942f5324f4d1f9c94ae32d60dfe978dbb85bb3d5ad2671"
+      },
+      {
+        "path": "llin-transfer-draft-20260916-01/pilot_result/candidates.private.jsonl",
+        "sha256": "0bed756f04398c1bd810f05d95b7f360ba294bc60e5e06332ac5b2493a04338a"
+      },
+      {
+        "path": "llin-transfer-constraint-pilot-20260916-01/result/candidates.private.jsonl",
+        "sha256": "2cbce73246f70ec49ca23a3eb1e8b92d82aea6711983c38c201a5cb6781df83e"
+      },
+      {
+        "path": "llin-s4-probe-20260915-01/cases.private.jsonl",
+        "sha256": "63f652b85d28ddf1da5de67f0074f99e80b144c5b1ca4f6ec408a83b7ac78b19"
+      },
+      {
+        "path": "llin-s4-probe-20260915-02/cases.private.jsonl",
+        "sha256": "2669e189e06b00c04a476be308a1d430eee65362d8cbe3bcdc9c4e77499035eb"
+      },
+      {
+        "path": "llin-s4-transfer-diagnostic-20260915-01/cases.private.jsonl",
+        "sha256": "0894adb053f55b0716ae3bf128bb91b21dd778ad48653342909a3125b2c473f9"
+      },
+      {
+        "path": "llin-s4-conditional-train-20260915-01/tasks.private.jsonl",
+        "sha256": "663e76794901e0af31d759a027ab4ea1e300888fb55e1927691336e2e4f4916b"
+      },
+      {
+        "path": "llin-s5-contrast-20260915-01/tasks.private.jsonl",
+        "sha256": "8d1f5e3ce9772fc2ddf99e16ee92630dcbf8aa6a1b58e558b5f397d33c616ea2"
+      },
+      {
+        "path": "llin-source-reviewed-20260914-01/cases.private.jsonl",
+        "sha256": "d896fd906a17c473d4ec9ef775f1ad0ed7138d9fbec431fec5efcab67a3856bd"
+      },
+      {
+        "path": "llin-source-expansion-20260914-01/filtered_tasks.private.jsonl",
+        "sha256": "cb8085d17b6b0573964540b72d6e3a3991cd617df114ba271857161926f271eb"
+      },
+      {
+        "path": "llin-transfer-p1-20260916-03/cases.private.jsonl",
+        "sha256": "b74ed230308e4d0da500263817280bf4222d1f5fabf38c315c22f4fc26f8ff3c"
+      },
+      {
+        "path": "llin-transfer-audit-20260915-01/frozen_cases.private.jsonl",
+        "sha256": "b652b2108cb552346df11d005c15ff3137c50a756a7b24eb35302683ec33ed99"
+      },
+      {
+        "path": "llin-transfer-expansion-draft-20260917-01/filtered.private.jsonl",
+        "sha256": "d0a2717405f85fd867956a712316fe1fa0ce6dc4b4416a2acbd6364d4612cb82"
+      },
+      {
+        "path": "llin-source-authoring-pilot-20260917-01/cases.private.jsonl",
+        "sha256": "fdb9fb716f226fd5c2b6531521ef84e990fca83fae65a29da3f295418e674b26"
+      },
+      {
+        "path": "llin-remediation-packet-20260917-01/cases.private.jsonl",
+        "sha256": "9f764dd3c60e4cefac8319be2d48a80bfe6d3a6df41eb048fd919fb0d06bafde"
+      },
+      {
+        "path": "llin-remediation-packet-20260917-03/cases.private.jsonl",
+        "sha256": "9d956b539b6f40a07e71ad4b925c681e49534c73e89873c80e825d7895a07848"
+      }
+    ],
+    "development_structure_ledger": [
+      {
+        "dev_id": "broad-warehouse_roles-missing_activity_evidence",
+        "nearest_train_id": "broad-activity_distribution-data_source_selection",
+        "word_jaccard": 0.1429,
+        "intended_distinction": "Held-out construction: missing_activity_evidence; shared source rules, not an independent source domain.",
+        "scope": "Shared source rules and arithmetic primitives; held-out construction, not independent knowledge."
+      },
+      {
+        "dev_id": "broad-warehouse_roles-function_change_over_time",
+        "nearest_train_id": "broad-warehouse_roles-crossdock_scope",
+        "word_jaccard": 0.1429,
+        "intended_distinction": "Held-out construction: function_change_over_time; shared source rules, not an independent source domain.",
+        "scope": "Shared source rules and arithmetic primitives; held-out construction, not independent knowledge."
+      },
+      {
+        "dev_id": "broad-handling_granularity-mixed_granularity_ledger",
+        "nearest_train_id": "broad-handling_granularity-event_count_and_cost",
+        "word_jaccard": 0.2195,
+        "intended_distinction": "Held-out construction: mixed_granularity_ledger; shared source rules, not an independent source domain.",
+        "scope": "Shared source rules and arithmetic primitives; held-out construction, not independent knowledge."
+      },
+      {
+        "dev_id": "broad-handling_granularity-inverse_cost_identifiability",
+        "nearest_train_id": "broad-handling_granularity-same_throughput",
+        "word_jaccard": 0.1731,
+        "intended_distinction": "Held-out construction: inverse_cost_identifiability; shared source rules, not an independent source domain.",
+        "scope": "Shared source rules and arithmetic primitives; held-out construction, not independent knowledge."
+      },
+      {
+        "dev_id": "broad-shipping_controls-unobserved_completion",
+        "nearest_train_id": "broad-mrp_coordination-lead_time_release",
+        "word_jaccard": 0.12,
+        "intended_distinction": "Held-out construction: unobserved_completion; shared source rules, not an independent source domain.",
+        "scope": "Shared source rules and arithmetic primitives; held-out construction, not independent knowledge."
+      },
+      {
+        "dev_id": "broad-shipping_controls-control_after_repack",
+        "nearest_train_id": "broad-storage_tradeoffs-space_vs_nearest",
+        "word_jaccard": 0.1064,
+        "intended_distinction": "Held-out construction: control_after_repack; shared source rules, not an independent source domain.",
+        "scope": "Shared source rules and arithmetic primitives; held-out construction, not independent knowledge."
+      },
+      {
+        "dev_id": "broad-activity_distribution-inverse_peak_requirement",
+        "nearest_train_id": "broad-activity_distribution-same_average_different_peak",
+        "word_jaccard": 0.2683,
+        "intended_distinction": "Held-out construction: inverse_peak_requirement; shared source rules, not an independent source domain.",
+        "scope": "Shared source rules and arithmetic primitives; held-out construction, not independent knowledge."
+      },
+      {
+        "dev_id": "broad-activity_distribution-aggregation_hides_burst",
+        "nearest_train_id": "broad-metric_denominators-processing_time_boundary",
+        "word_jaccard": 0.1081,
+        "intended_distinction": "Held-out construction: aggregation_hides_burst; shared source rules, not an independent source domain.",
+        "scope": "Shared source rules and arithmetic primitives; held-out construction, not independent knowledge."
+      },
+      {
+        "dev_id": "broad-storage_tradeoffs-compatibility_breaks_universal_claim",
+        "nearest_train_id": "broad-storage_tradeoffs-space_vs_nearest",
+        "word_jaccard": 0.1569,
+        "intended_distinction": "Held-out construction: compatibility_breaks_universal_claim; shared source rules, not an independent source domain.",
+        "scope": "Shared source rules and arithmetic primitives; held-out construction, not independent knowledge."
+      },
+      {
+        "dev_id": "broad-storage_tradeoffs-joint_order_frees_location",
+        "nearest_train_id": "broad-storage_tradeoffs-space_vs_nearest",
+        "word_jaccard": 0.25,
+        "intended_distinction": "Held-out construction: joint_order_frees_location; shared source rules, not an independent source domain.",
+        "scope": "Shared source rules and arithmetic primitives; held-out construction, not independent knowledge."
+      },
+      {
+        "dev_id": "broad-metric_denominators-overlapping_audits",
+        "nearest_train_id": "broad-metric_denominators-locations_vs_periods",
+        "word_jaccard": 0.1316,
+        "intended_distinction": "Held-out construction: overlapping_audits; shared source rules, not an independent source domain.",
+        "scope": "Shared source rules and arithmetic primitives; held-out construction, not independent knowledge."
+      },
+      {
+        "dev_id": "broad-metric_denominators-inverse_rate_target",
+        "nearest_train_id": "broad-metric_denominators-pooled_line_accuracy",
+        "word_jaccard": 0.2059,
+        "intended_distinction": "Held-out construction: inverse_rate_target; shared source rules, not an independent source domain.",
+        "scope": "Shared source rules and arithmetic primitives; held-out construction, not independent knowledge."
+      },
+      {
+        "dev_id": "broad-mrp_coordination-receipt_netting_and_timing",
+        "nearest_train_id": "broad-mrp_coordination-lead_time_release",
+        "word_jaccard": 0.2667,
+        "intended_distinction": "Held-out construction: receipt_netting_and_timing; shared source rules, not an independent source domain.",
+        "scope": "Shared source rules and arithmetic primitives; held-out construction, not independent knowledge."
+      },
+      {
+        "dev_id": "broad-mrp_coordination-cost_transfer_identifiability",
+        "nearest_train_id": "broad-mrp_coordination-joint_cost_tradeoff",
+        "word_jaccard": 0.1892,
+        "intended_distinction": "Held-out construction: cost_transfer_identifiability; shared source rules, not an independent source domain.",
+        "scope": "Shared source rules and arithmetic primitives; held-out construction, not independent knowledge."
+      },
+      {
+        "dev_id": "broad-network_decisions-cut_capacity",
+        "nearest_train_id": "broad-network_decisions-capacity_and_demand",
+        "word_jaccard": 0.2727,
+        "intended_distinction": "Held-out construction: cut_capacity; shared source rules, not an independent source domain.",
+        "scope": "Shared source rules and arithmetic primitives; held-out construction, not independent knowledge."
+      },
+      {
+        "dev_id": "broad-network_decisions-opening_condition_counterfactual",
+        "nearest_train_id": "broad-network_decisions-capacity_and_demand",
+        "word_jaccard": 0.1837,
+        "intended_distinction": "Held-out construction: opening_condition_counterfactual; shared source rules, not an independent source domain.",
+        "scope": "Shared source rules and arithmetic primitives; held-out construction, not independent knowledge."
+      },
+      {
+        "dev_id": "broad-outsourcing_governance-mixed_kpi_interpretation",
+        "nearest_train_id": "broad-outsourcing_governance-delegation_boundary",
+        "word_jaccard": 0.1111,
+        "intended_distinction": "Held-out construction: mixed_kpi_interpretation; shared source rules, not an independent source domain.",
+        "scope": "Shared source rules and arithmetic primitives; held-out construction, not independent knowledge."
+      },
+      {
+        "dev_id": "broad-outsourcing_governance-handover_responsibility",
+        "nearest_train_id": "broad-outsourcing_governance-managed_external_execution",
+        "word_jaccard": 0.186,
+        "intended_distinction": "Held-out construction: handover_responsibility; shared source rules, not an independent source domain.",
+        "scope": "Shared source rules and arithmetic primitives; held-out construction, not independent knowledge."
+      },
+      {
+        "dev_id": "broad-holding_cost-inventory_mix_rate",
+        "nearest_train_id": "broad-holding_cost-rate_boundary",
+        "word_jaccard": 0.2,
+        "intended_distinction": "Held-out construction: inventory_mix_rate; shared source rules, not an independent source domain.",
+        "scope": "Shared source rules and arithmetic primitives; held-out construction, not independent knowledge."
+      },
+      {
+        "dev_id": "broad-holding_cost-break_even_overlapping_fee",
+        "nearest_train_id": "broad-holding_cost-different_costing_purposes",
+        "word_jaccard": 0.1463,
+        "intended_distinction": "Held-out construction: break_even_overlapping_fee; shared source rules, not an independent source domain.",
+        "scope": "Shared source rules and arithmetic primitives; held-out construction, not independent knowledge."
+      },
+      {
+        "dev_id": "broad-road_capacity-integer_parcel_capacity",
+        "nearest_train_id": "broad-road_capacity-mass_volume_binding",
+        "word_jaccard": 0.4,
+        "intended_distinction": "Held-out construction: integer_parcel_capacity; shared source rules, not an independent source domain.",
+        "scope": "Shared source rules and arithmetic primitives; held-out construction, not independent knowledge."
+      },
+      {
+        "dev_id": "broad-road_capacity-volume_only_change",
+        "nearest_train_id": "broad-road_capacity-mass_volume_binding",
+        "word_jaccard": 0.439,
+        "intended_distinction": "Held-out construction: volume_only_change; shared source rules, not an independent source domain.",
+        "scope": "Shared source rules and arithmetic primitives; held-out construction, not independent knowledge."
+      },
+      {
+        "dev_id": "broad-rail_track_line-partial_double_tracking",
+        "nearest_train_id": "broad-rail_track_line-siding_scope",
+        "word_jaccard": 0.4681,
+        "intended_distinction": "Held-out construction: partial_double_tracking; shared source rules, not an independent source domain.",
+        "scope": "Shared source rules and arithmetic primitives; held-out construction, not independent knowledge."
+      },
+      {
+        "dev_id": "broad-rail_track_line-urban_scope_counterexample",
+        "nearest_train_id": "broad-rail_track_line-siding_scope",
+        "word_jaccard": 0.28,
+        "intended_distinction": "Held-out construction: urban_scope_counterexample; shared source rules, not an independent source domain.",
+        "scope": "Shared source rules and arithmetic primitives; held-out construction, not independent knowledge."
+      }
+    ],
+    "training_allowed": false,
+    "limitations": "Known-source development, correlated options, and prior benchmarks used for category-level direction. Exact normalized exclusion is not semantic-independence certification. No sealed items read.",
+    "version": "broad-v2",
+    "row_rebuild_matches": true,
+    "all24_option_permutations_checked": 2112,
+    "independent_references": {
+      "integer_package_maximum": 3,
+      "overlap_distinct_success_counts": [
+        11,
+        12,
+        13
+      ],
+      "inverse_accuracy_required_correct": [
+        10
+      ],
+      "restricted_network_feasible_count": 0,
+      "relaxed_network_feasible_count": 12,
+      "relaxed_network_witness": [
+        6,
+        0,
+        1,
+        3
+      ],
+      "mrp_component_requirement": 25,
+      "mrp_net_requirement": 8,
+      "mrp_release_day": 7,
+      "partial_running_track_length": 24,
+      "including_public_siding": 26,
+      "mixed_inventory_rate": "7/40",
+      "nonduplicated_net_saving": 4,
+      "known_peak_lower_bound": 90,
+      "note": "Independent arithmetic/finite-state checks support the named premises; they do not certify every semantic option."
+    },
+    "semantic_review": "All authored option explanations remain visible for operator review; blind model objections pending."
+  },
+  "pre_result_scope_review": {
+    "packet_sha256": "42fa58cd1f04db8448bf8c3a8a6dfb600a5b909425e7c8da2b1a088fdce160e6",
+    "stage": "operator_scope_review_before_baseline_results",
+    "exclude_from_training": {
+      "broad-storage_tradeoffs-idealized_utilization_scope": "Question supplies the governing utilization formula. Valid arithmetic/comprehension diagnostic, but unsuitable as evidence of acquired domain knowledge; quarantine from training release."
+    },
+    "development_scope": {
+      "broad-storage_tradeoffs-joint_order_frees_location": "Near-transfer counterexample within the same travel/space primitive; not strong structural extrapolation.",
+      "broad-road_capacity-volume_only_change": "Counterfactual change of one limit, within the same mass/volume primitive; report as near-transfer.",
+      "broad-rail_track_line-partial_double_tracking": "Composition of already known line/track and siding primitives; not a new source domain."
+    },
+    "new_to_p1_archived_sources_reviewed": 8,
+    "training_allowed": false,
+    "principle": "Source/semantic defects are adjudicated independently of model scores; do not rewrite answer keys to match a reviewer."
+  }
+}
