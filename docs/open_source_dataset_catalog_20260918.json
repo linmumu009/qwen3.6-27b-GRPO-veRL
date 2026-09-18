@@ -12,8 +12,50 @@
       "archive_name": "llm_raw_20260918.tar.gz",
       "size_archive": "1.34GB",
       "sha256": "48950BE0590363A2FC70A87AD64DCC8D9E744383903E3A55743C5559FA9087FE",
-      "baidu_path": "全部文件/新建文开源数据集_5号机件夹/llm_raw_20260918.tar.gz",
+      "baidu_path": "全部文件/开源数据集_5号机件夹/llm_raw_20260918.tar.gz",
       "status": "uploaded_verified_local_copy_removed"
+    },
+    {
+      "id": "h05-open-source-master",
+      "source": "huawei-05:/data/renjunxiang/coding/huawei_train/datasets/open_source/",
+      "source_bytes": 42024484915,
+      "source_file_count": 1088,
+      "archive_name": "open_source_master_20260918.tar.gz",
+      "archive_bytes": 13615216723,
+      "sha256": "34a929aae51339410039f92020585fd91fa6ef1187832f928637fc4f149a1f7b",
+      "baidu_path": "全部文件/开源数据集_5号机件夹/高价值数据资产_20260918/open_source_master_20260918.tar.gz",
+      "status": "uploaded_verified_local_and_remote_temp_removed"
+    },
+    {
+      "id": "h05-curated-high-value",
+      "source_refs": [
+        "huawei-05:/data1/yehairui/eval_datasets/",
+        "huawei-05:/data3/llin/sft/datasets/open_source/huawei_train/",
+        "huawei-05:/data1/yehairui/Mianyan-Ascend-LLM/supply_chain_continued_pretraining/",
+        "huawei-05:/data/zzl/mianyang-ldm/data/benchmark/",
+        "huawei-05:/data/zzl/mianyang-ldm/data/benchmark2hfvrp/",
+        "huawei-05:/data3/llin/qwen3.6-27b-verl-grpo/runs/cpt-corpus-v1.0.2-20260910/",
+        "huawei-05:/data3/llin/qwen3.6-27b-verl-grpo/data/step120_opensource_20260824/"
+      ],
+      "archive_name": "curated_high_value_20260918.tar.gz",
+      "archive_bytes": 131632247,
+      "sha256": "622bf75e4275841b5d355d7f22e6eea63463cb1e5f821ab53103ae063738bc1e",
+      "baidu_path": "全部文件/开源数据集_5号机件夹/高价值数据资产_20260918/curated_high_value_20260918.tar.gz",
+      "status": "uploaded_verified_local_and_remote_temp_removed"
+    },
+    {
+      "id": "h00-timeseries-eval",
+      "source_refs": [
+        "huawei-00:/data/datasets/fev_datasets/",
+        "huawei-00:/data/datasets/GiftEval/"
+      ],
+      "source_bytes": 1863331850,
+      "source_file_count": 451,
+      "archive_name": "timeseries_eval_20260918.tar.gz",
+      "archive_bytes": 956718397,
+      "sha256": "0569db8794a2500d166bd0d50b2ec27bc72ce6302247993ac50dbf5cf248e571",
+      "baidu_path": "全部文件/开源数据集_5号机件夹/高价值数据资产_20260918/timeseries_eval_20260918.tar.gz",
+      "status": "uploaded_verified_local_and_remote_temp_removed"
     }
   ],
   "priority_assets": [

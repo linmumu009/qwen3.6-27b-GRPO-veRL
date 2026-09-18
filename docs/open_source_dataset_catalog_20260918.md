@@ -19,9 +19,14 @@
 
 | 资产 | 源位置 | 百度网盘位置 | 原始规模 | 归档规模 | SHA-256 | 状态 |
 |---|---|---|---:|---:|---|---|
-| LLM RAW 首批19类 | `huawei-05:/data/datasets/llm/raw/` | `全部文件/新建文开源数据集_5号机件夹/llm_raw_20260918.tar.gz` | 5.2G | 1.34GB | `48950BE0590363A2FC70A87AD64DCC8D9E744383903E3A55743C5559FA9087FE` | 已上传并核验；本地临时包已删除 |
+| LLM RAW 首批19类 | `huawei-05:/data/datasets/llm/raw/` | `全部文件/开源数据集_5号机件夹/llm_raw_20260918.tar.gz` | 5.2G | 1.34GB | `48950BE0590363A2FC70A87AD64DCC8D9E744383903E3A55743C5559FA9087FE` | 已上传并核验；本地临时包已删除 |
+| 开放训练与评测主库 | `huawei-05:/data/renjunxiang/coding/huawei_train/datasets/open_source/` | `全部文件/开源数据集_5号机件夹/高价值数据资产_20260918/open_source_master_20260918.tar.gz` | 42,024,484,915字节，1,088个文件 | 13,615,216,723字节（12.68GB） | `34a929aae51339410039f92020585fd91fa6ef1187832f928637fc4f149a1f7b` | 已上传并核验；本地及服务器临时包已删除 |
+| 人工核验、SFT与物流精选包 | 多路径，见第三节第2、4、5项 | `全部文件/开源数据集_5号机件夹/高价值数据资产_20260918/curated_high_value_20260918.tar.gz` | 约367M | 131,632,247字节（125.53MB） | `622bf75e4275841b5d355d7f22e6eea63463cb1e5f821ab53103ae063738bc1e` | 已上传并核验；本地及服务器临时包已删除 |
+| FEV与GiftEval时序评测包 | `huawei-00:/data/datasets/fev_datasets/`、`GiftEval/` | `全部文件/开源数据集_5号机件夹/高价值数据资产_20260918/timeseries_eval_20260918.tar.gz` | 1,863,331,850字节，451个文件 | 956,718,397字节（912.40MB） | `0569db8794a2500d166bd0d50b2ec27bc72ce6302247993ac50dbf5cf248e571` | 已上传并核验；本地及服务器临时包已删除 |
 
 这份归档包含：AIME24、AIME25、AMO-Bench、ATLAS、BBH、BIG-bench、C-Eval、CMMLU、GSM8K、MATH、MATH-500、MMLU-Pro、MegaScience、MetaMATH、OlymMATH、Omni-MATH、PHYBench、PolyMath、mmlu。
+
+第二批目录同时保存 `backup_manifest_20260918.txt`（1.63KB），用于离线恢复时核对源路径、文件数、归档大小和SHA-256。百度网盘上传记录显示四个文件均已完成，完成时间分别为15:29:49、15:31:07、15:44:08和15:44:09。
 
 注意：该5.2G目录是下述40G主库的子集，不是完整开放数据资产。
 
@@ -61,7 +66,7 @@
 - `SCP_116K_train.jsonl` 约377M
 - BFCL、CompToolBench、GeneralFunctionCall、MetaTool、NESTFUL、ToolHop等统一Agentic评测文件
 
-建议：将整个40G目录作为一个“规范主库”归档；现有5.2G归档保留为首批快照，不再作为完整清单。
+状态：已作为 `open_source_master_20260918.tar.gz` 整体归档；现有5.2G归档保留为首批快照，不再作为完整清单。
 
 ### 2. 5号机安全与工具调用核验集
 
@@ -70,7 +75,7 @@
 - 内容：SafetyBench、CValues-MC、CS-Eval、MetaTool/ToolE、ToolHop、BFCL、CompToolBench、GeneralFunctionCall-Test、NESTFUL。
 - 独特价值：自带 `评测集清单.md` 与 `核验报告.md`，明确8个数据集可以本地确定性判分、CS-Eval因答案不公开而降级；这是人工调研和抽样核验成果，不只是公开文件副本。
 
-建议：整体备份，优先级高于单独备份其中任一上游数据集。
+状态：已与SFT质量结果、物流专项资产合并为 `curated_high_value_20260918.tar.gz` 备份。
 
 ### 3. 5号机Agentic/Thinking训练集合
 
@@ -89,7 +94,7 @@
 - 内容：OpenAI格式数据、reasoning合并版、`quality_split_20260713/`。
 - 独特价值：团队已经完成格式统一、质量分层与审计，重做成本高。
 
-建议：整体备份，并保留质量报告、审计文件和训练/隔离集的相对目录。
+状态：已与人工核验集、物流专项资产合并为 `curated_high_value_20260918.tar.gz` 备份，并保留原相对目录。
 
 ### 5. 物流与供应链专项小资产
 
@@ -101,7 +106,7 @@
 | CPT语料v1.0.2 | `huawei-05:/data3/llin/qwen3.6-27b-verl-grpo/runs/cpt-corpus-v1.0.2-20260910/` | 468K | train/validation双格式、manifest、loader检查与归属声明 |
 | Step120开放样本清单 | `huawei-05:/data3/llin/qwen3.6-27b-verl-grpo/data/step120_opensource_20260824/` | 240K | 数据manifest、质量报告和训练样本 |
 
-这些资产总体很小、与物流沙箱直接相关，应打成一个“物流开放数据与方法包”整体保存。
+这些资产总体很小、与物流沙箱直接相关，已与人工核验集和SFT质量结果合并为 `curated_high_value_20260918.tar.gz` 整体保存。
 
 ## 四、P1：选择性沉淀
 
@@ -109,8 +114,8 @@
 
 | 资产 | 路径 | 规模 | 建议 |
 |---|---|---:|---|
-| FEV | `huawei-00:/data/datasets/fev_datasets/` | 653M | 整体备份；约50类标准时序任务，体量小、覆盖广 |
-| GiftEval | `huawei-00:/data/datasets/GiftEval/` | 1.1G | 整体备份；适合时序预测与世界状态演化评测 |
+| FEV | `huawei-00:/data/datasets/fev_datasets/` | 653M | 已与GiftEval合并归档；约50类标准时序任务，体量小、覆盖广 |
+| GiftEval | `huawei-00:/data/datasets/GiftEval/` | 1.1G | 已与FEV合并归档；适合时序预测与世界状态演化评测 |
 | Time-300B当前副本 | `huawei-00:/data/datasets/Time-300B/` | 984M | 当前主要是energy与synthetic，先核验完整性再备份 |
 
 ### 2. 5号机专项中文与结构化任务集合
@@ -156,12 +161,12 @@ P2不是“没有价值”，而是当前更适合保存数据卡、来源、版
 
 ## 八、建议的后续备份顺序
 
-1. 40G开放训练与评测主库。
-2. 111M安全/工具调用核验集。
-3. 119M开源SFT质量筛选结果。
-4. 约137M物流开放数据与方法包。
-5. 114G Agentic/Thinking集合，按领域分五包归档。
-6. 0号机FEV与GiftEval，共约1.8G。
+1. ~~40G开放训练与评测主库。~~ 已完成。
+2. ~~111M安全/工具调用核验集。~~ 已进入精选包。
+3. ~~119M开源SFT质量筛选结果。~~ 已进入精选包。
+4. ~~约137M物流开放数据与方法包。~~ 已进入精选包。
+5. ~~0号机FEV与GiftEval，共约1.8G。~~ 已完成。
+6. 114G Agentic/Thinking集合，先核验许可，再按领域分五包归档。
 7. 5号机专项中文与结构化任务集合，先排除或单列32G BIRD-bench。
 
 每个归档必须同时保存：源路径、盘点日期、文件数、总字节数、SHA-256、上游来源、许可证、转换脚本及是否包含train/dev/test。
