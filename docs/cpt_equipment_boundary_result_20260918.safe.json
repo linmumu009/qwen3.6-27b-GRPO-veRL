@@ -1,0 +1,1016 @@
+{
+  "status": "completed_verified_local",
+  "new_calls": 768,
+  "packet_sha256": "7ecaf7a9ceee6686d4aae8c249cfbeb6695c5689041b0668e0b66505bb814081",
+  "models": {
+    "step120_current": {
+      "calls": 256,
+      "groups": {
+        "exact_label/16": {
+          "calls": 64,
+          "correct": 64,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/16/position0": {
+          "calls": 32,
+          "correct": 32,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/16/storage": {
+          "calls": 16,
+          "correct": 16,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/4": {
+          "calls": 64,
+          "correct": 64,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/4/position1": {
+          "calls": 32,
+          "correct": 32,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/4/storage": {
+          "calls": 16,
+          "correct": 16,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/16": {
+          "calls": 64,
+          "correct": 62,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/16/position0": {
+          "calls": 32,
+          "correct": 30,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/16/trucks": {
+          "calls": 16,
+          "correct": 16,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/4": {
+          "calls": 64,
+          "correct": 62,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/4/position1": {
+          "calls": 32,
+          "correct": 32,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/4/storage": {
+          "calls": 16,
+          "correct": 14,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/16/trucks": {
+          "calls": 16,
+          "correct": 16,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/4/position0": {
+          "calls": 32,
+          "correct": 32,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/4/position0": {
+          "calls": 32,
+          "correct": 30,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/4/cranes": {
+          "calls": 16,
+          "correct": 16,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/16/cranes": {
+          "calls": 16,
+          "correct": 16,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/4/cranes": {
+          "calls": 16,
+          "correct": 16,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/16/position1": {
+          "calls": 32,
+          "correct": 32,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/16/conveyors": {
+          "calls": 16,
+          "correct": 16,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/4/conveyors": {
+          "calls": 16,
+          "correct": 16,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/4/trucks": {
+          "calls": 16,
+          "correct": 16,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/4/trucks": {
+          "calls": 16,
+          "correct": 16,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/4/conveyors": {
+          "calls": 16,
+          "correct": 16,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/16/position1": {
+          "calls": 32,
+          "correct": 32,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/16/storage": {
+          "calls": 16,
+          "correct": 14,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/16/conveyors": {
+          "calls": 16,
+          "correct": 16,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/16/cranes": {
+          "calls": 16,
+          "correct": 16,
+          "invalid": 0,
+          "truncated": 0
+        }
+      },
+      "identical_prompt_groups": 128,
+      "unstable_identical_prompts": 0,
+      "training_allowed": false,
+      "concept_correct": 124,
+      "concept_calls": 128,
+      "per_case_concept": [
+        {
+          "id": "equipment-0",
+          "correct": 8,
+          "calls": 8
+        },
+        {
+          "id": "equipment-1",
+          "correct": 8,
+          "calls": 8
+        },
+        {
+          "id": "equipment-10",
+          "correct": 8,
+          "calls": 8
+        },
+        {
+          "id": "equipment-11",
+          "correct": 8,
+          "calls": 8
+        },
+        {
+          "id": "equipment-12",
+          "correct": 8,
+          "calls": 8
+        },
+        {
+          "id": "equipment-13",
+          "correct": 8,
+          "calls": 8
+        },
+        {
+          "id": "equipment-14",
+          "correct": 8,
+          "calls": 8
+        },
+        {
+          "id": "equipment-15",
+          "correct": 8,
+          "calls": 8
+        },
+        {
+          "id": "equipment-2",
+          "correct": 8,
+          "calls": 8
+        },
+        {
+          "id": "equipment-3",
+          "correct": 8,
+          "calls": 8
+        },
+        {
+          "id": "equipment-4",
+          "correct": 8,
+          "calls": 8
+        },
+        {
+          "id": "equipment-5",
+          "correct": 8,
+          "calls": 8
+        },
+        {
+          "id": "equipment-6",
+          "correct": 8,
+          "calls": 8
+        },
+        {
+          "id": "equipment-7",
+          "correct": 8,
+          "calls": 8
+        },
+        {
+          "id": "equipment-8",
+          "correct": 4,
+          "calls": 8
+        },
+        {
+          "id": "equipment-9",
+          "correct": 8,
+          "calls": 8
+        }
+      ],
+      "all_concept_variants_correct_cases": 15
+    },
+    "p1": {
+      "calls": 256,
+      "groups": {
+        "exact_label/16": {
+          "calls": 64,
+          "correct": 64,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/16/position0": {
+          "calls": 32,
+          "correct": 32,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/16/storage": {
+          "calls": 16,
+          "correct": 16,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/4": {
+          "calls": 64,
+          "correct": 64,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/4/position1": {
+          "calls": 32,
+          "correct": 32,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/4/storage": {
+          "calls": 16,
+          "correct": 16,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/16": {
+          "calls": 64,
+          "correct": 64,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/16/position0": {
+          "calls": 32,
+          "correct": 32,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/16/trucks": {
+          "calls": 16,
+          "correct": 16,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/4": {
+          "calls": 64,
+          "correct": 64,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/4/position1": {
+          "calls": 32,
+          "correct": 32,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/4/storage": {
+          "calls": 16,
+          "correct": 16,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/16/trucks": {
+          "calls": 16,
+          "correct": 16,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/4/position0": {
+          "calls": 32,
+          "correct": 32,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/4/position0": {
+          "calls": 32,
+          "correct": 32,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/4/cranes": {
+          "calls": 16,
+          "correct": 16,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/16/cranes": {
+          "calls": 16,
+          "correct": 16,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/4/cranes": {
+          "calls": 16,
+          "correct": 16,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/16/position1": {
+          "calls": 32,
+          "correct": 32,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/16/conveyors": {
+          "calls": 16,
+          "correct": 16,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/4/conveyors": {
+          "calls": 16,
+          "correct": 16,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/4/trucks": {
+          "calls": 16,
+          "correct": 16,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/4/trucks": {
+          "calls": 16,
+          "correct": 16,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/4/conveyors": {
+          "calls": 16,
+          "correct": 16,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/16/position1": {
+          "calls": 32,
+          "correct": 32,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/16/storage": {
+          "calls": 16,
+          "correct": 16,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/16/conveyors": {
+          "calls": 16,
+          "correct": 16,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/16/cranes": {
+          "calls": 16,
+          "correct": 16,
+          "invalid": 0,
+          "truncated": 0
+        }
+      },
+      "identical_prompt_groups": 128,
+      "unstable_identical_prompts": 0,
+      "training_allowed": false,
+      "concept_correct": 128,
+      "concept_calls": 128,
+      "per_case_concept": [
+        {
+          "id": "equipment-0",
+          "correct": 8,
+          "calls": 8
+        },
+        {
+          "id": "equipment-1",
+          "correct": 8,
+          "calls": 8
+        },
+        {
+          "id": "equipment-10",
+          "correct": 8,
+          "calls": 8
+        },
+        {
+          "id": "equipment-11",
+          "correct": 8,
+          "calls": 8
+        },
+        {
+          "id": "equipment-12",
+          "correct": 8,
+          "calls": 8
+        },
+        {
+          "id": "equipment-13",
+          "correct": 8,
+          "calls": 8
+        },
+        {
+          "id": "equipment-14",
+          "correct": 8,
+          "calls": 8
+        },
+        {
+          "id": "equipment-15",
+          "correct": 8,
+          "calls": 8
+        },
+        {
+          "id": "equipment-2",
+          "correct": 8,
+          "calls": 8
+        },
+        {
+          "id": "equipment-3",
+          "correct": 8,
+          "calls": 8
+        },
+        {
+          "id": "equipment-4",
+          "correct": 8,
+          "calls": 8
+        },
+        {
+          "id": "equipment-5",
+          "correct": 8,
+          "calls": 8
+        },
+        {
+          "id": "equipment-6",
+          "correct": 8,
+          "calls": 8
+        },
+        {
+          "id": "equipment-7",
+          "correct": 8,
+          "calls": 8
+        },
+        {
+          "id": "equipment-8",
+          "correct": 8,
+          "calls": 8
+        },
+        {
+          "id": "equipment-9",
+          "correct": 8,
+          "calls": 8
+        }
+      ],
+      "all_concept_variants_correct_cases": 16
+    },
+    "p4": {
+      "calls": 256,
+      "groups": {
+        "exact_label/16": {
+          "calls": 64,
+          "correct": 64,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/16/position0": {
+          "calls": 32,
+          "correct": 32,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/16/storage": {
+          "calls": 16,
+          "correct": 16,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/4": {
+          "calls": 64,
+          "correct": 64,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/4/position1": {
+          "calls": 32,
+          "correct": 32,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/4/storage": {
+          "calls": 16,
+          "correct": 16,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/16": {
+          "calls": 64,
+          "correct": 64,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/16/position0": {
+          "calls": 32,
+          "correct": 32,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/16/trucks": {
+          "calls": 16,
+          "correct": 16,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/4": {
+          "calls": 64,
+          "correct": 64,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/4/position1": {
+          "calls": 32,
+          "correct": 32,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/4/storage": {
+          "calls": 16,
+          "correct": 16,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/16/trucks": {
+          "calls": 16,
+          "correct": 16,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/4/position0": {
+          "calls": 32,
+          "correct": 32,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/4/position0": {
+          "calls": 32,
+          "correct": 32,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/4/cranes": {
+          "calls": 16,
+          "correct": 16,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/16/cranes": {
+          "calls": 16,
+          "correct": 16,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/4/cranes": {
+          "calls": 16,
+          "correct": 16,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/16/position1": {
+          "calls": 32,
+          "correct": 32,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/16/conveyors": {
+          "calls": 16,
+          "correct": 16,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/4/conveyors": {
+          "calls": 16,
+          "correct": 16,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/4/trucks": {
+          "calls": 16,
+          "correct": 16,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/4/trucks": {
+          "calls": 16,
+          "correct": 16,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/4/conveyors": {
+          "calls": 16,
+          "correct": 16,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/16/position1": {
+          "calls": 32,
+          "correct": 32,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/16/storage": {
+          "calls": 16,
+          "correct": 16,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "concept/16/conveyors": {
+          "calls": 16,
+          "correct": 16,
+          "invalid": 0,
+          "truncated": 0
+        },
+        "exact_label/16/cranes": {
+          "calls": 16,
+          "correct": 16,
+          "invalid": 0,
+          "truncated": 0
+        }
+      },
+      "identical_prompt_groups": 128,
+      "unstable_identical_prompts": 0,
+      "training_allowed": false,
+      "concept_correct": 128,
+      "concept_calls": 128,
+      "per_case_concept": [
+        {
+          "id": "equipment-0",
+          "correct": 8,
+          "calls": 8
+        },
+        {
+          "id": "equipment-1",
+          "correct": 8,
+          "calls": 8
+        },
+        {
+          "id": "equipment-10",
+          "correct": 8,
+          "calls": 8
+        },
+        {
+          "id": "equipment-11",
+          "correct": 8,
+          "calls": 8
+        },
+        {
+          "id": "equipment-12",
+          "correct": 8,
+          "calls": 8
+        },
+        {
+          "id": "equipment-13",
+          "correct": 8,
+          "calls": 8
+        },
+        {
+          "id": "equipment-14",
+          "correct": 8,
+          "calls": 8
+        },
+        {
+          "id": "equipment-15",
+          "correct": 8,
+          "calls": 8
+        },
+        {
+          "id": "equipment-2",
+          "correct": 8,
+          "calls": 8
+        },
+        {
+          "id": "equipment-3",
+          "correct": 8,
+          "calls": 8
+        },
+        {
+          "id": "equipment-4",
+          "correct": 8,
+          "calls": 8
+        },
+        {
+          "id": "equipment-5",
+          "correct": 8,
+          "calls": 8
+        },
+        {
+          "id": "equipment-6",
+          "correct": 8,
+          "calls": 8
+        },
+        {
+          "id": "equipment-7",
+          "correct": 8,
+          "calls": 8
+        },
+        {
+          "id": "equipment-8",
+          "correct": 8,
+          "calls": 8
+        },
+        {
+          "id": "equipment-9",
+          "correct": 8,
+          "calls": 8
+        }
+      ],
+      "all_concept_variants_correct_cases": 16
+    }
+  },
+  "within_model_short_long": {
+    "step120_current": {
+      "exact_label/4_to_16": {
+        "pairs": 64,
+        "short_correct": 64,
+        "long_correct": 64,
+        "losses": 0,
+        "gains": 0
+      },
+      "concept/4_to_16": {
+        "pairs": 64,
+        "short_correct": 62,
+        "long_correct": 62,
+        "losses": 0,
+        "gains": 0
+      }
+    },
+    "p1": {
+      "exact_label/4_to_16": {
+        "pairs": 64,
+        "short_correct": 64,
+        "long_correct": 64,
+        "losses": 0,
+        "gains": 0
+      },
+      "concept/4_to_16": {
+        "pairs": 64,
+        "short_correct": 64,
+        "long_correct": 64,
+        "losses": 0,
+        "gains": 0
+      }
+    },
+    "p4": {
+      "exact_label/4_to_16": {
+        "pairs": 64,
+        "short_correct": 64,
+        "long_correct": 64,
+        "losses": 0,
+        "gains": 0
+      },
+      "concept/4_to_16": {
+        "pairs": 64,
+        "short_correct": 64,
+        "long_correct": 64,
+        "losses": 0,
+        "gains": 0
+      }
+    }
+  },
+  "between_models": {
+    "step120_current_to_p1": {
+      "exact_label/16": {
+        "pairs": 64,
+        "before_correct": 64,
+        "after_correct": 64,
+        "gains": 0,
+        "losses": 0
+      },
+      "exact_label/4": {
+        "pairs": 64,
+        "before_correct": 64,
+        "after_correct": 64,
+        "gains": 0,
+        "losses": 0
+      },
+      "concept/16": {
+        "pairs": 64,
+        "before_correct": 62,
+        "after_correct": 64,
+        "gains": 2,
+        "losses": 0
+      },
+      "concept/4": {
+        "pairs": 64,
+        "before_correct": 62,
+        "after_correct": 64,
+        "gains": 2,
+        "losses": 0
+      }
+    },
+    "p1_to_p4": {
+      "exact_label/16": {
+        "pairs": 64,
+        "before_correct": 64,
+        "after_correct": 64,
+        "gains": 0,
+        "losses": 0
+      },
+      "exact_label/4": {
+        "pairs": 64,
+        "before_correct": 64,
+        "after_correct": 64,
+        "gains": 0,
+        "losses": 0
+      },
+      "concept/16": {
+        "pairs": 64,
+        "before_correct": 64,
+        "after_correct": 64,
+        "gains": 0,
+        "losses": 0
+      },
+      "concept/4": {
+        "pairs": 64,
+        "before_correct": 64,
+        "after_correct": 64,
+        "gains": 0,
+        "losses": 0
+      }
+    }
+  },
+  "raw_sha256": {
+    "step120_current/predictions.private.jsonl": "7d7135d6504bcc435b4c0cdd30efad4b1314fdabee2b98aef193bd2e8de9c402",
+    "step120_current/registration.safe.json": "b4db46ab979d2a8d4f8f3c893f84f8a2df63b1d25d6bfbbb6e5abcefadf03e8b",
+    "step120_current/summary.safe.json": "96553838f04c0b2c1f9664d296677d8040989cfd9259293f9e0cdc0875821676",
+    "step120_current/status.safe.json": "7b0a2ef267692bc41a9c0bf5efea0658464b8532f609c5b9d0a3d70588e04705",
+    "p1/predictions.private.jsonl": "05ca7bb0340da797c6de6445eca256a22bc014a5d85d9225d8f1a95c9d3b961a",
+    "p1/registration.safe.json": "2d47caff51b4ec9a2f153fc42b7b558d6cb6b2d63856f052734bfbfa7dde1f60",
+    "p1/summary.safe.json": "babe4f5eb0f9fc79709590ebb19eddfdb188ab40f2a0baca6b9093acdb6185c6",
+    "p1/status.safe.json": "7b0a2ef267692bc41a9c0bf5efea0658464b8532f609c5b9d0a3d70588e04705",
+    "p4/predictions.private.jsonl": "05ca7bb0340da797c6de6445eca256a22bc014a5d85d9225d8f1a95c9d3b961a",
+    "p4/registration.safe.json": "ec199c8cc4afda48c3b64797404697ddc34268aa62a41c7d0dfe49ed57145057",
+    "p4/summary.safe.json": "babe4f5eb0f9fc79709590ebb19eddfdb188ab40f2a0baca6b9093acdb6185c6",
+    "p4/status.safe.json": "7b0a2ef267692bc41a9c0bf5efea0658464b8532f609c5b9d0a3d70588e04705"
+  },
+  "all_token_fingerprints_verified": true,
+  "all_paired_prompts_identical": true,
+  "independent_prediction_reparse": true,
+  "verifier_sha256": "665bda37019be664e26044bd0de2ee3e3a994171ecd7eb85c156459490f9da0a",
+  "training_allowed": false,
+  "limitations": [
+    "Equipment names follow the cited CICMHE taxonomy, not all contemporary vendor terminology.",
+    "Newly authored without formal item text; neither unseen pretraining nor semantic independence from benchmarks is established.",
+    "Sixteen cases in four related source pages; contrasts are paired descriptions, not sixteen independent domains.",
+    "Only first/last positions and 4/16 options; this does not recreate the formal 269-option vocabulary.",
+    "Long lists add other equipment families; the short list already contains all four same-family competitors.",
+    "Two identical-batch repeats within a model process do not estimate cross-restart or cross-hardware variation.",
+    "Exact-label control deliberately gives the target term. All cases remain evaluation-only.",
+    "Scenario contrasts are source-grounded alternatives, not controlled single-feature causal interventions."
+  ],
+  "full_private_verification_sha256": "092c158cdf5642cb875630fe05c6f299092bf60b255e6a1416aee7cb0cc4507d",
+  "public_projection": "Aggregate contrasts retained; per-prompt rows replaced with per-case totals and the complete four-call error ledger. Full verification identified by hash.",
+  "error_ledger": [
+    {
+      "model": "step120_current",
+      "id": "equipment-8",
+      "size": 16,
+      "position": 0,
+      "mode": "concept",
+      "repeat": 0,
+      "family": "storage",
+      "pair": "storage/lane_access",
+      "correct": false,
+      "prediction": 2,
+      "expected": 0,
+      "predicted_label": "Push-back rack",
+      "invalid": false,
+      "truncated": false
+    },
+    {
+      "model": "step120_current",
+      "id": "equipment-8",
+      "size": 4,
+      "position": 0,
+      "mode": "concept",
+      "repeat": 0,
+      "family": "storage",
+      "pair": "storage/lane_access",
+      "correct": false,
+      "prediction": 2,
+      "expected": 0,
+      "predicted_label": "Push-back rack",
+      "invalid": false,
+      "truncated": false
+    },
+    {
+      "model": "step120_current",
+      "id": "equipment-8",
+      "size": 16,
+      "position": 0,
+      "mode": "concept",
+      "repeat": 1,
+      "family": "storage",
+      "pair": "storage/lane_access",
+      "correct": false,
+      "prediction": 2,
+      "expected": 0,
+      "predicted_label": "Push-back rack",
+      "invalid": false,
+      "truncated": false
+    },
+    {
+      "model": "step120_current",
+      "id": "equipment-8",
+      "size": 4,
+      "position": 0,
+      "mode": "concept",
+      "repeat": 1,
+      "family": "storage",
+      "pair": "storage/lane_access",
+      "correct": false,
+      "prediction": 2,
+      "expected": 0,
+      "predicted_label": "Push-back rack",
+      "invalid": false,
+      "truncated": false
+    }
+  ],
+  "distinct_error_cases": 1,
+  "post_run_model_identities_unchanged": true,
+  "experiment_lock_released": true,
+  "source_recheck": {
+    "case": "equipment-8",
+    "gold_unchanged": true,
+    "source": "storage",
+    "source_sha256": "c231838c5eab7773a9dbc9ff34c8a8edfe83ea999352ac248f38aa95720492d2",
+    "sections": [
+      "3",
+      "4",
+      "5",
+      "6"
+    ],
+    "reviewer": "Codex operator; no independent human certification"
+  },
+  "decision": "One order-associated Step120 distinction, no P1/P4 distinction. Stop scaling simple equipment naming. No training or promotion; next review existing formal error mechanisms and source coverage, not started."
+}
