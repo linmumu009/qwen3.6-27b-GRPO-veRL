@@ -1,0 +1,2314 @@
+{
+  "new_requests": 5284,
+  "old_diagnostics": {
+    "step120": {
+      "strata": {
+        "p1_train": {
+          "n": 60,
+          "before": 19,
+          "after": 47,
+          "gains": 31,
+          "losses": 3
+        },
+        "p1_dev_expression": {
+          "n": 20,
+          "before": 6,
+          "after": 8,
+          "gains": 5,
+          "losses": 3
+        },
+        "p1_dev_conditions": {
+          "n": 20,
+          "before": 7,
+          "after": 9,
+          "gains": 2,
+          "losses": 0
+        },
+        "p1_retention": {
+          "n": 80,
+          "before": 51,
+          "after": 48,
+          "gains": 0,
+          "losses": 3
+        }
+      },
+      "families": {
+        "p1_train": {
+          "speed": {
+            "n": 6,
+            "before": 2,
+            "after": 2,
+            "gains": 1,
+            "losses": 1
+          },
+          "railcar": {
+            "n": 6,
+            "before": 1,
+            "after": 1,
+            "gains": 1,
+            "losses": 1
+          },
+          "derailment": {
+            "n": 6,
+            "before": 0,
+            "after": 6,
+            "gains": 6,
+            "losses": 0
+          },
+          "injury": {
+            "n": 6,
+            "before": 0,
+            "after": 6,
+            "gains": 6,
+            "losses": 0
+          },
+          "capacity": {
+            "n": 6,
+            "before": 0,
+            "after": 4,
+            "gains": 4,
+            "losses": 0
+          },
+          "propulsion": {
+            "n": 6,
+            "before": 3,
+            "after": 6,
+            "gains": 3,
+            "losses": 0
+          },
+          "finance": {
+            "n": 6,
+            "before": 4,
+            "after": 6,
+            "gains": 2,
+            "losses": 0
+          },
+          "outsourcing": {
+            "n": 6,
+            "before": 2,
+            "after": 5,
+            "gains": 3,
+            "losses": 0
+          },
+          "pipeline": {
+            "n": 6,
+            "before": 5,
+            "after": 6,
+            "gains": 1,
+            "losses": 0
+          },
+          "wave": {
+            "n": 6,
+            "before": 2,
+            "after": 5,
+            "gains": 4,
+            "losses": 1
+          }
+        },
+        "p1_dev_expression": {
+          "speed": {
+            "n": 2,
+            "before": 0,
+            "after": 0,
+            "gains": 0,
+            "losses": 0
+          },
+          "railcar": {
+            "n": 2,
+            "before": 0,
+            "after": 0,
+            "gains": 0,
+            "losses": 0
+          },
+          "derailment": {
+            "n": 2,
+            "before": 0,
+            "after": 2,
+            "gains": 2,
+            "losses": 0
+          },
+          "injury": {
+            "n": 2,
+            "before": 0,
+            "after": 2,
+            "gains": 2,
+            "losses": 0
+          },
+          "capacity": {
+            "n": 2,
+            "before": 1,
+            "after": 1,
+            "gains": 0,
+            "losses": 0
+          },
+          "propulsion": {
+            "n": 2,
+            "before": 0,
+            "after": 1,
+            "gains": 1,
+            "losses": 0
+          },
+          "finance": {
+            "n": 2,
+            "before": 2,
+            "after": 1,
+            "gains": 0,
+            "losses": 1
+          },
+          "outsourcing": {
+            "n": 2,
+            "before": 0,
+            "after": 0,
+            "gains": 0,
+            "losses": 0
+          },
+          "pipeline": {
+            "n": 2,
+            "before": 2,
+            "after": 1,
+            "gains": 0,
+            "losses": 1
+          },
+          "wave": {
+            "n": 2,
+            "before": 1,
+            "after": 0,
+            "gains": 0,
+            "losses": 1
+          }
+        },
+        "p1_dev_conditions": {
+          "speed": {
+            "n": 2,
+            "before": 0,
+            "after": 0,
+            "gains": 0,
+            "losses": 0
+          },
+          "railcar": {
+            "n": 2,
+            "before": 1,
+            "after": 1,
+            "gains": 0,
+            "losses": 0
+          },
+          "derailment": {
+            "n": 2,
+            "before": 2,
+            "after": 2,
+            "gains": 0,
+            "losses": 0
+          },
+          "injury": {
+            "n": 2,
+            "before": 1,
+            "after": 2,
+            "gains": 1,
+            "losses": 0
+          },
+          "capacity": {
+            "n": 2,
+            "before": 0,
+            "after": 0,
+            "gains": 0,
+            "losses": 0
+          },
+          "propulsion": {
+            "n": 2,
+            "before": 0,
+            "after": 1,
+            "gains": 1,
+            "losses": 0
+          },
+          "finance": {
+            "n": 2,
+            "before": 1,
+            "after": 1,
+            "gains": 0,
+            "losses": 0
+          },
+          "outsourcing": {
+            "n": 2,
+            "before": 0,
+            "after": 0,
+            "gains": 0,
+            "losses": 0
+          },
+          "pipeline": {
+            "n": 2,
+            "before": 1,
+            "after": 1,
+            "gains": 0,
+            "losses": 0
+          },
+          "wave": {
+            "n": 2,
+            "before": 1,
+            "after": 1,
+            "gains": 0,
+            "losses": 0
+          }
+        },
+        "p1_retention": {
+          "teu": {
+            "n": 10,
+            "before": 2,
+            "after": 2,
+            "gains": 0,
+            "losses": 0
+          },
+          "tkm": {
+            "n": 10,
+            "before": 3,
+            "after": 2,
+            "gains": 0,
+            "losses": 1
+          },
+          "offered": {
+            "n": 10,
+            "before": 10,
+            "after": 9,
+            "gains": 0,
+            "losses": 1
+          },
+          "pallet": {
+            "n": 10,
+            "before": 10,
+            "after": 10,
+            "gains": 0,
+            "losses": 0
+          },
+          "reorder": {
+            "n": 10,
+            "before": 4,
+            "after": 4,
+            "gains": 0,
+            "losses": 0
+          },
+          "capital": {
+            "n": 10,
+            "before": 9,
+            "after": 8,
+            "gains": 0,
+            "losses": 1
+          },
+          "abc": {
+            "n": 3,
+            "before": 3,
+            "after": 3,
+            "gains": 0,
+            "losses": 0
+          },
+          "packages": {
+            "n": 5,
+            "before": 4,
+            "after": 4,
+            "gains": 0,
+            "losses": 0
+          },
+          "moment": {
+            "n": 6,
+            "before": 0,
+            "after": 0,
+            "gains": 0,
+            "losses": 0
+          },
+          "payload": {
+            "n": 6,
+            "before": 6,
+            "after": 6,
+            "gains": 0,
+            "losses": 0
+          }
+        }
+      }
+    },
+    "p1": {
+      "strata": {
+        "p1_train": {
+          "n": 60,
+          "before": 51,
+          "after": 47,
+          "gains": 2,
+          "losses": 6
+        },
+        "p1_dev_expression": {
+          "n": 20,
+          "before": 11,
+          "after": 8,
+          "gains": 2,
+          "losses": 5
+        },
+        "p1_dev_conditions": {
+          "n": 20,
+          "before": 11,
+          "after": 9,
+          "gains": 1,
+          "losses": 3
+        },
+        "p1_retention": {
+          "n": 80,
+          "before": 49,
+          "after": 48,
+          "gains": 1,
+          "losses": 2
+        }
+      },
+      "families": {
+        "p1_train": {
+          "speed": {
+            "n": 6,
+            "before": 3,
+            "after": 2,
+            "gains": 0,
+            "losses": 1
+          },
+          "railcar": {
+            "n": 6,
+            "before": 2,
+            "after": 1,
+            "gains": 0,
+            "losses": 1
+          },
+          "derailment": {
+            "n": 6,
+            "before": 6,
+            "after": 6,
+            "gains": 0,
+            "losses": 0
+          },
+          "injury": {
+            "n": 6,
+            "before": 5,
+            "after": 6,
+            "gains": 1,
+            "losses": 0
+          },
+          "capacity": {
+            "n": 6,
+            "before": 6,
+            "after": 4,
+            "gains": 0,
+            "losses": 2
+          },
+          "propulsion": {
+            "n": 6,
+            "before": 6,
+            "after": 6,
+            "gains": 0,
+            "losses": 0
+          },
+          "finance": {
+            "n": 6,
+            "before": 6,
+            "after": 6,
+            "gains": 0,
+            "losses": 0
+          },
+          "outsourcing": {
+            "n": 6,
+            "before": 5,
+            "after": 5,
+            "gains": 1,
+            "losses": 1
+          },
+          "pipeline": {
+            "n": 6,
+            "before": 6,
+            "after": 6,
+            "gains": 0,
+            "losses": 0
+          },
+          "wave": {
+            "n": 6,
+            "before": 6,
+            "after": 5,
+            "gains": 0,
+            "losses": 1
+          }
+        },
+        "p1_dev_expression": {
+          "speed": {
+            "n": 2,
+            "before": 0,
+            "after": 0,
+            "gains": 0,
+            "losses": 0
+          },
+          "railcar": {
+            "n": 2,
+            "before": 0,
+            "after": 0,
+            "gains": 0,
+            "losses": 0
+          },
+          "derailment": {
+            "n": 2,
+            "before": 2,
+            "after": 2,
+            "gains": 0,
+            "losses": 0
+          },
+          "injury": {
+            "n": 2,
+            "before": 1,
+            "after": 2,
+            "gains": 1,
+            "losses": 0
+          },
+          "capacity": {
+            "n": 2,
+            "before": 2,
+            "after": 1,
+            "gains": 0,
+            "losses": 1
+          },
+          "propulsion": {
+            "n": 2,
+            "before": 0,
+            "after": 1,
+            "gains": 1,
+            "losses": 0
+          },
+          "finance": {
+            "n": 2,
+            "before": 1,
+            "after": 1,
+            "gains": 0,
+            "losses": 0
+          },
+          "outsourcing": {
+            "n": 2,
+            "before": 1,
+            "after": 0,
+            "gains": 0,
+            "losses": 1
+          },
+          "pipeline": {
+            "n": 2,
+            "before": 2,
+            "after": 1,
+            "gains": 0,
+            "losses": 1
+          },
+          "wave": {
+            "n": 2,
+            "before": 2,
+            "after": 0,
+            "gains": 0,
+            "losses": 2
+          }
+        },
+        "p1_dev_conditions": {
+          "speed": {
+            "n": 2,
+            "before": 1,
+            "after": 0,
+            "gains": 0,
+            "losses": 1
+          },
+          "railcar": {
+            "n": 2,
+            "before": 1,
+            "after": 1,
+            "gains": 0,
+            "losses": 0
+          },
+          "derailment": {
+            "n": 2,
+            "before": 2,
+            "after": 2,
+            "gains": 0,
+            "losses": 0
+          },
+          "injury": {
+            "n": 2,
+            "before": 2,
+            "after": 2,
+            "gains": 0,
+            "losses": 0
+          },
+          "capacity": {
+            "n": 2,
+            "before": 1,
+            "after": 0,
+            "gains": 0,
+            "losses": 1
+          },
+          "propulsion": {
+            "n": 2,
+            "before": 0,
+            "after": 1,
+            "gains": 1,
+            "losses": 0
+          },
+          "finance": {
+            "n": 2,
+            "before": 2,
+            "after": 1,
+            "gains": 0,
+            "losses": 1
+          },
+          "outsourcing": {
+            "n": 2,
+            "before": 0,
+            "after": 0,
+            "gains": 0,
+            "losses": 0
+          },
+          "pipeline": {
+            "n": 2,
+            "before": 1,
+            "after": 1,
+            "gains": 0,
+            "losses": 0
+          },
+          "wave": {
+            "n": 2,
+            "before": 1,
+            "after": 1,
+            "gains": 0,
+            "losses": 0
+          }
+        },
+        "p1_retention": {
+          "teu": {
+            "n": 10,
+            "before": 2,
+            "after": 2,
+            "gains": 0,
+            "losses": 0
+          },
+          "tkm": {
+            "n": 10,
+            "before": 2,
+            "after": 2,
+            "gains": 0,
+            "losses": 0
+          },
+          "offered": {
+            "n": 10,
+            "before": 10,
+            "after": 9,
+            "gains": 0,
+            "losses": 1
+          },
+          "pallet": {
+            "n": 10,
+            "before": 10,
+            "after": 10,
+            "gains": 0,
+            "losses": 0
+          },
+          "reorder": {
+            "n": 10,
+            "before": 3,
+            "after": 4,
+            "gains": 1,
+            "losses": 0
+          },
+          "capital": {
+            "n": 10,
+            "before": 9,
+            "after": 8,
+            "gains": 0,
+            "losses": 1
+          },
+          "abc": {
+            "n": 3,
+            "before": 3,
+            "after": 3,
+            "gains": 0,
+            "losses": 0
+          },
+          "packages": {
+            "n": 5,
+            "before": 4,
+            "after": 4,
+            "gains": 0,
+            "losses": 0
+          },
+          "moment": {
+            "n": 6,
+            "before": 0,
+            "after": 0,
+            "gains": 0,
+            "losses": 0
+          },
+          "payload": {
+            "n": 6,
+            "before": 6,
+            "after": 6,
+            "gains": 0,
+            "losses": 0
+          }
+        }
+      }
+    }
+  },
+  "new_diagnostics": {
+    "model_label": "p4",
+    "cases": 44,
+    "closed_calls": 88,
+    "review_calls": 0,
+    "counts": {
+      "train_correct": 20,
+      "invalid": 0,
+      "truncated": 0,
+      "dev_correct": 11,
+      "retention_correct": 38,
+      "historical_dev_sources_correct": 22,
+      "shared_train_groups_correct": 16
+    },
+    "both_orders_correct_by_split": {
+      "train": 5,
+      "dev": 4,
+      "retention": 18
+    },
+    "option_order_changed_answer_ids": [
+      "remediation-pick_lines-unequal_area_comparison",
+      "remediation-batch_tradeoff-duplicate_cost_ledger",
+      "remediation-batch_tradeoff-cost_with_space_feasibility",
+      "remediation-batch_tradeoff-strict_break_even_boundary",
+      "remediation-batch_tradeoff-exclusive_interventions_with_fees",
+      "remediation-batch_tradeoff-robust_cost_ranges",
+      "remediation-serial_parallel-release_time_interaction",
+      "remediation-serial_parallel-bottleneck_perturbation",
+      "remediation-serial_parallel-precedence_graph_report",
+      "remediation-transport_capacity-cancellation_vs_rejection",
+      "remediation-transport_capacity-limited_flexible_requests",
+      "remediation-transport_capacity-partial_record_necessity",
+      "remediation-transport_capacity-connection_path_capacity",
+      "remediation-transport_capacity-capacity_uncertainty_guarantee",
+      "remediation-rail_transfer-event_sequence_audit",
+      "remediation-postponement-customization_deadline_limit"
+    ],
+    "per_call": [
+      {
+        "id": "remediation-pick_lines-multi_instruction_reconciliation",
+        "variant": 0,
+        "split": "train",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          1,
+          2
+        ]
+      },
+      {
+        "id": "remediation-pick_lines-multi_instruction_reconciliation",
+        "variant": 1,
+        "split": "train",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          1,
+          2
+        ]
+      },
+      {
+        "id": "remediation-pick_lines-unequal_area_comparison",
+        "variant": 0,
+        "split": "train",
+        "correct": false,
+        "original_order_prediction": [
+          2,
+          3
+        ]
+      },
+      {
+        "id": "remediation-pick_lines-unequal_area_comparison",
+        "variant": 1,
+        "split": "train",
+        "correct": true,
+        "original_order_prediction": [
+          2
+        ]
+      },
+      {
+        "id": "remediation-pick_lines-partial_grab_identifiability",
+        "variant": 0,
+        "split": "train",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          1
+        ]
+      },
+      {
+        "id": "remediation-pick_lines-partial_grab_identifiability",
+        "variant": 1,
+        "split": "train",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          1
+        ]
+      },
+      {
+        "id": "remediation-pick_lines-layout_change_with_fixed_activity",
+        "variant": 0,
+        "split": "train",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "remediation-pick_lines-layout_change_with_fixed_activity",
+        "variant": 1,
+        "split": "train",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "remediation-pick_lines-order_merge_and_separate",
+        "variant": 0,
+        "split": "dev",
+        "correct": true,
+        "original_order_prediction": [
+          0
+        ]
+      },
+      {
+        "id": "remediation-pick_lines-order_merge_and_separate",
+        "variant": 1,
+        "split": "dev",
+        "correct": true,
+        "original_order_prediction": [
+          0
+        ]
+      },
+      {
+        "id": "remediation-pick_lines-recover_instruction_count_from_events",
+        "variant": 0,
+        "split": "dev",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "remediation-pick_lines-recover_instruction_count_from_events",
+        "variant": 1,
+        "split": "dev",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "remediation-batch_tradeoff-duplicate_cost_ledger",
+        "variant": 0,
+        "split": "train",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          1
+        ]
+      },
+      {
+        "id": "remediation-batch_tradeoff-duplicate_cost_ledger",
+        "variant": 1,
+        "split": "train",
+        "correct": false,
+        "original_order_prediction": [
+          0,
+          3
+        ]
+      },
+      {
+        "id": "remediation-batch_tradeoff-cost_with_space_feasibility",
+        "variant": 0,
+        "split": "train",
+        "correct": true,
+        "original_order_prediction": [
+          1
+        ]
+      },
+      {
+        "id": "remediation-batch_tradeoff-cost_with_space_feasibility",
+        "variant": 1,
+        "split": "train",
+        "correct": false,
+        "original_order_prediction": [
+          2
+        ]
+      },
+      {
+        "id": "remediation-batch_tradeoff-strict_break_even_boundary",
+        "variant": 0,
+        "split": "train",
+        "correct": false,
+        "original_order_prediction": [
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "remediation-batch_tradeoff-strict_break_even_boundary",
+        "variant": 1,
+        "split": "train",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "remediation-batch_tradeoff-exclusive_interventions_with_fees",
+        "variant": 0,
+        "split": "train",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "remediation-batch_tradeoff-exclusive_interventions_with_fees",
+        "variant": 1,
+        "split": "train",
+        "correct": false,
+        "original_order_prediction": [
+          0
+        ]
+      },
+      {
+        "id": "remediation-batch_tradeoff-robust_cost_ranges",
+        "variant": 0,
+        "split": "dev",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          2
+        ]
+      },
+      {
+        "id": "remediation-batch_tradeoff-robust_cost_ranges",
+        "variant": 1,
+        "split": "dev",
+        "correct": false,
+        "original_order_prediction": [
+          0,
+          3
+        ]
+      },
+      {
+        "id": "remediation-batch_tradeoff-shared_setup_across_waves",
+        "variant": 0,
+        "split": "dev",
+        "correct": false,
+        "original_order_prediction": [
+          0,
+          1,
+          3
+        ]
+      },
+      {
+        "id": "remediation-batch_tradeoff-shared_setup_across_waves",
+        "variant": 1,
+        "split": "dev",
+        "correct": false,
+        "original_order_prediction": [
+          0,
+          1,
+          3
+        ]
+      },
+      {
+        "id": "remediation-serial_parallel-release_time_interaction",
+        "variant": 0,
+        "split": "train",
+        "correct": false,
+        "original_order_prediction": [
+          0,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "remediation-serial_parallel-release_time_interaction",
+        "variant": 1,
+        "split": "train",
+        "correct": false,
+        "original_order_prediction": [
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "remediation-serial_parallel-deadline_and_labor_budget",
+        "variant": 0,
+        "split": "train",
+        "correct": true,
+        "original_order_prediction": [
+          2
+        ]
+      },
+      {
+        "id": "remediation-serial_parallel-deadline_and_labor_budget",
+        "variant": 1,
+        "split": "train",
+        "correct": true,
+        "original_order_prediction": [
+          2
+        ]
+      },
+      {
+        "id": "remediation-serial_parallel-bottleneck_perturbation",
+        "variant": 0,
+        "split": "train",
+        "correct": false,
+        "original_order_prediction": [
+          1,
+          2
+        ]
+      },
+      {
+        "id": "remediation-serial_parallel-bottleneck_perturbation",
+        "variant": 1,
+        "split": "train",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          1
+        ]
+      },
+      {
+        "id": "remediation-serial_parallel-precedence_graph_report",
+        "variant": 0,
+        "split": "train",
+        "correct": false,
+        "original_order_prediction": [
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "remediation-serial_parallel-precedence_graph_report",
+        "variant": 1,
+        "split": "train",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "remediation-serial_parallel-inverse_release_bound",
+        "variant": 0,
+        "split": "dev",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "remediation-serial_parallel-inverse_release_bound",
+        "variant": 1,
+        "split": "dev",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "remediation-serial_parallel-interrupted_consolidation",
+        "variant": 0,
+        "split": "dev",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "remediation-serial_parallel-interrupted_consolidation",
+        "variant": 1,
+        "split": "dev",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "remediation-transport_capacity-cancellation_vs_rejection",
+        "variant": 0,
+        "split": "train",
+        "correct": false,
+        "original_order_prediction": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "remediation-transport_capacity-cancellation_vs_rejection",
+        "variant": 1,
+        "split": "train",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          1,
+          2
+        ]
+      },
+      {
+        "id": "remediation-transport_capacity-limited_flexible_requests",
+        "variant": 0,
+        "split": "train",
+        "correct": true,
+        "original_order_prediction": [
+          1
+        ]
+      },
+      {
+        "id": "remediation-transport_capacity-limited_flexible_requests",
+        "variant": 1,
+        "split": "train",
+        "correct": false,
+        "original_order_prediction": [
+          1,
+          2
+        ]
+      },
+      {
+        "id": "remediation-transport_capacity-partial_record_necessity",
+        "variant": 0,
+        "split": "train",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          1
+        ]
+      },
+      {
+        "id": "remediation-transport_capacity-partial_record_necessity",
+        "variant": 1,
+        "split": "train",
+        "correct": false,
+        "original_order_prediction": [
+          0
+        ]
+      },
+      {
+        "id": "remediation-transport_capacity-capacity_action_feasibility",
+        "variant": 0,
+        "split": "train",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "remediation-transport_capacity-capacity_action_feasibility",
+        "variant": 1,
+        "split": "train",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "remediation-transport_capacity-connection_path_capacity",
+        "variant": 0,
+        "split": "dev",
+        "correct": true,
+        "original_order_prediction": [
+          0
+        ]
+      },
+      {
+        "id": "remediation-transport_capacity-connection_path_capacity",
+        "variant": 1,
+        "split": "dev",
+        "correct": false,
+        "original_order_prediction": [
+          2
+        ]
+      },
+      {
+        "id": "remediation-transport_capacity-capacity_uncertainty_guarantee",
+        "variant": 0,
+        "split": "dev",
+        "correct": false,
+        "original_order_prediction": [
+          0,
+          1,
+          2
+        ]
+      },
+      {
+        "id": "remediation-transport_capacity-capacity_uncertainty_guarantee",
+        "variant": 1,
+        "split": "dev",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "remediation-pest-external_vs_internal",
+        "variant": 0,
+        "split": "retention",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          1,
+          3
+        ]
+      },
+      {
+        "id": "remediation-pest-external_vs_internal",
+        "variant": 1,
+        "split": "retention",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          1,
+          3
+        ]
+      },
+      {
+        "id": "remediation-pest-review_scope_repair",
+        "variant": 0,
+        "split": "retention",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          2
+        ]
+      },
+      {
+        "id": "remediation-pest-review_scope_repair",
+        "variant": 1,
+        "split": "retention",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          2
+        ]
+      },
+      {
+        "id": "remediation-abc-control_class_consistency",
+        "variant": 0,
+        "split": "retention",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          1,
+          2
+        ]
+      },
+      {
+        "id": "remediation-abc-control_class_consistency",
+        "variant": 1,
+        "split": "retention",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          1,
+          2
+        ]
+      },
+      {
+        "id": "remediation-abc-prioritize_control_repair",
+        "variant": 0,
+        "split": "retention",
+        "correct": true,
+        "original_order_prediction": [
+          0
+        ]
+      },
+      {
+        "id": "remediation-abc-prioritize_control_repair",
+        "variant": 1,
+        "split": "retention",
+        "correct": true,
+        "original_order_prediction": [
+          0
+        ]
+      },
+      {
+        "id": "remediation-reorder-error_vs_variability",
+        "variant": 0,
+        "split": "retention",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          2
+        ]
+      },
+      {
+        "id": "remediation-reorder-error_vs_variability",
+        "variant": 1,
+        "split": "retention",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          2
+        ]
+      },
+      {
+        "id": "remediation-reorder-strict_trigger_scope",
+        "variant": 0,
+        "split": "retention",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          2
+        ]
+      },
+      {
+        "id": "remediation-reorder-strict_trigger_scope",
+        "variant": 1,
+        "split": "retention",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          2
+        ]
+      },
+      {
+        "id": "remediation-rail_transfer-direct_vs_other_mode",
+        "variant": 0,
+        "split": "retention",
+        "correct": true,
+        "original_order_prediction": [
+          1
+        ]
+      },
+      {
+        "id": "remediation-rail_transfer-direct_vs_other_mode",
+        "variant": 1,
+        "split": "retention",
+        "correct": true,
+        "original_order_prediction": [
+          1
+        ]
+      },
+      {
+        "id": "remediation-rail_transfer-event_sequence_audit",
+        "variant": 0,
+        "split": "retention",
+        "correct": false,
+        "original_order_prediction": [
+          0,
+          1
+        ]
+      },
+      {
+        "id": "remediation-rail_transfer-event_sequence_audit",
+        "variant": 1,
+        "split": "retention",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          1,
+          3
+        ]
+      },
+      {
+        "id": "remediation-postponement-preserve_allocation_flexibility",
+        "variant": 0,
+        "split": "retention",
+        "correct": true,
+        "original_order_prediction": [
+          0
+        ]
+      },
+      {
+        "id": "remediation-postponement-preserve_allocation_flexibility",
+        "variant": 1,
+        "split": "retention",
+        "correct": true,
+        "original_order_prediction": [
+          0
+        ]
+      },
+      {
+        "id": "remediation-postponement-customization_deadline_limit",
+        "variant": 0,
+        "split": "retention",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          2
+        ]
+      },
+      {
+        "id": "remediation-postponement-customization_deadline_limit",
+        "variant": 1,
+        "split": "retention",
+        "correct": false,
+        "original_order_prediction": [
+          0,
+          1,
+          2
+        ]
+      },
+      {
+        "id": "remediation-contracts-contract_and_container_dimensions",
+        "variant": 0,
+        "split": "retention",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          2
+        ]
+      },
+      {
+        "id": "remediation-contracts-contract_and_container_dimensions",
+        "variant": 1,
+        "split": "retention",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          2
+        ]
+      },
+      {
+        "id": "remediation-contracts-same_mode_multiple_carriers",
+        "variant": 0,
+        "split": "retention",
+        "correct": true,
+        "original_order_prediction": [
+          0
+        ]
+      },
+      {
+        "id": "remediation-contracts-same_mode_multiple_carriers",
+        "variant": 1,
+        "split": "retention",
+        "correct": true,
+        "original_order_prediction": [
+          0
+        ]
+      },
+      {
+        "id": "remediation-warehouse_roles-mixed_wip_and_fulfillment",
+        "variant": 0,
+        "split": "retention",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          1
+        ]
+      },
+      {
+        "id": "remediation-warehouse_roles-mixed_wip_and_fulfillment",
+        "variant": 1,
+        "split": "retention",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          1
+        ]
+      },
+      {
+        "id": "remediation-warehouse_roles-location_and_inventory_roles",
+        "variant": 0,
+        "split": "retention",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          1
+        ]
+      },
+      {
+        "id": "remediation-warehouse_roles-location_and_inventory_roles",
+        "variant": 1,
+        "split": "retention",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          1
+        ]
+      },
+      {
+        "id": "remediation-shipping_controls-stage_event_mapping",
+        "variant": 0,
+        "split": "retention",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          1,
+          2
+        ]
+      },
+      {
+        "id": "remediation-shipping_controls-stage_event_mapping",
+        "variant": 1,
+        "split": "retention",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          1,
+          2
+        ]
+      },
+      {
+        "id": "remediation-shipping_controls-fix_the_demonstrated_defect",
+        "variant": 0,
+        "split": "retention",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          1
+        ]
+      },
+      {
+        "id": "remediation-shipping_controls-fix_the_demonstrated_defect",
+        "variant": 1,
+        "split": "retention",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          1
+        ]
+      },
+      {
+        "id": "remediation-outsourcing-responsibility_after_contract",
+        "variant": 0,
+        "split": "retention",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          1,
+          2
+        ]
+      },
+      {
+        "id": "remediation-outsourcing-responsibility_after_contract",
+        "variant": 1,
+        "split": "retention",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          1,
+          2
+        ]
+      },
+      {
+        "id": "remediation-outsourcing-provider_quality_and_governance",
+        "variant": 0,
+        "split": "retention",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          1
+        ]
+      },
+      {
+        "id": "remediation-outsourcing-provider_quality_and_governance",
+        "variant": 1,
+        "split": "retention",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          1
+        ]
+      },
+      {
+        "id": "remediation-holding_cost-duplicate_holding_component",
+        "variant": 0,
+        "split": "retention",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          2
+        ]
+      },
+      {
+        "id": "remediation-holding_cost-duplicate_holding_component",
+        "variant": 1,
+        "split": "retention",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          2
+        ]
+      },
+      {
+        "id": "remediation-holding_cost-allocated_vs_incremental_boundary",
+        "variant": 0,
+        "split": "retention",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "remediation-holding_cost-allocated_vs_incremental_boundary",
+        "variant": 1,
+        "split": "retention",
+        "correct": true,
+        "original_order_prediction": [
+          0,
+          1,
+          2,
+          3
+        ]
+      }
+    ],
+    "review_decisions": [],
+    "review_accepted": 0,
+    "training_allowed": false,
+    "limitations": "Fixed source-authored development candidates, not an independent final test. Reviewer is a model and cannot release data. Eight retention items share historical training groups."
+  },
+  "new_paired": {
+    "p1/train": {
+      "n": 32,
+      "before": 12,
+      "after": 20,
+      "gains": 11,
+      "losses": 3,
+      "delta_pp": 25.0
+    },
+    "p1/dev": {
+      "n": 16,
+      "before": 9,
+      "after": 11,
+      "gains": 2,
+      "losses": 0,
+      "delta_pp": 12.5
+    },
+    "p1/retention": {
+      "n": 40,
+      "before": 39,
+      "after": 38,
+      "gains": 1,
+      "losses": 2,
+      "delta_pp": -2.5
+    },
+    "step120_current/train": {
+      "n": 32,
+      "before": 14,
+      "after": 20,
+      "gains": 8,
+      "losses": 2,
+      "delta_pp": 18.75
+    },
+    "step120_current/dev": {
+      "n": 16,
+      "before": 6,
+      "after": 11,
+      "gains": 5,
+      "losses": 0,
+      "delta_pp": 31.25
+    },
+    "step120_current/retention": {
+      "n": 40,
+      "before": 36,
+      "after": 38,
+      "gains": 2,
+      "losses": 0,
+      "delta_pp": 5.0
+    }
+  },
+  "formal": [
+    {
+      "dataset": "SC-bench-knowledge",
+      "p4_correct": 191,
+      "target": 196,
+      "versus_step120": {
+        "n": 226,
+        "before": 190,
+        "after": 191,
+        "gains": 3,
+        "losses": 2,
+        "delta_pp": 0.4424778761061947,
+        "mcnemar_exact_two_sided_p_unadjusted": 1.0,
+        "paired_item_bootstrap_95pct_pp": [
+          -1.3274336283185841,
+          2.2123893805309733
+        ]
+      },
+      "versus_p1": {
+        "n": 226,
+        "before": 192,
+        "after": 191,
+        "gains": 2,
+        "losses": 3,
+        "delta_pp": -0.4424778761061947,
+        "mcnemar_exact_two_sided_p_unadjusted": 1.0,
+        "paired_item_bootstrap_95pct_pp": [
+          -2.6548672566371683,
+          1.7699115044247788
+        ]
+      }
+    },
+    {
+      "dataset": "LogistikaBench",
+      "p4_correct": 1187,
+      "target": 1224,
+      "versus_step120": {
+        "n": 1446,
+        "before": 1180,
+        "after": 1187,
+        "gains": 28,
+        "losses": 21,
+        "delta_pp": 0.48409405255878285,
+        "mcnemar_exact_two_sided_p_unadjusted": 0.3916029105474905,
+        "paired_item_bootstrap_95pct_pp": [
+          -0.4149377593360996,
+          1.4522821576763485
+        ]
+      },
+      "versus_p1": {
+        "n": 1446,
+        "before": 1193,
+        "after": 1187,
+        "gains": 16,
+        "losses": 22,
+        "delta_pp": -0.4149377593360996,
+        "mcnemar_exact_two_sided_p_unadjusted": 0.417692190836533,
+        "paired_item_bootstrap_95pct_pp": [
+          -1.2448132780082988,
+          0.4149377593360996
+        ]
+      }
+    }
+  ],
+  "formal_categories": [
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Finance and Operations",
+      "versus_p1": {
+        "n": 20,
+        "before": 17,
+        "after": 17,
+        "gains": 0,
+        "losses": 0,
+        "delta_pp": 0.0
+      }
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Fulfillment",
+      "versus_p1": {
+        "n": 79,
+        "before": 66,
+        "after": 67,
+        "gains": 2,
+        "losses": 1,
+        "delta_pp": 1.2658227848101267
+      }
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "In-warehouse",
+      "versus_p1": {
+        "n": 12,
+        "before": 10,
+        "after": 10,
+        "gains": 0,
+        "losses": 0,
+        "delta_pp": 0.0
+      }
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Inventory",
+      "versus_p1": {
+        "n": 4,
+        "before": 4,
+        "after": 4,
+        "gains": 0,
+        "losses": 0,
+        "delta_pp": 0.0
+      }
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Logistics Collaboration",
+      "versus_p1": {
+        "n": 73,
+        "before": 62,
+        "after": 61,
+        "gains": 0,
+        "losses": 1,
+        "delta_pp": -1.36986301369863
+      }
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Merchandise",
+      "versus_p1": {
+        "n": 1,
+        "before": 1,
+        "after": 1,
+        "gains": 0,
+        "losses": 0,
+        "delta_pp": 0.0
+      }
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Network",
+      "versus_p1": {
+        "n": 3,
+        "before": 3,
+        "after": 3,
+        "gains": 0,
+        "losses": 0,
+        "delta_pp": 0.0
+      }
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Other",
+      "versus_p1": {
+        "n": 3,
+        "before": 3,
+        "after": 3,
+        "gains": 0,
+        "losses": 0,
+        "delta_pp": 0.0
+      }
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Planning",
+      "versus_p1": {
+        "n": 14,
+        "before": 12,
+        "after": 12,
+        "gains": 0,
+        "losses": 0,
+        "delta_pp": 0.0
+      }
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Procurement",
+      "versus_p1": {
+        "n": 12,
+        "before": 9,
+        "after": 8,
+        "gains": 0,
+        "losses": 1,
+        "delta_pp": -8.333333333333334
+      }
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "Returns and Waste",
+      "versus_p1": {
+        "n": 1,
+        "before": 1,
+        "after": 1,
+        "gains": 0,
+        "losses": 0,
+        "delta_pp": 0.0
+      }
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "category": "unknown",
+      "versus_p1": {
+        "n": 4,
+        "before": 4,
+        "after": 4,
+        "gains": 0,
+        "losses": 0,
+        "delta_pp": 0.0
+      }
+    },
+    {
+      "dataset": "LogistikaBench",
+      "category": "material_handling",
+      "versus_p1": {
+        "n": 696,
+        "before": 583,
+        "after": 576,
+        "gains": 3,
+        "losses": 10,
+        "delta_pp": -1.0057471264367817
+      }
+    },
+    {
+      "dataset": "LogistikaBench",
+      "category": "procurement",
+      "versus_p1": {
+        "n": 42,
+        "before": 36,
+        "after": 35,
+        "gains": 1,
+        "losses": 2,
+        "delta_pp": -2.380952380952381
+      }
+    },
+    {
+      "dataset": "LogistikaBench",
+      "category": "supply_chain",
+      "versus_p1": {
+        "n": 102,
+        "before": 90,
+        "after": 90,
+        "gains": 0,
+        "losses": 0,
+        "delta_pp": 0.0
+      }
+    },
+    {
+      "dataset": "LogistikaBench",
+      "category": "transport",
+      "versus_p1": {
+        "n": 404,
+        "before": 332,
+        "after": 333,
+        "gains": 8,
+        "losses": 7,
+        "delta_pp": 0.24752475247524752
+      }
+    },
+    {
+      "dataset": "LogistikaBench",
+      "category": "warehousing",
+      "versus_p1": {
+        "n": 202,
+        "before": 152,
+        "after": 153,
+        "gains": 4,
+        "losses": 3,
+        "delta_pp": 0.49504950495049505
+      }
+    }
+  ],
+  "formal_invalid": 0,
+  "formal_truncated": 0,
+  "formal_repeat_unstable": 8,
+  "all_predictions_reparsed": true,
+  "training": {
+    "steps": 121,
+    "sequence_tokens": 99038,
+    "loss_first": 1.4004368782043457,
+    "loss_last": 0.01602950505912304,
+    "checkpoint_passed": true,
+    "optimizer_resume_available": false
+  },
+  "data": {
+    "budgets": {
+      "train": {
+        "records": 363,
+        "sequence_tokens": 99038,
+        "loss_tokens": 14710,
+        "sha256": "a0554092a0530729e8e3730eed8ebfc1a9c4f4afefec883f4b6ab8bd389247be",
+        "sampler_order_sha256": "8091b8845f7e88d77adc4333be68203dca30c1f40eb77631f0dc4d8fe1852dbf"
+      },
+      "dev": {
+        "records": 33,
+        "sequence_tokens": 5622,
+        "loss_tokens": 212,
+        "sha256": "3a35e5307cd46027b5e91f598917c70c0bc470175ba1de4ec534120edddc41f0",
+        "sampler_order_sha256": "b0965236adaed190a6b0738c04a6991fb64e00d4c9bb89c7055bb07cffda6664"
+      }
+    },
+    "installed_loader_passed": true,
+    "original_315_messages_and_tokens_unchanged": true,
+    "tokenizer_sha256": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523",
+    "release_sha256": "e01714578ed198a27069c54d8179adaae3b3974634249671d10e4a7d7749d834",
+    "train_file_sha256": "b2f0b062afa4cd34798e085b4b98a159269265829d896e60733d26d2364e85dc",
+    "train_messages_sha256": "1f67f334845f2ac84f9515a38612135b6238645f763c8b142a466303452884b7",
+    "steps": 121,
+    "batch": 3,
+    "lr": 5e-07,
+    "epochs": 1,
+    "new_tasks": 16,
+    "new_exposures": 48,
+    "new_answer_only": 16,
+    "new_explanation_answer": 32,
+    "option_order": "Original author order, unchanged across exposures; same policy as P1.",
+    "explanation_source": "Released author option_reasons, no model-review answers.",
+    "evaluation_inputs_read": false,
+    "training_started": false,
+    "exact_token_budget_matched": false,
+    "sequence_token_delta": 11698,
+    "supervised_token_delta": 2508
+  },
+  "promotion": false,
+  "raw_sha256": {
+    "post_old180/predictions.private.jsonl": "cff174f2b0abd2e57bc07b345a1593bfcb5db9d940e60142715755938fbfdd27",
+    "post_new88/closed.private.jsonl": "8df668cbffb27811e3bae73b5a30308526cb991dc360f4fecafac0e54c2357d5",
+    "formal5016/predictions.private.jsonl": "bf0cc4fcc14d00e190bbd35ddc56a1719c73c309bfda29f92f3f894391cb436f"
+  },
+  "next_action": "Review cumulative transfer; no automatic next arm.",
+  "posthoc_diagnostics": {
+    "capabilities": [
+      {
+        "model": "p1",
+        "unit": "abc",
+        "split": "retention",
+        "calls": 4,
+        "correct": 4
+      },
+      {
+        "model": "p1",
+        "unit": "batch_tradeoff",
+        "split": "dev",
+        "calls": 4,
+        "correct": 1
+      },
+      {
+        "model": "p1",
+        "unit": "batch_tradeoff",
+        "split": "train",
+        "calls": 8,
+        "correct": 0
+      },
+      {
+        "model": "p1",
+        "unit": "contracts",
+        "split": "retention",
+        "calls": 4,
+        "correct": 4
+      },
+      {
+        "model": "p1",
+        "unit": "holding_cost",
+        "split": "retention",
+        "calls": 4,
+        "correct": 3
+      },
+      {
+        "model": "p1",
+        "unit": "outsourcing",
+        "split": "retention",
+        "calls": 4,
+        "correct": 4
+      },
+      {
+        "model": "p1",
+        "unit": "pest",
+        "split": "retention",
+        "calls": 4,
+        "correct": 4
+      },
+      {
+        "model": "p1",
+        "unit": "pick_lines",
+        "split": "dev",
+        "calls": 4,
+        "correct": 4
+      },
+      {
+        "model": "p1",
+        "unit": "pick_lines",
+        "split": "train",
+        "calls": 8,
+        "correct": 5
+      },
+      {
+        "model": "p1",
+        "unit": "postponement",
+        "split": "retention",
+        "calls": 4,
+        "correct": 4
+      },
+      {
+        "model": "p1",
+        "unit": "rail_transfer",
+        "split": "retention",
+        "calls": 4,
+        "correct": 4
+      },
+      {
+        "model": "p1",
+        "unit": "reorder",
+        "split": "retention",
+        "calls": 4,
+        "correct": 4
+      },
+      {
+        "model": "p1",
+        "unit": "serial_parallel",
+        "split": "dev",
+        "calls": 4,
+        "correct": 3
+      },
+      {
+        "model": "p1",
+        "unit": "serial_parallel",
+        "split": "train",
+        "calls": 8,
+        "correct": 2
+      },
+      {
+        "model": "p1",
+        "unit": "shipping_controls",
+        "split": "retention",
+        "calls": 4,
+        "correct": 4
+      },
+      {
+        "model": "p1",
+        "unit": "transport_capacity",
+        "split": "dev",
+        "calls": 4,
+        "correct": 1
+      },
+      {
+        "model": "p1",
+        "unit": "transport_capacity",
+        "split": "train",
+        "calls": 8,
+        "correct": 5
+      },
+      {
+        "model": "p1",
+        "unit": "warehouse_roles",
+        "split": "retention",
+        "calls": 4,
+        "correct": 4
+      },
+      {
+        "model": "p4",
+        "unit": "abc",
+        "split": "retention",
+        "calls": 4,
+        "correct": 4
+      },
+      {
+        "model": "p4",
+        "unit": "batch_tradeoff",
+        "split": "dev",
+        "calls": 4,
+        "correct": 1
+      },
+      {
+        "model": "p4",
+        "unit": "batch_tradeoff",
+        "split": "train",
+        "calls": 8,
+        "correct": 4
+      },
+      {
+        "model": "p4",
+        "unit": "contracts",
+        "split": "retention",
+        "calls": 4,
+        "correct": 4
+      },
+      {
+        "model": "p4",
+        "unit": "holding_cost",
+        "split": "retention",
+        "calls": 4,
+        "correct": 4
+      },
+      {
+        "model": "p4",
+        "unit": "outsourcing",
+        "split": "retention",
+        "calls": 4,
+        "correct": 4
+      },
+      {
+        "model": "p4",
+        "unit": "pest",
+        "split": "retention",
+        "calls": 4,
+        "correct": 4
+      },
+      {
+        "model": "p4",
+        "unit": "pick_lines",
+        "split": "dev",
+        "calls": 4,
+        "correct": 4
+      },
+      {
+        "model": "p4",
+        "unit": "pick_lines",
+        "split": "train",
+        "calls": 8,
+        "correct": 7
+      },
+      {
+        "model": "p4",
+        "unit": "postponement",
+        "split": "retention",
+        "calls": 4,
+        "correct": 3
+      },
+      {
+        "model": "p4",
+        "unit": "rail_transfer",
+        "split": "retention",
+        "calls": 4,
+        "correct": 3
+      },
+      {
+        "model": "p4",
+        "unit": "reorder",
+        "split": "retention",
+        "calls": 4,
+        "correct": 4
+      },
+      {
+        "model": "p4",
+        "unit": "serial_parallel",
+        "split": "dev",
+        "calls": 4,
+        "correct": 4
+      },
+      {
+        "model": "p4",
+        "unit": "serial_parallel",
+        "split": "train",
+        "calls": 8,
+        "correct": 4
+      },
+      {
+        "model": "p4",
+        "unit": "shipping_controls",
+        "split": "retention",
+        "calls": 4,
+        "correct": 4
+      },
+      {
+        "model": "p4",
+        "unit": "transport_capacity",
+        "split": "dev",
+        "calls": 4,
+        "correct": 2
+      },
+      {
+        "model": "p4",
+        "unit": "transport_capacity",
+        "split": "train",
+        "calls": 8,
+        "correct": 5
+      },
+      {
+        "model": "p4",
+        "unit": "warehouse_roles",
+        "split": "retention",
+        "calls": 4,
+        "correct": 4
+      }
+    ],
+    "train_dev_error_types": {
+      "p1": {
+        "omission": 10,
+        "extra": 8,
+        "substitution": 9
+      },
+      "p4": {
+        "extra": 5,
+        "substitution": 8,
+        "omission": 4
+      }
+    },
+    "two_order_stability": [
+      {
+        "model": "p1",
+        "split": "train",
+        "tasks": 16,
+        "both_correct": 4,
+        "one_correct": 4,
+        "neither_correct": 8
+      },
+      {
+        "model": "p1",
+        "split": "dev",
+        "tasks": 8,
+        "both_correct": 3,
+        "one_correct": 3,
+        "neither_correct": 2
+      },
+      {
+        "model": "p1",
+        "split": "retention",
+        "tasks": 20,
+        "both_correct": 19,
+        "one_correct": 1,
+        "neither_correct": 0
+      },
+      {
+        "model": "p4",
+        "split": "train",
+        "tasks": 16,
+        "both_correct": 5,
+        "one_correct": 10,
+        "neither_correct": 1
+      },
+      {
+        "model": "p4",
+        "split": "dev",
+        "tasks": 8,
+        "both_correct": 4,
+        "one_correct": 3,
+        "neither_correct": 1
+      },
+      {
+        "model": "p4",
+        "split": "retention",
+        "tasks": 20,
+        "both_correct": 18,
+        "one_correct": 2,
+        "neither_correct": 0
+      }
+    ],
+    "used_for_training_or_selection": false
+  },
+  "local_verification": {
+    "data": {
+      "local_token_reconstruction_passed": true,
+      "old315_messages_sha256": "78a4e8a4f0acf95c7a2e69aa342855ac60a1334a3f57fdb4677609363f2a4304",
+      "train_records": 363,
+      "loss_monitor_records": 33,
+      "source_tokenizer_sha256": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523"
+    },
+    "new_predictions_reparsed": 5284,
+    "formal_control_predictions_reparsed": 10032,
+    "all_1940_prompt_token_sequences_rebuilt": true,
+    "all_aggregate_comparisons_matched": true,
+    "verifier_sha256": "b8595ea4e8670a465d1eb7e8f76dc2b4b818de22903bdc4ac00f7704bb8fd0a2"
+  },
+  "status": "completed_verified_both_sides"
+}

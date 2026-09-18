@@ -1,7 +1,9 @@
 """Independent local reconstruction of P4 training data and every evaluated answer."""
 import argparse
+from collections import Counter,defaultdict
 import hashlib
 import json
+import math
 from pathlib import Path
 from prepare_cpt_p4_cumulative import read,sha,append_released,OLD_MESSAGES_SHA,TOKENIZER_SHA
 from audit_cpt_transfer import verify_predictions,verify_protocols,paired
@@ -16,6 +18,8 @@ def verify_data(data,packet,tokenizer):
     assert sha(tokenizer/'tokenizer.json')==TOKENIZER_SHA
     tok=AutoTokenizer.from_pretrained(tokenizer,local_files_only=True,trust_remote_code=True)
     audit=obj(data/'data_audit.safe.json');messages=read(data/'train.messages.private.jsonl')
+    assert sha(packet/'release.safe.json')==audit['release_sha256']
+    assert sha(packet/'train.private.jsonl')==audit['train_file_sha256']
     old=''.join(json.dumps(x,ensure_ascii=False)+'\n' for x in messages[:315]).encode()
     assert hashlib.sha256(old).hexdigest()==OLD_MESSAGES_SHA
     assert append_released(messages[:315],read(packet/'train.private.jsonl'),obj(packet/'release.safe.json'))==messages
@@ -42,6 +46,7 @@ def verify_result(resources,out):
     from evaluate_logistics_knowledge import build_messages
     from run_logistics_strategy_diagnostic import messages_for
     from transformers import AutoTokenizer
+    from summarize_logistics_cpt_run import parse_metrics
     packet=resources/'llin-remediation-packet-20260917-03'
     package=resources/'llin-transfer-p4-package-20260918-01'
     tokenpath=resources/'llin-transfer-p4-tokenizer-20260918-01'
@@ -52,6 +57,16 @@ def verify_result(resources,out):
     assert obj(out/'status.safe.json')['status']=='completed_verified_remote'
     assert result['new_requests']==reg['new_requests']==5284 and reg['score_dependent_gating'] is False
     assert result['data']==obj(resources/'llin-transfer-p4-data-20260918-01/data_audit.safe.json')==reg['data_audit']
+    metric_logs=list((out/'training/torchrun_logs').glob('*/attempt_0/*/stdout.log'))
+    metrics=parse_metrics('\n'.join(p.read_text(encoding='utf-8',errors='replace') for p in metric_logs))
+    assert sorted(metrics)==list(range(1,122))
+    assert sum(int(m['train/global_tokens']) for m in metrics.values())==99038
+    assert all(math.isfinite(m[k]) for m in metrics.values() for k in ('train/loss','train/grad_norm','train/lr'))
+    assert result['training']['loss_first']==metrics[1]['train/loss'] and result['training']['loss_last']==metrics[121]['train/loss']
+    manifest=obj(out/'training/checkpoints/global_step_121/ckpt_contents.json')
+    assert manifest['global_step']==121 and manifest['world_size']==16 and set(manifest['save_contents'])=={'model','extra'}
+    exported=obj(out/'training/llin-step120-p4-hf/llin_export_manifest.json')['verification']
+    assert exported['valid'] and not exported['errors'] and exported['output_tensor_count']==1199 and exported['referenced_shard_count']==15
     for rel,h in result['raw_sha256'].items():assert sha(out/rel)==h
     old=read(out/'post_old180/predictions.private.jsonl');items=load_items(package/'old_cases.private.jsonl');prompts=obj(out/'post_old180/prompts.safe.json')
     assert len(old)==len(items)==len(prompts)==180
@@ -61,7 +76,8 @@ def verify_result(resources,out):
         assert r['correct']==(ok and r['finish_reason']=='stop' and pred==list(item.expected))
         assert r['source_id']==item.source_id==p['source_id'] and r['item_hash']==item.item_hash
         ids=encode(build_messages(item))
-        assert len(ids)==p['tokens']==r['prompt_tokens'] and digest(ids)==p['token_sha256']
+        token_hash=hashlib.sha256(json.dumps(ids,separators=(',',':')).encode()).hexdigest()
+        assert len(ids)==p['tokens']==r['prompt_tokens'] and token_hash==p['token_sha256']
     prior=resources/'llin-transfer-p1-20260916-03/complete_result'
     for label,folder in [('step120',prior/'baseline'),('p1',prior/'post')]:
         c=comparison(read(folder/'predictions.private.jsonl'),old)
@@ -78,6 +94,23 @@ def verify_result(resources,out):
         for split in ('train','dev','retention'):
             keys=[i for i,d in enumerate(summary['per_call']) if d['split']==split]
             assert result['new_paired'][label+'/'+split]==paired(keys,b['per_call'],summary['per_call'])
+    capability=[];error_types={};stability=[]
+    for label,records in [('p1',read(package/'p1.closed.private.jsonl')),('p4',raw)]:
+        groups=defaultdict(list);errors=Counter();per_task=defaultdict(list)
+        for s,r in zip(plan,records):
+            row=by_id[s['id']];pred=independent_prediction(r);good=pred==s['expected']
+            groups[(row['unit'],row['split'])].append(good);per_task[(s['id'],row['split'])].append(good)
+            if row['split'] in ('train','dev') and not good:
+                if pred is None:errors['invalid']+=1
+                else:
+                    missed=set(s['expected'])-set(pred);extra=set(pred)-set(s['expected'])
+                    errors['substitution' if missed and extra else 'omission' if missed else 'extra']+=1
+        error_types[label]=dict(errors)
+        for (unit,split),values in sorted(groups.items()):capability.append(dict(model=label,unit=unit,split=split,calls=len(values),correct=sum(values)))
+        for split in ('train','dev','retention'):
+            values=[v for (_,s),v in per_task.items() if s==split]
+            stability.append(dict(model=label,split=split,tasks=len(values),both_correct=sum(all(v) for v in values),one_correct=sum(sum(v)==1 for v in values),neither_correct=sum(not any(v) for v in values)))
+    result['posthoc_diagnostics']=dict(capabilities=capability,train_dev_error_types=error_types,two_order_stability=stability,used_for_training_or_selection=False)
     cases_path=resources/'llin-transfer-audit-20260915-01/frozen_cases.private.jsonl'
     assert sha(cases_path)=='b652b2108cb552346df11d005c15ff3137c50a756a7b24eb35302683ec33ed99'
     cases={r['item_hash']:r for r in read(cases_path)};assert len(cases)==1672
