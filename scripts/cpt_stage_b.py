@@ -10,6 +10,15 @@ SEED = 1024
 FORMS = ('scope', 'competing_rules', 'application', 'counterexample')
 
 
+def encode_prompt(tokenizer, text, output_budget=2048):
+    rendered=tokenizer.apply_chat_template([dict(role='user',content=text)],tokenize=False,add_generation_prompt=True,enable_thinking=False)
+    ids=tokenizer.encode(rendered,add_special_tokens=False)
+    if not isinstance(ids,list) or not ids or any(type(v) is not int or v<0 for v in ids):
+        raise RuntimeError('invalid token IDs')
+    if len(ids)+output_budget>8192:raise RuntimeError('prompt exceeds window; no truncation')
+    return ids
+
+
 def device_idle(text):
     """Allow observed driver baseline only with explicit empty process tables."""
     used=[int(v) for v in re.findall(r'(\d+)\s*/\s*65536',text)]

@@ -7,7 +7,7 @@ import re
 import subprocess
 import time
 from pathlib import Path
-from cpt_stage_b import sha,save,read,digest,author_prompt,reviewer_prompt,validate_task,review_ok,object_of,FORMS,device_idle
+from cpt_stage_b import sha,save,read,digest,author_prompt,reviewer_prompt,validate_task,review_ok,object_of,FORMS,device_idle,encode_prompt
 
 ROOT=Path('/workspace/llin-verl-grpo')
 MODELS={'step120_current':ROOT/'runs/llin-step120-opensource-20260825-02/hf_export_step120_opensource',
@@ -47,9 +47,7 @@ def run(a):
         from transformers import AutoTokenizer
         tok=AutoTokenizer.from_pretrained(MODELS['step120_current'],trust_remote_code=True,local_files_only=True)
         def tokens(text):
-            ids=tok.apply_chat_template([dict(role='user',content=text)],tokenize=True,add_generation_prompt=True,enable_thinking=False)
-            if len(ids)+2048>8192: raise ValueError('prompt exceeds window; no truncation')
-            return ids
+            return encode_prompt(tok,text)
         requests=[dict(id=g['id']+'-'+f,group=g['id'],form=f,prompt=author_prompt(g,f)) for g in packet['groups'] for f in FORMS]
         for r in requests:r['tokens']=tokens(r['prompt'])
         save(a.out/'registration.safe.json',dict(source_packet_sha256=sha(path),author_calls_max=64,author_requests=32,author_temperature=.4,review_temperature=0,author_seed=20920,review_seed=20921,max_tokens=2048,max_model_len=8192,max_num_seqs=32,tp=8,wait_seconds=a.wait_seconds,models_sha256=sha(a.out/'models.safe.json'),code_sha256={p.name:sha(p) for p in (Path(__file__),Path(__file__).with_name('cpt_stage_b.py'))},training_allowed=False))
@@ -77,7 +75,9 @@ def run(a):
                     nonlocal calls
                     ids=tokens(text)
                     if calls>=64:raise ValueError('author budget exhausted')
-                    outputs=llm.generate([dict(prompt_token_ids=ids)],SamplingParams(temperature=.4 if stage=='author' else 0,max_tokens=2048,seed=20920 if stage=='author' else 20921))
+                    try:
+                        outputs=llm.generate([dict(prompt_token_ids=ids)],SamplingParams(temperature=.4 if stage=='author' else 0,max_tokens=2048,seed=20920 if stage=='author' else 20921))
+                    except Exception as e:raise RuntimeError('inference failed') from e
                     calls+=1
                     if len(outputs)!=1 or list(outputs[0].prompt_token_ids)!=ids:raise RuntimeError('prompt identity')
                     v=outputs[0].outputs[0]

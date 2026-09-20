@@ -8,6 +8,17 @@ from cpt_stage_b import FORMS,specs,messages,summarize,digest,author_prompt,revi
 
 
 class ProtocolTest(unittest.TestCase):
+    def test_token_encoding_contract(self):
+        from cpt_stage_b import encode_prompt
+        class Tokenizer:
+            def apply_chat_template(self,messages,**kw):
+                return 'rendered' if not kw['tokenize'] else {'input_ids':[1,2]}
+            def encode(self,text,**kw):return [1,2]
+        self.assertEqual(encode_prompt(Tokenizer(),'question'),[1,2])
+        for bad in [{'input_ids':[1]},['1'],[True],[-1],[1]*8192]:
+            t=Tokenizer();t.encode=lambda *a,**kw:bad
+            with self.assertRaises(RuntimeError):encode_prompt(t,'question')
+
     def test_device_driver_baseline_and_fail_closed(self):
         baseline='\n'.join(['3137 / 65536']*16+['No running processes found in NPU '+str(i) for i in range(8)])
         self.assertTrue(device_idle(baseline)[0])
