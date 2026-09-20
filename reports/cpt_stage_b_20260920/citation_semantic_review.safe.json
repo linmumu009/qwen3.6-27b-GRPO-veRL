@@ -1,0 +1,180 @@
+{
+  "review_type": "local_nonblind_source_audit",
+  "reviewer_has_seen_author_keys": true,
+  "not_independent_confirmation": true,
+  "candidates_reviewed": 12,
+  "semantic_holds": 4,
+  "design_holds": 2,
+  "key_supported_design_pending": 6,
+  "all_items_still_require_release_review": true,
+  "released_groups": 0,
+  "new_model_calls": 0,
+  "training_allowed": false,
+  "citation_audit_sha256": "9c460be776eb4cea6b969370f34c5f2e602407a9f9c45802c98ae8e9488bd410",
+  "records": [
+    {
+      "id": "transport_models-counterexample",
+      "option_assessment": [
+        "supported",
+        "supported",
+        "contradicted",
+        "contradicted"
+      ],
+      "disposition": "key_supported_design_pending",
+      "reason": "Loop 3 and transparent assumptions are supported. The scenario tests correction/application; the requested counterexample operation needs separate review.",
+      "task_sha256": "e68ddb77d64a9f0b1f4b37fd4ba931334fba0dcbfe47186bac225465c008bea2",
+      "source_text_sha256": "05aee2f03b8009160a391981b7b70b81eeed81a6a1a1a51f3b38b4147b77402d"
+    },
+    {
+      "id": "modal_dimensions-competing_rules",
+      "option_assessment": [
+        "supported",
+        "supported",
+        "contradicted",
+        "contradicted"
+      ],
+      "disposition": "key_supported_design_pending",
+      "reason": "Single contract across rail/sea versus two tickets within air is supported; carrier change does not imply mode change. Verify source attribution and independent scenario overlap before release.",
+      "task_sha256": "79f292e0bfe704ac78d7c346e66c589d6860de4a1403512f9541b283daacdd08",
+      "source_text_sha256": "f3b99dab9f1ca62b9ef3d30c439f0ee242ca423767ebe0118eacce7204b04afd"
+    },
+    {
+      "id": "gvc_trajectories-scope",
+      "option_assessment": [
+        "unresolved",
+        "supported",
+        "contradicted",
+        "supported"
+      ],
+      "disposition": "hold_semantic",
+      "reason": "Option 0 moves difficulty of host-country value capture to the company division. The source does not establish equivalence of country and company outcomes.",
+      "task_sha256": "1723f99c1310c3e00bf2840c104a25da425b2d0aee1ce40222cc40054697549b",
+      "source_text_sha256": "f505161008c27ee2fd0b8a120a3214505438d6f33e5ccac9f31bdb698037dc48"
+    },
+    {
+      "id": "gvc_trajectories-counterexample",
+      "option_assessment": [
+        "supported",
+        "supported",
+        "supported",
+        "contradicted"
+      ],
+      "disposition": "hold_design",
+      "reason": "Replication claims match the historical framework, but reduced fragmentation also occurs under reshoring. The request for features distinguishing it from all other trajectories is ambiguous, and no explicit overgeneralized claim is tested.",
+      "task_sha256": "5e9899cfcb9a4f4c7448679b2650135b859dfe6ad6a897cbe6b402114b7a57e2",
+      "source_text_sha256": "f505161008c27ee2fd0b8a120a3214505438d6f33e5ccac9f31bdb698037dc48"
+    },
+    {
+      "id": "low_water_response-scope",
+      "option_assessment": [
+        "contradicted",
+        "supported",
+        "supported",
+        "contradicted",
+        "supported",
+        "contradicted"
+      ],
+      "disposition": "key_supported_design_pending",
+      "reason": "ALW is computed by location; its maintenance reference is not real-time riverbed lowering. Historical fleet withdrawal, smaller-vessel limits and listed response measures support the key.",
+      "task_sha256": "451e77cf162cc50b6fe1ba3041239a2b735725ddeb6a59e60765922c2c9ef679",
+      "source_text_sha256": "092756f94b0fcb08bfd2e31cfb00304af89ec78bcdc9a5b9f5f180d0d3bf40c3"
+    },
+    {
+      "id": "low_water_response-application",
+      "option_assessment": [
+        "supported",
+        "contradicted",
+        "supported",
+        "supported",
+        "contradicted",
+        "supported"
+      ],
+      "disposition": "key_supported_design_pending",
+      "reason": "Within the textbook drought scenario, reduced loads require more trips for the same volume; actual total capacity can still fall. Check similarity to scope task before any release.",
+      "task_sha256": "2db555d254bf957bfbb4a78e21ec470d990090b0989faa03c02bc3ff45eaabc4",
+      "source_text_sha256": "092756f94b0fcb08bfd2e31cfb00304af89ec78bcdc9a5b9f5f180d0d3bf40c3"
+    },
+    {
+      "id": "low_water_response-counterexample",
+      "option_assessment": [
+        "supported",
+        "contradicted",
+        "contradicted",
+        "supported",
+        "supported",
+        "contradicted"
+      ],
+      "disposition": "key_supported_design_pending",
+      "reason": "The first claim is tied to the observed historical data, not a universal threshold law. Reduced load, incomplete replacement of capacity and listed modal/production responses support the key.",
+      "task_sha256": "a78ce07c7915f93c8aff8b789b660454c82d81a656da2fa42af5a9d5c5833d10",
+      "source_text_sha256": "092756f94b0fcb08bfd2e31cfb00304af89ec78bcdc9a5b9f5f180d0d3bf40c3"
+    },
+    {
+      "id": "port_forecast-scope",
+      "option_assessment": [
+        "supported",
+        "contradicted",
+        "supported",
+        "contradicted"
+      ],
+      "disposition": "key_supported_design_pending",
+      "reason": "Macro demand estimation and competitive port allocation have different purposes; contested cargo calls for a mix rather than exclusive bottom-up or replacement of top-down.",
+      "task_sha256": "30230dd9a1ae4d45f58c893499f5f9d5e9e7441449faf7998cbe5606180c9edd",
+      "source_text_sha256": "9f7f4c57c209aec336d300b306eecd45260cf91def229031acda84ae3e9d5734"
+    },
+    {
+      "id": "port_forecast-application",
+      "option_assessment": [
+        "supported",
+        "contradicted",
+        "supported",
+        "supported"
+      ],
+      "disposition": "hold_design",
+      "reason": "The answer set is supported, but arbitrary cargo shares and demographic numbers do not participate in a source-backed calculation and violate the registered author design.",
+      "task_sha256": "6256be73e2ed4db39c40976422aa11e8a634c9e37a9d516366ff27872bdc2335",
+      "source_text_sha256": "9f7f4c57c209aec336d300b306eecd45260cf91def229031acda84ae3e9d5734"
+    },
+    {
+      "id": "picking_workload-competing_rules",
+      "option_assessment": [
+        "unresolved",
+        "unresolved",
+        "unresolved",
+        "unresolved"
+      ],
+      "disposition": "hold_semantic",
+      "reason": "The source does not prohibit relocating small items to another zone, quantify a travel/extraction trade-off, or specify item-size-dependent searching/extraction proportions. The blind reviewer approved an overstrong invalidity claim.",
+      "task_sha256": "3d50ce055b664a1c6199c78d0e86236204be1422d821d35f3ba190a5a63a7292",
+      "source_text_sha256": "62943bdafbbbcc0041626f74cc87ebaa626344197cee73320fe3ff76cd801ca6"
+    },
+    {
+      "id": "picking_workload-application",
+      "option_assessment": [
+        "unresolved",
+        "unresolved",
+        "unresolved",
+        "unresolved"
+      ],
+      "disposition": "hold_semantic",
+      "reason": "An aggregate 55% travel share does not establish lower travel share for pallets. Relative layout priority needs quantities and frequencies; source does not prove chaotic putaway advantage or identify the new small-item line as high volume.",
+      "task_sha256": "068ef79def2f169ae5bb477bc9ea179ed490ba736784f488fe3d4a581b350097",
+      "source_text_sha256": "62943bdafbbbcc0041626f74cc87ebaa626344197cee73320fe3ff76cd801ca6"
+    },
+    {
+      "id": "rail_rolling_stock-application",
+      "option_assessment": [
+        "contradicted",
+        "supported",
+        "contradicted",
+        "supported",
+        "supported",
+        "unresolved"
+      ],
+      "disposition": "hold_semantic",
+      "reason": "Power source, railcar versus locomotive, passenger-body counting and authorized private wagons are supported. Dedicated-line design is absent for Beta, so the rationale cannot assert the high-speed category from 250 km/h alone; formation does not determine it.",
+      "task_sha256": "5a1e68f5df968b3004b9305e785cb87343c1ba6f06b2d08d70b3d5fa44e93341",
+      "source_text_sha256": "78b22d61630808b60360435af7bc8a20e8a76246cd5d10ce2d3e3bdd633cef0b"
+    }
+  ]
+}
