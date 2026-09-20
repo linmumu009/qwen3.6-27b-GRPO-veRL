@@ -1,0 +1,603 @@
+{
+  "schema_version": 1,
+  "reviewer": "Codex",
+  "review_date": "2026-09-20",
+  "source_catalog_sha256": "5df7dc2b209938986cd7081aecdc9105fb989c9a872d572ce0a0c5a16dbbf8a4",
+  "scope": "All P1/P4 majority-correctness changes. Source sufficiency remains unresolved where stated. Review labels describe observed tasks, not causes.",
+  "coverage_definitions": {
+    "rule_present": "A concrete governing rule appears in the preserved P1 training messages. This does not establish mastery.",
+    "related_only": "A neighboring concept appears, but the required distinction or full scope is not demonstrated.",
+    "not_identified": "No specific governing supervision identified in the bounded review of P1 315 and P4 48 appended messages; not a claim about pretraining or prior CPT."
+  },
+  "items": [
+    {
+      "hash_prefix": "00f7c50ed142",
+      "topic": "库存与缺货模型",
+      "mechanism": "model_scope",
+      "training_coverage": "not_identified",
+      "training_rows": [],
+      "source_rows": [],
+      "book_ids": [],
+      "source_status": "unresolved",
+      "note": "正式标签变化；没有核实所用模型假设，不能据此认定获得了完整库存优化能力。"
+    },
+    {
+      "hash_prefix": "09ef66676f05",
+      "topic": "集装箱发展史",
+      "mechanism": "multi_statement",
+      "training_coverage": "not_identified",
+      "training_rows": [],
+      "source_rows": [],
+      "book_ids": [],
+      "source_status": "unresolved",
+      "note": "补回一个选项；并非设备类别识别。"
+    },
+    {
+      "hash_prefix": "0ac2e67afe89",
+      "topic": "仓库图示位置",
+      "mechanism": "missing_visual_context",
+      "training_coverage": "not_identified",
+      "training_rows": [],
+      "source_rows": [],
+      "book_ids": [],
+      "source_status": "unresolved",
+      "note": "原始文本输入仅给位置编号；没有图或编号含义。"
+    },
+    {
+      "hash_prefix": "0cc445c2ef83",
+      "topic": "客服责任划分",
+      "mechanism": "enterprise_context",
+      "training_coverage": "not_identified",
+      "training_rows": [],
+      "source_rows": [],
+      "book_ids": [],
+      "source_status": "unresolved",
+      "note": "通用物流来源不足以确证特定支持团队的分工规则。"
+    },
+    {
+      "hash_prefix": "0d594d7da644",
+      "topic": "货代组织层级",
+      "mechanism": "concept_specificity",
+      "training_coverage": "not_identified",
+      "training_rows": [],
+      "source_rows": [],
+      "book_ids": [],
+      "source_status": "unresolved",
+      "note": "专门类别退回上位概念；没有定位到足以核实该分类的已训练记录。"
+    },
+    {
+      "hash_prefix": "1afdc0a669e8",
+      "topic": "建模方法辨析",
+      "mechanism": "concept_boundary",
+      "training_coverage": "not_identified",
+      "training_rows": [],
+      "source_rows": [
+        33
+      ],
+      "book_ids": [],
+      "source_status": "related_only",
+      "note": "现有仿真来源仅作相邻知识，未证明两种方法互斥。"
+    },
+    {
+      "hash_prefix": "1e93c87f0491",
+      "topic": "内河运输资产价值",
+      "mechanism": "definition_retrieval",
+      "training_coverage": "not_identified",
+      "training_rows": [],
+      "source_rows": [
+        127
+      ],
+      "book_ids": [],
+      "source_status": "rule_supported",
+      "note": "来源明确给出资产净值和折旧定义；训练消息未发现该定义。"
+    },
+    {
+      "hash_prefix": "2ac3171b8a06",
+      "topic": "履约合规比例",
+      "mechanism": "possible_semantic_equivalence",
+      "training_coverage": "not_identified",
+      "training_rows": [],
+      "source_rows": [
+        204
+      ],
+      "book_ids": [],
+      "source_status": "conditional_equivalence",
+      "note": "在相同分母且达标/超时互补时两个描述等价；题目唯一性需裁定，官方分数保持不变。"
+    },
+    {
+      "hash_prefix": "2efc457901a5",
+      "topic": "需求与销售口径",
+      "mechanism": "definition_scope",
+      "training_coverage": "not_identified",
+      "training_rows": [],
+      "source_rows": [],
+      "book_ids": [],
+      "source_status": "unresolved",
+      "note": "需求和销量需要明确口径；未取得足以唯一裁定该题的来源。"
+    },
+    {
+      "hash_prefix": "3e64e0a5697c",
+      "topic": "合并平均时长",
+      "mechanism": "weighted_aggregation",
+      "training_coverage": "related_only",
+      "training_rows": [
+        202
+      ],
+      "source_rows": [
+        43,
+        204
+      ],
+      "book_ids": [],
+      "source_status": "rule_supported",
+      "note": "已有加权均值定义，未发现同一合并时长计算的训练实例；不能直接归因于P4算术训练。"
+    },
+    {
+      "hash_prefix": "4374d64f2ccb",
+      "topic": "仓库图示位置",
+      "mechanism": "missing_visual_context",
+      "training_coverage": "not_identified",
+      "training_rows": [],
+      "source_rows": [],
+      "book_ids": [],
+      "source_status": "unresolved",
+      "note": "原始文本输入仅给位置编号；没有图或编号含义。"
+    },
+    {
+      "hash_prefix": "447c6260a4c9",
+      "topic": "海运经济与地理",
+      "mechanism": "multi_statement",
+      "training_coverage": "not_identified",
+      "training_rows": [],
+      "source_rows": [],
+      "book_ids": [],
+      "source_status": "unresolved",
+      "note": "补回一个选项；跨国成本结论的时期和来源尚未核实。"
+    },
+    {
+      "hash_prefix": "4f8049c6ca68",
+      "topic": "设施数量与成本曲线",
+      "mechanism": "missing_visual_context",
+      "training_coverage": "not_identified",
+      "training_rows": [],
+      "source_rows": [],
+      "book_ids": [],
+      "source_status": "unresolved",
+      "note": "输入要求按数字匹配曲线，但未包含曲线或编号说明。"
+    },
+    {
+      "hash_prefix": "571c49bfa6b4",
+      "topic": "WMS数据表范围",
+      "mechanism": "multi_statement",
+      "training_coverage": "related_only",
+      "training_rows": [
+        40
+      ],
+      "source_rows": [
+        40
+      ],
+      "book_ids": [],
+      "source_status": "related_only",
+      "note": "训练仅有WMS总定义，没有具体教材数据表清单。"
+    },
+    {
+      "hash_prefix": "59309a994b63",
+      "topic": "仓网与绩效周期",
+      "mechanism": "multi_statement",
+      "training_coverage": "not_identified",
+      "training_rows": [],
+      "source_rows": [
+        108
+      ],
+      "book_ids": [],
+      "source_status": "related_only",
+      "note": "补回一个定义选项；目录的网络设计主题不等于完整支持该题。"
+    },
+    {
+      "hash_prefix": "5f39d838a6bd",
+      "topic": "车辆重量限制口径",
+      "mechanism": "concept_specificity",
+      "training_coverage": "related_only",
+      "training_rows": [
+        198,
+        299
+      ],
+      "source_rows": [
+        119,
+        164
+      ],
+      "book_ids": [],
+      "source_status": "related_only",
+      "note": "已有载重和总质量定义；未发现铭牌设计/法律限重的直接辨析。"
+    },
+    {
+      "hash_prefix": "5fbf5b742ac2",
+      "topic": "投资曲线识别",
+      "mechanism": "missing_visual_context",
+      "training_coverage": "not_identified",
+      "training_rows": [],
+      "source_rows": [],
+      "book_ids": [],
+      "source_status": "unresolved",
+      "note": "要求匹配图编号，实际文本没有图或曲线数据。"
+    },
+    {
+      "hash_prefix": "60698ff06834",
+      "topic": "人工复核触发条件",
+      "mechanism": "enterprise_context",
+      "training_coverage": "not_identified",
+      "training_rows": [],
+      "source_rows": [],
+      "book_ids": [],
+      "source_status": "unresolved",
+      "note": "多选增加一个触发条件；缺少决定人工/自动分工的企业流程来源。"
+    },
+    {
+      "hash_prefix": "6d36caaa9351",
+      "topic": "订单处理核心职能",
+      "mechanism": "definition_retrieval",
+      "training_coverage": "not_identified",
+      "training_rows": [],
+      "source_rows": [
+        26
+      ],
+      "book_ids": [],
+      "source_status": "related_only",
+      "note": "订单履行来源是邻近主题，尚不能唯一支持该题措辞。"
+    },
+    {
+      "hash_prefix": "735e132c5d5d",
+      "topic": "包装单位沿流程变化",
+      "mechanism": "multi_statement",
+      "training_coverage": "rule_present",
+      "training_rows": [
+        146,
+        257
+      ],
+      "source_rows": [
+        74
+      ],
+      "book_ids": [],
+      "source_status": "rule_supported",
+      "note": "变化涉及的包装单位趋势已在P1训练消息出现，P4原样保留。"
+    },
+    {
+      "hash_prefix": "77e6167162b9",
+      "topic": "售前税务评估条件",
+      "mechanism": "enterprise_context",
+      "training_coverage": "not_identified",
+      "training_rows": [],
+      "source_rows": [],
+      "book_ids": [],
+      "source_status": "unresolved",
+      "note": "正式评分改善，但没有核实该流程的具体规则来源。"
+    },
+    {
+      "hash_prefix": "7929df4d7ad6",
+      "topic": "集装箱规模效益分类",
+      "mechanism": "classification_frame",
+      "training_coverage": "not_identified",
+      "training_rows": [],
+      "source_rows": [],
+      "book_ids": [
+        "bbc28096f6e7cb81153e"
+      ],
+      "source_status": "rule_supported",
+      "note": "归档教材将规模效益列在优势项；另一候选来自技术变化分类，存在分类维度竞争。"
+    },
+    {
+      "hash_prefix": "7c60c0fb4d18",
+      "topic": "港口货运预测与经济性",
+      "mechanism": "multi_statement",
+      "training_coverage": "not_identified",
+      "training_rows": [],
+      "source_rows": [
+        181
+      ],
+      "book_ids": [
+        "9b7d2f7c0246d5b83118",
+        "44247ab41f17672e477e"
+      ],
+      "source_status": "rule_supported",
+      "note": "原书支持被漏选的经济关系；没有发现此关系进入P1/P4消息。"
+    },
+    {
+      "hash_prefix": "7ec07ffdd7da",
+      "topic": "高峰定价与需求",
+      "mechanism": "negative_instruction",
+      "training_coverage": "not_identified",
+      "training_rows": [],
+      "source_rows": [
+        194
+      ],
+      "book_ids": [],
+      "source_status": "related_only",
+      "note": "替换一个错误选项；需区分否定指令与价格经济关系。"
+    },
+    {
+      "hash_prefix": "956fa3ebff51",
+      "topic": "批量拣选适用条件",
+      "mechanism": "concept_boundary",
+      "training_coverage": "related_only",
+      "training_rows": [
+        0
+      ],
+      "source_rows": [
+        76,
+        167
+      ],
+      "book_ids": [],
+      "source_status": "related_only",
+      "note": "P1已有拣选分工取舍，P4新增成本约束；未确认该适用条件受到直接监督。"
+    },
+    {
+      "hash_prefix": "9b7c3b62c212",
+      "topic": "仓库图示位置",
+      "mechanism": "missing_visual_context",
+      "training_coverage": "not_identified",
+      "training_rows": [],
+      "source_rows": [],
+      "book_ids": [],
+      "source_status": "unresolved",
+      "note": "缺少编号图；P4同提示三次答案还发生变化。"
+    },
+    {
+      "hash_prefix": "a0458edfeba3",
+      "topic": "贸易壁垒分类",
+      "mechanism": "classification_frame",
+      "training_coverage": "not_identified",
+      "training_rows": [],
+      "source_rows": [
+        28
+      ],
+      "book_ids": [
+        "3d0f05d2370850da222d"
+      ],
+      "source_status": "frame_unresolved",
+      "note": "来源讨论政治行为及经济后果，两种候选分类有交叠；通用题头未明确选择哪套分类。"
+    },
+    {
+      "hash_prefix": "b3bedb490155",
+      "topic": "仓库流程次序",
+      "mechanism": "framework_order",
+      "training_coverage": "not_identified",
+      "training_rows": [],
+      "source_rows": [
+        73,
+        77
+      ],
+      "book_ids": [],
+      "source_status": "related_only",
+      "note": "需要指定流程框架；通用仓库功能不自动给出唯一编号。"
+    },
+    {
+      "hash_prefix": "b6acebb04603",
+      "topic": "物流外包阶段",
+      "mechanism": "framework_order",
+      "training_coverage": "rule_present",
+      "training_rows": [
+        2,
+        16,
+        55
+      ],
+      "source_rows": [
+        179
+      ],
+      "book_ids": [],
+      "source_status": "rule_supported",
+      "note": "完整六阶段序列已在P1解释监督中出现；同组另有一题退化。"
+    },
+    {
+      "hash_prefix": "b7ae2f29574f",
+      "topic": "搬运移动组织",
+      "mechanism": "concept_boundary",
+      "training_coverage": "not_identified",
+      "training_rows": [],
+      "source_rows": [
+        21
+      ],
+      "book_ids": [],
+      "source_status": "related_only",
+      "note": "搬运总定义不足以证明具体移动系统的适用条件。"
+    },
+    {
+      "hash_prefix": "bc00757305f3",
+      "topic": "越库收益与操作描述",
+      "mechanism": "multi_statement",
+      "training_coverage": "related_only",
+      "training_rows": [
+        43
+      ],
+      "source_rows": [
+        73
+      ],
+      "book_ids": [],
+      "source_status": "related_only",
+      "note": "训练有短暂存储混合中心，缺少该题所有收益选项的唯一性来源。"
+    },
+    {
+      "hash_prefix": "bc3be1d63734",
+      "topic": "仓库图示位置",
+      "mechanism": "missing_visual_context",
+      "training_coverage": "not_identified",
+      "training_rows": [],
+      "source_rows": [],
+      "book_ids": [],
+      "source_status": "unresolved",
+      "note": "该题得分改善仍涉及缺图编号；不视为可靠流程学习证据。"
+    },
+    {
+      "hash_prefix": "cfb07bd200ec",
+      "topic": "航空装载单元缩写",
+      "mechanism": "possible_semantic_equivalence",
+      "training_coverage": "not_identified",
+      "training_rows": [],
+      "source_rows": [
+        93
+      ],
+      "book_ids": [],
+      "source_status": "alias_review_needed",
+      "note": "全称与缩写候选疑似同义，P1重复还不稳定；不将其直接算作知识遗忘，官方计分不变。"
+    },
+    {
+      "hash_prefix": "d561134ae163",
+      "topic": "物流外包阶段",
+      "mechanism": "framework_order",
+      "training_coverage": "rule_present",
+      "training_rows": [
+        55,
+        16
+      ],
+      "source_rows": [
+        179
+      ],
+      "book_ids": [],
+      "source_status": "rule_supported",
+      "note": "完整序列及该阶段已在保留的解释监督中出现；外包另一题同时改善。"
+    },
+    {
+      "hash_prefix": "d7719e13ddaf",
+      "topic": "仓库图示位置",
+      "mechanism": "missing_visual_context",
+      "training_coverage": "not_identified",
+      "training_rows": [],
+      "source_rows": [],
+      "book_ids": [],
+      "source_status": "unresolved",
+      "note": "原始文本输入没有编号图；与另一个类别的题有相近题面及选项拼写差别，不能视为独立知识点。"
+    },
+    {
+      "hash_prefix": "dd4fc8a7a66d",
+      "topic": "球面最短路径应用",
+      "mechanism": "multi_statement",
+      "training_coverage": "rule_present",
+      "training_rows": [
+        76
+      ],
+      "source_rows": [
+        14
+      ],
+      "book_ids": [],
+      "source_status": "rule_supported",
+      "note": "相关大圆弧定义在P1监督中；新增城市实例判断改善。"
+    },
+    {
+      "hash_prefix": "de30439b9afd",
+      "topic": "提前期的起止边界",
+      "mechanism": "definition_scope",
+      "training_coverage": "related_only",
+      "training_rows": [
+        86
+      ],
+      "source_rows": [
+        17
+      ],
+      "book_ids": [],
+      "source_status": "related_only",
+      "note": "已有过程起止定义，但没有明确该题所需的发运/收货边界；不把词条出现等同充分覆盖。"
+    },
+    {
+      "hash_prefix": "e21f17e83f22",
+      "topic": "港口协作职责",
+      "mechanism": "actor_boundary",
+      "training_coverage": "related_only",
+      "training_rows": [
+        267,
+        281
+      ],
+      "source_rows": [
+        36,
+        19
+      ],
+      "book_ids": [
+        "12263c04e011fc439831",
+        "83df4f92e9b0aa1aef21"
+      ],
+      "source_status": "rule_supported",
+      "note": "原书可区分相邻港口角色；训练有相邻角色定义，未发现目标角色的直接监督。"
+    },
+    {
+      "hash_prefix": "e62230f51473",
+      "topic": "集装箱就业影响分类",
+      "mechanism": "classification_frame",
+      "training_coverage": "not_identified",
+      "training_rows": [],
+      "source_rows": [],
+      "book_ids": [],
+      "source_status": "unresolved",
+      "note": "利弊与社会影响两种分类维度竞争；原书完整段落未在已检查快照定位，不宣称完成标签裁定。"
+    },
+    {
+      "hash_prefix": "e720798fd7e3",
+      "topic": "桥梁净空与水位",
+      "mechanism": "condition_application",
+      "training_coverage": "rule_present",
+      "training_rows": [
+        7,
+        89
+      ],
+      "source_rows": [
+        199
+      ],
+      "book_ids": [
+        "12263c04e011fc439831"
+      ],
+      "source_status": "rule_supported",
+      "note": "退化涉及的固定/变化水位边界在原有正确训练记录中直接出现；P4未删除。"
+    },
+    {
+      "hash_prefix": "ed5f42fcfc04",
+      "topic": "车辆超载后果",
+      "mechanism": "multi_statement",
+      "training_coverage": "related_only",
+      "training_rows": [
+        198,
+        299
+      ],
+      "source_rows": [
+        119,
+        164
+      ],
+      "book_ids": [],
+      "source_status": "related_only",
+      "note": "已有限重定义但没有核实全部后果的训练覆盖；补回多个选项。"
+    },
+    {
+      "hash_prefix": "f113ec38abb1",
+      "topic": "订货策略成本条件",
+      "mechanism": "multi_statement",
+      "training_coverage": "related_only",
+      "training_rows": [
+        87
+      ],
+      "source_rows": [
+        22,
+        192
+      ],
+      "book_ids": [
+        "97ae5a039c52c8bd2937"
+      ],
+      "source_status": "related_only",
+      "note": "MRP与逐期订货定义不足以支持持有/设置成本同时最小的结论；需完整成本前提。"
+    },
+    {
+      "hash_prefix": "f429a7b56bbb",
+      "topic": "跨境管道统计边界",
+      "mechanism": "definition_scope",
+      "training_coverage": "related_only",
+      "training_rows": [
+        84,
+        110,
+        215
+      ],
+      "source_rows": [
+        97,
+        106,
+        128
+      ],
+      "book_ids": [],
+      "source_status": "related_only",
+      "note": "管道类别和国界统计已训练；货物流向与过境区别尚未定位到直接监督。"
+    }
+  ],
+  "book_pages_sha256": "1f3516fc5e89763667040f92c8801cff31cd4429f94b7ffaa80de3bdbc940591"
+}

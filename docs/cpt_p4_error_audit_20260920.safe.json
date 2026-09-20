@@ -1,0 +1,1306 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-20",
+  "review_method": "Codex semantic review of every changed item; not independent human adjudication",
+  "analysis": "posthoc descriptive audit of already-used formal evaluations",
+  "comparisons": [
+    {
+      "dataset": "LogistikaBench",
+      "before_model": "step120",
+      "n": 1446,
+      "before": 1180,
+      "after": 1187,
+      "gains": 28,
+      "losses": 21,
+      "delta_pp": 0.48409405255878285
+    },
+    {
+      "dataset": "LogistikaBench",
+      "before_model": "p1",
+      "n": 1446,
+      "before": 1193,
+      "after": 1187,
+      "gains": 16,
+      "losses": 22,
+      "delta_pp": -0.4149377593360996
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "before_model": "step120",
+      "n": 226,
+      "before": 190,
+      "after": 191,
+      "gains": 3,
+      "losses": 2,
+      "delta_pp": 0.4424778761061947
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "before_model": "p1",
+      "n": 226,
+      "before": 192,
+      "after": 191,
+      "gains": 2,
+      "losses": 3,
+      "delta_pp": -0.4424778761061947
+    }
+  ],
+  "transitions": {
+    "gain": {
+      "items": 18,
+      "stable_both": 17,
+      "p1_unstable": 1,
+      "p4_unstable": 0,
+      "wrong_answer_shapes": {
+        "substitution": 11,
+        "omission": 7
+      },
+      "review_mechanisms": {
+        "model_scope": 1,
+        "multi_statement": 6,
+        "concept_boundary": 3,
+        "weighted_aggregation": 1,
+        "definition_retrieval": 1,
+        "enterprise_context": 1,
+        "negative_instruction": 1,
+        "framework_order": 2,
+        "missing_visual_context": 1,
+        "definition_scope": 1
+      },
+      "training_coverage": {
+        "not_identified": 11,
+        "related_only": 4,
+        "rule_present": 3
+      },
+      "source_status": {
+        "unresolved": 5,
+        "related_only": 9,
+        "rule_supported": 4
+      }
+    },
+    "loss": {
+      "items": 25,
+      "stable_both": 22,
+      "p1_unstable": 1,
+      "p4_unstable": 2,
+      "wrong_answer_shapes": {
+        "substitution": 19,
+        "omission": 2,
+        "extra": 4
+      },
+      "review_mechanisms": {
+        "missing_visual_context": 6,
+        "enterprise_context": 2,
+        "concept_specificity": 2,
+        "definition_retrieval": 1,
+        "possible_semantic_equivalence": 2,
+        "definition_scope": 2,
+        "multi_statement": 4,
+        "classification_frame": 3,
+        "framework_order": 1,
+        "actor_boundary": 1,
+        "condition_application": 1
+      },
+      "training_coverage": {
+        "not_identified": 17,
+        "related_only": 6,
+        "rule_present": 2
+      },
+      "source_status": {
+        "unresolved": 11,
+        "rule_supported": 6,
+        "conditional_equivalence": 1,
+        "related_only": 5,
+        "frame_unresolved": 1,
+        "alias_review_needed": 1
+      }
+    }
+  },
+  "remaining_errors": [
+    {
+      "dataset": "LogistikaBench",
+      "p4_errors": 259,
+      "wrong_in_both": 237
+    },
+    {
+      "dataset": "SC-bench-knowledge",
+      "p4_errors": 35,
+      "wrong_in_both": 32
+    }
+  ],
+  "p1_p4_oracle_union": [
+    {
+      "dataset": "SC-bench-knowledge",
+      "target": 196,
+      "oracle_union_correct": 194,
+      "still_missing": 2,
+      "deployable_model": false
+    },
+    {
+      "dataset": "LogistikaBench",
+      "target": 1224,
+      "oracle_union_correct": 1209,
+      "still_missing": 15,
+      "deployable_model": false
+    }
+  ],
+  "long_list_losses": {
+    "items": 7,
+    "mechanisms": {
+      "concept_specificity": 1,
+      "definition_retrieval": 1,
+      "classification_frame": 3,
+      "possible_semantic_equivalence": 1,
+      "actor_boundary": 1
+    }
+  },
+  "raw_checks": {
+    "step120": {
+      "requests": 5016,
+      "invalid": 0,
+      "truncated": 0,
+      "unstable_items": 10
+    },
+    "p1": {
+      "requests": 5016,
+      "invalid": 1,
+      "truncated": 0,
+      "unstable_items": 7
+    },
+    "p4": {
+      "requests": 5016,
+      "invalid": 0,
+      "truncated": 0,
+      "unstable_items": 8
+    }
+  },
+  "inputs": {
+    "cases_sha256": "b652b2108cb552346df11d005c15ff3137c50a756a7b24eb35302683ec33ed99",
+    "raw_sha256": {
+      "step120": "0a75f6d706bca79105c94dec85fc5727d58e40eda97c73509d893c346bbe995e",
+      "p1": "33c5fc7dcb64c0fba59c25c054b19cda7b2e07880ad62daf0d2debd6ece7bbb2",
+      "p4": "bf0cc4fcc14d00e190bbd35ddc56a1719c73c309bfda29f92f3f894391cb436f"
+    },
+    "protocols_sha256": {
+      "step120": "5f5e725bbb7f582644e73793374cb6a80b54fa7fd0c50903d84643f2e06931fa",
+      "p1": "da8366e930b6d8bf1a8be58981be12998fd82c61979e7987f394821f85292e17",
+      "p4": "0b6e8479803aec6cc9e64cacedf11ee8fcbf65018e4e26450481b26493b00a95"
+    },
+    "training_messages_sha256": "1f67f334845f2ac84f9515a38612135b6238645f763c8b142a466303452884b7",
+    "old315_messages_sha256": "78a4e8a4f0acf95c7a2e69aa342855ac60a1334a3f57fdb4677609363f2a4304",
+    "sources_sha256": "5df7dc2b209938986cd7081aecdc9105fb989c9a872d572ce0a0c5a16dbbf8a4",
+    "book_pages_sha256": "1f3516fc5e89763667040f92c8801cff31cd4429f94b7ffaa80de3bdbc940591",
+    "annotations_sha256": "c9d604333bab6adfee25c2cd58e9bc57c984b91daab00a90390a290ded21bb5c"
+  },
+  "training": {
+    "p1_records": 315,
+    "p4_records": 363,
+    "preserved_p1_prefix": true,
+    "new_tasks": 16,
+    "new_exposures": 48,
+    "coverage_scope": "Only these SFT messages; not all historical CPT or pretraining knowledge."
+  },
+  "changed_items": [
+    {
+      "item_hash": "00f7c50ed142e43d4c895b857c5042e6758d382d0b1cfdc66433fffedd2ddf70",
+      "dataset": "LogistikaBench",
+      "category": "transport",
+      "options": 5,
+      "gold_cardinality": 1,
+      "transition": "gain",
+      "p1_unstable": true,
+      "p4_unstable": false,
+      "step120_correct": false,
+      "wrong_answer_shape": "substitution",
+      "topic": "库存与缺货模型",
+      "mechanism": "model_scope",
+      "training_coverage": "not_identified",
+      "source_status": "unresolved",
+      "note": "正式标签变化；没有核实所用模型假设，不能据此认定获得了完整库存优化能力。",
+      "source_ids": [],
+      "book_references": [],
+      "training_message_ids": [],
+      "training_message_rows_zero_based": []
+    },
+    {
+      "item_hash": "09ef66676f05715555c4589a0f09560713105c2a702b52a1376f985ff75b312e",
+      "dataset": "LogistikaBench",
+      "category": "material_handling",
+      "options": 5,
+      "gold_cardinality": 4,
+      "transition": "gain",
+      "p1_unstable": false,
+      "p4_unstable": false,
+      "step120_correct": true,
+      "wrong_answer_shape": "omission",
+      "topic": "集装箱发展史",
+      "mechanism": "multi_statement",
+      "training_coverage": "not_identified",
+      "source_status": "unresolved",
+      "note": "补回一个选项；并非设备类别识别。",
+      "source_ids": [],
+      "book_references": [],
+      "training_message_ids": [],
+      "training_message_rows_zero_based": []
+    },
+    {
+      "item_hash": "0ac2e67afe89b27b2162837fecf69839e3a76b8f56f27de771f7cd53ec870237",
+      "dataset": "LogistikaBench",
+      "category": "procurement",
+      "options": 8,
+      "gold_cardinality": 1,
+      "transition": "loss",
+      "p1_unstable": false,
+      "p4_unstable": false,
+      "step120_correct": true,
+      "wrong_answer_shape": "substitution",
+      "topic": "仓库图示位置",
+      "mechanism": "missing_visual_context",
+      "training_coverage": "not_identified",
+      "source_status": "unresolved",
+      "note": "原始文本输入仅给位置编号；没有图或编号含义。",
+      "source_ids": [],
+      "book_references": [],
+      "training_message_ids": [],
+      "training_message_rows_zero_based": []
+    },
+    {
+      "item_hash": "0cc445c2ef831925ef1bd49776475ca16658428cd523ab6eaabd7ecec47e8c77",
+      "dataset": "SC-bench-knowledge",
+      "category": "Logistics Collaboration",
+      "options": 2,
+      "gold_cardinality": 1,
+      "transition": "loss",
+      "p1_unstable": false,
+      "p4_unstable": true,
+      "step120_correct": true,
+      "wrong_answer_shape": "substitution",
+      "topic": "客服责任划分",
+      "mechanism": "enterprise_context",
+      "training_coverage": "not_identified",
+      "source_status": "unresolved",
+      "note": "通用物流来源不足以确证特定支持团队的分工规则。",
+      "source_ids": [],
+      "book_references": [],
+      "training_message_ids": [],
+      "training_message_rows_zero_based": []
+    },
+    {
+      "item_hash": "0d594d7da64424d4ad71a8cae2f00f7a7e21cadd37d2b79ffb15ab0f3b1d5616",
+      "dataset": "LogistikaBench",
+      "category": "material_handling",
+      "options": 269,
+      "gold_cardinality": 1,
+      "transition": "loss",
+      "p1_unstable": false,
+      "p4_unstable": false,
+      "step120_correct": false,
+      "wrong_answer_shape": "substitution",
+      "topic": "货代组织层级",
+      "mechanism": "concept_specificity",
+      "training_coverage": "not_identified",
+      "source_status": "unresolved",
+      "note": "专门类别退回上位概念；没有定位到足以核实该分类的已训练记录。",
+      "source_ids": [],
+      "book_references": [],
+      "training_message_ids": [],
+      "training_message_rows_zero_based": []
+    },
+    {
+      "item_hash": "1afdc0a669e877befb1e0386d0b9845f6fe1f336b04be9e2193c7f899fed1dfa",
+      "dataset": "LogistikaBench",
+      "category": "transport",
+      "options": 3,
+      "gold_cardinality": 1,
+      "transition": "gain",
+      "p1_unstable": false,
+      "p4_unstable": false,
+      "step120_correct": true,
+      "wrong_answer_shape": "substitution",
+      "topic": "建模方法辨析",
+      "mechanism": "concept_boundary",
+      "training_coverage": "not_identified",
+      "source_status": "related_only",
+      "note": "现有仿真来源仅作相邻知识，未证明两种方法互斥。",
+      "source_ids": [
+        "llin-core-010eea3da282a23f6b6b"
+      ],
+      "book_references": [],
+      "training_message_ids": [],
+      "training_message_rows_zero_based": []
+    },
+    {
+      "item_hash": "1e93c87f04918d3067fc2461a93e671c1b2e337f03f5f7f0e82e376f9a8e0a0c",
+      "dataset": "LogistikaBench",
+      "category": "material_handling",
+      "options": 269,
+      "gold_cardinality": 1,
+      "transition": "loss",
+      "p1_unstable": false,
+      "p4_unstable": false,
+      "step120_correct": false,
+      "wrong_answer_shape": "substitution",
+      "topic": "内河运输资产价值",
+      "mechanism": "definition_retrieval",
+      "training_coverage": "not_identified",
+      "source_status": "rule_supported",
+      "note": "来源明确给出资产净值和折旧定义；训练消息未发现该定义。",
+      "source_ids": [
+        "llin-core-e883f36babe4afb746b1"
+      ],
+      "book_references": [],
+      "training_message_ids": [],
+      "training_message_rows_zero_based": []
+    },
+    {
+      "item_hash": "2ac3171b8a06d9b9754d270baa15f0587c6c0270f9737ecec03c4de290947c85",
+      "dataset": "SC-bench-knowledge",
+      "category": "Fulfillment",
+      "options": 4,
+      "gold_cardinality": 1,
+      "transition": "loss",
+      "p1_unstable": false,
+      "p4_unstable": false,
+      "step120_correct": false,
+      "wrong_answer_shape": "substitution",
+      "topic": "履约合规比例",
+      "mechanism": "possible_semantic_equivalence",
+      "training_coverage": "not_identified",
+      "source_status": "conditional_equivalence",
+      "note": "在相同分母且达标/超时互补时两个描述等价；题目唯一性需裁定，官方分数保持不变。",
+      "source_ids": [
+        "llin-core-3e0fd5afa6664dc97053"
+      ],
+      "book_references": [],
+      "training_message_ids": [],
+      "training_message_rows_zero_based": []
+    },
+    {
+      "item_hash": "2efc457901a53781fbe39599677831ebe03c809db57502b4e1b892a2962d86ce",
+      "dataset": "LogistikaBench",
+      "category": "transport",
+      "options": 5,
+      "gold_cardinality": 1,
+      "transition": "loss",
+      "p1_unstable": false,
+      "p4_unstable": false,
+      "step120_correct": false,
+      "wrong_answer_shape": "substitution",
+      "topic": "需求与销售口径",
+      "mechanism": "definition_scope",
+      "training_coverage": "not_identified",
+      "source_status": "unresolved",
+      "note": "需求和销量需要明确口径；未取得足以唯一裁定该题的来源。",
+      "source_ids": [],
+      "book_references": [],
+      "training_message_ids": [],
+      "training_message_rows_zero_based": []
+    },
+    {
+      "item_hash": "3e64e0a5697cd755ac6651f7085ed24b5286ebd320ae0f51251e554a1f354305",
+      "dataset": "SC-bench-knowledge",
+      "category": "Fulfillment",
+      "options": 4,
+      "gold_cardinality": 1,
+      "transition": "gain",
+      "p1_unstable": false,
+      "p4_unstable": false,
+      "step120_correct": false,
+      "wrong_answer_shape": "substitution",
+      "topic": "合并平均时长",
+      "mechanism": "weighted_aggregation",
+      "training_coverage": "related_only",
+      "source_status": "rule_supported",
+      "note": "已有加权均值定义，未发现同一合并时长计算的训练实例；不能直接归因于P4算术训练。",
+      "source_ids": [
+        "llin-core-843b314389c66133ed2f",
+        "llin-core-3e0fd5afa6664dc97053"
+      ],
+      "book_references": [],
+      "training_message_ids": [
+        "p1-replay-llin-core-843b314389c66133ed2f-definition_discrimination"
+      ],
+      "training_message_rows_zero_based": [
+        202
+      ]
+    },
+    {
+      "item_hash": "4374d64f2ccb705f8d29f149b7e701136a9876a3f83a72d6d40a096f510cc34e",
+      "dataset": "LogistikaBench",
+      "category": "warehousing",
+      "options": 8,
+      "gold_cardinality": 1,
+      "transition": "loss",
+      "p1_unstable": false,
+      "p4_unstable": false,
+      "step120_correct": true,
+      "wrong_answer_shape": "substitution",
+      "topic": "仓库图示位置",
+      "mechanism": "missing_visual_context",
+      "training_coverage": "not_identified",
+      "source_status": "unresolved",
+      "note": "原始文本输入仅给位置编号；没有图或编号含义。",
+      "source_ids": [],
+      "book_references": [],
+      "training_message_ids": [],
+      "training_message_rows_zero_based": []
+    },
+    {
+      "item_hash": "447c6260a4c93183417a1faee58d22f087b8de78b8eabb85fdc47cc54c9e840c",
+      "dataset": "LogistikaBench",
+      "category": "transport",
+      "options": 5,
+      "gold_cardinality": 2,
+      "transition": "gain",
+      "p1_unstable": false,
+      "p4_unstable": false,
+      "step120_correct": true,
+      "wrong_answer_shape": "omission",
+      "topic": "海运经济与地理",
+      "mechanism": "multi_statement",
+      "training_coverage": "not_identified",
+      "source_status": "unresolved",
+      "note": "补回一个选项；跨国成本结论的时期和来源尚未核实。",
+      "source_ids": [],
+      "book_references": [],
+      "training_message_ids": [],
+      "training_message_rows_zero_based": []
+    },
+    {
+      "item_hash": "4f8049c6ca684223accb1375aa6b892de766d73786204768b18ce1f039661233",
+      "dataset": "LogistikaBench",
+      "category": "transport",
+      "options": 6,
+      "gold_cardinality": 1,
+      "transition": "loss",
+      "p1_unstable": false,
+      "p4_unstable": false,
+      "step120_correct": false,
+      "wrong_answer_shape": "substitution",
+      "topic": "设施数量与成本曲线",
+      "mechanism": "missing_visual_context",
+      "training_coverage": "not_identified",
+      "source_status": "unresolved",
+      "note": "输入要求按数字匹配曲线，但未包含曲线或编号说明。",
+      "source_ids": [],
+      "book_references": [],
+      "training_message_ids": [],
+      "training_message_rows_zero_based": []
+    },
+    {
+      "item_hash": "571c49bfa6b4d056762ecae983704c8308391848feff504cdfe14501336f4558",
+      "dataset": "LogistikaBench",
+      "category": "warehousing",
+      "options": 6,
+      "gold_cardinality": 6,
+      "transition": "loss",
+      "p1_unstable": false,
+      "p4_unstable": false,
+      "step120_correct": false,
+      "wrong_answer_shape": "omission",
+      "topic": "WMS数据表范围",
+      "mechanism": "multi_statement",
+      "training_coverage": "related_only",
+      "source_status": "related_only",
+      "note": "训练仅有WMS总定义，没有具体教材数据表清单。",
+      "source_ids": [
+        "llin-core-18477c2fb3f772f11477"
+      ],
+      "book_references": [],
+      "training_message_ids": [
+        "p1-replay-llin-core-18477c2fb3f772f11477-definition_discrimination"
+      ],
+      "training_message_rows_zero_based": [
+        40
+      ]
+    },
+    {
+      "item_hash": "59309a994b63cbc1dd47ad26684cf27ef0a1286d5ba5a2e0cf219a16a2e8a2fe",
+      "dataset": "LogistikaBench",
+      "category": "transport",
+      "options": 5,
+      "gold_cardinality": 4,
+      "transition": "gain",
+      "p1_unstable": false,
+      "p4_unstable": false,
+      "step120_correct": false,
+      "wrong_answer_shape": "omission",
+      "topic": "仓网与绩效周期",
+      "mechanism": "multi_statement",
+      "training_coverage": "not_identified",
+      "source_status": "related_only",
+      "note": "补回一个定义选项；目录的网络设计主题不等于完整支持该题。",
+      "source_ids": [
+        "llin-core-19afa54fce090ce327cf"
+      ],
+      "book_references": [],
+      "training_message_ids": [],
+      "training_message_rows_zero_based": []
+    },
+    {
+      "item_hash": "5f39d838a6bdae6d0279ccd526f58d709708971f39043c34b271fbcca1c1a9e6",
+      "dataset": "LogistikaBench",
+      "category": "material_handling",
+      "options": 8,
+      "gold_cardinality": 1,
+      "transition": "loss",
+      "p1_unstable": false,
+      "p4_unstable": false,
+      "step120_correct": false,
+      "wrong_answer_shape": "substitution",
+      "topic": "车辆重量限制口径",
+      "mechanism": "concept_specificity",
+      "training_coverage": "related_only",
+      "source_status": "related_only",
+      "note": "已有载重和总质量定义；未发现铭牌设计/法律限重的直接辨析。",
+      "source_ids": [
+        "llin-core-9adae425cbbabbd2bf0c",
+        "llin-core-d2295c894a901dc68a89"
+      ],
+      "book_references": [],
+      "training_message_ids": [
+        "p1-replay-llin-core-d2295c894a901dc68a89-definition_discrimination",
+        "p1-replay-llin-core-9adae425cbbabbd2bf0c-definition_discrimination"
+      ],
+      "training_message_rows_zero_based": [
+        198,
+        299
+      ]
+    },
+    {
+      "item_hash": "5fbf5b742ac2d038d2c42c3fd222846523848a6d6b962b6984c57c613e25444a",
+      "dataset": "LogistikaBench",
+      "category": "transport",
+      "options": 4,
+      "gold_cardinality": 1,
+      "transition": "loss",
+      "p1_unstable": false,
+      "p4_unstable": false,
+      "step120_correct": false,
+      "wrong_answer_shape": "substitution",
+      "topic": "投资曲线识别",
+      "mechanism": "missing_visual_context",
+      "training_coverage": "not_identified",
+      "source_status": "unresolved",
+      "note": "要求匹配图编号，实际文本没有图或曲线数据。",
+      "source_ids": [],
+      "book_references": [],
+      "training_message_ids": [],
+      "training_message_rows_zero_based": []
+    },
+    {
+      "item_hash": "60698ff06834c1cbd4f3fc3e8d8530be0ea32eb7d7c5172642ba239233cd6276",
+      "dataset": "SC-bench-knowledge",
+      "category": "Procurement",
+      "options": 4,
+      "gold_cardinality": 3,
+      "transition": "loss",
+      "p1_unstable": false,
+      "p4_unstable": false,
+      "step120_correct": false,
+      "wrong_answer_shape": "extra",
+      "topic": "人工复核触发条件",
+      "mechanism": "enterprise_context",
+      "training_coverage": "not_identified",
+      "source_status": "unresolved",
+      "note": "多选增加一个触发条件；缺少决定人工/自动分工的企业流程来源。",
+      "source_ids": [],
+      "book_references": [],
+      "training_message_ids": [],
+      "training_message_rows_zero_based": []
+    },
+    {
+      "item_hash": "6d36caaa9351299bfef11311fe7d618bbe7ed2ce945bc2e6a45e5b96fcebe74f",
+      "dataset": "LogistikaBench",
+      "category": "procurement",
+      "options": 4,
+      "gold_cardinality": 1,
+      "transition": "gain",
+      "p1_unstable": false,
+      "p4_unstable": false,
+      "step120_correct": false,
+      "wrong_answer_shape": "substitution",
+      "topic": "订单处理核心职能",
+      "mechanism": "definition_retrieval",
+      "training_coverage": "not_identified",
+      "source_status": "related_only",
+      "note": "订单履行来源是邻近主题，尚不能唯一支持该题措辞。",
+      "source_ids": [
+        "llin-core-b3c2fa1d744a20b2474b"
+      ],
+      "book_references": [],
+      "training_message_ids": [],
+      "training_message_rows_zero_based": []
+    },
+    {
+      "item_hash": "735e132c5d5df6a711200f9b619ee7c8b2429f0f5fb9bce9680bbbba889a4c33",
+      "dataset": "LogistikaBench",
+      "category": "warehousing",
+      "options": 4,
+      "gold_cardinality": 2,
+      "transition": "gain",
+      "p1_unstable": false,
+      "p4_unstable": false,
+      "step120_correct": true,
+      "wrong_answer_shape": "omission",
+      "topic": "包装单位沿流程变化",
+      "mechanism": "multi_statement",
+      "training_coverage": "rule_present",
+      "source_status": "rule_supported",
+      "note": "变化涉及的包装单位趋势已在P1训练消息出现，P4原样保留。",
+      "source_ids": [
+        "llin-core-7292656c5310e162ab09"
+      ],
+      "book_references": [],
+      "training_message_ids": [
+        "p1-replay-llin-core-7292656c5310e162ab09-boundary_or_counterexample",
+        "p1-replay-llin-core-7292656c5310e162ab09-definition_discrimination"
+      ],
+      "training_message_rows_zero_based": [
+        146,
+        257
+      ]
+    },
+    {
+      "item_hash": "77e6167162b949974a4a8dcb20d60a57ce3bdc30747aae6a8028e95615f32a44",
+      "dataset": "SC-bench-knowledge",
+      "category": "Fulfillment",
+      "options": 4,
+      "gold_cardinality": 4,
+      "transition": "gain",
+      "p1_unstable": false,
+      "p4_unstable": false,
+      "step120_correct": true,
+      "wrong_answer_shape": "omission",
+      "topic": "售前税务评估条件",
+      "mechanism": "enterprise_context",
+      "training_coverage": "not_identified",
+      "source_status": "unresolved",
+      "note": "正式评分改善，但没有核实该流程的具体规则来源。",
+      "source_ids": [],
+      "book_references": [],
+      "training_message_ids": [],
+      "training_message_rows_zero_based": []
+    },
+    {
+      "item_hash": "7929df4d7ad6d508b74109abfb2757f341b9e2d51d9b4cb345ff2c9d3ff757c0",
+      "dataset": "LogistikaBench",
+      "category": "material_handling",
+      "options": 269,
+      "gold_cardinality": 1,
+      "transition": "loss",
+      "p1_unstable": false,
+      "p4_unstable": false,
+      "step120_correct": false,
+      "wrong_answer_shape": "substitution",
+      "topic": "集装箱规模效益分类",
+      "mechanism": "classification_frame",
+      "training_coverage": "not_identified",
+      "source_status": "rule_supported",
+      "note": "归档教材将规模效益列在优势项；另一候选来自技术变化分类，存在分类维度竞争。",
+      "source_ids": [],
+      "book_references": [
+        {
+          "id": "bbc28096f6e7cb81153e",
+          "source_file": "43_Book_Manuscript_398_1_10_20230209.pdf",
+          "locator": 138
+        }
+      ],
+      "training_message_ids": [],
+      "training_message_rows_zero_based": []
+    },
+    {
+      "item_hash": "7c60c0fb4d18174f32889384f69679df6c2ea45f34ed59fe4fda1f906d9ff2ae",
+      "dataset": "LogistikaBench",
+      "category": "material_handling",
+      "options": 5,
+      "gold_cardinality": 3,
+      "transition": "loss",
+      "p1_unstable": false,
+      "p4_unstable": false,
+      "step120_correct": true,
+      "wrong_answer_shape": "omission",
+      "topic": "港口货运预测与经济性",
+      "mechanism": "multi_statement",
+      "training_coverage": "not_identified",
+      "source_status": "rule_supported",
+      "note": "原书支持被漏选的经济关系；没有发现此关系进入P1/P4消息。",
+      "source_ids": [
+        "llin-core-136a011475a248e5ce6d"
+      ],
+      "book_references": [
+        {
+          "id": "9b7d2f7c0246d5b83118",
+          "source_file": "43_Book_Manuscript_398_1_10_20230209.pdf",
+          "locator": 89
+        },
+        {
+          "id": "44247ab41f17672e477e",
+          "source_file": "43_Book_Manuscript_398_1_10_20230209.pdf",
+          "locator": 90
+        }
+      ],
+      "training_message_ids": [],
+      "training_message_rows_zero_based": []
+    },
+    {
+      "item_hash": "7ec07ffdd7da962900e3468608fb4f169a3cf8fa60f5a83e642fe403d410e43b",
+      "dataset": "LogistikaBench",
+      "category": "transport",
+      "options": 4,
+      "gold_cardinality": 2,
+      "transition": "gain",
+      "p1_unstable": false,
+      "p4_unstable": false,
+      "step120_correct": true,
+      "wrong_answer_shape": "substitution",
+      "topic": "高峰定价与需求",
+      "mechanism": "negative_instruction",
+      "training_coverage": "not_identified",
+      "source_status": "related_only",
+      "note": "替换一个错误选项；需区分否定指令与价格经济关系。",
+      "source_ids": [
+        "llin-core-9026b75d5b2d078be852"
+      ],
+      "book_references": [],
+      "training_message_ids": [],
+      "training_message_rows_zero_based": []
+    },
+    {
+      "item_hash": "956fa3ebff517536da66024024ff7eaad2f23e4450fdee32450d0d2db0995a43",
+      "dataset": "LogistikaBench",
+      "category": "warehousing",
+      "options": 4,
+      "gold_cardinality": 1,
+      "transition": "gain",
+      "p1_unstable": false,
+      "p4_unstable": false,
+      "step120_correct": false,
+      "wrong_answer_shape": "substitution",
+      "topic": "批量拣选适用条件",
+      "mechanism": "concept_boundary",
+      "training_coverage": "related_only",
+      "source_status": "related_only",
+      "note": "P1已有拣选分工取舍，P4新增成本约束；未确认该适用条件受到直接监督。",
+      "source_ids": [
+        "llin-core-8b59830a7b1ec9fd54b6",
+        "llin-core-4abc2a4cad028703b936"
+      ],
+      "book_references": [],
+      "training_message_ids": [
+        "p1-replay-llin-core-8b59830a7b1ec9fd54b6-application_with_new_entities"
+      ],
+      "training_message_rows_zero_based": [
+        0
+      ]
+    },
+    {
+      "item_hash": "9b7c3b62c2125bc16f5096ec7724171149ad6cc336a84872327366603448d93c",
+      "dataset": "LogistikaBench",
+      "category": "warehousing",
+      "options": 8,
+      "gold_cardinality": 1,
+      "transition": "loss",
+      "p1_unstable": false,
+      "p4_unstable": true,
+      "step120_correct": true,
+      "wrong_answer_shape": "substitution",
+      "topic": "仓库图示位置",
+      "mechanism": "missing_visual_context",
+      "training_coverage": "not_identified",
+      "source_status": "unresolved",
+      "note": "缺少编号图；P4同提示三次答案还发生变化。",
+      "source_ids": [],
+      "book_references": [],
+      "training_message_ids": [],
+      "training_message_rows_zero_based": []
+    },
+    {
+      "item_hash": "a0458edfeba369664c37120a4e0048a04d85fc53da83c0575ec0ba63180000bc",
+      "dataset": "LogistikaBench",
+      "category": "material_handling",
+      "options": 269,
+      "gold_cardinality": 1,
+      "transition": "loss",
+      "p1_unstable": false,
+      "p4_unstable": false,
+      "step120_correct": false,
+      "wrong_answer_shape": "substitution",
+      "topic": "贸易壁垒分类",
+      "mechanism": "classification_frame",
+      "training_coverage": "not_identified",
+      "source_status": "frame_unresolved",
+      "note": "来源讨论政治行为及经济后果，两种候选分类有交叠；通用题头未明确选择哪套分类。",
+      "source_ids": [
+        "llin-core-1a49c35fbce4f4de1d1a"
+      ],
+      "book_references": [
+        {
+          "id": "3d0f05d2370850da222d",
+          "source_file": "43_Book_Manuscript_398_1_10_20230209.pdf",
+          "locator": 49
+        }
+      ],
+      "training_message_ids": [],
+      "training_message_rows_zero_based": []
+    },
+    {
+      "item_hash": "b3bedb490155f65c5a9fc87b28a4a900daf0a9e8d5840b29d8d660bb363f6e73",
+      "dataset": "LogistikaBench",
+      "category": "transport",
+      "options": 5,
+      "gold_cardinality": 1,
+      "transition": "gain",
+      "p1_unstable": false,
+      "p4_unstable": false,
+      "step120_correct": true,
+      "wrong_answer_shape": "substitution",
+      "topic": "仓库流程次序",
+      "mechanism": "framework_order",
+      "training_coverage": "not_identified",
+      "source_status": "related_only",
+      "note": "需要指定流程框架；通用仓库功能不自动给出唯一编号。",
+      "source_ids": [
+        "llin-core-82687efa78d48d4baead",
+        "llin-core-56134d4692f9d511d52b"
+      ],
+      "book_references": [],
+      "training_message_ids": [],
+      "training_message_rows_zero_based": []
+    },
+    {
+      "item_hash": "b6acebb046038ff35ed1df359f6f4adde52c48bc4c2e993f0561aa61810fe3f9",
+      "dataset": "LogistikaBench",
+      "category": "transport",
+      "options": 6,
+      "gold_cardinality": 1,
+      "transition": "gain",
+      "p1_unstable": false,
+      "p4_unstable": false,
+      "step120_correct": true,
+      "wrong_answer_shape": "substitution",
+      "topic": "物流外包阶段",
+      "mechanism": "framework_order",
+      "training_coverage": "rule_present",
+      "source_status": "rule_supported",
+      "note": "完整六阶段序列已在P1解释监督中出现；同组另有一题退化。",
+      "source_ids": [
+        "llin-core-d3eeb424676374325e30"
+      ],
+      "book_references": [],
+      "training_message_ids": [
+        "p1-outsourcing-train-1-exposure1",
+        "p1-outsourcing-train-0-exposure1",
+        "p1-outsourcing-train-2-exposure1"
+      ],
+      "training_message_rows_zero_based": [
+        2,
+        16,
+        55
+      ]
+    },
+    {
+      "item_hash": "b7ae2f29574f2582bcbe41112790233e41f78ae8bf3c48cd3222dea817505645",
+      "dataset": "LogistikaBench",
+      "category": "warehousing",
+      "options": 3,
+      "gold_cardinality": 1,
+      "transition": "gain",
+      "p1_unstable": false,
+      "p4_unstable": false,
+      "step120_correct": false,
+      "wrong_answer_shape": "substitution",
+      "topic": "搬运移动组织",
+      "mechanism": "concept_boundary",
+      "training_coverage": "not_identified",
+      "source_status": "related_only",
+      "note": "搬运总定义不足以证明具体移动系统的适用条件。",
+      "source_ids": [
+        "llin-core-46a71fd8602ab24ed4bb"
+      ],
+      "book_references": [],
+      "training_message_ids": [],
+      "training_message_rows_zero_based": []
+    },
+    {
+      "item_hash": "bc00757305f3e52fdee9aca680904d7e4cf887d66ce48acb964a807c7271ffea",
+      "dataset": "LogistikaBench",
+      "category": "transport",
+      "options": 5,
+      "gold_cardinality": 2,
+      "transition": "loss",
+      "p1_unstable": false,
+      "p4_unstable": false,
+      "step120_correct": true,
+      "wrong_answer_shape": "extra",
+      "topic": "越库收益与操作描述",
+      "mechanism": "multi_statement",
+      "training_coverage": "related_only",
+      "source_status": "related_only",
+      "note": "训练有短暂存储混合中心，缺少该题所有收益选项的唯一性来源。",
+      "source_ids": [
+        "llin-core-82687efa78d48d4baead"
+      ],
+      "book_references": [],
+      "training_message_ids": [
+        "p1-replay-llin-core-82687efa78d48d4baead-definition_discrimination"
+      ],
+      "training_message_rows_zero_based": [
+        43
+      ]
+    },
+    {
+      "item_hash": "bc3be1d63734417afa0d932d8268ed56de8b0945a20ae6b6ea4ae16abdc4a5a5",
+      "dataset": "LogistikaBench",
+      "category": "warehousing",
+      "options": 8,
+      "gold_cardinality": 1,
+      "transition": "gain",
+      "p1_unstable": false,
+      "p4_unstable": false,
+      "step120_correct": true,
+      "wrong_answer_shape": "substitution",
+      "topic": "仓库图示位置",
+      "mechanism": "missing_visual_context",
+      "training_coverage": "not_identified",
+      "source_status": "unresolved",
+      "note": "该题得分改善仍涉及缺图编号；不视为可靠流程学习证据。",
+      "source_ids": [],
+      "book_references": [],
+      "training_message_ids": [],
+      "training_message_rows_zero_based": []
+    },
+    {
+      "item_hash": "cfb07bd200ecd639f75546c5ea1e545475cc0b944f9cef4286b239f2c148e659",
+      "dataset": "LogistikaBench",
+      "category": "material_handling",
+      "options": 269,
+      "gold_cardinality": 1,
+      "transition": "loss",
+      "p1_unstable": true,
+      "p4_unstable": false,
+      "step120_correct": false,
+      "wrong_answer_shape": "substitution",
+      "topic": "航空装载单元缩写",
+      "mechanism": "possible_semantic_equivalence",
+      "training_coverage": "not_identified",
+      "source_status": "alias_review_needed",
+      "note": "全称与缩写候选疑似同义，P1重复还不稳定；不将其直接算作知识遗忘，官方计分不变。",
+      "source_ids": [
+        "llin-core-f3434848ccb0f303692c"
+      ],
+      "book_references": [],
+      "training_message_ids": [],
+      "training_message_rows_zero_based": []
+    },
+    {
+      "item_hash": "d561134ae163cead856d5b7a3fa114e806ffcee4d1563b52956ef63697de2f61",
+      "dataset": "LogistikaBench",
+      "category": "transport",
+      "options": 6,
+      "gold_cardinality": 1,
+      "transition": "loss",
+      "p1_unstable": false,
+      "p4_unstable": false,
+      "step120_correct": false,
+      "wrong_answer_shape": "substitution",
+      "topic": "物流外包阶段",
+      "mechanism": "framework_order",
+      "training_coverage": "rule_present",
+      "source_status": "rule_supported",
+      "note": "完整序列及该阶段已在保留的解释监督中出现；外包另一题同时改善。",
+      "source_ids": [
+        "llin-core-d3eeb424676374325e30"
+      ],
+      "book_references": [],
+      "training_message_ids": [
+        "p1-outsourcing-train-2-exposure1",
+        "p1-outsourcing-train-0-exposure1"
+      ],
+      "training_message_rows_zero_based": [
+        55,
+        16
+      ]
+    },
+    {
+      "item_hash": "d7719e13ddaf88861a25ec1255ed432e3a43fe39b8f2e5c5780062e810dc7d37",
+      "dataset": "LogistikaBench",
+      "category": "procurement",
+      "options": 8,
+      "gold_cardinality": 1,
+      "transition": "loss",
+      "p1_unstable": false,
+      "p4_unstable": false,
+      "step120_correct": true,
+      "wrong_answer_shape": "substitution",
+      "topic": "仓库图示位置",
+      "mechanism": "missing_visual_context",
+      "training_coverage": "not_identified",
+      "source_status": "unresolved",
+      "note": "原始文本输入没有编号图；与另一个类别的题有相近题面及选项拼写差别，不能视为独立知识点。",
+      "source_ids": [],
+      "book_references": [],
+      "training_message_ids": [],
+      "training_message_rows_zero_based": []
+    },
+    {
+      "item_hash": "dd4fc8a7a66d349862457a38d88e320b68df194b303d64ba8bace4be97738b9f",
+      "dataset": "LogistikaBench",
+      "category": "transport",
+      "options": 5,
+      "gold_cardinality": 3,
+      "transition": "gain",
+      "p1_unstable": false,
+      "p4_unstable": false,
+      "step120_correct": true,
+      "wrong_answer_shape": "omission",
+      "topic": "球面最短路径应用",
+      "mechanism": "multi_statement",
+      "training_coverage": "rule_present",
+      "source_status": "rule_supported",
+      "note": "相关大圆弧定义在P1监督中；新增城市实例判断改善。",
+      "source_ids": [
+        "llin-core-a83128aee821c400a2e0"
+      ],
+      "book_references": [],
+      "training_message_ids": [
+        "p1-replay-llin-core-a83128aee821c400a2e0-definition_discrimination"
+      ],
+      "training_message_rows_zero_based": [
+        76
+      ]
+    },
+    {
+      "item_hash": "de30439b9afdef3f465d1f02fb6d8dfc8a734bd1ddcf251a0aeb5d2375dcb668",
+      "dataset": "LogistikaBench",
+      "category": "transport",
+      "options": 5,
+      "gold_cardinality": 1,
+      "transition": "loss",
+      "p1_unstable": false,
+      "p4_unstable": false,
+      "step120_correct": true,
+      "wrong_answer_shape": "substitution",
+      "topic": "提前期的起止边界",
+      "mechanism": "definition_scope",
+      "training_coverage": "related_only",
+      "source_status": "related_only",
+      "note": "已有过程起止定义，但没有明确该题所需的发运/收货边界；不把词条出现等同充分覆盖。",
+      "source_ids": [
+        "llin-core-cb14070ebfeab64c9a9e"
+      ],
+      "book_references": [],
+      "training_message_ids": [
+        "p1-replay-llin-core-cb14070ebfeab64c9a9e-definition_discrimination"
+      ],
+      "training_message_rows_zero_based": [
+        86
+      ]
+    },
+    {
+      "item_hash": "e21f17e83f2274a58bcf24a8b5f9ccc09828768a522ac9d5ce9d3845a512b27a",
+      "dataset": "LogistikaBench",
+      "category": "material_handling",
+      "options": 269,
+      "gold_cardinality": 1,
+      "transition": "loss",
+      "p1_unstable": false,
+      "p4_unstable": false,
+      "step120_correct": false,
+      "wrong_answer_shape": "substitution",
+      "topic": "港口协作职责",
+      "mechanism": "actor_boundary",
+      "training_coverage": "related_only",
+      "source_status": "rule_supported",
+      "note": "原书可区分相邻港口角色；训练有相邻角色定义，未发现目标角色的直接监督。",
+      "source_ids": [
+        "llin-core-01c1f0c1c031e67b1429",
+        "llin-core-b54f5536ce8936cf75f8"
+      ],
+      "book_references": [
+        {
+          "id": "12263c04e011fc439831",
+          "source_file": "43_Book_Manuscript_398_1_10_20230209.pdf",
+          "locator": 37
+        },
+        {
+          "id": "83df4f92e9b0aa1aef21",
+          "source_file": "43_Book_Manuscript_398_1_10_20230209.pdf",
+          "locator": 38
+        }
+      ],
+      "training_message_ids": [
+        "p1-replay-llin-core-01c1f0c1c031e67b1429-definition_discrimination",
+        "p1-replay-llin-core-b54f5536ce8936cf75f8-definition_discrimination"
+      ],
+      "training_message_rows_zero_based": [
+        267,
+        281
+      ]
+    },
+    {
+      "item_hash": "e62230f5147337f7dc485016fc1ca0543f8450757b738c10a3c936e7a4f54b89",
+      "dataset": "LogistikaBench",
+      "category": "material_handling",
+      "options": 269,
+      "gold_cardinality": 1,
+      "transition": "loss",
+      "p1_unstable": false,
+      "p4_unstable": false,
+      "step120_correct": true,
+      "wrong_answer_shape": "substitution",
+      "topic": "集装箱就业影响分类",
+      "mechanism": "classification_frame",
+      "training_coverage": "not_identified",
+      "source_status": "unresolved",
+      "note": "利弊与社会影响两种分类维度竞争；原书完整段落未在已检查快照定位，不宣称完成标签裁定。",
+      "source_ids": [],
+      "book_references": [],
+      "training_message_ids": [],
+      "training_message_rows_zero_based": []
+    },
+    {
+      "item_hash": "e720798fd7e31ac81d34239f1b9f65c99f827db6ef615f4465677b307f3a2b21",
+      "dataset": "LogistikaBench",
+      "category": "material_handling",
+      "options": 5,
+      "gold_cardinality": 3,
+      "transition": "loss",
+      "p1_unstable": false,
+      "p4_unstable": false,
+      "step120_correct": true,
+      "wrong_answer_shape": "extra",
+      "topic": "桥梁净空与水位",
+      "mechanism": "condition_application",
+      "training_coverage": "rule_present",
+      "source_status": "rule_supported",
+      "note": "退化涉及的固定/变化水位边界在原有正确训练记录中直接出现；P4未删除。",
+      "source_ids": [
+        "llin-core-2c3ecd2880fff468249e"
+      ],
+      "book_references": [
+        {
+          "id": "12263c04e011fc439831",
+          "source_file": "43_Book_Manuscript_398_1_10_20230209.pdf",
+          "locator": 37
+        }
+      ],
+      "training_message_ids": [
+        "p1-replay-llin-core-2c3ecd2880fff468249e-application_with_new_entities",
+        "p1-replay-llin-core-2c3ecd2880fff468249e-definition_discrimination"
+      ],
+      "training_message_rows_zero_based": [
+        7,
+        89
+      ]
+    },
+    {
+      "item_hash": "ed5f42fcfc046abd9f1ff492b039eb5530e6779fc42846344b335d83dbf86342",
+      "dataset": "LogistikaBench",
+      "category": "material_handling",
+      "options": 5,
+      "gold_cardinality": 4,
+      "transition": "gain",
+      "p1_unstable": false,
+      "p4_unstable": false,
+      "step120_correct": true,
+      "wrong_answer_shape": "omission",
+      "topic": "车辆超载后果",
+      "mechanism": "multi_statement",
+      "training_coverage": "related_only",
+      "source_status": "related_only",
+      "note": "已有限重定义但没有核实全部后果的训练覆盖；补回多个选项。",
+      "source_ids": [
+        "llin-core-9adae425cbbabbd2bf0c",
+        "llin-core-d2295c894a901dc68a89"
+      ],
+      "book_references": [],
+      "training_message_ids": [
+        "p1-replay-llin-core-d2295c894a901dc68a89-definition_discrimination",
+        "p1-replay-llin-core-9adae425cbbabbd2bf0c-definition_discrimination"
+      ],
+      "training_message_rows_zero_based": [
+        198,
+        299
+      ]
+    },
+    {
+      "item_hash": "f113ec38abb122071130c52aa44050d50761dbe62abc9f8cb4056f1504eaf859",
+      "dataset": "LogistikaBench",
+      "category": "transport",
+      "options": 5,
+      "gold_cardinality": 2,
+      "transition": "loss",
+      "p1_unstable": false,
+      "p4_unstable": false,
+      "step120_correct": false,
+      "wrong_answer_shape": "extra",
+      "topic": "订货策略成本条件",
+      "mechanism": "multi_statement",
+      "training_coverage": "related_only",
+      "source_status": "related_only",
+      "note": "MRP与逐期订货定义不足以支持持有/设置成本同时最小的结论；需完整成本前提。",
+      "source_ids": [
+        "llin-core-2b371c17caeb0873b20b",
+        "llin-core-fe12c856b64d45a8baef"
+      ],
+      "book_references": [
+        {
+          "id": "97ae5a039c52c8bd2937",
+          "source_file": "JSI_LogisticHandbook_English_2019_combined_web.pdf",
+          "locator": 116
+        }
+      ],
+      "training_message_ids": [
+        "p1-replay-llin-core-2b371c17caeb0873b20b-definition_discrimination"
+      ],
+      "training_message_rows_zero_based": [
+        87
+      ]
+    },
+    {
+      "item_hash": "f429a7b56bbbd618ad4613d624efce927fcd6d1b621729a9c821b35717c4e966",
+      "dataset": "LogistikaBench",
+      "category": "material_handling",
+      "options": 6,
+      "gold_cardinality": 1,
+      "transition": "gain",
+      "p1_unstable": false,
+      "p4_unstable": false,
+      "step120_correct": true,
+      "wrong_answer_shape": "substitution",
+      "topic": "跨境管道统计边界",
+      "mechanism": "definition_scope",
+      "training_coverage": "related_only",
+      "source_status": "related_only",
+      "note": "管道类别和国界统计已训练；货物流向与过境区别尚未定位到直接监督。",
+      "source_ids": [
+        "llin-core-f300fd947c2ed1da3538",
+        "llin-core-38d42cd372130f6c3576",
+        "llin-core-68a803b013da11c293ce"
+      ],
+      "book_references": [],
+      "training_message_ids": [
+        "p1-replay-llin-core-68a803b013da11c293ce-definition_discrimination",
+        "p1-replay-llin-core-38d42cd372130f6c3576-boundary_or_counterexample",
+        "p1-replay-llin-core-f300fd947c2ed1da3538-definition_discrimination"
+      ],
+      "training_message_rows_zero_based": [
+        84,
+        110,
+        215
+      ]
+    }
+  ],
+  "new_inference_calls": 0,
+  "new_training": false,
+  "official_scores_modified": false,
+  "limits": [
+    "Changed items are not a representative sample of all remaining errors.",
+    "Same-seed deterministic inference repeats are not independent training seeds.",
+    "Content, format, exposure count and training length are confounded; annotations do not establish training causality.",
+    "Source references marked related or unresolved do not establish a unique official answer.",
+    "Not-found coverage means not identified in this bounded SFT review, not proof of model ignorance.",
+    "Official questions, options and labels must not be copied or paraphrased into future training data."
+  ]
+}
