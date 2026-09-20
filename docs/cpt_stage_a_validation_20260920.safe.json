@@ -1,0 +1,33 @@
+{
+  "date": "2026-09-20",
+  "deterministic_rebuild": true,
+  "review_items": 269,
+  "raw_predictions_reparsed": 10032,
+  "p4_training_records": 363,
+  "p1_prefix_records": 315,
+  "fault_injection": {
+    "missing_item": {
+      "rejected": true,
+      "reason": "incomplete review"
+    },
+    "duplicate_item": {
+      "rejected": true,
+      "reason": "review identity mismatch"
+    },
+    "wrong_catalog_hash": {
+      "rejected": true,
+      "reason": "source_catalog_sha256 mismatch"
+    },
+    "bad_training_row": {
+      "rejected": true,
+      "reason": "bad training row"
+    },
+    "summary_promoted_without_primary": {
+      "rejected": true,
+      "reason": "summary promoted to primary"
+    }
+  },
+  "safe_field_allowlist_passed": true,
+  "semantic_review_independently_adjudicated": false,
+  "result_sha256": "70ffb7ad9957b12e06b3ea4e5ed9d7970cf48e1a8d1ea67d835d2d1fcbc9bc52"
+}
