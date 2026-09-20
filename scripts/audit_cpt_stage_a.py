@@ -68,6 +68,11 @@ def audit(root, review_path, private_out):
     require(len({a['item_hash'] for a in review['items']}) == 269, 'duplicate review item')
     web_path = resources / 'llin-stage-a-20260920-01/official_web_read.private.json'
     require(sha(web_path) == review['official_web_read_sha256'], 'official web archive mismatch')
+    primary_snapshots = {}
+    for reference in review.get('primary_source_snapshots', []):
+        path = root / reference['path']
+        require(sha(path) == reference['sha256'], 'primary snapshot mismatch')
+        primary_snapshots[reference['id']] = path.read_text(encoding='utf-8')
     zip_path = root / 'datasets/SC-bench-main.zip'
     require(sha(zip_path) == review['sc_zip_sha256'], 'SC archive mismatch')
     with zipfile.ZipFile(zip_path) as z:
@@ -102,6 +107,10 @@ def audit(root, review_path, private_out):
             require(a['input_sufficiency'] == 'sufficient_in_reviewed_scope' and a['label_uniqueness'] == 'supported_by_review', 'A lacks explicit input/label review')
             if refs and all(r['kind'] == 'summary_requires_primary_check' for r in refs):
                 require(a.get('official_url'), 'summary promoted to primary')
+            if a.get('primary_snapshot_id'):
+                require(a['primary_snapshot_id'] in primary_snapshots, 'missing primary snapshot')
+                require(a['official_url'] in primary_snapshots[a['primary_snapshot_id']], 'primary URL not in snapshot')
+                require(all(token in primary_snapshots[a['primary_snapshot_id']] for token in a['primary_required_spans']), 'primary evidence span missing')
         prompt = messages_for(c, 'original')[0]
         require(all(isinstance(m['content'], str) for m in prompt), 'unexpected multimodal content')
         norm = lambda x: re.sub(r'\s+', ' ', x).strip().casefold()
@@ -140,6 +149,7 @@ def audit(root, review_path, private_out):
                 source_catalog_sha256=sha(source_path), archive_sha256=sha(archive_path),
                 training_sha256=sha(train_path), p1_prefix_sha256=OLD_MESSAGES_SHA,
                 review_sha256=sha(review_path), sc_context_member_sha256=sop_hashes,
+                **({'primary_source_snapshots': review['primary_source_snapshots']} if review.get('primary_source_snapshots') else {}),
                 long_list_items=sum(x['option_count'] == 269 for x in ledger),
                 confirmed_long_list_items=sum(x['option_count'] == 269 and x['status'] == 'A' for x in ledger),
                 gold_casefold_overlap_items=sum(x['gold_has_casefold_equivalent_candidate'] for x in ledger),

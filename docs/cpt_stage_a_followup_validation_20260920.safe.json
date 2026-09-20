@@ -1,0 +1,10 @@
+{
+  "deterministic_rebuild": true,
+  "initial_stage_a_unchanged": true,
+  "source_faults_rejected": {
+    "missing_snapshot": "missing primary snapshot",
+    "bad_snapshot_hash": "primary snapshot mismatch",
+    "missing_span": "primary evidence span missing"
+  },
+  "manual_semantic_review_not_independent": true
+}

@@ -1,0 +1,182 @@
+{
+  "date": "2026-09-20",
+  "parent_review_sha256": "c79bac7c0a83aac6dd42a254321c7674490f291dd17bda1e8bf64c59b0ac1060",
+  "changes": [
+    {
+      "item_hash": "05709f26db9deb4bcfdcc429e5c029708733c7e447f2e55701320b2c4a3d1d59",
+      "review_index_zero_based": 147,
+      "before": "B",
+      "after": "A",
+      "capability_group": "gvc_trajectory",
+      "url": "https://unctad.org/node/3989",
+      "locator": "WIR 2020 Key Messages, printed page xiii, trajectories (1)-(4)"
+    },
+    {
+      "item_hash": "a2742ae5e6651fd6fd85e7e8f113a684cb8dfabfadf7edc3e793377cc8b2d09e",
+      "review_index_zero_based": 155,
+      "before": "B",
+      "after": "A",
+      "capability_group": "gvc_trajectory",
+      "url": "https://unctad.org/node/3989",
+      "locator": "WIR 2020 Key Messages, printed page xiii, trajectories (1)-(4)"
+    },
+    {
+      "item_hash": "ad468565ded356367051e1845096f0ae9e277c0a71b1ad3f5a83bb5117661779",
+      "review_index_zero_based": 199,
+      "before": "B",
+      "after": "A",
+      "capability_group": "modal_contract_dimensions",
+      "url": "https://transportgeography.org/contents/chapter5/intermodal-transportation-containerization/intermodalism-multimodalism-transmodalism/",
+      "locator": "Definition paragraphs 1, 2 and 4"
+    },
+    {
+      "item_hash": "fa51bb5d856f4901839c5182d8fc8850775ff4735301df7f4c410f52f1c43b1e",
+      "review_index_zero_based": 221,
+      "before": "B",
+      "after": "A",
+      "capability_group": "modal_contract_dimensions",
+      "url": "https://transportgeography.org/contents/chapter5/intermodal-transportation-containerization/intermodalism-multimodalism-transmodalism/",
+      "locator": "Definition paragraphs 1, 2 and 4"
+    },
+    {
+      "item_hash": "fe2b6f15e2dbf0b26ad43b953d6dd4ec7111c451188a8a5ce65048f3cb4466fd",
+      "review_index_zero_based": 222,
+      "before": "B",
+      "after": "A",
+      "capability_group": "modal_contract_dimensions",
+      "url": "https://transportgeography.org/contents/chapter5/intermodal-transportation-containerization/intermodalism-multimodalism-transmodalism/",
+      "locator": "Definition paragraphs 1, 2 and 4"
+    }
+  ],
+  "sc_release": {
+    "url": "https://github.com/Damon-GSY/SC-bench",
+    "commit": "28d500d42d1710b99a501204f2bd2ba2b78ad070",
+    "sha256": "8667ad6a20b11e99e1a3db35ce27640715ca3f7fa15cb6de7517ca42a3d514d1",
+    "exact_member_match_with_local": true,
+    "files": 23,
+    "tables": [
+      {
+        "member": "SC-bench-main/data/multiple_choices_clean_final_clean.jsonl",
+        "records": 63,
+        "output_fields": [
+          "answer",
+          "explanation",
+          "field",
+          "options",
+          "question",
+          "question_type",
+          "sub_field",
+          "sub_type",
+          "tags",
+          "type"
+        ]
+      },
+      {
+        "member": "SC-bench-main/data/single_choices_clean_final_clean.jsonl",
+        "records": 82,
+        "output_fields": [
+          "answer",
+          "explanation",
+          "field",
+          "options",
+          "question",
+          "question_type",
+          "sub_field",
+          "tags"
+        ]
+      },
+      {
+        "member": "SC-bench-main/data/true_false_clean_final_clean.jsonl",
+        "records": 81,
+        "output_fields": [
+          "answer",
+          "explanation",
+          "field",
+          "options",
+          "question",
+          "question_type",
+          "sub_field",
+          "tags"
+        ]
+      }
+    ],
+    "source_pointers": {
+      "desensitization_results.jsonl": 226
+    },
+    "missing_members": [
+      "desensitization_results.jsonl"
+    ],
+    "paper_version": "arXiv:2602.07342v1",
+    "paper_qa_count": 435,
+    "warning": "Paper and public snapshot counts differ; this is not a validated complete reproduction of the paper."
+  },
+  "datasets": [
+    {
+      "dataset": "SC-bench-knowledge",
+      "items": 32,
+      "statuses": {
+        "A": 1,
+        "B": 5,
+        "C": 22,
+        "D": 4
+      },
+      "confirmed_items": 1,
+      "confirmed_deduplicated_items": 1,
+      "confirmed_capability_groups": 1,
+      "confirmed_with_rule_supervision": 0,
+      "training_coverage": {
+        "not_established": 32
+      },
+      "unknown_items": 27,
+      "disputed_items": 4,
+      "required_net_gain": 4,
+      "space_gate": "insufficient_current_verified_sources"
+    },
+    {
+      "dataset": "LogistikaBench",
+      "items": 237,
+      "statuses": {
+        "A": 47,
+        "B": 89,
+        "C": 44,
+        "D": 57
+      },
+      "confirmed_items": 47,
+      "confirmed_deduplicated_items": 38,
+      "confirmed_capability_groups": 38,
+      "confirmed_with_rule_supervision": 17,
+      "training_coverage": {
+        "not_established": 204,
+        "related_or_partial_supervision": 16,
+        "rule_present": 17
+      },
+      "unknown_items": 133,
+      "disputed_items": 57,
+      "required_net_gain": 31,
+      "space_gate": "necessary_count_only"
+    }
+  ],
+  "primary_source_snapshots": [
+    {
+      "id": "primary_passages",
+      "path": "CPT_resources/llin-stage-a-20260920-02/primary_passages.private.json",
+      "sha256": "49e70c66c8f9ebb0e6e15945e2f71e27c84ad128c116d54786649e9d0e5f0a40",
+      "kind": "web_reader_response"
+    },
+    {
+      "id": "paper_context",
+      "path": "CPT_resources/llin-stage-a-20260920-02/paper_context.private.json",
+      "sha256": "db7fed8800d398eb8c41ef950028a094b1c0025f369c33563941801af9638ee6",
+      "kind": "web_reader_response"
+    }
+  ],
+  "training_check": {
+    "records": 363,
+    "named_concept_match_rows": [],
+    "exhaustive_semantic_absence_proven": false
+  },
+  "model_calls": 0,
+  "training_runs": 0,
+  "next_action": "SC source acquisition; no two-arm training",
+  "result_sha256": "0245125f68cd41cba1c7c0aa1fce7636b54b35bddb47cb08161305dd52cef12f"
+}

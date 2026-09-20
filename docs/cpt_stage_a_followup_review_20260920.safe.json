@@ -1,0 +1,4228 @@
+{
+  "schema_version": 1,
+  "date": "2026-09-20",
+  "reviewer": "Codex; semantic audit, no independent adjudication",
+  "status_definitions": {
+    "A": "来源充分且在核验范围内答案可唯一推出；不代表已证实可训练修复",
+    "B": "相邻知识/部分前提/原始来源核验未完成",
+    "C": "缺图、企业制度、流程或版本上下文",
+    "D": "候选重叠或标签/题面待裁定"
+  },
+  "source_catalog_sha256": "5df7dc2b209938986cd7081aecdc9105fb989c9a872d572ce0a0c5a16dbbf8a4",
+  "archive_sha256": "7da53a1a3246381181c5a28fabfb0b68223aed0ee76ff6242710bf257e5af4c2",
+  "book_pages_sha256": "1f3516fc5e89763667040f92c8801cff31cd4429f94b7ffaa80de3bdbc940591",
+  "train_sha256": "1f67f334845f2ac84f9515a38612135b6238645f763c8b142a466303452884b7",
+  "official_web_read_sha256": "4d9381ff1dffca823f2859e2445dabb993a57c16834b135460fc7ad61b9604b1",
+  "sc_zip_sha256": "8667ad6a20b11e99e1a3db35ce27640715ca3f7fa15cb6de7517ca42a3d514d1",
+  "sc_context_members": [
+    "SC-bench-main/README.md",
+    "SC-bench-main/config/prompts/prompt_tool_sessions_with_sop.md",
+    "SC-bench-main/config/prompt_tool_sessions_with_sop.yaml"
+  ],
+  "items": [
+    {
+      "review_index_zero_based": 0,
+      "item_hash": "3120e45b952338d02ec904187f875b22eae66963569789a3aee1b10c7692e80b",
+      "status": "B",
+      "capability_group": "tax_jurisdiction_date",
+      "dedup_group": "tax_jurisdiction_date",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "官方资料提供税制差异线索，但题目时间、交易适用范围不足；不把按现行一般税率推断计为充分来源。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established",
+      "candidate_official_urls": [
+        "https://zatca.gov.sa/en/MediaCenter/News/Pages/News-320.aspx",
+        "https://tax.gov.ae/en/faq.aspx?keyword=Does+VAT+apply+to+all+goods+and+services%3F"
+      ]
+    },
+    {
+      "review_index_zero_based": 1,
+      "item_hash": "674653d62aae5db0cb9c879da0c8635eb50f9c45501fa486e20e43be55118688",
+      "status": "C",
+      "capability_group": "query_architecture",
+      "dedup_group": "query_architecture",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需要具体交易查询系统架构、复杂查询限制及版本。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 2,
+      "item_hash": "730f789a53fe4b3290888e77068da2a5b23680bd42eb345838eab8677cd2205a",
+      "status": "C",
+      "capability_group": "payment_mapping",
+      "dedup_group": "payment_mapping",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需要实际支付分类映射和未定义类别的处理规则。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 3,
+      "item_hash": "0cfca542107910131b0aae7c46fbe5102d0a4e924e0f796b1826188bb73f73cc",
+      "status": "C",
+      "capability_group": "cancellation_workflow",
+      "dedup_group": "cancellation_workflow",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需要预留订单取消后的库存处理 SOP 和责任边界。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 4,
+      "item_hash": "10c3bb509d457abbb0562ebb2374a1478d532eeb7cfcb8880b5eef2c8a266668",
+      "status": "D",
+      "capability_group": "national_tariff_scope",
+      "dedup_group": "national_tariff_scope",
+      "source_rows": [
+        94,
+        95
+      ],
+      "book_ids": [],
+      "note": "缺少国家与申报制度范围；国际基础编码与国家扩展编码不能互换。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 5,
+      "item_hash": "15c4b010883508ac2b99220535b69f44c773682223a81ebad75eb25968c68540",
+      "status": "B",
+      "capability_group": "order_parcel_cardinality",
+      "dedup_group": "order_parcel_cardinality",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "算术成立依赖订单和包裹一一对应；原始包的订单层级说明未提供此映射。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 6,
+      "item_hash": "15e85c8cd53250f0541dd2425c964e27a8cf57df136dcb92a12327f39b6ee6e0",
+      "status": "C",
+      "capability_group": "routing_provider_support",
+      "dedup_group": "routing_provider_support",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需要路由产品对口岸及多服务商的配置能力说明。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 7,
+      "item_hash": "324130cb99849fc49ab49e25a8fd335fde72353153b9d5ce0520703000e519f6",
+      "status": "C",
+      "capability_group": "customs_valuation_scope",
+      "dedup_group": "customs_valuation_scope",
+      "source_rows": [
+        94
+      ],
+      "book_ids": [],
+      "note": "计价项目受国家、价格口径和申报规则影响；现有材料不足以确定完整集合。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 8,
+      "item_hash": "5baedd5b38d16a530e38a0082d67b438e9d8be25b0e1585db7e893e2b11c60b0",
+      "status": "D",
+      "capability_group": "ddp_adoption_conditions",
+      "dedup_group": "ddp_adoption_conditions",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "政策事实与采用动因不能直接等同；需地区、门槛和业务情境裁定。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 9,
+      "item_hash": "644b09139d558e4208eff7f7d3469cf29af199ea0ac0657dc1b7521b41c107c2",
+      "status": "C",
+      "capability_group": "shipping_stage_framework",
+      "dedup_group": "shipping_stage_framework",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需要题目采用的业务阶段定义和事件顺序。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 10,
+      "item_hash": "99fa8ffb6b2e613148437b3e40723d130e1f73ab1125a4fb8f77d9b3aa0aa757",
+      "status": "C",
+      "capability_group": "leg_consolidation_policy",
+      "dedup_group": "leg_consolidation_policy",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需要本业务头程尾程的独立或合单规则，通用可能性不足。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 11,
+      "item_hash": "bf5c6efeaf163d5f8e76fc5c4e189079a4b611e3a76520d6fd89f68af8bcc91f",
+      "status": "C",
+      "capability_group": "customs_party_configuration",
+      "dedup_group": "customs_party_configuration",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需要清关地点与服务主体的配置政策。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 12,
+      "item_hash": "d8360dcedbc651d09dced68e1f56f8d3faf1d640b2fee972bdec80848122b45e",
+      "status": "C",
+      "capability_group": "change_test_order",
+      "dedup_group": "change_test_order",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需要变更与测试 SOP；不能从一般实践推出绝对先后要求。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 13,
+      "item_hash": "e8f1c46c117854eba9730d8b682113da719b4bb3466a9d14e1cfc933273c04b5",
+      "status": "C",
+      "capability_group": "stockout_policy",
+      "dedup_group": "stockout_policy",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需要缺货后的默认自动或人工处置策略。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 14,
+      "item_hash": "0d80ff0567659c11da9914eb4cc78a8efa97aed7afcf76725279c639d77d3e4d",
+      "status": "C",
+      "capability_group": "inventory_exception_ownership",
+      "dedup_group": "inventory_exception_ownership",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需要库存异常类型、状态组合和团队职责矩阵；不同情境不重复计为独立规则。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 15,
+      "item_hash": "d36ec22e55d5337f779517ac9b8ac1861dad51835a2382e4c94289e2cbdd2a6f",
+      "status": "C",
+      "capability_group": "inventory_exception_ownership",
+      "dedup_group": "inventory_exception_ownership",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需要库存异常类型、状态组合和团队职责矩阵；不同情境不重复计为独立规则。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 16,
+      "item_hash": "153d2febe0e0525e01f3c86087967b34e66ef371a231b42d0b59d8c2671a6d39",
+      "status": "B",
+      "capability_group": "tax_jurisdiction_date",
+      "dedup_group": "tax_jurisdiction_date",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "官方资料提供税制差异线索，但题目时间、交易适用范围不足；不把按现行一般税率推断计为充分来源。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established",
+      "candidate_official_urls": [
+        "https://zatca.gov.sa/en/MediaCenter/News/Pages/News-320.aspx",
+        "https://tax.gov.ae/en/faq.aspx?keyword=Does+VAT+apply+to+all+goods+and+services%3F"
+      ]
+    },
+    {
+      "review_index_zero_based": 17,
+      "item_hash": "308c8355dbea3252673d85865c8a016d0a67bce9e0b4d56855b30b28663a78c5",
+      "status": "C",
+      "capability_group": "visibility_dimensions",
+      "dedup_group": "visibility_dimensions",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需要订单可视化产品实际提供的质量维度。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 18,
+      "item_hash": "3d1770c68072d868ac2fc04cd5995afb75687be7a3c5c2807f05d84a7dc8e9c7",
+      "status": "C",
+      "capability_group": "tracking_escalation",
+      "dedup_group": "tracking_escalation",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需要揽收与轨迹异常的升级规则及责任团队。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 19,
+      "item_hash": "4f3a74554c8e904e65a3c02ccebb9e4a9c1a4d9cc717af534bc91ec071e93cca",
+      "status": "C",
+      "capability_group": "routing_ui_capability",
+      "dedup_group": "routing_ui_capability",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需要自动/手工路由产品功能与优先级交互说明。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 20,
+      "item_hash": "7bdc32dd6100aab412d4866b733668235f2ceb55c8ef3a3f266fec1a4d40ab2b",
+      "status": "D",
+      "capability_group": "customs_fallback_policy",
+      "dedup_group": "customs_fallback_policy",
+      "source_rows": [
+        94
+      ],
+      "book_ids": [],
+      "note": "编码背景不能证明本系统应取消兜底机制；完整多选集合待裁定。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 21,
+      "item_hash": "86a8ce02fc94c6497f2f69b0c58bfa8e01cc4c5de1538e205e9df9b30b7cacad",
+      "status": "D",
+      "capability_group": "customs_architecture_tradeoff",
+      "dedup_group": "customs_architecture_tradeoff",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "缺少系统约束，多个分布式架构风险选项可同时成立。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 22,
+      "item_hash": "92c985cb67a35361c18716cffdc0039ef9b1a224f56af756dff05ff5bdf4e744",
+      "status": "A",
+      "capability_group": "national_code_structure",
+      "dedup_group": "national_code_structure",
+      "source_rows": [
+        95
+      ],
+      "book_ids": [],
+      "note": "核验日本海关原始说明；仅限国家编码结构辨析，不外推具体商品税率。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "sufficient_in_reviewed_scope",
+      "label_uniqueness": "supported_by_review",
+      "official_url": "https://www.customs.go.jp/toukei/sankou/code/code_e.htm",
+      "official_locator": "Commodity Classification; nine digits and six-digit HS plus domestic subdivision; accessed 2026-09-20"
+    },
+    {
+      "review_index_zero_based": 23,
+      "item_hash": "acd6f92e6ad5ea58b7278b32079937a79293d9eba17a4c41b6b997d9840001eb",
+      "status": "B",
+      "capability_group": "code_namespace",
+      "dedup_group": "code_namespace",
+      "source_rows": [
+        182,
+        183,
+        184,
+        185,
+        187,
+        188
+      ],
+      "book_ids": [],
+      "note": "不同代码命名空间可提供反例线索，但缺少题目所指模板与代码表。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 24,
+      "item_hash": "cc94f031ab47df1cef376d13257bff61afdef9cdbeb3d70ef3b58f5170df2c13",
+      "status": "C",
+      "capability_group": "declaration_organization",
+      "dedup_group": "declaration_organization",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需集中/分散申报在该业务中的制度与管理定义。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 25,
+      "item_hash": "cd3911d5c39f6aeeb384b719056f0fe66dc9ac0d9c987986562b357d1e1e6d14",
+      "status": "C",
+      "capability_group": "special_parcel_handoff",
+      "dedup_group": "special_parcel_handoff",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需要特殊包裹交接与出库流程规范。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 26,
+      "item_hash": "ea9d85831a56eec3d387ed4add88dc2b23e3313150905ea999222a2a3ff1904d",
+      "status": "C",
+      "capability_group": "acceptance_events",
+      "dedup_group": "acceptance_events",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需订单受理节点的事件生成清单，不能凭常识补全多选。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 27,
+      "item_hash": "0f7f0dbd9a60cf4dd912e49c00dc50c904726f3b1d3f5b8d704e3cc8050532ef",
+      "status": "C",
+      "capability_group": "replenishment_escalation",
+      "dedup_group": "replenishment_escalation",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需要补货问题排查与升级 SOP。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 28,
+      "item_hash": "b1ed82b8aebfe139c81ea9e5e577fca4b8d390c5c027a2c551d3fd5fbf06edb7",
+      "status": "C",
+      "capability_group": "business_timestamp",
+      "dedup_group": "business_timestamp",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需采购、销售和物流事件生效时间的业务定义。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 29,
+      "item_hash": "01512c3a8ddccce75d4f20ace58cdc9c1cd864087365abd61644865152258ed4",
+      "status": "B",
+      "capability_group": "inbound_count_attribution",
+      "dedup_group": "inbound_count_attribution",
+      "source_rows": [
+        204
+      ],
+      "book_ids": [],
+      "note": "通用监控指标不支持唯一归因到采购渠道；需业务字段及排查依据。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 30,
+      "item_hash": "408e5af3288997bb6990a4a5612594d8519dba48c96132ee8d0e40de29f81e96",
+      "status": "C",
+      "capability_group": "dtc_cost_scope",
+      "dedup_group": "dtc_cost_scope",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需 DTC 与传统模式在指定条款下的成本归集规则。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 31,
+      "item_hash": "58aada37bddc2535d387cf4286459da4cd5b892932a6c776c223d2a5e6c0d030",
+      "status": "C",
+      "capability_group": "procurement_leadtime_kpi",
+      "dedup_group": "procurement_leadtime_kpi",
+      "source_rows": [
+        204
+      ],
+      "book_ids": [],
+      "note": "需正式 KPI 字典：权重、起止事件、数据表和用途。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 32,
+      "item_hash": "01d96f8f6721ca48741769c8f87ee49bab070253f357acb34554d6d3dacf948a",
+      "status": "B",
+      "capability_group": "package_definition",
+      "dedup_group": "package_definition",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "尚未核实能够排除邻近包装概念的原始定义。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 33,
+      "item_hash": "04765b44a850923c7f8f84127303823bc88e6c4c53f719166176d9f5624f207b",
+      "status": "D",
+      "capability_group": "port_impact_taxonomy",
+      "dedup_group": "port_impact_taxonomy",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "社会、政治、经济影响候选存在分类重叠；需原课程分类框架裁定。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 34,
+      "item_hash": "06dbbc071dadaecdcc10b89324e22eb5cc28fb5d8d3c0e53ddd0f19aeca86a83",
+      "status": "A",
+      "capability_group": "rail_line_speed",
+      "dedup_group": "rail_line_speed",
+      "source_rows": [
+        49
+      ],
+      "book_ids": [],
+      "note": "原始统计术语页支持速度条件与线路类型；限该术语版本。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "sufficient_in_reviewed_scope",
+      "label_uniqueness": "supported_by_review"
+    },
+    {
+      "review_index_zero_based": 35,
+      "item_hash": "089df45f80fa4f6081c0ede2f5f2073d238767e87a771cf76265f02e377b3e80",
+      "status": "B",
+      "capability_group": "pipeline_facility_components",
+      "dedup_group": "pipeline_facility_components",
+      "source_rows": [
+        100
+      ],
+      "book_ids": [],
+      "note": "来源明确介质，但题面省略介质；需确认与一般管道设施的区分是否充分。",
+      "training_rows": [
+        22
+      ],
+      "training_coverage": "related_or_partial_supervision",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 36,
+      "item_hash": "0a06e77e60a0800129485e328153d073980fe51ed0b5cf39335a9f9997384b80",
+      "status": "A",
+      "capability_group": "cargo_code_perishable",
+      "dedup_group": "cargo_code_perishable",
+      "source_rows": [
+        182
+      ],
+      "book_ids": [],
+      "note": "核验归档 IATA 特殊处理代码表中的对应项与候选唯一性。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "sufficient_in_reviewed_scope",
+      "label_uniqueness": "supported_by_review"
+    },
+    {
+      "review_index_zero_based": 37,
+      "item_hash": "0a451a3acf99e9a27ef47f95e74c1f0a20b0df10861cc5b1022b5e27febf4a4c",
+      "status": "A",
+      "capability_group": "rail_accident_intent",
+      "dedup_group": "rail_accident_intent",
+      "source_rows": [
+        104
+      ],
+      "book_ids": [],
+      "note": "核验统计定义中的意图、结局与主管机关登记条件。",
+      "training_rows": [
+        33
+      ],
+      "training_coverage": "rule_present",
+      "input_sufficiency": "sufficient_in_reviewed_scope",
+      "label_uniqueness": "supported_by_review"
+    },
+    {
+      "review_index_zero_based": 38,
+      "item_hash": "0ea0d54ec851d92b18acb0d862ffb299cc351bbc5dea67da996da735bcde28d0",
+      "status": "B",
+      "capability_group": "dry_bulk_vessel",
+      "dedup_group": "dry_bulk_vessel",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需要包含兼用船的船舶分类原始定义。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 39,
+      "item_hash": "1039b3279b684789d6156f6b91a813e10353dd8b0ae6c7dda0a5c28c9e581102",
+      "status": "B",
+      "capability_group": "aircraft_load_scope",
+      "dedup_group": "aircraft_load_scope",
+      "source_rows": [
+        201
+      ],
+      "book_ids": [],
+      "note": "现有摘要不足以逐项确定载荷、人员、燃油等口径边界。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 40,
+      "item_hash": "11c6408f868573237d2c920c24674b1c5c68157065110265ac462fe7487fb408",
+      "status": "B",
+      "capability_group": "aircraft_arm",
+      "dedup_group": "aircraft_arm",
+      "source_rows": [
+        172
+      ],
+      "book_ids": [],
+      "note": "现有档案是 FAA 摘要；未将原页面全文核验计为完成。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 41,
+      "item_hash": "12419d5e456be4c40859a094e9849272f9063ffb5d4ac1f841665f909612811e",
+      "status": "D",
+      "capability_group": "transport_work_alias",
+      "dedup_group": "transport_work_alias",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "运输功指标有多个缩写或同义标签，需候选合并/裁定。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 42,
+      "item_hash": "128feafa009b4d5a74f14e3c9eab270641df99318e66691fc5133520b3df177a",
+      "status": "B",
+      "capability_group": "aircraft_load_scope",
+      "dedup_group": "aircraft_load_scope",
+      "source_rows": [
+        201
+      ],
+      "book_ids": [],
+      "note": "现有摘要不足以逐项确定载荷、人员、燃油等口径边界。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 43,
+      "item_hash": "140ed38b654d9a00569f4491795e0074f0c9168ec6c30acb40476d1c0fa03aca",
+      "status": "A",
+      "capability_group": "port_forecast_bottomup",
+      "dedup_group": "port_forecast_bottomup",
+      "source_rows": [
+        181
+      ],
+      "book_ids": [],
+      "note": "核验原书预测方法页对起点、适用行业和汇总的说明。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "sufficient_in_reviewed_scope",
+      "label_uniqueness": "supported_by_review"
+    },
+    {
+      "review_index_zero_based": 44,
+      "item_hash": "1687d4e0a1e78123ad971d21b74354a864b8ea2808313b29d8fb551e66da7f95",
+      "status": "A",
+      "capability_group": "rail_principal_line",
+      "dedup_group": "rail_principal_line",
+      "source_rows": [
+        46
+      ],
+      "book_ids": [],
+      "note": "核验维护、运营与路网范围定义；两种呈现合并计数。",
+      "training_rows": [
+        157
+      ],
+      "training_coverage": "rule_present",
+      "input_sufficiency": "sufficient_in_reviewed_scope",
+      "label_uniqueness": "supported_by_review"
+    },
+    {
+      "review_index_zero_based": 45,
+      "item_hash": "1a842cd730bbd4311da1b4c69689a5a00eb58a8ec75ca5444908d6a88eec8869",
+      "status": "A",
+      "capability_group": "rigid_freight_vehicle",
+      "dedup_group": "rigid_freight_vehicle",
+      "source_rows": [
+        60
+      ],
+      "book_ids": [],
+      "note": "核验刚性结构与主要用途条件。",
+      "training_rows": [
+        45,
+        123
+      ],
+      "training_coverage": "rule_present",
+      "input_sufficiency": "sufficient_in_reviewed_scope",
+      "label_uniqueness": "supported_by_review"
+    },
+    {
+      "review_index_zero_based": 46,
+      "item_hash": "1b9d8996d39079116e006fb617e0f80374c22cb6b3bac6ec302fe89dd04f7777",
+      "status": "D",
+      "capability_group": "cargo_class_taxonomy",
+      "dedup_group": "cargo_class_taxonomy",
+      "source_rows": [
+        56
+      ],
+      "book_ids": [],
+      "note": "货物分类候选框架和子类列表重叠，需明确采用的分类体系。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 47,
+      "item_hash": "1c66ab819bb8b455fbbf7654b50e81c955e682c2519bce09aa88a2bd98273862",
+      "status": "A",
+      "capability_group": "rail_fixed_composition",
+      "dedup_group": "rail_fixed_composition",
+      "source_rows": [
+        110,
+        113
+      ],
+      "book_ids": [],
+      "note": "核验固定编组与模块编组区别。",
+      "training_rows": [
+        13
+      ],
+      "training_coverage": "rule_present",
+      "input_sufficiency": "sufficient_in_reviewed_scope",
+      "label_uniqueness": "supported_by_review"
+    },
+    {
+      "review_index_zero_based": 48,
+      "item_hash": "1dff86ec19810634ab69e18d34061a7b4c89dc34d1b80ddf05891211731a529a",
+      "status": "B",
+      "capability_group": "cargo_inspection_role",
+      "dedup_group": "cargo_inspection_role",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需货运检查的职责/服务分类原始说明。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 49,
+      "item_hash": "1f3fd3635ca21d6f99e2c93da3e8e8cc3daab2443be6330d3793c23880857815",
+      "status": "A",
+      "capability_group": "rail_dangerous_goods",
+      "dedup_group": "rail_dangerous_goods",
+      "source_rows": [
+        56
+      ],
+      "book_ids": [],
+      "note": "核验该统计术语中的分类集合；不外推当前法规适用性。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "sufficient_in_reviewed_scope",
+      "label_uniqueness": "supported_by_review"
+    },
+    {
+      "review_index_zero_based": 50,
+      "item_hash": "27c5680f72ebf43cc0f94a4ebdb412d7f4a0becb33d9872c4251bd0e7b4b49d5",
+      "status": "B",
+      "capability_group": "vehicle_weight_scope",
+      "dedup_group": "vehicle_weight_scope",
+      "source_rows": [
+        119
+      ],
+      "book_ids": [],
+      "note": "需逐项确认自重与总重的燃料、驾驶员等范围及国家口径。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 51,
+      "item_hash": "2af985c5673c5431777861fd0bcdf528dbad6591c70bd1dc04c56f3049362746",
+      "status": "B",
+      "capability_group": "cargo_assembly_actor",
+      "dedup_group": "cargo_assembly_actor",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需明确货物汇集操作与经营主体术语边界。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 52,
+      "item_hash": "2b646eda1ae1557d9011998b48c9811f964a76d9591761308efda1699b130497",
+      "status": "B",
+      "capability_group": "found_cargo_code",
+      "dedup_group": "found_cargo_code",
+      "source_rows": [
+        189
+      ],
+      "book_ids": [],
+      "note": "需要原始业务消息代码规范及版本，相关概述不充分。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 53,
+      "item_hash": "2f0472dc4574a9424440543fcf332ef69171f68e7a2eed95114e38b60e933245",
+      "status": "D",
+      "capability_group": "rail_electrification_wording",
+      "dedup_group": "rail_electrification_wording",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "选项缺失关键限定词，需原题与线路电气化定义对照裁定。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 54,
+      "item_hash": "34bc6e3cac1debb6bed63f0bd9bc2420b0d9c1bd07a9790aa58b5ba1e93f4690",
+      "status": "D",
+      "capability_group": "moment_alias",
+      "dedup_group": "moment_alias",
+      "source_rows": [
+        172
+      ],
+      "book_ids": [],
+      "note": "候选单复数表达语义近同，需裁定而非按索引训练。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 55,
+      "item_hash": "34dc18e4d132faddc463a51517399a33c0c1a83fc295f908feca858dcef3a39a",
+      "status": "A",
+      "capability_group": "iwt_passenger_scope",
+      "dedup_group": "iwt_passenger_scope",
+      "source_rows": [
+        122
+      ],
+      "book_ids": [],
+      "note": "原始定义支持用途、水域和乘客数量范围。",
+      "training_rows": [
+        287
+      ],
+      "training_coverage": "related_or_partial_supervision",
+      "input_sufficiency": "sufficient_in_reviewed_scope",
+      "label_uniqueness": "supported_by_review"
+    },
+    {
+      "review_index_zero_based": 56,
+      "item_hash": "35e1b00d18b236c25d423193836a78ebea9563fbfbb717d8611771ec43f3aec4",
+      "status": "C",
+      "capability_group": "historical_vessel_size",
+      "dedup_group": "historical_vessel_size",
+      "source_rows": [
+        180
+      ],
+      "book_ids": [],
+      "note": "已有历史船型表，但题面未给定表版本；不能当永久船型阈值。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 57,
+      "item_hash": "39542e29ca8770ba49598ea2b7d53677de6b542e57de845d1b31213a533aa332",
+      "status": "B",
+      "capability_group": "transport_cost_framework",
+      "dedup_group": "transport_cost_framework",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需要课程成本分类及各判断的条件，不能只凭一般成本原则。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 58,
+      "item_hash": "3cda43bf5bd922bedc89bf61e7e9f21faa332a6d5c1b11b7640027c2c7a5d7b4",
+      "status": "B",
+      "capability_group": "pipeline_facility_components",
+      "dedup_group": "pipeline_facility_components",
+      "source_rows": [
+        100
+      ],
+      "book_ids": [],
+      "note": "来源明确介质，但题面省略介质；需确认与一般管道设施的区分是否充分。",
+      "training_rows": [
+        22
+      ],
+      "training_coverage": "related_or_partial_supervision",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 59,
+      "item_hash": "3e47e532a696e9c4331fe8e2c6b50e55fa593a9d67927e47c66ab95578fb4aa5",
+      "status": "B",
+      "capability_group": "air_pallet_scope",
+      "dedup_group": "air_pallet_scope",
+      "source_rows": [
+        93
+      ],
+      "book_ids": [],
+      "note": "需航空托盘、平台与约束装置的完整原始定义。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 60,
+      "item_hash": "40ea0d1cfd560de1c412789649a23327d0a9b655cbf1b1e64f77dcf0e0ab1597",
+      "status": "D",
+      "capability_group": "articulated_label_duplicate",
+      "dedup_group": "articulated_label_duplicate",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "正确标签在候选表有仅大小写不同的副本。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 61,
+      "item_hash": "448d2357f9f3444e6c62fafd7c386fc27c3fd9a435b6d25b72e7e4154d20ae3c",
+      "status": "D",
+      "capability_group": "cargo_class_taxonomy",
+      "dedup_group": "cargo_class_taxonomy",
+      "source_rows": [
+        56
+      ],
+      "book_ids": [],
+      "note": "货物分类候选框架和子类列表重叠，需明确采用的分类体系。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 62,
+      "item_hash": "4706cfa37275aa007edde584bafa05eebbe57584f211462122ee933af939d9e5",
+      "status": "A",
+      "capability_group": "iwt_propulsion_boundary",
+      "dedup_group": "iwt_propulsion_boundary",
+      "source_rows": [
+        123
+      ],
+      "book_ids": [],
+      "note": "核验自航、油船排除与辅助发动机边界；重复题去重。",
+      "training_rows": [
+        125,
+        242
+      ],
+      "training_coverage": "rule_present",
+      "input_sufficiency": "sufficient_in_reviewed_scope",
+      "label_uniqueness": "supported_by_review"
+    },
+    {
+      "review_index_zero_based": 63,
+      "item_hash": "481d3e310e0ec79992ed1435a8153b5803a14f3f8c13cccbac48619af830c787",
+      "status": "B",
+      "capability_group": "transport_cost_framework",
+      "dedup_group": "transport_cost_framework",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需要课程成本分类及各判断的条件，不能只凭一般成本原则。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 64,
+      "item_hash": "484d3c62d0cd71d5295d794a89573c95b60555d773a3a352f10bf094113626f1",
+      "status": "D",
+      "capability_group": "airline_operator_overlap",
+      "dedup_group": "airline_operator_overlap",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "航空公司与运营主体候选的概念范围可能重叠。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 65,
+      "item_hash": "4aa2f4c4ff1bee4e809a8a34fca4297d17360358e70f581d77f6f9291b0044cb",
+      "status": "D",
+      "capability_group": "pallet_skid_boundary",
+      "dedup_group": "pallet_skid_boundary",
+      "source_rows": [
+        93
+      ],
+      "book_ids": [],
+      "note": "托盘与滑橇术语是否等同需来源和候选边界裁定。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 66,
+      "item_hash": "4ac487a6281716ab4534a813563211b1bdb2400321459c494cb0c1423896c6f3",
+      "status": "B",
+      "capability_group": "gas_pipeline_scope",
+      "dedup_group": "gas_pipeline_scope",
+      "source_rows": [
+        101
+      ],
+      "book_ids": [],
+      "note": "原始定义明确气体，但题面删除介质限定；暂不计充分唯一。",
+      "training_rows": [
+        118
+      ],
+      "training_coverage": "related_or_partial_supervision",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 67,
+      "item_hash": "4cc1bad5e93f24c99a53ddeeedf60b3efa743a206f203144feee8e7f1e1636c8",
+      "status": "D",
+      "capability_group": "reefer_temperature_scope",
+      "dedup_group": "reefer_temperature_scope",
+      "source_rows": [
+        114
+      ],
+      "book_ids": [],
+      "note": "题面温区与来源多种冷藏等级不完全对应，需要原始定义裁定。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 68,
+      "item_hash": "4da87384f492c7632cb5261137d688862608463d197ea82a38a2482cc6d034ce",
+      "status": "A",
+      "capability_group": "railcar_scope",
+      "dedup_group": "railcar_scope",
+      "source_rows": [
+        113
+      ],
+      "book_ids": [],
+      "note": "核验动力、运输用途与车型分类；重复题去重。",
+      "training_rows": [
+        312
+      ],
+      "training_coverage": "related_or_partial_supervision",
+      "input_sufficiency": "sufficient_in_reviewed_scope",
+      "label_uniqueness": "supported_by_review"
+    },
+    {
+      "review_index_zero_based": 69,
+      "item_hash": "4ece62536cce549e240e598dcaa50266d0a871e8ac168ef470ddaa8c33a9ef5d",
+      "status": "C",
+      "capability_group": "historical_vessel_size",
+      "dedup_group": "historical_vessel_size",
+      "source_rows": [
+        180
+      ],
+      "book_ids": [],
+      "note": "已有历史船型表，但题面未给定表版本；不能当永久船型阈值。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 70,
+      "item_hash": "4fe8e32d7bc49fced2944b87f8350bb90fa10ec8d940203588645382452d39b5",
+      "status": "D",
+      "capability_group": "gross_weight_limit",
+      "dedup_group": "gross_weight_limit",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "实测总重与法定上限的限定不明确，需候选范围裁定。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 71,
+      "item_hash": "50b4ffc5685e6d9194c14b5f32f37ad8da8f5bee320e21bf2bdd9e72b3ce2c4f",
+      "status": "A",
+      "capability_group": "iwt_freight_scope",
+      "dedup_group": "iwt_freight_scope",
+      "source_rows": [
+        120
+      ],
+      "book_ids": [],
+      "note": "核验水域、载重门槛与用途。",
+      "training_rows": [
+        14,
+        246
+      ],
+      "training_coverage": "rule_present",
+      "input_sufficiency": "sufficient_in_reviewed_scope",
+      "label_uniqueness": "supported_by_review"
+    },
+    {
+      "review_index_zero_based": 72,
+      "item_hash": "533587da23b108e93ebce2c1aae37c29704d2749bd805066e19e84f8f75379d6",
+      "status": "D",
+      "capability_group": "trailer_label_duplicate",
+      "dedup_group": "trailer_label_duplicate",
+      "source_rows": [
+        63
+      ],
+      "book_ids": [],
+      "note": "候选存在仅大小写不同的同一标签。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 73,
+      "item_hash": "54433980809c26816669ba04023f0151f9bed823d1a2d8f4a6e2bc379bb85b02",
+      "status": "B",
+      "capability_group": "rail_track_scope",
+      "dedup_group": "rail_track_scope",
+      "source_rows": [
+        131,
+        132
+      ],
+      "book_ids": [],
+      "note": "需核验全部线路/轨道范围判断，相关术语不足以完成多选。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 74,
+      "item_hash": "57916624085c094fae2c50ec355183864ba6ccd777ac5d085ba14e053b3371f4",
+      "status": "A",
+      "capability_group": "rail_modular_composition",
+      "dedup_group": "rail_modular_composition",
+      "source_rows": [
+        113
+      ],
+      "book_ids": [],
+      "note": "原始定义明确模块编组条件；重复题去重。",
+      "training_rows": [
+        312
+      ],
+      "training_coverage": "related_or_partial_supervision",
+      "input_sufficiency": "sufficient_in_reviewed_scope",
+      "label_uniqueness": "supported_by_review"
+    },
+    {
+      "review_index_zero_based": 75,
+      "item_hash": "60002f83caf0ba6794f5c789d45b791cebf5b77c11d2af267412f9240d715c0a",
+      "status": "A",
+      "capability_group": "iwt_authorised_capacity",
+      "dedup_group": "iwt_authorised_capacity",
+      "source_rows": [
+        126
+      ],
+      "book_ids": [],
+      "note": "核验载货重量的授权上限及单位。",
+      "training_rows": [
+        243
+      ],
+      "training_coverage": "rule_present",
+      "input_sufficiency": "sufficient_in_reviewed_scope",
+      "label_uniqueness": "supported_by_review"
+    },
+    {
+      "review_index_zero_based": 76,
+      "item_hash": "6069315419feafa62b38e43f0714669fc93fab47d0f1ea8a4fc7e6fcb6651237",
+      "status": "A",
+      "capability_group": "cargo_code_vulnerable",
+      "dedup_group": "cargo_code_vulnerable",
+      "source_rows": [
+        188
+      ],
+      "book_ids": [],
+      "note": "核验 IATA 特殊处理命名空间中的项目。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "sufficient_in_reviewed_scope",
+      "label_uniqueness": "supported_by_review"
+    },
+    {
+      "review_index_zero_based": 77,
+      "item_hash": "65b081fd6efa34562a792acd5b09d7318c603c884b5de1b52270d145b5bde436",
+      "status": "D",
+      "capability_group": "moment_alias",
+      "dedup_group": "moment_alias",
+      "source_rows": [
+        172
+      ],
+      "book_ids": [],
+      "note": "候选单复数表达语义近同，需裁定而非按索引训练。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 78,
+      "item_hash": "66d3401f7df169e4a4072d2732e09cb3043938779d0de1b42a5808b52ccf4f1d",
+      "status": "A",
+      "capability_group": "rail_loading_scope",
+      "dedup_group": "rail_loading_scope",
+      "source_rows": [
+        139,
+        140,
+        141,
+        142,
+        143,
+        144
+      ],
+      "book_ids": [],
+      "note": "原始页支持渡运、过境、装卸地点及换模式后重新装卸的完整集合。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "sufficient_in_reviewed_scope",
+      "label_uniqueness": "supported_by_review"
+    },
+    {
+      "review_index_zero_based": 79,
+      "item_hash": "67f51c02388a0cf554000364b89d0a47b3133bcff04fc3a6237fe38f7a10aaf0",
+      "status": "A",
+      "capability_group": "railcar_scope",
+      "dedup_group": "railcar_scope",
+      "source_rows": [
+        113
+      ],
+      "book_ids": [],
+      "note": "核验动力、运输用途与车型分类；重复题去重。",
+      "training_rows": [
+        312
+      ],
+      "training_coverage": "related_or_partial_supervision",
+      "input_sufficiency": "sufficient_in_reviewed_scope",
+      "label_uniqueness": "supported_by_review"
+    },
+    {
+      "review_index_zero_based": 80,
+      "item_hash": "6f93ede55288729e65edd988f4efa708857a13d05306656755c01eeb224dafcd",
+      "status": "A",
+      "capability_group": "rail_tractive_scope",
+      "dedup_group": "rail_tractive_scope",
+      "source_rows": [
+        112
+      ],
+      "book_ids": [],
+      "note": "核验动力构成、牵引与运载用途范围。",
+      "training_rows": [
+        79
+      ],
+      "training_coverage": "rule_present",
+      "input_sufficiency": "sufficient_in_reviewed_scope",
+      "label_uniqueness": "supported_by_review"
+    },
+    {
+      "review_index_zero_based": 81,
+      "item_hash": "7100b1e7c3ad3baf0eabec7b67652f3cdc41a39e276a4384f46c2c02db6cf7be",
+      "status": "B",
+      "capability_group": "aircraft_scale_tradeoff",
+      "dedup_group": "aircraft_scale_tradeoff",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需机型、运营条件与规模效应依据。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 82,
+      "item_hash": "7560839adc1b9cab2e03426ae884b9dff827984ab5a7d63f625459f9301990ce",
+      "status": "C",
+      "capability_group": "parcel_weight_threshold",
+      "dedup_group": "parcel_weight_threshold",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "缺少快件分类的运营商、制度与版本，不能使用通用重量阈值。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 83,
+      "item_hash": "7e4b60eed430ce6c97194e3f3c2bdd7b1c0770b13b46696774613bc47c2bdbb0",
+      "status": "D",
+      "capability_group": "mechanics_dimension",
+      "dedup_group": "mechanics_dimension",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "所选公式存在量纲疑点，需原教材和符号定义裁定。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 84,
+      "item_hash": "7f7d857d360c6ef2d15cc10edb151b7843cfcf26c77b97631f0511ff0e3fc383",
+      "status": "D",
+      "capability_group": "port_impact_taxonomy",
+      "dedup_group": "port_impact_taxonomy",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "社会、政治、经济影响候选存在分类重叠；需原课程分类框架裁定。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 85,
+      "item_hash": "7f92aa7682bf0e88765145bceb1279dcaa9f6403db3e3c3f611ac8b73cf4fb5f",
+      "status": "A",
+      "capability_group": "pipeline_network_scope",
+      "dedup_group": "pipeline_network_scope",
+      "source_rows": [
+        99
+      ],
+      "book_ids": [],
+      "note": "原始定义支持地理集合范围。",
+      "training_rows": [
+        149
+      ],
+      "training_coverage": "rule_present",
+      "input_sufficiency": "sufficient_in_reviewed_scope",
+      "label_uniqueness": "supported_by_review"
+    },
+    {
+      "review_index_zero_based": 86,
+      "item_hash": "81a9053b747d5b85b5a74398d867175600441eb393481452b05e9ec179a5f20a",
+      "status": "A",
+      "capability_group": "seagoing_ship_scope",
+      "dedup_group": "seagoing_ship_scope",
+      "source_rows": [
+        129
+      ],
+      "book_ids": [],
+      "note": "同一船舶定义的主体与排除边界；保守合并为一个去重单元。",
+      "training_rows": [
+        188,
+        204
+      ],
+      "training_coverage": "rule_present",
+      "input_sufficiency": "sufficient_in_reviewed_scope",
+      "label_uniqueness": "supported_by_review"
+    },
+    {
+      "review_index_zero_based": 87,
+      "item_hash": "824bbe41117158c78ba3f02023ad36b88928b21ac3f14ee8c790d07ad8eee14d",
+      "status": "A",
+      "capability_group": "general_cargo_ship",
+      "dedup_group": "general_cargo_ship",
+      "source_rows": [
+        66
+      ],
+      "book_ids": [],
+      "note": "原始船型分类支持主要用途和兼用类型范围。",
+      "training_rows": [
+        20
+      ],
+      "training_coverage": "related_or_partial_supervision",
+      "input_sufficiency": "sufficient_in_reviewed_scope",
+      "label_uniqueness": "supported_by_review"
+    },
+    {
+      "review_index_zero_based": 88,
+      "item_hash": "82e0544558395080205deb24e0820a989ad6f45ca02015f3cb38a91026bc4bf1",
+      "status": "A",
+      "capability_group": "pipeline_goods_scope",
+      "dedup_group": "pipeline_goods_scope",
+      "source_rows": [
+        128
+      ],
+      "book_ids": [],
+      "note": "核验介质类别与运输方式条件。",
+      "training_rows": [
+        84
+      ],
+      "training_coverage": "related_or_partial_supervision",
+      "input_sufficiency": "sufficient_in_reviewed_scope",
+      "label_uniqueness": "supported_by_review"
+    },
+    {
+      "review_index_zero_based": 89,
+      "item_hash": "8458fe57e5b74b4d885e5ed421696cba595513a0b8c07fea90741bfa79cb2540",
+      "status": "A",
+      "capability_group": "cargo_code_live",
+      "dedup_group": "cargo_code_live",
+      "source_rows": [
+        183
+      ],
+      "book_ids": [],
+      "note": "核验 IATA 特殊处理命名空间，不能与商品代码混用。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "sufficient_in_reviewed_scope",
+      "label_uniqueness": "supported_by_review"
+    },
+    {
+      "review_index_zero_based": 90,
+      "item_hash": "898f9b588e8ad416913db83b937b4ebbd739074e84d15d83cbeb778be4f2f5d1",
+      "status": "B",
+      "capability_group": "road_haulier",
+      "dedup_group": "road_haulier",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需公路货运经营主体的原始定义与候选区分。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 91,
+      "item_hash": "8c7c3986c1eab24ef8e2a4107292eaf4624c4ed702c49121bc7d52d35bd305e6",
+      "status": "C",
+      "capability_group": "malformed_fragment",
+      "dedup_group": "malformed_fragment",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "输入只残留不可解读片段，需恢复原始题目。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 92,
+      "item_hash": "8c8a260a34185d783f1bca87c4bdab4914f183ba63de8192b29aa21b8f4efc93",
+      "status": "D",
+      "capability_group": "transport_work_alias",
+      "dedup_group": "transport_work_alias",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "运输功指标有多个缩写或同义标签，需候选合并/裁定。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 93,
+      "item_hash": "8d70f4cc15261c6b0b234e4ea394047f6a3c531d0a0516b162629785417e68ce",
+      "status": "A",
+      "capability_group": "river_tug_scope",
+      "dedup_group": "river_tug_scope",
+      "source_rows": [
+        125
+      ],
+      "book_ids": [],
+      "note": "核验功率、用途、水域及排除范围。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "sufficient_in_reviewed_scope",
+      "label_uniqueness": "supported_by_review"
+    },
+    {
+      "review_index_zero_based": 94,
+      "item_hash": "8f22fff40aa4b16bb631e2dcec7ae824898666b3415921863c6cfa153eaf4c3d",
+      "status": "D",
+      "capability_group": "semitrailer_label_duplicate",
+      "dedup_group": "semitrailer_label_duplicate",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "候选存在仅大小写不同的同一标签。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 95,
+      "item_hash": "93ed377fe92d5d06968442dd73d6ba7fa7294b16fa4e0004bb2e441c9e8bbe54",
+      "status": "A",
+      "capability_group": "cargo_code_valuable",
+      "dedup_group": "cargo_code_valuable",
+      "source_rows": [
+        187
+      ],
+      "book_ids": [],
+      "note": "核验 IATA 特殊处理命名空间中的项目。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "sufficient_in_reviewed_scope",
+      "label_uniqueness": "supported_by_review"
+    },
+    {
+      "review_index_zero_based": 96,
+      "item_hash": "95524347f87bae46f4cce77e1a9bcebf2f9875af56746a2462d24f6516647428",
+      "status": "A",
+      "capability_group": "vehicle_authorised_load",
+      "dedup_group": "vehicle_authorised_load",
+      "source_rows": [
+        119
+      ],
+      "book_ids": [],
+      "note": "原始定义支持主管机关、注册国及货物重量口径。",
+      "training_rows": [
+        299
+      ],
+      "training_coverage": "rule_present",
+      "input_sufficiency": "sufficient_in_reviewed_scope",
+      "label_uniqueness": "supported_by_review"
+    },
+    {
+      "review_index_zero_based": 97,
+      "item_hash": "9575dca67461899418a99f7594c25b8ea9afb0f6e6eb803326c31b5d8b58a35a",
+      "status": "B",
+      "capability_group": "cargo_inspection_role",
+      "dedup_group": "cargo_inspection_role",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需货运检查的职责/服务分类原始说明。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 98,
+      "item_hash": "967cb919e010f84796cf39988fbc9cb064c146c11b2f0229b1f5c42ea1e6661e",
+      "status": "A",
+      "capability_group": "road_train_configuration",
+      "dedup_group": "road_train_configuration",
+      "source_rows": [
+        118
+      ],
+      "book_ids": [],
+      "note": "原始车辆定义支持组合范围；两种呈现去重。",
+      "training_rows": [
+        101
+      ],
+      "training_coverage": "rule_present",
+      "input_sufficiency": "sufficient_in_reviewed_scope",
+      "label_uniqueness": "supported_by_review"
+    },
+    {
+      "review_index_zero_based": 99,
+      "item_hash": "9881023e1769aa7b3eb5be8156db7a5eb69d199d30b7a6f41a6e4e6d440d3a9f",
+      "status": "A",
+      "capability_group": "port_traffic_control",
+      "dedup_group": "port_traffic_control",
+      "source_rows": [],
+      "book_ids": [
+        "83df4f92e9b0aa1aef21"
+      ],
+      "note": "原书港口参与方页明确助航交通服务角色。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "sufficient_in_reviewed_scope",
+      "label_uniqueness": "supported_by_review"
+    },
+    {
+      "review_index_zero_based": 100,
+      "item_hash": "9903877051f90d24be136c9946fad29d4197542350e1effcf4824e7cf25057b6",
+      "status": "D",
+      "capability_group": "autonomous_shipping_set",
+      "dedup_group": "autonomous_shipping_set",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "官方集合同时包含具体判断与否定全部的候选，存在集合一致性疑点。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 101,
+      "item_hash": "9df11a62861ccca73acd601249431faf2b7d7cfc9577c53137b038c4af8c1398",
+      "status": "A",
+      "capability_group": "port_landfall_services",
+      "dedup_group": "port_landfall_services",
+      "source_rows": [],
+      "book_ids": [
+        "0bc59345e442f826165a"
+      ],
+      "note": "原书港口设施分类明确助航服务范围；限本分类框架。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "sufficient_in_reviewed_scope",
+      "label_uniqueness": "supported_by_review"
+    },
+    {
+      "review_index_zero_based": 102,
+      "item_hash": "9e8ed8bcab06639d28f6a6e51cb4ee7c94e338d492862599aa359ababe0a86c9",
+      "status": "B",
+      "capability_group": "vehicle_weight_scope",
+      "dedup_group": "vehicle_weight_scope",
+      "source_rows": [
+        119
+      ],
+      "book_ids": [],
+      "note": "需逐项确认自重与总重的燃料、驾驶员等范围及国家口径。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 103,
+      "item_hash": "9ebbfaffb6e4891af6ea3a5664c1b583379c7ab931e89129c15dbef506522bdb",
+      "status": "A",
+      "capability_group": "offered_transport_capacity",
+      "dedup_group": "offered_transport_capacity",
+      "source_rows": [
+        130
+      ],
+      "book_ids": [],
+      "note": "原始统计定义支持运力与航程乘积及驳船范围。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "sufficient_in_reviewed_scope",
+      "label_uniqueness": "supported_by_review"
+    },
+    {
+      "review_index_zero_based": 104,
+      "item_hash": "9f7f4c594e143c4df0434c7f3520da36f6e34315a18b847ca7a6814c26888b44",
+      "status": "D",
+      "capability_group": "port_impact_taxonomy",
+      "dedup_group": "port_impact_taxonomy",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "社会、政治、经济影响候选存在分类重叠；需原课程分类框架裁定。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 105,
+      "item_hash": "a2b1c1686a36d301348a347c14386254f4dc1f579915f075cdc20dd467da92e8",
+      "status": "D",
+      "capability_group": "routing_journey_overlap",
+      "dedup_group": "routing_journey_overlap",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "路径规划与货物行程候选描述范围重叠，需术语边界。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 106,
+      "item_hash": "a4cee8fe7fbd4a560ea781c21a70156eab51164a71ed3853c786785c6b6ef425",
+      "status": "B",
+      "capability_group": "container_security_tradeoff",
+      "dedup_group": "container_security_tradeoff",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "缺少完整原文支撑全部利弊判断。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 107,
+      "item_hash": "a4febe2bbf60008eab8f8984ea078092688144d38e9e1a8c1875e8e5663dcf53",
+      "status": "A",
+      "capability_group": "collision_derailment_priority",
+      "dedup_group": "collision_derailment_priority",
+      "source_rows": [
+        158
+      ],
+      "book_ids": [],
+      "note": "原始统计定义明确事件分类的优先级。",
+      "training_rows": [
+        132
+      ],
+      "training_coverage": "rule_present",
+      "input_sufficiency": "sufficient_in_reviewed_scope",
+      "label_uniqueness": "supported_by_review"
+    },
+    {
+      "review_index_zero_based": 108,
+      "item_hash": "a6f05152a554730cec8e4030eb9c1e401db1c81bc517ce2a3db180c618708d28",
+      "status": "A",
+      "capability_group": "iwt_propulsion_boundary",
+      "dedup_group": "iwt_propulsion_boundary",
+      "source_rows": [
+        123
+      ],
+      "book_ids": [],
+      "note": "核验自航、油船排除与辅助发动机边界；重复题去重。",
+      "training_rows": [
+        125,
+        242
+      ],
+      "training_coverage": "rule_present",
+      "input_sufficiency": "sufficient_in_reviewed_scope",
+      "label_uniqueness": "supported_by_review"
+    },
+    {
+      "review_index_zero_based": 109,
+      "item_hash": "a8aed9a2b2760b295d053be2f7ccc9ebc850dcc283ca4ee05e36457735bd352a",
+      "status": "B",
+      "capability_group": "terminal_scope",
+      "dedup_group": "terminal_scope",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需港外设施、货客功能与候选类型的完整定义。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 110,
+      "item_hash": "ad9a15ca2d65369ba764270e513fb3fe8062b46967c31d39fdd5a32077127bb4",
+      "status": "D",
+      "capability_group": "port_impact_taxonomy",
+      "dedup_group": "port_impact_taxonomy",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "社会、政治、经济影响候选存在分类重叠；需原课程分类框架裁定。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 111,
+      "item_hash": "b8b286b6bda83c1ac2a7f4b5b18ed7edd98c70361894dd3168ca66ded4829928",
+      "status": "C",
+      "capability_group": "regional_pallet_standard",
+      "dedup_group": "regional_pallet_standard",
+      "source_rows": [
+        96
+      ],
+      "book_ids": [],
+      "note": "地区不唯一决定托盘尺寸；需标准、行业和版本。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 112,
+      "item_hash": "ba54dec9727c4319bed20faaa3608486793779002b6e801d65719a82af66ba48",
+      "status": "B",
+      "capability_group": "port_information_system",
+      "dedup_group": "port_information_system",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需港口电子信息交换服务的原始定义。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 113,
+      "item_hash": "bbcd00bdc565ea78aff39f888c5a6b9d123eb7b3aa82f6e7e94589b003cfdf5a",
+      "status": "A",
+      "capability_group": "cargo_code_heavy",
+      "dedup_group": "cargo_code_heavy",
+      "source_rows": [
+        184
+      ],
+      "book_ids": [],
+      "note": "核验 IATA 特殊处理代码项；数量门槛仅在给出重量时应用。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "sufficient_in_reviewed_scope",
+      "label_uniqueness": "supported_by_review"
+    },
+    {
+      "review_index_zero_based": 114,
+      "item_hash": "bfa5883b6b4cd9b047eb72c6dd9e152bc05ead5cdc477d526e6f91cac29bdbde",
+      "status": "C",
+      "capability_group": "regional_pallet_standard",
+      "dedup_group": "regional_pallet_standard",
+      "source_rows": [
+        96
+      ],
+      "book_ids": [],
+      "note": "地区不唯一决定托盘尺寸；需标准、行业和版本。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 115,
+      "item_hash": "c36341e0cdd91eaf26f0a525a96073cb3114c3d12c28ac33811b4e4c00da9e6d",
+      "status": "D",
+      "capability_group": "forwarder_alias",
+      "dedup_group": "forwarder_alias",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "候选经营主体名称存在单复数或近义重叠。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 116,
+      "item_hash": "c363f5a1f0e5d6001468c158080ef6a0361d23ce28d10f4bec46ac87f29ba2ae",
+      "status": "A",
+      "capability_group": "seagoing_ship_scope",
+      "dedup_group": "seagoing_ship_scope",
+      "source_rows": [
+        129
+      ],
+      "book_ids": [],
+      "note": "同一船舶定义的主体与排除边界；保守合并为一个去重单元。",
+      "training_rows": [
+        188,
+        204
+      ],
+      "training_coverage": "rule_present",
+      "input_sufficiency": "sufficient_in_reviewed_scope",
+      "label_uniqueness": "supported_by_review"
+    },
+    {
+      "review_index_zero_based": 117,
+      "item_hash": "c450852b40ca0fd40cecb1dce82cbb35cac77000a94c5500ba467f2dd1132c6d",
+      "status": "A",
+      "capability_group": "rail_principal_line",
+      "dedup_group": "rail_principal_line",
+      "source_rows": [
+        46
+      ],
+      "book_ids": [],
+      "note": "核验维护、运营与路网范围定义；两种呈现合并计数。",
+      "training_rows": [
+        157
+      ],
+      "training_coverage": "rule_present",
+      "input_sufficiency": "sufficient_in_reviewed_scope",
+      "label_uniqueness": "supported_by_review"
+    },
+    {
+      "review_index_zero_based": 118,
+      "item_hash": "c452b818600393ddcdbc32d19c95c4cab11102ab221449e498737024fcfc2a27",
+      "status": "B",
+      "capability_group": "drawbar_trailer_scope",
+      "dedup_group": "drawbar_trailer_scope",
+      "source_rows": [
+        63
+      ],
+      "book_ids": [],
+      "note": "需牵引杆、半挂和一般挂车的原始区分条件。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 119,
+      "item_hash": "c758a55cfb8614aa509a52207cb851cd7abc90f19af39e399e12301e8f4241d9",
+      "status": "D",
+      "capability_group": "uld_alias",
+      "dedup_group": "uld_alias",
+      "source_rows": [
+        93
+      ],
+      "book_ids": [],
+      "note": "全称与缩写候选可指向同一概念。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 120,
+      "item_hash": "c758b15d0e9212ac5648ffe56416d08606684058b4f18d7f76e262189f9cb481",
+      "status": "B",
+      "capability_group": "cargo_embargo_scope",
+      "dedup_group": "cargo_embargo_scope",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需要承运人禁运与其他限制的准确术语边界。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 121,
+      "item_hash": "d0aac9f3976e546f9957ceb7e4624f662a850888f21b9b87366eb29ac49d0e90",
+      "status": "D",
+      "capability_group": "cargo_class_taxonomy",
+      "dedup_group": "cargo_class_taxonomy",
+      "source_rows": [
+        56
+      ],
+      "book_ids": [],
+      "note": "货物分类候选框架和子类列表重叠，需明确采用的分类体系。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 122,
+      "item_hash": "d1be62136f7f488d6096a0502d11727ee22d3ec8849ad970391233660388f0ae",
+      "status": "D",
+      "capability_group": "forwarder_alias",
+      "dedup_group": "forwarder_alias",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "候选经营主体名称存在单复数或近义重叠。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 123,
+      "item_hash": "d3b67cd5e6a0a5b728e05b0f55dd8b793b0b6a227f3570b572d83965e4bad3b4",
+      "status": "C",
+      "capability_group": "regional_pallet_standard",
+      "dedup_group": "regional_pallet_standard",
+      "source_rows": [
+        96
+      ],
+      "book_ids": [],
+      "note": "地区不唯一决定托盘尺寸；需标准、行业和版本。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 124,
+      "item_hash": "d5208c565ba5a7f8d65ed6c94322b9b3d3c5183814bbd8551c34ec5b93de055c",
+      "status": "D",
+      "capability_group": "loose_bulk_air_scope",
+      "dedup_group": "loose_bulk_air_scope",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "散装与未集装航空货物候选有概念重叠，需课程定义。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 125,
+      "item_hash": "d5a776af906d893ff53162368ad722e46c851da64f1f777b45b5e8cf24e84d0e",
+      "status": "D",
+      "capability_group": "port_impact_taxonomy",
+      "dedup_group": "port_impact_taxonomy",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "社会、政治、经济影响候选存在分类重叠；需原课程分类框架裁定。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 126,
+      "item_hash": "d63458c372101575b8facb2a54674d468d4c64ccbb4ee107d1a3aa97b67ca152",
+      "status": "B",
+      "capability_group": "train_weight_scope",
+      "dedup_group": "train_weight_scope",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需要列车重量定义、空重/载重和车辆范围。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 127,
+      "item_hash": "db24416545cce93940c7a4d391e4fa17352364351e56be974177df64fc4d77df",
+      "status": "A",
+      "capability_group": "cargo_code_dry_ice",
+      "dedup_group": "cargo_code_dry_ice",
+      "source_rows": [
+        185
+      ],
+      "book_ids": [],
+      "note": "核验特殊处理代码表；不与商品代码表混同。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "sufficient_in_reviewed_scope",
+      "label_uniqueness": "supported_by_review"
+    },
+    {
+      "review_index_zero_based": 128,
+      "item_hash": "dc0c0a38f555cda3b853e2b1c0b00c1b36fc7f59ade6af762a4397fb29abc293",
+      "status": "D",
+      "capability_group": "oversize_alias",
+      "dedup_group": "oversize_alias",
+      "source_rows": [
+        186
+      ],
+      "book_ids": [],
+      "note": "超尺寸表述与处理代码含义重叠，需候选裁定。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 129,
+      "item_hash": "dc52ac4a5347749c4efaa6618c05a0d0d3d4a3646eff6eb6708397bec4bc184f",
+      "status": "D",
+      "capability_group": "container_vessel_water_scope",
+      "dedup_group": "container_vessel_water_scope",
+      "source_rows": [
+        121
+      ],
+      "book_ids": [],
+      "note": "来源限定内河；题面省略水域，通用集装箱船候选可能同样成立。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 130,
+      "item_hash": "dd26323520bc7744a2bab00dc9049079ababd0f66145852e95945cfb61c9c4e0",
+      "status": "D",
+      "capability_group": "belly_lowerdeck_alias",
+      "dedup_group": "belly_lowerdeck_alias",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "机腹与下货舱概念重叠，需机型与候选定义。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 131,
+      "item_hash": "dd86542a4b7952679a0da0b70f19958c7c30e74817abc83e88e2f53f3d8d3e5b",
+      "status": "D",
+      "capability_group": "transport_work_alias",
+      "dedup_group": "transport_work_alias",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "运输功指标有多个缩写或同义标签，需候选合并/裁定。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 132,
+      "item_hash": "e0d4c6ff78c1ff5037ee4caf9c89d5db5172aaccd869a9f5ef50bf937c48e0a7",
+      "status": "A",
+      "capability_group": "road_train_configuration",
+      "dedup_group": "road_train_configuration",
+      "source_rows": [
+        118
+      ],
+      "book_ids": [],
+      "note": "原始车辆定义支持组合范围；两种呈现去重。",
+      "training_rows": [
+        101
+      ],
+      "training_coverage": "rule_present",
+      "input_sufficiency": "sufficient_in_reviewed_scope",
+      "label_uniqueness": "supported_by_review"
+    },
+    {
+      "review_index_zero_based": 133,
+      "item_hash": "e6aaaafd5c9699257b6506921d0520302e58c98a776ebabcfcd7d664c7356969",
+      "status": "B",
+      "capability_group": "pipeline_statement_set",
+      "dedup_group": "pipeline_statement_set",
+      "source_rows": [
+        99,
+        100,
+        101
+      ],
+      "book_ids": [],
+      "note": "若干定义已支持，但炼厂相关命题仍需单独核验。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 134,
+      "item_hash": "eaf66693935409bd9feef1b6e5523d14ea5e29ce18906b71f138088a2ad32ffd",
+      "status": "B",
+      "capability_group": "aircraft_overload_set",
+      "dedup_group": "aircraft_overload_set",
+      "source_rows": [
+        173
+      ],
+      "book_ids": [],
+      "note": "FAA 摘要只支持部分后果，不足以完成全体选项判定。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 135,
+      "item_hash": "efc5550b762f38d92e60ff1765d5774b0ce67e8bf5f0581133b2c37cd7b5f926",
+      "status": "B",
+      "capability_group": "port_forecast_topdown",
+      "dedup_group": "port_forecast_topdown",
+      "source_rows": [
+        181
+      ],
+      "book_ids": [],
+      "note": "方法有原文，示例人均吞吐系数缺少题面年代和地域适用条件。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 136,
+      "item_hash": "f1e21fdca134541e4ce9f3eefc820fbaf7997ccfadc32a67abeda34fc24ef290",
+      "status": "B",
+      "capability_group": "ship_efficiency_tradeoff",
+      "dedup_group": "ship_efficiency_tradeoff",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需航速、船型、载荷与成本条件支持完整判断。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 137,
+      "item_hash": "f23a2afbbc58913263b337e3d61dc947e151f572b54e0c372ddb769e48abac45",
+      "status": "B",
+      "capability_group": "intermodal_standardization",
+      "dedup_group": "intermodal_standardization",
+      "source_rows": [
+        93,
+        96
+      ],
+      "book_ids": [],
+      "note": "相邻集装单元知识不足以支撑全部标准化命题。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 138,
+      "item_hash": "f52c216669446528b7228e8ee44b3445c8921b45b1a0648fd1400200c390eb3d",
+      "status": "D",
+      "capability_group": "trailer_label_duplicate",
+      "dedup_group": "trailer_label_duplicate",
+      "source_rows": [
+        63
+      ],
+      "book_ids": [],
+      "note": "候选存在仅大小写不同的同一标签。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 139,
+      "item_hash": "f580276f23c07ad07af9a5630f55c3e12277d5d75c278e6dbbc284f8dbea22b7",
+      "status": "A",
+      "capability_group": "rail_modular_composition",
+      "dedup_group": "rail_modular_composition",
+      "source_rows": [
+        113
+      ],
+      "book_ids": [],
+      "note": "原始定义明确模块编组条件；重复题去重。",
+      "training_rows": [
+        312
+      ],
+      "training_coverage": "related_or_partial_supervision",
+      "input_sufficiency": "sufficient_in_reviewed_scope",
+      "label_uniqueness": "supported_by_review"
+    },
+    {
+      "review_index_zero_based": 140,
+      "item_hash": "f9cf554cff9bdf31ad38ce10efca2d7c235675e1ef655e2b06422667062743a0",
+      "status": "C",
+      "capability_group": "historical_vessel_size",
+      "dedup_group": "historical_vessel_size",
+      "source_rows": [
+        180
+      ],
+      "book_ids": [],
+      "note": "已有历史船型表，但题面未给定表版本；不能当永久船型阈值。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 141,
+      "item_hash": "fec222c16a0ff0d0ae997e8236c16e6d1ef8a6ba4699ac0bc147386adc83afbf",
+      "status": "B",
+      "capability_group": "gas_pipeline_scope",
+      "dedup_group": "gas_pipeline_scope",
+      "source_rows": [
+        101
+      ],
+      "book_ids": [],
+      "note": "原始定义明确气体，但题面删除介质限定；暂不计充分唯一。",
+      "training_rows": [
+        118
+      ],
+      "training_coverage": "related_or_partial_supervision",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 142,
+      "item_hash": "0140d179e2d5a278d39a8b16df8c307092a24f95a008ac104b493346600a1a66",
+      "status": "B",
+      "capability_group": "mrp_action_timing",
+      "dedup_group": "mrp_action_timing",
+      "source_rows": [
+        22,
+        192
+      ],
+      "book_ids": [],
+      "note": "需要 MRP 动作时间与输入时序的完整原始规则。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 143,
+      "item_hash": "0b84fb8140f746951fbfed723c6e92a2ecbb6826fef381ed42aa9b18ff165d40",
+      "status": "C",
+      "capability_group": "warehouse_layout_diagram",
+      "dedup_group": "warehouse_layout_diagram",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "缺少被编号引用的布局图；同类图题不计为多个独立知识点。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 144,
+      "item_hash": "45f5ec625d66f488f1dd49120216f1d37627bb2a2fe7bc34907a872f10eea2ee",
+      "status": "C",
+      "capability_group": "warehouse_service_taxonomy",
+      "dedup_group": "warehouse_service_taxonomy",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需原课程核心/附加服务分类框架。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 145,
+      "item_hash": "db6fd3e003c4be7ec1a47bace1df9658f24f234040f5dd3aa164ebcd8082c6d7",
+      "status": "C",
+      "capability_group": "warehouse_layout_diagram",
+      "dedup_group": "warehouse_layout_diagram",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "缺少被编号引用的布局图；同类图题不计为多个独立知识点。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 146,
+      "item_hash": "e8d27b994ece172b8e253f340f0b3f5180b986befbdf51d277b68cbed5236032",
+      "status": "C",
+      "capability_group": "warehouse_layout_diagram",
+      "dedup_group": "warehouse_layout_diagram",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "缺少被编号引用的布局图；同类图题不计为多个独立知识点。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 147,
+      "item_hash": "05709f26db9deb4bcfdcc429e5c029708733c7e447f2e55701320b2c4a3d1d59",
+      "status": "A",
+      "capability_group": "gvc_trajectory",
+      "dedup_group": "gvc_trajectory",
+      "source_rows": [
+        202
+      ],
+      "book_ids": [],
+      "note": "已核验 UNCTAD 2020 原始报告摘要中的四轨迹比较；仅解释该历史分析框架，不声称预测已实现。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "sufficient_in_reviewed_scope",
+      "label_uniqueness": "supported_by_review",
+      "official_url": "https://unctad.org/node/3989",
+      "primary_snapshot_id": "primary_passages",
+      "official_locator": "WIR 2020 Key Messages, printed page xiii, trajectories (1)-(4)",
+      "primary_required_spans": [
+        "Diversification",
+        "Replication",
+        "rebundling"
+      ],
+      "training_search_status": "no_source_id_or_named_concept_match; paraphrased exposure remains unestablished"
+    },
+    {
+      "review_index_zero_based": 148,
+      "item_hash": "127a31ff1ff54c62d0a140b5ede6c7d322fd625f3db23664beb0a600c9454d1f",
+      "status": "D",
+      "capability_group": "management_model_overlap",
+      "dedup_group": "management_model_overlap",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "决策与行为模型候选边界不清，需原框架裁定。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 149,
+      "item_hash": "187870309391d54d6dd2549c21528898829b5cc54386747d9e4b124684ad0804",
+      "status": "A",
+      "capability_group": "invoice_finance_mechanism",
+      "dedup_group": "invoice_finance_mechanism",
+      "source_rows": [
+        79
+      ],
+      "book_ids": [],
+      "note": "核验教材中融资机制及信用依据；不外推现实金融产品。",
+      "training_rows": [
+        263
+      ],
+      "training_coverage": "related_or_partial_supervision",
+      "input_sufficiency": "sufficient_in_reviewed_scope",
+      "label_uniqueness": "supported_by_review"
+    },
+    {
+      "review_index_zero_based": 150,
+      "item_hash": "192b0bf0e23c27b73788f33aafc34ef2faa38957ce4c522cafb9d5c5896994b2",
+      "status": "D",
+      "capability_group": "quality_sustainability_scope",
+      "dedup_group": "quality_sustainability_scope",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "损耗质量与可持续性分类重叠，需原框架。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 151,
+      "item_hash": "1f7a1672f86e4fbd59b02d255e0534c6777e29cfe91d246699da0b2588ea37bf",
+      "status": "D",
+      "capability_group": "rfid_alias",
+      "dedup_group": "rfid_alias",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "方法名称和完整展开式候选近义。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 152,
+      "item_hash": "341982e433e16494c96fdcc81429ccb8f33c43ddf3f0b57544d5744fa4b8f309",
+      "status": "C",
+      "capability_group": "supply_chain_stage_diagram",
+      "dedup_group": "supply_chain_stage_diagram",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "缺少阶段图及方向定义；共用图示不能按编号拆分知识点。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 153,
+      "item_hash": "92052c6acd980ed8dd040205b2635b5918f0dfb8008f501b0d26afbf3c51cf23",
+      "status": "B",
+      "capability_group": "model_method_scope",
+      "dedup_group": "model_method_scope",
+      "source_rows": [
+        23,
+        33
+      ],
+      "book_ids": [],
+      "note": "需模型假设、类别和局限的完整材料。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 154,
+      "item_hash": "9bf161dc9bf693e090d7252e8db8c8d276e7ba1fd611bd43788548476b4ab106",
+      "status": "C",
+      "capability_group": "supply_chain_stage_diagram",
+      "dedup_group": "supply_chain_stage_diagram",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "缺少阶段图及方向定义；共用图示不能按编号拆分知识点。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 155,
+      "item_hash": "a2742ae5e6651fd6fd85e7e8f113a684cb8dfabfadf7edc3e793377cc8b2d09e",
+      "status": "A",
+      "capability_group": "gvc_trajectory",
+      "dedup_group": "gvc_trajectory",
+      "source_rows": [
+        202
+      ],
+      "book_ids": [],
+      "note": "已核验 UNCTAD 2020 原始报告摘要中的四轨迹比较；仅解释该历史分析框架，不声称预测已实现。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "sufficient_in_reviewed_scope",
+      "label_uniqueness": "supported_by_review",
+      "official_url": "https://unctad.org/node/3989",
+      "primary_snapshot_id": "primary_passages",
+      "official_locator": "WIR 2020 Key Messages, printed page xiii, trajectories (1)-(4)",
+      "primary_required_spans": [
+        "Diversification",
+        "Replication",
+        "rebundling"
+      ],
+      "training_search_status": "no_source_id_or_named_concept_match; paraphrased exposure remains unestablished"
+    },
+    {
+      "review_index_zero_based": 156,
+      "item_hash": "c0594dbef0fa5d236dcadb9c2fe60e90e62623fa2110ddf8d09c2f831fa1e380",
+      "status": "B",
+      "capability_group": "scor_model_scope",
+      "dedup_group": "scor_model_scope",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需所用 SCOR 版本与模型定义原文。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 157,
+      "item_hash": "e52ad65dc4440f8350553a1748734deccc6623cfe721dcb437afdf38b7759526",
+      "status": "C",
+      "capability_group": "it_level_taxonomy",
+      "dedup_group": "it_level_taxonomy",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "缺少信息技术层级的课程框架，常识不能唯一定位。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 158,
+      "item_hash": "fbacc4ded4d8c839f3691b12674fa43b6bb5ebab3f3b26d9ae2186ede388ed43",
+      "status": "B",
+      "capability_group": "smile_curve_technology",
+      "dedup_group": "smile_curve_technology",
+      "source_rows": [
+        34,
+        202
+      ],
+      "book_ids": [],
+      "note": "相关技术与轨迹摘要不能支持全部价值链曲线判断。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 159,
+      "item_hash": "01e908f7a753543e787fd612efe78c99998e459ee5acface932ab4e38f60323a",
+      "status": "B",
+      "capability_group": "great_circle_applicability",
+      "dedup_group": "great_circle_applicability",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "球面最短距离原理未解决实际港口、陆地阻碍和航线条件。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 160,
+      "item_hash": "032d8db7c58926d5aa897966416799b5830d406af913d37519f141214a902f33",
+      "status": "D",
+      "capability_group": "carrier_consignor_role",
+      "dedup_group": "carrier_consignor_role",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "承运主体和托运主体角色混用疑点，需原文裁定。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 161,
+      "item_hash": "067a08988d405bbd0b332920a08efa56b4d8175cfdcbec7aefa385e57c4d6a35",
+      "status": "B",
+      "capability_group": "its_functions",
+      "dedup_group": "its_functions",
+      "source_rows": [
+        15
+      ],
+      "book_ids": [],
+      "note": "需完整 ITS 功能分类，相关概述不足以确定全部选项。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 162,
+      "item_hash": "0b2e337db24fd890370eb60aa404a369d96765bc09a16570408db30ed4511ff5",
+      "status": "C",
+      "capability_group": "graph_diagram",
+      "dedup_group": "graph_diagram",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "缺少图结构，节点/环/编号无法从文字唯一恢复。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 163,
+      "item_hash": "0ddb3a670a5fb41c5fcb9a7f2db668a7dbde1cd1cdf9a40fda12d722337bcb67",
+      "status": "C",
+      "capability_group": "warehouse_layout_diagram",
+      "dedup_group": "warehouse_layout_diagram",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "缺少被编号引用的布局图；同类图题不计为多个独立知识点。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 164,
+      "item_hash": "13f6fa2ef66384ff8bad6ccba1a49f18cdfa1b8094ccf7f8b713a286dcfdbd25",
+      "status": "C",
+      "capability_group": "graph_diagram",
+      "dedup_group": "graph_diagram",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "缺少图结构，节点/环/编号无法从文字唯一恢复。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 165,
+      "item_hash": "1ee47cf153abd86af322e09942ebca94f8e7c760afb3b3780bfc05363784c9c6",
+      "status": "B",
+      "capability_group": "postponement_scope",
+      "dedup_group": "postponement_scope",
+      "source_rows": [
+        191
+      ],
+      "book_ids": [],
+      "note": "产品延迟与配送延迟的定义边界需原材料确认。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 166,
+      "item_hash": "2032d0f432c68907a1656c07297fa415880d072b54b0aa16e3bc71c921775f6a",
+      "status": "C",
+      "capability_group": "outsourcing_stage_framework",
+      "dedup_group": "outsourcing_stage_framework",
+      "source_rows": [
+        179
+      ],
+      "book_ids": [],
+      "note": "已有六阶段材料和训练，但题目未指明框架，需确认编号对应。",
+      "training_rows": [
+        2,
+        16,
+        55
+      ],
+      "training_coverage": "related_or_partial_supervision",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 167,
+      "item_hash": "22530f108fe309cfe9ed5ea9106ea556dec93ec4758aa86c444bd0b18f98a715",
+      "status": "C",
+      "capability_group": "warehouse_layout_diagram",
+      "dedup_group": "warehouse_layout_diagram",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "缺少被编号引用的布局图；同类图题不计为多个独立知识点。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 168,
+      "item_hash": "2c9690524e392f3b87b3893b963fc964253c98ff524684334680e1cf3365f2e7",
+      "status": "B",
+      "capability_group": "postponement_scope",
+      "dedup_group": "postponement_scope",
+      "source_rows": [
+        191
+      ],
+      "book_ids": [],
+      "note": "产品延迟与配送延迟的定义边界需原材料确认。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 169,
+      "item_hash": "2ce0253f2879dc65d38b65a8dc51f7b6e26d534668391442c27aa147d15e4b56",
+      "status": "B",
+      "capability_group": "model_method_scope",
+      "dedup_group": "model_method_scope",
+      "source_rows": [
+        23,
+        33
+      ],
+      "book_ids": [],
+      "note": "需模型假设、类别和局限的完整材料。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 170,
+      "item_hash": "31d9dfb60de501986a5f90831789e9c941c6678f33164630a1d7bd1e52a25b0f",
+      "status": "D",
+      "capability_group": "mrp_input_label",
+      "dedup_group": "mrp_input_label",
+      "source_rows": [
+        22
+      ],
+      "book_ids": [],
+      "note": "独立需求与物料清单的题干/答案对应存在疑点，需原文裁定。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 171,
+      "item_hash": "32361d93e24b8b9737fc1a86387aefe192b18d45fcf1406b9fd6504e24400188",
+      "status": "B",
+      "capability_group": "xyz_demand_classification",
+      "dedup_group": "xyz_demand_classification",
+      "source_rows": [
+        44
+      ],
+      "book_ids": [],
+      "note": "ABC 背景不能代替 XYZ 的需求波动分类定义。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 172,
+      "item_hash": "33096f8e721995d19391159761baf6d59c8138e65e25334907089cc4b86c7c3e",
+      "status": "B",
+      "capability_group": "service_level_factors",
+      "dedup_group": "service_level_factors",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需服务水平因素清单及课程适用范围。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 173,
+      "item_hash": "497f0e3e34f18ab3d54bee4b0821ff0c29c5dc960cdce097b2dba8d0f2617f82",
+      "status": "C",
+      "capability_group": "cost_curve_diagram",
+      "dedup_group": "cost_curve_diagram",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "缺少带编号曲线及坐标，不能从曲线序号推断。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 174,
+      "item_hash": "5685e07136bd00244f3f80b5a29b5eb8ea69703f8bfb9ec047a380c4ccbff727",
+      "status": "B",
+      "capability_group": "public_warehouse_benefit",
+      "dedup_group": "public_warehouse_benefit",
+      "source_rows": [
+        73
+      ],
+      "book_ids": [],
+      "note": "一般仓库功能不能确定所有服务收益或公仓优势。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 175,
+      "item_hash": "5c42233d6452fc56cbafcd4acb06a14275debf11ea8127ed5090fcf36d67fd73",
+      "status": "A",
+      "capability_group": "low_water_response",
+      "dedup_group": "low_water_response",
+      "source_rows": [
+        200
+      ],
+      "book_ids": [],
+      "note": "原书完整列出低水位响应及吃水方向，支持全体候选判断。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "sufficient_in_reviewed_scope",
+      "label_uniqueness": "supported_by_review"
+    },
+    {
+      "review_index_zero_based": 176,
+      "item_hash": "608db06a361a7b938d7f2ff9a396ca713de2dbad3c6dacb5aa2664a8cc9d42c9",
+      "status": "C",
+      "capability_group": "warehouse_layout_diagram",
+      "dedup_group": "warehouse_layout_diagram",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "缺少被编号引用的布局图；同类图题不计为多个独立知识点。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 177,
+      "item_hash": "67a0506accaf12b054c91e367deea046a445926df52d78029da95a1bac5ac624",
+      "status": "D",
+      "capability_group": "forecast_method_taxonomy",
+      "dedup_group": "forecast_method_taxonomy",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "时间序列、方差分析与专家组合方法存在分类混用疑点。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 178,
+      "item_hash": "6ccfca36248d52cf020b439cfa202c6c172a0c8338df6e219a5c24775c713cd9",
+      "status": "C",
+      "capability_group": "supply_chain_stage_diagram",
+      "dedup_group": "supply_chain_stage_diagram",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "缺少阶段图及方向定义；共用图示不能按编号拆分知识点。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 179,
+      "item_hash": "6d1070789e945d6e46ee8748d5f5b58d108c122c907e4a53a1a786a867091042",
+      "status": "B",
+      "capability_group": "routing_guide_tms",
+      "dedup_group": "routing_guide_tms",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需运输管理系统与路由指南的功能边界。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 180,
+      "item_hash": "6e98952cb63394893ffb13bfa7dd8a0b236b95c79c6fdaa0520765e18d8fabca",
+      "status": "C",
+      "capability_group": "cost_curve_diagram",
+      "dedup_group": "cost_curve_diagram",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "缺少带编号曲线及坐标，不能从曲线序号推断。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 181,
+      "item_hash": "7011bc34bce6b270a050034e67d6fafd0a2edbfe637acb58858ef869a37b192d",
+      "status": "C",
+      "capability_group": "empty_matching_input",
+      "dedup_group": "empty_matching_input",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "匹配内容缺失，需恢复原始材料。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 182,
+      "item_hash": "71bdb8fb24a330da9e9ff21d0da743ff5ebb0e454caba56f40de5be2a5887424",
+      "status": "D",
+      "capability_group": "model_parameter_constraint",
+      "dedup_group": "model_parameter_constraint",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "固定量与限制条件的术语边界需原教材确认。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 183,
+      "item_hash": "7317ecd874b1f3dec11e246ac0684c2d009be9023bc72944e17754293e496db5",
+      "status": "C",
+      "capability_group": "cost_curve_diagram",
+      "dedup_group": "cost_curve_diagram",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "缺少带编号曲线及坐标，不能从曲线序号推断。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 184,
+      "item_hash": "7385fd4ab74333d58d321ec9c2e4254980a7fd8fca4a0501bebd18a182204524",
+      "status": "C",
+      "capability_group": "cost_curve_diagram",
+      "dedup_group": "cost_curve_diagram",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "缺少带编号曲线及坐标，不能从曲线序号推断。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 185,
+      "item_hash": "76511629a2610e5c42d212507747d8aeaadaf04e3b808dd4cdae4ff443615b9b",
+      "status": "B",
+      "capability_group": "inventory_accounting_scope",
+      "dedup_group": "inventory_accounting_scope",
+      "source_rows": [
+        174
+      ],
+      "book_ids": [],
+      "note": "需要会计制度、辖区与政策解释，不以泛化的禁用原因直接训练。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 186,
+      "item_hash": "7af30a02fbd0ab836272bfb1a18ef376bcc996d861a4c4efb22d9e4d4847c411",
+      "status": "D",
+      "capability_group": "scm_definition_scope",
+      "dedup_group": "scm_definition_scope",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "否定式定义题有多个可能不合定义的描述，需完整框架裁定。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 187,
+      "item_hash": "7ebbf317ce748c4bee111e4d0624d9fbd395b3d471e8cc9abe6aa090bd499395",
+      "status": "D",
+      "capability_group": "single_multi_cardinality",
+      "dedup_group": "single_multi_cardinality",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "题面单选与官方多项集合冲突，保留评分并送裁定。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 188,
+      "item_hash": "812a4a72fa4052272d7661bed87b71ad14978e241a11104af2e47531dd929675",
+      "status": "B",
+      "capability_group": "lsp_internationalization",
+      "dedup_group": "lsp_internationalization",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需时期、市场和服务商比较证据。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 189,
+      "item_hash": "8637e8933f7830613a02572f10237b5899c454b53e708a02f117fec6aaa1f669",
+      "status": "C",
+      "capability_group": "outsourcing_stage_framework",
+      "dedup_group": "outsourcing_stage_framework",
+      "source_rows": [
+        179
+      ],
+      "book_ids": [],
+      "note": "已有六阶段材料和训练，但题目未指明框架，需确认编号对应。",
+      "training_rows": [
+        2,
+        16,
+        55
+      ],
+      "training_coverage": "related_or_partial_supervision",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 190,
+      "item_hash": "8d287084b159cb2747eec531f2e76800c554cda83a3fd008a90ee0a29785d5b2",
+      "status": "B",
+      "capability_group": "public_warehouse_benefit",
+      "dedup_group": "public_warehouse_benefit",
+      "source_rows": [
+        73
+      ],
+      "book_ids": [],
+      "note": "一般仓库功能不能确定所有服务收益或公仓优势。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 191,
+      "item_hash": "9243a17df2420c134372c63cf9e593778e37bc9575689d91b137b5d92439e7fd",
+      "status": "C",
+      "capability_group": "cost_curve_diagram",
+      "dedup_group": "cost_curve_diagram",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "缺少带编号曲线及坐标，不能从曲线序号推断。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 192,
+      "item_hash": "9337adc036044b023bf0e2a16ef47d7ef1f08b8c746c4b07092cc8dc40e391d7",
+      "status": "B",
+      "capability_group": "transport_segmentation",
+      "dedup_group": "transport_segmentation",
+      "source_rows": [
+        20,
+        194
+      ],
+      "book_ids": [],
+      "note": "分群与价格质量关系需具体假设及原材料。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 193,
+      "item_hash": "9464b6e90c303a5160c8bdf34e62a47d0761c5df25cf6412689a9bda5c4ded29",
+      "status": "C",
+      "capability_group": "container_fleet_statistics",
+      "dedup_group": "container_fleet_statistics",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "缺少年份和统计母体，不能把箱型占比视为恒定知识。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 194,
+      "item_hash": "9480159c4a09d90b8ec5f9996807314d59bfbdf020593b05edab0237fb7b35e9",
+      "status": "C",
+      "capability_group": "supply_demand_system_framework",
+      "dedup_group": "supply_demand_system_framework",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "缺少系统阶段与过渡的命名框架。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 195,
+      "item_hash": "969173d719cf80d894f6e3d9d64c1d121104244058252f6cdade850dfd3cb054",
+      "status": "B",
+      "capability_group": "third_party_service_roles",
+      "dedup_group": "third_party_service_roles",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需金融/管理服务在指定物流服务商分类中的边界。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 196,
+      "item_hash": "99b5810a48c1241c3b0e855f433a9846e8eb5541d260ebd9171c73ea1ea0cb18",
+      "status": "C",
+      "capability_group": "warehouse_process_sequence",
+      "dedup_group": "warehouse_process_sequence",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "缺少原流程的阶段编号；不能用常见顺序替代。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 197,
+      "item_hash": "a343e61ae5b89873ab3c01d4c3646ba1bee992b6c0ec425452895b9ddd74497d",
+      "status": "B",
+      "capability_group": "outsourcing_capital",
+      "dedup_group": "outsourcing_capital",
+      "source_rows": [
+        27
+      ],
+      "book_ids": [],
+      "note": "需要外包后资产释放机制与题目条件的明确证据。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 198,
+      "item_hash": "a68d8b63e2144466f7820455c5ef7c2c3a62c09cd41cad86a25c64a6c3f17805",
+      "status": "D",
+      "capability_group": "dynamic_model_overlap",
+      "dedup_group": "dynamic_model_overlap",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "动态模型与系统动力学候选概念层级重叠。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 199,
+      "item_hash": "ad468565ded356367051e1845096f0ae9e277c0a71b1ad3f5a83bb5117661779",
+      "status": "A",
+      "capability_group": "modal_contract_dimensions",
+      "dedup_group": "modal_contract_dimensions",
+      "source_rows": [
+        195
+      ],
+      "book_ids": [],
+      "note": "已核验原作者教材中的运输方式与合同维度定义；仅在该教材术语框架内放行，不外推为所有法规的通用定义。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "sufficient_in_reviewed_scope",
+      "label_uniqueness": "supported_by_review",
+      "official_url": "https://transportgeography.org/contents/chapter5/intermodal-transportation-containerization/intermodalism-multimodalism-transmodalism/",
+      "primary_snapshot_id": "primary_passages",
+      "official_locator": "Definition paragraphs 1, 2 and 4",
+      "primary_required_spans": [
+        "separate ticket",
+        "single ticket",
+        "same mode"
+      ],
+      "training_search_status": "no_source_id_or_named_concept_match; paraphrased exposure remains unestablished"
+    },
+    {
+      "review_index_zero_based": 200,
+      "item_hash": "ad9013b8b52b8397b24a1f074af4b2305a740fb1456953d8a29b07f333acef9e",
+      "status": "C",
+      "capability_group": "large_item_slotting",
+      "dedup_group": "large_item_slotting",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需要具体仓库布局及放置策略条件。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 201,
+      "item_hash": "aefe96f3808e9ded19cd31c51068cff67f979c7e1459bc6a951c2e2b2926996d",
+      "status": "D",
+      "capability_group": "modal_comparison_wording",
+      "dedup_group": "modal_comparison_wording",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "比较句含自指/错字及历史数据，需原题与时期裁定。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 202,
+      "item_hash": "af3c8cfc8d11e6c819b9e159e9f7cad1e5853a4b6a2f396db8f5cbf4a579f5ae",
+      "status": "C",
+      "capability_group": "supply_chain_stage_diagram",
+      "dedup_group": "supply_chain_stage_diagram",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "缺少阶段图及方向定义；共用图示不能按编号拆分知识点。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 203,
+      "item_hash": "af7c4b980dcc015534da9d92855adc6f80f8538d0934fb2bfd2991c5fdb77b37",
+      "status": "B",
+      "capability_group": "inventory_reorder_assumptions",
+      "dedup_group": "inventory_reorder_assumptions",
+      "source_rows": [
+        109
+      ],
+      "book_ids": [],
+      "note": "需需求不确定性及连续/定期检查模型假设。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 204,
+      "item_hash": "b539c06d30146ac5674eb850d9a97d45cbd5012fd7a2db623b359c585b87ca63",
+      "status": "D",
+      "capability_group": "scm_definition_scope",
+      "dedup_group": "scm_definition_scope",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "否定式定义题有多个可能不合定义的描述，需完整框架裁定。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 205,
+      "item_hash": "b61524451d135be96268ab2c5df3de604b32b510abcfa830858e8d5cfe9f32db",
+      "status": "B",
+      "capability_group": "third_party_service_roles",
+      "dedup_group": "third_party_service_roles",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需金融/管理服务在指定物流服务商分类中的边界。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 206,
+      "item_hash": "b87431d054539180bb0e535be146b093c7c928f42c0ca0649408f844988b6e46",
+      "status": "D",
+      "capability_group": "value_added_service_scope",
+      "dedup_group": "value_added_service_scope",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "制造支持是否排除取决于服务分类，现有题面不唯一。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 207,
+      "item_hash": "bac4c2de74b9db649714f97d71c36236c9119cd9a9701858fc20b224882ffdd4",
+      "status": "B",
+      "capability_group": "dc_mixing_scope",
+      "dedup_group": "dc_mixing_scope",
+      "source_rows": [
+        73
+      ],
+      "book_ids": [],
+      "note": "相关中心定义存在，但需复核该题各命题的完整条件。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 208,
+      "item_hash": "bc1c85be8bbbd8ac83beed66e5babc4596f5440ef0f5db73bb4306deb4c55b53",
+      "status": "C",
+      "capability_group": "warehouse_layout_diagram",
+      "dedup_group": "warehouse_layout_diagram",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "缺少被编号引用的布局图；同类图题不计为多个独立知识点。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 209,
+      "item_hash": "c07cb12239d86db5a6c05f77c0cb69264eb300a180292fe446c81f87454fa3bc",
+      "status": "B",
+      "capability_group": "postponement_scope",
+      "dedup_group": "postponement_scope",
+      "source_rows": [
+        191
+      ],
+      "book_ids": [],
+      "note": "产品延迟与配送延迟的定义边界需原材料确认。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 210,
+      "item_hash": "c0cbc86e1b14f1671faf907d8ea547ec0e840c163eed0064b896f21671083b84",
+      "status": "C",
+      "capability_group": "warehouse_process_sequence",
+      "dedup_group": "warehouse_process_sequence",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "缺少原流程的阶段编号；不能用常见顺序替代。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 211,
+      "item_hash": "c7254a1e7fca43ac0cfa8183358e361466345afb5a883240458bff7271d765e1",
+      "status": "D",
+      "capability_group": "crossdock_mixing_boundary",
+      "dedup_group": "crossdock_mixing_boundary",
+      "source_rows": [
+        73
+      ],
+      "book_ids": [],
+      "note": "操作方式与设施类型混合，需要候选定义裁定。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 212,
+      "item_hash": "c94bec44b513bd3e195b34372206a112b3481a3cd2f4db64f6b38b7601ccbcec",
+      "status": "C",
+      "capability_group": "warehouse_layout_diagram",
+      "dedup_group": "warehouse_layout_diagram",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "缺少被编号引用的布局图；同类图题不计为多个独立知识点。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 213,
+      "item_hash": "cb2667cc0ecc5651cac859c8e48dbf8fb0e5ae72fdf2d7394bc3078f8f306647",
+      "status": "C",
+      "capability_group": "third_party_historical_ranking",
+      "dedup_group": "third_party_historical_ranking",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需特定年份服务商收入、排名与统计口径。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 214,
+      "item_hash": "d7d43fe09aa426aaee295bf1ff6de63d776b8eff9fc515798859118a9d3783a9",
+      "status": "C",
+      "capability_group": "graph_diagram",
+      "dedup_group": "graph_diagram",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "缺少图结构，节点/环/编号无法从文字唯一恢复。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 215,
+      "item_hash": "d9d26b1ebb6006a4898010aa8437e6a66ee36f174716610ee951fb9b8c0d841a",
+      "status": "B",
+      "capability_group": "supervisor_cost_allocation",
+      "dedup_group": "supervisor_cost_allocation",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "直接/间接、固定/变动依赖成本对象和考察期限。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 216,
+      "item_hash": "e3088b9150e023a5f93a271135122c2eab86cabe4519010dabd3ce0e7af57f49",
+      "status": "B",
+      "capability_group": "transport_emission_policy",
+      "dedup_group": "transport_emission_policy",
+      "source_rows": [
+        176
+      ],
+      "book_ids": [],
+      "note": "需政策版本与运输排放统计范围，摘要不足。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 217,
+      "item_hash": "e5091bb214097f756cd4ddba16fba12174fae5d5bfd7073cb7e1287a00cf14a7",
+      "status": "B",
+      "capability_group": "forecast_error_metric",
+      "dedup_group": "forecast_error_metric",
+      "source_rows": [
+        89,
+        203
+      ],
+      "book_ids": [],
+      "note": "需零值、权重与误差口径的前提，尚未支持全部比较。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 218,
+      "item_hash": "e62733a6712162c68f9e4903f520c67c4dab34827a0d3367a2baf60ce3054944",
+      "status": "B",
+      "capability_group": "forecast_uncertainty_set",
+      "dedup_group": "forecast_uncertainty_set",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "不确定性随聚合/局部变化的命题需模型和条件，不能作普遍定理。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 219,
+      "item_hash": "eb2612666d778d3d0225eb32878f1b995c6776d379819525766b53bb94fab2c8",
+      "status": "C",
+      "capability_group": "third_party_historical_ranking",
+      "dedup_group": "third_party_historical_ranking",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需特定年份服务商收入、排名与统计口径。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 220,
+      "item_hash": "f33bcc220d613367b05dd4c65b6bb9442892581f74de211ddda25bfc6862ef66",
+      "status": "D",
+      "capability_group": "multimodal_intermodal_overlap",
+      "dedup_group": "multimodal_intermodal_overlap",
+      "source_rows": [
+        195
+      ],
+      "book_ids": [],
+      "note": "术语在未说明合同/装载条件时有交叠。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 221,
+      "item_hash": "fa51bb5d856f4901839c5182d8fc8850775ff4735301df7f4c410f52f1c43b1e",
+      "status": "A",
+      "capability_group": "modal_contract_dimensions",
+      "dedup_group": "modal_contract_dimensions",
+      "source_rows": [
+        195
+      ],
+      "book_ids": [],
+      "note": "已核验原作者教材中的运输方式与合同维度定义；仅在该教材术语框架内放行，不外推为所有法规的通用定义。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "sufficient_in_reviewed_scope",
+      "label_uniqueness": "supported_by_review",
+      "official_url": "https://transportgeography.org/contents/chapter5/intermodal-transportation-containerization/intermodalism-multimodalism-transmodalism/",
+      "primary_snapshot_id": "primary_passages",
+      "official_locator": "Definition paragraphs 1, 2 and 4",
+      "primary_required_spans": [
+        "separate ticket",
+        "single ticket",
+        "same mode"
+      ],
+      "training_search_status": "no_source_id_or_named_concept_match; paraphrased exposure remains unestablished"
+    },
+    {
+      "review_index_zero_based": 222,
+      "item_hash": "fe2b6f15e2dbf0b26ad43b953d6dd4ec7111c451188a8a5ce65048f3cb4466fd",
+      "status": "A",
+      "capability_group": "modal_contract_dimensions",
+      "dedup_group": "modal_contract_dimensions",
+      "source_rows": [
+        195
+      ],
+      "book_ids": [],
+      "note": "已核验原作者教材中的运输方式与合同维度定义；仅在该教材术语框架内放行，不外推为所有法规的通用定义。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "sufficient_in_reviewed_scope",
+      "label_uniqueness": "supported_by_review",
+      "official_url": "https://transportgeography.org/contents/chapter5/intermodal-transportation-containerization/intermodalism-multimodalism-transmodalism/",
+      "primary_snapshot_id": "primary_passages",
+      "official_locator": "Definition paragraphs 1, 2 and 4",
+      "primary_required_spans": [
+        "separate ticket",
+        "single ticket",
+        "same mode"
+      ],
+      "training_search_status": "no_source_id_or_named_concept_match; paraphrased exposure remains unestablished"
+    },
+    {
+      "review_index_zero_based": 223,
+      "item_hash": "0975f1da9c5f996be060ccf6a2b7e3b6f42fced5c4d759dd9c36befafceae04b",
+      "status": "D",
+      "capability_group": "storage_policy_mixed_description",
+      "dedup_group": "storage_policy_mixed_description",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "同一描述混合商品族与共享储位政策，需标签裁定。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 224,
+      "item_hash": "0cb0fb66ef7badfe6c58ceab26cfc6fa3c857b2d0e93f5abe08934608cc9ac81",
+      "status": "C",
+      "capability_group": "picking_zone_diagram",
+      "dedup_group": "picking_zone_diagram",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "缺少区域图，无法从区域字母唯一识别策略。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 225,
+      "item_hash": "0e35c7201f86bc93a57e205cd86c3fba6178e99823cd306047548b1397ac2baa",
+      "status": "A",
+      "capability_group": "picking_workload",
+      "dedup_group": "picking_workload",
+      "source_rows": [
+        75
+      ],
+      "book_ids": [],
+      "note": "核验教材的作业负担、单位尺寸和操作对比；限教学统计口径。",
+      "training_rows": [
+        269
+      ],
+      "training_coverage": "related_or_partial_supervision",
+      "input_sufficiency": "sufficient_in_reviewed_scope",
+      "label_uniqueness": "supported_by_review"
+    },
+    {
+      "review_index_zero_based": 226,
+      "item_hash": "110f4ff69f7bcbe827d10602e6ded1585acf1dd22f9e5cb8b5fa3faa949c8463",
+      "status": "C",
+      "capability_group": "warehouse_layout_diagram",
+      "dedup_group": "warehouse_layout_diagram",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "缺少被编号引用的布局图；同类图题不计为多个独立知识点。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 227,
+      "item_hash": "13ebb070c838d4ae6139575f8d6b96a122cfd10d88bba80ee7e7058df104d4e2",
+      "status": "B",
+      "capability_group": "picking_batch_zone_boundary",
+      "dedup_group": "picking_batch_zone_boundary",
+      "source_rows": [
+        169
+      ],
+      "book_ids": [],
+      "note": "需批量与分区的任务分解规则及场景前提，不能只用策略名称。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 228,
+      "item_hash": "1e8c78d1996381a6433a3e449907a02f527b7d13de242ebafc5eb191ffd4eaec",
+      "status": "B",
+      "capability_group": "seasonal_storage_response",
+      "dedup_group": "seasonal_storage_response",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需完整仓储季节性策略依据与限制条件。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 229,
+      "item_hash": "266188363ee2785e689796a97e0c44d750f048b2a42ce7ec723793af76ee9986",
+      "status": "B",
+      "capability_group": "warehouse_layout_tradeoff",
+      "dedup_group": "warehouse_layout_tradeoff",
+      "source_rows": [
+        86
+      ],
+      "book_ids": [],
+      "note": "需布局、通道方向和搬运条件支持具体取舍。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 230,
+      "item_hash": "2bcf4faa6d41c4304bbcecd7687c5c94e6e24881d233d37bebc016b66496dc54",
+      "status": "B",
+      "capability_group": "picking_route_conditions",
+      "dedup_group": "picking_route_conditions",
+      "source_rows": [
+        45
+      ],
+      "book_ids": [],
+      "note": "路径优劣依赖密度、设备及布局，需对应算法条件。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 231,
+      "item_hash": "3096c49162bd80582878282e5d40e2635e57c05982ff282fe81ec11cd7ea7d1a",
+      "status": "B",
+      "capability_group": "wms_time_window",
+      "dedup_group": "wms_time_window",
+      "source_rows": [
+        40
+      ],
+      "book_ids": [],
+      "note": "一般 WMS 来源未给出时间窗口的完整业务语义。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 232,
+      "item_hash": "375472c7aba5efffd49daf09d3a1196e76ad05961fd33882c326f8c8fd363a52",
+      "status": "D",
+      "capability_group": "material_handling_negation",
+      "dedup_group": "material_handling_negation",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "否定式题目与短距离搬运命题有方向疑点，需原教材裁定。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 233,
+      "item_hash": "399c2270d7a6bdb573484138c41f6e6e0072d15b6ae344430e31f0b1dbb9896d",
+      "status": "D",
+      "capability_group": "overpack_definition",
+      "dedup_group": "overpack_definition",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "定义文字存在对象自比较/层级混淆，需原文修复。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 234,
+      "item_hash": "3a38c659784db57a11e0c240c84840c238971a09a53b8168de2ffab82389bb6e",
+      "status": "B",
+      "capability_group": "picking_route_conditions",
+      "dedup_group": "picking_route_conditions",
+      "source_rows": [
+        45
+      ],
+      "book_ids": [],
+      "note": "路径优劣依赖密度、设备及布局，需对应算法条件。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 235,
+      "item_hash": "44bc3b7b7a1fef0b60b4c80913fb548bed7c62b34c45ff7e7c8e0b6aa1d12a3a",
+      "status": "D",
+      "capability_group": "wms_all_none_logic",
+      "dedup_group": "wms_all_none_logic",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "具体错误选项与全称选项可能同时满足否定式要求。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 236,
+      "item_hash": "4719ea3317cedddfb28d34f346bbe432811d66aad7833e80b0820455a6943316",
+      "status": "D",
+      "capability_group": "overpack_definition",
+      "dedup_group": "overpack_definition",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "定义文字存在对象自比较/层级混淆，需原文修复。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 237,
+      "item_hash": "4c1bf68e86c0393c382c435977f55a8cd1668e04898fc267947e6f80bb8abade",
+      "status": "B",
+      "capability_group": "abc_profile_scope",
+      "dedup_group": "abc_profile_scope",
+      "source_rows": [
+        44
+      ],
+      "book_ids": [],
+      "note": "需累计贡献和品项比例的适用口径，不能当固定普遍比例。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 238,
+      "item_hash": "5a94ba58579193b33f3413f9e27184bafb274d1e2a4aecd5bcead238722826b1",
+      "status": "B",
+      "capability_group": "picking_batch_zone_boundary",
+      "dedup_group": "picking_batch_zone_boundary",
+      "source_rows": [
+        169
+      ],
+      "book_ids": [],
+      "note": "需批量与分区的任务分解规则及场景前提，不能只用策略名称。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 239,
+      "item_hash": "68f16f8c0091406482b86ae90b69633bbbc35ef6146a978e470e97af876d7b1d",
+      "status": "B",
+      "capability_group": "batch_downstream_process",
+      "dedup_group": "batch_downstream_process",
+      "source_rows": [
+        76,
+        169
+      ],
+      "book_ids": [],
+      "note": "需批拣后分拣和区域协作的完整规则。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 240,
+      "item_hash": "718fbb867b5dc86514e0d5bc045621d8a384442eaeeecc47e42afefe2bc251c6",
+      "status": "B",
+      "capability_group": "picking_batch_zone_boundary",
+      "dedup_group": "picking_batch_zone_boundary",
+      "source_rows": [
+        169
+      ],
+      "book_ids": [],
+      "note": "需批量与分区的任务分解规则及场景前提，不能只用策略名称。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 241,
+      "item_hash": "78e74c0dedbaa01a8873bbae2aa76046044738431c4edfda089072f352ed3062",
+      "status": "B",
+      "capability_group": "partial_load_consolidation",
+      "dedup_group": "partial_load_consolidation",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需存储方式、批次与合并操作前提。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 242,
+      "item_hash": "7b35b80558f45543f1b1802020cf57f82fe8bd67973ab8932df06001d2136814",
+      "status": "B",
+      "capability_group": "wms_ocr_claim",
+      "dedup_group": "wms_ocr_claim",
+      "source_rows": [
+        40
+      ],
+      "book_ids": [],
+      "note": "识别技术不自动证明流程中完全消除人工阅读；需系统说明。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 243,
+      "item_hash": "81f9b3c07b8d6865e32b7b1d58dbcbf89130a82a770fd7cf2d72500894db8a2e",
+      "status": "B",
+      "capability_group": "warehouse_activity_profile",
+      "dedup_group": "warehouse_activity_profile",
+      "source_rows": [
+        78
+      ],
+      "book_ids": [],
+      "note": "需收发活动分析的数据粒度与指标定义。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 244,
+      "item_hash": "86057786fa4ae316c74a2861421c32af0db35bc40f63dd6d13c9285fa1207741",
+      "status": "B",
+      "capability_group": "raw_material_storage",
+      "dedup_group": "raw_material_storage",
+      "source_rows": [
+        73
+      ],
+      "book_ids": [],
+      "note": "现有仓库类型只支持位置/功能，未逐项覆盖该题附加陈述。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 245,
+      "item_hash": "8d0fbd050da3b58be97864ec90557bff79f26c20f20833b8fdadc70a70024239",
+      "status": "D",
+      "capability_group": "wave_batch_tradeoff",
+      "dedup_group": "wave_batch_tradeoff",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "波次与批次拣选的利弊对应不明确，需原课程边界。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 246,
+      "item_hash": "8ea0d7c758b327a0c9a7cbb8b4e33db2831dd4ecbe14d0a9db1ff085b677dfcb",
+      "status": "B",
+      "capability_group": "picking_batch_zone_boundary",
+      "dedup_group": "picking_batch_zone_boundary",
+      "source_rows": [
+        169
+      ],
+      "book_ids": [],
+      "note": "需批量与分区的任务分解规则及场景前提，不能只用策略名称。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 247,
+      "item_hash": "93423250e7448f01e33a901f258eb929918c6a7a2ca6f68ae6a23ddb7daf459a",
+      "status": "B",
+      "capability_group": "warehouse_business_priority",
+      "dedup_group": "warehouse_business_priority",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "业务类型与成本/响应/准确性权衡需具体教材或条件。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 248,
+      "item_hash": "97c74cc90b59e693e569afc6ebc203b96d59124cbeed1b7ce7d293ff2f92bd86",
+      "status": "D",
+      "capability_group": "voice_guided_alias",
+      "dedup_group": "voice_guided_alias",
+      "source_rows": [
+        38
+      ],
+      "book_ids": [],
+      "note": "语音引导与语音识别名称交叠，需要候选操作定义。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 249,
+      "item_hash": "98dc723a7e0ae92b9052f4ac022b8433d9d41f32de670457966d187ce3880569",
+      "status": "B",
+      "capability_group": "returns_receiving",
+      "dedup_group": "returns_receiving",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需退货与收货流程关系的原始说明。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 250,
+      "item_hash": "993ae03b1628afcfabb67ca19fefcea37cec2b446d5d4c17260692a6f60522bc",
+      "status": "B",
+      "capability_group": "order_class_subsets",
+      "dedup_group": "order_class_subsets",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需订单分类维度与子集划分规则。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 251,
+      "item_hash": "a1687fe90f6aaa8e1add2c8cadb2951b6dfb75014fd9295565b0b59d64481111",
+      "status": "D",
+      "capability_group": "storage_policy_mixed_description",
+      "dedup_group": "storage_policy_mixed_description",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "同一描述混合商品族与共享储位政策，需标签裁定。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 252,
+      "item_hash": "a370da8c92747849c3e5007ccab233f9ca0b9537159233f4dd018266ce99f02c",
+      "status": "B",
+      "capability_group": "receiving_practice",
+      "dedup_group": "receiving_practice",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需收货最佳实践的条件与完整多选依据。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 253,
+      "item_hash": "aebafaec1e548fa47aaf90abd57552628cde30376e33218d1a3932455b9373fa",
+      "status": "B",
+      "capability_group": "wms_configuration_flexibility",
+      "dedup_group": "wms_configuration_flexibility",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需要产品配置兼容性规则，不能外推系统能力。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 254,
+      "item_hash": "b3b7b4f6f5a871ba99698570294fb1346c3455799f55cbe661c06400233cfc51",
+      "status": "B",
+      "capability_group": "warehouse_business_priority",
+      "dedup_group": "warehouse_business_priority",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "业务类型与成本/响应/准确性权衡需具体教材或条件。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 255,
+      "item_hash": "b8ed3805b93f33c2fb7b59425f389eadb9ded9710b20a47fe1eb4c6a570f2a54",
+      "status": "B",
+      "capability_group": "warehouse_activity_profile",
+      "dedup_group": "warehouse_activity_profile",
+      "source_rows": [
+        78
+      ],
+      "book_ids": [],
+      "note": "需收发活动分析的数据粒度与指标定义。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 256,
+      "item_hash": "bae56894b1fcb232f216c34099b76f8b89fae0baeab44253ba2a06bf2cca5dec",
+      "status": "B",
+      "capability_group": "picking_route_conditions",
+      "dedup_group": "picking_route_conditions",
+      "source_rows": [
+        45
+      ],
+      "book_ids": [],
+      "note": "路径优劣依赖密度、设备及布局，需对应算法条件。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 257,
+      "item_hash": "bb2f3826e155bd645d504ddadef9f60bbf53f9833eb7a6357ea964700045db0a",
+      "status": "B",
+      "capability_group": "warehouse_business_priority",
+      "dedup_group": "warehouse_business_priority",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "业务类型与成本/响应/准确性权衡需具体教材或条件。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 258,
+      "item_hash": "bf87d9b084ea0c800c9093653e8bffd360076be0c0e6bf6579010ce688a09336",
+      "status": "B",
+      "capability_group": "warehouse_layout_tradeoff",
+      "dedup_group": "warehouse_layout_tradeoff",
+      "source_rows": [
+        86
+      ],
+      "book_ids": [],
+      "note": "需布局、通道方向和搬运条件支持具体取舍。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 259,
+      "item_hash": "c5d53087ea43865037b8d39d8235761e2c6d103a347f76a19ea2de223ee01e31",
+      "status": "A",
+      "capability_group": "distribution_center_function",
+      "dedup_group": "distribution_center_function",
+      "source_rows": [
+        73
+      ],
+      "book_ids": [],
+      "note": "原书功能列表支持设施辨析。",
+      "training_rows": [
+        43,
+        170,
+        268
+      ],
+      "training_coverage": "related_or_partial_supervision",
+      "input_sufficiency": "sufficient_in_reviewed_scope",
+      "label_uniqueness": "supported_by_review"
+    },
+    {
+      "review_index_zero_based": 260,
+      "item_hash": "d024419dd954881189c23bc5c9af77be8fa21a74490c7ea81e6672ee62e3d15b",
+      "status": "B",
+      "capability_group": "seasonal_storage_response",
+      "dedup_group": "seasonal_storage_response",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "需完整仓储季节性策略依据与限制条件。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 261,
+      "item_hash": "d2c73acf2bd1866b561533bbe583a5db4fd48251f0d7a5dba15ba2b841b55df7",
+      "status": "B",
+      "capability_group": "batch_destination_objective",
+      "dedup_group": "batch_destination_objective",
+      "source_rows": [
+        169
+      ],
+      "book_ids": [],
+      "note": "需批次按目的地组织的目标与约束条件。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 262,
+      "item_hash": "dfece668ec863be43b3d32f208508100c8bad06aec85fa4b83bd5337d6da8a8b",
+      "status": "B",
+      "capability_group": "batch_downstream_process",
+      "dedup_group": "batch_downstream_process",
+      "source_rows": [
+        76,
+        169
+      ],
+      "book_ids": [],
+      "note": "需批拣后分拣和区域协作的完整规则。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 263,
+      "item_hash": "e3b3a07c907f405e73d83a42773445649c8fb62ec5a3072b37c88c81a8b0ed0a",
+      "status": "D",
+      "capability_group": "wave_batch_tradeoff",
+      "dedup_group": "wave_batch_tradeoff",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "波次与批次拣选的利弊对应不明确，需原课程边界。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 264,
+      "item_hash": "e7f2716aee20a11d941a6bd474af7c90419498ca92d37ab020468b90f3055fbe",
+      "status": "C",
+      "capability_group": "warehouse_layout_diagram",
+      "dedup_group": "warehouse_layout_diagram",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "缺少被编号引用的布局图；同类图题不计为多个独立知识点。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 265,
+      "item_hash": "f09a98d010bf829fe15fe75eee0f8deb0c9bd2f8e64567d062db03fa9baa04be",
+      "status": "B",
+      "capability_group": "wms_time_window",
+      "dedup_group": "wms_time_window",
+      "source_rows": [
+        40
+      ],
+      "book_ids": [],
+      "note": "一般 WMS 来源未给出时间窗口的完整业务语义。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 266,
+      "item_hash": "f3abbb40e8a00157091552e9a34020cd5f29d1b50db97f4c1b312c921198bd92",
+      "status": "D",
+      "capability_group": "voice_guided_alias",
+      "dedup_group": "voice_guided_alias",
+      "source_rows": [
+        38
+      ],
+      "book_ids": [],
+      "note": "语音引导与语音识别名称交叠，需要候选操作定义。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "requires_adjudication",
+      "label_uniqueness": "requires_adjudication"
+    },
+    {
+      "review_index_zero_based": 267,
+      "item_hash": "f42933c3712943b5479306e788896d6cc477dea06e28918d76817ed488be2ead",
+      "status": "B",
+      "capability_group": "warehouse_height_regime",
+      "dedup_group": "warehouse_height_regime",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "人工/自动库高度依赖设备、建筑与时期，需明确资料范围。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "not_established",
+      "label_uniqueness": "not_established"
+    },
+    {
+      "review_index_zero_based": 268,
+      "item_hash": "fe02efbe53d886829a6a36e8d4f051bf8331e225e264b85ea9ef8e964a41d37d",
+      "status": "C",
+      "capability_group": "picking_zone_diagram",
+      "dedup_group": "picking_zone_diagram",
+      "source_rows": [],
+      "book_ids": [],
+      "note": "缺少区域图，无法从区域字母唯一识别策略。",
+      "training_rows": [],
+      "training_coverage": "not_established",
+      "input_sufficiency": "missing_context",
+      "label_uniqueness": "not_established"
+    }
+  ],
+  "primary_source_snapshots": [
+    {
+      "id": "primary_passages",
+      "path": "CPT_resources/llin-stage-a-20260920-02/primary_passages.private.json",
+      "sha256": "49e70c66c8f9ebb0e6e15945e2f71e27c84ad128c116d54786649e9d0e5f0a40",
+      "kind": "web_reader_response"
+    },
+    {
+      "id": "paper_context",
+      "path": "CPT_resources/llin-stage-a-20260920-02/paper_context.private.json",
+      "sha256": "db7fed8800d398eb8c41ef950028a094b1c0025f369c33563941801af9638ee6",
+      "kind": "web_reader_response"
+    }
+  ],
+  "parent_review_sha256": "c79bac7c0a83aac6dd42a254321c7674490f291dd17bda1e8bf64c59b0ac1060"
+}
