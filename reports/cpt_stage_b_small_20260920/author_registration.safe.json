@@ -1,0 +1,30 @@
+{
+  "input_sha256": "3b873f85ddf6ef56f0923acdc452bf781a6a51a504002d57ebfc3309cea78fb3",
+  "mode": "author",
+  "model_label": "step120_current",
+  "calls": 8,
+  "max_tokens": 2048,
+  "temperature": 0.4,
+  "seed": 20922,
+  "max_model_len": 8192,
+  "max_num_seqs": 32,
+  "tp": 8,
+  "thinking": false,
+  "prompt_tokens": [
+    2716,
+    2716,
+    2723,
+    2721,
+    2032,
+    2032,
+    2033,
+    2043
+  ],
+  "code_sha256": {
+    "run_cpt_stage_b_small.py": "d04b52d5b057817daeb74603659546fd6ea6afe6a011fafc2a3f9ebcbb60bdb1",
+    "run_cpt_stage_b_author.py": "108dc5bec976c6b131a5d5dfc66e84e4b5348bf58901875ee61e8f700581e5af",
+    "cpt_stage_b.py": "c5855c92041b111b8103486e2b4558b7c1806f3f9d0e161979932396f084d923",
+    "evaluate_logistics_knowledge.py": "8cee1c90a17771860b26b2e01f919bf3730c4ac2fefb21be3fd0dee222c8f949"
+  },
+  "training_allowed": false
+}

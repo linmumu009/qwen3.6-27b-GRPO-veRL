@@ -1,0 +1,170 @@
+{
+  "author_calls": 8,
+  "additional_review_model_calls": 0,
+  "blind_review_by_different_model": true,
+  "original_author_evidence_hidden_until_judgments_frozen": true,
+  "judgments_sha256": "f14b9746442ac7c0554adb9c983c9ec97e7e283a61cbc6e9ecdbb9bba27befc9",
+  "group_quality_pass": {
+    "low_water_response": false,
+    "port_forecast": false
+  },
+  "records": [
+    {
+      "id": "low_water_response-scope",
+      "group": "low_water_response",
+      "form": "scope",
+      "structural_errors": [
+        "AssertionError: malformed or truncated task schema"
+      ],
+      "author_key": null,
+      "blind_key": null,
+      "key_agreement": false,
+      "blind_quality_pass": false,
+      "quality_pass": false,
+      "review_note": "No complete parseable task; do not salvage a partial generation.",
+      "task_sha256": "1a8d03bd296a42c4899e121c81034ea0941bc14ad32d3d59311a271ed191ca29"
+    },
+    {
+      "id": "low_water_response-competing_rules",
+      "group": "low_water_response",
+      "form": "competing_rules",
+      "structural_errors": [
+        "AssertionError: registered explicit instruction missing"
+      ],
+      "author_key": [
+        0,
+        2,
+        3,
+        5
+      ],
+      "blind_key": [
+        0,
+        2,
+        3,
+        5
+      ],
+      "key_agreement": true,
+      "blind_quality_pass": false,
+      "quality_pass": false,
+      "review_note": "Source supports the answer set, but this mainly enumerates measures and lacks differentiated feasibility constraints or a real competition between rules; explicit named textbook/historical scope is not stated.",
+      "task_sha256": "3950c9ed6db9a32ac54b37be6bc8950be4b063601ed6bd4be50488bb46225634"
+    },
+    {
+      "id": "low_water_response-application",
+      "group": "low_water_response",
+      "form": "application",
+      "structural_errors": [
+        "AssertionError: registered explicit instruction missing"
+      ],
+      "author_key": [
+        0,
+        3,
+        4
+      ],
+      "blind_key": [
+        0,
+        4
+      ],
+      "key_agreement": false,
+      "blind_quality_pass": false,
+      "quality_pass": false,
+      "review_note": "Smaller push-barge convoys eventually withdrew; coupled barges are a distinct group said to benefit from demand. Option 3 transfers the withdrawal claim to coupled barges. Full original load for those vessels is not established. Stem repeats part of the answer and lacks explicit select-all instruction.",
+      "task_sha256": "4dd1c2d5e6401e53b8487cb8be4194a9549b275e6653317111b5186b46383c62"
+    },
+    {
+      "id": "low_water_response-counterexample",
+      "group": "low_water_response",
+      "form": "counterexample",
+      "structural_errors": [],
+      "author_key": [
+        1,
+        3,
+        5
+      ],
+      "blind_key": [
+        1,
+        3,
+        5
+      ],
+      "key_agreement": true,
+      "blind_quality_pass": true,
+      "quality_pass": true,
+      "review_note": "Historical capacity loss despite more small-vessel activity is a concrete counterexample; the named 2018/124-day observation is source-backed. No universal law about all future droughts is required.",
+      "task_sha256": "24e0c7191b66119f6b3456c1492ef17493f8088bd7eacaa3405214af39c1332b"
+    },
+    {
+      "id": "port_forecast-scope",
+      "group": "port_forecast",
+      "form": "scope",
+      "structural_errors": [],
+      "author_key": [
+        0,
+        1
+      ],
+      "blind_key": [
+        0,
+        1
+      ],
+      "key_agreement": true,
+      "blind_quality_pass": false,
+      "quality_pass": false,
+      "review_note": "Arbitrary 10-million/5-million/1.5-million/2-million quantities violate registration. The question explicitly gives regional total, port share and which forecast method to use, making the correct options mainly restatements. Option 2 invents LNG at this port.",
+      "task_sha256": "5404803ee89aa23ae699422def61094b9f9906a323b340325cce5d57a5adabb6"
+    },
+    {
+      "id": "port_forecast-competing_rules",
+      "group": "port_forecast",
+      "form": "competing_rules",
+      "structural_errors": [],
+      "author_key": [
+        0,
+        2
+      ],
+      "blind_key": [
+        0,
+        2
+      ],
+      "key_agreement": true,
+      "blind_quality_pass": true,
+      "quality_pass": true,
+      "review_note": "No alternative routes versus three competing ports provides the necessary captive/contested conditions, and the textbook supports the contrasting forecasting approaches.",
+      "task_sha256": "2147255244d991ddcfa7602571e9eb0596627824255d990bc90ff7ecf88e2693"
+    },
+    {
+      "id": "port_forecast-application",
+      "group": "port_forecast",
+      "form": "application",
+      "structural_errors": [],
+      "author_key": [
+        0,
+        1
+      ],
+      "blind_key": null,
+      "key_agreement": false,
+      "blind_quality_pass": false,
+      "quality_pass": false,
+      "review_note": "Proximity to a steel mill does not establish the absence of other port options. Option 2 asserts alternatives without the scenario specifying them; cannot call it false solely for lack of evidence. Need explicit routing-choice premise before classification.",
+      "task_sha256": "3f8a9e41da6823f8616844b53407d200e66199cedf75caac192f5ae8151bf710"
+    },
+    {
+      "id": "port_forecast-counterexample",
+      "group": "port_forecast",
+      "form": "counterexample",
+      "structural_errors": [],
+      "author_key": [
+        0,
+        2
+      ],
+      "blind_key": [
+        0
+      ],
+      "key_agreement": false,
+      "blind_quality_pass": false,
+      "quality_pass": false,
+      "review_note": "Reliability/time defeats the asserted cost-only guarantee. Captive cargo facts do not refute a claim expressly about contested cargo. The item gives no concrete competing-route scenario and is mostly a general rule paraphrase.",
+      "task_sha256": "045ecb079bd403359dbdbda208068234ae9b93b7ba42a39af0f4bf4c482bdb41"
+    }
+  ],
+  "overlap_still_required": true,
+  "training_allowed": false
+}

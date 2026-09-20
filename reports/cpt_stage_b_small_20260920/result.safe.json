@@ -1,0 +1,15 @@
+{
+  "author_calls": 8,
+  "complete_outputs": 7,
+  "truncated_outputs": 1,
+  "quality_pass_tasks": 2,
+  "quality_pass_groups": 0,
+  "diagnostic_calls": 0,
+  "training_allowed": false,
+  "automatic_authoring_stopped": true,
+  "reason": "Neither group passed all four tasks; pre-registered stop condition reached.",
+  "blind_judgments_sha256": "f14b9746442ac7c0554adb9c983c9ec97e7e283a61cbc6e9ecdbb9bba27befc9",
+  "raw_predictions_sha256": "cfd46641a4eba952fa1c0cb8ee25404139de51dc10ab6a63e75e6675fdc1fba4",
+  "quality_sha256": "ce97408f08108fbd6f2d46ef33b95cebcb1b1c66dcea7e37d5154bb15843fb00",
+  "overlap_sha256": "b7f740c69ef6f51d09508119ae56762dcdb028217bbb26e71d5e462100653565"
+}

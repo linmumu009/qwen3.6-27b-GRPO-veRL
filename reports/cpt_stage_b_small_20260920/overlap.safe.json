@@ -1,0 +1,113 @@
+{
+  "corpus_records": 2785,
+  "unique_normalized_questions": 2296,
+  "inputs": [
+    {
+      "path": "llin-transfer-audit-20260915-01\\frozen_cases.private.jsonl",
+      "sha256": "b652b2108cb552346df11d005c15ff3137c50a756a7b24eb35302683ec33ed99"
+    },
+    {
+      "path": "llin-transfer-p4-data-20260918-01\\train.messages.private.jsonl",
+      "sha256": "1f67f334845f2ac84f9515a38612135b6238645f763c8b142a466303452884b7"
+    },
+    {
+      "path": "llin-composed-boundaries-20260916-01\\cases.private.jsonl",
+      "sha256": "ebc53dab7e305a4d34d00dc31eff70476d2612021855240762c29c8969c25328"
+    },
+    {
+      "path": "llin-coverage-expansion-20260916-01\\cases.private.jsonl",
+      "sha256": "b28c352852a2c78bc6659e6d2ee74adefb7e4cd2d688e1d8f1de3995efec0373"
+    },
+    {
+      "path": "llin-reviewed-scenario-probe-20260916-01\\cases.private.jsonl",
+      "sha256": "d778181eae00dc8ed45496a81bead8d9f5f410970e7d28fa1f1354137eaaae09"
+    },
+    {
+      "path": "llin-transfer-screen-20260916-02\\candidates.private.jsonl",
+      "sha256": "1237a2c060eae41a674a620864f08381ffe364de219accb7916555e849622a6e"
+    },
+    {
+      "path": "llin-transfer-screen-20260916-03\\candidates.private.jsonl",
+      "sha256": "f0452e42f78606cd7f942f5324f4d1f9c94ae32d60dfe978dbb85bb3d5ad2671"
+    },
+    {
+      "path": "llin-transfer-draft-20260916-01\\pilot_result\\candidates.private.jsonl",
+      "sha256": "0bed756f04398c1bd810f05d95b7f360ba294bc60e5e06332ac5b2493a04338a"
+    },
+    {
+      "path": "llin-transfer-constraint-pilot-20260916-01\\result\\candidates.private.jsonl",
+      "sha256": "2cbce73246f70ec49ca23a3eb1e8b92d82aea6711983c38c201a5cb6781df83e"
+    },
+    {
+      "path": "llin-s4-probe-20260915-01\\cases.private.jsonl",
+      "sha256": "63f652b85d28ddf1da5de67f0074f99e80b144c5b1ca4f6ec408a83b7ac78b19"
+    },
+    {
+      "path": "llin-s4-probe-20260915-02\\cases.private.jsonl",
+      "sha256": "2669e189e06b00c04a476be308a1d430eee65362d8cbe3bcdc9c4e77499035eb"
+    },
+    {
+      "path": "llin-s4-transfer-diagnostic-20260915-01\\cases.private.jsonl",
+      "sha256": "0894adb053f55b0716ae3bf128bb91b21dd778ad48653342909a3125b2c473f9"
+    },
+    {
+      "path": "llin-s4-conditional-train-20260915-01\\tasks.private.jsonl",
+      "sha256": "663e76794901e0af31d759a027ab4ea1e300888fb55e1927691336e2e4f4916b"
+    },
+    {
+      "path": "llin-s5-contrast-20260915-01\\tasks.private.jsonl",
+      "sha256": "8d1f5e3ce9772fc2ddf99e16ee92630dcbf8aa6a1b58e558b5f397d33c616ea2"
+    },
+    {
+      "path": "llin-source-reviewed-20260914-01\\cases.private.jsonl",
+      "sha256": "d896fd906a17c473d4ec9ef775f1ad0ed7138d9fbec431fec5efcab67a3856bd"
+    },
+    {
+      "path": "llin-source-expansion-20260914-01\\filtered_tasks.private.jsonl",
+      "sha256": "cb8085d17b6b0573964540b72d6e3a3991cd617df114ba271857161926f271eb"
+    },
+    {
+      "path": "llin-stage-b-20260920-01\\run04\\calls.private.jsonl",
+      "sha256": "0b6726848166634dec3318dab1db2f79c715bf0f30859509699306c3da7a4598"
+    }
+  ],
+  "missing": [],
+  "records": [
+    {
+      "id": "low_water_response-scope",
+      "unavailable": true,
+      "hits": []
+    },
+    {
+      "id": "low_water_response-competing_rules",
+      "hits": []
+    },
+    {
+      "id": "low_water_response-application",
+      "hits": []
+    },
+    {
+      "id": "low_water_response-counterexample",
+      "hits": []
+    },
+    {
+      "id": "port_forecast-scope",
+      "hits": []
+    },
+    {
+      "id": "port_forecast-competing_rules",
+      "hits": []
+    },
+    {
+      "id": "port_forecast-application",
+      "hits": []
+    },
+    {
+      "id": "port_forecast-counterexample",
+      "hits": []
+    }
+  ],
+  "threshold": 0.3,
+  "limitation": "Lexical question-only screen; semantic novelty and option overlap require manual review. Corpus limited to enumerated historical artifacts.",
+  "training_allowed": false
+}
