@@ -1,0 +1,24 @@
+{
+  "status": "waiting_for_device",
+  "time_utc": "2026-09-20T04:48:14Z",
+  "training_allowed": false,
+  "memory_used_mib": [
+    59221,
+    58975,
+    59211,
+    58973,
+    59243,
+    58981,
+    59243,
+    58982,
+    59212,
+    58973,
+    59219,
+    58962,
+    59249,
+    59014,
+    59248,
+    59012
+  ],
+  "deadline_remaining_seconds": 21598
+}

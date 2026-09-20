@@ -1,0 +1,96 @@
+{
+  "source_packet_sha256": "00b4f343d9b35211dd86d0e19d44247fe5db6a4754b3f6f3e4c13b1db12031ca",
+  "archives": {
+    "llin-knowledge-complete-20260911\\core\\sources.private.jsonl": "7da53a1a3246381181c5a28fabfb0b68223aed0ee76ff6242710bf257e5af4c2",
+    "llin-stage-a-20260920-02\\primary_passages.private.json": "49e70c66c8f9ebb0e6e15945e2f71e27c84ad128c116d54786649e9d0e5f0a40",
+    "llin-stage-a-20260920-03\\mit_models.private.json": "fb21b555dff31ec34f06b94540897ed7e13c61d39cd122db5db238260151c04c"
+  },
+  "groups": [
+    {
+      "id": "transport_models",
+      "scope": "MIT Transportation Systems, 2004, chapter 10, slides 4, 10, 13",
+      "operation": "Distinguish mathematical models, qualitative frameworks, system evaluation and transparent assumptions in planning decisions.",
+      "option_count": 4,
+      "source_refs": [
+        "https://ocw.mit.edu/courses/1-221j-transportation-systems-fall-2004/85c6999b30a667b59613fb41621d81e7_trans_sys_chap10.pdf"
+      ],
+      "source_text_sha256": "05aee2f03b8009160a391981b7b70b81eeed81a6a1a1a51f3b38b4147b77402d"
+    },
+    {
+      "id": "modal_dimensions",
+      "scope": "The Geography of Transport Systems: Intermodalism, Multimodalism and Transmodalism; archived 2026-09-20",
+      "operation": "Compare mode changes and contract boundaries; distinguish contract integration from within-mode connections and efficiency claims.",
+      "option_count": 4,
+      "source_refs": [
+        "https://transportgeography.org/contents/chapter5/intermodal-transportation-containerization/intermodalism-multimodalism-transmodalism/"
+      ],
+      "source_text_sha256": "f3b99dab9f1ca62b9ef3d30c439f0ee242ca423767ebe0118eacce7204b04afd"
+    },
+    {
+      "id": "gvc_trajectories",
+      "scope": "UNCTAD World Investment Report 2020, key messages, page xiii",
+      "operation": "Compare reshoring, diversification, regionalization and replication across fragmentation, geography, value concentration and digital manufacturing.",
+      "option_count": 4,
+      "source_refs": [
+        "https://unctad.org/node/3989"
+      ],
+      "source_text_sha256": "f505161008c27ee2fd0b8a120a3214505438d6f33e5ccac9f31bdb698037dc48"
+    },
+    {
+      "id": "low_water_response",
+      "scope": "Ports and Waterways textbook; low-water navigation context",
+      "operation": "Compare operational and infrastructure responses to low water, including prerequisites and limits.",
+      "option_count": 6,
+      "source_refs": [
+        "book:23e9a80444aca87fc443"
+      ],
+      "source_text_sha256": "092756f94b0fcb08bfd2e31cfb00304af89ec78bcdc9a5b9f5f180d0d3bf40c3"
+    },
+    {
+      "id": "rail_loading",
+      "scope": "Glossary for Transport Statistics, archived edition and railway statistical definitions",
+      "operation": "Apply loading, unloading, national/international transport and transit boundaries including rail-ferry exceptions.",
+      "option_count": 6,
+      "source_refs": [
+        "book:503554d08d7c3c219cc9",
+        "book:03936680691d4e0b0fbe"
+      ],
+      "source_text_sha256": "6e4e26cd3de3281adc48052d26f568dd5d49f0a6875b658b93d5572e86983b85"
+    },
+    {
+      "id": "port_forecast",
+      "scope": "Ports and Waterways textbook, cargo forecast methods; examples are historical teaching assumptions",
+      "operation": "Distinguish top-down and bottom-up evidence, forecast assumptions and port competition limitations.",
+      "option_count": 4,
+      "source_refs": [
+        "book:44247ab41f17672e477e"
+      ],
+      "source_text_sha256": "9f7f4c57c209aec336d300b306eecd45260cf91def229031acda84ae3e9d5734"
+    },
+    {
+      "id": "picking_workload",
+      "scope": "MITx supply-chain teaching material, archived order-picking section",
+      "operation": "Apply unit-size differences to picking workload and automation choices without inventing universal productivity ratios.",
+      "option_count": 4,
+      "source_refs": [
+        "book:e24132919e309f5e6174"
+      ],
+      "source_text_sha256": "62943bdafbbbcc0041626f74cc87ebaa626344197cee73320fe3ff76cd801ca6"
+    },
+    {
+      "id": "rail_rolling_stock",
+      "scope": "Glossary for Transport Statistics, archived railway rolling-stock definitions",
+      "operation": "Apply propulsion, passenger capacity, coupled-unit and fixed-formation boundaries; compare overlapping classes, not equipment name lookup.",
+      "option_count": 6,
+      "source_refs": [
+        "book:7a99a7c52f9c2bace58b",
+        "book:92ba8cbfe8931dcab751",
+        "book:ac6926e38c57fbfab1db"
+      ],
+      "source_text_sha256": "78b22d61630808b60360435af7bc8a20e8a76246cd5d10ce2d3e3bdd633cef0b"
+    }
+  ],
+  "author_calls_max": 64,
+  "diagnostic_calls_max": 432,
+  "training_allowed": false
+}

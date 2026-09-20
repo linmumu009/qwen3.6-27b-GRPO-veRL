@@ -1,0 +1,20 @@
+{
+  "source_packet_sha256": "00b4f343d9b35211dd86d0e19d44247fe5db6a4754b3f6f3e4c13b1db12031ca",
+  "author_calls_max": 64,
+  "author_requests": 32,
+  "author_temperature": 0.4,
+  "review_temperature": 0,
+  "author_seed": 20920,
+  "review_seed": 20921,
+  "max_tokens": 2048,
+  "max_model_len": 8192,
+  "max_num_seqs": 32,
+  "tp": 8,
+  "wait_seconds": 21600,
+  "models_sha256": "bb1cd0cce359cbda829ab5dd7a473532b44e27c52a67ff0867d56f8b915f956a",
+  "code_sha256": {
+    "run_cpt_stage_b_author.py": "89ff26c4f3b6a325428915f451a39ce7eaf7d6ed0390c123d9a4c6dc6387c77d",
+    "cpt_stage_b.py": "6d3e660400f47076ad51b7c3a49b0f155ca0fb92906661d8a02c56e3434895cf"
+  },
+  "training_allowed": false
+}
