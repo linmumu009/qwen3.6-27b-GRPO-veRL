@@ -1,0 +1,40 @@
+{
+  "calls": 34,
+  "stages": {
+    "author": 32,
+    "review": 2
+  },
+  "candidates": 32,
+  "blind_review_pass": 2,
+  "group_pass_counts": {
+    "transport_models": 0,
+    "modal_dimensions": 0,
+    "gvc_trajectories": 0,
+    "low_water_response": 1,
+    "rail_loading": 0,
+    "port_forecast": 0,
+    "picking_workload": 1,
+    "rail_rolling_stock": 0
+  },
+  "complete_groups": 0,
+  "rejections": {
+    "source quote": 25,
+    "missing multi-select instruction": 1,
+    "task length/design": 3,
+    "option count or duplicates": 1
+  },
+  "quote_failure_surface_categories": {
+    "contains_ellipsis": 20,
+    "other_nonexact": 2,
+    "whitespace_only": 3
+  },
+  "semantic_quality_of_rejected_tasks_not_established": true,
+  "diagnostic_calls": 0,
+  "training_allowed": false,
+  "files_sha256": {
+    "sources.private.json": "00b4f343d9b35211dd86d0e19d44247fe5db6a4754b3f6f3e4c13b1db12031ca",
+    "candidates.private.json": "bbb2a8f3f7bb5024960a5c399d8f41dc53f81fbc617a2861bca68c4a918d0867",
+    "calls.private.jsonl": "0b6726848166634dec3318dab1db2f79c715bf0f30859509699306c3da7a4598",
+    "summary.safe.json": "bacfacef37c9dea74d7b70ef3187a562e9ccfa05ebaeef5136fe9e57176d5daf"
+  }
+}
