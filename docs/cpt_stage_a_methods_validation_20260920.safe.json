@@ -1,0 +1,14 @@
+{
+  "deterministic_rebuild": true,
+  "reviewed": 19,
+  "state_changes": 1,
+  "primary_pdf_pages_checked": 7,
+  "visual_model_pages_checked": [
+    4,
+    10,
+    13
+  ],
+  "raw_prediction_rows_reparsed": 10032,
+  "model_calls": 0,
+  "training_runs": 0
+}

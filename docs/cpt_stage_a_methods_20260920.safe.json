@@ -1,0 +1,289 @@
+{
+  "date": "2026-09-20",
+  "parent_review_sha256": "991731a8cd2ef8bca791ef8edc665c26cf3dd31f9b669e4fe626c0b2d90c6244",
+  "reviewed": 19,
+  "state_changes": 1,
+  "items": [
+    {
+      "item_hash": "0140d179e2d5a278d39a8b16df8c307092a24f95a008ac104b493346600a1a66",
+      "review_index_zero_based": 142,
+      "before": "B",
+      "after": "B",
+      "capability_group": "mrp_action_timing",
+      "note": "MRP 定义与提前期资料未给出当前时间桶的专用标签，维持部分依据。",
+      "training_coverage": "not_established"
+    },
+    {
+      "item_hash": "92052c6acd980ed8dd040205b2635b5918f0dfb8008f501b0d26afbf3c51cf23",
+      "review_index_zero_based": 153,
+      "before": "B",
+      "after": "B",
+      "capability_group": "model_method_scope",
+      "note": "找到一般仿真定义，尚未找到覆盖计算资源、求解时间和最优决策局限的完整原文。",
+      "training_coverage": "not_established"
+    },
+    {
+      "item_hash": "1ee47cf153abd86af322e09942ebca94f8e7c760afb3b3780bfc05363784c9c6",
+      "review_index_zero_based": 165,
+      "before": "B",
+      "after": "B",
+      "capability_group": "postponement_scope",
+      "note": "现有延迟差异化来源讨论产品阶段，不足以证明题目采用的运输延期策略。",
+      "training_coverage": "not_established"
+    },
+    {
+      "item_hash": "2c9690524e392f3b87b3893b963fc964253c98ff524684334680e1cf3365f2e7",
+      "review_index_zero_based": 168,
+      "before": "B",
+      "after": "B",
+      "capability_group": "postponement_scope",
+      "note": "产品延期与货运需求紧迫性不是同一命题，需要运输策略原始来源。",
+      "training_coverage": "not_established"
+    },
+    {
+      "item_hash": "2ce0253f2879dc65d38b65a8dc51f7b6e26d534668391442c27aa147d15e4b56",
+      "review_index_zero_based": 169,
+      "before": "B",
+      "after": "A",
+      "capability_group": "model_method_scope",
+      "note": "MIT 原课件第4、10、13页共同支持模型/框架、预测用途和透明假设的完整集合；已逐页视觉核验。",
+      "training_coverage": "not_established"
+    },
+    {
+      "item_hash": "32361d93e24b8b9737fc1a86387aefe192b18d45fcf1406b9fd6504e24400188",
+      "review_index_zero_based": 171,
+      "before": "B",
+      "after": "B",
+      "capability_group": "xyz_demand_classification",
+      "note": "SAP 检索结果提供波动分类线索，但原网页未返回可审正文，不能只凭摘要放行。",
+      "training_coverage": "not_established"
+    },
+    {
+      "item_hash": "67a0506accaf12b054c91e367deea046a445926df52d78029da95a1bac5ac624",
+      "review_index_zero_based": 177,
+      "before": "D",
+      "after": "D",
+      "capability_group": "forecast_method_taxonomy",
+      "note": "官方集合含方法混用疑点；误差指标定义无法证明所述专家与统计组合命题，维持待裁定。",
+      "training_coverage": "not_established"
+    },
+    {
+      "item_hash": "af7c4b980dcc015534da9d92855adc6f80f8538d0934fb2bfd2991c5fdb77b37",
+      "review_index_zero_based": 203,
+      "before": "B",
+      "after": "B",
+      "capability_group": "inventory_reorder_assumptions",
+      "note": "MIT 原页支持库存位置触发及检查周期差异，但题面未明确库存口径、安全系数与比较前提，保持部分依据。",
+      "training_coverage": "not_established"
+    },
+    {
+      "item_hash": "c07cb12239d86db5a6c05f77c0cb69264eb300a180292fe446c81f87454fa3bc",
+      "review_index_zero_based": 209,
+      "before": "B",
+      "after": "B",
+      "capability_group": "postponement_scope",
+      "note": "一般产品延迟差异化材料不能代替残余运输需求的延期规则。",
+      "training_coverage": "not_established"
+    },
+    {
+      "item_hash": "e5091bb214097f756cd4ddba16fba12174fae5d5bfd7073cb7e1287a00cf14a7",
+      "review_index_zero_based": 217,
+      "before": "B",
+      "after": "B",
+      "capability_group": "forecast_error_metric",
+      "note": "原作者预测教材确认百分比指标的跨单位比较用途及零值限制；未证明其应在其他指标不一致时普遍优先。",
+      "training_coverage": "not_established"
+    },
+    {
+      "item_hash": "e62733a6712162c68f9e4903f520c67c4dab34827a0d3367a2baf60ce3054944",
+      "review_index_zero_based": 218,
+      "before": "B",
+      "after": "B",
+      "capability_group": "forecast_uncertainty_set",
+      "note": "现有资料未覆盖五个原因及局部/全国不确定性比较的全部条件，未升级。",
+      "training_coverage": "not_established"
+    },
+    {
+      "item_hash": "13ebb070c838d4ae6139575f8d6b96a122cfd10d88bba80ee7e7058df104d4e2",
+      "review_index_zero_based": 227,
+      "before": "B",
+      "after": "B",
+      "capability_group": "picking_batch_zone_boundary",
+      "note": "仓储原书支持分工与区域组织原则，但没有核实题目特定订单分解情境的完整定义。 已检查实际训练第0行的拣选组织权衡任务，只作为相邻监督，不视为专用分类已覆盖。",
+      "training_coverage": "related_or_partial_supervision"
+    },
+    {
+      "item_hash": "4c1bf68e86c0393c382c435977f55a8cd1668e04898fc267947e6f80bb8abade",
+      "review_index_zero_based": 237,
+      "before": "B",
+      "after": "B",
+      "capability_group": "abc_profile_scope",
+      "note": "原书将80/20作为经验规律；按使用价值和库存水平交叉判断仍缺完整同口径依据。",
+      "training_coverage": "not_established"
+    },
+    {
+      "item_hash": "5a94ba58579193b33f3413f9e27184bafb274d1e2a4aecd5bcead238722826b1",
+      "review_index_zero_based": 238,
+      "before": "B",
+      "after": "B",
+      "capability_group": "picking_batch_zone_boundary",
+      "note": "原书支持合并订单以减少行走，但未核实题目采用的子订单、分区与设备分类口径。 已检查实际训练第0行的拣选组织权衡任务，只作为相邻监督，不视为专用分类已覆盖。",
+      "training_coverage": "related_or_partial_supervision"
+    },
+    {
+      "item_hash": "68f16f8c0091406482b86ae90b69633bbbc35ef6146a978e470e97af876d7b1d",
+      "review_index_zero_based": 239,
+      "before": "B",
+      "after": "B",
+      "capability_group": "batch_downstream_process",
+      "note": "已有批量/分区来源未区分该题下游分拣与边拣边分的完整条件。 已检查实际训练第0行的拣选组织权衡任务，只作为相邻监督，不视为专用分类已覆盖。",
+      "training_coverage": "related_or_partial_supervision"
+    },
+    {
+      "item_hash": "718fbb867b5dc86514e0d5bc045621d8a384442eaeeecc47e42afefe2bc251c6",
+      "review_index_zero_based": 240,
+      "before": "B",
+      "after": "B",
+      "capability_group": "picking_batch_zone_boundary",
+      "note": "原书给出一次行程拣多订单的批量说明，尚未确认子订单集合的专用术语表。 已检查实际训练第0行的拣选组织权衡任务，只作为相邻监督，不视为专用分类已覆盖。",
+      "training_coverage": "related_or_partial_supervision"
+    },
+    {
+      "item_hash": "8ea0d7c758b327a0c9a7cbb8b4e33db2831dd4ecbe14d0a9db1ff085b677dfcb",
+      "review_index_zero_based": 246,
+      "before": "B",
+      "after": "B",
+      "capability_group": "picking_batch_zone_boundary",
+      "note": "与另一术语呈现重复，所需专用术语表仍未核实，不增加独立知识数。 已检查实际训练第0行的拣选组织权衡任务，只作为相邻监督，不视为专用分类已覆盖。",
+      "training_coverage": "related_or_partial_supervision"
+    },
+    {
+      "item_hash": "d2c73acf2bd1866b561533bbe583a5db4fd48251f0d7a5dba15ba2b841b55df7",
+      "review_index_zero_based": 261,
+      "before": "B",
+      "after": "B",
+      "capability_group": "batch_destination_objective",
+      "note": "分组目的地可能同时涉及批量与波次组织，来源未支持该利弊标签唯一性。 已检查实际训练第0行的拣选组织权衡任务，只作为相邻监督，不视为专用分类已覆盖。",
+      "training_coverage": "related_or_partial_supervision"
+    },
+    {
+      "item_hash": "dfece668ec863be43b3d32f208508100c8bad06aec85fa4b83bd5337d6da8a8b",
+      "review_index_zero_based": 262,
+      "before": "B",
+      "after": "B",
+      "capability_group": "batch_downstream_process",
+      "note": "与另一处理方式题重复，仍需分拣时点和分区组合的完整原文。 已检查实际训练第0行的拣选组织权衡任务，只作为相邻监督，不视为专用分类已覆盖。",
+      "training_coverage": "related_or_partial_supervision"
+    }
+  ],
+  "datasets": [
+    {
+      "dataset": "SC-bench-knowledge",
+      "items": 32,
+      "statuses": {
+        "A": 1,
+        "B": 5,
+        "C": 22,
+        "D": 4
+      },
+      "confirmed_items": 1,
+      "confirmed_deduplicated_items": 1,
+      "confirmed_capability_groups": 1,
+      "confirmed_with_rule_supervision": 0,
+      "training_coverage": {
+        "not_established": 32
+      },
+      "unknown_items": 27,
+      "disputed_items": 4,
+      "required_net_gain": 4,
+      "space_gate": "insufficient_current_verified_sources"
+    },
+    {
+      "dataset": "LogistikaBench",
+      "items": 237,
+      "statuses": {
+        "A": 48,
+        "B": 88,
+        "C": 44,
+        "D": 57
+      },
+      "confirmed_items": 48,
+      "confirmed_deduplicated_items": 39,
+      "confirmed_capability_groups": 39,
+      "confirmed_with_rule_supervision": 17,
+      "training_coverage": {
+        "not_established": 197,
+        "related_or_partial_supervision": 23,
+        "rule_present": 17
+      },
+      "unknown_items": 132,
+      "disputed_items": 57,
+      "required_net_gain": 31,
+      "space_gate": "necessary_count_only"
+    }
+  ],
+  "source_archives": [
+    {
+      "file": "mit_models.private.json",
+      "sha256": "fb21b555dff31ec34f06b94540897ed7e13c61d39cd122db5db238260151c04c"
+    },
+    {
+      "file": "pages.private.json",
+      "sha256": "210d2b5dfec3d6eee981753112e8ed2bdda52d6c8b254c015f9be761686c59b9"
+    },
+    {
+      "file": "web_read.private.json",
+      "sha256": "ad4ffa3730cce017fb28c91eee3781a073491a287b9f03a3604220672135c795"
+    }
+  ],
+  "pdf_sources": [
+    {
+      "path": "CPT_resources\\material_survey_20260910\\raw\\fbf969eb415825539c8244423c5487f1cee4bea1a1b8c0d75e202a501a5195e6.pdf",
+      "sha256": "fbf969eb415825539c8244423c5487f1cee4bea1a1b8c0d75e202a501a5195e6",
+      "page": 4
+    },
+    {
+      "path": "CPT_resources\\material_survey_20260910\\raw\\fbf969eb415825539c8244423c5487f1cee4bea1a1b8c0d75e202a501a5195e6.pdf",
+      "sha256": "fbf969eb415825539c8244423c5487f1cee4bea1a1b8c0d75e202a501a5195e6",
+      "page": 10
+    },
+    {
+      "path": "CPT_resources\\material_survey_20260910\\raw\\fbf969eb415825539c8244423c5487f1cee4bea1a1b8c0d75e202a501a5195e6.pdf",
+      "sha256": "fbf969eb415825539c8244423c5487f1cee4bea1a1b8c0d75e202a501a5195e6",
+      "page": 13
+    },
+    {
+      "path": "CPT_resources\\CPT-LOGISTS\\MITx_MicroMasters_SCM_KeyConcepts.pdf",
+      "sha256": "7a34b6f16a0680413ff032abe995b471f2723effcb1a9d3c2ab37eb7b60771d7",
+      "page": 105
+    },
+    {
+      "path": "CPT_resources\\CPT-LOGISTS\\MITx_MicroMasters_SCM_KeyConcepts.pdf",
+      "sha256": "7a34b6f16a0680413ff032abe995b471f2723effcb1a9d3c2ab37eb7b60771d7",
+      "page": 107
+    },
+    {
+      "path": "CPT_resources\\CPT-LOGISTS\\MITx_MicroMasters_SCM_KeyConcepts.pdf",
+      "sha256": "7a34b6f16a0680413ff032abe995b471f2723effcb1a9d3c2ab37eb7b60771d7",
+      "page": 110
+    },
+    {
+      "path": "CPT_resources\\CPT-LOGISTS\\wh-sci-0.98.1.pdf",
+      "sha256": "1c4db4f28175cbce2e130c73e2f4d09ba8e295783d318a6519a40ab7fe731882",
+      "page": 48
+    }
+  ],
+  "primary_reference": {
+    "url": "https://ocw.mit.edu/courses/1-221j-transportation-systems-fall-2004/85c6999b30a667b59613fb41621d81e7_trans_sys_chap10.pdf",
+    "pages": [
+      4,
+      10,
+      13
+    ],
+    "visual_review_completed": true
+  },
+  "model_calls": 0,
+  "training_runs": 0,
+  "semantic_review_independent": false,
+  "full_result_private_sha256": "62345ac0a87f75afd95ff8e0b69a6183c7556ce49ea40ae66e176dc8a87af9bc"
+}
