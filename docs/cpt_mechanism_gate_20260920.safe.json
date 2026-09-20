@@ -1,0 +1,24 @@
+{
+  "installed_loader_passed": true,
+  "baseline_model_and_runtime_match": true,
+  "prompts_match": true,
+  "budgets": {
+    "K": {
+      "records": 333,
+      "sequence_tokens": 89599,
+      "supervised_tokens": 13273
+    },
+    "R": {
+      "records": 333,
+      "sequence_tokens": 94954,
+      "supervised_tokens": 13438
+    }
+  },
+  "same_sampler_order": true,
+  "sampler_sha256": "e500324916c1d32effb883f160cfd140c062553055d196973129ff306472469f",
+  "budget_sha256": "d60c1ca37fc040ad1f1551c904efe5ace49c813ac779b42dd1795859b9d8fa6d",
+  "training_allowed": true,
+  "trainer_seed": 1,
+  "engine_seed": 1,
+  "sampler_seed": 1
+}

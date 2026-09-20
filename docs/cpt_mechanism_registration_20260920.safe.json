@@ -1,0 +1,84 @@
+{
+  "id": "llin-mechanism-20260920-01",
+  "kind": "small_scope_mechanism_validation",
+  "date": "2026-09-20",
+  "units": [
+    "llin-core-031182c8e97a128c8c31",
+    "llin-core-05db8a7a420b9cc25b7f",
+    "llin-core-284682e6d05c9f063d99",
+    "llin-core-64cdc879fa758f981414",
+    "llin-core-9adae425cbbabbd2bf0c",
+    "llin-core-b15da40c324e799cd7f5"
+  ],
+  "formula": "315+3G records;105+G steps;G<=6",
+  "seed": 1,
+  "arms": [
+    "K",
+    "R"
+  ],
+  "max_generation_calls": 10176,
+  "formal_calls_per_arm": 5016,
+  "direct_calls_per_model": 36,
+  "models_for_direct": [
+    "Step120",
+    "P1",
+    "K",
+    "R"
+  ],
+  "baseline_formal_reuse": true,
+  "baseline_runtime_match_required": true,
+  "checkpoints": "final only",
+  "fresh_optimizer": true,
+  "budgets": {
+    "K": {
+      "records": 333,
+      "sequence_tokens": 89599,
+      "supervised_tokens": 13273
+    },
+    "R": {
+      "records": 333,
+      "sequence_tokens": 94954,
+      "supervised_tokens": 13438
+    }
+  },
+  "rubric": "each necessary fact scored 0/1; strict pass all facts and no forbidden inference; truncated fails; semantic equivalents accepted",
+  "blinding": "hide model and arm; freeze individual scores before unblinding; repeats not independent training seeds",
+  "stop": "no third arm, no tuning, no automatic promotion; budget failure stops before training",
+  "interpretation": "source direct teaching recipe; content and style are not causally separated",
+  "scope": "not independent blind test; Stage B failure preserved; Stage C original scope gate unchanged",
+  "R_matching": "deterministic cumulative token match among disjoint P1 old records; selected 18 speed-family records; not representative of all old families",
+  "files": {
+    "probes.private.json": "b6815f8a6941b8021454ec84d370c1965cacdbe36c93b56d0080320b8104458e",
+    "sources.private.json": "f4571061dff96b31fbd624fc954c0b52037ac78d548d8c9f2d88b7be31339c68",
+    "prepared/budget.safe.json": "d60c1ca37fc040ad1f1551c904efe5ace49c813ac779b42dd1795859b9d8fa6d",
+    "prepared/K/dev.messages.private.jsonl": "dea806503ed0a13a0e8218bf0036b7074ea10af26df134ed481e3a8ca821da25",
+    "prepared/K/dev.parquet": "3a35e5307cd46027b5e91f598917c70c0bc470175ba1de4ec534120edddc41f0",
+    "prepared/K/train.messages.private.jsonl": "1aa9995b4ee72db88ed3ee094b68b956cdbe4ab54e8c38633c3ead4450624827",
+    "prepared/K/train.parquet": "10da5af3ea79202a949df0d1ed978229dffebba65b43fa1c9e4109d969f27bf3",
+    "prepared/R/dev.messages.private.jsonl": "dea806503ed0a13a0e8218bf0036b7074ea10af26df134ed481e3a8ca821da25",
+    "prepared/R/dev.parquet": "3a35e5307cd46027b5e91f598917c70c0bc470175ba1de4ec534120edddc41f0",
+    "prepared/R/train.messages.private.jsonl": "2e37b3c058483a28348e889cb9efaa89bf034f75927cb1bb7c97ec64f02c959c",
+    "prepared/R/train.parquet": "6b56f95e625993421252dc298b43c857b970f5f0a0aafd90c989f99b97c229eb"
+  },
+  "code": {
+    "audit_cpt_mechanism.py": "4327761f7f33c9f6d4b2e56a22db88879f8cfe8bccf8a69b7c1b97713b31bb2e",
+    "audit_cpt_transfer.py": "4bcd64ac3dc13abb72625a89413da34af926112768d59270b352bcfd5cdb206b",
+    "cpt_stage_b.py": "c5855c92041b111b8103486e2b4558b7c1806f3f9d0e161979932396f084d923",
+    "evaluate_logistics_knowledge.py": "8cee1c90a17771860b26b2e01f919bf3730c4ac2fefb21be3fd0dee222c8f949",
+    "export_megatron_dist_to_hf.py": "a116db370557577970da429eff98a56ab45197069923ee382db61e82e00acfa5",
+    "gate_cpt_mechanism.py": "ae9787abab36c43fa08ad10613ff7420e5f7f460080762cfbb7f52a25fc86e2f",
+    "prepare_cpt_mechanism.py": "c71ec042f4000a074c2313ac29a611971db897cbfc28ee876f442eeafb3f5d89",
+    "prepare_cpt_p4_cumulative.py": "ddc04877827073655435f790c08b7b7acee3e8504e9a88d3675bddca5222392b",
+    "qwen36_mcq_answer_dataset.py": "ed38f1696b7438ce2d4c399d471d34c4ca79661b0383d7b0d3c33419c6b93aa9",
+    "run_cpt_formal_transfer.py": "40a1016f7439089ab58c00b97343f3b88962e03c4a79b3ff8869a44fe727fbd3",
+    "run_cpt_mechanism.py": "74c9960d5c305788e2143595bed1c47d64da56f2cefcd29c5c786957f2860cc4",
+    "run_cpt_mechanism_inference.py": "81c3cffd451c5e45e4c96b4225f861a78a65021e4382f8bf05fa4ad83a8ae106",
+    "run_cpt_mechanism_train.sh": "30aad820cd786674405ff29d6a027fd71e655110b61fb94244a9bcf22e7f1640",
+    "run_logistics_cpt_curve_8x.py": "2d13cec58c65c34f9e821bdcb40a6a160cd5ab23dd24e989ff1a413097f08c8a",
+    "run_logistics_strategy_diagnostic.py": "8934be47378afc48052de5e42f09459aa94bb7078355469b75aac9c6dfab652a",
+    "run_vllm_logistics_mcq.py": "a635534e8ea345070ef3f9abc65b20dd7dee71e065e5264c82d493e50db19cfb",
+    "summarize_logistics_cpt_run.py": "1fcffec99b750048f2d7fb433daa152655a34809ba68a827598a36692822e5f5",
+    "train_cpt_mechanism_sft.py": "43362afcf36fc15592e32b81b156b6e4ac2657f726af4fd5d0a168f5fc5f68ed",
+    "verify_checkpoint_integrity.py": "da33c6bc46bee3bbe07fcfc345624872fd37f45091970c960b8193cdf49269c4"
+  }
+}

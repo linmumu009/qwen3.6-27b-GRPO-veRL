@@ -1,0 +1,1113 @@
+{
+  "schema_version": 1,
+  "status": "history_recomputed_direct_call_control_missing",
+  "units": [
+    {
+      "unit_id": "llin-core-031182c8e97a128c8c31",
+      "source_sha256": "0c081eac3b0d73530876786a85ae44702792a7070bc93d554d4e85627164aff0",
+      "body_sha256": "d84a25724d543063afeb3f5a9ce0aef440c24c916b241c76969162c290fba8ea",
+      "target_items": 2,
+      "source_verified": true,
+      "historical_split": "train",
+      "training": {
+        "cpt16_and_lora": {
+          "same_train_parquet_sha256": "6ffa16684e617f657293918bf1d89ae8930ec24e0e08da346f175c4710c1f1c8",
+          "complete_supervised_spans": [
+            {
+              "record_id": "llin-core-031182c8e97a128c8c31",
+              "start_char": 165,
+              "end_char": 549,
+              "first_token": 46,
+              "last_token": 143,
+              "rule_tokens": 98
+            }
+          ],
+          "mask_contract": "first token zero; all subsequent tokens including EOS one"
+        },
+        "p1": {
+          "linked_records": 2,
+          "linked_answer_only": 2,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "p1-replay-llin-core-031182c8e97a128c8c31-application_with_new_entities",
+            "p1-replay-llin-core-031182c8e97a128c8c31-boundary_or_counterexample"
+          ]
+        },
+        "s4": {
+          "linked_records": 2,
+          "linked_answer_only": 2,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "llin-core-031182c8e97a128c8c31-boundary_or_counterexample",
+            "llin-core-031182c8e97a128c8c31-application_with_new_entities"
+          ]
+        },
+        "s5": {
+          "linked_records": 2,
+          "linked_answer_only": 2,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "llin-core-031182c8e97a128c8c31-boundary_or_counterexample",
+            "llin-core-031182c8e97a128c8c31-application_with_new_entities"
+          ]
+        },
+        "s2": {
+          "linked_records": 0,
+          "linked_answer_only": 0,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": []
+        },
+        "p4": {
+          "linked_records": 2,
+          "linked_answer_only": 2,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "p1-replay-llin-core-031182c8e97a128c8c31-application_with_new_entities",
+            "p1-replay-llin-core-031182c8e97a128c8c31-boundary_or_counterexample"
+          ]
+        }
+      },
+      "formal_correct": {
+        "step120": 0,
+        "cpt16": 0,
+        "s4": 0,
+        "s5": 0,
+        "step120_current": 0,
+        "p1": 0,
+        "p4": 0,
+        "s2": 0,
+        "lora": 0
+      },
+      "historical_mcq_probes": {
+        "s2": [],
+        "lora": [
+          {
+            "id": "llin-core-031182c8e97a128c8c31-boundary_or_counterexample",
+            "correct": true
+          },
+          {
+            "id": "llin-core-031182c8e97a128c8c31-application_with_new_entities",
+            "correct": false
+          }
+        ],
+        "s4": [
+          {
+            "id": "llin-core-031182c8e97a128c8c31-boundary_or_counterexample",
+            "correct": true
+          },
+          {
+            "id": "llin-core-031182c8e97a128c8c31-application_with_new_entities",
+            "correct": false
+          }
+        ],
+        "p1": []
+      },
+      "direct_rule_scope_probes": "missing; historical MCQ option recognition is not equivalent",
+      "eligible": true,
+      "selected": true
+    },
+    {
+      "unit_id": "llin-core-05db8a7a420b9cc25b7f",
+      "source_sha256": "7ac12004e258eb49082bda008ed09bdb3aaabbed72e1d812bc51410f97b46e38",
+      "body_sha256": "698a1605204bb2229b51bb15692ce1e95df404d1ad3b7d16ec4746ecd3189b52",
+      "target_items": 1,
+      "source_verified": true,
+      "historical_split": "train",
+      "training": {
+        "cpt16_and_lora": {
+          "same_train_parquet_sha256": "6ffa16684e617f657293918bf1d89ae8930ec24e0e08da346f175c4710c1f1c8",
+          "complete_supervised_spans": [
+            {
+              "record_id": "llin-core-05db8a7a420b9cc25b7f",
+              "start_char": 153,
+              "end_char": 407,
+              "first_token": 41,
+              "last_token": 109,
+              "rule_tokens": 69
+            }
+          ],
+          "mask_contract": "first token zero; all subsequent tokens including EOS one"
+        },
+        "p1": {
+          "linked_records": 0,
+          "linked_answer_only": 0,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": []
+        },
+        "s4": {
+          "linked_records": 0,
+          "linked_answer_only": 0,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": []
+        },
+        "s5": {
+          "linked_records": 0,
+          "linked_answer_only": 0,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": []
+        },
+        "s2": {
+          "linked_records": 0,
+          "linked_answer_only": 0,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": []
+        },
+        "p4": {
+          "linked_records": 0,
+          "linked_answer_only": 0,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": []
+        }
+      },
+      "formal_correct": {
+        "step120": 0,
+        "cpt16": 0,
+        "s4": 0,
+        "s5": 0,
+        "step120_current": 0,
+        "p1": 0,
+        "p4": 0,
+        "s2": 0,
+        "lora": 0
+      },
+      "historical_mcq_probes": {
+        "s2": [],
+        "lora": [],
+        "s4": [],
+        "p1": []
+      },
+      "direct_rule_scope_probes": "missing; historical MCQ option recognition is not equivalent",
+      "eligible": true,
+      "selected": true
+    },
+    {
+      "unit_id": "llin-core-284682e6d05c9f063d99",
+      "source_sha256": "ba9e780ae41cfa9241a88d02be1831009c1e45a550c54e93228f440c7e240a96",
+      "body_sha256": "fbbd76942a32c1f150fe2358fc1e096621ab2fcb33fae4f45a024eb26c4f9799",
+      "target_items": 1,
+      "source_verified": true,
+      "historical_split": "train",
+      "training": {
+        "cpt16_and_lora": {
+          "same_train_parquet_sha256": "6ffa16684e617f657293918bf1d89ae8930ec24e0e08da346f175c4710c1f1c8",
+          "complete_supervised_spans": [
+            {
+              "record_id": "llin-core-284682e6d05c9f063d99",
+              "start_char": 187,
+              "end_char": 402,
+              "first_token": 52,
+              "last_token": 99,
+              "rule_tokens": 48
+            }
+          ],
+          "mask_contract": "first token zero; all subsequent tokens including EOS one"
+        },
+        "p1": {
+          "linked_records": 1,
+          "linked_answer_only": 1,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "p1-replay-llin-core-284682e6d05c9f063d99-definition_discrimination"
+          ]
+        },
+        "s4": {
+          "linked_records": 1,
+          "linked_answer_only": 1,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "llin-core-284682e6d05c9f063d99-definition_discrimination"
+          ]
+        },
+        "s5": {
+          "linked_records": 1,
+          "linked_answer_only": 1,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "llin-core-284682e6d05c9f063d99-definition_discrimination"
+          ]
+        },
+        "s2": {
+          "linked_records": 0,
+          "linked_answer_only": 0,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": []
+        },
+        "p4": {
+          "linked_records": 1,
+          "linked_answer_only": 1,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "p1-replay-llin-core-284682e6d05c9f063d99-definition_discrimination"
+          ]
+        }
+      },
+      "formal_correct": {
+        "step120": 0,
+        "cpt16": 0,
+        "s4": 0,
+        "s5": 0,
+        "step120_current": 0,
+        "p1": 0,
+        "p4": 0,
+        "s2": 0,
+        "lora": 0
+      },
+      "historical_mcq_probes": {
+        "s2": [],
+        "lora": [
+          {
+            "id": "llin-core-284682e6d05c9f063d99-definition_discrimination",
+            "correct": true
+          }
+        ],
+        "s4": [
+          {
+            "id": "llin-core-284682e6d05c9f063d99-definition_discrimination",
+            "correct": true
+          }
+        ],
+        "p1": []
+      },
+      "direct_rule_scope_probes": "missing; historical MCQ option recognition is not equivalent",
+      "eligible": true,
+      "selected": true
+    },
+    {
+      "unit_id": "llin-core-64cdc879fa758f981414",
+      "source_sha256": "790ad8c972335d997239327d24eaa5fca83dafd03b528dee19b1b83e4163aebb",
+      "body_sha256": "13ea000e2fa5618891f82bc20d268c3593a6270d5f38262e186ac387bb12974c",
+      "target_items": 1,
+      "source_verified": true,
+      "historical_split": "train",
+      "training": {
+        "cpt16_and_lora": {
+          "same_train_parquet_sha256": "6ffa16684e617f657293918bf1d89ae8930ec24e0e08da346f175c4710c1f1c8",
+          "complete_supervised_spans": [
+            {
+              "record_id": "llin-core-64cdc879fa758f981414",
+              "start_char": 177,
+              "end_char": 324,
+              "first_token": 48,
+              "last_token": 86,
+              "rule_tokens": 39
+            }
+          ],
+          "mask_contract": "first token zero; all subsequent tokens including EOS one"
+        },
+        "p1": {
+          "linked_records": 1,
+          "linked_answer_only": 1,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "p1-replay-llin-core-64cdc879fa758f981414-definition_discrimination"
+          ]
+        },
+        "s4": {
+          "linked_records": 1,
+          "linked_answer_only": 1,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "llin-core-64cdc879fa758f981414-definition_discrimination"
+          ]
+        },
+        "s5": {
+          "linked_records": 1,
+          "linked_answer_only": 1,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "llin-core-64cdc879fa758f981414-definition_discrimination"
+          ]
+        },
+        "s2": {
+          "linked_records": 0,
+          "linked_answer_only": 0,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": []
+        },
+        "p4": {
+          "linked_records": 1,
+          "linked_answer_only": 1,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "p1-replay-llin-core-64cdc879fa758f981414-definition_discrimination"
+          ]
+        }
+      },
+      "formal_correct": {
+        "step120": 0,
+        "cpt16": 1,
+        "s4": 0,
+        "s5": 0,
+        "step120_current": 0,
+        "p1": 0,
+        "p4": 0,
+        "s2": 0,
+        "lora": 1
+      },
+      "historical_mcq_probes": {
+        "s2": [],
+        "lora": [
+          {
+            "id": "llin-core-64cdc879fa758f981414-definition_discrimination",
+            "correct": false
+          }
+        ],
+        "s4": [
+          {
+            "id": "llin-core-64cdc879fa758f981414-definition_discrimination",
+            "correct": true
+          }
+        ],
+        "p1": []
+      },
+      "direct_rule_scope_probes": "missing; historical MCQ option recognition is not equivalent",
+      "eligible": true,
+      "selected": true
+    },
+    {
+      "unit_id": "llin-core-68a803b013da11c293ce",
+      "source_sha256": "5b273369fcf0031205a6648f2b1b59b7a6995b27c9cc1342673a7ce339fe442f",
+      "body_sha256": "bd23e9ee2a2a628759ffc5ec5c92eb10a9078a63f58ba627991200aa0f574f14",
+      "target_items": 1,
+      "source_verified": true,
+      "historical_split": "dev",
+      "training": {
+        "cpt16_and_lora": {
+          "same_train_parquet_sha256": "6ffa16684e617f657293918bf1d89ae8930ec24e0e08da346f175c4710c1f1c8",
+          "complete_supervised_spans": [
+            {
+              "record_id": "7c83fad35cfb212a8815362a6576cb8aa95164c6157d089c661caad671abc622",
+              "start_char": 876,
+              "end_char": 1097,
+              "first_token": 199,
+              "last_token": 269,
+              "rule_tokens": 71
+            },
+            {
+              "record_id": "llin-core-68a803b013da11c293ce",
+              "start_char": 173,
+              "end_char": 394,
+              "first_token": 45,
+              "last_token": 115,
+              "rule_tokens": 71
+            }
+          ],
+          "mask_contract": "first token zero; all subsequent tokens including EOS one"
+        },
+        "p1": {
+          "linked_records": 1,
+          "linked_answer_only": 1,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "p1-replay-llin-core-68a803b013da11c293ce-definition_discrimination"
+          ]
+        },
+        "s4": {
+          "linked_records": 1,
+          "linked_answer_only": 1,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "llin-core-68a803b013da11c293ce-definition_discrimination"
+          ]
+        },
+        "s5": {
+          "linked_records": 1,
+          "linked_answer_only": 1,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "llin-core-68a803b013da11c293ce-definition_discrimination"
+          ]
+        },
+        "s2": {
+          "linked_records": 0,
+          "linked_answer_only": 0,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": []
+        },
+        "p4": {
+          "linked_records": 1,
+          "linked_answer_only": 1,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "p1-replay-llin-core-68a803b013da11c293ce-definition_discrimination"
+          ]
+        }
+      },
+      "formal_correct": {
+        "step120": 0,
+        "cpt16": 0,
+        "s4": 0,
+        "s5": 0,
+        "step120_current": 0,
+        "p1": 0,
+        "p4": 0,
+        "s2": 0,
+        "lora": 0
+      },
+      "historical_mcq_probes": {
+        "s2": [],
+        "lora": [
+          {
+            "id": "llin-core-68a803b013da11c293ce-definition_discrimination",
+            "correct": true
+          }
+        ],
+        "s4": [
+          {
+            "id": "llin-core-68a803b013da11c293ce-definition_discrimination",
+            "correct": true
+          }
+        ],
+        "p1": []
+      },
+      "direct_rule_scope_probes": "missing; historical MCQ option recognition is not equivalent",
+      "eligible": false,
+      "selected": false
+    },
+    {
+      "unit_id": "llin-core-9adae425cbbabbd2bf0c",
+      "source_sha256": "aa800321d8d84eabc3cc6d01afd66cf26311d89dda8e089d5c7d55ebf4472248",
+      "body_sha256": "c66ee3ca95df7eac49c54d8e084387bfca07d67da8bef4adec599fd24cdeda29",
+      "target_items": 1,
+      "source_verified": true,
+      "historical_split": "train",
+      "training": {
+        "cpt16_and_lora": {
+          "same_train_parquet_sha256": "6ffa16684e617f657293918bf1d89ae8930ec24e0e08da346f175c4710c1f1c8",
+          "complete_supervised_spans": [
+            {
+              "record_id": "llin-core-9adae425cbbabbd2bf0c",
+              "start_char": 157,
+              "end_char": 476,
+              "first_token": 40,
+              "last_token": 109,
+              "rule_tokens": 70
+            }
+          ],
+          "mask_contract": "first token zero; all subsequent tokens including EOS one"
+        },
+        "p1": {
+          "linked_records": 2,
+          "linked_answer_only": 2,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "p1-replay-llin-core-9adae425cbbabbd2bf0c-application_with_new_entities",
+            "p1-replay-llin-core-9adae425cbbabbd2bf0c-definition_discrimination"
+          ]
+        },
+        "s4": {
+          "linked_records": 2,
+          "linked_answer_only": 2,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "llin-core-9adae425cbbabbd2bf0c-definition_discrimination",
+            "llin-core-9adae425cbbabbd2bf0c-application_with_new_entities"
+          ]
+        },
+        "s5": {
+          "linked_records": 2,
+          "linked_answer_only": 2,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "llin-core-9adae425cbbabbd2bf0c-definition_discrimination",
+            "llin-core-9adae425cbbabbd2bf0c-application_with_new_entities"
+          ]
+        },
+        "s2": {
+          "linked_records": 0,
+          "linked_answer_only": 0,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": []
+        },
+        "p4": {
+          "linked_records": 2,
+          "linked_answer_only": 2,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "p1-replay-llin-core-9adae425cbbabbd2bf0c-application_with_new_entities",
+            "p1-replay-llin-core-9adae425cbbabbd2bf0c-definition_discrimination"
+          ]
+        }
+      },
+      "formal_correct": {
+        "step120": 0,
+        "cpt16": 0,
+        "s4": 0,
+        "s5": 0,
+        "step120_current": 0,
+        "p1": 0,
+        "p4": 0,
+        "s2": 0,
+        "lora": 0
+      },
+      "historical_mcq_probes": {
+        "s2": [],
+        "lora": [
+          {
+            "id": "llin-core-9adae425cbbabbd2bf0c-definition_discrimination",
+            "correct": true
+          },
+          {
+            "id": "llin-core-9adae425cbbabbd2bf0c-application_with_new_entities",
+            "correct": true
+          }
+        ],
+        "s4": [
+          {
+            "id": "llin-core-9adae425cbbabbd2bf0c-definition_discrimination",
+            "correct": true
+          },
+          {
+            "id": "llin-core-9adae425cbbabbd2bf0c-application_with_new_entities",
+            "correct": true
+          }
+        ],
+        "p1": []
+      },
+      "direct_rule_scope_probes": "missing; historical MCQ option recognition is not equivalent",
+      "eligible": true,
+      "selected": true
+    },
+    {
+      "unit_id": "llin-core-b15da40c324e799cd7f5",
+      "source_sha256": "9a78de94edb14f03d70b7826cf6caaea55c975e5ba9a47ea00d6e94f59c96b1f",
+      "body_sha256": "afd61e769e9816943464f861d927a6074d94c4449bb3bc480014cfe4b31c9bec",
+      "target_items": 1,
+      "source_verified": true,
+      "historical_split": "train",
+      "training": {
+        "cpt16_and_lora": {
+          "same_train_parquet_sha256": "6ffa16684e617f657293918bf1d89ae8930ec24e0e08da346f175c4710c1f1c8",
+          "complete_supervised_spans": [
+            {
+              "record_id": "llin-core-b15da40c324e799cd7f5",
+              "start_char": 174,
+              "end_char": 271,
+              "first_token": 47,
+              "last_token": 73,
+              "rule_tokens": 27
+            }
+          ],
+          "mask_contract": "first token zero; all subsequent tokens including EOS one"
+        },
+        "p1": {
+          "linked_records": 2,
+          "linked_answer_only": 2,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "p1-replay-llin-core-b15da40c324e799cd7f5-definition_discrimination",
+            "p1-replay-llin-core-b15da40c324e799cd7f5-boundary_or_counterexample"
+          ]
+        },
+        "s4": {
+          "linked_records": 2,
+          "linked_answer_only": 2,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "llin-core-b15da40c324e799cd7f5-definition_discrimination",
+            "llin-core-b15da40c324e799cd7f5-boundary_or_counterexample"
+          ]
+        },
+        "s5": {
+          "linked_records": 2,
+          "linked_answer_only": 2,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "llin-core-b15da40c324e799cd7f5-definition_discrimination",
+            "llin-core-b15da40c324e799cd7f5-boundary_or_counterexample"
+          ]
+        },
+        "s2": {
+          "linked_records": 0,
+          "linked_answer_only": 0,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": []
+        },
+        "p4": {
+          "linked_records": 2,
+          "linked_answer_only": 2,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "p1-replay-llin-core-b15da40c324e799cd7f5-definition_discrimination",
+            "p1-replay-llin-core-b15da40c324e799cd7f5-boundary_or_counterexample"
+          ]
+        }
+      },
+      "formal_correct": {
+        "step120": 0,
+        "cpt16": 0,
+        "s4": 0,
+        "s5": 0,
+        "step120_current": 0,
+        "p1": 0,
+        "p4": 0,
+        "s2": 0,
+        "lora": 0
+      },
+      "historical_mcq_probes": {
+        "s2": [],
+        "lora": [
+          {
+            "id": "llin-core-b15da40c324e799cd7f5-boundary_or_counterexample",
+            "correct": false
+          },
+          {
+            "id": "llin-core-b15da40c324e799cd7f5-definition_discrimination",
+            "correct": true
+          }
+        ],
+        "s4": [
+          {
+            "id": "llin-core-b15da40c324e799cd7f5-boundary_or_counterexample",
+            "correct": false
+          },
+          {
+            "id": "llin-core-b15da40c324e799cd7f5-definition_discrimination",
+            "correct": true
+          }
+        ],
+        "p1": []
+      },
+      "direct_rule_scope_probes": "missing; historical MCQ option recognition is not equivalent",
+      "eligible": true,
+      "selected": true
+    },
+    {
+      "unit_id": "llin-core-b95f38d7271f9ce99c17",
+      "source_sha256": "7ac12004e258eb49082bda008ed09bdb3aaabbed72e1d812bc51410f97b46e38",
+      "body_sha256": "cf0efec72e7f5c7cb8c7b52586f4909f8054513c227b8a2465ba59932c9db423",
+      "target_items": 1,
+      "source_verified": true,
+      "historical_split": "train",
+      "training": {
+        "cpt16_and_lora": {
+          "same_train_parquet_sha256": "6ffa16684e617f657293918bf1d89ae8930ec24e0e08da346f175c4710c1f1c8",
+          "complete_supervised_spans": [
+            {
+              "record_id": "llin-core-b95f38d7271f9ce99c17",
+              "start_char": 186,
+              "end_char": 320,
+              "first_token": 51,
+              "last_token": 87,
+              "rule_tokens": 37
+            }
+          ],
+          "mask_contract": "first token zero; all subsequent tokens including EOS one"
+        },
+        "p1": {
+          "linked_records": 1,
+          "linked_answer_only": 1,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "p1-replay-llin-core-b95f38d7271f9ce99c17-definition_discrimination"
+          ]
+        },
+        "s4": {
+          "linked_records": 1,
+          "linked_answer_only": 1,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "llin-core-b95f38d7271f9ce99c17-definition_discrimination"
+          ]
+        },
+        "s5": {
+          "linked_records": 1,
+          "linked_answer_only": 1,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "llin-core-b95f38d7271f9ce99c17-definition_discrimination"
+          ]
+        },
+        "s2": {
+          "linked_records": 0,
+          "linked_answer_only": 0,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": []
+        },
+        "p4": {
+          "linked_records": 1,
+          "linked_answer_only": 1,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "p1-replay-llin-core-b95f38d7271f9ce99c17-definition_discrimination"
+          ]
+        }
+      },
+      "formal_correct": {
+        "step120": 0,
+        "cpt16": 0,
+        "s4": 0,
+        "s5": 0,
+        "step120_current": 0,
+        "p1": 0,
+        "p4": 0,
+        "s2": 0,
+        "lora": 0
+      },
+      "historical_mcq_probes": {
+        "s2": [],
+        "lora": [
+          {
+            "id": "llin-core-b95f38d7271f9ce99c17-definition_discrimination",
+            "correct": true
+          }
+        ],
+        "s4": [
+          {
+            "id": "llin-core-b95f38d7271f9ce99c17-definition_discrimination",
+            "correct": true
+          }
+        ],
+        "p1": []
+      },
+      "direct_rule_scope_probes": "missing; historical MCQ option recognition is not equivalent",
+      "eligible": true,
+      "selected": false
+    },
+    {
+      "unit_id": "llin-core-bff682970154c1118932",
+      "source_sha256": "9b79e69bae0f52e44ff0cf5dab676049ffe76a1a74ab76424d6c58eaa835f883",
+      "body_sha256": "b8edd225a77f85c398bd81096465660d86d10a99e11bba9256f903c860741f48",
+      "target_items": 1,
+      "source_verified": true,
+      "historical_split": "train",
+      "training": {
+        "cpt16_and_lora": {
+          "same_train_parquet_sha256": "6ffa16684e617f657293918bf1d89ae8930ec24e0e08da346f175c4710c1f1c8",
+          "complete_supervised_spans": [
+            {
+              "record_id": "llin-core-bff682970154c1118932",
+              "start_char": 155,
+              "end_char": 298,
+              "first_token": 31,
+              "last_token": 65,
+              "rule_tokens": 35
+            }
+          ],
+          "mask_contract": "first token zero; all subsequent tokens including EOS one"
+        },
+        "p1": {
+          "linked_records": 1,
+          "linked_answer_only": 1,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "p1-replay-llin-core-bff682970154c1118932-definition_discrimination"
+          ]
+        },
+        "s4": {
+          "linked_records": 1,
+          "linked_answer_only": 1,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "llin-core-bff682970154c1118932-definition_discrimination"
+          ]
+        },
+        "s5": {
+          "linked_records": 1,
+          "linked_answer_only": 1,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "llin-core-bff682970154c1118932-definition_discrimination"
+          ]
+        },
+        "s2": {
+          "linked_records": 0,
+          "linked_answer_only": 0,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": []
+        },
+        "p4": {
+          "linked_records": 1,
+          "linked_answer_only": 1,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "p1-replay-llin-core-bff682970154c1118932-definition_discrimination"
+          ]
+        }
+      },
+      "formal_correct": {
+        "step120": 0,
+        "cpt16": 0,
+        "s4": 0,
+        "s5": 0,
+        "step120_current": 0,
+        "p1": 0,
+        "p4": 0,
+        "s2": 0,
+        "lora": 0
+      },
+      "historical_mcq_probes": {
+        "s2": [],
+        "lora": [
+          {
+            "id": "llin-core-bff682970154c1118932-definition_discrimination",
+            "correct": true
+          }
+        ],
+        "s4": [
+          {
+            "id": "llin-core-bff682970154c1118932-definition_discrimination",
+            "correct": true
+          }
+        ],
+        "p1": []
+      },
+      "direct_rule_scope_probes": "missing; historical MCQ option recognition is not equivalent",
+      "eligible": true,
+      "selected": false
+    },
+    {
+      "unit_id": "llin-core-e9f2706abfecef6a2f36",
+      "source_sha256": "250c515947556a33057e5390e17cb0af621ca6548c349e990faf3e7e82b4b89a",
+      "body_sha256": "a503ea2575cb0ddab4595d7791ce55de296288877c98c77b3c6ffe1cdb5923e4",
+      "target_items": 1,
+      "source_verified": true,
+      "historical_split": "train",
+      "training": {
+        "cpt16_and_lora": {
+          "same_train_parquet_sha256": "6ffa16684e617f657293918bf1d89ae8930ec24e0e08da346f175c4710c1f1c8",
+          "complete_supervised_spans": [
+            {
+              "record_id": "llin-core-e9f2706abfecef6a2f36",
+              "start_char": 157,
+              "end_char": 576,
+              "first_token": 42,
+              "last_token": 136,
+              "rule_tokens": 95
+            }
+          ],
+          "mask_contract": "first token zero; all subsequent tokens including EOS one"
+        },
+        "p1": {
+          "linked_records": 2,
+          "linked_answer_only": 2,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "p1-replay-llin-core-e9f2706abfecef6a2f36-definition_discrimination",
+            "p1-replay-llin-core-e9f2706abfecef6a2f36-boundary_or_counterexample"
+          ]
+        },
+        "s4": {
+          "linked_records": 2,
+          "linked_answer_only": 2,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "llin-core-e9f2706abfecef6a2f36-definition_discrimination",
+            "llin-core-e9f2706abfecef6a2f36-boundary_or_counterexample"
+          ]
+        },
+        "s5": {
+          "linked_records": 2,
+          "linked_answer_only": 2,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "llin-core-e9f2706abfecef6a2f36-definition_discrimination",
+            "llin-core-e9f2706abfecef6a2f36-boundary_or_counterexample"
+          ]
+        },
+        "s2": {
+          "linked_records": 0,
+          "linked_answer_only": 0,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": []
+        },
+        "p4": {
+          "linked_records": 2,
+          "linked_answer_only": 2,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "p1-replay-llin-core-e9f2706abfecef6a2f36-definition_discrimination",
+            "p1-replay-llin-core-e9f2706abfecef6a2f36-boundary_or_counterexample"
+          ]
+        }
+      },
+      "formal_correct": {
+        "step120": 0,
+        "cpt16": 0,
+        "s4": 0,
+        "s5": 0,
+        "step120_current": 0,
+        "p1": 0,
+        "p4": 0,
+        "s2": 0,
+        "lora": 0
+      },
+      "historical_mcq_probes": {
+        "s2": [],
+        "lora": [
+          {
+            "id": "llin-core-e9f2706abfecef6a2f36-boundary_or_counterexample",
+            "correct": true
+          },
+          {
+            "id": "llin-core-e9f2706abfecef6a2f36-definition_discrimination",
+            "correct": false
+          }
+        ],
+        "s4": [
+          {
+            "id": "llin-core-e9f2706abfecef6a2f36-boundary_or_counterexample",
+            "correct": true
+          },
+          {
+            "id": "llin-core-e9f2706abfecef6a2f36-definition_discrimination",
+            "correct": true
+          }
+        ],
+        "p1": []
+      },
+      "direct_rule_scope_probes": "missing; historical MCQ option recognition is not equivalent",
+      "eligible": true,
+      "selected": false
+    }
+  ],
+  "source_archive_sha256": "7da53a1a3246381181c5a28fabfb0b68223aed0ee76ff6242710bf257e5af4c2",
+  "evidence_packet_sha256": "1ed94d36e78b3e40bc8d6ac6d302bf7b09f7221b2694aebd507ca7969147d84d",
+  "training_audits": {
+    "p1": {
+      "records": 315,
+      "messages_sha256": "78a4e8a4f0acf95c7a2e69aa342855ac60a1334a3f57fdb4677609363f2a4304",
+      "parquet_sha256": "7779c2ba6137eb91aaf80e56b262b4a4ed2620001eafd9097d5ce46f1e63bdf0",
+      "all_answer_boundaries_verified": true
+    },
+    "s4": {
+      "records": 231,
+      "messages_sha256": "e768f48bb8cb06ad0226cb23490d369ddb9b2e15fa6eb904a5888a97c93e2c7e",
+      "parquet_sha256": "b0f083fc3f15b128bcce6295d162f25fbfe02d191272944eb587110c9dea82f8",
+      "all_answer_boundaries_verified": true
+    },
+    "s5": {
+      "records": 231,
+      "messages_sha256": "b55fdbdcfbaf8230dff7c4da245365ccbe0114be691f886c74a29abd74846988",
+      "parquet_sha256": "68e912b5a7b22d3fb22132c37f300deb017e14892c6e3d4b3abaa1e352c4d2f1",
+      "all_answer_boundaries_verified": true
+    },
+    "s2": {
+      "records": 591,
+      "messages_sha256": "9cd79b702b45e880e813be0bbe492627fa38bb0ac7a4557c56ca06f24b0c7b4c",
+      "parquet_sha256": "2f10b42c9a8ad0bde49b2c1887a6216727352c4871d1afdc5e84145e70dd9051",
+      "all_answer_boundaries_verified": true
+    }
+  },
+  "formal_audits": {
+    "step120": {
+      "predictions_sha256": "18f0e0524a0ff97c1e0345cd6192b16363a1fcec05405f3ad7c97fb70edad0f7",
+      "protocol_sha256": "5f5e725bbb7f582644e73793374cb6a80b54fa7fd0c50903d84643f2e06931fa",
+      "model": "/workspace/llin-verl-grpo/runs/llin-step120-opensource-20260825-02/hf_export_step120_opensource",
+      "requests_recomputed": 5016
+    },
+    "cpt16": {
+      "predictions_sha256": "2caa2826b24c4d2ffe586f8feb1b2bd871f1a264c381022b82279cd7c603be86",
+      "protocol_sha256": "ca5e7cb067342751910c387af0f83827a71dc28c08a9487d7dc319096a139326",
+      "model": "/workspace/llin-verl-grpo/runs/cpt-stage2-storage-20260910/llin/llin-cpt-knowledge-complete-one-epoch-20260911/llin-step120-knowledge-complete-cpt-1epoch-20260911",
+      "requests_recomputed": 5016
+    },
+    "s4": {
+      "predictions_sha256": "d61a385e9e5f64929269093ddbd6ed77ba9193e1565b4327a36280ed4e52d4f0",
+      "protocol_sha256": "53d20d30bd8c27237a96a45ae057d20b0382f047758a7091fd5265ca531cb79d",
+      "model": "/workspace/llin-verl-grpo/runs/llin-sft-search-s4-20260915-01/llin-training/llin-step120-s4-hf",
+      "requests_recomputed": 5016
+    },
+    "s5": {
+      "predictions_sha256": "6ceacafa6fb58bff50d9d8781420dece4b0dc658c02367d266634869c33db506",
+      "protocol_sha256": "d14a4a350253b358473482fe435fdfb72c11e08f50b6997c63695ea237fbaeb0",
+      "model": "/opt/llin-sft-search-s5-20260915-01/llin-training/llin-step120-s5-hf",
+      "requests_recomputed": 5016
+    },
+    "step120_current": {
+      "predictions_sha256": "0a75f6d706bca79105c94dec85fc5727d58e40eda97c73509d893c346bbe995e",
+      "protocol_sha256": "5f5e725bbb7f582644e73793374cb6a80b54fa7fd0c50903d84643f2e06931fa",
+      "model": "/workspace/llin-verl-grpo/runs/llin-step120-opensource-20260825-02/hf_export_step120_opensource",
+      "requests_recomputed": 5016
+    },
+    "p1": {
+      "predictions_sha256": "33c5fc7dcb64c0fba59c25c054b19cda7b2e07880ad62daf0d2debd6ece7bbb2",
+      "protocol_sha256": "da8366e930b6d8bf1a8be58981be12998fd82c61979e7987f394821f85292e17",
+      "model": "/workspace/llin-verl-grpo/runs/llin-transfer-p1-run-20260916-02/training/llin-step120-p1-hf",
+      "requests_recomputed": 5016
+    },
+    "p4": {
+      "predictions_sha256": "bf0cc4fcc14d00e190bbd35ddc56a1719c73c309bfda29f92f3f894391cb436f",
+      "protocol_sha256": "0b6e8479803aec6cc9e64cacedf11ee8fcbf65018e4e26450481b26493b00a95",
+      "model": "/workspace/llin-verl-grpo/runs/llin-transfer-p4-run-20260918-01/training/llin-step120-p4-hf",
+      "requests_recomputed": 5016
+    },
+    "s2": {
+      "predictions_sha256": "82a98bd8a8f75b83db16a62a698e37ba78e753f5e67a2eb90f26c93b0b13ae96",
+      "protocol_sha256": "6020bef976f46287113baa0d395f1f9123d928e9d48514b7d3f19b2d441f5af3",
+      "model": "/opt/llin-sft-search-s2-20260914-01/llin-training/llin-step120-s2-hf",
+      "requests_recomputed": 5016
+    },
+    "lora": {
+      "predictions_sha256": "2371dd4cc651eda23319e84a6b8adebe0030271e3c78ab924d74f6e3b748c2f5",
+      "protocol_sha256": "d1536152607b40771e5b3c2e38c5050a5a583b73040ea04424de8c4abf68fa2e",
+      "model": "/opt/llin-lora-cpt-r64-20260914-04/llin-step120-lora-cpt-r64-1epoch-hf",
+      "requests_recomputed": 5016
+    }
+  },
+  "selected_units": [
+    "llin-core-031182c8e97a128c8c31",
+    "llin-core-05db8a7a420b9cc25b7f",
+    "llin-core-284682e6d05c9f063d99",
+    "llin-core-64cdc879fa758f981414",
+    "llin-core-9adae425cbbabbd2bf0c",
+    "llin-core-b15da40c324e799cd7f5"
+  ],
+  "new_model_calls": 0,
+  "promotion": false,
+  "caveats": [
+    "Exact-span absence is not semantic non-exposure.",
+    "Historical MCQ probes do not measure free recall.",
+    "CPT/LoRA complete spans show supervised exposure, not successful rule recall."
+  ]
+}
