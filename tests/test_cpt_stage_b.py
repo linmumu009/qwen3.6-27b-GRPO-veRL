@@ -4,10 +4,16 @@ import sys
 import unittest
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
-from cpt_stage_b import FORMS,specs,messages,summarize,digest,author_prompt,reviewer_prompt,validate_task
+from cpt_stage_b import FORMS,specs,messages,summarize,digest,author_prompt,reviewer_prompt,validate_task,device_idle
 
 
 class ProtocolTest(unittest.TestCase):
+    def test_device_driver_baseline_and_fail_closed(self):
+        baseline='\n'.join(['3137 / 65536']*16+['No running processes found in NPU '+str(i) for i in range(8)])
+        self.assertTrue(device_idle(baseline)[0])
+        for bad in [baseline.replace('3137','59000'),baseline.replace('NPU 7','NPU 6'),baseline.replace('3137 / 65536','missing',1),baseline+'\n| 0 0 | 1234 | worker |']:
+            self.assertFalse(device_idle(bad)[0])
+
     def packet(self,n=8):
         groups=[dict(id=str(i),source_text='A source supports a distinct operational rule.',option_count=6,scope='historical',operation='boundary',source_refs=['primary']) for i in range(n)]
         tasks=[dict(id=g['id']+'-'+f,group=g['id'],form=f,question='Select all correct statements.',options=['a','b','c','d','e','f'],correct_indices=[0,3]) for g in groups for f in FORMS]

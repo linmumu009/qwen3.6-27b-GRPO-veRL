@@ -7,7 +7,7 @@ import re
 import subprocess
 import time
 from pathlib import Path
-from cpt_stage_b import sha,save,read,digest,author_prompt,reviewer_prompt,validate_task,review_ok,object_of,FORMS
+from cpt_stage_b import sha,save,read,digest,author_prompt,reviewer_prompt,validate_task,review_ok,object_of,FORMS,device_idle
 
 ROOT=Path('/workspace/llin-verl-grpo')
 MODELS={'step120_current':ROOT/'runs/llin-step120-opensource-20260825-02/hf_export_step120_opensource',
@@ -29,9 +29,7 @@ def identity(model):
 
 def idle():
     result=subprocess.run(['npu-smi','info'],capture_output=True,text=True,timeout=30,check=True)
-    # Fail closed unless all sixteen physical chips report <2 GiB occupied.
-    used=[int(v) for v in re.findall(r'(\d+)\s*/\s*65536',result.stdout)]
-    return len(used)==16 and max(used)<2048,used
+    return device_idle(result.stdout)
 
 
 def run(a):

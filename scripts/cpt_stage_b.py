@@ -10,6 +10,14 @@ SEED = 1024
 FORMS = ('scope', 'competing_rules', 'application', 'counterexample')
 
 
+def device_idle(text):
+    """Allow observed driver baseline only with explicit empty process tables."""
+    used=[int(v) for v in re.findall(r'(\d+)\s*/\s*65536',text)]
+    empty={int(v) for v in re.findall(r'No running processes found in NPU (\d+)',text)}
+    process_rows=re.search(r'^\s*\|\s*\d+\s+\d+\s*\|\s*\d+\s*\|',text,re.M)
+    return len(used)==16 and max(used)<4096 and empty==set(range(8)) and not process_rows,used
+
+
 def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
 
