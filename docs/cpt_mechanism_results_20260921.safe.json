@@ -1,0 +1,1320 @@
+{
+  "direct": {
+    "K": {
+      "calls": 36,
+      "strict_pass": 0,
+      "facts_correct": 9,
+      "facts_total": 78,
+      "uncertain": 12
+    },
+    "R": {
+      "calls": 36,
+      "strict_pass": 0,
+      "facts_correct": 21,
+      "facts_total": 78,
+      "uncertain": 3
+    },
+    "p1": {
+      "calls": 36,
+      "strict_pass": 0,
+      "facts_correct": 18,
+      "facts_total": 78,
+      "uncertain": 0
+    },
+    "step120": {
+      "calls": 36,
+      "strict_pass": 3,
+      "facts_correct": 27,
+      "facts_total": 78,
+      "uncertain": 0
+    }
+  },
+  "formal": [
+    {
+      "arm": "K",
+      "reference": "step120",
+      "dataset": "SC-bench-knowledge",
+      "subset": "all",
+      "n": 226,
+      "correct": 190,
+      "gains": 3,
+      "losses": 3,
+      "net": 0
+    },
+    {
+      "arm": "K",
+      "reference": "step120",
+      "dataset": "SC-bench-knowledge",
+      "subset": "target",
+      "n": 0,
+      "correct": 0,
+      "gains": 0,
+      "losses": 0,
+      "net": 0
+    },
+    {
+      "arm": "K",
+      "reference": "step120",
+      "dataset": "SC-bench-knowledge",
+      "subset": "non_target",
+      "n": 226,
+      "correct": 190,
+      "gains": 3,
+      "losses": 3,
+      "net": 0
+    },
+    {
+      "arm": "K",
+      "reference": "step120",
+      "dataset": "LogistikaBench",
+      "subset": "all",
+      "n": 1446,
+      "correct": 1195,
+      "gains": 31,
+      "losses": 16,
+      "net": 15
+    },
+    {
+      "arm": "K",
+      "reference": "step120",
+      "dataset": "LogistikaBench",
+      "subset": "target",
+      "n": 7,
+      "correct": 1,
+      "gains": 1,
+      "losses": 0,
+      "net": 1
+    },
+    {
+      "arm": "K",
+      "reference": "step120",
+      "dataset": "LogistikaBench",
+      "subset": "non_target",
+      "n": 1439,
+      "correct": 1194,
+      "gains": 30,
+      "losses": 16,
+      "net": 14
+    },
+    {
+      "arm": "K",
+      "reference": "p1",
+      "dataset": "SC-bench-knowledge",
+      "subset": "all",
+      "n": 226,
+      "correct": 190,
+      "gains": 0,
+      "losses": 2,
+      "net": -2
+    },
+    {
+      "arm": "K",
+      "reference": "p1",
+      "dataset": "SC-bench-knowledge",
+      "subset": "target",
+      "n": 0,
+      "correct": 0,
+      "gains": 0,
+      "losses": 0,
+      "net": 0
+    },
+    {
+      "arm": "K",
+      "reference": "p1",
+      "dataset": "SC-bench-knowledge",
+      "subset": "non_target",
+      "n": 226,
+      "correct": 190,
+      "gains": 0,
+      "losses": 2,
+      "net": -2
+    },
+    {
+      "arm": "K",
+      "reference": "p1",
+      "dataset": "LogistikaBench",
+      "subset": "all",
+      "n": 1446,
+      "correct": 1195,
+      "gains": 17,
+      "losses": 15,
+      "net": 2
+    },
+    {
+      "arm": "K",
+      "reference": "p1",
+      "dataset": "LogistikaBench",
+      "subset": "target",
+      "n": 7,
+      "correct": 1,
+      "gains": 1,
+      "losses": 0,
+      "net": 1
+    },
+    {
+      "arm": "K",
+      "reference": "p1",
+      "dataset": "LogistikaBench",
+      "subset": "non_target",
+      "n": 1439,
+      "correct": 1194,
+      "gains": 16,
+      "losses": 15,
+      "net": 1
+    },
+    {
+      "arm": "K",
+      "reference": "R",
+      "dataset": "SC-bench-knowledge",
+      "subset": "all",
+      "n": 226,
+      "correct": 190,
+      "gains": 3,
+      "losses": 0,
+      "net": 3
+    },
+    {
+      "arm": "K",
+      "reference": "R",
+      "dataset": "SC-bench-knowledge",
+      "subset": "target",
+      "n": 0,
+      "correct": 0,
+      "gains": 0,
+      "losses": 0,
+      "net": 0
+    },
+    {
+      "arm": "K",
+      "reference": "R",
+      "dataset": "SC-bench-knowledge",
+      "subset": "non_target",
+      "n": 226,
+      "correct": 190,
+      "gains": 3,
+      "losses": 0,
+      "net": 3
+    },
+    {
+      "arm": "K",
+      "reference": "R",
+      "dataset": "LogistikaBench",
+      "subset": "all",
+      "n": 1446,
+      "correct": 1195,
+      "gains": 13,
+      "losses": 3,
+      "net": 10
+    },
+    {
+      "arm": "K",
+      "reference": "R",
+      "dataset": "LogistikaBench",
+      "subset": "target",
+      "n": 7,
+      "correct": 1,
+      "gains": 1,
+      "losses": 0,
+      "net": 1
+    },
+    {
+      "arm": "K",
+      "reference": "R",
+      "dataset": "LogistikaBench",
+      "subset": "non_target",
+      "n": 1439,
+      "correct": 1194,
+      "gains": 12,
+      "losses": 3,
+      "net": 9
+    },
+    {
+      "arm": "R",
+      "reference": "step120",
+      "dataset": "SC-bench-knowledge",
+      "subset": "all",
+      "n": 226,
+      "correct": 187,
+      "gains": 2,
+      "losses": 5,
+      "net": -3
+    },
+    {
+      "arm": "R",
+      "reference": "step120",
+      "dataset": "SC-bench-knowledge",
+      "subset": "target",
+      "n": 0,
+      "correct": 0,
+      "gains": 0,
+      "losses": 0,
+      "net": 0
+    },
+    {
+      "arm": "R",
+      "reference": "step120",
+      "dataset": "SC-bench-knowledge",
+      "subset": "non_target",
+      "n": 226,
+      "correct": 187,
+      "gains": 2,
+      "losses": 5,
+      "net": -3
+    },
+    {
+      "arm": "R",
+      "reference": "step120",
+      "dataset": "LogistikaBench",
+      "subset": "all",
+      "n": 1446,
+      "correct": 1185,
+      "gains": 25,
+      "losses": 20,
+      "net": 5
+    },
+    {
+      "arm": "R",
+      "reference": "step120",
+      "dataset": "LogistikaBench",
+      "subset": "target",
+      "n": 7,
+      "correct": 0,
+      "gains": 0,
+      "losses": 0,
+      "net": 0
+    },
+    {
+      "arm": "R",
+      "reference": "step120",
+      "dataset": "LogistikaBench",
+      "subset": "non_target",
+      "n": 1439,
+      "correct": 1185,
+      "gains": 25,
+      "losses": 20,
+      "net": 5
+    },
+    {
+      "arm": "R",
+      "reference": "p1",
+      "dataset": "SC-bench-knowledge",
+      "subset": "all",
+      "n": 226,
+      "correct": 187,
+      "gains": 0,
+      "losses": 5,
+      "net": -5
+    },
+    {
+      "arm": "R",
+      "reference": "p1",
+      "dataset": "SC-bench-knowledge",
+      "subset": "target",
+      "n": 0,
+      "correct": 0,
+      "gains": 0,
+      "losses": 0,
+      "net": 0
+    },
+    {
+      "arm": "R",
+      "reference": "p1",
+      "dataset": "SC-bench-knowledge",
+      "subset": "non_target",
+      "n": 226,
+      "correct": 187,
+      "gains": 0,
+      "losses": 5,
+      "net": -5
+    },
+    {
+      "arm": "R",
+      "reference": "p1",
+      "dataset": "LogistikaBench",
+      "subset": "all",
+      "n": 1446,
+      "correct": 1185,
+      "gains": 12,
+      "losses": 20,
+      "net": -8
+    },
+    {
+      "arm": "R",
+      "reference": "p1",
+      "dataset": "LogistikaBench",
+      "subset": "target",
+      "n": 7,
+      "correct": 0,
+      "gains": 0,
+      "losses": 0,
+      "net": 0
+    },
+    {
+      "arm": "R",
+      "reference": "p1",
+      "dataset": "LogistikaBench",
+      "subset": "non_target",
+      "n": 1439,
+      "correct": 1185,
+      "gains": 12,
+      "losses": 20,
+      "net": -8
+    }
+  ],
+  "unit_outcomes": [
+    {
+      "unit_id": "llin-core-031182c8e97a128c8c31",
+      "source_sha256": "0c081eac3b0d73530876786a85ae44702792a7070bc93d554d4e85627164aff0",
+      "body_sha256": "d84a25724d543063afeb3f5a9ce0aef440c24c916b241c76969162c290fba8ea",
+      "historical_training": {
+        "cpt16_and_lora": {
+          "same_train_parquet_sha256": "6ffa16684e617f657293918bf1d89ae8930ec24e0e08da346f175c4710c1f1c8",
+          "complete_supervised_spans": [
+            {
+              "record_id": "llin-core-031182c8e97a128c8c31",
+              "start_char": 165,
+              "end_char": 549,
+              "first_token": 46,
+              "last_token": 143,
+              "rule_tokens": 98
+            }
+          ],
+          "mask_contract": "first token zero; all subsequent tokens including EOS one"
+        },
+        "p1": {
+          "linked_records": 2,
+          "linked_answer_only": 2,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "p1-replay-llin-core-031182c8e97a128c8c31-application_with_new_entities",
+            "p1-replay-llin-core-031182c8e97a128c8c31-boundary_or_counterexample"
+          ]
+        },
+        "s4": {
+          "linked_records": 2,
+          "linked_answer_only": 2,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "llin-core-031182c8e97a128c8c31-boundary_or_counterexample",
+            "llin-core-031182c8e97a128c8c31-application_with_new_entities"
+          ]
+        },
+        "s5": {
+          "linked_records": 2,
+          "linked_answer_only": 2,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "llin-core-031182c8e97a128c8c31-boundary_or_counterexample",
+            "llin-core-031182c8e97a128c8c31-application_with_new_entities"
+          ]
+        },
+        "s2": {
+          "linked_records": 0,
+          "linked_answer_only": 0,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": []
+        },
+        "p4": {
+          "linked_records": 2,
+          "linked_answer_only": 2,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "p1-replay-llin-core-031182c8e97a128c8c31-application_with_new_entities",
+            "p1-replay-llin-core-031182c8e97a128c8c31-boundary_or_counterexample"
+          ]
+        }
+      },
+      "historical_formal": {
+        "step120": 0,
+        "cpt16": 0,
+        "s4": 0,
+        "s5": 0,
+        "step120_current": 0,
+        "p1": 0,
+        "p4": 0,
+        "s2": 0,
+        "lora": 0
+      },
+      "current": {
+        "step120": {
+          "target_correct": 0,
+          "repaired_vs_p1": 0,
+          "lost_vs_p1": 0,
+          "direct_strict_passes": 0
+        },
+        "p1": {
+          "target_correct": 0,
+          "repaired_vs_p1": 0,
+          "lost_vs_p1": 0,
+          "direct_strict_passes": 0
+        },
+        "K": {
+          "target_correct": 0,
+          "repaired_vs_p1": 0,
+          "lost_vs_p1": 0,
+          "direct_strict_passes": 0
+        },
+        "R": {
+          "target_correct": 0,
+          "repaired_vs_p1": 0,
+          "lost_vs_p1": 0,
+          "direct_strict_passes": 0
+        }
+      }
+    },
+    {
+      "unit_id": "llin-core-05db8a7a420b9cc25b7f",
+      "source_sha256": "7ac12004e258eb49082bda008ed09bdb3aaabbed72e1d812bc51410f97b46e38",
+      "body_sha256": "698a1605204bb2229b51bb15692ce1e95df404d1ad3b7d16ec4746ecd3189b52",
+      "historical_training": {
+        "cpt16_and_lora": {
+          "same_train_parquet_sha256": "6ffa16684e617f657293918bf1d89ae8930ec24e0e08da346f175c4710c1f1c8",
+          "complete_supervised_spans": [
+            {
+              "record_id": "llin-core-05db8a7a420b9cc25b7f",
+              "start_char": 153,
+              "end_char": 407,
+              "first_token": 41,
+              "last_token": 109,
+              "rule_tokens": 69
+            }
+          ],
+          "mask_contract": "first token zero; all subsequent tokens including EOS one"
+        },
+        "p1": {
+          "linked_records": 0,
+          "linked_answer_only": 0,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": []
+        },
+        "s4": {
+          "linked_records": 0,
+          "linked_answer_only": 0,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": []
+        },
+        "s5": {
+          "linked_records": 0,
+          "linked_answer_only": 0,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": []
+        },
+        "s2": {
+          "linked_records": 0,
+          "linked_answer_only": 0,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": []
+        },
+        "p4": {
+          "linked_records": 0,
+          "linked_answer_only": 0,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": []
+        }
+      },
+      "historical_formal": {
+        "step120": 0,
+        "cpt16": 0,
+        "s4": 0,
+        "s5": 0,
+        "step120_current": 0,
+        "p1": 0,
+        "p4": 0,
+        "s2": 0,
+        "lora": 0
+      },
+      "current": {
+        "step120": {
+          "target_correct": 0,
+          "repaired_vs_p1": 0,
+          "lost_vs_p1": 0,
+          "direct_strict_passes": 0
+        },
+        "p1": {
+          "target_correct": 0,
+          "repaired_vs_p1": 0,
+          "lost_vs_p1": 0,
+          "direct_strict_passes": 0
+        },
+        "K": {
+          "target_correct": 0,
+          "repaired_vs_p1": 0,
+          "lost_vs_p1": 0,
+          "direct_strict_passes": 0
+        },
+        "R": {
+          "target_correct": 0,
+          "repaired_vs_p1": 0,
+          "lost_vs_p1": 0,
+          "direct_strict_passes": 0
+        }
+      }
+    },
+    {
+      "unit_id": "llin-core-284682e6d05c9f063d99",
+      "source_sha256": "ba9e780ae41cfa9241a88d02be1831009c1e45a550c54e93228f440c7e240a96",
+      "body_sha256": "fbbd76942a32c1f150fe2358fc1e096621ab2fcb33fae4f45a024eb26c4f9799",
+      "historical_training": {
+        "cpt16_and_lora": {
+          "same_train_parquet_sha256": "6ffa16684e617f657293918bf1d89ae8930ec24e0e08da346f175c4710c1f1c8",
+          "complete_supervised_spans": [
+            {
+              "record_id": "llin-core-284682e6d05c9f063d99",
+              "start_char": 187,
+              "end_char": 402,
+              "first_token": 52,
+              "last_token": 99,
+              "rule_tokens": 48
+            }
+          ],
+          "mask_contract": "first token zero; all subsequent tokens including EOS one"
+        },
+        "p1": {
+          "linked_records": 1,
+          "linked_answer_only": 1,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "p1-replay-llin-core-284682e6d05c9f063d99-definition_discrimination"
+          ]
+        },
+        "s4": {
+          "linked_records": 1,
+          "linked_answer_only": 1,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "llin-core-284682e6d05c9f063d99-definition_discrimination"
+          ]
+        },
+        "s5": {
+          "linked_records": 1,
+          "linked_answer_only": 1,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "llin-core-284682e6d05c9f063d99-definition_discrimination"
+          ]
+        },
+        "s2": {
+          "linked_records": 0,
+          "linked_answer_only": 0,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": []
+        },
+        "p4": {
+          "linked_records": 1,
+          "linked_answer_only": 1,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "p1-replay-llin-core-284682e6d05c9f063d99-definition_discrimination"
+          ]
+        }
+      },
+      "historical_formal": {
+        "step120": 0,
+        "cpt16": 0,
+        "s4": 0,
+        "s5": 0,
+        "step120_current": 0,
+        "p1": 0,
+        "p4": 0,
+        "s2": 0,
+        "lora": 0
+      },
+      "current": {
+        "step120": {
+          "target_correct": 0,
+          "repaired_vs_p1": 0,
+          "lost_vs_p1": 0,
+          "direct_strict_passes": 0
+        },
+        "p1": {
+          "target_correct": 0,
+          "repaired_vs_p1": 0,
+          "lost_vs_p1": 0,
+          "direct_strict_passes": 0
+        },
+        "K": {
+          "target_correct": 0,
+          "repaired_vs_p1": 0,
+          "lost_vs_p1": 0,
+          "direct_strict_passes": 0
+        },
+        "R": {
+          "target_correct": 0,
+          "repaired_vs_p1": 0,
+          "lost_vs_p1": 0,
+          "direct_strict_passes": 0
+        }
+      }
+    },
+    {
+      "unit_id": "llin-core-64cdc879fa758f981414",
+      "source_sha256": "790ad8c972335d997239327d24eaa5fca83dafd03b528dee19b1b83e4163aebb",
+      "body_sha256": "13ea000e2fa5618891f82bc20d268c3593a6270d5f38262e186ac387bb12974c",
+      "historical_training": {
+        "cpt16_and_lora": {
+          "same_train_parquet_sha256": "6ffa16684e617f657293918bf1d89ae8930ec24e0e08da346f175c4710c1f1c8",
+          "complete_supervised_spans": [
+            {
+              "record_id": "llin-core-64cdc879fa758f981414",
+              "start_char": 177,
+              "end_char": 324,
+              "first_token": 48,
+              "last_token": 86,
+              "rule_tokens": 39
+            }
+          ],
+          "mask_contract": "first token zero; all subsequent tokens including EOS one"
+        },
+        "p1": {
+          "linked_records": 1,
+          "linked_answer_only": 1,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "p1-replay-llin-core-64cdc879fa758f981414-definition_discrimination"
+          ]
+        },
+        "s4": {
+          "linked_records": 1,
+          "linked_answer_only": 1,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "llin-core-64cdc879fa758f981414-definition_discrimination"
+          ]
+        },
+        "s5": {
+          "linked_records": 1,
+          "linked_answer_only": 1,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "llin-core-64cdc879fa758f981414-definition_discrimination"
+          ]
+        },
+        "s2": {
+          "linked_records": 0,
+          "linked_answer_only": 0,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": []
+        },
+        "p4": {
+          "linked_records": 1,
+          "linked_answer_only": 1,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "p1-replay-llin-core-64cdc879fa758f981414-definition_discrimination"
+          ]
+        }
+      },
+      "historical_formal": {
+        "step120": 0,
+        "cpt16": 1,
+        "s4": 0,
+        "s5": 0,
+        "step120_current": 0,
+        "p1": 0,
+        "p4": 0,
+        "s2": 0,
+        "lora": 1
+      },
+      "current": {
+        "step120": {
+          "target_correct": 0,
+          "repaired_vs_p1": 0,
+          "lost_vs_p1": 0,
+          "direct_strict_passes": 3
+        },
+        "p1": {
+          "target_correct": 0,
+          "repaired_vs_p1": 0,
+          "lost_vs_p1": 0,
+          "direct_strict_passes": 0
+        },
+        "K": {
+          "target_correct": 1,
+          "repaired_vs_p1": 1,
+          "lost_vs_p1": 0,
+          "direct_strict_passes": 0
+        },
+        "R": {
+          "target_correct": 0,
+          "repaired_vs_p1": 0,
+          "lost_vs_p1": 0,
+          "direct_strict_passes": 0
+        }
+      }
+    },
+    {
+      "unit_id": "llin-core-9adae425cbbabbd2bf0c",
+      "source_sha256": "aa800321d8d84eabc3cc6d01afd66cf26311d89dda8e089d5c7d55ebf4472248",
+      "body_sha256": "c66ee3ca95df7eac49c54d8e084387bfca07d67da8bef4adec599fd24cdeda29",
+      "historical_training": {
+        "cpt16_and_lora": {
+          "same_train_parquet_sha256": "6ffa16684e617f657293918bf1d89ae8930ec24e0e08da346f175c4710c1f1c8",
+          "complete_supervised_spans": [
+            {
+              "record_id": "llin-core-9adae425cbbabbd2bf0c",
+              "start_char": 157,
+              "end_char": 476,
+              "first_token": 40,
+              "last_token": 109,
+              "rule_tokens": 70
+            }
+          ],
+          "mask_contract": "first token zero; all subsequent tokens including EOS one"
+        },
+        "p1": {
+          "linked_records": 2,
+          "linked_answer_only": 2,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "p1-replay-llin-core-9adae425cbbabbd2bf0c-application_with_new_entities",
+            "p1-replay-llin-core-9adae425cbbabbd2bf0c-definition_discrimination"
+          ]
+        },
+        "s4": {
+          "linked_records": 2,
+          "linked_answer_only": 2,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "llin-core-9adae425cbbabbd2bf0c-definition_discrimination",
+            "llin-core-9adae425cbbabbd2bf0c-application_with_new_entities"
+          ]
+        },
+        "s5": {
+          "linked_records": 2,
+          "linked_answer_only": 2,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "llin-core-9adae425cbbabbd2bf0c-definition_discrimination",
+            "llin-core-9adae425cbbabbd2bf0c-application_with_new_entities"
+          ]
+        },
+        "s2": {
+          "linked_records": 0,
+          "linked_answer_only": 0,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": []
+        },
+        "p4": {
+          "linked_records": 2,
+          "linked_answer_only": 2,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "p1-replay-llin-core-9adae425cbbabbd2bf0c-application_with_new_entities",
+            "p1-replay-llin-core-9adae425cbbabbd2bf0c-definition_discrimination"
+          ]
+        }
+      },
+      "historical_formal": {
+        "step120": 0,
+        "cpt16": 0,
+        "s4": 0,
+        "s5": 0,
+        "step120_current": 0,
+        "p1": 0,
+        "p4": 0,
+        "s2": 0,
+        "lora": 0
+      },
+      "current": {
+        "step120": {
+          "target_correct": 0,
+          "repaired_vs_p1": 0,
+          "lost_vs_p1": 0,
+          "direct_strict_passes": 0
+        },
+        "p1": {
+          "target_correct": 0,
+          "repaired_vs_p1": 0,
+          "lost_vs_p1": 0,
+          "direct_strict_passes": 0
+        },
+        "K": {
+          "target_correct": 0,
+          "repaired_vs_p1": 0,
+          "lost_vs_p1": 0,
+          "direct_strict_passes": 0
+        },
+        "R": {
+          "target_correct": 0,
+          "repaired_vs_p1": 0,
+          "lost_vs_p1": 0,
+          "direct_strict_passes": 0
+        }
+      }
+    },
+    {
+      "unit_id": "llin-core-b15da40c324e799cd7f5",
+      "source_sha256": "9a78de94edb14f03d70b7826cf6caaea55c975e5ba9a47ea00d6e94f59c96b1f",
+      "body_sha256": "afd61e769e9816943464f861d927a6074d94c4449bb3bc480014cfe4b31c9bec",
+      "historical_training": {
+        "cpt16_and_lora": {
+          "same_train_parquet_sha256": "6ffa16684e617f657293918bf1d89ae8930ec24e0e08da346f175c4710c1f1c8",
+          "complete_supervised_spans": [
+            {
+              "record_id": "llin-core-b15da40c324e799cd7f5",
+              "start_char": 174,
+              "end_char": 271,
+              "first_token": 47,
+              "last_token": 73,
+              "rule_tokens": 27
+            }
+          ],
+          "mask_contract": "first token zero; all subsequent tokens including EOS one"
+        },
+        "p1": {
+          "linked_records": 2,
+          "linked_answer_only": 2,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "p1-replay-llin-core-b15da40c324e799cd7f5-definition_discrimination",
+            "p1-replay-llin-core-b15da40c324e799cd7f5-boundary_or_counterexample"
+          ]
+        },
+        "s4": {
+          "linked_records": 2,
+          "linked_answer_only": 2,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "llin-core-b15da40c324e799cd7f5-definition_discrimination",
+            "llin-core-b15da40c324e799cd7f5-boundary_or_counterexample"
+          ]
+        },
+        "s5": {
+          "linked_records": 2,
+          "linked_answer_only": 2,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "llin-core-b15da40c324e799cd7f5-definition_discrimination",
+            "llin-core-b15da40c324e799cd7f5-boundary_or_counterexample"
+          ]
+        },
+        "s2": {
+          "linked_records": 0,
+          "linked_answer_only": 0,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": []
+        },
+        "p4": {
+          "linked_records": 2,
+          "linked_answer_only": 2,
+          "full_verbatim_rule_supervised_records": 0,
+          "semantic_partial_coverage": "not_inferred_from_exact_match",
+          "linked_ids": [
+            "p1-replay-llin-core-b15da40c324e799cd7f5-definition_discrimination",
+            "p1-replay-llin-core-b15da40c324e799cd7f5-boundary_or_counterexample"
+          ]
+        }
+      },
+      "historical_formal": {
+        "step120": 0,
+        "cpt16": 0,
+        "s4": 0,
+        "s5": 0,
+        "step120_current": 0,
+        "p1": 0,
+        "p4": 0,
+        "s2": 0,
+        "lora": 0
+      },
+      "current": {
+        "step120": {
+          "target_correct": 0,
+          "repaired_vs_p1": 0,
+          "lost_vs_p1": 0,
+          "direct_strict_passes": 0
+        },
+        "p1": {
+          "target_correct": 0,
+          "repaired_vs_p1": 0,
+          "lost_vs_p1": 0,
+          "direct_strict_passes": 0
+        },
+        "K": {
+          "target_correct": 0,
+          "repaired_vs_p1": 0,
+          "lost_vs_p1": 0,
+          "direct_strict_passes": 0
+        },
+        "R": {
+          "target_correct": 0,
+          "repaired_vs_p1": 0,
+          "lost_vs_p1": 0,
+          "direct_strict_passes": 0
+        }
+      }
+    }
+  ],
+  "ratings_sha256": "597306f37d474ee4b57566316a31058c07a676128a517379e43be74ca77f3a49",
+  "target_items": 7,
+  "unit_stability": [
+    {
+      "model": "K",
+      "unit_id": "llin-core-031182c8e97a128c8c31",
+      "prompt_id": "llin-core-031182c8e97a128c8c31-rule",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "K",
+      "unit_id": "llin-core-031182c8e97a128c8c31",
+      "prompt_id": "llin-core-031182c8e97a128c8c31-scope",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "K",
+      "unit_id": "llin-core-05db8a7a420b9cc25b7f",
+      "prompt_id": "llin-core-05db8a7a420b9cc25b7f-rule",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "K",
+      "unit_id": "llin-core-05db8a7a420b9cc25b7f",
+      "prompt_id": "llin-core-05db8a7a420b9cc25b7f-scope",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "K",
+      "unit_id": "llin-core-284682e6d05c9f063d99",
+      "prompt_id": "llin-core-284682e6d05c9f063d99-rule",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "K",
+      "unit_id": "llin-core-284682e6d05c9f063d99",
+      "prompt_id": "llin-core-284682e6d05c9f063d99-scope",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "K",
+      "unit_id": "llin-core-64cdc879fa758f981414",
+      "prompt_id": "llin-core-64cdc879fa758f981414-rule",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "K",
+      "unit_id": "llin-core-64cdc879fa758f981414",
+      "prompt_id": "llin-core-64cdc879fa758f981414-scope",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "K",
+      "unit_id": "llin-core-9adae425cbbabbd2bf0c",
+      "prompt_id": "llin-core-9adae425cbbabbd2bf0c-rule",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "K",
+      "unit_id": "llin-core-9adae425cbbabbd2bf0c",
+      "prompt_id": "llin-core-9adae425cbbabbd2bf0c-scope",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "K",
+      "unit_id": "llin-core-b15da40c324e799cd7f5",
+      "prompt_id": "llin-core-b15da40c324e799cd7f5-rule",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "K",
+      "unit_id": "llin-core-b15da40c324e799cd7f5",
+      "prompt_id": "llin-core-b15da40c324e799cd7f5-scope",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "R",
+      "unit_id": "llin-core-031182c8e97a128c8c31",
+      "prompt_id": "llin-core-031182c8e97a128c8c31-rule",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "R",
+      "unit_id": "llin-core-031182c8e97a128c8c31",
+      "prompt_id": "llin-core-031182c8e97a128c8c31-scope",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "R",
+      "unit_id": "llin-core-05db8a7a420b9cc25b7f",
+      "prompt_id": "llin-core-05db8a7a420b9cc25b7f-rule",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "R",
+      "unit_id": "llin-core-05db8a7a420b9cc25b7f",
+      "prompt_id": "llin-core-05db8a7a420b9cc25b7f-scope",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "R",
+      "unit_id": "llin-core-284682e6d05c9f063d99",
+      "prompt_id": "llin-core-284682e6d05c9f063d99-rule",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "R",
+      "unit_id": "llin-core-284682e6d05c9f063d99",
+      "prompt_id": "llin-core-284682e6d05c9f063d99-scope",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "R",
+      "unit_id": "llin-core-64cdc879fa758f981414",
+      "prompt_id": "llin-core-64cdc879fa758f981414-rule",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "R",
+      "unit_id": "llin-core-64cdc879fa758f981414",
+      "prompt_id": "llin-core-64cdc879fa758f981414-scope",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "R",
+      "unit_id": "llin-core-9adae425cbbabbd2bf0c",
+      "prompt_id": "llin-core-9adae425cbbabbd2bf0c-rule",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "R",
+      "unit_id": "llin-core-9adae425cbbabbd2bf0c",
+      "prompt_id": "llin-core-9adae425cbbabbd2bf0c-scope",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "R",
+      "unit_id": "llin-core-b15da40c324e799cd7f5",
+      "prompt_id": "llin-core-b15da40c324e799cd7f5-rule",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "R",
+      "unit_id": "llin-core-b15da40c324e799cd7f5",
+      "prompt_id": "llin-core-b15da40c324e799cd7f5-scope",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "p1",
+      "unit_id": "llin-core-031182c8e97a128c8c31",
+      "prompt_id": "llin-core-031182c8e97a128c8c31-rule",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "p1",
+      "unit_id": "llin-core-031182c8e97a128c8c31",
+      "prompt_id": "llin-core-031182c8e97a128c8c31-scope",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "p1",
+      "unit_id": "llin-core-05db8a7a420b9cc25b7f",
+      "prompt_id": "llin-core-05db8a7a420b9cc25b7f-rule",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "p1",
+      "unit_id": "llin-core-05db8a7a420b9cc25b7f",
+      "prompt_id": "llin-core-05db8a7a420b9cc25b7f-scope",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "p1",
+      "unit_id": "llin-core-284682e6d05c9f063d99",
+      "prompt_id": "llin-core-284682e6d05c9f063d99-rule",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "p1",
+      "unit_id": "llin-core-284682e6d05c9f063d99",
+      "prompt_id": "llin-core-284682e6d05c9f063d99-scope",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "p1",
+      "unit_id": "llin-core-64cdc879fa758f981414",
+      "prompt_id": "llin-core-64cdc879fa758f981414-rule",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "p1",
+      "unit_id": "llin-core-64cdc879fa758f981414",
+      "prompt_id": "llin-core-64cdc879fa758f981414-scope",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "p1",
+      "unit_id": "llin-core-9adae425cbbabbd2bf0c",
+      "prompt_id": "llin-core-9adae425cbbabbd2bf0c-rule",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "p1",
+      "unit_id": "llin-core-9adae425cbbabbd2bf0c",
+      "prompt_id": "llin-core-9adae425cbbabbd2bf0c-scope",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "p1",
+      "unit_id": "llin-core-b15da40c324e799cd7f5",
+      "prompt_id": "llin-core-b15da40c324e799cd7f5-rule",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "p1",
+      "unit_id": "llin-core-b15da40c324e799cd7f5",
+      "prompt_id": "llin-core-b15da40c324e799cd7f5-scope",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "step120",
+      "unit_id": "llin-core-031182c8e97a128c8c31",
+      "prompt_id": "llin-core-031182c8e97a128c8c31-rule",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "step120",
+      "unit_id": "llin-core-031182c8e97a128c8c31",
+      "prompt_id": "llin-core-031182c8e97a128c8c31-scope",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "step120",
+      "unit_id": "llin-core-05db8a7a420b9cc25b7f",
+      "prompt_id": "llin-core-05db8a7a420b9cc25b7f-rule",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "step120",
+      "unit_id": "llin-core-05db8a7a420b9cc25b7f",
+      "prompt_id": "llin-core-05db8a7a420b9cc25b7f-scope",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "step120",
+      "unit_id": "llin-core-284682e6d05c9f063d99",
+      "prompt_id": "llin-core-284682e6d05c9f063d99-rule",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "step120",
+      "unit_id": "llin-core-284682e6d05c9f063d99",
+      "prompt_id": "llin-core-284682e6d05c9f063d99-scope",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "step120",
+      "unit_id": "llin-core-64cdc879fa758f981414",
+      "prompt_id": "llin-core-64cdc879fa758f981414-rule",
+      "passes": 3,
+      "repeats": 3
+    },
+    {
+      "model": "step120",
+      "unit_id": "llin-core-64cdc879fa758f981414",
+      "prompt_id": "llin-core-64cdc879fa758f981414-scope",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "step120",
+      "unit_id": "llin-core-9adae425cbbabbd2bf0c",
+      "prompt_id": "llin-core-9adae425cbbabbd2bf0c-rule",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "step120",
+      "unit_id": "llin-core-9adae425cbbabbd2bf0c",
+      "prompt_id": "llin-core-9adae425cbbabbd2bf0c-scope",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "step120",
+      "unit_id": "llin-core-b15da40c324e799cd7f5",
+      "prompt_id": "llin-core-b15da40c324e799cd7f5-rule",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "step120",
+      "unit_id": "llin-core-b15da40c324e799cd7f5",
+      "prompt_id": "llin-core-b15da40c324e799cd7f5-scope",
+      "passes": 0,
+      "repeats": 3
+    }
+  ],
+  "promotion": false,
+  "independent_holdout": false,
+  "training_seeds": 1,
+  "interpretation": "Source direct teaching recipe; judge recall before diagnosing transfer; aggregate score alone is insufficient."
+}

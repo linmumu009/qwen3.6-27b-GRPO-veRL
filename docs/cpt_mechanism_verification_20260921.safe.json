@@ -1,0 +1,45 @@
+{
+  "checked_comparison_rows": 30,
+  "formal_totals": {
+    "step120": {
+      "SC-bench-knowledge": 190,
+      "LogistikaBench": 1180
+    },
+    "p1": {
+      "SC-bench-knowledge": 192,
+      "LogistikaBench": 1193
+    },
+    "K": {
+      "SC-bench-knowledge": 190,
+      "LogistikaBench": 1195
+    },
+    "R": {
+      "SC-bench-knowledge": 187,
+      "LogistikaBench": 1185
+    }
+  },
+  "target_items": 7,
+  "non_target_items": 1665,
+  "formal_raw_sha256": {
+    "step120": "0a75f6d706bca79105c94dec85fc5727d58e40eda97c73509d893c346bbe995e",
+    "p1": "33c5fc7dcb64c0fba59c25c054b19cda7b2e07880ad62daf0d2debd6ece7bbb2",
+    "K": "96b68e4045e6be9bf4bd18b26e16f447fc8a7cfb425854ebfdb2a1bed9a1f912",
+    "R": "3e0a4a2ccebcffef02a58f3904e4fe46f624358b0f56bbb7f8fa27721801af8d"
+  },
+  "method": "Independently group per-call correctness; >=2/3 votes equals correct majority; compare every gains/losses/subset row. Raw answer parser separately revalidated by summarize.",
+  "training": {
+    "K": {
+      "steps": 111,
+      "sequence_tokens": 89599,
+      "checkpoint_verified": true,
+      "fresh_optimizer": true
+    },
+    "R": {
+      "steps": 111,
+      "sequence_tokens": 94954,
+      "checkpoint_verified": true,
+      "fresh_optimizer": true
+    }
+  },
+  "calls": 10176
+}
