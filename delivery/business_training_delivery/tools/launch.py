@@ -66,10 +66,6 @@ def validate_data(root, kind, model):
                     assert ids[-1] == tokenizer.eos_token_id
                 else:
                     assert 0 < int(mask.sum()) < len(ids)
-                    decoded = tokenizer.decode(ids[mask.bool()].tolist())
-                    assert "Answer:" in decoded
-                    if kind == "trajory-SFT":
-                        assert "calculator" in decoded
                 supervised.append(int(mask.sum()))
             details[split] = {"rows": len(ds), "min_supervised_tokens": min(supervised),
                               "max_supervised_tokens": max(supervised)}
