@@ -4,13 +4,15 @@
       "path": "outputs/SFT/20260921-104906-3159588",
       "state": "incomplete",
       "wrapper_exit_code": 1,
-      "checkpoint_manifests": []
+      "checkpoint_manifests": [],
+      "artifacts_removed": true
     },
     {
       "path": "outputs/SFT/20260921-105018-3168323",
       "state": "preflight_only",
       "wrapper_exit_code": 0,
-      "checkpoint_manifests": []
+      "checkpoint_manifests": [],
+      "artifacts_removed": true
     },
     {
       "path": "outputs/SFT/20260921-105153-3174517",
@@ -32,7 +34,8 @@
       "checkpoint_integrity_gate": true,
       "final_validation_metrics": "{'val/loss': 0.8809373378753662}",
       "train/loss": 1.5363091230392456,
-      "train/grad_norm": 169.33679227725437
+      "train/grad_norm": 169.33679227725437,
+      "artifacts_removed": true
     },
     {
       "path": "outputs/SFT/20260921-120116-3847655",
@@ -48,14 +51,16 @@
         "extra_tensor_count": 0,
         "shape_mismatch_count": 0
       },
-      "checkpoint_manifests": []
+      "checkpoint_manifests": [],
+      "artifacts_removed": true
     },
     {
       "path": "outputs/SFT/cpu-export-20260921",
       "state": "export_failed",
       "exit_code": 1,
       "wrapper_exit_code": 1,
-      "checkpoint_manifests": []
+      "checkpoint_manifests": [],
+      "artifacts_removed": true
     }
   ],
   "trajory-SFT": [
@@ -79,7 +84,8 @@
       "checkpoint_integrity_gate": true,
       "final_validation_metrics": "{'val/loss': 0.0001641562266740948}",
       "train/loss": 0.005156707018613815,
-      "train/grad_norm": 12.050364660546519
+      "train/grad_norm": 12.050364660546519,
+      "artifacts_removed": true
     }
   ],
   "GRPO": [
@@ -88,14 +94,16 @@
       "state": "aborted_environment_fix",
       "reason": "Preserve Ascend PYTHONPATH and move Ray temp to data3; stopped during initialization, no training checkpoint.",
       "wrapper_exit_code": 137,
-      "checkpoint_manifests": []
+      "checkpoint_manifests": [],
+      "artifacts_removed": true
     },
     {
       "path": "outputs/GRPO/20260921-111708-3526165",
       "state": "aborted_resource_config_fix",
       "reason": "Ray CPU allocation 32 could not place 16 workers requesting 3 CPUs each. Changed to 96 on 640-CPU host; no training checkpoint.",
       "wrapper_exit_code": 137,
-      "checkpoint_manifests": []
+      "checkpoint_manifests": [],
+      "artifacts_removed": true
     },
     {
       "path": "outputs/GRPO/20260921-112149-3557017",
@@ -103,7 +111,8 @@
       "exit_code": 1,
       "checkpoints": [],
       "wrapper_exit_code": 1,
-      "checkpoint_manifests": []
+      "checkpoint_manifests": [],
+      "artifacts_removed": true
     },
     {
       "path": "outputs/GRPO/20260921-112800-3602768",
@@ -111,14 +120,16 @@
       "exit_code": 1,
       "checkpoints": [],
       "wrapper_exit_code": 1,
-      "checkpoint_manifests": []
+      "checkpoint_manifests": [],
+      "artifacts_removed": true
     },
     {
       "path": "outputs/GRPO/20260921-113502-3653757",
       "state": "failed",
       "exit_code": 1,
       "checkpoints": [],
-      "checkpoint_manifests": []
+      "checkpoint_manifests": [],
+      "artifacts_removed": true
     },
     {
       "path": "outputs/GRPO/20260921-114058-3699256",
@@ -126,7 +137,8 @@
       "exit_code": 1,
       "checkpoints": [],
       "wrapper_exit_code": 1,
-      "checkpoint_manifests": []
+      "checkpoint_manifests": [],
+      "artifacts_removed": true
     },
     {
       "path": "outputs/GRPO/20260921-114625-3743567",
@@ -134,7 +146,8 @@
       "exit_code": 1,
       "checkpoints": [],
       "wrapper_exit_code": 1,
-      "checkpoint_manifests": []
+      "checkpoint_manifests": [],
+      "artifacts_removed": true
     },
     {
       "path": "outputs/GRPO/20260921-120534-3872837",
@@ -142,14 +155,16 @@
       "exit_code": 1,
       "checkpoints": [],
       "wrapper_exit_code": 1,
-      "checkpoint_manifests": []
+      "checkpoint_manifests": [],
+      "artifacts_removed": true
     },
     {
       "path": "outputs/GRPO/20260921-121422-3945981",
       "state": "aborted_weight_sync_address_mismatch",
       "reason": "Receiver used physical NPU ranks 4..15 while each replica sender used local ranks 0..3; no optimizer step or checkpoint",
       "wrapper_exit_code": 137,
-      "checkpoint_manifests": []
+      "checkpoint_manifests": [],
+      "artifacts_removed": true
     },
     {
       "path": "outputs/GRPO/20260921-122735-4042974",
@@ -157,7 +172,8 @@
       "exit_code": 1,
       "checkpoints": [],
       "wrapper_exit_code": 1,
-      "checkpoint_manifests": []
+      "checkpoint_manifests": [],
+      "artifacts_removed": true
     },
     {
       "path": "outputs/GRPO/20260921-124216-4167216",
@@ -178,17 +194,20 @@
       ],
       "checkpoint_integrity_gate": true,
       "actor/grad_norm": 0.0,
-      "critic/score/mean": 1.0
+      "critic/score/mean": 1.0,
+      "artifacts_removed": true
     },
     {
       "path": "outputs/GRPO/config-check-20260921",
       "state": "incomplete",
-      "checkpoint_manifests": []
+      "checkpoint_manifests": [],
+      "artifacts_removed": true
     },
     {
       "path": "outputs/GRPO/preflight-20260921",
       "state": "preflight_only",
-      "checkpoint_manifests": []
+      "checkpoint_manifests": [],
+      "artifacts_removed": true
     }
   ],
   "agentic-GRPO": [
@@ -217,12 +236,14 @@
       ],
       "checkpoint_integrity_gate": true,
       "actor/grad_norm": 0.0,
-      "critic/score/mean": 1.0
+      "critic/score/mean": 1.0,
+      "artifacts_removed": true
     },
     {
       "path": "outputs/agentic-GRPO/preflight-20260921",
       "state": "preflight_only",
-      "checkpoint_manifests": []
+      "checkpoint_manifests": [],
+      "artifacts_removed": true
     }
   ],
   "CPT": [
@@ -246,10 +267,15 @@
       "checkpoint_integrity_gate": true,
       "final_validation_metrics": "{'val/loss': 2.6585237979888916}",
       "train/loss": 2.7324411869049072,
-      "train/grad_norm": 32.627910849551036
+      "train/grad_norm": 32.627910849551036,
+      "artifacts_removed": true
     }
   ],
   "model_is_standalone": true,
   "model_checksums_present": true,
-  "offline_image_present": true
+  "offline_image_present": true,
+  "_artifact_retention": {
+    "removed_on": "2026-09-21",
+    "status": "Temporary runs, checkpoints, HF test export, raw logs and caches deleted at user request. Metrics and manifest facts describe verification-time state, not currently present files."
+  }
 }
