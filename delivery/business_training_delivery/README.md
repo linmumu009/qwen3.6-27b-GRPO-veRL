@@ -1,8 +1,8 @@
 # 业务方训练交付包
 
-版本：0.2.1；日期：2026-09-21。
+版本：0.2.2；日期：2026-09-21。
 5号机位置：`/data3/llin/business_training_delivery`。
-面向Ascend 910 A3单机16个逻辑NPU，优先使用veRL。CPT模型仍预留。
+面向Ascend 910 A3单机16个逻辑NPU，优先使用veRL。CPT模型已作为独立实体副本放入model/CPT。
 
 首次部署和完整操作见[业务方运行手册](docs/业务方运行手册.md)，日常操作见[快速开始](docs/业务方快速开始.md)，逐项完成情况见[验收状态](docs/验收状态.md)。
 
@@ -22,7 +22,7 @@ bash Train/CPT/run.sh
 真实验收状态以 `docs/验收状态.md` 为准，不能将入口存在或预检成功等同于完整训练通过。
 
 ## 内容
-- model：原始模型与CPT模型预留位置；模型整理状态见model/README.md。
+- model：原始模型与CPT模型；模型整理状态见model/README.md。
 - datasets：五类自编样例，每类32条训练数据、8条验证数据；JSONL可读，入口自动生成Parquet。
 - Train：五类run.sh、config.yaml、README.md。沿用用户指定的trajory-SFT名称。
 - frameworks：共享源码及补丁，第三方源码只在5号机归档，不提交到项目Git。

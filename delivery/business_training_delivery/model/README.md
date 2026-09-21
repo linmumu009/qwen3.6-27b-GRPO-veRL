@@ -1,9 +1,18 @@
 # 模型
 
-qwen3.6-27b已整理为交付包内实体文件；从5号机原始模型复制，逐文件完成SHA256回读校验。delivery_checksums.json记录文件大小和摘要，不再依赖包外模型软链接。
-CPT目录仍预留，等待用户提供模型。训练配方默认从原始模型开始。
+交付包包含两个独立模型目录，均为实体文件，不依赖包外软链接。
 
-后续将兼容的Qwen3.6-27B CPT模型放到model/CPT（包含config、tokenizer与HF权重分片）后，可用一行切换基座：
+- `qwen3.6-27b`：原始模型，所有训练入口默认使用它。
+- `CPT`：用户提供的CPT后模型，来源及验证边界见[CPT说明](CPT/README.md)。
+
+两个目录中的 `delivery_checksums.json` 记录逐文件大小和SHA256摘要。CPT模型入包不改变默认训练配置，切换时先预检：
+
+```bash
+DELIVERY_MODEL_DIR=model/CPT bash Train/SFT/run.sh --check
+```
+
+通过后执行：
+
 ```bash
 DELIVERY_MODEL_DIR=model/CPT bash Train/SFT/run.sh
 ```
