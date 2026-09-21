@@ -1,7 +1,7 @@
 # 业务方训练交付包（目录整理版）
 
 版本：0.1.0；日期：2026-09-21。
-5号机位置：`/data/llin/business_training_delivery`。
+5号机位置：`/data3/llin/business_training_delivery`。
 当前只完成目录、格式示例、历史实现索引和交付方案；没有验收五类训练一行跑通。
 
 ## 目录
