@@ -1,8 +1,14 @@
 # trajory-SFT
 
-状态：待适配与工程验收。
+在交付包根目录运行：
+```bash
+bash Train/trajory-SFT/run.sh --check
+bash Train/trajory-SFT/run.sh
+```
+第一条只检查，第二条实际训练1步并保存检查点。每次新建输出目录，不自动恢复历史训练。
+配置：本目录config.yaml（JSON语法的合法YAML）；overrides为当前veRL参数，可修改步数、学习率、batch等。不要改变模型并行参数，除非重新验证硬件适配。
+数据：datasets/trajory-SFT/train.jsonl和val.jsonl；入口自动转换Parquet。
+输出：outputs/trajory-SFT/时间编号/，包括driver.log、exit_code、preflight.json、resolved_config.yaml、status.json和checkpoints。
+完整训练验收以docs/验收状态.md为准。默认不自动导出HF，以免五类重复导出耗尽磁盘；导出说明见tools/README.md。
 
-规划入口：在包根目录执行 `bash Train/trajory-SFT/run.sh`，尚未实现。
-规划配置：本目录config.yaml。框架优先veRL，共享源码放frameworks。
-候选历史实现：`scripts/run_repair_sft_megatron_smoke.sh`。
-示例数据：`datasets/trajory-SFT/example.jsonl`。
+默认检查点保存模型与额外状态，不保存优化器状态；正式可恢复训练需在config.yaml中将checkpoint.save_contents（GRPO类为actor_rollout_ref.actor.checkpoint.save_contents）加入optimizer，并预留更多空间。

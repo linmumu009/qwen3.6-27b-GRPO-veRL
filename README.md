@@ -2,6 +2,12 @@
 
 Qwen3.6 27B 的 GRPO / veRL 训练项目。
 
+## v1.13.147（2026-09-21）
+
+- 完成5号机 `/data3/llin/business_training_delivery` 的[业务训练交付包](delivery/business_training_delivery/README.md)：原始模型实体副本、五类32/8条样例数据、共享veRL源码及补丁、固定离线镜像、独立容器和一行训练入口；CPT成品模型继续预留。
+- 五类均完成真实1步运行及检查点结构核验；agentic-GRPO记录16次成功工具调用，SFT严格HF导出覆盖1199个张量。两类GRPO样例奖励全为1、梯度为0，仅证明工程流程，不代表训练收益。
+- 修复独立环境路径、RL普通主机内存拷贝及同机副本权重通信地址；7项本地检查、设备拷贝和CP2索引/梯度检查通过。提供[快速开始](delivery/business_training_delivery/docs/业务方快速开始.md)、打包工具及[验收记录](delivery/business_training_delivery/docs/验收状态.md)；异机复验和业务效果评测未执行。
+
 ## v1.13.146（2026-09-21）
 
 - 完成[来源知识K/R机制验证](docs/cpt_mechanism_results_20260921.md)：两臂各111步、144次直接调用及10,032次正式评测，匿名逐事实评分先冻结再揭示身份。

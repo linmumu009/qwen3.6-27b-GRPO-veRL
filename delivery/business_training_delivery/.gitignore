@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+*.parquet
+frameworks/*/
+frameworks/*.tar.gz
+frameworks/*.patch
+environment/*.tar
+environment/*.partial
+model/qwen3.6-27b/
+model/.qwen3.6-27b-copy/
+outputs/*/
+outputs/.*

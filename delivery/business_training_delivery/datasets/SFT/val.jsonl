@@ -1,0 +1,8 @@
+{"messages": [{"role": "user", "content": "Compute 1437 + 723. End with a separate line: Answer: <integer>."}, {"role": "assistant", "content": "Answer: 2160"}], "enable_thinking": false}
+{"messages": [{"role": "user", "content": "Compute 1450 * 730. End with a separate line: Answer: <integer>."}, {"role": "assistant", "content": "Answer: 1058500"}], "enable_thinking": false}
+{"messages": [{"role": "user", "content": "Compute 1463 + 737. End with a separate line: Answer: <integer>."}, {"role": "assistant", "content": "Answer: 2200"}], "enable_thinking": false}
+{"messages": [{"role": "user", "content": "Compute 1476 * 744. End with a separate line: Answer: <integer>."}, {"role": "assistant", "content": "Answer: 1098144"}], "enable_thinking": false}
+{"messages": [{"role": "user", "content": "Compute 1489 + 751. End with a separate line: Answer: <integer>."}, {"role": "assistant", "content": "Answer: 2240"}], "enable_thinking": false}
+{"messages": [{"role": "user", "content": "Compute 1502 * 758. End with a separate line: Answer: <integer>."}, {"role": "assistant", "content": "Answer: 1138516"}], "enable_thinking": false}
+{"messages": [{"role": "user", "content": "Compute 1515 + 765. End with a separate line: Answer: <integer>."}, {"role": "assistant", "content": "Answer: 2280"}], "enable_thinking": false}
+{"messages": [{"role": "user", "content": "Compute 1528 * 772. End with a separate line: Answer: <integer>."}, {"role": "assistant", "content": "Answer: 1179616"}], "enable_thinking": false}

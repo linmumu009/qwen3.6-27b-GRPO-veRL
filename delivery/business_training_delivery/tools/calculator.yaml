@@ -1,0 +1,41 @@
+{
+  "tools": [
+    {
+      "class_name": "tools.calculator.CalculatorTool",
+      "config": {
+        "type": "native"
+      },
+      "tool_schema": {
+        "type": "function",
+        "function": {
+          "name": "calculator",
+          "description": "Compute integer addition or multiplication. Use this tool for arithmetic.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "a": {
+                "type": "integer"
+              },
+              "b": {
+                "type": "integer"
+              },
+              "operation": {
+                "type": "string",
+                "enum": [
+                  "add",
+                  "multiply"
+                ]
+              }
+            },
+            "required": [
+              "a",
+              "b",
+              "operation"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    }
+  ]
+}

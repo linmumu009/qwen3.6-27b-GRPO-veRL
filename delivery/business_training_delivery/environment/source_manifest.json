@@ -1,0 +1,36 @@
+{
+  "verl": {
+    "commit": "bc72e38edba78e778bfbd462638f9634b9140a76",
+    "archive_sha256": "b5e9e9db8d71ee09f939a188a8c169cea2fc641e3aa5ff829f9d7db643dee71e",
+    "patch_sha256": "0cd7ab808429c619d104824df54b5a6ae1c74bd72bf081b026c596a9dec866d5",
+    "tracked_files": 1162,
+    "delivery_extra_patch": {
+      "file": "frameworks/verl-delivery-pageable-offload.patch",
+      "sha256": "a86a2ed94b48a69f790b4b1b9d184c4a12075da7c904f05ef6c270237fbf4263",
+      "patched_file_sha256": "8a302bcdbbc7184e33484c6594e4e80dcf5b04fa5801f63a9d0d0ea073b76a7c"
+    },
+    "delivery_colocated_sync_patch": {
+      "file": "frameworks/verl-delivery-colocated-sync.patch",
+      "sha256": "a3e6bac8e3684f655f3f322ed89565c3ed017a406046881e74753cb691e8fcb2",
+      "patched_file_sha256": "6f2c7e54b4b44e635aabec26126f5339b6d0313a2365e2a818661acd493bee72"
+    }
+  },
+  "vllm": {
+    "commit": "bcf2be96120005e9aea171927f85055a6a5c0cf6",
+    "archive_sha256": "9291e2af0cf1644d6c5076741e8ee8949e9f4ca3ce26d0a4790a87e91b297c6f",
+    "patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "tracked_files": 4285
+  },
+  "vllm-ascend": {
+    "commit": "a43c8cc8057f490ed1df2c6ed66253e2d7817da4",
+    "archive_sha256": "01b5b38f8ea96557e2c069e8ff70bc3e05ed81928085c44a83abe2f9173a5ae7",
+    "patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "tracked_files": 1541
+  },
+  "Megatron-Bridge": {
+    "commit": "de93536e9028ecf1e4dc28608dc80f336dcdfe59",
+    "archive_sha256": "e673db47834cd12a184d8f5ab8a5fa4aca66a71f718b80cb5fdb937a93ba6a36",
+    "patch_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "tracked_files": 978
+  }
+}
