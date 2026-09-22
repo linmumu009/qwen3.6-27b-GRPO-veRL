@@ -1,0 +1,140 @@
+{
+  "date": "2026-09-22",
+  "id": "llin-logistika-independent-20260922-01",
+  "status": "closed_no_complete_quality_group",
+  "author_method": "History-free model subagent; source-only input by instruction",
+  "reviewer_method": "Separate history-free model subagent; author evidence withheld until review freeze",
+  "human_expert_review": false,
+  "os_enforced_file_isolation": false,
+  "author_records": 32,
+  "author_skips": 0,
+  "option_judgments": 152,
+  "resolved_label_agreement_tasks": 31,
+  "tasks_with_insufficient_options": 1,
+  "blind_quality_pass_tasks": 26,
+  "evidence_agreement_pass_tasks": 26,
+  "evidence_agreement_complete_groups": 4,
+  "final_quality_complete_groups": 0,
+  "root_group_rejection_counts": {
+    "semantic_operation_reuse": 6,
+    "measurement_design": 2
+  },
+  "groups": [
+    {
+      "group": "gvc_trajectories",
+      "evidence_agreement_tasks": 4,
+      "evidence_agreement_complete_group": true,
+      "root_complete_group_released": false,
+      "diagnostic_released": false,
+      "root_reason": "semantic_operation_reuse",
+      "root_note": "新旧均把平台化服务的分散化与分布式制造的复制路径并置，问数字基础设施、价值获取及制造基础前提；更换机构与提案措辞，没有建立新的判断操作。",
+      "root_blocking_task_id": "gvc_trajectories__application",
+      "historical_reference_id": "gvc_trajectories-scope"
+    },
+    {
+      "group": "low_water_response",
+      "evidence_agreement_tasks": 3,
+      "evidence_agreement_complete_group": false,
+      "root_complete_group_released": false,
+      "diagnostic_released": false,
+      "root_reason": "measurement_design",
+      "root_note": "所谓竞争规则题预先声明所有措施可用，随后主要列举低水位措施与历史船型事实；未形成依据不同适用条件区分竞争措施的任务，且混入历史容量陈述。与旧失败题同类设计问题。",
+      "root_blocking_task_id": "low_water_response__competing_rules",
+      "historical_reference_id": "low_water_response-competing_rules"
+    },
+    {
+      "group": "modal_dimensions",
+      "evidence_agreement_tasks": 4,
+      "evidence_agreement_complete_group": true,
+      "root_complete_group_released": false,
+      "diagnostic_released": false,
+      "root_reason": "semantic_operation_reuse",
+      "root_note": "新旧均组合跨方式分别合同、跨方式单合同、同方式航空单合同三个场景，并判断单合同是否保证效率；运输段替换没有改变关键条件组合。",
+      "root_blocking_task_id": "modal_dimensions__application",
+      "historical_reference_id": "modal_dimensions-scope"
+    },
+    {
+      "group": "picking_workload",
+      "evidence_agreement_tasks": 3,
+      "evidence_agreement_complete_group": false,
+      "root_complete_group_released": false,
+      "diagnostic_released": false,
+      "root_reason": "measurement_design",
+      "root_note": "新题主要比较给定比例大小及货物单位难易排序，没有拣选/布局的条件权衡。不能用比例算术替代原规格的竞争判断难度；这是设计拒收，不声称它复制旧题。",
+      "root_blocking_task_id": "picking_workload__competing_rules",
+      "historical_reference_id": "picking_workload-competing_rules"
+    },
+    {
+      "group": "port_forecast",
+      "evidence_agreement_tasks": 2,
+      "evidence_agreement_complete_group": false,
+      "root_complete_group_released": false,
+      "diagnostic_released": false,
+      "root_reason": "semantic_operation_reuse",
+      "root_note": "新旧均用邻近产业且无替代港对照腹地客户可选多个港，要求独占/竞争货分类与预测方法；去掉距离和项目名称仍是同一操作。",
+      "root_blocking_task_id": "port_forecast__competing_rules",
+      "historical_reference_id": "port_forecast-competing_rules"
+    },
+    {
+      "group": "rail_loading",
+      "evidence_agreement_tasks": 4,
+      "evidence_agreement_complete_group": true,
+      "root_complete_group_released": false,
+      "diagnostic_released": false,
+      "root_reason": "semantic_operation_reuse",
+      "root_note": "新旧均并置申报国装车后渡船出口、国外装卸且渡船通过申报国，另以更换牵引车测试统计装卸边界；国家字母和叙述组合改变但规则应用结构已见。",
+      "root_blocking_task_id": "rail_loading__application",
+      "historical_reference_id": "rail_loading-counterexample"
+    },
+    {
+      "group": "rail_rolling_stock",
+      "evidence_agreement_tasks": 4,
+      "evidence_agreement_complete_group": true,
+      "root_complete_group_released": false,
+      "diagnostic_released": false,
+      "root_reason": "semantic_operation_reuse",
+      "root_note": "新旧均含两动力车一拖车的固定编组与可耦合单司机模块编组；新题又重用旧application的三车体计数。组合既有问题不能作为未见操作认证。",
+      "root_blocking_task_id": "rail_rolling_stock__application",
+      "historical_reference_id": "rail_rolling_stock-competing_rules"
+    },
+    {
+      "group": "transport_models",
+      "evidence_agreement_tasks": 2,
+      "evidence_agreement_complete_group": false,
+      "root_complete_group_released": false,
+      "diagnostic_released": false,
+      "root_reason": "semantic_operation_reuse",
+      "root_note": "新旧均同时给出预测不符、评价指标受质疑、公开走廊权衡假设，要求对应抽象预测检查、指标检查及透明模型；这是相同系统分析判断组合。",
+      "root_blocking_task_id": "transport_models__application",
+      "historical_reference_id": "transport_models-scope"
+    }
+  ],
+  "lexical": {
+    "files": 21,
+    "records": 2850,
+    "tasks_with_hits": 0,
+    "threshold": 0.3,
+    "limitation": "Enumerated corpus only; lexical leads do not certify semantic novelty. Full source and task-operation review required."
+  },
+  "fingerprints": {
+    "registration.private.json": "70d64e9b4e96afb02598f7c029275c9d9fe45b2a2aa3127e4af65257201c7d2c",
+    "writer_input.private.json": "55fb23fcd4d8e17b474c1d73949e9fe62495def3ff40fc6936a42939ce13b785",
+    "author.private.json": "594e63fa56701b733f3295e33a64d9da2118dbb71128777fde1b6661d69bdbba",
+    "reviewer_input.private.json": "c9f3434196e7523cdd45fd62e21ecf0fca23289f7e168a45b3c6325f38f65f72",
+    "review.private.json": "a73718fa506a66cf4d89e25a7b7a1aa52f92824872fa92f13bcfd58f542726a8",
+    "review_freeze.private.json": "4fef6ea454ded8179c82fb7cdfceb810061e2ed0844b2fe27c9f97897441a6bd",
+    "root_group_review.private.json": "d04c8a84d5e0451a71de77f3a3013defe2fd6510778d4bd450686005b31a4242",
+    "overlap_corpus.private.json": "ddb85f46ae30c1c759a1e73545a60883e4eb40a25b8f20a3e8b4a478b00dfec6",
+    "overlap.private.json": "bbb14fd3d9806a05de3c34195ac59e3aa6de916f97cbec7213e57218ef51d67d",
+    "comparison.safe.json": "3e5c072fa95f93a0bd09e39a54c2acf947a2b6003f1d62aa8dc99ebda8dba174"
+  },
+  "actual_student_model_calls": 0,
+  "actual_training_runs": 0,
+  "actual_formal_eval_calls": 0,
+  "draft_revisions": 0,
+  "maximum_unused_diagnostic_calls": 432,
+  "old_results_preserved": true,
+  "stage_c_passed": false,
+  "training_allowed": false,
+  "next_step": "Do not expand automatic authoring on unchanged sources. Need a materially different judgment operation with source support and pre-authoring feasibility review."
+}
