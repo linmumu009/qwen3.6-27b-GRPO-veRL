@@ -1,0 +1,17 @@
+{
+  "date": "2026-09-22",
+  "response_calls": 16,
+  "nll_requests": 16,
+  "scored_reference_tokens": 464,
+  "response_tokens": 445,
+  "all_16_responses_natural_stop": true,
+  "unresolved_batches": 0,
+  "independent_token_sums_and_rating_join": true,
+  "ratings_sha256": "83807a8371fc23e065fab96573ee08e0a954770194f5ca019003c261d18ed044",
+  "raw_data_private": true,
+  "synthetic_blind_freeze_reveal_and_known_difference_test": true,
+  "delivery_builder_reproduces_frozen_input_bytes": true,
+  "delivery_builder_sha256": "a06e39af4f7577b8de84a097967199f4defde4cf3e26292a262858e937ec466c",
+  "original_preparation_snapshot_private_sha256": "0d9e1c3c9e08545b349724bf6ec9f2c5813727d0911c5a53d4280fd110441bd8",
+  "followup_questions_private": true
+}

@@ -1,0 +1,84 @@
+{
+  "id": "llin-context-bridge-20260922-01",
+  "date": "2026-09-22",
+  "models": [
+    "K",
+    "R"
+  ],
+  "units": 4,
+  "contexts": [
+    "source",
+    "self"
+  ],
+  "self_context": "K original recall repeat 0; same text supplied to both models; heading normalized",
+  "selection": [
+    {
+      "unit_id": "llin-core-031182c8e97a128c8c31",
+      "selected": true,
+      "fact_index": 4,
+      "target_sha256": "6c341656c01b862e3d1337fdca8310c12327c06d011e0950c3c3238150a7abbe"
+    },
+    {
+      "unit_id": "llin-core-05db8a7a420b9cc25b7f",
+      "selected": true,
+      "fact_index": 4,
+      "target_sha256": "7ae97e3abf62283a6471270ba05d80bbb1ac67f96fc95484f749b4539f52be3b"
+    },
+    {
+      "unit_id": "llin-core-284682e6d05c9f063d99",
+      "selected": true,
+      "fact_index": 2,
+      "target_sha256": "5193bebc770763dae491ce8e82df14f56a441a0ae73a50db0f41f4d7cbcf8515"
+    },
+    {
+      "unit_id": "llin-core-64cdc879fa758f981414",
+      "selected": false,
+      "reason": "No always-missing full-sentence fact with preceding complete source sentence"
+    },
+    {
+      "unit_id": "llin-core-9adae425cbbabbd2bf0c",
+      "selected": true,
+      "fact_index": 2,
+      "target_sha256": "ad39e8a4fba3a313a4a24bb494d8eee35053e858d89ab2a03e4b969706c18916"
+    },
+    {
+      "unit_id": "llin-core-b15da40c324e799cd7f5",
+      "selected": false,
+      "reason": "No always-missing full-sentence fact with preceding complete source sentence"
+    }
+  ],
+  "selection_rule": "In stable original fact order, first always-missing full source sentence after another complete source sentence; no eligible fact means exclude",
+  "max_response_calls": 16,
+  "max_nll_requests": 16,
+  "max_discarded_decode_tokens": 16,
+  "max_response_tokens": 6144,
+  "repeats": 1,
+  "training_steps": 0,
+  "formal_reruns": 0,
+  "cases_sha256": "9694a207525b97353a953ab35cb439b97dfbafeac09e8eed763966b4a1e734b9",
+  "runner_sha256": "35cbddbdf66ec7b6376c218ff3347738e058d9f7d15abb6eeda2ab7a7a10025b",
+  "preparation_sha256": "0d9e1c3c9e08545b349724bf6ec9f2c5813727d0911c5a53d4280fd110441bd8",
+  "chat_template_sha256": "e84f32a23fdda27689f868aa4a1a5621f41133e51a48d7f3efcbea2839574259",
+  "source_nll_cases_sha256": "096e1b148c1a5b17698e22c5641143170fc6adb2bac7dc299e432deacb5323d4",
+  "K_prior_predictions_sha256": "42cf3daa95bc8eb8ee566506a05adaa5da6a9f8b0ea96298a57980de66449829",
+  "fact_gap_results_sha256": "676b1a3156b9b08e5e5236cd42b866ef0377cd0021b96c36b428dc0ea65d6190",
+  "protocol": {
+    "tp": 8,
+    "dtype": "bfloat16",
+    "temperature": 0,
+    "seed": 1024,
+    "max_model_len": 8192,
+    "max_num_seqs": 32,
+    "max_response_tokens": 384,
+    "prompt_logprobs": 1,
+    "nll_decode_tokens": 1,
+    "enable_thinking": false,
+    "enable_prefix_caching": false
+  },
+  "primary": "Within each model compare same target sentence NLL excluding EOS under K-self vs source context; positive self-minus-source means source context helps reference prediction. Also report first token and EOS.",
+  "secondary": "Blind model/condition review of generated response against frozen target fact; support regardless natural stop, contradiction prevents pass. No credit from context, no new facts or post-hoc rubric changes.",
+  "blinding": "Reviewer sees follow-up question, target reference, required fact and response, not preceding context or model. Freeze ratings before identity reveal.",
+  "limitations": "Targeted question and supplied context; not free recall or generalization. Prefix content, length and style differ. R sees K-self text, not R own text. Single pass, no independent seeds.",
+  "stop": "No extra models, prompts, seeds, retries with unresolved reservation, training or promotion. Preserve completed batches.",
+  "promotion": false
+}
