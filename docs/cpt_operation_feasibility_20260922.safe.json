@@ -1,0 +1,74 @@
+{
+  "registration": "llin-operation-feasibility-20260922-01",
+  "status": "bounded_pre_authoring_audit_complete",
+  "input_sha256": {
+    "CPT_resources/llin-operation-feasibility-20260922-01/source_review_input.private.json": "ec061be95e690aaa81731f6f0e5daab6515c618b3275bdffec61369d9b48ce5c",
+    "CPT_resources/llin-operation-feasibility-20260922-01/source_review.private.json": "14aac98606f294bfa8b8e66aabb944ab8d705bf68964061a4c5d27e8360f16c4",
+    "CPT_resources/llin-stage-a-20260920-03/ledger.private.json": "00f015b854626291dc8f0382e8a48ecd62085f4ebb2feb7ec21a9c2bc60db04d",
+    "CPT_resources/llin-logistika-independent-20260922-01/overlap_corpus.private.json": "ddb85f46ae30c1c759a1e73545a60883e4eb40a25b8f20a3e8b4a478b00dfec6"
+  },
+  "accepted_logistika_records": 48,
+  "capability_groups": 39,
+  "inventory_counts": {
+    "recent_eight_family_trial": 11,
+    "previous_kr_units": 6,
+    "lookup_first_triage": 7,
+    "previous_composition_probe": 1,
+    "current_four_source_families": 6,
+    "not_deeply_reviewed_this_round": 8
+  },
+  "source_families_reviewed": 4,
+  "abstract_operations_reviewed": 16,
+  "exact_support_quotes_checked": 39,
+  "historical_corpus_records": 2850,
+  "groups": [
+    {
+      "id": "trade_finance_structure",
+      "source_feasible": true,
+      "historical_anchor_count": 2,
+      "reviewed_form": "application",
+      "decision": "conditional_credit_basis_already_used",
+      "new_complete_group_certified": false
+    },
+    {
+      "id": "warehouse_functions_flow",
+      "source_feasible": true,
+      "historical_anchor_count": 3,
+      "reviewed_form": "application",
+      "decision": "handling_unit_cost_rule_already_used",
+      "new_complete_group_certified": false
+    },
+    {
+      "id": "port_operations_objectives",
+      "source_feasible": true,
+      "historical_anchor_count": 1,
+      "reviewed_form": "competing_rules",
+      "decision": "utilization_waiting_conflict_already_used",
+      "new_complete_group_certified": false
+    },
+    {
+      "id": "pipeline_reporting_boundaries",
+      "source_feasible": true,
+      "historical_anchor_count": 1,
+      "reviewed_form": "application",
+      "decision": "both_density_conversion_bases_already_exposed",
+      "new_complete_group_certified": false
+    }
+  ],
+  "new_complete_groups_certified": 0,
+  "new_questions": 0,
+  "student_model_calls": 0,
+  "training_runs": 0,
+  "limits": [
+    "Source-only agent used separate context but shared filesystem; not an external human review.",
+    "One concrete historical anchor per family blocks certification of the proposed complete group; this is not proof that every possible operation is exhausted.",
+    "Shared source alone is not a rejection criterion; exposed facts do not prove identical reasoning.",
+    "Eight inventory groups were not deeply reviewed in this round."
+  ],
+  "remaining_leads": [
+    "finance_partial_observation_disambiguation",
+    "harbour_to_port_converse"
+  ],
+  "remaining_leads_status": "source_supported_but_novelty_and_measurement_not_certified",
+  "private_audit_sha256": "4c5fee09d0a33c4852009c0dea1055087d7705762559f96f3c0caa8b0df121d3"
+}
