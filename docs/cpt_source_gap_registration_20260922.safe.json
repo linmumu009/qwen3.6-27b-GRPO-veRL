@@ -1,0 +1,22 @@
+{
+  "id": "llin-source-gap-20260922-01",
+  "date": "2026-09-22",
+  "mode": "retrospective offline audit; not independent preregistered test",
+  "fact_spans_sha256": "fea54959e6a4a92e50a0db8fc5e78b6d117aa27d3896e4aa2487f56f94ab4033",
+  "facts": 26,
+  "units": 6,
+  "models": [
+    "step120",
+    "p1",
+    "K",
+    "R"
+  ],
+  "new_model_calls": 0,
+  "training_steps": 0,
+  "selection": "All 26 frozen necessary facts; manually map supporting source spans before computing span probabilities; no score-based exclusion",
+  "overlap": "Facts may overlap or be implications of shared wording; do not pool as independent observations",
+  "token_overlap": "Include any body token overlapping a mapped character range; union overlapping ranges within each fact",
+  "interpretation": "Teacher-forced probability of reference wording is not factual understanding; decoded text common prefix is lexical only, not first semantic error",
+  "initial_fact_spans_sha256": "d661dbc2ca2f095daa60b871e93340b4ed4633f74b68d6adcb0af7b09bfa4a3b",
+  "mapping_revision": "Passenger design fact span extended to include the passenger referent after initial calculation; initial mapping preserved privately. Retrospective scope unchanged; all 26 facts retained."
+}

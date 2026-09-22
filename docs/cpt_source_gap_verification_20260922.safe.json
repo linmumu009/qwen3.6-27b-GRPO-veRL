@@ -1,0 +1,10 @@
+{
+  "date": "2026-09-22",
+  "fact_model_cells_recomputed": 104,
+  "distinct_unit_token_spans": 24,
+  "token_span_overlap_verified": true,
+  "source_tokenizer_ids_verified": true,
+  "new_model_calls": 0,
+  "ratings_unchanged_sha256": "2bd9fb1c75c0dab4a3d82629411fb9ce4a5eb139afe2bee9d49dbf86ec742a44",
+  "result_sha256": "676b1a3156b9b08e5e5236cd42b866ef0377cd0021b96c36b428dc0ea65d6190"
+}
