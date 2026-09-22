@@ -1,0 +1,553 @@
+{
+  "date": "2026-09-22",
+  "scope": "Nine B/D cases re-reviewed; all unresolved SC dependencies inventoried from prior metadata",
+  "input_sha256": {
+    "CPT_resources\\llin-stage-a-20260920-03\\ledger.private.json": "00f015b854626291dc8f0382e8a48ecd62085f4ebb2feb7ec21a9c2bc60db04d",
+    "docs\\cpt_structured_candidate_gate_20260922.safe.json": "1dc5665f85ec0a1a419344af2d0680fb7fad8138234ee463ae9d432dcdd6b0bc",
+    "CPT_resources\\llin-sc-source-readiness-20260922-01\\web_reads.private.json": "19e7d6e0e6cf3fad111dde52c85c95485876f8ab44852c3eb2ba95eafac9deed"
+  },
+  "total_sc_errors": 32,
+  "retained_status_counts": {
+    "B": 5,
+    "C": 22,
+    "D": 4,
+    "A": 1
+  },
+  "deeply_reviewed_items": 9,
+  "deeply_reviewed_capability_groups": 8,
+  "unresolved_items": 31,
+  "unresolved_groups": 29,
+  "dependencies": [
+    {
+      "capability_group": "acceptance_events",
+      "items": 1,
+      "retained_statuses": {
+        "C": 1
+      },
+      "evidence_route": "versioned_business_source",
+      "acceptance_requirement": "需订单受理节点的事件生成清单，不能凭常识补全多选。",
+      "shared_requirements": [
+        "来源身份与版本可核验",
+        "适用期间和业务范围可对齐",
+        "必要条件及全部标签有来源支持或明确进入歧义裁定",
+        "不能从正式答案解释反写独立来源"
+      ],
+      "next_trigger": "Matching original source or explicit scope/adjudication evidence arrives",
+      "ready_for_authoring": false
+    },
+    {
+      "capability_group": "business_timestamp",
+      "items": 1,
+      "retained_statuses": {
+        "C": 1
+      },
+      "evidence_route": "versioned_business_source",
+      "acceptance_requirement": "需采购、销售和物流事件生效时间的业务定义。",
+      "shared_requirements": [
+        "来源身份与版本可核验",
+        "适用期间和业务范围可对齐",
+        "必要条件及全部标签有来源支持或明确进入歧义裁定",
+        "不能从正式答案解释反写独立来源"
+      ],
+      "next_trigger": "Matching original source or explicit scope/adjudication evidence arrives",
+      "ready_for_authoring": false
+    },
+    {
+      "capability_group": "cancellation_workflow",
+      "items": 1,
+      "retained_statuses": {
+        "C": 1
+      },
+      "evidence_route": "versioned_business_source",
+      "acceptance_requirement": "需要预留订单取消后的库存处理 SOP 和责任边界。",
+      "shared_requirements": [
+        "来源身份与版本可核验",
+        "适用期间和业务范围可对齐",
+        "必要条件及全部标签有来源支持或明确进入歧义裁定",
+        "不能从正式答案解释反写独立来源"
+      ],
+      "next_trigger": "Matching original source or explicit scope/adjudication evidence arrives",
+      "ready_for_authoring": false
+    },
+    {
+      "capability_group": "change_test_order",
+      "items": 1,
+      "retained_statuses": {
+        "C": 1
+      },
+      "evidence_route": "versioned_business_source",
+      "acceptance_requirement": "需要变更与测试 SOP；不能从一般实践推出绝对先后要求。",
+      "shared_requirements": [
+        "来源身份与版本可核验",
+        "适用期间和业务范围可对齐",
+        "必要条件及全部标签有来源支持或明确进入歧义裁定",
+        "不能从正式答案解释反写独立来源"
+      ],
+      "next_trigger": "Matching original source or explicit scope/adjudication evidence arrives",
+      "ready_for_authoring": false
+    },
+    {
+      "capability_group": "code_namespace",
+      "items": 1,
+      "retained_statuses": {
+        "B": 1
+      },
+      "evidence_route": "template_and_dictionary",
+      "acceptance_requirement": "提供目标设计工具、模板版本及代码字典或可核验跨模板例证；数字应用标识符不等于单字母处理代码。",
+      "shared_requirements": [
+        "来源身份与版本可核验",
+        "适用期间和业务范围可对齐",
+        "必要条件及全部标签有来源支持或明确进入歧义裁定",
+        "不能从正式答案解释反写独立来源"
+      ],
+      "next_trigger": "Matching original source or explicit scope/adjudication evidence arrives",
+      "ready_for_authoring": false
+    },
+    {
+      "capability_group": "customs_architecture_tradeoff",
+      "items": 1,
+      "retained_statuses": {
+        "D": 1
+      },
+      "evidence_route": "system_constraints_and_adjudication",
+      "acceptance_requirement": "提供系统约束、评价目标及允许排除其他权衡的原始依据；一般架构知识不能保证单选唯一。",
+      "shared_requirements": [
+        "来源身份与版本可核验",
+        "适用期间和业务范围可对齐",
+        "必要条件及全部标签有来源支持或明确进入歧义裁定",
+        "不能从正式答案解释反写独立来源"
+      ],
+      "next_trigger": "Matching original source or explicit scope/adjudication evidence arrives",
+      "ready_for_authoring": false
+    },
+    {
+      "capability_group": "customs_fallback_policy",
+      "items": 1,
+      "retained_statuses": {
+        "D": 1
+      },
+      "evidence_route": "business_policy",
+      "acceptance_requirement": "提供兜底策略、触发条件和风险处置规范；编码标准无法决定本系统是否取消兜底。",
+      "shared_requirements": [
+        "来源身份与版本可核验",
+        "适用期间和业务范围可对齐",
+        "必要条件及全部标签有来源支持或明确进入歧义裁定",
+        "不能从正式答案解释反写独立来源"
+      ],
+      "next_trigger": "Matching original source or explicit scope/adjudication evidence arrives",
+      "ready_for_authoring": false
+    },
+    {
+      "capability_group": "customs_party_configuration",
+      "items": 1,
+      "retained_statuses": {
+        "C": 1
+      },
+      "evidence_route": "versioned_business_source",
+      "acceptance_requirement": "需要清关地点与服务主体的配置政策。",
+      "shared_requirements": [
+        "来源身份与版本可核验",
+        "适用期间和业务范围可对齐",
+        "必要条件及全部标签有来源支持或明确进入歧义裁定",
+        "不能从正式答案解释反写独立来源"
+      ],
+      "next_trigger": "Matching original source or explicit scope/adjudication evidence arrives",
+      "ready_for_authoring": false
+    },
+    {
+      "capability_group": "customs_valuation_scope",
+      "items": 1,
+      "retained_statuses": {
+        "C": 1
+      },
+      "evidence_route": "versioned_business_source",
+      "acceptance_requirement": "计价项目受国家、价格口径和申报规则影响；现有材料不足以确定完整集合。",
+      "shared_requirements": [
+        "来源身份与版本可核验",
+        "适用期间和业务范围可对齐",
+        "必要条件及全部标签有来源支持或明确进入歧义裁定",
+        "不能从正式答案解释反写独立来源"
+      ],
+      "next_trigger": "Matching original source or explicit scope/adjudication evidence arrives",
+      "ready_for_authoring": false
+    },
+    {
+      "capability_group": "ddp_adoption_conditions",
+      "items": 1,
+      "retained_statuses": {
+        "D": 1
+      },
+      "evidence_route": "business_context_and_causal_evidence",
+      "acceptance_requirement": "给出地区、时期、交易门槛及采用动因的原始论述；条款责任定义或税制事实不能单独证明采用率原因。",
+      "shared_requirements": [
+        "来源身份与版本可核验",
+        "适用期间和业务范围可对齐",
+        "必要条件及全部标签有来源支持或明确进入歧义裁定",
+        "不能从正式答案解释反写独立来源"
+      ],
+      "next_trigger": "Matching original source or explicit scope/adjudication evidence arrives",
+      "ready_for_authoring": false
+    },
+    {
+      "capability_group": "declaration_organization",
+      "items": 1,
+      "retained_statuses": {
+        "C": 1
+      },
+      "evidence_route": "versioned_business_source",
+      "acceptance_requirement": "需集中/分散申报在该业务中的制度与管理定义。",
+      "shared_requirements": [
+        "来源身份与版本可核验",
+        "适用期间和业务范围可对齐",
+        "必要条件及全部标签有来源支持或明确进入歧义裁定",
+        "不能从正式答案解释反写独立来源"
+      ],
+      "next_trigger": "Matching original source or explicit scope/adjudication evidence arrives",
+      "ready_for_authoring": false
+    },
+    {
+      "capability_group": "dtc_cost_scope",
+      "items": 1,
+      "retained_statuses": {
+        "C": 1
+      },
+      "evidence_route": "versioned_business_source",
+      "acceptance_requirement": "需 DTC 与传统模式在指定条款下的成本归集规则。",
+      "shared_requirements": [
+        "来源身份与版本可核验",
+        "适用期间和业务范围可对齐",
+        "必要条件及全部标签有来源支持或明确进入歧义裁定",
+        "不能从正式答案解释反写独立来源"
+      ],
+      "next_trigger": "Matching original source or explicit scope/adjudication evidence arrives",
+      "ready_for_authoring": false
+    },
+    {
+      "capability_group": "inbound_count_attribution",
+      "items": 1,
+      "retained_statuses": {
+        "B": 1
+      },
+      "evidence_route": "metric_dictionary_and_diagnostic_policy",
+      "acceptance_requirement": "提供入库指标分母、渠道维度、时间口径及异常排查依据；相关指标不证明唯一归因。",
+      "shared_requirements": [
+        "来源身份与版本可核验",
+        "适用期间和业务范围可对齐",
+        "必要条件及全部标签有来源支持或明确进入歧义裁定",
+        "不能从正式答案解释反写独立来源"
+      ],
+      "next_trigger": "Matching original source or explicit scope/adjudication evidence arrives",
+      "ready_for_authoring": false
+    },
+    {
+      "capability_group": "inventory_exception_ownership",
+      "items": 2,
+      "retained_statuses": {
+        "C": 2
+      },
+      "evidence_route": "versioned_business_source",
+      "acceptance_requirement": "需要库存异常类型、状态组合和团队职责矩阵；不同情境不重复计为独立规则。",
+      "shared_requirements": [
+        "来源身份与版本可核验",
+        "适用期间和业务范围可对齐",
+        "必要条件及全部标签有来源支持或明确进入歧义裁定",
+        "不能从正式答案解释反写独立来源"
+      ],
+      "next_trigger": "Matching original source or explicit scope/adjudication evidence arrives",
+      "ready_for_authoring": false
+    },
+    {
+      "capability_group": "leg_consolidation_policy",
+      "items": 1,
+      "retained_statuses": {
+        "C": 1
+      },
+      "evidence_route": "versioned_business_source",
+      "acceptance_requirement": "需要本业务头程尾程的独立或合单规则，通用可能性不足。",
+      "shared_requirements": [
+        "来源身份与版本可核验",
+        "适用期间和业务范围可对齐",
+        "必要条件及全部标签有来源支持或明确进入歧义裁定",
+        "不能从正式答案解释反写独立来源"
+      ],
+      "next_trigger": "Matching original source or explicit scope/adjudication evidence arrives",
+      "ready_for_authoring": false
+    },
+    {
+      "capability_group": "national_tariff_scope",
+      "items": 1,
+      "retained_statuses": {
+        "D": 1
+      },
+      "evidence_route": "jurisdiction_adjudication",
+      "acceptance_requirement": "补齐申报国家、程序及版本，再核验国际基础码与本国扩展码；通用长度资料不能确立未指定辖区题的唯一标签。",
+      "shared_requirements": [
+        "来源身份与版本可核验",
+        "适用期间和业务范围可对齐",
+        "必要条件及全部标签有来源支持或明确进入歧义裁定",
+        "不能从正式答案解释反写独立来源"
+      ],
+      "next_trigger": "Matching original source or explicit scope/adjudication evidence arrives",
+      "ready_for_authoring": false
+    },
+    {
+      "capability_group": "order_parcel_cardinality",
+      "items": 1,
+      "retained_statuses": {
+        "B": 1
+      },
+      "evidence_route": "business_mapping",
+      "acceptance_requirement": "提供订单—包裹实体映射和取消事件计数口径，包括拆单、合单及一对多处理；算术不构成映射依据。",
+      "shared_requirements": [
+        "来源身份与版本可核验",
+        "适用期间和业务范围可对齐",
+        "必要条件及全部标签有来源支持或明确进入歧义裁定",
+        "不能从正式答案解释反写独立来源"
+      ],
+      "next_trigger": "Matching original source or explicit scope/adjudication evidence arrives",
+      "ready_for_authoring": false
+    },
+    {
+      "capability_group": "payment_mapping",
+      "items": 1,
+      "retained_statuses": {
+        "C": 1
+      },
+      "evidence_route": "versioned_business_source",
+      "acceptance_requirement": "需要实际支付分类映射和未定义类别的处理规则。",
+      "shared_requirements": [
+        "来源身份与版本可核验",
+        "适用期间和业务范围可对齐",
+        "必要条件及全部标签有来源支持或明确进入歧义裁定",
+        "不能从正式答案解释反写独立来源"
+      ],
+      "next_trigger": "Matching original source or explicit scope/adjudication evidence arrives",
+      "ready_for_authoring": false
+    },
+    {
+      "capability_group": "procurement_leadtime_kpi",
+      "items": 1,
+      "retained_statuses": {
+        "C": 1
+      },
+      "evidence_route": "versioned_business_source",
+      "acceptance_requirement": "需正式 KPI 字典：权重、起止事件、数据表和用途。",
+      "shared_requirements": [
+        "来源身份与版本可核验",
+        "适用期间和业务范围可对齐",
+        "必要条件及全部标签有来源支持或明确进入歧义裁定",
+        "不能从正式答案解释反写独立来源"
+      ],
+      "next_trigger": "Matching original source or explicit scope/adjudication evidence arrives",
+      "ready_for_authoring": false
+    },
+    {
+      "capability_group": "query_architecture",
+      "items": 1,
+      "retained_statuses": {
+        "C": 1
+      },
+      "evidence_route": "versioned_business_source",
+      "acceptance_requirement": "需要具体交易查询系统架构、复杂查询限制及版本。",
+      "shared_requirements": [
+        "来源身份与版本可核验",
+        "适用期间和业务范围可对齐",
+        "必要条件及全部标签有来源支持或明确进入歧义裁定",
+        "不能从正式答案解释反写独立来源"
+      ],
+      "next_trigger": "Matching original source or explicit scope/adjudication evidence arrives",
+      "ready_for_authoring": false
+    },
+    {
+      "capability_group": "replenishment_escalation",
+      "items": 1,
+      "retained_statuses": {
+        "C": 1
+      },
+      "evidence_route": "versioned_business_source",
+      "acceptance_requirement": "需要补货问题排查与升级 SOP。",
+      "shared_requirements": [
+        "来源身份与版本可核验",
+        "适用期间和业务范围可对齐",
+        "必要条件及全部标签有来源支持或明确进入歧义裁定",
+        "不能从正式答案解释反写独立来源"
+      ],
+      "next_trigger": "Matching original source or explicit scope/adjudication evidence arrives",
+      "ready_for_authoring": false
+    },
+    {
+      "capability_group": "routing_provider_support",
+      "items": 1,
+      "retained_statuses": {
+        "C": 1
+      },
+      "evidence_route": "versioned_business_source",
+      "acceptance_requirement": "需要路由产品对口岸及多服务商的配置能力说明。",
+      "shared_requirements": [
+        "来源身份与版本可核验",
+        "适用期间和业务范围可对齐",
+        "必要条件及全部标签有来源支持或明确进入歧义裁定",
+        "不能从正式答案解释反写独立来源"
+      ],
+      "next_trigger": "Matching original source or explicit scope/adjudication evidence arrives",
+      "ready_for_authoring": false
+    },
+    {
+      "capability_group": "routing_ui_capability",
+      "items": 1,
+      "retained_statuses": {
+        "C": 1
+      },
+      "evidence_route": "versioned_business_source",
+      "acceptance_requirement": "需要自动/手工路由产品功能与优先级交互说明。",
+      "shared_requirements": [
+        "来源身份与版本可核验",
+        "适用期间和业务范围可对齐",
+        "必要条件及全部标签有来源支持或明确进入歧义裁定",
+        "不能从正式答案解释反写独立来源"
+      ],
+      "next_trigger": "Matching original source or explicit scope/adjudication evidence arrives",
+      "ready_for_authoring": false
+    },
+    {
+      "capability_group": "shipping_stage_framework",
+      "items": 1,
+      "retained_statuses": {
+        "C": 1
+      },
+      "evidence_route": "versioned_business_source",
+      "acceptance_requirement": "需要题目采用的业务阶段定义和事件顺序。",
+      "shared_requirements": [
+        "来源身份与版本可核验",
+        "适用期间和业务范围可对齐",
+        "必要条件及全部标签有来源支持或明确进入歧义裁定",
+        "不能从正式答案解释反写独立来源"
+      ],
+      "next_trigger": "Matching original source or explicit scope/adjudication evidence arrives",
+      "ready_for_authoring": false
+    },
+    {
+      "capability_group": "special_parcel_handoff",
+      "items": 1,
+      "retained_statuses": {
+        "C": 1
+      },
+      "evidence_route": "versioned_business_source",
+      "acceptance_requirement": "需要特殊包裹交接与出库流程规范。",
+      "shared_requirements": [
+        "来源身份与版本可核验",
+        "适用期间和业务范围可对齐",
+        "必要条件及全部标签有来源支持或明确进入歧义裁定",
+        "不能从正式答案解释反写独立来源"
+      ],
+      "next_trigger": "Matching original source or explicit scope/adjudication evidence arrives",
+      "ready_for_authoring": false
+    },
+    {
+      "capability_group": "stockout_policy",
+      "items": 1,
+      "retained_statuses": {
+        "C": 1
+      },
+      "evidence_route": "versioned_business_source",
+      "acceptance_requirement": "需要缺货后的默认自动或人工处置策略。",
+      "shared_requirements": [
+        "来源身份与版本可核验",
+        "适用期间和业务范围可对齐",
+        "必要条件及全部标签有来源支持或明确进入歧义裁定",
+        "不能从正式答案解释反写独立来源"
+      ],
+      "next_trigger": "Matching original source or explicit scope/adjudication evidence arrives",
+      "ready_for_authoring": false
+    },
+    {
+      "capability_group": "tax_jurisdiction_date",
+      "items": 2,
+      "retained_statuses": {
+        "B": 2
+      },
+      "evidence_route": "public_rules_plus_applicability",
+      "acceptance_requirement": "取得题目对应期间、辖区及交易性质的依据；区分货物/车辆销售、运输服务、标准税率、零税率和免税，不能用一般税率替代全部条件。",
+      "shared_requirements": [
+        "来源身份与版本可核验",
+        "适用期间和业务范围可对齐",
+        "必要条件及全部标签有来源支持或明确进入歧义裁定",
+        "不能从正式答案解释反写独立来源"
+      ],
+      "next_trigger": "Matching original source or explicit scope/adjudication evidence arrives",
+      "ready_for_authoring": false
+    },
+    {
+      "capability_group": "tracking_escalation",
+      "items": 1,
+      "retained_statuses": {
+        "C": 1
+      },
+      "evidence_route": "versioned_business_source",
+      "acceptance_requirement": "需要揽收与轨迹异常的升级规则及责任团队。",
+      "shared_requirements": [
+        "来源身份与版本可核验",
+        "适用期间和业务范围可对齐",
+        "必要条件及全部标签有来源支持或明确进入歧义裁定",
+        "不能从正式答案解释反写独立来源"
+      ],
+      "next_trigger": "Matching original source or explicit scope/adjudication evidence arrives",
+      "ready_for_authoring": false
+    },
+    {
+      "capability_group": "visibility_dimensions",
+      "items": 1,
+      "retained_statuses": {
+        "C": 1
+      },
+      "evidence_route": "versioned_business_source",
+      "acceptance_requirement": "需要订单可视化产品实际提供的质量维度。",
+      "shared_requirements": [
+        "来源身份与版本可核验",
+        "适用期间和业务范围可对齐",
+        "必要条件及全部标签有来源支持或明确进入歧义裁定",
+        "不能从正式答案解释反写独立来源"
+      ],
+      "next_trigger": "Matching original source or explicit scope/adjudication evidence arrives",
+      "ready_for_authoring": false
+    }
+  ],
+  "source_upgrades": 0,
+  "source_qualified_sc_groups": 1,
+  "stage_b_qualified_groups": 0,
+  "stage_c_passed": false,
+  "web_evidence": [
+    {
+      "id": "sa_rate_history",
+      "url": "https://zatca.gov.sa/en/MediaCenter/News/Pages/News-320.aspx",
+      "status": "body_read",
+      "locator": "body announcement, effective 2020-07-01",
+      "use": "Historical rate change; does not establish the benchmark transaction date or treatment"
+    },
+    {
+      "id": "uae_transport_scope",
+      "url": "https://tax.gov.ae/DataFolder/Files/Pdf/AR/07-%20Public%20Transportation.pdf",
+      "status": "pdf_text_read",
+      "locator": "VATP007 physical pages 1-2 and 6-7",
+      "use": "Vehicle supply and transport services have distinct scope; not a complete current-law audit"
+    },
+    {
+      "id": "sa_professional_guide",
+      "url": "https://www.zatca.gov.sa/en/HelpCenter/guidelines/Documents/VAT_Professional_Services_Guideline_English.pdf",
+      "status": "redirect_to_not_found",
+      "use": "Search snippet excluded from qualification"
+    },
+    {
+      "id": "gs1_label",
+      "url": "https://www.gs1.org/standards/gs1-logistic-label-guideline/1-3",
+      "status": "body_fetch_failed_403",
+      "use": "Search snippet only; no supported mapping to target templates"
+    }
+  ],
+  "new_model_calls": 0,
+  "new_training_runs": 0,
+  "new_tasks": 0,
+  "original_scores_and_adjudications_unchanged": true,
+  "semantic_review_independent": false,
+  "decision": "Stop unchanged public-source searches; resume on matching source/context or explicitly registered scope change"
+}
