@@ -1,0 +1,18 @@
+{
+  "date": "2026-09-22",
+  "models": [
+    "step120",
+    "p1",
+    "K",
+    "R"
+  ],
+  "requests": 24,
+  "supervised_tokens": 1428,
+  "content_tokens_per_model": 267,
+  "heading_tokens_per_model": 84,
+  "eos_tokens_per_model": 6,
+  "independent_fsum_matches": true,
+  "corrupted_aggregate_rejected_with_matching_hash": true,
+  "raw_private": true,
+  "unresolved_reservations": 0
+}

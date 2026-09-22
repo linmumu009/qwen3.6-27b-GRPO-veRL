@@ -1,0 +1,41 @@
+{
+  "id": "llin-source-nll-20260922-01",
+  "date": "2026-09-22",
+  "status_at_freeze": "prepared",
+  "models": [
+    "step120",
+    "p1",
+    "K",
+    "R"
+  ],
+  "units": 6,
+  "repeats": 1,
+  "max_scoring_requests": 24,
+  "supervised_tokens_per_model": 357,
+  "max_discarded_decode_tokens": 24,
+  "free_answer_calls": 0,
+  "training_steps": 0,
+  "formal_reruns": 0,
+  "cases_sha256": "096e1b148c1a5b17698e22c5641143170fc6adb2bac7dc299e432deacb5323d4",
+  "runner_sha256": "ceb6a6e1682fac30a827abed72979fd75f97e8a1bb11c16c4dd78dc4be6705c5",
+  "source_training_parquet_sha256": "10da5af3ea79202a949df0d1ed978229dffebba65b43fa1c9e4109d969f27bf3",
+  "protocol": {
+    "tp": 8,
+    "temperature": 0,
+    "seed": 1024,
+    "max_model_len": 8192,
+    "max_num_seqs": 32,
+    "dtype": "bfloat16",
+    "prompt_logprobs": 1,
+    "max_tokens": 1,
+    "detokenize": false,
+    "enable_thinking": false,
+    "enable_prefix_caching": false
+  },
+  "primary": "Per-unit content-token mean negative natural log probability, lower is better; exclude heading and EOS. Content begins after first blank line; include any token overlapping content.",
+  "secondary": "Whole original supervised sequence, heading and EOS separately; macro and token-weighted mean.",
+  "comparison": "K vs Step120, P1 and R, all six frozen units; no significance or arbitrary pass threshold; descriptive only.",
+  "interpretation": "Probability under the correct reference prefix is not free recall, correctness preference against alternatives, or transfer.",
+  "stop": "No new source, prompt, parameter, model or repetition; unresolved scoring reservation stops without resubmission; prior experiment budgets remain closed.",
+  "promotion": false
+}
