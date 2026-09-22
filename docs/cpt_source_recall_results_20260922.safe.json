@@ -1,0 +1,602 @@
+{
+  "new_generation_calls": 72,
+  "training_steps": 0,
+  "formal_reruns": 0,
+  "direct": {
+    "step120": {
+      "calls": 18,
+      "strict_pass": 0,
+      "facts_correct": 28,
+      "facts_total": 78,
+      "truncated": 18
+    },
+    "K": {
+      "calls": 18,
+      "strict_pass": 3,
+      "facts_correct": 24,
+      "facts_total": 78,
+      "truncated": 0
+    },
+    "R": {
+      "calls": 18,
+      "strict_pass": 0,
+      "facts_correct": 26,
+      "facts_total": 78,
+      "truncated": 18
+    },
+    "p1": {
+      "calls": 18,
+      "strict_pass": 0,
+      "facts_correct": 27,
+      "facts_total": 78,
+      "truncated": 18
+    }
+  },
+  "units": [
+    {
+      "model": "K",
+      "unit_id": "llin-core-031182c8e97a128c8c31",
+      "calls": 3,
+      "strict_pass": 0,
+      "facts_correct": 3,
+      "facts_total": 18
+    },
+    {
+      "model": "K",
+      "unit_id": "llin-core-05db8a7a420b9cc25b7f",
+      "calls": 3,
+      "strict_pass": 0,
+      "facts_correct": 0,
+      "facts_total": 18
+    },
+    {
+      "model": "K",
+      "unit_id": "llin-core-284682e6d05c9f063d99",
+      "calls": 3,
+      "strict_pass": 0,
+      "facts_correct": 3,
+      "facts_total": 9
+    },
+    {
+      "model": "K",
+      "unit_id": "llin-core-64cdc879fa758f981414",
+      "calls": 3,
+      "strict_pass": 3,
+      "facts_correct": 12,
+      "facts_total": 12
+    },
+    {
+      "model": "K",
+      "unit_id": "llin-core-9adae425cbbabbd2bf0c",
+      "calls": 3,
+      "strict_pass": 0,
+      "facts_correct": 3,
+      "facts_total": 9
+    },
+    {
+      "model": "K",
+      "unit_id": "llin-core-b15da40c324e799cd7f5",
+      "calls": 3,
+      "strict_pass": 0,
+      "facts_correct": 3,
+      "facts_total": 12
+    },
+    {
+      "model": "R",
+      "unit_id": "llin-core-031182c8e97a128c8c31",
+      "calls": 3,
+      "strict_pass": 0,
+      "facts_correct": 3,
+      "facts_total": 18
+    },
+    {
+      "model": "R",
+      "unit_id": "llin-core-05db8a7a420b9cc25b7f",
+      "calls": 3,
+      "strict_pass": 0,
+      "facts_correct": 5,
+      "facts_total": 18
+    },
+    {
+      "model": "R",
+      "unit_id": "llin-core-284682e6d05c9f063d99",
+      "calls": 3,
+      "strict_pass": 0,
+      "facts_correct": 3,
+      "facts_total": 9
+    },
+    {
+      "model": "R",
+      "unit_id": "llin-core-64cdc879fa758f981414",
+      "calls": 3,
+      "strict_pass": 0,
+      "facts_correct": 6,
+      "facts_total": 12
+    },
+    {
+      "model": "R",
+      "unit_id": "llin-core-9adae425cbbabbd2bf0c",
+      "calls": 3,
+      "strict_pass": 0,
+      "facts_correct": 3,
+      "facts_total": 9
+    },
+    {
+      "model": "R",
+      "unit_id": "llin-core-b15da40c324e799cd7f5",
+      "calls": 3,
+      "strict_pass": 0,
+      "facts_correct": 6,
+      "facts_total": 12
+    },
+    {
+      "model": "p1",
+      "unit_id": "llin-core-031182c8e97a128c8c31",
+      "calls": 3,
+      "strict_pass": 0,
+      "facts_correct": 3,
+      "facts_total": 18
+    },
+    {
+      "model": "p1",
+      "unit_id": "llin-core-05db8a7a420b9cc25b7f",
+      "calls": 3,
+      "strict_pass": 0,
+      "facts_correct": 6,
+      "facts_total": 18
+    },
+    {
+      "model": "p1",
+      "unit_id": "llin-core-284682e6d05c9f063d99",
+      "calls": 3,
+      "strict_pass": 0,
+      "facts_correct": 3,
+      "facts_total": 9
+    },
+    {
+      "model": "p1",
+      "unit_id": "llin-core-64cdc879fa758f981414",
+      "calls": 3,
+      "strict_pass": 0,
+      "facts_correct": 6,
+      "facts_total": 12
+    },
+    {
+      "model": "p1",
+      "unit_id": "llin-core-9adae425cbbabbd2bf0c",
+      "calls": 3,
+      "strict_pass": 0,
+      "facts_correct": 3,
+      "facts_total": 9
+    },
+    {
+      "model": "p1",
+      "unit_id": "llin-core-b15da40c324e799cd7f5",
+      "calls": 3,
+      "strict_pass": 0,
+      "facts_correct": 6,
+      "facts_total": 12
+    },
+    {
+      "model": "step120",
+      "unit_id": "llin-core-031182c8e97a128c8c31",
+      "calls": 3,
+      "strict_pass": 0,
+      "facts_correct": 3,
+      "facts_total": 18
+    },
+    {
+      "model": "step120",
+      "unit_id": "llin-core-05db8a7a420b9cc25b7f",
+      "calls": 3,
+      "strict_pass": 0,
+      "facts_correct": 6,
+      "facts_total": 18
+    },
+    {
+      "model": "step120",
+      "unit_id": "llin-core-284682e6d05c9f063d99",
+      "calls": 3,
+      "strict_pass": 0,
+      "facts_correct": 4,
+      "facts_total": 9
+    },
+    {
+      "model": "step120",
+      "unit_id": "llin-core-64cdc879fa758f981414",
+      "calls": 3,
+      "strict_pass": 0,
+      "facts_correct": 6,
+      "facts_total": 12
+    },
+    {
+      "model": "step120",
+      "unit_id": "llin-core-9adae425cbbabbd2bf0c",
+      "calls": 3,
+      "strict_pass": 0,
+      "facts_correct": 3,
+      "facts_total": 9
+    },
+    {
+      "model": "step120",
+      "unit_id": "llin-core-b15da40c324e799cd7f5",
+      "calls": 3,
+      "strict_pass": 0,
+      "facts_correct": 6,
+      "facts_total": 12
+    }
+  ],
+  "old_split_prompt_direct": {
+    "K": {
+      "calls": 36,
+      "strict_pass": 0,
+      "facts_correct": 9,
+      "facts_total": 78,
+      "uncertain": 12
+    },
+    "R": {
+      "calls": 36,
+      "strict_pass": 0,
+      "facts_correct": 21,
+      "facts_total": 78,
+      "uncertain": 3
+    },
+    "p1": {
+      "calls": 36,
+      "strict_pass": 0,
+      "facts_correct": 18,
+      "facts_total": 78,
+      "uncertain": 0
+    },
+    "step120": {
+      "calls": 36,
+      "strict_pass": 3,
+      "facts_correct": 27,
+      "facts_total": 78,
+      "uncertain": 0
+    }
+  },
+  "old_prompt_stability": [
+    {
+      "model": "K",
+      "unit_id": "llin-core-031182c8e97a128c8c31",
+      "prompt_id": "llin-core-031182c8e97a128c8c31-rule",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "K",
+      "unit_id": "llin-core-031182c8e97a128c8c31",
+      "prompt_id": "llin-core-031182c8e97a128c8c31-scope",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "K",
+      "unit_id": "llin-core-05db8a7a420b9cc25b7f",
+      "prompt_id": "llin-core-05db8a7a420b9cc25b7f-rule",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "K",
+      "unit_id": "llin-core-05db8a7a420b9cc25b7f",
+      "prompt_id": "llin-core-05db8a7a420b9cc25b7f-scope",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "K",
+      "unit_id": "llin-core-284682e6d05c9f063d99",
+      "prompt_id": "llin-core-284682e6d05c9f063d99-rule",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "K",
+      "unit_id": "llin-core-284682e6d05c9f063d99",
+      "prompt_id": "llin-core-284682e6d05c9f063d99-scope",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "K",
+      "unit_id": "llin-core-64cdc879fa758f981414",
+      "prompt_id": "llin-core-64cdc879fa758f981414-rule",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "K",
+      "unit_id": "llin-core-64cdc879fa758f981414",
+      "prompt_id": "llin-core-64cdc879fa758f981414-scope",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "K",
+      "unit_id": "llin-core-9adae425cbbabbd2bf0c",
+      "prompt_id": "llin-core-9adae425cbbabbd2bf0c-rule",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "K",
+      "unit_id": "llin-core-9adae425cbbabbd2bf0c",
+      "prompt_id": "llin-core-9adae425cbbabbd2bf0c-scope",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "K",
+      "unit_id": "llin-core-b15da40c324e799cd7f5",
+      "prompt_id": "llin-core-b15da40c324e799cd7f5-rule",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "K",
+      "unit_id": "llin-core-b15da40c324e799cd7f5",
+      "prompt_id": "llin-core-b15da40c324e799cd7f5-scope",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "R",
+      "unit_id": "llin-core-031182c8e97a128c8c31",
+      "prompt_id": "llin-core-031182c8e97a128c8c31-rule",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "R",
+      "unit_id": "llin-core-031182c8e97a128c8c31",
+      "prompt_id": "llin-core-031182c8e97a128c8c31-scope",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "R",
+      "unit_id": "llin-core-05db8a7a420b9cc25b7f",
+      "prompt_id": "llin-core-05db8a7a420b9cc25b7f-rule",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "R",
+      "unit_id": "llin-core-05db8a7a420b9cc25b7f",
+      "prompt_id": "llin-core-05db8a7a420b9cc25b7f-scope",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "R",
+      "unit_id": "llin-core-284682e6d05c9f063d99",
+      "prompt_id": "llin-core-284682e6d05c9f063d99-rule",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "R",
+      "unit_id": "llin-core-284682e6d05c9f063d99",
+      "prompt_id": "llin-core-284682e6d05c9f063d99-scope",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "R",
+      "unit_id": "llin-core-64cdc879fa758f981414",
+      "prompt_id": "llin-core-64cdc879fa758f981414-rule",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "R",
+      "unit_id": "llin-core-64cdc879fa758f981414",
+      "prompt_id": "llin-core-64cdc879fa758f981414-scope",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "R",
+      "unit_id": "llin-core-9adae425cbbabbd2bf0c",
+      "prompt_id": "llin-core-9adae425cbbabbd2bf0c-rule",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "R",
+      "unit_id": "llin-core-9adae425cbbabbd2bf0c",
+      "prompt_id": "llin-core-9adae425cbbabbd2bf0c-scope",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "R",
+      "unit_id": "llin-core-b15da40c324e799cd7f5",
+      "prompt_id": "llin-core-b15da40c324e799cd7f5-rule",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "R",
+      "unit_id": "llin-core-b15da40c324e799cd7f5",
+      "prompt_id": "llin-core-b15da40c324e799cd7f5-scope",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "p1",
+      "unit_id": "llin-core-031182c8e97a128c8c31",
+      "prompt_id": "llin-core-031182c8e97a128c8c31-rule",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "p1",
+      "unit_id": "llin-core-031182c8e97a128c8c31",
+      "prompt_id": "llin-core-031182c8e97a128c8c31-scope",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "p1",
+      "unit_id": "llin-core-05db8a7a420b9cc25b7f",
+      "prompt_id": "llin-core-05db8a7a420b9cc25b7f-rule",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "p1",
+      "unit_id": "llin-core-05db8a7a420b9cc25b7f",
+      "prompt_id": "llin-core-05db8a7a420b9cc25b7f-scope",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "p1",
+      "unit_id": "llin-core-284682e6d05c9f063d99",
+      "prompt_id": "llin-core-284682e6d05c9f063d99-rule",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "p1",
+      "unit_id": "llin-core-284682e6d05c9f063d99",
+      "prompt_id": "llin-core-284682e6d05c9f063d99-scope",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "p1",
+      "unit_id": "llin-core-64cdc879fa758f981414",
+      "prompt_id": "llin-core-64cdc879fa758f981414-rule",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "p1",
+      "unit_id": "llin-core-64cdc879fa758f981414",
+      "prompt_id": "llin-core-64cdc879fa758f981414-scope",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "p1",
+      "unit_id": "llin-core-9adae425cbbabbd2bf0c",
+      "prompt_id": "llin-core-9adae425cbbabbd2bf0c-rule",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "p1",
+      "unit_id": "llin-core-9adae425cbbabbd2bf0c",
+      "prompt_id": "llin-core-9adae425cbbabbd2bf0c-scope",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "p1",
+      "unit_id": "llin-core-b15da40c324e799cd7f5",
+      "prompt_id": "llin-core-b15da40c324e799cd7f5-rule",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "p1",
+      "unit_id": "llin-core-b15da40c324e799cd7f5",
+      "prompt_id": "llin-core-b15da40c324e799cd7f5-scope",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "step120",
+      "unit_id": "llin-core-031182c8e97a128c8c31",
+      "prompt_id": "llin-core-031182c8e97a128c8c31-rule",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "step120",
+      "unit_id": "llin-core-031182c8e97a128c8c31",
+      "prompt_id": "llin-core-031182c8e97a128c8c31-scope",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "step120",
+      "unit_id": "llin-core-05db8a7a420b9cc25b7f",
+      "prompt_id": "llin-core-05db8a7a420b9cc25b7f-rule",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "step120",
+      "unit_id": "llin-core-05db8a7a420b9cc25b7f",
+      "prompt_id": "llin-core-05db8a7a420b9cc25b7f-scope",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "step120",
+      "unit_id": "llin-core-284682e6d05c9f063d99",
+      "prompt_id": "llin-core-284682e6d05c9f063d99-rule",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "step120",
+      "unit_id": "llin-core-284682e6d05c9f063d99",
+      "prompt_id": "llin-core-284682e6d05c9f063d99-scope",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "step120",
+      "unit_id": "llin-core-64cdc879fa758f981414",
+      "prompt_id": "llin-core-64cdc879fa758f981414-rule",
+      "passes": 3,
+      "repeats": 3
+    },
+    {
+      "model": "step120",
+      "unit_id": "llin-core-64cdc879fa758f981414",
+      "prompt_id": "llin-core-64cdc879fa758f981414-scope",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "step120",
+      "unit_id": "llin-core-9adae425cbbabbd2bf0c",
+      "prompt_id": "llin-core-9adae425cbbabbd2bf0c-rule",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "step120",
+      "unit_id": "llin-core-9adae425cbbabbd2bf0c",
+      "prompt_id": "llin-core-9adae425cbbabbd2bf0c-scope",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "step120",
+      "unit_id": "llin-core-b15da40c324e799cd7f5",
+      "prompt_id": "llin-core-b15da40c324e799cd7f5-rule",
+      "passes": 0,
+      "repeats": 3
+    },
+    {
+      "model": "step120",
+      "unit_id": "llin-core-b15da40c324e799cd7f5",
+      "prompt_id": "llin-core-b15da40c324e799cd7f5-scope",
+      "passes": 0,
+      "repeats": 3
+    }
+  ],
+  "ratings_sha256": "2bd9fb1c75c0dab4a3d82629411fb9ce4a5eb139afe2bee9d49dbf86ec742a44",
+  "previous_results_sha256": "bd7bd60028bc17cf7a7e849172aef6fa05f1ecae559ac800abe22d780fd345cb",
+  "promotion": false,
+  "independent_holdout": false,
+  "limitation": "Original prompt tests recall, not independent transfer. Full prompt and split prompts differ in task scope; do not compare strict-pass percentages directly."
+}
