@@ -1,0 +1,16 @@
+{
+  "date": "2026-09-22",
+  "new_calls": 38,
+  "reused_calls": 4,
+  "total_observations": 42,
+  "new_output_tokens": 1615,
+  "new_truncated": 0,
+  "independent_42_score_joins_and_14_group_counts": true,
+  "contemporary_repeats_verified": true,
+  "equal_length_prompt_tokens": 197,
+  "removed_note_prompt_tokens": 171,
+  "ratings_sha256": "586261278c70fb82accfae6126736ebf544d11f318b6a2c69e95e7fb89782c8b",
+  "prior_ratings_sha256": "83807a8371fc23e065fab96573ee08e0a954770194f5ca019003c261d18ed044",
+  "unresolved_batches": 0,
+  "decision_gate_branches_tested": true
+}

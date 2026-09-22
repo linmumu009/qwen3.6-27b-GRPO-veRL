@@ -1,0 +1,54 @@
+{
+  "id": "llin-rule-disambiguation-20260922-01",
+  "date": "2026-09-22",
+  "models": [
+    "K",
+    "R"
+  ],
+  "max_new_response_calls": 38,
+  "reused_calls": 4,
+  "total_observations": 42,
+  "repeats": 3,
+  "max_new_response_tokens": 14592,
+  "probability_calls": 0,
+  "training_steps": 0,
+  "formal_reruns": 0,
+  "promotion": false,
+  "cases_sha256": "9233936a4e0537fb4c1b2836dd5c9cfa3ac849514c2d5da00515a56dbffb86d8",
+  "instructions_sha256": "09477fadb88dc3a07f7a6eb35135d7600df372f7ff852bf8ee14606ec7d04e53",
+  "preparation_sha256": "72e15f2d098d1b648f3dec579631950b6939ee84e0fe9600815f600682675c77",
+  "runner_sha256": "b60ec27c858a3ba25e75132607ae5f3af378ebf0fb3f6d6f7a27b939007967c0",
+  "chat_template_sha256": "e84f32a23fdda27689f868aa4a1a5621f41133e51a48d7f3efcbea2839574259",
+  "prior_cases_sha256": "9694a207525b97353a953ab35cb439b97dfbafeac09e8eed763966b4a1e734b9",
+  "prior_raw_sha256": {
+    "K/nll": "b5489af64144bb3579b5cf8830896a6ce06fb35ca4671535524b4cbab10a74bf",
+    "K/response": "1f1d553230e431e560cbdeef8049582bbd9e32569f56e2138e0a0c802ae24898",
+    "R/nll": "77a9bfe467402265a0054805039b6ebf0b38f2eabae006c5546fca044807c0ab",
+    "R/response": "29caa127f8e358fd267a22901e582bbbdce2237720792032474a155eb7ef183a"
+  },
+  "prior_ratings_sha256": "83807a8371fc23e065fab96573ee08e0a954770194f5ca019003c261d18ed044",
+  "contrasts": {
+    "rail": "No assistant history; same original question and one-sentence instruction, add only target-topic focus.",
+    "barge": "Same source context and ordinary question; add only per-class answer precision request.",
+    "load": "Same K historical context and question; keep original note, replace it with a 25-token neutral glossary note, or remove it. Original and neutral entire prompt token counts identical."
+  },
+  "protocol": {
+    "tp": 8,
+    "dtype": "bfloat16",
+    "temperature": 0,
+    "seed": 1024,
+    "max_model_len": 8192,
+    "max_num_seqs": 32,
+    "max_tokens": 384,
+    "enable_thinking": false,
+    "enable_prefix_caching": false
+  },
+  "scoring": "Frozen target fact complete, no contradiction or uncertainty. Review new responses with model and condition labels hidden; unchanged prior scores reused. Freeze before reveal. Report truncation separately.",
+  "decision_rules": {
+    "rail": "Candidate cue sensitivity if focused>=2/3 and broad<=1/3; compare K and R; otherwise mixed or no such signal.",
+    "barge": "Candidate output-granularity sensitivity if per_class>=2/3 and ordinary<=1/3; no claim of new knowledge.",
+    "load": "If original<=1/3 and both neutral and removed>=2/3: candidate note-content effect. If only removed>=2/3: removal/length confounded. If original>=2/3: earlier failure not stable. Otherwise mixed."
+  },
+  "limitations": "Engineering decision gates, not significance tests. Repeats probe inference stability, not training seeds. Four repeat-0 observations reused from older batch; report repeats 1/2 separately. Three historically selected units, no generalization or formal gains.",
+  "stop": "No additional prompts, models, repetitions, probability scoring, training or tuning. No automatic resubmission with unresolved reservation. Deliver all branches even if negative."
+}

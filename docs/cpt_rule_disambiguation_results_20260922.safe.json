@@ -1,0 +1,697 @@
+{
+  "id": "llin-rule-disambiguation-20260922-01",
+  "models": {
+    "K": {
+      "groups": {
+        "barge": {
+          "ordinary": {
+            "passes": 0,
+            "repeats_1_2_passes": 0,
+            "repeats": 3,
+            "prompt_tokens": 145,
+            "distinct_answers": 1
+          },
+          "per_class": {
+            "passes": 3,
+            "repeats_1_2_passes": 2,
+            "repeats": 3,
+            "prompt_tokens": 168,
+            "distinct_answers": 1
+          }
+        },
+        "load": {
+          "neutral_note": {
+            "passes": 3,
+            "repeats_1_2_passes": 2,
+            "repeats": 3,
+            "prompt_tokens": 197,
+            "distinct_answers": 2
+          },
+          "original_note": {
+            "passes": 0,
+            "repeats_1_2_passes": 0,
+            "repeats": 3,
+            "prompt_tokens": 197,
+            "distinct_answers": 1
+          },
+          "removed_note": {
+            "passes": 3,
+            "repeats_1_2_passes": 2,
+            "repeats": 3,
+            "prompt_tokens": 171,
+            "distinct_answers": 2
+          }
+        },
+        "rail": {
+          "broad": {
+            "passes": 0,
+            "repeats_1_2_passes": 0,
+            "repeats": 3,
+            "prompt_tokens": 78,
+            "distinct_answers": 3
+          },
+          "focused": {
+            "passes": 0,
+            "repeats_1_2_passes": 0,
+            "repeats": 3,
+            "prompt_tokens": 94,
+            "distinct_answers": 2
+          }
+        }
+      },
+      "cells": [
+        {
+          "id": "barge-ordinary-0",
+          "module": "barge",
+          "condition": "ordinary",
+          "repeat": 0,
+          "reused": true,
+          "passed": false,
+          "supported": false,
+          "contradiction": false,
+          "uncertain": false,
+          "output_tokens": 28,
+          "truncated": false
+        },
+        {
+          "id": "barge-ordinary-1",
+          "module": "barge",
+          "condition": "ordinary",
+          "repeat": 1,
+          "reused": false,
+          "passed": false,
+          "supported": false,
+          "contradiction": false,
+          "uncertain": false,
+          "output_tokens": 28,
+          "truncated": false
+        },
+        {
+          "id": "barge-ordinary-2",
+          "module": "barge",
+          "condition": "ordinary",
+          "repeat": 2,
+          "reused": false,
+          "passed": false,
+          "supported": false,
+          "contradiction": false,
+          "uncertain": false,
+          "output_tokens": 28,
+          "truncated": false
+        },
+        {
+          "id": "barge-per_class-0",
+          "module": "barge",
+          "condition": "per_class",
+          "repeat": 0,
+          "reused": false,
+          "passed": true,
+          "supported": true,
+          "contradiction": false,
+          "uncertain": false,
+          "output_tokens": 53,
+          "truncated": false
+        },
+        {
+          "id": "barge-per_class-1",
+          "module": "barge",
+          "condition": "per_class",
+          "repeat": 1,
+          "reused": false,
+          "passed": true,
+          "supported": true,
+          "contradiction": false,
+          "uncertain": false,
+          "output_tokens": 53,
+          "truncated": false
+        },
+        {
+          "id": "barge-per_class-2",
+          "module": "barge",
+          "condition": "per_class",
+          "repeat": 2,
+          "reused": false,
+          "passed": true,
+          "supported": true,
+          "contradiction": false,
+          "uncertain": false,
+          "output_tokens": 53,
+          "truncated": false
+        },
+        {
+          "id": "load-neutral_note-0",
+          "module": "load",
+          "condition": "neutral_note",
+          "repeat": 0,
+          "reused": false,
+          "passed": true,
+          "supported": true,
+          "contradiction": false,
+          "uncertain": false,
+          "output_tokens": 31,
+          "truncated": false
+        },
+        {
+          "id": "load-neutral_note-1",
+          "module": "load",
+          "condition": "neutral_note",
+          "repeat": 1,
+          "reused": false,
+          "passed": true,
+          "supported": true,
+          "contradiction": false,
+          "uncertain": false,
+          "output_tokens": 31,
+          "truncated": false
+        },
+        {
+          "id": "load-neutral_note-2",
+          "module": "load",
+          "condition": "neutral_note",
+          "repeat": 2,
+          "reused": false,
+          "passed": true,
+          "supported": true,
+          "contradiction": false,
+          "uncertain": false,
+          "output_tokens": 32,
+          "truncated": false
+        },
+        {
+          "id": "load-original_note-0",
+          "module": "load",
+          "condition": "original_note",
+          "repeat": 0,
+          "reused": true,
+          "passed": false,
+          "supported": false,
+          "contradiction": false,
+          "uncertain": false,
+          "output_tokens": 46,
+          "truncated": false
+        },
+        {
+          "id": "load-original_note-1",
+          "module": "load",
+          "condition": "original_note",
+          "repeat": 1,
+          "reused": false,
+          "passed": false,
+          "supported": false,
+          "contradiction": false,
+          "uncertain": false,
+          "output_tokens": 46,
+          "truncated": false
+        },
+        {
+          "id": "load-original_note-2",
+          "module": "load",
+          "condition": "original_note",
+          "repeat": 2,
+          "reused": false,
+          "passed": false,
+          "supported": false,
+          "contradiction": false,
+          "uncertain": false,
+          "output_tokens": 46,
+          "truncated": false
+        },
+        {
+          "id": "load-removed_note-0",
+          "module": "load",
+          "condition": "removed_note",
+          "repeat": 0,
+          "reused": false,
+          "passed": true,
+          "supported": true,
+          "contradiction": false,
+          "uncertain": false,
+          "output_tokens": 31,
+          "truncated": false
+        },
+        {
+          "id": "load-removed_note-1",
+          "module": "load",
+          "condition": "removed_note",
+          "repeat": 1,
+          "reused": false,
+          "passed": true,
+          "supported": true,
+          "contradiction": false,
+          "uncertain": false,
+          "output_tokens": 31,
+          "truncated": false
+        },
+        {
+          "id": "load-removed_note-2",
+          "module": "load",
+          "condition": "removed_note",
+          "repeat": 2,
+          "reused": false,
+          "passed": true,
+          "supported": true,
+          "contradiction": false,
+          "uncertain": false,
+          "output_tokens": 32,
+          "truncated": false
+        },
+        {
+          "id": "rail-broad-0",
+          "module": "rail",
+          "condition": "broad",
+          "repeat": 0,
+          "reused": false,
+          "passed": false,
+          "supported": false,
+          "contradiction": false,
+          "uncertain": false,
+          "output_tokens": 64,
+          "truncated": false
+        },
+        {
+          "id": "rail-broad-1",
+          "module": "rail",
+          "condition": "broad",
+          "repeat": 1,
+          "reused": false,
+          "passed": false,
+          "supported": false,
+          "contradiction": false,
+          "uncertain": false,
+          "output_tokens": 47,
+          "truncated": false
+        },
+        {
+          "id": "rail-broad-2",
+          "module": "rail",
+          "condition": "broad",
+          "repeat": 2,
+          "reused": false,
+          "passed": false,
+          "supported": false,
+          "contradiction": false,
+          "uncertain": false,
+          "output_tokens": 46,
+          "truncated": false
+        },
+        {
+          "id": "rail-focused-0",
+          "module": "rail",
+          "condition": "focused",
+          "repeat": 0,
+          "reused": false,
+          "passed": false,
+          "supported": false,
+          "contradiction": false,
+          "uncertain": false,
+          "output_tokens": 60,
+          "truncated": false
+        },
+        {
+          "id": "rail-focused-1",
+          "module": "rail",
+          "condition": "focused",
+          "repeat": 1,
+          "reused": false,
+          "passed": false,
+          "supported": false,
+          "contradiction": false,
+          "uncertain": false,
+          "output_tokens": 57,
+          "truncated": false
+        },
+        {
+          "id": "rail-focused-2",
+          "module": "rail",
+          "condition": "focused",
+          "repeat": 2,
+          "reused": false,
+          "passed": false,
+          "supported": false,
+          "contradiction": false,
+          "uncertain": false,
+          "output_tokens": 60,
+          "truncated": false
+        }
+      ],
+      "decisions": {
+        "rail": "mixed_or_no_cue_signal",
+        "barge": "candidate_granularity_sensitivity",
+        "load": "candidate_note_content_effect"
+      }
+    },
+    "R": {
+      "groups": {
+        "barge": {
+          "ordinary": {
+            "passes": 0,
+            "repeats_1_2_passes": 0,
+            "repeats": 3,
+            "prompt_tokens": 145,
+            "distinct_answers": 1
+          },
+          "per_class": {
+            "passes": 0,
+            "repeats_1_2_passes": 0,
+            "repeats": 3,
+            "prompt_tokens": 168,
+            "distinct_answers": 1
+          }
+        },
+        "load": {
+          "neutral_note": {
+            "passes": 3,
+            "repeats_1_2_passes": 2,
+            "repeats": 3,
+            "prompt_tokens": 197,
+            "distinct_answers": 1
+          },
+          "original_note": {
+            "passes": 0,
+            "repeats_1_2_passes": 0,
+            "repeats": 3,
+            "prompt_tokens": 197,
+            "distinct_answers": 1
+          },
+          "removed_note": {
+            "passes": 3,
+            "repeats_1_2_passes": 2,
+            "repeats": 3,
+            "prompt_tokens": 171,
+            "distinct_answers": 1
+          }
+        },
+        "rail": {
+          "broad": {
+            "passes": 0,
+            "repeats_1_2_passes": 0,
+            "repeats": 3,
+            "prompt_tokens": 78,
+            "distinct_answers": 2
+          },
+          "focused": {
+            "passes": 1,
+            "repeats_1_2_passes": 1,
+            "repeats": 3,
+            "prompt_tokens": 94,
+            "distinct_answers": 2
+          }
+        }
+      },
+      "cells": [
+        {
+          "id": "barge-ordinary-0",
+          "module": "barge",
+          "condition": "ordinary",
+          "repeat": 0,
+          "reused": true,
+          "passed": false,
+          "supported": false,
+          "contradiction": false,
+          "uncertain": false,
+          "output_tokens": 27,
+          "truncated": false
+        },
+        {
+          "id": "barge-ordinary-1",
+          "module": "barge",
+          "condition": "ordinary",
+          "repeat": 1,
+          "reused": false,
+          "passed": false,
+          "supported": false,
+          "contradiction": false,
+          "uncertain": false,
+          "output_tokens": 27,
+          "truncated": false
+        },
+        {
+          "id": "barge-ordinary-2",
+          "module": "barge",
+          "condition": "ordinary",
+          "repeat": 2,
+          "reused": false,
+          "passed": false,
+          "supported": false,
+          "contradiction": false,
+          "uncertain": false,
+          "output_tokens": 27,
+          "truncated": false
+        },
+        {
+          "id": "barge-per_class-0",
+          "module": "barge",
+          "condition": "per_class",
+          "repeat": 0,
+          "reused": false,
+          "passed": false,
+          "supported": false,
+          "contradiction": false,
+          "uncertain": false,
+          "output_tokens": 56,
+          "truncated": false
+        },
+        {
+          "id": "barge-per_class-1",
+          "module": "barge",
+          "condition": "per_class",
+          "repeat": 1,
+          "reused": false,
+          "passed": false,
+          "supported": false,
+          "contradiction": false,
+          "uncertain": false,
+          "output_tokens": 56,
+          "truncated": false
+        },
+        {
+          "id": "barge-per_class-2",
+          "module": "barge",
+          "condition": "per_class",
+          "repeat": 2,
+          "reused": false,
+          "passed": false,
+          "supported": false,
+          "contradiction": false,
+          "uncertain": false,
+          "output_tokens": 56,
+          "truncated": false
+        },
+        {
+          "id": "load-neutral_note-0",
+          "module": "load",
+          "condition": "neutral_note",
+          "repeat": 0,
+          "reused": false,
+          "passed": true,
+          "supported": true,
+          "contradiction": false,
+          "uncertain": false,
+          "output_tokens": 32,
+          "truncated": false
+        },
+        {
+          "id": "load-neutral_note-1",
+          "module": "load",
+          "condition": "neutral_note",
+          "repeat": 1,
+          "reused": false,
+          "passed": true,
+          "supported": true,
+          "contradiction": false,
+          "uncertain": false,
+          "output_tokens": 32,
+          "truncated": false
+        },
+        {
+          "id": "load-neutral_note-2",
+          "module": "load",
+          "condition": "neutral_note",
+          "repeat": 2,
+          "reused": false,
+          "passed": true,
+          "supported": true,
+          "contradiction": false,
+          "uncertain": false,
+          "output_tokens": 32,
+          "truncated": false
+        },
+        {
+          "id": "load-original_note-0",
+          "module": "load",
+          "condition": "original_note",
+          "repeat": 0,
+          "reused": true,
+          "passed": false,
+          "supported": false,
+          "contradiction": false,
+          "uncertain": false,
+          "output_tokens": 47,
+          "truncated": false
+        },
+        {
+          "id": "load-original_note-1",
+          "module": "load",
+          "condition": "original_note",
+          "repeat": 1,
+          "reused": false,
+          "passed": false,
+          "supported": false,
+          "contradiction": false,
+          "uncertain": false,
+          "output_tokens": 47,
+          "truncated": false
+        },
+        {
+          "id": "load-original_note-2",
+          "module": "load",
+          "condition": "original_note",
+          "repeat": 2,
+          "reused": false,
+          "passed": false,
+          "supported": false,
+          "contradiction": false,
+          "uncertain": false,
+          "output_tokens": 47,
+          "truncated": false
+        },
+        {
+          "id": "load-removed_note-0",
+          "module": "load",
+          "condition": "removed_note",
+          "repeat": 0,
+          "reused": false,
+          "passed": true,
+          "supported": true,
+          "contradiction": false,
+          "uncertain": false,
+          "output_tokens": 32,
+          "truncated": false
+        },
+        {
+          "id": "load-removed_note-1",
+          "module": "load",
+          "condition": "removed_note",
+          "repeat": 1,
+          "reused": false,
+          "passed": true,
+          "supported": true,
+          "contradiction": false,
+          "uncertain": false,
+          "output_tokens": 32,
+          "truncated": false
+        },
+        {
+          "id": "load-removed_note-2",
+          "module": "load",
+          "condition": "removed_note",
+          "repeat": 2,
+          "reused": false,
+          "passed": true,
+          "supported": true,
+          "contradiction": false,
+          "uncertain": false,
+          "output_tokens": 32,
+          "truncated": false
+        },
+        {
+          "id": "rail-broad-0",
+          "module": "rail",
+          "condition": "broad",
+          "repeat": 0,
+          "reused": false,
+          "passed": false,
+          "supported": false,
+          "contradiction": false,
+          "uncertain": false,
+          "output_tokens": 45,
+          "truncated": false
+        },
+        {
+          "id": "rail-broad-1",
+          "module": "rail",
+          "condition": "broad",
+          "repeat": 1,
+          "reused": false,
+          "passed": false,
+          "supported": false,
+          "contradiction": false,
+          "uncertain": false,
+          "output_tokens": 45,
+          "truncated": false
+        },
+        {
+          "id": "rail-broad-2",
+          "module": "rail",
+          "condition": "broad",
+          "repeat": 2,
+          "reused": false,
+          "passed": false,
+          "supported": false,
+          "contradiction": false,
+          "uncertain": false,
+          "output_tokens": 45,
+          "truncated": false
+        },
+        {
+          "id": "rail-focused-0",
+          "module": "rail",
+          "condition": "focused",
+          "repeat": 0,
+          "reused": false,
+          "passed": false,
+          "supported": false,
+          "contradiction": false,
+          "uncertain": false,
+          "output_tokens": 47,
+          "truncated": false
+        },
+        {
+          "id": "rail-focused-1",
+          "module": "rail",
+          "condition": "focused",
+          "repeat": 1,
+          "reused": false,
+          "passed": true,
+          "supported": true,
+          "contradiction": false,
+          "uncertain": false,
+          "output_tokens": 49,
+          "truncated": false
+        },
+        {
+          "id": "rail-focused-2",
+          "module": "rail",
+          "condition": "focused",
+          "repeat": 2,
+          "reused": false,
+          "passed": false,
+          "supported": false,
+          "contradiction": false,
+          "uncertain": false,
+          "output_tokens": 47,
+          "truncated": false
+        }
+      ],
+      "decisions": {
+        "rail": "mixed_or_no_cue_signal",
+        "barge": "mixed_or_no_granularity_signal",
+        "load": "candidate_note_content_effect"
+      }
+    }
+  },
+  "new_response_calls": 38,
+  "reused_calls": 4,
+  "observations": 42,
+  "training_steps": 0,
+  "formal_reruns": 0,
+  "probability_calls": 0,
+  "promotion": false,
+  "ratings_sha256": "586261278c70fb82accfae6126736ebf544d11f318b6a2c69e95e7fb89782c8b",
+  "prior_ratings_sha256": "83807a8371fc23e065fab96573ee08e0a954770194f5ca019003c261d18ed044",
+  "raw_sha256": {
+    "K": "fb37c7266846e28b1563ffffe08a163cd4406d7931ebf0c53d9a41d17afe70db",
+    "R": "af57f954321dcba63400baa7b176fc14ff1156378a1187a451c1dd7aaab15536"
+  },
+  "new_output_tokens": 1615
+}
