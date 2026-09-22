@@ -1,0 +1,61 @@
+{
+  "date": "2026-09-22",
+  "scope": "Archived project evidence only; no new source or question adjudication",
+  "inputs_sha256": {
+    "CPT_resources\\llin-stage-b-20260920-01\\sources.private.json": "00b4f343d9b35211dd86d0e19d44247fe5db6a4754b3f6f3e4c13b1db12031ca",
+    "reports\\cpt_stage_b_20260920\\manifest.safe.json": "68a7dabe7a2a09b9d26458e2c4765fb456e24598df05de4dc8e4d80ffdb0a10f",
+    "docs\\cpt_structured_candidate_spec_20260922.safe.json": "416b49e88c3b94ec0d3689b3afe338d05cb2303fb75c4395f21949234b885bcc",
+    "CPT_resources\\llin-stage-a-20260920-03\\ledger.private.json": "00f015b854626291dc8f0382e8a48ecd62085f4ebb2feb7ec21a9c2bc60db04d",
+    "CPT_resources\\llin-stage-a-20260920-03\\result.private.json": "62345ac0a87f75afd95ff8e0b69a6183c7556ce49ea40ae66e176dc8a87af9bc",
+    "reports\\cpt_stage_b_20260920\\run04_author_audit.safe.json": "6f9cb745de970d838c6ee13e04211a5be70f3aa940103effe435284cc2dc5b34",
+    "reports\\cpt_stage_b_small_20260920\\result.safe.json": "18ef0e9ce162d270ac8b88e53661ae5eb0ed1ae629a5f8dc746dc88de4b4fd59"
+  },
+  "source_coverage": [
+    {
+      "dataset": "SC-bench-knowledge",
+      "source_statuses": {
+        "B": 5,
+        "C": 22,
+        "D": 4,
+        "A": 1
+      },
+      "source_confirmed_items": 1,
+      "source_confirmed_groups": 1,
+      "source_confirmed_deduplicated": 1
+    },
+    {
+      "dataset": "LogistikaBench",
+      "source_statuses": {
+        "B": 88,
+        "D": 57,
+        "A": 48,
+        "C": 44
+      },
+      "source_confirmed_items": 48,
+      "source_confirmed_groups": 39,
+      "source_confirmed_deduplicated": 39
+    }
+  ],
+  "candidate_packet_groups": 8,
+  "stage_b_complete_groups": 0,
+  "stage_c_gate": {
+    "minimum_total_qualified": 12,
+    "minimum_sc_qualified": 3,
+    "minimum_logistika_qualified": 9,
+    "current_qualified_total": 0,
+    "current_qualified_sc": 0,
+    "current_qualified_logistika": 0,
+    "passed": false
+  },
+  "sc_source_group_shortfall_minimum": 2,
+  "sc_note": "One source-qualified SC group is not B-qualified; at least two additional source groups needed before testing three. All three must still pass B.",
+  "log_note": "Eight packet candidates are not B-qualified; source-rich 39 groups do not imply any training-value qualification.",
+  "writer_handoff_sha256": "8e33cdcb9550c5158efc9362e07235101884d88b4b8812b654d23ccb94887bab",
+  "source_fingerprints_verified": 8,
+  "forbidden_structural_fields_absent": true,
+  "previous_authoring_stop_preserved": true,
+  "new_tasks": 0,
+  "new_model_calls": 0,
+  "new_training_runs": 0,
+  "training_allowed": false
+}

@@ -1,0 +1,218 @@
+{
+  "date": "2026-09-22",
+  "purpose": "Source-only authoring specification, not generated tasks or training labels",
+  "profiles": [
+    {
+      "id": "modal_dimensions",
+      "dataset": "LogistikaBench",
+      "priority": 1,
+      "judgment_type": "多维概念区分",
+      "scope": "The Geography of Transport Systems: Intermodalism, Multimodalism and Transmodalism; archived 2026-09-20",
+      "operation": "Compare mode changes and contract boundaries; distinguish contract integration from within-mode connections and efficiency claims.",
+      "source_refs": [
+        "https://transportgeography.org/contents/chapter5/intermodal-transportation-containerization/intermodalism-multimodalism-transmodalism/"
+      ],
+      "source_text_sha256": "419ea9b3a58b134671bba76e9a80dd45ed27ac01da038d7c3aa4843a2d99bfdd",
+      "required_coverage": [
+        "同时核验运输方式是否变化和合同是否整合，不把两个维度混为一谈",
+        "同方式不同区段连接的概念不能由单一合同条件替代",
+        "保留单一合同并不保证效率或可持续性最优的限制"
+      ],
+      "rejection_checks": [
+        "把该教材的定义当成跨文献唯一术语标准",
+        "把一张合同推成总是更高效",
+        "以简单命名题代替合同与方式组合辨析"
+      ],
+      "minimum_option_count": 4,
+      "stage_b_status": "historical_complete_group_not_passed",
+      "training_ready": false,
+      "exposure": "Prior source screening and authoring attempted; not an independent unseen confirmation source"
+    },
+    {
+      "id": "rail_loading",
+      "dataset": "LogistikaBench",
+      "priority": 1,
+      "judgment_type": "统计口径与例外",
+      "scope": "Glossary for Transport Statistics, archived edition and railway statistical definitions",
+      "operation": "Apply railway loading/unloading, outgoing/incoming and throughout-transit boundaries with rail-ferry exceptions; domestic-transport definition requires additional source support.",
+      "source_refs": [
+        "book:503554d08d7c3c219cc9",
+        "book:03936680691d4e0b0fbe"
+      ],
+      "source_text_sha256": "08c9ed046ff27f21cd9b26dcf76a7b12314b228b66f5b818658959c19196ccdf",
+      "required_coverage": [
+        "区分直接铁路车辆间转运、更换牵引车辆与经其他运输方式中转",
+        "同时提供装卸地点与申报国家，分别核验出境、入境和全程过境",
+        "保留铁路渡轮相关的包含条件"
+      ],
+      "rejection_checks": [
+        "把车辆变化都计作重新装卸",
+        "漏掉装卸地点或申报国家而强制判定",
+        "没有补充来源就扩到全部国内运输定义"
+      ],
+      "minimum_option_count": 6,
+      "stage_b_status": "historical_complete_group_not_passed",
+      "training_ready": false,
+      "exposure": "Prior source screening and authoring attempted; not an independent unseen confirmation source"
+    },
+    {
+      "id": "rail_rolling_stock",
+      "dataset": "LogistikaBench",
+      "priority": 1,
+      "judgment_type": "分类边界与重叠集合",
+      "scope": "Glossary for Transport Statistics, archived railway rolling-stock definitions",
+      "operation": "Apply propulsion, passenger capacity, coupled-unit and fixed-formation boundaries; compare overlapping classes, not equipment name lookup.",
+      "source_refs": [
+        "book:7a99a7c52f9c2bace58b",
+        "book:92ba8cbfe8931dcab751",
+        "book:ac6926e38c57fbfab1db"
+      ],
+      "source_text_sha256": "2ce673784c231a01c9ab88e3b3557c009ff415609c2618a94e67f85b837fe686",
+      "required_coverage": [
+        "区分运行中可分离性、动力用途、载荷用途与编组关系，不以名称替代判定",
+        "保留固定编组与可模块组合的条件，允许动力和客运类别同时成立",
+        "比较能源来源与传动形式时保留双模式及柴油发电驱动的来源分类例外"
+      ],
+      "rejection_checks": [
+        "把发动机存在当作充分分类条件",
+        "把相交类别强行设为互斥选项",
+        "以同义词或设备名字替代竞争概念判断"
+      ],
+      "minimum_option_count": 6,
+      "stage_b_status": "historical_complete_group_not_passed",
+      "training_ready": false,
+      "exposure": "Prior source screening and authoring attempted; not an independent unseen confirmation source"
+    },
+    {
+      "id": "gvc_trajectories",
+      "dataset": "LogistikaBench",
+      "priority": 2,
+      "judgment_type": "多维分类与条件推断",
+      "scope": "UNCTAD World Investment Report 2020, key messages, page xiii",
+      "operation": "Compare reshoring, diversification, regionalization and replication across fragmentation, geography, value concentration and digital manufacturing.",
+      "source_refs": [
+        "https://unctad.org/node/3989"
+      ],
+      "source_text_sha256": "3338b544b0e3a1ba7cd0534ae256cbee231a03c63ede558c8e0cbc5991f0e73c",
+      "required_coverage": [
+        "并列比较链条长度、碎片化、活动地理分布及价值增加集中度",
+        "按2020报告框架比较四种轨迹并保留行业和基础设施条件",
+        "区分活动分散与价值获取分散，不能互相替代"
+      ],
+      "rejection_checks": [
+        "把地区化等同于减少全部生产分段",
+        "把2020情景分析写成当前普遍事实",
+        "将四种轨迹拆成同义模板虚增能力组"
+      ],
+      "minimum_option_count": 4,
+      "stage_b_status": "historical_complete_group_not_passed",
+      "training_ready": false,
+      "exposure": "Prior source screening and authoring attempted; not an independent unseen confirmation source"
+    },
+    {
+      "id": "low_water_response",
+      "dataset": "LogistikaBench",
+      "priority": 2,
+      "judgment_type": "策略前提与限制",
+      "scope": "Ports and Waterways textbook; low-water navigation context",
+      "operation": "Compare operational and infrastructure responses to low water, including prerequisites and limits.",
+      "source_refs": [
+        "book:23e9a80444aca87fc443"
+      ],
+      "source_text_sha256": "f712b55bea5109d48ca6c96ff5db3a7afeda4be609119ad43215d6a5b63ae1d8",
+      "required_coverage": [
+        "区分装载率、路线、吃水、作业方式、方式转移和库存等措施的适用前提",
+        "明确较小推驳船队与小型船舶、联接驳船的不同指代",
+        "同时保留小型船活动增加和不能完全弥补总运力损失"
+      ],
+      "rejection_checks": [
+        "代词跨船型错误归属",
+        "从缺失图像推导未给出的数值阈值",
+        "枚举措施却不说明竞争条件"
+      ],
+      "minimum_option_count": 6,
+      "stage_b_status": "historical_complete_group_not_passed",
+      "training_ready": false,
+      "exposure": "Prior source screening and authoring attempted; not an independent unseen confirmation source"
+    },
+    {
+      "id": "port_forecast",
+      "dataset": "LogistikaBench",
+      "priority": 2,
+      "judgment_type": "预测方法与条件匹配",
+      "scope": "Ports and Waterways textbook, cargo forecast methods; examples are historical teaching assumptions",
+      "operation": "Distinguish top-down and bottom-up evidence, forecast assumptions and port competition limitations.",
+      "source_refs": [
+        "book:44247ab41f17672e477e"
+      ],
+      "source_text_sha256": "cd206f04d133b9e2ebc8baeafee42e605956b7144ae315868b598ecd0a51fcd9",
+      "required_coverage": [
+        "区分宏观需求推导、企业需求聚合与网络模型的输入和用途",
+        "独占货物必须同时明确邻近产业与不存在替代港口；竞争货物需存在港口选择",
+        "不得将最低成本扩成赢得全部货物，保留可靠性和时效因素"
+      ],
+      "rejection_checks": [
+        "只凭靠近港口判定独占货物",
+        "题干直接写出应选方法再要求选择",
+        "把其他货类的事实当成本命题的反例"
+      ],
+      "minimum_option_count": 4,
+      "stage_b_status": "historical_complete_group_not_passed",
+      "training_ready": false,
+      "exposure": "Prior source screening and authoring attempted; not an independent unseen confirmation source"
+    },
+    {
+      "id": "transport_models",
+      "dataset": "LogistikaBench",
+      "priority": 2,
+      "judgment_type": "课程框架与推论强度",
+      "scope": "MIT Transportation Systems, 2004, chapter 10, slides 4, 10, 13",
+      "operation": "Distinguish mathematical models, qualitative frameworks, system evaluation and transparent assumptions in planning decisions.",
+      "source_refs": [
+        "https://ocw.mit.edu/courses/1-221j-transportation-systems-fall-2004/85c6999b30a667b59613fb41621d81e7_trans_sys_chap10.pdf"
+      ],
+      "source_text_sha256": "2e6eb69101497f81d49b24c672db04bc7f8a56c81e06eedf0cc45582221702a0",
+      "required_coverage": [
+        "限于该课程框架比较数学表征和定性组织原则",
+        "区分预测、评价、选择和迭代核查的用途",
+        "透明性说明假设可见，不等于保证最优或必然正确"
+      ],
+      "rejection_checks": [
+        "将课程术语宣称为所有学科唯一约定",
+        "缺失框图关系时自行补绘逻辑",
+        "以名称对号替代方法用途及限制判断"
+      ],
+      "minimum_option_count": 4,
+      "stage_b_status": "historical_complete_group_not_passed",
+      "training_ready": false,
+      "exposure": "Prior source screening and authoring attempted; not an independent unseen confirmation source"
+    },
+    {
+      "id": "picking_workload",
+      "dataset": "LogistikaBench",
+      "priority": 3,
+      "judgment_type": "工作量与任务条件",
+      "scope": "MITx supply-chain teaching material, archived order-picking section",
+      "operation": "Compare picking unit size, effort components and qualitative layout workload; equipment selection and incomplete numerical optimization are outside current source coverage.",
+      "source_refs": [
+        "book:e24132919e309f5e6174"
+      ],
+      "source_text_sha256": "dc645aae40d7949329ae10d5061a3e5eab600386530428eab51b4b718f030e47",
+      "required_coverage": [
+        "限定整托、箱和小件的相对作业负担，不添加通用定量比例",
+        "区分行走、搜寻、提取和其他工作量口径",
+        "若涉及布局目标，补齐距离与工作量变量后才允许数值任务"
+      ],
+      "rejection_checks": [
+        "来源未给设备选择规则却生成自动化方案标签",
+        "把教学材料比例当成所有仓库的常数",
+        "使用残缺公式推导精确最优布局"
+      ],
+      "minimum_option_count": 4,
+      "stage_b_status": "historical_complete_group_not_passed",
+      "training_ready": false,
+      "exposure": "Prior source screening and authoring attempted; not an independent unseen confirmation source"
+    }
+  ],
+  "training_allowed": false
+}
