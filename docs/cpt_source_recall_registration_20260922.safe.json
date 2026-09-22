@@ -1,0 +1,36 @@
+{
+  "id": "llin-source-recall-20260922-01",
+  "status": "prepared_not_run",
+  "type": "separate_followup_measurement_no_training",
+  "prior_round_closed": true,
+  "prior_generation_calls": 10176,
+  "new_generation_calls": 0,
+  "max_new_generation_calls": 72,
+  "models": [
+    "Step120",
+    "P1",
+    "K",
+    "R"
+  ],
+  "units": 6,
+  "repeats": 3,
+  "calls_per_model": 18,
+  "source": "Exact original K system and user messages; assistant source withheld",
+  "scoring": "Merge frozen rule/scope facts per unit; semantic review hidden identity; freeze before unblinding; no substring grading",
+  "protocol": {
+    "temperature": 0,
+    "seed": 1024,
+    "max_tokens": 384,
+    "max_model_len": 8192,
+    "tp": 8,
+    "max_num_seqs": 32,
+    "enable_thinking": false
+  },
+  "training_steps": 0,
+  "formal_reruns": 0,
+  "stop": "Only fixed six original prompts; no rephrasing, parameter searches or extra generations on failure; unresolved reservations investigated without resubmission",
+  "probes_sha256": "3f6372e4666d33a1d8227d728a544f17734c55cecb46b898bb6b68daca0b2ece",
+  "prior_sources_sha256": "f4571061dff96b31fbd624fc954c0b52037ac78d548d8c9f2d88b7be31339c68",
+  "prior_probes_sha256": "b6815f8a6941b8021454ec84d370c1965cacdbe36c93b56d0080320b8104458e",
+  "promotion": false
+}
