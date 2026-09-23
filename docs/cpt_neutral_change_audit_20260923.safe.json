@@ -1,0 +1,67 @@
+{
+  "status": "closed_offline_source_review_complete",
+  "new_model_calls": 0,
+  "training_runs": 0,
+  "official_scores_changed": false,
+  "changed_counts": {
+    "gain": 18,
+    "loss": 13
+  },
+  "full_pool_casefold_duplicate_groups": 3,
+  "changed_expected_has_casefold_duplicate": {
+    "gain": 2,
+    "loss": 1
+  },
+  "changed_index_same_normalized_text": {
+    "gain": 1,
+    "loss": 1
+  },
+  "changed_natural_pair_counts": {
+    "gain": 18,
+    "loss": 12
+  },
+  "posthoc_pros_cons_label_cohort": {
+    "n": 12,
+    "before": 10,
+    "after": 5,
+    "gains": 0,
+    "losses": 5
+  },
+  "input_sha256": {
+    "CPT_resources/llin-transfer-audit-20260915-01/frozen_cases.private.jsonl": "b652b2108cb552346df11d005c15ff3137c50a756a7b24eb35302683ec33ed99",
+    "CPT_resources/llin-neutral-prefix-20260923-01/results.private.json": "656139f3425fb5e13f0b839c0a032e775b30dc974ccafafec14ecbdf4fdd6423",
+    "CPT_resources/llin-p1-error-map-20260923-01/paired_cases.private.json": "4817ecf331d4c60c8d687f775342c2f5a6a7a06bb2b74a4b4a10d033b54e40c8",
+    "CPT_resources/llin-neutral-change-audit-20260923-01/gain_review.private.json": "3f62d7c99ec65103905c838099df49410eab3c4debc0020edbdedbcfbd281a2e",
+    "CPT_resources/llin-neutral-change-audit-20260923-01/loss_review.private.json": "a0fd39d73e9b4440621b493bbba52d476c99a1b82a630f178292b827e766f062",
+    "CPT_resources/llin-knowledge-expansion-20260911/book_pages.private.jsonl": "1f3516fc5e89763667040f92c8801cff31cd4429f94b7ffaa80de3bdbc940591",
+    "CPT_resources/llin-knowledge-core-v1-20260911/sources.private.jsonl": "858344eb35fe0494138487e3dab5e3c1b63134cd4e93ae69490819cf41fb14c1",
+    "CPT_resources/material_survey_20260910_index/text_for_review/91727eb1e29c0b12a435cfce09a4583ec6c0616a45688047d8b21c48a8c13f24.txt": "9fdb2f652941d990f2844b68df9f5ad3a7e7e5860efccf4b256694145e2988d2",
+    "CPT_resources/llin-knowledge-complete-20260911/all_source_pages.private.jsonl": "a3a4a4ae113f68a85955e6fc50df8d851e18b05323785d4fe2a4aec92da98489",
+    "CPT_resources/material_survey_20260910_index/text_for_review/e32083e25325b5660df0c7db775cfacd343e702517ff2bbcb8273d01d5f37467.txt": "c1c7342eb34a9134a7090fd37a42fad66c68af09a4b67de1c80e5f31133a40ae"
+  },
+  "structural_ledger_sha256": "e6fff8ba05a98233b13e00743babded12b3d806540a881c3fe9ccd78e9e6f8e5",
+  "limitations": [
+    "Outcome-selected descriptive audit, not held-out validation",
+    "Casefold duplicates do not constitute a new scoring rule",
+    "Natural pairs and labels do not independently validate source truth",
+    "Post-hoc label categories cannot be used as inference features"
+  ],
+  "gain_source_status": {
+    "C": 2,
+    "D": 6,
+    "A": 10
+  },
+  "loss_source_status": {
+    "A": 6,
+    "D": 4,
+    "B": 1,
+    "C": 2
+  },
+  "reviewed_items": 31,
+  "source_reference_count": 32,
+  "all_source_quotes_and_fingerprints_verified": true,
+  "reviewed_ledger_sha256": "c5bd0627bdb49e901626cdaa29e6f8e552769804007b16418b72f58589896866",
+  "historical_source_cohorts_unchanged": true,
+  "training_ready": false,
+  "human_review_limitations": "Source text extraction, no new page-image validation; outcomes visible; no independent blind claim"
+}
