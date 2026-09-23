@@ -3,3 +3,5 @@ scripts/run_cpt_matrix_screen.py text eol=lf
 docs/cpt_matrix_trial_registration_20260923.md text eol=lf
 scripts/*cpt_selection_diagnostic.py text eol=lf
 docs/cpt_selection_diagnostic_registration_20260923.md text eol=lf
+scripts/*cpt_neutral_prefix.py text eol=lf
+docs/cpt_neutral_prefix_registration_20260923.md text eol=lf

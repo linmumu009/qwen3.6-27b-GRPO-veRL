@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "semantic_review_sha256": "739cf439be30c99625325da80aa62639f4d19c9eefc958b0e1f3b7f3262cae07",
+  "protocol_review_sha256": "fe99770f5530026116e8c01d6b581942108b3967da85d600c7278eb52062ec6c",
+  "inputs": {
+    "packet": "07fa65d6f5865307e2500ac457d1929026759d74f2884d8d6224fe46ed30e980",
+    "registration": "ab67962829b2dc12126bf40fd1643fe9664446bbd1f270b2cd666f1fbf67f881",
+    "builder": "cd7dfa93aa2951a14a2f237be03a39b12ce52fdb21898669264c94796d675f49",
+    "runner": "06f265587ad4c7adce4bd60ffecdcc2e9e8fe3f37366dc7c6c0596a41a83d914"
+  }
+}

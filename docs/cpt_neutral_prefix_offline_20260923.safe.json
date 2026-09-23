@@ -1,0 +1,21 @@
+{
+  "items": 305,
+  "new_calls": 915,
+  "historical_calls": 915,
+  "baseline_correct": 224,
+  "baseline_wrong": 81,
+  "source_A_errors": 30,
+  "old_targets": 25,
+  "unique_pool": true,
+  "unique_prefix": true,
+  "exact_definition_and_options_preserved": true,
+  "whole_prompt_semantic_equivalence_claimed": false,
+  "input_sha256": {
+    "CPT_resources\\llin-transfer-audit-20260915-01\\frozen_cases.private.jsonl": "b652b2108cb552346df11d005c15ff3137c50a756a7b24eb35302683ec33ed99",
+    "CPT_resources\\llin-transfer-formal-20260917-01\\p1\\predictions.private.jsonl": "33c5fc7dcb64c0fba59c25c054b19cda7b2e07880ad62daf0d2debd6ece7bbb2",
+    "CPT_resources\\llin-transfer-formal-20260917-01\\p1\\protocol.safe.json": "da8366e930b6d8bf1a8be58981be12998fd82c61979e7987f394821f85292e17",
+    "CPT_resources\\llin-transfer-formal-20260917-01\\p1\\scores.safe.json": "c13b4210f94890f1796e4fe49cf4446143ab2da0fda61cfa24e72d82b442f47f",
+    "CPT_resources\\llin-p1-error-map-20260923-01\\ledger.private.json": "c4db83e19fd0a8b4875fc4576211cedee749752bf4a3c502e7ecaec33807487b",
+    "CPT_resources\\llin-p1-error-map-20260923-01\\decision_queues.private.json": "6fba63422705143b509fa1fe1e85f80c60bf1f3e68a093a4206bc4b7c28f676b"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "id": "llin-neutral-prefix-20260923-01",
+  "max_calls": 915,
+  "reused_calls": 915,
+  "groups": 305,
+  "training_allowed": false,
+  "quality_released": true,
+  "quality_sha256": "cd82960f74d80cc4be8ddf9e0b630fcd72ea56bf41081e26d678c2169c779b23",
+  "packet_sha256": "07fa65d6f5865307e2500ac457d1929026759d74f2884d8d6224fe46ed30e980",
+  "runner_sha256": "06f265587ad4c7adce4bd60ffecdcc2e9e8fe3f37366dc7c6c0596a41a83d914",
+  "registered_plan_sha256": "ab67962829b2dc12126bf40fd1643fe9664446bbd1f270b2cd666f1fbf67f881",
+  "protocol_code_sha256": {
+    "cpt_stage_b.py": "c5855c92041b111b8103486e2b4558b7c1806f3f9d0e161979932396f084d923",
+    "evaluate_logistics_knowledge.py": "8cee1c90a17771860b26b2e01f919bf3730c4ac2fefb21be3fd0dee222c8f949"
+  },
+  "model_path": "/workspace/llin-verl-grpo/runs/llin-transfer-p1-run-20260916-02/training/llin-step120-p1-hf",
+  "temperature": 0,
+  "seed": 1024,
+  "max_tokens": 96,
+  "max_model_len": 8192,
+  "tp": 8,
+  "max_num_seqs": 32,
+  "repeats": 3
+}

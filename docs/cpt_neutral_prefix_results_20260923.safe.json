@@ -1,0 +1,127 @@
+{
+  "status": "closed_local_verification_complete",
+  "new_calls": 915,
+  "reused_calls": 915,
+  "completed_batches": 58,
+  "table": [
+    {
+      "cohort": "all",
+      "n": 305,
+      "gains": 18,
+      "losses": 13,
+      "net": 5,
+      "before": {
+        "correct": 224,
+        "stable_correct": 223,
+        "unstable": 2,
+        "invalid": 0,
+        "truncated": 0
+      },
+      "after": {
+        "correct": 229,
+        "stable_correct": 226,
+        "unstable": 8,
+        "invalid": 0,
+        "truncated": 0
+      }
+    },
+    {
+      "cohort": "baseline_wrong",
+      "n": 81,
+      "gains": 18,
+      "losses": 0,
+      "net": 18,
+      "before": {
+        "correct": 0,
+        "stable_correct": 0,
+        "unstable": 1,
+        "invalid": 0,
+        "truncated": 0
+      },
+      "after": {
+        "correct": 18,
+        "stable_correct": 15,
+        "unstable": 7,
+        "invalid": 0,
+        "truncated": 0
+      }
+    },
+    {
+      "cohort": "baseline_correct",
+      "n": 224,
+      "gains": 0,
+      "losses": 13,
+      "net": -13,
+      "before": {
+        "correct": 224,
+        "stable_correct": 223,
+        "unstable": 1,
+        "invalid": 0,
+        "truncated": 0
+      },
+      "after": {
+        "correct": 211,
+        "stable_correct": 211,
+        "unstable": 1,
+        "invalid": 0,
+        "truncated": 0
+      }
+    },
+    {
+      "cohort": "source_A_known_errors",
+      "n": 30,
+      "gains": 8,
+      "losses": 0,
+      "net": 8,
+      "before": {
+        "correct": 0,
+        "stable_correct": 0,
+        "unstable": 1,
+        "invalid": 0,
+        "truncated": 0
+      },
+      "after": {
+        "correct": 8,
+        "stable_correct": 6,
+        "unstable": 5,
+        "invalid": 0,
+        "truncated": 0
+      }
+    },
+    {
+      "cohort": "old_25_targets",
+      "n": 25,
+      "gains": 8,
+      "losses": 0,
+      "net": 8,
+      "before": {
+        "correct": 0,
+        "stable_correct": 0,
+        "unstable": 1,
+        "invalid": 0,
+        "truncated": 0
+      },
+      "after": {
+        "correct": 8,
+        "stable_correct": 6,
+        "unstable": 5,
+        "invalid": 0,
+        "truncated": 0
+      }
+    }
+  ],
+  "training_runs": 0,
+  "official_results_unchanged": true,
+  "training_ready": false,
+  "decision": "positive_development_signal_only",
+  "packet_sha256": "07fa65d6f5865307e2500ac457d1929026759d74f2884d8d6224fe46ed30e980",
+  "predictions_sha256": "6985bf774dca79ad3a68a86cf2885beca00fd6da720125f68c8f4617ebb4fd3c",
+  "private_ledger_sha256": "656139f3425fb5e13f0b839c0a032e775b30dc974ccafafec14ecbdf4fdd6423",
+  "limitations": [
+    "Historical baseline, not contemporaneous randomized control",
+    "Existing labels are not all source-validated",
+    "Source A cohort contains only previously audited errors, not a fully audited retention set",
+    "Full original question meaning is changed; matching definition/options are preserved",
+    "Development evidence only; no promotion"
+  ]
+}
