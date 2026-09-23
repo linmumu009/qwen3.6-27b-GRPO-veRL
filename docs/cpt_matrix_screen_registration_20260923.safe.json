@@ -1,0 +1,22 @@
+{
+  "id": "llin-matrix-screen-20260923-01",
+  "max_calls": 80,
+  "training_allowed": false,
+  "quality_released": true,
+  "quality_sha256": "f195601563c6b5bf78e5be2e8dec8dfd4eaab5fe02e0c41170c40004fae75c87",
+  "packet_sha256": "d88d2f56cb7c60b3e6a4a9453d86c3973ec944ecec36bdf8dbc81c825408f98d",
+  "runner_sha256": "edf4b3fe22c3a5b37d67df1a7df3512d4b5a2db2c80e524290fea9abae9d63eb",
+  "protocol_code_sha256": {
+    "cpt_stage_b.py": "c5855c92041b111b8103486e2b4558b7c1806f3f9d0e161979932396f084d923",
+    "evaluate_logistics_knowledge.py": "8cee1c90a17771860b26b2e01f919bf3730c4ac2fefb21be3fd0dee222c8f949"
+  },
+  "model_path": "/workspace/llin-verl-grpo/runs/llin-transfer-p1-run-20260916-02/training/llin-step120-p1-hf",
+  "temperature": 0,
+  "seed": 1024,
+  "max_tokens": 96,
+  "max_model_len": 8192,
+  "tp": 8,
+  "max_num_seqs": 32,
+  "registered_plan_sha256": "6a8d1d7c9b043bd3b0a8336859c6a11d02ba1616f13d5d884b13893e22930576",
+  "interpretation": "No additional reference versus full reference; MU1-3 already state core prerequisites. Not a pure source-recall test."
+}

@@ -1,1 +1,3 @@
 *.sh text eol=lf
+scripts/run_cpt_matrix_screen.py text eol=lf
+docs/cpt_matrix_trial_registration_20260923.md text eol=lf

@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "authoring_released": true,
+  "errors": [],
+  "training_pair_specifications": 10,
+  "reserved_development_specifications": 8,
+  "training_allowed": false,
+  "student_generation_calls": 0,
+  "independent_holdout": false,
+  "state_exposures_matched": false,
+  "sha256": {
+    "matrix": "c0a4c0a4b264a19e36e5108921a463aa832b41bc0bfc484e01a3571bfaffe3c0",
+    "review": "e5f68b24e0d657114dbbafb235b872b70a246523af064a080b30395b5db9f55a",
+    "source": "4d59380ac01396856d8d8c8112bf741230fd782cbcd13883ef543bd8ce7517e3"
+  }
+}

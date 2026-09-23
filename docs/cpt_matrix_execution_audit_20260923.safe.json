@@ -1,0 +1,74 @@
+{
+  "input_sha256": {
+    "packet.private.json": "d88d2f56cb7c60b3e6a4a9453d86c3973ec944ecec36bdf8dbc81c825408f98d",
+    "remote_run/p1/predictions.private.json": "01dee24790ba3fbc91d634d31ffc3e37a4e993487f624681ecb4bbb286673421",
+    "development_blind_review.private.json": "4b5a23bb081932bbff3ea0d786bf976dacdc76ae661cee982da9ffcec0ff0889",
+    "train_blind_review.private.json": "71e26e6951bbf0f662d12a72d7a4063f0a8746e2c344519ee827070e66e7c5af"
+  },
+  "audit_method": "Offline strict JSON with duplicate-key and nonfinite rejection; exactly answers key; unique integer indices 0..3; set-exact scoring. Expected rederived via packet order from frozen blind labels, then compared with packet expected. No student/model calls.",
+  "integrity_passed": true,
+  "integrity_issues": [],
+  "counts": {
+    "packet_requests": 80,
+    "predictions": 80,
+    "audited": 80,
+    "strict_valid": 80,
+    "invalid": 0,
+    "truncated": 0,
+    "correct": 75,
+    "incorrect": 5,
+    "error_types": {
+      "correct": 75,
+      "omission_only": 5
+    },
+    "finish_reasons": {
+      "stop": 80
+    },
+    "missed_correct_option_count": 5,
+    "selected_incorrect_option_count": 0,
+    "families": {
+      "rodrigue_contractual_transport": {
+        "items": 4,
+        "closed_all_four_correct_items": 2,
+        "source_all_four_correct_items": 2,
+        "closed_correct_requests": 14,
+        "source_correct_requests": 14,
+        "requests_per_condition": 16,
+        "first_order_three_correctness_consistent_items": 3,
+        "first_order_all_three_correct_items": 3
+      },
+      "unctad_2020_trajectories": {
+        "items": 4,
+        "closed_all_four_correct_items": 4,
+        "source_all_four_correct_items": 4,
+        "closed_correct_requests": 16,
+        "source_correct_requests": 16,
+        "requests_per_condition": 16,
+        "first_order_three_correctness_consistent_items": 4,
+        "first_order_all_three_correct_items": 4
+      }
+    },
+    "by_condition": {
+      "closed": {
+        "correct": 30,
+        "omission_only": 2
+      },
+      "source": {
+        "correct": 30,
+        "omission_only": 2
+      },
+      "repeat": {
+        "omission_only": 1,
+        "correct": 15
+      }
+    }
+  },
+  "limits": [
+    "Only the four authorized input files were read in this execution audit; no main-audit summaries were used. Frozen files were not modified.",
+    "Reported token hashes were compared for equality; token arrays and tokenizer were not supplied, so hashes cannot independently reconstruct tokens. Packet messages were compared directly.",
+    "MU4 remains a separate lower-tier paired cross-framework item in details; family totals are descriptive and do not make it an independent compositional ability.",
+    "Closed condition means no appended source; MU1–MU3 already state governing rules, so these scores do not measure pure knowledge retrieval.",
+    "Correctness changes under identical prompts are observed output facts only; no internal mechanism or cause is inferred."
+  ],
+  "private_audit_sha256": "adb0cee6847939b9447a4f4bb47538b082cb34d877993eee64ad7ab629e32579"
+}

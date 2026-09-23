@@ -1,0 +1,36 @@
+{
+  "families": [
+    {
+      "family": "rodrigue_contractual_transport",
+      "tasks": 4,
+      "closed_stable": 2,
+      "source_stable": 2,
+      "repeat_consistent": false,
+      "passed": false
+    },
+    {
+      "family": "unctad_2020_trajectories",
+      "tasks": 4,
+      "closed_stable": 4,
+      "source_stable": 4,
+      "repeat_consistent": true,
+      "passed": false
+    }
+  ],
+  "training_value_passed": false,
+  "calls": 80,
+  "invalid": 0,
+  "truncated": 0,
+  "training_started": false,
+  "completed_batches": 5,
+  "packet_sha256": "d88d2f56cb7c60b3e6a4a9453d86c3973ec944ecec36bdf8dbc81c825408f98d",
+  "predictions_sha256": "01dee24790ba3fbc91d634d31ffc3e37a4e993487f624681ecb4bbb286673421",
+  "source_condition_is_not_pure_recall": true,
+  "lower_order_item": {
+    "id": "MU4",
+    "closed": true,
+    "source": true,
+    "repeat_consistent": true
+  },
+  "decision": "closed_at_registered_screen_gate"
+}

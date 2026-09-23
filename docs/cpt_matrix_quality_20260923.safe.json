@@ -1,0 +1,32 @@
+{
+  "passed": true,
+  "tasks": 28,
+  "training_tasks": 20,
+  "development_tasks": 8,
+  "label_or_content_failures": 0,
+  "design_passed": true,
+  "cross_split_conflicts": 0,
+  "historical_records": 1784,
+  "lexical_history_hits": 0,
+  "historical_overlap_is_not_independence_proof": true,
+  "student_calls": 0,
+  "training_allowed": false,
+  "inputs": {
+    "matrix.v2.private.json": "c0a4c0a4b264a19e36e5108921a463aa832b41bc0bfc484e01a3571bfaffe3c0",
+    "source_only.private.json": "4d59380ac01396856d8d8c8112bf741230fd782cbcd13883ef543bd8ce7517e3",
+    "train_author.private.json": "6d616bdf61b7ed0872cbf10696bd4b38548e9b81d96d6dd6d0979165373c46cd",
+    "development_author.private.json": "af5212f9f14d7b6395954248e515f8619b3c3cb1ae1e7350129e5d2ceb79ca79",
+    "development_blind_review.private.json": "4b5a23bb081932bbff3ea0d786bf976dacdc76ae661cee982da9ffcec0ff0889",
+    "train_blind_review.private.json": "71e26e6951bbf0f662d12a72d7a4063f0a8746e2c344519ee827070e66e7c5af",
+    "design_review.private.json": "7a2155d9add44a7cf08ea61b7f7d90d5b5c87d358a8bc620464db0b2c11ce2d8"
+  },
+  "history_inputs": {
+    "CPT_resources\\llin-transfer-audit-20260915-01\\frozen_cases.private.jsonl": "b652b2108cb552346df11d005c15ff3137c50a756a7b24eb35302683ec33ed99",
+    "CPT_resources\\llin-logistika-independent-20260922-01\\author.private.json": "594e63fa56701b733f3295e33a64d9da2118dbb71128777fde1b6661d69bdbba",
+    "CPT_resources\\llin-remaining-operations-20260923-01\\author.private.json": "1283a70b87e6b64632c995c279db473b86e97c775155bae535bbd18b6e3109dd",
+    "CPT_resources\\llin-remaining-operations-20260923-01\\diagnostic.private.json": "b1ad6a4af1a1a22d84a19338d8721024f7edb87e13b36bfd440a94d3ccc54a4b",
+    "CPT_resources\\llin-two-family-20260923-01\\train_author.private.json": "740dca0d25d15759547b2e396e205b68aa7bb93a85abe170162d1e3094101c1e",
+    "CPT_resources\\llin-two-family-20260923-01\\train_author.v2.private.json": "190cf941579ce746b79f6805cffb63c96d77f1aacf59616ca82072287ee60c70",
+    "CPT_resources\\llin-two-family-20260923-01\\transfer_author.private.json": "49283a6fd3db7570ac7f7f778e76dc2e0177b0796db955ff33055500f1c67c46"
+  }
+}
