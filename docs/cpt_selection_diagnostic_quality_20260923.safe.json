@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "inputs": {
+    "packet.private.json": "e212ec73b0cd76f489af8dd3f44b001c2c8d60905190b71f1ad743d626e31fde",
+    "registration": "15f5dbaba00fb6b9441289cd9f20656a385ff5c2c68f3aedc5bd899f8a7626e7",
+    "builder": "c0b436aabb74e496cd96a1fbbd832ad6afa3feb7e323643288182a5377696d1a",
+    "protocol": "2f4466ec477b1b85a8c47d637bb7a990788a1bbf695e34cea31dd87db2d7eda5",
+    "runner": "b2be9a9704e1abe0f9d122ca9b35bf30a056b67a85a01a688782296c35bc9371"
+  },
+  "review_sha256": "6534ffa5b6864f7ebcd828b124ffd0d5d4dbcbd47eec752d569f4b0f52cc6f4b",
+  "training_allowed": false
+}

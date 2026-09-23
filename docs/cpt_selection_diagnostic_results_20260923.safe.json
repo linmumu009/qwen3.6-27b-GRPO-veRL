@@ -1,0 +1,230 @@
+{
+  "forms": {
+    "S": {
+      "calls": 24,
+      "output_tokens": 188,
+      "truncated": 0,
+      "invalid": 0,
+      "stable_tasks": 2,
+      "main_complete_sets_correct": 14,
+      "main_complete_sets": 16,
+      "all_complete_sets_correct": 22,
+      "all_complete_sets": 24,
+      "observed_omissions": 2,
+      "observed_false_positives": 0,
+      "tasks": [
+        {
+          "id": "MT1",
+          "stable_four": false,
+          "first_three_correct": [
+            true,
+            true,
+            true
+          ],
+          "first_three_valid": true,
+          "first_three_vectors_equal": true,
+          "main_correct": 3,
+          "first_three_stable_options": 4
+        },
+        {
+          "id": "MT2",
+          "stable_four": true,
+          "first_three_correct": [
+            true,
+            true,
+            true
+          ],
+          "first_three_valid": true,
+          "first_three_vectors_equal": true,
+          "main_correct": 4,
+          "first_three_stable_options": 4
+        },
+        {
+          "id": "MT3",
+          "stable_four": false,
+          "first_three_correct": [
+            true,
+            true,
+            true
+          ],
+          "first_three_valid": true,
+          "first_three_vectors_equal": true,
+          "main_correct": 3,
+          "first_three_stable_options": 4
+        },
+        {
+          "id": "MT4",
+          "stable_four": true,
+          "first_three_correct": [
+            true,
+            true,
+            true
+          ],
+          "first_three_valid": true,
+          "first_three_vectors_equal": true,
+          "main_correct": 4,
+          "first_three_stable_options": 4
+        }
+      ],
+      "retention": {
+        "tasks": 2,
+        "stable_tasks": 2,
+        "main_correct": 8,
+        "main_total": 8
+      }
+    },
+    "V": {
+      "calls": 24,
+      "output_tokens": 216,
+      "truncated": 0,
+      "invalid": 0,
+      "stable_tasks": 1,
+      "main_complete_sets_correct": 12,
+      "main_complete_sets": 16,
+      "all_complete_sets_correct": 18,
+      "all_complete_sets": 24,
+      "observed_omissions": 6,
+      "observed_false_positives": 0,
+      "tasks": [
+        {
+          "id": "MT1",
+          "stable_four": false,
+          "first_three_correct": [
+            true,
+            true,
+            true
+          ],
+          "first_three_valid": true,
+          "first_three_vectors_equal": true,
+          "main_correct": 3,
+          "first_three_stable_options": 4
+        },
+        {
+          "id": "MT2",
+          "stable_four": true,
+          "first_three_correct": [
+            true,
+            true,
+            true
+          ],
+          "first_three_valid": true,
+          "first_three_vectors_equal": true,
+          "main_correct": 4,
+          "first_three_stable_options": 4
+        },
+        {
+          "id": "MT3",
+          "stable_four": false,
+          "first_three_correct": [
+            false,
+            false,
+            false
+          ],
+          "first_three_valid": true,
+          "first_three_vectors_equal": true,
+          "main_correct": 2,
+          "first_three_stable_options": 4
+        },
+        {
+          "id": "MT4",
+          "stable_four": false,
+          "first_three_correct": [
+            true,
+            true,
+            true
+          ],
+          "first_three_valid": true,
+          "first_three_vectors_equal": true,
+          "main_correct": 3,
+          "first_three_stable_options": 4
+        }
+      ],
+      "retention": {
+        "tasks": 2,
+        "stable_tasks": 1,
+        "main_correct": 7,
+        "main_total": 8
+      }
+    },
+    "B": {
+      "calls": 96,
+      "output_tokens": 576,
+      "truncated": 0,
+      "invalid": 0,
+      "stable_tasks": 1,
+      "main_complete_sets_correct": 10,
+      "main_complete_sets": 16,
+      "all_complete_sets_correct": 16,
+      "all_complete_sets": 24,
+      "observed_omissions": 8,
+      "observed_false_positives": 0,
+      "tasks": [
+        {
+          "id": "MT1",
+          "stable_four": false,
+          "first_three_correct": [
+            true,
+            true,
+            true
+          ],
+          "first_three_valid": true,
+          "first_three_vectors_equal": true,
+          "main_correct": 2,
+          "first_three_stable_options": 4
+        },
+        {
+          "id": "MT2",
+          "stable_four": true,
+          "first_three_correct": [
+            true,
+            true,
+            true
+          ],
+          "first_three_valid": true,
+          "first_three_vectors_equal": true,
+          "main_correct": 4,
+          "first_three_stable_options": 4
+        },
+        {
+          "id": "MT3",
+          "stable_four": false,
+          "first_three_correct": [
+            false,
+            false,
+            false
+          ],
+          "first_three_valid": true,
+          "first_three_vectors_equal": true,
+          "main_correct": 1,
+          "first_three_stable_options": 4
+        },
+        {
+          "id": "MT4",
+          "stable_four": false,
+          "first_three_correct": [
+            true,
+            true,
+            true
+          ],
+          "first_three_valid": true,
+          "first_three_vectors_equal": true,
+          "main_correct": 3,
+          "first_three_stable_options": 4
+        }
+      ],
+      "retention": {
+        "tasks": 2,
+        "stable_tasks": 1,
+        "main_correct": 7,
+        "main_total": 8
+      }
+    }
+  },
+  "calls": 144,
+  "completed_batches": 9,
+  "training_runs": 0,
+  "formal_calls": 0,
+  "packet_sha256": "e212ec73b0cd76f489af8dd3f44b001c2c8d60905190b71f1ad743d626e31fde",
+  "predictions_sha256": "123dc81801e3aa15b83dae82e1570cf85fdbd8f4a4ef04089f748f9517c9c92d",
+  "interpretation": "Local development output-form comparison; B requires four calls per complete set. No promotion or training."
+}

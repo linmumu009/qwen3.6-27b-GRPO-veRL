@@ -1,0 +1,111 @@
+{
+  "passed": true,
+  "input_sha256": {
+    "packet": "e212ec73b0cd76f489af8dd3f44b001c2c8d60905190b71f1ad743d626e31fde",
+    "predictions": "123dc81801e3aa15b83dae82e1570cf85fdbd8f4a4ef04089f748f9517c9c92d",
+    "frozen_blind_review": "4b5a23bb081932bbff3ea0d786bf976dacdc76ae661cee982da9ffcec0ff0889"
+  },
+  "private_audit_sha256": "ce755b2ce012a5faf820b439961f73e6215188d1013ae45372103849ad9efe63",
+  "forms": {
+    "S": {
+      "calls": 24,
+      "output_tokens": 188,
+      "main_correct": 14,
+      "main_total": 16,
+      "all_correct": 22,
+      "all_total": 24,
+      "four_permutations_correct_tasks": 2,
+      "invalid_complete_units": 0,
+      "main_omissions": 2,
+      "main_false_positives": 0,
+      "all_omissions": 2,
+      "all_false_positives": 0,
+      "keeping_items": {
+        "MT2": {
+          "main_correct": 4,
+          "main_total": 4,
+          "all_correct": 6,
+          "all_total": 6
+        },
+        "MT4": {
+          "main_correct": 4,
+          "main_total": 4,
+          "all_correct": 6,
+          "all_total": 6
+        }
+      }
+    },
+    "V": {
+      "calls": 24,
+      "output_tokens": 216,
+      "main_correct": 12,
+      "main_total": 16,
+      "all_correct": 18,
+      "all_total": 24,
+      "four_permutations_correct_tasks": 1,
+      "invalid_complete_units": 0,
+      "main_omissions": 4,
+      "main_false_positives": 0,
+      "all_omissions": 6,
+      "all_false_positives": 0,
+      "keeping_items": {
+        "MT2": {
+          "main_correct": 4,
+          "main_total": 4,
+          "all_correct": 6,
+          "all_total": 6
+        },
+        "MT4": {
+          "main_correct": 3,
+          "main_total": 4,
+          "all_correct": 5,
+          "all_total": 6
+        }
+      }
+    },
+    "B": {
+      "calls": 96,
+      "output_tokens": 576,
+      "main_correct": 10,
+      "main_total": 16,
+      "all_correct": 16,
+      "all_total": 24,
+      "four_permutations_correct_tasks": 1,
+      "invalid_complete_units": 0,
+      "main_omissions": 6,
+      "main_false_positives": 0,
+      "all_omissions": 8,
+      "all_false_positives": 0,
+      "keeping_items": {
+        "MT2": {
+          "main_correct": 4,
+          "main_total": 4,
+          "all_correct": 6,
+          "all_total": 6
+        },
+        "MT4": {
+          "main_correct": 3,
+          "main_total": 4,
+          "all_correct": 5,
+          "all_total": 6
+        }
+      }
+    }
+  },
+  "paired_main": {
+    "V": {
+      "paired_units": 16,
+      "repairs": 1,
+      "new_losses": 3,
+      "both_correct": 11,
+      "both_wrong": 1
+    },
+    "B": {
+      "paired_units": 16,
+      "repairs": 1,
+      "new_losses": 5,
+      "both_correct": 9,
+      "both_wrong": 1
+    }
+  }
+}

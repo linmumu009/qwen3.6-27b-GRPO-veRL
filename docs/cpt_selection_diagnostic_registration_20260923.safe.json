@@ -1,0 +1,27 @@
+{
+  "id": "llin-selection-diagnostic-20260923-01",
+  "max_calls": 144,
+  "training_allowed": false,
+  "quality_released": true,
+  "quality_sha256": "3d0694ddbe9a74adaf8a9b139ffae09cea170d8323b4ed060d4f0a9289216238",
+  "packet_sha256": "e212ec73b0cd76f489af8dd3f44b001c2c8d60905190b71f1ad743d626e31fde",
+  "runner_sha256": "b2be9a9704e1abe0f9d122ca9b35bf30a056b67a85a01a688782296c35bc9371",
+  "protocol_code_sha256": {
+    "cpt_stage_b.py": "c5855c92041b111b8103486e2b4558b7c1806f3f9d0e161979932396f084d923",
+    "evaluate_logistics_knowledge.py": "8cee1c90a17771860b26b2e01f919bf3730c4ac2fefb21be3fd0dee222c8f949"
+  },
+  "model_path": "/workspace/llin-verl-grpo/runs/llin-transfer-p1-run-20260916-02/training/llin-step120-p1-hf",
+  "temperature": 0,
+  "seed": 1024,
+  "max_tokens": 96,
+  "max_model_len": 8192,
+  "tp": 8,
+  "max_num_seqs": 32,
+  "registered_plan_sha256": "15f5dbaba00fb6b9441289cd9f20656a385ff5c2c68f3aedc5bd899f8a7626e7",
+  "calls_by_form": {
+    "S": 24,
+    "V": 24,
+    "B": 96
+  },
+  "historical_token_prompts_checked": 16
+}
