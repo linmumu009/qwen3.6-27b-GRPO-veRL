@@ -1,0 +1,159 @@
+{
+  "status": "closed_validation_complete",
+  "new_calls": 300,
+  "reused_calls": 300,
+  "training_runs": 0,
+  "table": [
+    {
+      "cohort": "target",
+      "condition": "LL",
+      "n": 25,
+      "correct": 0,
+      "stable_correct": 0,
+      "unstable": 1,
+      "invalid": 0,
+      "truncated": 0
+    },
+    {
+      "cohort": "target",
+      "condition": "SL",
+      "n": 25,
+      "correct": 19,
+      "stable_correct": 17,
+      "unstable": 4,
+      "invalid": 0,
+      "truncated": 0
+    },
+    {
+      "cohort": "target",
+      "condition": "LS",
+      "n": 25,
+      "correct": 22,
+      "stable_correct": 22,
+      "unstable": 0,
+      "invalid": 0,
+      "truncated": 0
+    },
+    {
+      "cohort": "target",
+      "condition": "SS",
+      "n": 25,
+      "correct": 25,
+      "stable_correct": 25,
+      "unstable": 0,
+      "invalid": 0,
+      "truncated": 0
+    },
+    {
+      "cohort": "retention",
+      "condition": "LL",
+      "n": 25,
+      "correct": 25,
+      "stable_correct": 25,
+      "unstable": 0,
+      "invalid": 0,
+      "truncated": 0
+    },
+    {
+      "cohort": "retention",
+      "condition": "SL",
+      "n": 25,
+      "correct": 25,
+      "stable_correct": 24,
+      "unstable": 1,
+      "invalid": 0,
+      "truncated": 0
+    },
+    {
+      "cohort": "retention",
+      "condition": "LS",
+      "n": 25,
+      "correct": 24,
+      "stable_correct": 24,
+      "unstable": 0,
+      "invalid": 0,
+      "truncated": 0
+    },
+    {
+      "cohort": "retention",
+      "condition": "SS",
+      "n": 25,
+      "correct": 25,
+      "stable_correct": 24,
+      "unstable": 1,
+      "invalid": 0,
+      "truncated": 0
+    }
+  ],
+  "effects": [
+    {
+      "cohort": "target",
+      "contrast": "prefix_full",
+      "gains": 19,
+      "losses": 0,
+      "net": 19
+    },
+    {
+      "cohort": "target",
+      "contrast": "prefix_small",
+      "gains": 3,
+      "losses": 0,
+      "net": 3
+    },
+    {
+      "cohort": "target",
+      "contrast": "pool_original_prefix",
+      "gains": 22,
+      "losses": 0,
+      "net": 22
+    },
+    {
+      "cohort": "target",
+      "contrast": "pool_specific_prefix",
+      "gains": 6,
+      "losses": 0,
+      "net": 6
+    },
+    {
+      "cohort": "retention",
+      "contrast": "prefix_full",
+      "gains": 0,
+      "losses": 0,
+      "net": 0
+    },
+    {
+      "cohort": "retention",
+      "contrast": "prefix_small",
+      "gains": 1,
+      "losses": 0,
+      "net": 1
+    },
+    {
+      "cohort": "retention",
+      "contrast": "pool_original_prefix",
+      "gains": 0,
+      "losses": 1,
+      "net": -1
+    },
+    {
+      "cohort": "retention",
+      "contrast": "pool_specific_prefix",
+      "gains": 0,
+      "losses": 0,
+      "net": 0
+    }
+  ],
+  "input_packet_sha256": "58abb54a2397827465efe8988ebad29fa6b24917920b7d821cf15fd7776d6f13",
+  "predictions_sha256": "abd423f6d8aa82f9d9a1cd6b1a1c4495aa0862f51ca0b84535d8cdbe0a0fe0e9",
+  "private_ledger_sha256": "35dc15700d4865d5439969d99157fb4fff44c694527fce5ad32ffef7d3487620",
+  "original_stage_c_gate_unchanged": true,
+  "training_ready": false,
+  "official_results_unchanged": true,
+  "limitations": [
+    "Development-selected pairs; no generalization claim",
+    "Pool size, distractors and order change together",
+    "Small prefix provides domain cues; this is replacement, not neutral removal",
+    "Historical baselines reused; batch/runtime timing differences remain",
+    "Retention uses existing labels, not a new source audit"
+  ]
+}

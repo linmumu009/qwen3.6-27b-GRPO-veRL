@@ -1,0 +1,101 @@
+{
+  "status": "closed_validation_complete",
+  "new_calls": 36,
+  "reused_calls": 12,
+  "training_runs": 0,
+  "table": [
+    {
+      "family": "rodrigue_contractual_transport",
+      "condition": "original_closed",
+      "n": 2,
+      "correct": 0,
+      "stable_correct": 0,
+      "unstable": 0,
+      "invalid": 0,
+      "truncated": 0
+    },
+    {
+      "family": "rodrigue_contractual_transport",
+      "condition": "scoped_closed",
+      "n": 2,
+      "correct": 0,
+      "stable_correct": 0,
+      "unstable": 0,
+      "invalid": 0,
+      "truncated": 0
+    },
+    {
+      "family": "rodrigue_contractual_transport",
+      "condition": "source",
+      "n": 2,
+      "correct": 2,
+      "stable_correct": 2,
+      "unstable": 0,
+      "invalid": 0,
+      "truncated": 0
+    },
+    {
+      "family": "rodrigue_contractual_transport",
+      "condition": "structured",
+      "n": 2,
+      "correct": 2,
+      "stable_correct": 2,
+      "unstable": 0,
+      "invalid": 0,
+      "truncated": 0
+    },
+    {
+      "family": "unctad_2020_trajectories",
+      "condition": "original_closed",
+      "n": 2,
+      "correct": 0,
+      "stable_correct": 0,
+      "unstable": 0,
+      "invalid": 0,
+      "truncated": 0
+    },
+    {
+      "family": "unctad_2020_trajectories",
+      "condition": "scoped_closed",
+      "n": 2,
+      "correct": 0,
+      "stable_correct": 0,
+      "unstable": 0,
+      "invalid": 0,
+      "truncated": 0
+    },
+    {
+      "family": "unctad_2020_trajectories",
+      "condition": "source",
+      "n": 2,
+      "correct": 2,
+      "stable_correct": 2,
+      "unstable": 0,
+      "invalid": 0,
+      "truncated": 0
+    },
+    {
+      "family": "unctad_2020_trajectories",
+      "condition": "structured",
+      "n": 2,
+      "correct": 2,
+      "stable_correct": 2,
+      "unstable": 0,
+      "invalid": 0,
+      "truncated": 0
+    }
+  ],
+  "excluded_before_calls": 1,
+  "packet_sha256": "1e127b60324f75dd6584667ec02be78b02184eb5bd0696ce892bf747b03b3e64",
+  "predictions_sha256": "f8922636ec331e5f857c7b4da60c15804a63c5796f2ca134bdb8a09ed25f8e7f",
+  "private_ledger_sha256": "ee7bb01a80ce6f565898838e0d39b105863806e063703a719cf33e0fa5fc5633",
+  "training_ready": false,
+  "stage_c_gate_unchanged": true,
+  "limitations": [
+    "Four development tasks, two rule families, not independent transfer",
+    "Source and structure lengths differ",
+    "Scope preamble changes original prompt; original closed results are historical reference only",
+    "Formal closed-book system text retained across all conditions; added reference is a diagnostic intervention",
+    "One disputed competitor excluded by blind review before calls"
+  ]
+}

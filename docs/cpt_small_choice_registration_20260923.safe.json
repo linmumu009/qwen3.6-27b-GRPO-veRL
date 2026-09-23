@@ -1,0 +1,43 @@
+{
+  "id": "llin-small-choice-20260923-01",
+  "max_calls": 36,
+  "reused_calls": 12,
+  "groups": 4,
+  "families": 2,
+  "excluded_before_generation": 1,
+  "packet_sha256": "1e127b60324f75dd6584667ec02be78b02184eb5bd0696ce892bf747b03b3e64",
+  "runner_sha256": "ef090fdfda216c4e95c0d64c8909500c9d34d9f4e64ce0afbef28c32065cf4fc",
+  "protocol_code_sha256": {
+    "cpt_stage_b.py": "c5855c92041b111b8103486e2b4558b7c1806f3f9d0e161979932396f084d923",
+    "evaluate_logistics_knowledge.py": "8cee1c90a17771860b26b2e01f919bf3730c4ac2fefb21be3fd0dee222c8f949"
+  },
+  "model_path": "/workspace/llin-verl-grpo/runs/llin-transfer-p1-run-20260916-02/training/llin-step120-p1-hf",
+  "training_allowed": false,
+  "repeats": 3,
+  "temperature": 0,
+  "seed": 1024,
+  "max_tokens": 96,
+  "max_model_len": 8192,
+  "tp": 8,
+  "max_num_seqs": 32,
+  "inputs": {
+    "CPT_resources\\llin-presentation-20260923-01\\small_choice_blind_review.private.json": "7ffb222c80e28e4a7511d8603c323e576312f07c109d527721585851579f8af9",
+    "CPT_resources\\llin-transfer-audit-20260915-01\\frozen_cases.private.jsonl": "b652b2108cb552346df11d005c15ff3137c50a756a7b24eb35302683ec33ed99",
+    "CPT_resources\\llin-transfer-formal-20260917-01\\p1\\predictions.private.jsonl": "33c5fc7dcb64c0fba59c25c054b19cda7b2e07880ad62daf0d2debd6ece7bbb2",
+    "CPT_resources\\llin-transfer-formal-20260917-01\\p1\\protocol.safe.json": "da8366e930b6d8bf1a8be58981be12998fd82c61979e7987f394821f85292e17"
+  },
+  "conditions": [
+    "scoped_closed",
+    "source",
+    "structured"
+  ],
+  "primary": "Report all four tasks and three conditions; source/structured gains versus identically scoped closed prompts.",
+  "limitations": [
+    "Four development tasks, two rule families, not independent transfer",
+    "Source and structure lengths differ",
+    "Scope preamble changes original prompt; original closed results are historical reference only",
+    "Formal closed-book system text retained across all conditions; added reference is a diagnostic intervention",
+    "One disputed competitor excluded by blind review before calls"
+  ],
+  "training_gate": "Original Stage C unchanged; no automatic training from this diagnostic."
+}
