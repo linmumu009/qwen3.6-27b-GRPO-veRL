@@ -1,0 +1,2455 @@
+{
+  "id": "llin-p1-error-map-20260923-01",
+  "status": "offline_complete",
+  "new_model_calls": 0,
+  "training_runs": 0,
+  "formal_scores_changed": false,
+  "population": 1672,
+  "p1_correct": 1385,
+  "p1_errors": 287,
+  "errors_by_dataset": {
+    "LogistikaBench": 253,
+    "SC-bench-knowledge": 34
+  },
+  "prior_review_count": 269,
+  "new_review_count": 18,
+  "source_status": {
+    "B": 100,
+    "D": 63,
+    "A": 52,
+    "C": 72
+  },
+  "source_status_by_dataset": {
+    "LogistikaBench": {
+      "B": 95,
+      "D": 59,
+      "A": 50,
+      "C": 49
+    },
+    "SC-bench-knowledge": {
+      "B": 5,
+      "C": 23,
+      "D": 4,
+      "A": 2
+    }
+  },
+  "self_contained_derivations": 1,
+  "cause_status": {
+    "source_or_label_context_pending": 235,
+    "knowledge_vs_rule_application_unresolved": 25,
+    "cross_presentation_disagreement_observed_cause_unresolved": 26,
+    "self_contained_arithmetic_answer_error_cause_unresolved": 1
+  },
+  "answer_symptoms": {
+    "missing_and_extra": 235,
+    "missing_only": 37,
+    "extra_only": 15
+  },
+  "error_item_repeat_unstable": 4,
+  "error_item_invalid_calls": 0,
+  "error_item_truncated_calls": 0,
+  "formal_history": {
+    "step120": {
+      "correct": 1370,
+      "correct_among_p1_errors": 25,
+      "loses_p1_correct": 40
+    },
+    "K": {
+      "correct": 1385,
+      "correct_among_p1_errors": 17,
+      "loses_p1_correct": 17
+    },
+    "R": {
+      "correct": 1372,
+      "correct_among_p1_errors": 12,
+      "loses_p1_correct": 25
+    }
+  },
+  "natural_pairs": {
+    "pairs": 303,
+    "unique_large": 302,
+    "outcomes": {
+      "large_1_small_1": 221,
+      "large_0_small_1": 71,
+      "large_0_small_0": 9,
+      "large_1_small_0": 2
+    },
+    "unique_large_wrong_small_correct": 71,
+    "unique_discordant_error_items": 73,
+    "source_A_large_wrong_small_correct": 25,
+    "source_A_discordant_error_items": 26,
+    "method": "Exact normalized description suffix plus normalized gold option text; labels and original scoring unchanged.",
+    "limitation": "Not randomized: prefix, option count, distractors, order and question ID vary together. Repeated definitions are not independent knowledge units."
+  },
+  "large_bank": {
+    "total": 305,
+    "errors": 81,
+    "source_A_errors": 30,
+    "unique_option_pools": 1,
+    "unique_prefixes": 1,
+    "raw_csv_matches_all_1446": true
+  },
+  "families": [
+    {
+      "group": "warehouse_layout_diagram",
+      "n": 10,
+      "source_status": {
+        "C": 10
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "cost_curve_diagram",
+      "n": 5,
+      "source_status": {
+        "C": 5
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "port_impact_taxonomy",
+      "n": 5,
+      "source_status": {
+        "D": 5
+      },
+      "large_bank": 5,
+      "paired_other_correct": 5,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "picking_batch_zone_boundary",
+      "n": 4,
+      "source_status": {
+        "B": 4
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "supply_chain_stage_diagram",
+      "n": 4,
+      "source_status": {
+        "C": 4
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "cargo_class_taxonomy",
+      "n": 3,
+      "source_status": {
+        "D": 3
+      },
+      "large_bank": 3,
+      "paired_other_correct": 3,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "graph_diagram",
+      "n": 3,
+      "source_status": {
+        "C": 3
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 1,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "historical_vessel_size",
+      "n": 3,
+      "source_status": {
+        "C": 3
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "modal_contract_dimensions",
+      "n": 3,
+      "source_status": {
+        "A": 3
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "picking_route_conditions",
+      "n": 3,
+      "source_status": {
+        "B": 3
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "postponement_scope",
+      "n": 3,
+      "source_status": {
+        "B": 3
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "regional_pallet_standard",
+      "n": 3,
+      "source_status": {
+        "C": 3
+      },
+      "large_bank": 3,
+      "paired_other_correct": 3,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "transport_work_alias",
+      "n": 3,
+      "source_status": {
+        "D": 3
+      },
+      "large_bank": 3,
+      "paired_other_correct": 3,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "warehouse_business_priority",
+      "n": 3,
+      "source_status": {
+        "B": 3
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "aircraft_load_scope",
+      "n": 2,
+      "source_status": {
+        "B": 2
+      },
+      "large_bank": 2,
+      "paired_other_correct": 2,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "batch_downstream_process",
+      "n": 2,
+      "source_status": {
+        "B": 2
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "cargo_inspection_role",
+      "n": 2,
+      "source_status": {
+        "B": 2
+      },
+      "large_bank": 1,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "forwarder_alias",
+      "n": 2,
+      "source_status": {
+        "D": 2
+      },
+      "large_bank": 2,
+      "paired_other_correct": 2,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "gas_pipeline_scope",
+      "n": 2,
+      "source_status": {
+        "B": 2
+      },
+      "large_bank": 1,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "gvc_trajectory",
+      "n": 2,
+      "source_status": {
+        "A": 2
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "inventory_exception_ownership",
+      "n": 2,
+      "source_status": {
+        "C": 2
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "iwt_propulsion_boundary",
+      "n": 2,
+      "source_status": {
+        "A": 2
+      },
+      "large_bank": 1,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 2
+    },
+    {
+      "group": "model_method_scope",
+      "n": 2,
+      "source_status": {
+        "A": 1,
+        "B": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "moment_alias",
+      "n": 2,
+      "source_status": {
+        "D": 2
+      },
+      "large_bank": 2,
+      "paired_other_correct": 2,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "outsourcing_stage_framework",
+      "n": 2,
+      "source_status": {
+        "C": 2
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "overpack_definition",
+      "n": 2,
+      "source_status": {
+        "D": 2
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "picking_zone_diagram",
+      "n": 2,
+      "source_status": {
+        "C": 2
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "pipeline_facility_components",
+      "n": 2,
+      "source_status": {
+        "B": 2
+      },
+      "large_bank": 1,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "public_warehouse_benefit",
+      "n": 2,
+      "source_status": {
+        "B": 2
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "rail_modular_composition",
+      "n": 2,
+      "source_status": {
+        "A": 2
+      },
+      "large_bank": 1,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "rail_principal_line",
+      "n": 2,
+      "source_status": {
+        "A": 2
+      },
+      "large_bank": 1,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 1
+    },
+    {
+      "group": "railcar_scope",
+      "n": 2,
+      "source_status": {
+        "A": 2
+      },
+      "large_bank": 1,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "road_train_configuration",
+      "n": 2,
+      "source_status": {
+        "A": 2
+      },
+      "large_bank": 1,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "scm_definition_scope",
+      "n": 2,
+      "source_status": {
+        "D": 2
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "seagoing_ship_scope",
+      "n": 2,
+      "source_status": {
+        "A": 2
+      },
+      "large_bank": 2,
+      "paired_other_correct": 2,
+      "unstable": 1,
+      "historical_step120_evidence": 1
+    },
+    {
+      "group": "seasonal_storage_response",
+      "n": 2,
+      "source_status": {
+        "B": 2
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "storage_policy_mixed_description",
+      "n": 2,
+      "source_status": {
+        "D": 2
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "tax_jurisdiction_date",
+      "n": 2,
+      "source_status": {
+        "B": 2
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "third_party_historical_ranking",
+      "n": 2,
+      "source_status": {
+        "C": 2
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "third_party_service_roles",
+      "n": 2,
+      "source_status": {
+        "B": 2
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "trailer_label_duplicate",
+      "n": 2,
+      "source_status": {
+        "D": 2
+      },
+      "large_bank": 2,
+      "paired_other_correct": 2,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "transport_cost_framework",
+      "n": 2,
+      "source_status": {
+        "B": 2
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "vehicle_weight_scope",
+      "n": 2,
+      "source_status": {
+        "B": 2
+      },
+      "large_bank": 1,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "voice_guided_alias",
+      "n": 2,
+      "source_status": {
+        "D": 2
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "warehouse_activity_profile",
+      "n": 2,
+      "source_status": {
+        "B": 2
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "warehouse_layout_tradeoff",
+      "n": 2,
+      "source_status": {
+        "B": 2
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "warehouse_process_sequence",
+      "n": 2,
+      "source_status": {
+        "C": 2
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "wave_batch_tradeoff",
+      "n": 2,
+      "source_status": {
+        "D": 2
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "wms_time_window",
+      "n": 2,
+      "source_status": {
+        "B": 2
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "abc_profile_scope",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "acceptance_events",
+      "n": 1,
+      "source_status": {
+        "C": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "aggregate_mean_update",
+      "n": 1,
+      "source_status": {
+        "A": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 1
+    },
+    {
+      "group": "air_pallet_scope",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 1,
+      "paired_other_correct": 1,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "aircraft_arm",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 1,
+      "paired_other_correct": 1,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "aircraft_overload_set",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "aircraft_scale_tradeoff",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "airline_operator_overlap",
+      "n": 1,
+      "source_status": {
+        "D": 1
+      },
+      "large_bank": 1,
+      "paired_other_correct": 1,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "articulated_label_duplicate",
+      "n": 1,
+      "source_status": {
+        "D": 1
+      },
+      "large_bank": 1,
+      "paired_other_correct": 1,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "autonomous_shipping_set",
+      "n": 1,
+      "source_status": {
+        "D": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "batch_destination_objective",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "batch_vs_wave_picking",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "belly_lowerdeck_alias",
+      "n": 1,
+      "source_status": {
+        "D": 1
+      },
+      "large_bank": 1,
+      "paired_other_correct": 1,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "business_timestamp",
+      "n": 1,
+      "source_status": {
+        "C": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "cancellation_workflow",
+      "n": 1,
+      "source_status": {
+        "C": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "cargo_assembly_actor",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 1,
+      "paired_other_correct": 1,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "cargo_code_dry_ice",
+      "n": 1,
+      "source_status": {
+        "A": 1
+      },
+      "large_bank": 1,
+      "paired_other_correct": 1,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "cargo_code_heavy",
+      "n": 1,
+      "source_status": {
+        "A": 1
+      },
+      "large_bank": 1,
+      "paired_other_correct": 1,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "cargo_code_live",
+      "n": 1,
+      "source_status": {
+        "A": 1
+      },
+      "large_bank": 1,
+      "paired_other_correct": 1,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "cargo_code_perishable",
+      "n": 1,
+      "source_status": {
+        "A": 1
+      },
+      "large_bank": 1,
+      "paired_other_correct": 1,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "cargo_code_valuable",
+      "n": 1,
+      "source_status": {
+        "A": 1
+      },
+      "large_bank": 1,
+      "paired_other_correct": 1,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "cargo_code_vulnerable",
+      "n": 1,
+      "source_status": {
+        "A": 1
+      },
+      "large_bank": 1,
+      "paired_other_correct": 1,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "cargo_embargo_scope",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 1,
+      "paired_other_correct": 1,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "carrier_consignor_role",
+      "n": 1,
+      "source_status": {
+        "D": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "change_test_order",
+      "n": 1,
+      "source_status": {
+        "C": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "code_namespace",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "collision_derailment_priority",
+      "n": 1,
+      "source_status": {
+        "A": 1
+      },
+      "large_bank": 1,
+      "paired_other_correct": 1,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "congestion_peak_pricing",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "container_fleet_statistics",
+      "n": 1,
+      "source_status": {
+        "C": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "container_security_tradeoff",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 1,
+      "paired_other_correct": 1,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "container_vessel_water_scope",
+      "n": 1,
+      "source_status": {
+        "D": 1
+      },
+      "large_bank": 1,
+      "paired_other_correct": 1,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "crossdock_mixing_boundary",
+      "n": 1,
+      "source_status": {
+        "D": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "customs_architecture_tradeoff",
+      "n": 1,
+      "source_status": {
+        "D": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "customs_fallback_policy",
+      "n": 1,
+      "source_status": {
+        "D": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "customs_party_configuration",
+      "n": 1,
+      "source_status": {
+        "C": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "customs_valuation_scope",
+      "n": 1,
+      "source_status": {
+        "C": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "dc_mixing_scope",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "ddp_adoption_conditions",
+      "n": 1,
+      "source_status": {
+        "D": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "declaration_organization",
+      "n": 1,
+      "source_status": {
+        "C": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "distribution_center_function",
+      "n": 1,
+      "source_status": {
+        "A": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "drawbar_trailer_scope",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 1,
+      "paired_other_correct": 1,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "dry_bulk_vessel",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 1,
+      "paired_other_correct": 1,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "dtc_cost_scope",
+      "n": 1,
+      "source_status": {
+        "C": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "dynamic_model_overlap",
+      "n": 1,
+      "source_status": {
+        "D": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "empty_matching_input",
+      "n": 1,
+      "source_status": {
+        "C": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "eoq_planned_shortages",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 1,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "forecast_error_metric",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "forecast_method_taxonomy",
+      "n": 1,
+      "source_status": {
+        "D": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "forecast_uncertainty_set",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "found_cargo_code",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 1,
+      "paired_other_correct": 1,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "general_cargo_ship",
+      "n": 1,
+      "source_status": {
+        "A": 1
+      },
+      "large_bank": 1,
+      "paired_other_correct": 1,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "great_circle_applicability",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "great_circle_route_scope",
+      "n": 1,
+      "source_status": {
+        "D": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "gross_weight_limit",
+      "n": 1,
+      "source_status": {
+        "D": 1
+      },
+      "large_bank": 1,
+      "paired_other_correct": 1,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "inbound_count_attribution",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "intermodal_standardization",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "inventory_accounting_scope",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "inventory_reorder_assumptions",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "invoice_finance_mechanism",
+      "n": 1,
+      "source_status": {
+        "A": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "iso_container_history",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "it_level_taxonomy",
+      "n": 1,
+      "source_status": {
+        "C": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "its_functions",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "iwt_authorised_capacity",
+      "n": 1,
+      "source_status": {
+        "A": 1
+      },
+      "large_bank": 1,
+      "paired_other_correct": 1,
+      "unstable": 0,
+      "historical_step120_evidence": 1
+    },
+    {
+      "group": "iwt_freight_scope",
+      "n": 1,
+      "source_status": {
+        "A": 1
+      },
+      "large_bank": 1,
+      "paired_other_correct": 1,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "iwt_passenger_scope",
+      "n": 1,
+      "source_status": {
+        "A": 1
+      },
+      "large_bank": 1,
+      "paired_other_correct": 1,
+      "unstable": 0,
+      "historical_step120_evidence": 1
+    },
+    {
+      "group": "large_item_slotting",
+      "n": 1,
+      "source_status": {
+        "C": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "leg_consolidation_policy",
+      "n": 1,
+      "source_status": {
+        "C": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "loose_bulk_air_scope",
+      "n": 1,
+      "source_status": {
+        "D": 1
+      },
+      "large_bank": 1,
+      "paired_other_correct": 1,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "low_water_response",
+      "n": 1,
+      "source_status": {
+        "A": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "lsp_internationalization",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "malformed_fragment",
+      "n": 1,
+      "source_status": {
+        "C": 1
+      },
+      "large_bank": 1,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "management_model_overlap",
+      "n": 1,
+      "source_status": {
+        "D": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "maritime_cost_and_ownership_scope",
+      "n": 1,
+      "source_status": {
+        "D": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "material_handling_movement_system",
+      "n": 1,
+      "source_status": {
+        "C": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "material_handling_negation",
+      "n": 1,
+      "source_status": {
+        "D": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "mechanics_dimension",
+      "n": 1,
+      "source_status": {
+        "D": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "modal_comparison_wording",
+      "n": 1,
+      "source_status": {
+        "D": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 1,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "model_parameter_constraint",
+      "n": 1,
+      "source_status": {
+        "D": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "mrp_action_timing",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "mrp_input_label",
+      "n": 1,
+      "source_status": {
+        "D": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "multimodal_intermodal_overlap",
+      "n": 1,
+      "source_status": {
+        "D": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "national_code_structure",
+      "n": 1,
+      "source_status": {
+        "A": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "national_tariff_scope",
+      "n": 1,
+      "source_status": {
+        "D": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "offered_transport_capacity",
+      "n": 1,
+      "source_status": {
+        "A": 1
+      },
+      "large_bank": 1,
+      "paired_other_correct": 1,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "order_class_subsets",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "order_parcel_cardinality",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 1
+    },
+    {
+      "group": "order_processing_core_function",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "outsourcing_capital",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "outsourcing_six_phase_sequence",
+      "n": 1,
+      "source_status": {
+        "C": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "oversize_alias",
+      "n": 1,
+      "source_status": {
+        "D": 1
+      },
+      "large_bank": 1,
+      "paired_other_correct": 1,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "package_definition",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 1,
+      "paired_other_correct": 1,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "pallet_skid_boundary",
+      "n": 1,
+      "source_status": {
+        "D": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 1,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "parcel_weight_threshold",
+      "n": 1,
+      "source_status": {
+        "C": 1
+      },
+      "large_bank": 1,
+      "paired_other_correct": 1,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "partial_load_consolidation",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "payment_mapping",
+      "n": 1,
+      "source_status": {
+        "C": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "picking_workload",
+      "n": 1,
+      "source_status": {
+        "A": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "pipeline_goods_left_country",
+      "n": 1,
+      "source_status": {
+        "A": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 1,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "pipeline_goods_scope",
+      "n": 1,
+      "source_status": {
+        "A": 1
+      },
+      "large_bank": 1,
+      "paired_other_correct": 1,
+      "unstable": 0,
+      "historical_step120_evidence": 1
+    },
+    {
+      "group": "pipeline_network_scope",
+      "n": 1,
+      "source_status": {
+        "A": 1
+      },
+      "large_bank": 1,
+      "paired_other_correct": 1,
+      "unstable": 0,
+      "historical_step120_evidence": 1
+    },
+    {
+      "group": "pipeline_statement_set",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "port_forecast_bottomup",
+      "n": 1,
+      "source_status": {
+        "A": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "port_forecast_topdown",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "port_information_system",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 1,
+      "paired_other_correct": 1,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "port_landfall_services",
+      "n": 1,
+      "source_status": {
+        "A": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "port_traffic_control",
+      "n": 1,
+      "source_status": {
+        "A": 1
+      },
+      "large_bank": 1,
+      "paired_other_correct": 1,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "presale_tax_method_eligibility",
+      "n": 1,
+      "source_status": {
+        "C": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "procurement_leadtime_kpi",
+      "n": 1,
+      "source_status": {
+        "C": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "quality_sustainability_scope",
+      "n": 1,
+      "source_status": {
+        "D": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "query_architecture",
+      "n": 1,
+      "source_status": {
+        "C": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "rail_accident_intent",
+      "n": 1,
+      "source_status": {
+        "A": 1
+      },
+      "large_bank": 1,
+      "paired_other_correct": 1,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "rail_dangerous_goods",
+      "n": 1,
+      "source_status": {
+        "A": 1
+      },
+      "large_bank": 1,
+      "paired_other_correct": 1,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "rail_electrification_wording",
+      "n": 1,
+      "source_status": {
+        "D": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "rail_fixed_composition",
+      "n": 1,
+      "source_status": {
+        "A": 1
+      },
+      "large_bank": 1,
+      "paired_other_correct": 1,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "rail_line_speed",
+      "n": 1,
+      "source_status": {
+        "A": 1
+      },
+      "large_bank": 1,
+      "paired_other_correct": 1,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "rail_loading_scope",
+      "n": 1,
+      "source_status": {
+        "A": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "rail_track_scope",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "rail_tractive_scope",
+      "n": 1,
+      "source_status": {
+        "A": 1
+      },
+      "large_bank": 1,
+      "paired_other_correct": 1,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "raw_material_storage",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "receiving_practice",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "reefer_temperature_scope",
+      "n": 1,
+      "source_status": {
+        "D": 1
+      },
+      "large_bank": 1,
+      "paired_other_correct": 1,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "replenishment_escalation",
+      "n": 1,
+      "source_status": {
+        "C": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "returns_receiving",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "rfid_alias",
+      "n": 1,
+      "source_status": {
+        "D": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "rigid_freight_vehicle",
+      "n": 1,
+      "source_status": {
+        "A": 1
+      },
+      "large_bank": 1,
+      "paired_other_correct": 1,
+      "unstable": 0,
+      "historical_step120_evidence": 1
+    },
+    {
+      "group": "river_tug_scope",
+      "n": 1,
+      "source_status": {
+        "A": 1
+      },
+      "large_bank": 1,
+      "paired_other_correct": 1,
+      "unstable": 0,
+      "historical_step120_evidence": 1
+    },
+    {
+      "group": "road_haulier",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 1,
+      "paired_other_correct": 1,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "routing_guide_tms",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "routing_journey_overlap",
+      "n": 1,
+      "source_status": {
+        "D": 1
+      },
+      "large_bank": 1,
+      "paired_other_correct": 1,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "routing_provider_support",
+      "n": 1,
+      "source_status": {
+        "C": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "routing_ui_capability",
+      "n": 1,
+      "source_status": {
+        "C": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "scor_model_scope",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "semitrailer_label_duplicate",
+      "n": 1,
+      "source_status": {
+        "D": 1
+      },
+      "large_bank": 1,
+      "paired_other_correct": 1,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "sensitivity_vs_simulation",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "service_level_factors",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "ship_efficiency_tradeoff",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "shipping_stage_framework",
+      "n": 1,
+      "source_status": {
+        "C": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "single_multi_cardinality",
+      "n": 1,
+      "source_status": {
+        "D": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "smile_curve_technology",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "special_parcel_handoff",
+      "n": 1,
+      "source_status": {
+        "C": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "stockout_policy",
+      "n": 1,
+      "source_status": {
+        "C": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "supervisor_cost_allocation",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "supply_demand_system_framework",
+      "n": 1,
+      "source_status": {
+        "C": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "terminal_scope",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "tracking_escalation",
+      "n": 1,
+      "source_status": {
+        "C": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "train_weight_scope",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 1,
+      "paired_other_correct": 1,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "transport_emission_policy",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "transport_segmentation",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "uld_alias",
+      "n": 1,
+      "source_status": {
+        "D": 1
+      },
+      "large_bank": 1,
+      "paired_other_correct": 1,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "value_added_service_scope",
+      "n": 1,
+      "source_status": {
+        "D": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "vehicle_authorised_load",
+      "n": 1,
+      "source_status": {
+        "A": 1
+      },
+      "large_bank": 1,
+      "paired_other_correct": 1,
+      "unstable": 0,
+      "historical_step120_evidence": 1
+    },
+    {
+      "group": "vehicle_overloading_effects",
+      "n": 1,
+      "source_status": {
+        "C": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "visibility_dimensions",
+      "n": 1,
+      "source_status": {
+        "C": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "warehouse_function_sequence",
+      "n": 1,
+      "source_status": {
+        "C": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "warehouse_height_regime",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "warehouse_local_presence_tradeoff",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "warehouse_numbered_layout",
+      "n": 1,
+      "source_status": {
+        "C": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "warehouse_package_size",
+      "n": 1,
+      "source_status": {
+        "A": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "warehouse_service_taxonomy",
+      "n": 1,
+      "source_status": {
+        "C": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "wms_all_none_logic",
+      "n": 1,
+      "source_status": {
+        "D": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "wms_configuration_flexibility",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "wms_ocr_claim",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    },
+    {
+      "group": "xyz_demand_classification",
+      "n": 1,
+      "source_status": {
+        "B": 1
+      },
+      "large_bank": 0,
+      "paired_other_correct": 0,
+      "unstable": 0,
+      "historical_step120_evidence": 0
+    }
+  ],
+  "input_sha256": {
+    "CPT_resources/llin-transfer-audit-20260915-01/frozen_cases.private.jsonl": "b652b2108cb552346df11d005c15ff3137c50a756a7b24eb35302683ec33ed99",
+    "CPT_resources/llin-stage-a-20260920-03/ledger.private.json": "00f015b854626291dc8f0382e8a48ecd62085f4ebb2feb7ec21a9c2bc60db04d",
+    "CPT_resources/llin-p1-error-map-20260923-01/source_gap_review.private.json": "8872409f651a23787e67d470a70027b07406968168723d376373389e6906b36c",
+    "datasets/LogistikaBench.csv": "4736d13abada32d203f0c1024a8d0c765aa24a5674b6ef954130f3eb9503ba45",
+    "CPT_resources/llin-transfer-formal-20260917-01/p1/predictions.private.jsonl": "33c5fc7dcb64c0fba59c25c054b19cda7b2e07880ad62daf0d2debd6ece7bbb2",
+    "CPT_resources/llin-transfer-formal-20260917-01/p1/scores.safe.json": "c13b4210f94890f1796e4fe49cf4446143ab2da0fda61cfa24e72d82b442f47f",
+    "CPT_resources/llin-transfer-formal-20260917-01/p1/protocol.safe.json": "da8366e930b6d8bf1a8be58981be12998fd82c61979e7987f394821f85292e17",
+    "CPT_resources/llin-transfer-formal-20260917-01/step120_current/predictions.private.jsonl": "0a75f6d706bca79105c94dec85fc5727d58e40eda97c73509d893c346bbe995e",
+    "CPT_resources/llin-transfer-formal-20260917-01/step120_current/scores.safe.json": "f7a9cc3e9f4031d2cc8821f0359f88b34b77cae2a97e3b3f896d252d42cf3d91",
+    "CPT_resources/llin-transfer-formal-20260917-01/step120_current/protocol.safe.json": "5f5e725bbb7f582644e73793374cb6a80b54fa7fd0c50903d84643f2e06931fa",
+    "CPT_resources/llin-mechanism-20260920-01/results/K_formal/predictions.private.jsonl": "96b68e4045e6be9bf4bd18b26e16f447fc8a7cfb425854ebfdb2a1bed9a1f912",
+    "CPT_resources/llin-mechanism-20260920-01/results/K_formal/scores.safe.json": "e0ca9a07df902e60ceed703474c2b3b25704b0306a3bc392e94aa6f01879b6ae",
+    "CPT_resources/llin-mechanism-20260920-01/results/K_formal/protocol.safe.json": "3d7bf7c7716027227fcb5cb2fe615f813f8db5054039e7d0d6b56fa23c8b275e",
+    "CPT_resources/llin-mechanism-20260920-01/results/R_formal/predictions.private.jsonl": "3e0a4a2ccebcffef02a58f3904e4fe46f624358b0f56bbb7f8fa27721801af8d",
+    "CPT_resources/llin-mechanism-20260920-01/results/R_formal/scores.safe.json": "5576834adb1f3e4d7943c15a9087993fa340a54a31be63c70e0049ab6518dad4",
+    "CPT_resources/llin-mechanism-20260920-01/results/R_formal/protocol.safe.json": "414e241705eb9c70c19dc03e37bd800fce22dd0b4c2b5e34999728ff4a3dfd4d",
+    "CPT_resources/llin-knowledge-expansion-20260911/book_pages.private.jsonl": "1f3516fc5e89763667040f92c8801cff31cd4429f94b7ffaa80de3bdbc940591",
+    "CPT_resources/llin-knowledge-complete-20260911/core/sources.private.jsonl": "7da53a1a3246381181c5a28fabfb0b68223aed0ee76ff6242710bf257e5af4c2",
+    "CPT_resources/llin-transfer-audit-20260915-01/evidence_result/predictions.private.jsonl": "98621e81a3ce4b0171892bafdeb44e391173857c16001b09e1664a0dc6d83490",
+    "CPT_resources/llin-transfer-audit-20260915-01/evidence_result/registration.safe.json": "aabcdbd0cf2a75af09c8d569edd8c93a0b1e336110c8c0bf61e29d7dbe5258fa"
+  },
+  "private_ledger_sha256": "c4db83e19fd0a8b4875fc4576211cedee749752bf4a3c502e7ecaec33807487b",
+  "decision_queue_counts": {
+    "presentation_control_first": 25,
+    "small_choice_rule_discrimination": 5,
+    "source_or_adjudication_first": 235,
+    "general_arithmetic_not_cpt": 1
+  },
+  "decision_queues_sha256": "6fba63422705143b509fa1fe1e85f80c60bf1f3e68a093a4206bc4b7c28f676b",
+  "independent_verification": {
+    "sha256": "55573411dee58223c54226b5733b7cf77a82c81d8fbfe319a32f3fb6b0bd6e7b",
+    "matched": true,
+    "raw_prediction_count": 5016,
+    "raw_invalid_all_population": 1,
+    "raw_csv_question_exact_match": 1444,
+    "raw_csv_question_trailing_space_only": 2,
+    "raw_csv_options_labels_exact_match": 1446
+  }
+}
