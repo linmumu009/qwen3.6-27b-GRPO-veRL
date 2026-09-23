@@ -11,6 +11,23 @@ spec.loader.exec_module(pilot)
 
 
 class IsolationTests(unittest.TestCase):
+    def test_registered_small_batch_and_duplicate_rejection(self):
+        with tempfile.TemporaryDirectory() as folder:
+            base=Path(folder)
+            slots=[dict(id=str(i),group='synthetic',form='scope') for i in range(4)]
+            pilot.freeze(base/'writer_input.private.json',dict(groups=[]))
+            pilot.freeze(base/'registration.private.json',dict(slots=slots,
+                writer_input_sha256=pilot.sha(base/'writer_input.private.json')))
+            payload=dict(records=[dict(id=str(i),question='Synthetic',options=['one','two']) for i in range(4)],
+                inputs_accessed=['synthetic'],historical_context_seen=False)
+            path=base/'author.private.json'
+            pilot.freeze(path,payload)
+            pilot.blind(base)
+            self.assertEqual(len(pilot.read(base/'reviewer_input.private.json')['records']),4)
+            payload['records'][-1]['id']='0'
+            path.write_text(json.dumps(payload),encoding='utf-8')
+            with self.assertRaises(ValueError):pilot.validate_author(base)
+
     def test_frozen_artifact_rejects_replacement(self):
         with tempfile.TemporaryDirectory() as folder:
             path=Path(folder)/'frozen.json'

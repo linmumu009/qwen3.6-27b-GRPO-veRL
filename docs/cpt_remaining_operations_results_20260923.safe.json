@@ -1,0 +1,264 @@
+{
+  "registration": "llin-remaining-operations-20260923-01",
+  "date": "2026-09-23",
+  "status": "closed_validation_complete",
+  "source_items": 10,
+  "source_complete_groups": 7,
+  "source_partial_groups": 3,
+  "exact_quotes_checked": 75,
+  "historical_anchors_checked": 93,
+  "selected_ids": [
+    "finance_partial_observation_disambiguation",
+    "general_cargo_ship",
+    "iwt_freight_scope",
+    "offered_transport_capacity",
+    "seagoing_ship_scope"
+  ],
+  "pre_screen_exclusions": {
+    "rail_accident_intent": "partial: source-only four-operation coverage insufficient",
+    "iwt_authorised_capacity": "partial: parallel definitions and arithmetic insufficient",
+    "harbour_to_port_converse": "partial: useful converse but not four distinct operations",
+    "collision_derailment_priority": "existing causal truth-table and subtype exceptions; no complete distinct residual established",
+    "road_train_configuration": "configuration changes and conjunctive conditions already covered; insufficient residual"
+  },
+  "draft_slots": 20,
+  "correction_rounds": 0,
+  "potential_diagnostic_cap": 288,
+  "student_model_calls": 80,
+  "training_runs": 0,
+  "diagnostic_released": true,
+  "fingerprints": {
+    "source_input.private.json": "26b92190dc3425bab810a5051db198e8037bceba2b309c9fb33cba68d4b2a51e",
+    "source_review.private.json": "073fc855c804e401a03fb31563505a2640562ae9ebc8e8cf93e407f9065e7029",
+    "history_review.private.json": "15495cbb61f7b92a5cefc0be4c5356459cbd3777607237f35912e7ccb4e49631",
+    "selection.private.json": "5620c786958aa756b5a7a1be1174102e6f148f18a034c35a2ea4ebb80599c78c",
+    "writer_input.private.json": "5fbab0a9df1b524e85298fdcdb144dec2d9ae876175a26ec5e20213c779c03ec",
+    "overlap_corpus.private.json": "ddb85f46ae30c1c759a1e73545a60883e4eb40a25b8f20a3e8b4a478b00dfec6",
+    "author.private.json": "1283a70b87e6b64632c995c279db473b86e97c775155bae535bbd18b6e3109dd",
+    "review.private.json": "407c1855f0287a33b63856fefc4fd51760a207bfcb12022f9f9a3e13d64c2775",
+    "review_freeze.private.json": "70d786ef8daf9a58858be7032c9104fa6d7919c576a7d4f9c8cf1cce70d7aa7e",
+    "root_quality.private.json": "cbca87b1815618d6d444749aac92faf5eafb589d0a8f6a8b037241df814ea8ee",
+    "execution.safe.json": "856dbcf1214819b5c5b78018d13e168ce65a1e311d565ff777b37b8c07f28238",
+    "diagnostic.private.json": "b1ad6a4af1a1a22d84a19338d8721024f7edb87e13b36bfd440a94d3ccc54a4b",
+    "step120_current_predictions": "107dd55f64426a87bfe96d3c1a2a742bf2b9f33e03c929239fd042972e7fd18f",
+    "step120_current_identity": "187ee7b7e57150365fe7cc30431167f52cb9b0d5c44cab164f2ee4d6d978affd",
+    "step120_current_prompts": "893ed65be1b096133270170baae51e35da2fb2f67028ed41d32077ae62886c4a",
+    "p1_predictions": "f6dc81526aa18cf8d7627286086f4b4feecbecf155c2387d85bc8ada1b7ba0af",
+    "p1_identity": "e528eb6c88f769d9e34fc04d53f510f68bc2816dbe699d25a169feeac0667b6a",
+    "p1_prompts": "c445c508ac83dcff2ec3e1bf847bcfed38002bba255fedd3483a71721ab064f2"
+  },
+  "content_pass_items": 16,
+  "content_complete_groups": [
+    "offered_transport_capacity",
+    "seagoing_ship_scope"
+  ],
+  "content_failures": [
+    {
+      "id": "finance_partial_observation_disambiguation__application",
+      "errors": [
+        "Unresolved option"
+      ]
+    },
+    {
+      "id": "general_cargo_ship__application",
+      "errors": [
+        "Reviewer rejected quality"
+      ]
+    },
+    {
+      "id": "general_cargo_ship__counterexample",
+      "errors": [
+        "Reviewer rejected quality"
+      ]
+    },
+    {
+      "id": "iwt_freight_scope__counterexample",
+      "errors": [
+        "Reviewer rejected quality"
+      ]
+    }
+  ],
+  "root_quality": [
+    {
+      "id": "finance_partial_observation_disambiguation",
+      "reason_code": "credit_basis_reuse_and_counterexample_answer_in_stem",
+      "historical_indices": [
+        39,
+        168,
+        169,
+        447
+      ],
+      "pass": false
+    },
+    {
+      "id": "general_cargo_ship",
+      "reason_code": "competing_and_counterexample_repeat_same_roro_override",
+      "historical_indices": [
+        112
+      ],
+      "pass": false
+    },
+    {
+      "id": "iwt_freight_scope",
+      "reason_code": "competing_and_counterexample_repeat_storage_override",
+      "historical_indices": [],
+      "pass": false
+    },
+    {
+      "id": "seagoing_ship_scope",
+      "reason_code": "scope_reuses_exclusively_inland_despite_physical_ship_conditions",
+      "historical_indices": [
+        122,
+        484,
+        660
+      ],
+      "pass": false
+    },
+    {
+      "id": "offered_transport_capacity",
+      "reason_code": "distinct_journey_inclusion_register_basis_missing_fields_and_controlled_change",
+      "historical_indices": [
+        485,
+        661,
+        1267,
+        1773
+      ],
+      "pass": true
+    }
+  ],
+  "quality_complete_groups": [
+    "offered_transport_capacity"
+  ],
+  "diagnostic": {
+    "step120_current": {
+      "label": "step120_current",
+      "calls": 16,
+      "invalid": 0,
+      "groups": [
+        {
+          "group": "offered_transport_capacity",
+          "items": 4,
+          "closed_stable_correct": 4
+        }
+      ],
+      "stability_extra_calls": 0,
+      "stability_answer_changes": 0,
+      "training_allowed": false
+    },
+    "p1": {
+      "label": "p1",
+      "calls": 64,
+      "invalid": 0,
+      "groups": [
+        {
+          "group": "offered_transport_capacity",
+          "items": 4,
+          "closed_stable_correct": 4,
+          "evidence_stable_correct": 3,
+          "training_value_screen_pass": false
+        }
+      ],
+      "stability_extra_calls": 32,
+      "stability_answer_changes": 0,
+      "training_allowed": false
+    }
+  },
+  "training_value_signal": false,
+  "promotion": false,
+  "formal_reruns": 0,
+  "protocol": {
+    "max_tokens": 96,
+    "seed": 1024,
+    "temperature": 0,
+    "thinking": false,
+    "option_orders": 4,
+    "prefix_caching": false,
+    "model_identity": "matches previous metadata and shard size/mtime; not full-weight content hashes"
+  },
+  "independent_main_score_check": [
+    {
+      "model": "step120_current",
+      "form": "scope",
+      "condition": "closed",
+      "correct_orders": 4,
+      "total_orders": 4
+    },
+    {
+      "model": "step120_current",
+      "form": "competing_rules",
+      "condition": "closed",
+      "correct_orders": 4,
+      "total_orders": 4
+    },
+    {
+      "model": "step120_current",
+      "form": "application",
+      "condition": "closed",
+      "correct_orders": 4,
+      "total_orders": 4
+    },
+    {
+      "model": "step120_current",
+      "form": "counterexample",
+      "condition": "closed",
+      "correct_orders": 4,
+      "total_orders": 4
+    },
+    {
+      "model": "p1",
+      "form": "scope",
+      "condition": "closed",
+      "correct_orders": 4,
+      "total_orders": 4
+    },
+    {
+      "model": "p1",
+      "form": "scope",
+      "condition": "evidence",
+      "correct_orders": 3,
+      "total_orders": 4
+    },
+    {
+      "model": "p1",
+      "form": "competing_rules",
+      "condition": "closed",
+      "correct_orders": 4,
+      "total_orders": 4
+    },
+    {
+      "model": "p1",
+      "form": "competing_rules",
+      "condition": "evidence",
+      "correct_orders": 4,
+      "total_orders": 4
+    },
+    {
+      "model": "p1",
+      "form": "application",
+      "condition": "closed",
+      "correct_orders": 4,
+      "total_orders": 4
+    },
+    {
+      "model": "p1",
+      "form": "application",
+      "condition": "evidence",
+      "correct_orders": 4,
+      "total_orders": 4
+    },
+    {
+      "model": "p1",
+      "form": "counterexample",
+      "condition": "closed",
+      "correct_orders": 4,
+      "total_orders": 4
+    },
+    {
+      "model": "p1",
+      "form": "counterexample",
+      "condition": "evidence",
+      "correct_orders": 4,
+      "total_orders": 4
+    }
+  ]
+}

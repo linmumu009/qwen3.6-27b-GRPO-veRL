@@ -78,7 +78,7 @@ def validate_author(base):
     author=read(base/'author.private.json')
     expected={s['id'] for s in registration['slots']}
     rows=author['records']
-    if len(rows)!=32 or {r['id'] for r in rows}!=expected:
+    if not expected or len(rows)!=len(expected) or {r['id'] for r in rows}!=expected:
         raise ValueError('Missing or duplicate slots')
     if author['historical_context_seen'] is not False or not author['inputs_accessed']:
         raise ValueError('Author isolation not declared')
@@ -138,7 +138,7 @@ def compare(base):
     if review['historical_context_seen'] is not False or review['author_answers_seen'] is not False or not review['inputs_accessed']:
         raise ValueError('Reviewer isolation not declared')
     rows=review['records']; ids={s['id'] for s in registration['slots']}
-    if len(rows)!=32 or {r['id'] for r in rows}!=ids:
+    if not ids or len(rows)!=len(ids) or {r['id'] for r in rows}!=ids:
         raise ValueError('Incomplete review')
     freeze(base/'review_freeze.private.json',dict(review_sha256=sha(base/'review.private.json'),
         reviewer_input_sha256=sha(base/'reviewer_input.private.json')))
