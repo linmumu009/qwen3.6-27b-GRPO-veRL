@@ -4,6 +4,16 @@
 
 **执行位置：5号机宿主机终端，目录 `/data3/llin/business_training_delivery`。** 参考环境为单机16个逻辑NPU、每个64GB，主机约2TiB内存。三项依次运行；开始前用 `npu-smi info` 确认设备空闲、`df -h .` 确认输出盘至少90GB空余。每项检查点约55GB，三项结果都会占空间。
 
+**本次仅用5号机，6号机继续原有训练。** 三项配置均为 `trainer.nnodes=1`、`trainer.n_gpus_per_node=16`；SFT、CPT用 `torchrun --standalone --nnodes=1`，GRPO由独立容器设置 `RAY_ADDRESS=local`，不复用历史多机Ray集群。只执行下文交付包入口，不执行旧项目中的Ray集群启动、停止或多机训练脚本；6号机无需任何操作。
+
+若服务器上的交付包曾改动，先在5号机交付目录只读核对以下两项，再使用下文命令：第一条三份配置都应显示1节点、16设备，第二条应显示 `RAY_ADDRESS=local`；不符合时先恢复单机配置。
+
+```bash
+cd /data3/llin/business_training_delivery
+grep -nE 'trainer.nnodes=|trainer.n_gpus_per_node=' Train/{SFT,GRPO,CPT}/config.yaml
+grep -n 'RAY_ADDRESS=local' environment/run.sh
+```
+
 入口自动启动容器、将JSONL转成Parquet、加载模型自带的tokenizer，**不用手动分词或启动Ray**。新服务器须先部署完整交付包及导入镜像，见[运维说明](../delivery/business_training_delivery/docs/运维部署与验收说明.md)；只拉Git仓库不能训练。
 
 ## 1 SFT
