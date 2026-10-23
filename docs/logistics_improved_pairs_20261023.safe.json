@@ -122,5 +122,39 @@
         "sha256": "183ae8221ef4cb5088209304bc2a6da45224d5d136b84bae8eba25f4cb5b240d"
       }
     ]
+  },
+  "merged_workbook_verification": {
+    "files": [
+      {
+        "file": "LogistikaBench_基座与Best_Model对照.xlsx",
+        "questions": 218,
+        "option_rows": 20129,
+        "original_columns": 11,
+        "merged_columns": 12,
+        "added_column": "D",
+        "bytes": 768385,
+        "sha256": "d4e2ec6ae8d6a67d1db43b2756586d86e61be88ae6ae41a1dab15f6f3807608c"
+      },
+      {
+        "file": "SC-bench知识题_基座与Best_Model对照.xlsx",
+        "questions": 28,
+        "option_rows": 84,
+        "original_columns": 11,
+        "merged_columns": 12,
+        "added_column": "D",
+        "bytes": 19656,
+        "sha256": "ba2898b9d24f8bed6cb37c6af97242f333e7adecbbc6718f8291dfa435d0d131"
+      }
+    ],
+    "paired_questions": 246,
+    "option_rows": 20213,
+    "same_rows_and_ids": true,
+    "all_original_record_cells_preserved": true,
+    "best_answers_match_best_workbook": true,
+    "complete_option_sheet_preserved_except_header_label": true,
+    "source_files_unchanged": true,
+    "row_heights_column_widths_freeze_panes_and_filters_preserved": true,
+    "no_formulas": true,
+    "rendered_sheets_checked": 4
   }
 }
