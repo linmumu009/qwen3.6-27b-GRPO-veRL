@@ -1,0 +1,511 @@
+{
+  "private_content_included": false,
+  "audit": {
+    "date": "2026-10-23",
+    "private_content_included": false,
+    "independent_test": false,
+    "pipeline_complete": true,
+    "training_items": 309,
+    "additional_epochs": 2,
+    "additional_training_steps": 206,
+    "cumulative_epochs": 3,
+    "cumulative_sft_steps": 309,
+    "sequence_tokens": 655232,
+    "sequence_tokens_each_epoch": [
+      327616,
+      327616
+    ],
+    "all_training_metrics_finite": true,
+    "nonzero_gradients": true,
+    "baseline_reused": true,
+    "new_inference_calls": 8360,
+    "checked_prediction_rows_including_reused_baseline": 10032,
+    "evaluation_steps": [
+      0,
+      50,
+      100,
+      150,
+      200,
+      206
+    ],
+    "results": [
+      {
+        "additional_step": 0,
+        "cumulative_sft_step": 103,
+        "correct": 1378,
+        "items": 1672,
+        "accuracy": 0.8241626794258373,
+        "by_dataset": [
+          {
+            "dataset": "LogistikaBench",
+            "items": 1446,
+            "correct": 1198,
+            "accuracy": 0.828492,
+            "parse_failures": 0,
+            "api_failures": 0
+          },
+          {
+            "dataset": "SC-bench-knowledge",
+            "items": 226,
+            "correct": 180,
+            "accuracy": 0.79646,
+            "parse_failures": 3,
+            "api_failures": 0
+          }
+        ],
+        "parse_failures": 3,
+        "vs_continuation_baseline": {
+          "items": 1672,
+          "baseline_correct": 1378,
+          "candidate_correct": 1378,
+          "gains": 0,
+          "losses": 0,
+          "net": 0
+        },
+        "vs_previous": {
+          "items": 1672,
+          "baseline_correct": 1378,
+          "candidate_correct": 1378,
+          "gains": 0,
+          "losses": 0,
+          "net": 0
+        },
+        "trained309": {
+          "items": 309,
+          "baseline_correct": 196,
+          "candidate_correct": 196,
+          "gains": 0,
+          "losses": 0,
+          "net": 0
+        },
+        "other1363": {
+          "items": 1363,
+          "baseline_correct": 1182,
+          "candidate_correct": 1182,
+          "gains": 0,
+          "losses": 0,
+          "net": 0
+        },
+        "prediction_file_sha256": "bc4c4cc8d2b5641a65ce551118299794e1f3a33fea8bfe2f6076db67e890d423"
+      },
+      {
+        "additional_step": 50,
+        "cumulative_sft_step": 153,
+        "correct": 1456,
+        "items": 1672,
+        "accuracy": 0.8708133971291866,
+        "by_dataset": [
+          {
+            "dataset": "LogistikaBench",
+            "items": 1446,
+            "correct": 1264,
+            "accuracy": 0.874136,
+            "parse_failures": 0,
+            "api_failures": 0
+          },
+          {
+            "dataset": "SC-bench-knowledge",
+            "items": 226,
+            "correct": 192,
+            "accuracy": 0.849558,
+            "parse_failures": 0,
+            "api_failures": 0
+          }
+        ],
+        "parse_failures": 0,
+        "vs_continuation_baseline": {
+          "items": 1672,
+          "baseline_correct": 1378,
+          "candidate_correct": 1456,
+          "gains": 170,
+          "losses": 92,
+          "net": 78
+        },
+        "vs_previous": {
+          "items": 1672,
+          "baseline_correct": 1378,
+          "candidate_correct": 1456,
+          "gains": 170,
+          "losses": 92,
+          "net": 78
+        },
+        "trained309": {
+          "items": 309,
+          "baseline_correct": 196,
+          "candidate_correct": 228,
+          "gains": 61,
+          "losses": 29,
+          "net": 32
+        },
+        "other1363": {
+          "items": 1363,
+          "baseline_correct": 1182,
+          "candidate_correct": 1228,
+          "gains": 109,
+          "losses": 63,
+          "net": 46
+        },
+        "prediction_file_sha256": "c83f2ade01700b348829805f52d06c58ba4353452ee64aeed1a8a4ee49eff468"
+      },
+      {
+        "additional_step": 100,
+        "cumulative_sft_step": 203,
+        "correct": 1445,
+        "items": 1672,
+        "accuracy": 0.8642344497607656,
+        "by_dataset": [
+          {
+            "dataset": "LogistikaBench",
+            "items": 1446,
+            "correct": 1250,
+            "accuracy": 0.864454,
+            "parse_failures": 1,
+            "api_failures": 0
+          },
+          {
+            "dataset": "SC-bench-knowledge",
+            "items": 226,
+            "correct": 195,
+            "accuracy": 0.862832,
+            "parse_failures": 0,
+            "api_failures": 0
+          }
+        ],
+        "parse_failures": 1,
+        "vs_continuation_baseline": {
+          "items": 1672,
+          "baseline_correct": 1378,
+          "candidate_correct": 1445,
+          "gains": 162,
+          "losses": 95,
+          "net": 67
+        },
+        "vs_previous": {
+          "items": 1672,
+          "baseline_correct": 1456,
+          "candidate_correct": 1445,
+          "gains": 104,
+          "losses": 115,
+          "net": -11
+        },
+        "trained309": {
+          "items": 309,
+          "baseline_correct": 196,
+          "candidate_correct": 236,
+          "gains": 66,
+          "losses": 26,
+          "net": 40
+        },
+        "other1363": {
+          "items": 1363,
+          "baseline_correct": 1182,
+          "candidate_correct": 1209,
+          "gains": 96,
+          "losses": 69,
+          "net": 27
+        },
+        "prediction_file_sha256": "91f06f0cba238bcb72cd635fe1274ed3a10b0b800c61d6e414d94c8a4f9f6fca"
+      },
+      {
+        "additional_step": 150,
+        "cumulative_sft_step": 253,
+        "correct": 1474,
+        "items": 1672,
+        "accuracy": 0.881578947368421,
+        "by_dataset": [
+          {
+            "dataset": "LogistikaBench",
+            "items": 1446,
+            "correct": 1276,
+            "accuracy": 0.882434,
+            "parse_failures": 1,
+            "api_failures": 0
+          },
+          {
+            "dataset": "SC-bench-knowledge",
+            "items": 226,
+            "correct": 198,
+            "accuracy": 0.876106,
+            "parse_failures": 0,
+            "api_failures": 0
+          }
+        ],
+        "parse_failures": 1,
+        "vs_continuation_baseline": {
+          "items": 1672,
+          "baseline_correct": 1378,
+          "candidate_correct": 1474,
+          "gains": 181,
+          "losses": 85,
+          "net": 96
+        },
+        "vs_previous": {
+          "items": 1672,
+          "baseline_correct": 1445,
+          "candidate_correct": 1474,
+          "gains": 95,
+          "losses": 66,
+          "net": 29
+        },
+        "trained309": {
+          "items": 309,
+          "baseline_correct": 196,
+          "candidate_correct": 246,
+          "gains": 69,
+          "losses": 19,
+          "net": 50
+        },
+        "other1363": {
+          "items": 1363,
+          "baseline_correct": 1182,
+          "candidate_correct": 1228,
+          "gains": 112,
+          "losses": 66,
+          "net": 46
+        },
+        "prediction_file_sha256": "416eae90dae4d02863157555262feed56a4eceb3466cdf2e8905d49cdd67ae72"
+      },
+      {
+        "additional_step": 200,
+        "cumulative_sft_step": 303,
+        "correct": 1473,
+        "items": 1672,
+        "accuracy": 0.8809808612440191,
+        "by_dataset": [
+          {
+            "dataset": "LogistikaBench",
+            "items": 1446,
+            "correct": 1271,
+            "accuracy": 0.878976,
+            "parse_failures": 0,
+            "api_failures": 0
+          },
+          {
+            "dataset": "SC-bench-knowledge",
+            "items": 226,
+            "correct": 202,
+            "accuracy": 0.893805,
+            "parse_failures": 0,
+            "api_failures": 0
+          }
+        ],
+        "parse_failures": 0,
+        "vs_continuation_baseline": {
+          "items": 1672,
+          "baseline_correct": 1378,
+          "candidate_correct": 1473,
+          "gains": 179,
+          "losses": 84,
+          "net": 95
+        },
+        "vs_previous": {
+          "items": 1672,
+          "baseline_correct": 1474,
+          "candidate_correct": 1473,
+          "gains": 67,
+          "losses": 68,
+          "net": -1
+        },
+        "trained309": {
+          "items": 309,
+          "baseline_correct": 196,
+          "candidate_correct": 251,
+          "gains": 74,
+          "losses": 19,
+          "net": 55
+        },
+        "other1363": {
+          "items": 1363,
+          "baseline_correct": 1182,
+          "candidate_correct": 1222,
+          "gains": 105,
+          "losses": 65,
+          "net": 40
+        },
+        "prediction_file_sha256": "dbbca5782f6f75df5770743f7795a47a2cf1732279e4d2765dd001f86d6d451a"
+      },
+      {
+        "additional_step": 206,
+        "cumulative_sft_step": 309,
+        "correct": 1474,
+        "items": 1672,
+        "accuracy": 0.881578947368421,
+        "by_dataset": [
+          {
+            "dataset": "LogistikaBench",
+            "items": 1446,
+            "correct": 1271,
+            "accuracy": 0.878976,
+            "parse_failures": 0,
+            "api_failures": 0
+          },
+          {
+            "dataset": "SC-bench-knowledge",
+            "items": 226,
+            "correct": 203,
+            "accuracy": 0.89823,
+            "parse_failures": 0,
+            "api_failures": 0
+          }
+        ],
+        "parse_failures": 0,
+        "vs_continuation_baseline": {
+          "items": 1672,
+          "baseline_correct": 1378,
+          "candidate_correct": 1474,
+          "gains": 174,
+          "losses": 78,
+          "net": 96
+        },
+        "vs_previous": {
+          "items": 1672,
+          "baseline_correct": 1473,
+          "candidate_correct": 1474,
+          "gains": 23,
+          "losses": 22,
+          "net": 1
+        },
+        "trained309": {
+          "items": 309,
+          "baseline_correct": 196,
+          "candidate_correct": 251,
+          "gains": 70,
+          "losses": 15,
+          "net": 55
+        },
+        "other1363": {
+          "items": 1363,
+          "baseline_correct": 1182,
+          "candidate_correct": 1223,
+          "gains": 104,
+          "losses": 63,
+          "net": 41
+        },
+        "prediction_file_sha256": "d7fe05809957678f2d85d07ab482ae29d24211d79643da1a7442c43384f07242"
+      }
+    ],
+    "best_additional_step": 150,
+    "best_cumulative_sft_step": 253,
+    "best_host_model": "/data3/llin/qwen3.6-27b-verl-grpo/runs/logistics-wrong-text-two-more-20261023-01/hf/step_150",
+    "retained_new_models": 1,
+    "temporary_checkpoints_removed": true,
+    "best_export_verification": {
+      "valid": true,
+      "errors": [],
+      "base_tensor_count": 1199,
+      "output_tensor_count": 1199,
+      "referenced_shard_count": 15,
+      "total_safetensor_bytes": 56484503104,
+      "language_layer_ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63
+      ],
+      "missing_tensor_count": 0,
+      "extra_tensor_count": 0,
+      "shape_mismatch_count": 0,
+      "dtype_difference_count": 0,
+      "missing_tensor_examples": [],
+      "extra_tensor_examples": [],
+      "shape_mismatch_examples": [],
+      "dtype_difference_examples": [],
+      "dtype_difference_details": []
+    },
+    "baseline_reuse": {
+      "private_content_included": false,
+      "reused": true,
+      "new_inference_calls": 0,
+      "parent_run": "/workspace/llin-verl-grpo/runs/logistics-wrong-text-20261023-02",
+      "parent_step": 103,
+      "items": 1672,
+      "correct": 1378,
+      "prediction_file_sha256": "bc4c4cc8d2b5641a65ce551118299794e1f3a33fea8bfe2f6076db67e890d423",
+      "optimizer_state_reused": false,
+      "model_initialization": "/workspace/llin-verl-grpo/runs/logistics-wrong-text-20261023-02/hf/step_103"
+    },
+    "concurrent_communication_gate": {
+      "passed": true,
+      "training_world_size": 16,
+      "concurrent_evaluation_world_sizes": [
+        8,
+        8
+      ],
+      "physical_npus": 16
+    }
+  },
+  "cleanup": {
+    "only_one_model_across_this_and_previous_round": true,
+    "kept_best": "/data3/llin/qwen3.6-27b-verl-grpo/runs/logistics-wrong-text-two-more-20261023-01/hf/step_150",
+    "removed_previous_round_models": [
+      {
+        "path": "/data3/llin/qwen3.6-27b-verl-grpo/runs/logistics-wrong-text-20261023-02/hf/step_103",
+        "bytes": 56504626291
+      }
+    ],
+    "previous_best_alias": "/data3/llin/qwen3.6-27b-verl-grpo/runs/logistics-wrong-text-20261023-02/best_model",
+    "previous_best_alias_target": "/data3/llin/qwen3.6-27b-verl-grpo/runs/logistics-wrong-text-two-more-20261023-01/hf/step_150",
+    "original_step120_and_other_experiments_modified": false,
+    "logs_and_predictions_preserved": true
+  }
+}
