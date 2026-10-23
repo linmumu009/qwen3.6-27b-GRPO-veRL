@@ -1,6 +1,7 @@
 """Merge the two evaluation replicas and retain only a strictly better HF model."""
 import argparse
 import json
+import os
 from pathlib import Path
 import re
 import shutil
@@ -15,6 +16,11 @@ def owned_model(run, path):
     if path.is_symlink() or path.resolve().parent != (run / 'hf').resolve() or not re.fullmatch(r'step_\d+', path.name):
         raise ValueError('refusing cleanup outside this run HF candidates')
     return path
+
+
+def best_link_target(run, model):
+    # The project is mounted under different absolute prefixes on host and container.
+    return Path(os.path.relpath(model, start=run))
 
 
 def main():
@@ -73,7 +79,7 @@ def main():
         link.unlink()
     elif link.exists():
         raise ValueError('unexpected best_model directory')
-    link.symlink_to(history['best']['model'], target_is_directory=True)
+    link.symlink_to(best_link_target(args.run, history['best']['model']), target_is_directory=True)
     if discard:
         shutil.rmtree(owned_model(args.run, discard))
     print(json.dumps({'evaluated': entry, 'best_step': history['best']['step'], 'improved': better}))

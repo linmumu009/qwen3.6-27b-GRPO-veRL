@@ -5,7 +5,7 @@ import pytest
 
 from scripts.evaluate_logistics_knowledge import _make_item, parse_answers
 from scripts.prepare_logistics_wrong_text_sft import encode, read_predictions, select_errors, training_example
-from scripts.logistics_wrong_text_selection import owned_model
+from scripts.logistics_wrong_text_selection import best_link_target, owned_model
 from scripts.train_logistics_wrong_text_sft import evaluation_environment
 
 
@@ -67,6 +67,15 @@ def test_cleanup_is_limited_to_owned_candidate_models(tmp_path):
     for path in [tmp_path/'step_50', tmp_path/'hf/../step_50', tmp_path/'hf/baseline']:
         with pytest.raises(ValueError):
             owned_model(tmp_path, path)
+
+
+def test_best_model_link_survives_different_host_and_container_mounts(tmp_path):
+    container = tmp_path/'container'
+    host = tmp_path/'host'
+    for model in ['runs/baseline/hf', 'runs/current/hf/step_100']:
+        target = best_link_target(container/'runs/current', container/model)
+        assert not target.is_absolute()
+        assert (host/'runs/current'/target).resolve() == (host/model).resolve()
 
 
 def test_child_evaluator_does_not_join_training_process_group():
