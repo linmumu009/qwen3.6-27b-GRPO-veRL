@@ -77,5 +77,50 @@
     "all_freeze_panes_and_filters_verified": true,
     "visual_sheets_checked": 8,
     "targeted_tests_passed": 15
+  },
+  "json_verification": {
+    "utf8": true,
+    "format": "JSON object with metadata and questions array",
+    "same_records_as_previous_export": true,
+    "all_fields_and_actual_responses_verified": true,
+    "paired_ids_and_order_match": true,
+    "files": [
+      {
+        "file": "LogistikaBench_Best_Model.json",
+        "dataset": "LogistikaBench",
+        "model_role": "best",
+        "questions": 218,
+        "options": 20129,
+        "bytes": 876680,
+        "sha256": "f02c15be980445f74f90add1319aab623812f4504999cbd68ff7792a914ab204"
+      },
+      {
+        "file": "LogistikaBench_原始基座.json",
+        "dataset": "LogistikaBench",
+        "model_role": "native",
+        "questions": 218,
+        "options": 20129,
+        "bytes": 877756,
+        "sha256": "abc25d7c458958fa5b5ba16d73fdae4f284107f78332fe835679aafb1eed8182"
+      },
+      {
+        "file": "SC-bench知识题_Best_Model.json",
+        "dataset": "SC-bench-knowledge",
+        "model_role": "best",
+        "questions": 28,
+        "options": 84,
+        "bytes": 38052,
+        "sha256": "8059495493f00a47ee3562b413616a7bd382af0154ec44481eda176e26908cfe"
+      },
+      {
+        "file": "SC-bench知识题_原始基座.json",
+        "dataset": "SC-bench-knowledge",
+        "model_role": "native",
+        "questions": 28,
+        "options": 84,
+        "bytes": 38363,
+        "sha256": "183ae8221ef4cb5088209304bc2a6da45224d5d136b84bae8eba25f4cb5b240d"
+      }
+    ]
   }
 }

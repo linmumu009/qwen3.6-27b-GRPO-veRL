@@ -107,11 +107,51 @@ def extract(source, native_path, best_path, selection_path, *, expected_best_ste
     return {"manifest": safe, "pairs": pairs}, safe
 
 
+def export_json_files(payload, output_dir):
+    """Write four UTF-8 JSON documents, with one model's actual answers each."""
+    documents = {}
+    for dataset, label in [("LogistikaBench", "LogistikaBench"),
+                           ("SC-bench-knowledge", "SC-bench知识题")]:
+        pairs = [p for p in payload["pairs"] if p["dataset"] == dataset]
+        for role, role_label in [("native", "原始基座"), ("best", "Best_Model")]:
+            questions = []
+            for pair in pairs:
+                answer = pair[role]
+                questions.append({
+                    **{key: pair[key] for key in ("pair_id", "item_hash", "source_id",
+                        "category", "question_type", "question", "options")},
+                    "gold_answer": {"indices": pair["expected"], "texts": pair["gold_texts"]},
+                    "model_answer": {
+                        "raw_response": answer["prediction"],
+                        "indices": answer["parsed"], "texts": answer["answer_texts"],
+                        "reasoning": answer["reasoning"],
+                        "parse_ok": answer["parse_ok"], "correct": answer["correct"],
+                    },
+                })
+            documents[output_dir / f"{label}_{role_label}.json"] = {
+                "dataset": dataset, "model_role": role,
+                "model": (payload["manifest"]["native_model"] if role == "native" else
+                          f"Final Best Model, additional step {payload['manifest']['best_additional_step']}, "
+                          f"cumulative SFT step {payload['manifest']['best_cumulative_sft_step']}"),
+                "selection_filter": payload["manifest"]["filter"],
+                "independent_test": payload["manifest"]["independent_test"],
+                "option_index_base": 0, "question_count": len(questions),
+                "questions": questions,
+            }
+    if any(path.exists() for path in documents):
+        raise ValueError("refusing to overwrite existing JSON deliverables")
+    output_dir.mkdir(parents=True, exist_ok=True)
+    for path, document in documents.items():
+        path.write_text(json.dumps(document, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return list(documents)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for key in ("source", "native", "best", "selection", "output", "safe_output"):
         parser.add_argument("--" + key.replace("_", "-"), type=Path, required=True)
     parser.add_argument("--expected-best-step", type=int, required=True)
+    parser.add_argument("--json-output-dir", type=Path)
     args = parser.parse_args()
     payload, safe = extract(args.source, args.native, args.best, args.selection,
                             expected_best_step=args.expected_best_step)
@@ -120,6 +160,8 @@ def main():
             raise ValueError(f"refusing overwrite: {path}")
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    if args.json_output_dir:
+        export_json_files(payload, args.json_output_dir)
     print(json.dumps(safe, ensure_ascii=False))
 
 
