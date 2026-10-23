@@ -63,16 +63,22 @@ def main() -> int:
     parser.add_argument("--gpu-memory-utilization", type=float, default=0.8)
     parser.add_argument("--seed", type=int, default=1024)
     parser.add_argument("--repeats", type=int, default=1)
+    parser.add_argument("--shard-count", type=int, default=1)
+    parser.add_argument("--shard-index", type=int, default=0)
     parser.add_argument("--private-output", type=Path, required=True)
     parser.add_argument("--safe-output", type=Path, required=True)
     args = parser.parse_args()
     if args.repeats < 1:
         raise ValueError("repeats must be positive")
+    if not 0 <= args.shard_index < args.shard_count:
+        raise ValueError("invalid evaluation shard")
 
     from transformers import AutoTokenizer
     from vllm import LLM, SamplingParams
 
-    items = load_items(args.cases)
+    items = load_items(args.cases)[args.shard_index::args.shard_count]
+    if not items:
+        raise ValueError("empty evaluation shard")
     tokenizer = AutoTokenizer.from_pretrained(args.model, trust_remote_code=True)
     prompts: list[dict[str, list[int]]] = []
     for item in items:
@@ -150,6 +156,8 @@ def main() -> int:
             "prefix_caching": False,
             "seed": args.seed,
             "repeat_index": repeat_index + 1,
+            "shard_count": args.shard_count,
+            "shard_index": args.shard_index,
         }
         safe_path = repeat_path(args.safe_output, repeat_index)
         safe_path.parent.mkdir(parents=True, exist_ok=True)

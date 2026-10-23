@@ -1,0 +1,33 @@
+{
+  "contract": "logistics-wrong-union-full-text-sft-v1",
+  "independent_test": false,
+  "private_content_included": false,
+  "items": 309,
+  "full_evaluation_items": 1672,
+  "by_dataset": {
+    "LogistikaBench": 271,
+    "SC-bench-knowledge": 38
+  },
+  "baseline_errors": 303,
+  "native_errors": 309,
+  "source_sha256": "b652b2108cb552346df11d005c15ff3137c50a756a7b24eb35302683ec33ed99",
+  "selection_sha256": {
+    "baseline": "f8509987f32637ec4fde2dae2bcb80079074d63f8231b633ad6b4a58fceca1e1",
+    "native": "72b173d3538e700c42099284d7b20dd6dc80ff2c41fa99a5e17d4a906cbcde7d"
+  },
+  "parquet_sha256": "720385334470706c0bf859225c1777549f2e609aadf1e92569c139310e55d2fe",
+  "full_answer_text_supervised": true,
+  "shuffled_options": true,
+  "all_options_retained": true,
+  "total_epochs": 1,
+  "batch_size": 3,
+  "total_steps": 103,
+  "evaluation_steps": [
+    50,
+    100,
+    103
+  ],
+  "sequence_tokens": 327616,
+  "supervised_tokens": 9705,
+  "max_sequence_tokens": 3052
+}
