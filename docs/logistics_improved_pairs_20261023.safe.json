@@ -1,0 +1,81 @@
+{
+  "date": "2026-10-23",
+  "private_content_included": false,
+  "filter": "native incorrect AND selected final best correct",
+  "native_model": "Qwen3.6-27B original local base (not Step120)",
+  "best_additional_step": 150,
+  "best_cumulative_sft_step": 253,
+  "independent_test": false,
+  "evaluation_items": 1672,
+  "selected_items": 246,
+  "by_dataset": {
+    "LogistikaBench": 218,
+    "SC-bench-knowledge": 28
+  },
+  "native_correct": 1363,
+  "best_correct": 1474,
+  "selected_max_option_count": 269,
+  "selected_option_rows": {
+    "LogistikaBench": 20129,
+    "SC-bench-knowledge": 84
+  },
+  "source_sha256": {
+    "cases": "b652b2108cb552346df11d005c15ff3137c50a756a7b24eb35302683ec33ed99",
+    "native": "72b173d3538e700c42099284d7b20dd6dc80ff2c41fa99a5e17d4a906cbcde7d",
+    "best": "416eae90dae4d02863157555262feed56a4eceb3466cdf2e8905d49cdd67ae72",
+    "selection": "98064af909e6c23a793a4ee8d2a60ae3fef9e907f1be24e0ab7c8339c9a0db2f"
+  },
+  "all_saved_predictions_reparsed": true,
+  "all_question_metadata_verified": true,
+  "all_options_retained": true,
+  "answers_resolved_to_full_option_text": true,
+  "same_order_and_pair_ids_in_each_dataset": true,
+  "workbook_verification": {
+    "question_rows_checked": 492,
+    "option_rows_checked": 40426,
+    "paired_items": 246,
+    "exported_files": [
+      {
+        "file": "LogistikaBench_原始基座.xlsx",
+        "dataset": "LogistikaBench",
+        "role": "native",
+        "questions": 218,
+        "option_rows": 20129,
+        "bytes": 766808,
+        "sha256": "ffb2b0fa5784e7e5d4a80e7502e1f08a42121e116716c7e29e8e4e6dfd86dc20"
+      },
+      {
+        "file": "LogistikaBench_Best_Model.xlsx",
+        "dataset": "LogistikaBench",
+        "role": "best",
+        "questions": 218,
+        "option_rows": 20129,
+        "bytes": 764072,
+        "sha256": "c1bba1df1a8b9340bb9f2b862c9726379e8c0ead6d2827edfffaa555fafd79e4"
+      },
+      {
+        "file": "SC-bench知识题_原始基座.xlsx",
+        "dataset": "SC-bench-knowledge",
+        "role": "native",
+        "questions": 28,
+        "option_rows": 84,
+        "bytes": 19372,
+        "sha256": "8b94c33c5611faf131edaf0274d9cdb9d9d00d4a93066ed2b6496c0084a0e32b"
+      },
+      {
+        "file": "SC-bench知识题_Best_Model.xlsx",
+        "dataset": "SC-bench-knowledge",
+        "role": "best",
+        "questions": 28,
+        "option_rows": 84,
+        "bytes": 19050,
+        "sha256": "0340b03c718f6ecb3c7ac4ba0666b337a5c8b9372151a62cad7594f72f9f7227"
+      }
+    ],
+    "all_cells_match_private_sources": true,
+    "no_formulas": true,
+    "all_freeze_panes_and_filters_verified": true,
+    "visual_sheets_checked": 8,
+    "targeted_tests_passed": 15
+  }
+}
