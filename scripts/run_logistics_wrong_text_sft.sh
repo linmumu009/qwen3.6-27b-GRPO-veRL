@@ -3,7 +3,9 @@ set -Eeuo pipefail
 ROOT=/workspace/llin-verl-grpo
 RUN=${WRONG_TEXT_RUN:?}
 CODE=$(cd -- "$(dirname -- "$0")" && pwd)
-BASE=$ROOT/runs/llin-step120-opensource-20260825-02/hf_export_step120_opensource
+BASE=${WRONG_TEXT_BASE_MODEL:-$ROOT/runs/llin-step120-opensource-20260825-02/hf_export_step120_opensource}
+EPOCHS=${WRONG_TEXT_EPOCHS:-1}
+PARENT=${WRONG_TEXT_PARENT_RUN:-}
 BRIDGE=$ROOT/reference/Megatron-Bridge-de93536e/src
 CASES=$ROOT/runs/logistics-cpt-diagnostics-20260904/private/public_eval/frozen_cases_source.jsonl
 umask 077
@@ -26,10 +28,15 @@ torchrun --standalone --nnodes=1 --nproc_per_node=16 "$CODE/check_logistics_eval
 printf 'preparing_data\n' > "$RUN/status.txt"
 python3 "$CODE/prepare_logistics_wrong_text_sft.py" --source "$CASES" \
   --baseline "$RUN/inputs/step120_opensource_nothinking.jsonl" \
-  --native "$RUN/inputs/base_local_qwen36_27b_nothinking.jsonl" --model "$BASE" --output "$RUN/data"
+  --native "$RUN/inputs/base_local_qwen36_27b_nothinking.jsonl" --model "$BASE" --epochs "$EPOCHS" --output "$RUN/data"
 read -r BATCH STEPS < <(python3 -c 'import json,sys; d=json.load(open(sys.argv[1])); print(d["batch_size"],d["total_steps"])' "$RUN/data/manifest.safe.json")
 printf 'evaluating_step_0\n' > "$RUN/status.txt"
-bash "$CODE/evaluate_logistics_wrong_text_checkpoint.sh" 0 > "$RUN/eval_step_0.log" 2>&1
+if [[ -n $PARENT ]]; then
+  python3 "$CODE/seed_logistics_wrong_text_continuation.py" --run "$RUN" --parent "$PARENT" \
+    --cases "$CASES" --base-model "$BASE" > "$RUN/eval_step_0.log" 2>&1
+else
+  bash "$CODE/evaluate_logistics_wrong_text_checkpoint.sh" 0 > "$RUN/eval_step_0.log" 2>&1
+fi
 printf 'training\n' > "$RUN/status.txt"
 torchrun --standalone --nnodes=1 --nproc_per_node=16 --log-dir="$RUN/torchrun_logs" --redirects=3 --tee=0 \
  "$CODE/train_logistics_wrong_text_sft.py" \
@@ -53,8 +60,8 @@ torchrun --standalone --nnodes=1 --nproc_per_node=16 --log-dir="$RUN/torchrun_lo
  ++engine.override_transformer_config.recompute_num_layers=1 ++engine.override_transformer_config.use_flash_attn=true \
  ++engine.override_transformer_config.sequence_parallel=true 'checkpoint.load_contents=[]' 'checkpoint.save_contents=[model,extra]' \
  "trainer.default_local_dir=$RUN/checkpoints" trainer.project_name=llin-logistics-wrong-text \
- trainer.experiment_name=wrong-union-full-text-one-epoch 'trainer.logger=["console"]' \
- trainer.total_epochs=1 "trainer.total_training_steps=$STEPS" trainer.save_freq=50 trainer.test_freq=-1 \
+ "trainer.experiment_name=wrong-union-full-text-${EPOCHS}epochs" 'trainer.logger=["console"]' \
+ "trainer.total_epochs=$EPOCHS" "trainer.total_training_steps=$STEPS" trainer.save_freq=50 trainer.test_freq=-1 \
  trainer.seed=1024 trainer.resume_mode=disable trainer.max_ckpt_to_keep=1 trainer.nnodes=1 trainer.n_gpus_per_node=16
 python3 - "$RUN" <<'PY'
 import json, pathlib, shutil, sys

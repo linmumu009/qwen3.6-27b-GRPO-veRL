@@ -3,7 +3,7 @@ set -Eeuo pipefail
 RUN=${WRONG_TEXT_RUN:?}
 ROOT=/workspace/llin-verl-grpo
 CODE=$(cd -- "$(dirname -- "$0")" && pwd)
-BASE=$ROOT/runs/llin-step120-opensource-20260825-02/hf_export_step120_opensource
+BASE=${WRONG_TEXT_BASE_MODEL:-$ROOT/runs/llin-step120-opensource-20260825-02/hf_export_step120_opensource}
 CASES=$ROOT/runs/logistics-cpt-diagnostics-20260904/private/public_eval/frozen_cases_source.jsonl
 STEP=${1:?}
 [[ $STEP =~ ^[0-9]+$ && -d $RUN ]] || exit 2

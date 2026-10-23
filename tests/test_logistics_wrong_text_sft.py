@@ -4,7 +4,7 @@ from pathlib import Path
 import pytest
 
 from scripts.evaluate_logistics_knowledge import _make_item, parse_answers
-from scripts.prepare_logistics_wrong_text_sft import encode, read_predictions, select_errors, training_example
+from scripts.prepare_logistics_wrong_text_sft import encode, read_predictions, select_errors, training_example, training_schedule
 from scripts.logistics_wrong_text_selection import best_link_target, owned_model
 from scripts.train_logistics_wrong_text_sft import evaluation_environment
 
@@ -25,6 +25,53 @@ def test_full_correct_texts_and_shuffled_indices_agree():
     assert set(texts) == {'Move by rail.', 'Use a warehouse.'}
     assert all(option in messages[1]['content'] for option in case.options)
     assert training_example(case) == (messages, answer, order)
+
+
+@pytest.mark.parametrize('epochs,steps,evaluations', [(1,103,[50,100,103]), (2,206,[50,100,150,200,206])])
+def test_complete_epoch_schedule_has_no_tail_drops(epochs, steps, evaluations):
+    schedule = training_schedule(309, epochs)
+    assert schedule['batch_size'] * schedule['steps_per_epoch'] == 309
+    assert schedule['total_steps'] == steps
+    assert schedule['evaluation_steps'] == evaluations
+
+
+def test_continuation_reuses_only_matching_verified_evaluation(tmp_path, monkeypatch):
+    import hashlib
+    import scripts.seed_logistics_wrong_text_continuation as seed
+    from scripts.evaluate_logistics_knowledge import PROMPT_VERSION
+    parent = tmp_path/'parent'
+    for directory in ['private','safe','hf/model']:
+        (parent/directory).mkdir(parents=True, exist_ok=True)
+    model = parent/'hf/model'
+    (parent/'status.txt').write_text('complete\n')
+    cases = tmp_path/'cases.jsonl'
+    source, predictions = [], []
+    for index in range(1672):
+        case = item(str(index))
+        source.append(dict(item_hash=case.item_hash,dataset=case.dataset,source_id=case.source_id,
+            category=case.category,question_type=case.question_type,question=case.question,
+            options=list(case.options),expected=list(case.expected)))
+        predictions.append({**source[-1], 'prediction':'{"answers":[0,2]}' if index < 1600 else '{"answers":[0]}',
+            'correct':index < 1600,'parse_ok':True})
+    cases.write_text('\n'.join(json.dumps(row) for row in source)+'\n')
+    fingerprint = hashlib.sha256(cases.read_bytes()).hexdigest()
+    monkeypatch.setattr(seed, 'SOURCE_SHA256', fingerprint)
+    raw = parent/'private/step_103.jsonl'
+    raw.write_text('\n'.join(json.dumps(row) for row in predictions)+'\n')
+    best = dict(step=103,model=str(model),correct=1600,parse_failures=0)
+    (parent/'selection.safe.json').write_text(json.dumps(dict(best=best,evaluations=[best])))
+    summary = dict(input_sha256={'cases_jsonl':fingerprint},prompt_version=PROMPT_VERSION,
+        request=dict(temperature=0,max_output_tokens=128,enable_thinking=False),
+        runtime=dict(tensor_parallel_size=8,data_parallel_size=2,seed=1024))
+    safe = parent/'safe/step_103.json'
+    safe.write_text(json.dumps(summary))
+    assert seed.validate_parent(parent,cases,model)[0] == best
+    with pytest.raises(ValueError,match='initial model'):
+        seed.validate_parent(parent,cases,tmp_path/'other')
+    summary['request']['max_output_tokens'] = 96
+    safe.write_text(json.dumps(summary))
+    with pytest.raises(ValueError,match='generation settings'):
+        seed.validate_parent(parent,cases,model)
 
 
 def test_union_includes_native_only_and_step120_only_errors():

@@ -1,4 +1,4 @@
-"""One exposure to the union of native/Step120 errors, with full answer text."""
+"""Prepare complete epochs of native/Step120 errors with full answer text."""
 import argparse
 from collections import Counter
 from dataclasses import replace
@@ -72,11 +72,22 @@ def encode(item, tokenizer):
         answer_start=len(prefix), answer_tokens=len(suffix), token_count=len(ids), option_order=order)
 
 
+def training_schedule(item_count, epochs):
+    if item_count < 1 or epochs < 1:
+        raise ValueError('positive item and epoch counts required')
+    batch = max(size for size in range(1, 9) if item_count % size == 0)
+    steps_per_epoch = item_count // batch
+    steps = steps_per_epoch * epochs
+    return dict(batch_size=batch, steps_per_epoch=steps_per_epoch, total_epochs=epochs,
+        total_steps=steps, evaluation_steps=sorted(set(range(50, steps + 1, 50)) | {steps}))
+
+
 def main():
     parser = argparse.ArgumentParser()
     for name in ('source', 'baseline', 'native', 'output'):
         parser.add_argument('--' + name, type=Path, required=True)
     parser.add_argument('--model', required=True)
+    parser.add_argument('--epochs', type=int, default=1)
     args = parser.parse_args()
     if args.output.exists():
         raise ValueError('refusing overwrite')
@@ -95,8 +106,7 @@ def main():
     tokenizer = AutoTokenizer.from_pretrained(args.model, trust_remote_code=True)
     rows = [encode(item, tokenizer) for item in selected]
     # This trainer drops partial batches. Select an exact divisor: no omitted or repeated items.
-    batch = max(size for size in range(1, 9) if len(rows) % size == 0)
-    steps = len(rows) // batch
+    schedule = training_schedule(len(rows), args.epochs)
     os.umask(0o077)
     args.output.mkdir(parents=True)
     parquet = args.output / 'train.parquet'
@@ -111,10 +121,10 @@ def main():
                           for key, path in [('baseline', args.baseline), ('native', args.native)]},
         parquet_sha256=hashlib.sha256(parquet.read_bytes()).hexdigest(),
         full_answer_text_supervised=True, shuffled_options=True, all_options_retained=True,
-        total_epochs=1, batch_size=batch, total_steps=steps,
-        evaluation_steps=sorted(set(range(50, steps + 1, 50)) | {steps}),
-        sequence_tokens=sum(row['token_count'] for row in rows),
-        supervised_tokens=sum(row['answer_tokens'] + 1 for row in rows),
+        **schedule,
+        sequence_tokens_per_epoch=sum(row['token_count'] for row in rows),
+        sequence_tokens=sum(row['token_count'] for row in rows) * args.epochs,
+        supervised_tokens=sum(row['answer_tokens'] + 1 for row in rows) * args.epochs,
         max_sequence_tokens=max(row['token_count'] for row in rows))
     (args.output / 'manifest.safe.json').write_text(json.dumps(manifest, indent=2) + '\n')
     print(json.dumps(manifest, indent=2))
