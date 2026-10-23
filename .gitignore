@@ -17,3 +17,7 @@ data/*.parquet
 
 # Locally downloaded framework/source references
 reference/
+
+# Private CPT material copies and one-time server downloads
+/CPT语料整理_20261023/
+/.tmp/cpt-materials-download-20261023/
