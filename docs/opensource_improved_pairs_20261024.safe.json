@@ -1,0 +1,1922 @@
+{
+  "date": "2026-10-24",
+  "private_content_included": false,
+  "native_model_tag": "qwen36-27b",
+  "trained_model_tag": "llin-step120-opensource",
+  "trained_model": "Qwen3.6-27B GRPO Step120-opensource, not logistics SFT best150",
+  "selection": "recorded native wrong and trained correct, identical prompts and golds, no API errors or truncated trained answers",
+  "primary_mode": "nothink_8192",
+  "score_basis": "existing archived per-task scores; no fresh inference or benchmark code execution",
+  "selected_items": 307,
+  "by_dataset": {
+    "BBH-0shot": 86,
+    "BBH-3shot": 69,
+    "CMATH": 1,
+    "GSM8K_test": 2,
+    "HumanEval": 6,
+    "IFEval": 35,
+    "LiveCodeBench-v1": 21,
+    "LiveCodeBench-v2": 8,
+    "LiveCodeBench-v3": 6,
+    "LiveCodeBench-v4": 10,
+    "LiveCodeBench-v5": 10,
+    "LiveCodeBench-v6": 7,
+    "MBPP": 9,
+    "MGSM-zh": 7,
+    "RACE": 1,
+    "SafetyBench-en": 11,
+    "SafetyBench-zh": 15,
+    "AIME24": 2,
+    "AIME25": 1
+  },
+  "pending_aime_items": 0,
+  "pending_by_dataset": {},
+  "audits": [
+    {
+      "dataset": "AIME24",
+      "mode": "nothink_8192",
+      "items": 30,
+      "native_correct": 22,
+      "trained_correct": 3,
+      "recorded_gains": 1,
+      "recorded_losses": 20,
+      "prompt_mismatches": 0,
+      "model_tag_conflict": false,
+      "native_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_8192/20260713_165256_AIME24",
+      "trained_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_8192/20260825_175123_AIME24",
+      "native_config": {
+        "model": {
+          "tag": "qwen36-27b",
+          "name": "Qwen3.6-27B",
+          "path": "/data/models/Qwen3.6-27B"
+        },
+        "benchmark": {
+          "name": "AIME24",
+          "data": "AIME24.jsonl",
+          "type": "math",
+          "shot": 0,
+          "max_tokens": 8192,
+          "scorer": "math_scorer"
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": true
+        },
+        "seed": 1024
+      },
+      "trained_config": {
+        "model": {
+          "tag": "llin-step120-opensource",
+          "name": "Qwen3.6-27B",
+          "path": "/data3/llin/qwen3.6-27b-verl-grpo/runs/llin-step120-opensource-20260825-02/hf_export_step120_opensource"
+        },
+        "benchmark": {
+          "name": "AIME24",
+          "data": "AIME24.jsonl",
+          "type": "math",
+          "shot": null,
+          "max_tokens": 8192,
+          "scorer": null
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": false
+        },
+        "seed": null
+      },
+      "status": "no_complete_improvement",
+      "excluded_candidate_reasons": {
+        "trained_response_truncated": 1
+      },
+      "exported_items": 0
+    },
+    {
+      "dataset": "AIME25",
+      "mode": "nothink_8192",
+      "items": 30,
+      "native_correct": 22,
+      "trained_correct": 4,
+      "recorded_gains": 0,
+      "recorded_losses": 18,
+      "prompt_mismatches": 0,
+      "model_tag_conflict": false,
+      "native_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_8192/20260713_165256_AIME25",
+      "trained_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_8192/20260825_175123_AIME25",
+      "native_config": {
+        "model": {
+          "tag": "qwen36-27b",
+          "name": "Qwen3.6-27B",
+          "path": "/data/models/Qwen3.6-27B"
+        },
+        "benchmark": {
+          "name": "AIME25",
+          "data": "AIME25.jsonl",
+          "type": "math",
+          "shot": 0,
+          "max_tokens": 8192,
+          "scorer": "math_scorer"
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": true
+        },
+        "seed": 1024
+      },
+      "trained_config": {
+        "model": {
+          "tag": "llin-step120-opensource",
+          "name": "Qwen3.6-27B",
+          "path": "/data3/llin/qwen3.6-27b-verl-grpo/runs/llin-step120-opensource-20260825-02/hf_export_step120_opensource"
+        },
+        "benchmark": {
+          "name": "AIME25",
+          "data": "AIME25.jsonl",
+          "type": "math",
+          "shot": null,
+          "max_tokens": 8192,
+          "scorer": null
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": false
+        },
+        "seed": null
+      },
+      "status": "no_complete_improvement",
+      "excluded_candidate_reasons": {},
+      "exported_items": 0
+    },
+    {
+      "dataset": "BBH-0shot",
+      "mode": "nothink_8192",
+      "items": 6511,
+      "native_correct": 5844,
+      "trained_correct": 5834,
+      "recorded_gains": 86,
+      "recorded_losses": 96,
+      "prompt_mismatches": 0,
+      "model_tag_conflict": false,
+      "native_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_8192/20260831_131259_BBH-0shot",
+      "trained_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_8192/20260831_161210_BBH-0shot",
+      "native_config": {
+        "model": {
+          "tag": "qwen36-27b",
+          "name": "Qwen3.6-27B",
+          "path": "/data3/models/Qwen3.6-27B"
+        },
+        "benchmark": {
+          "name": "BBH-0shot",
+          "data": "BBH-0shot.jsonl",
+          "type": "bbh",
+          "shot": 0,
+          "max_tokens": 8192,
+          "scorer": "bbh_scorer"
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": true
+        },
+        "seed": 1024
+      },
+      "trained_config": {
+        "model": {
+          "tag": "llin-step120-opensource",
+          "name": "Qwen3.6-27B",
+          "path": "/data3/llin/qwen3.6-27b-verl-grpo/runs/llin-step120-opensource-20260825-02/hf_export_step120_opensource"
+        },
+        "benchmark": {
+          "name": "BBH-0shot",
+          "data": "BBH-0shot.jsonl",
+          "type": "bbh",
+          "shot": 0,
+          "max_tokens": 8192,
+          "scorer": "bbh_scorer"
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": true
+        },
+        "seed": 1024
+      },
+      "status": "included",
+      "excluded_candidate_reasons": {},
+      "exported_items": 86
+    },
+    {
+      "dataset": "BBH-3shot",
+      "mode": "nothink_8192",
+      "items": 6511,
+      "native_correct": 6059,
+      "trained_correct": 6061,
+      "recorded_gains": 69,
+      "recorded_losses": 67,
+      "prompt_mismatches": 0,
+      "model_tag_conflict": false,
+      "native_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_8192/20260831_134201_BBH-3shot",
+      "trained_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_8192/20260831_164106_BBH-3shot",
+      "native_config": {
+        "model": {
+          "tag": "qwen36-27b",
+          "name": "Qwen3.6-27B",
+          "path": "/data3/models/Qwen3.6-27B"
+        },
+        "benchmark": {
+          "name": "BBH-3shot",
+          "data": "BBH-3shot.jsonl",
+          "type": "bbh",
+          "shot": 0,
+          "max_tokens": 8192,
+          "scorer": "bbh_scorer"
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": true
+        },
+        "seed": 1024
+      },
+      "trained_config": {
+        "model": {
+          "tag": "llin-step120-opensource",
+          "name": "Qwen3.6-27B",
+          "path": "/data3/llin/qwen3.6-27b-verl-grpo/runs/llin-step120-opensource-20260825-02/hf_export_step120_opensource"
+        },
+        "benchmark": {
+          "name": "BBH-3shot",
+          "data": "BBH-3shot.jsonl",
+          "type": "bbh",
+          "shot": 0,
+          "max_tokens": 8192,
+          "scorer": "bbh_scorer"
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": true
+        },
+        "seed": 1024
+      },
+      "status": "included",
+      "excluded_candidate_reasons": {},
+      "exported_items": 69
+    },
+    {
+      "dataset": "C-Eval-val",
+      "mode": "nothink_8192",
+      "items": 1346,
+      "native_correct": 1143,
+      "trained_correct": 1217,
+      "recorded_gains": 110,
+      "recorded_losses": 36,
+      "prompt_mismatches": 1346,
+      "model_tag_conflict": false,
+      "native_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_8192/20260713_165256_C-Eval-val",
+      "trained_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_8192/20260825_175123_C-Eval-val",
+      "native_config": {
+        "model": {
+          "tag": "qwen36-27b",
+          "name": "Qwen3.6-27B",
+          "path": "/data/models/Qwen3.6-27B"
+        },
+        "benchmark": {
+          "name": "C-Eval-val",
+          "data": "C-Eval-val.jsonl",
+          "type": "multiple_choice",
+          "shot": 5,
+          "max_tokens": 8192,
+          "scorer": "choice_scorer"
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": true
+        },
+        "seed": 1024
+      },
+      "trained_config": {
+        "model": {
+          "tag": "llin-step120-opensource",
+          "name": "Qwen3.6-27B",
+          "path": "/data3/llin/qwen3.6-27b-verl-grpo/runs/llin-step120-opensource-20260825-02/hf_export_step120_opensource"
+        },
+        "benchmark": {
+          "name": "C-Eval-val",
+          "data": "C-Eval-val.jsonl",
+          "type": "multiple_choice",
+          "shot": null,
+          "max_tokens": 8192,
+          "scorer": null
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": false
+        },
+        "seed": null
+      },
+      "status": "excluded_prompt_mismatch",
+      "excluded_candidate_reasons": {},
+      "exported_items": 0
+    },
+    {
+      "dataset": "CMATH",
+      "mode": "nothink_8192",
+      "items": 600,
+      "native_correct": 546,
+      "trained_correct": 547,
+      "recorded_gains": 1,
+      "recorded_losses": 0,
+      "prompt_mismatches": 0,
+      "model_tag_conflict": false,
+      "native_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_8192/20260829_213643_CMATH",
+      "trained_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_8192/20260829_222450_CMATH",
+      "native_config": {
+        "model": {
+          "tag": "qwen36-27b",
+          "name": "Qwen3.6-27B",
+          "path": "/data3/models/Qwen3.6-27B"
+        },
+        "benchmark": {
+          "name": "CMATH",
+          "data": "CMATH.jsonl",
+          "type": "math",
+          "shot": 0,
+          "max_tokens": 8192,
+          "scorer": "math_scorer"
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": true
+        },
+        "seed": 1024
+      },
+      "trained_config": {
+        "model": {
+          "tag": "llin-step120-opensource",
+          "name": "Qwen3.6-27B",
+          "path": "/data3/llin/qwen3.6-27b-verl-grpo/runs/llin-step120-opensource-20260825-02/hf_export_step120_opensource"
+        },
+        "benchmark": {
+          "name": "CMATH",
+          "data": "CMATH.jsonl",
+          "type": "math",
+          "shot": 0,
+          "max_tokens": 8192,
+          "scorer": "math_scorer"
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": true
+        },
+        "seed": 1024
+      },
+      "status": "included",
+      "excluded_candidate_reasons": {},
+      "exported_items": 1
+    },
+    {
+      "dataset": "CMMLU",
+      "mode": "nothink_8192",
+      "items": 11582,
+      "native_correct": 10032,
+      "trained_correct": 10336,
+      "recorded_gains": 641,
+      "recorded_losses": 337,
+      "prompt_mismatches": 11582,
+      "model_tag_conflict": false,
+      "native_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_8192/20260825_001217_qwen36-27b_CMMLU",
+      "trained_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_8192/20260825_175123_CMMLU",
+      "native_config": {
+        "model": {
+          "tag": "qwen36-27b",
+          "name": "Qwen3.6-27B",
+          "path": "/data3/models/Qwen3.6-27B"
+        },
+        "benchmark": {
+          "name": "CMMLU",
+          "data": "CMMLU.jsonl",
+          "type": "multiple_choice",
+          "shot": 5,
+          "max_tokens": 8192,
+          "scorer": "choice_scorer"
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": null
+        },
+        "seed": 1024
+      },
+      "trained_config": {
+        "model": {
+          "tag": "llin-step120-opensource",
+          "name": "Qwen3.6-27B",
+          "path": "/data3/llin/qwen3.6-27b-verl-grpo/runs/llin-step120-opensource-20260825-02/hf_export_step120_opensource"
+        },
+        "benchmark": {
+          "name": "CMMLU",
+          "data": "CMMLU.jsonl",
+          "type": "multiple_choice",
+          "shot": null,
+          "max_tokens": 8192,
+          "scorer": null
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": false
+        },
+        "seed": null
+      },
+      "status": "excluded_prompt_mismatch",
+      "excluded_candidate_reasons": {},
+      "exported_items": 0
+    },
+    {
+      "dataset": "GSM8K_test",
+      "mode": "nothink_8192",
+      "items": 1319,
+      "native_correct": 1258,
+      "trained_correct": 1258,
+      "recorded_gains": 2,
+      "recorded_losses": 2,
+      "prompt_mismatches": 0,
+      "model_tag_conflict": false,
+      "native_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_8192/20260920_114937_GSM8K_test",
+      "trained_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_8192/20260920_161331_GSM8K_test",
+      "native_config": {
+        "model": {
+          "tag": "qwen36-27b",
+          "name": "Qwen3.6-27B",
+          "path": "huawei-0:/data3/models/qwen3.6_27b_docker_compose/Qwen3.6-27B(常驻服务)"
+        },
+        "benchmark": {
+          "name": "GSM8K_test",
+          "data": "Reasoning/GSM8K_test.jsonl",
+          "type": "math",
+          "shot": 0,
+          "max_tokens": 8192,
+          "scorer": "math_scorer"
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": null
+        },
+        "seed": 1024
+      },
+      "trained_config": {
+        "model": {
+          "tag": "llin-step120-opensource",
+          "name": "Qwen3.6-27B",
+          "path": "PLACEHOLDER"
+        },
+        "benchmark": {
+          "name": "GSM8K_test",
+          "data": "Reasoning/GSM8K_test.jsonl",
+          "type": "math",
+          "shot": 0,
+          "max_tokens": 8192,
+          "scorer": "math_scorer"
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": true
+        },
+        "seed": 1024
+      },
+      "status": "included",
+      "excluded_candidate_reasons": {},
+      "exported_items": 2
+    },
+    {
+      "dataset": "HumanEval",
+      "mode": "nothink_8192",
+      "items": 164,
+      "native_correct": 136,
+      "trained_correct": 76,
+      "recorded_gains": 6,
+      "recorded_losses": 66,
+      "prompt_mismatches": 0,
+      "model_tag_conflict": false,
+      "native_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_8192/20260823_181539_HumanEval",
+      "trained_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_8192/20260825_175123_HumanEval",
+      "native_config": {
+        "model": {
+          "tag": "qwen36-27b",
+          "name": "Qwen3.6-27B",
+          "path": "/data3/llin/base_model/Qwen3.6-27B"
+        },
+        "benchmark": {
+          "name": "HumanEval",
+          "data": "HumanEval.jsonl",
+          "type": "code",
+          "shot": 0,
+          "max_tokens": 8192,
+          "scorer": null
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": true
+        },
+        "seed": 1024
+      },
+      "trained_config": {
+        "model": {
+          "tag": "llin-step120-opensource",
+          "name": "Qwen3.6-27B",
+          "path": "/data3/llin/qwen3.6-27b-verl-grpo/runs/llin-step120-opensource-20260825-02/hf_export_step120_opensource"
+        },
+        "benchmark": {
+          "name": "HumanEval",
+          "data": "HumanEval.jsonl",
+          "type": "code",
+          "shot": null,
+          "max_tokens": 8192,
+          "scorer": null
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": false
+        },
+        "seed": null
+      },
+      "status": "included",
+      "excluded_candidate_reasons": {},
+      "exported_items": 6
+    },
+    {
+      "dataset": "IFEval",
+      "mode": "nothink_8192",
+      "items": 541,
+      "native_correct": 418,
+      "trained_correct": 423,
+      "recorded_gains": 35,
+      "recorded_losses": 30,
+      "prompt_mismatches": 0,
+      "model_tag_conflict": false,
+      "native_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_8192/20260823_181539_IFEval",
+      "trained_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_8192/20260825_175123_IFEval",
+      "native_config": {
+        "model": {
+          "tag": "qwen36-27b",
+          "name": "Qwen3.6-27B",
+          "path": "/data3/llin/base_model/Qwen3.6-27B"
+        },
+        "benchmark": {
+          "name": "IFEval",
+          "data": "IFEval.jsonl",
+          "type": "instruction",
+          "shot": 0,
+          "max_tokens": 8192,
+          "scorer": null
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": true
+        },
+        "seed": 1024
+      },
+      "trained_config": {
+        "model": {
+          "tag": "llin-step120-opensource",
+          "name": "Qwen3.6-27B",
+          "path": "/data3/llin/qwen3.6-27b-verl-grpo/runs/llin-step120-opensource-20260825-02/hf_export_step120_opensource"
+        },
+        "benchmark": {
+          "name": "IFEval",
+          "data": "IFEval.jsonl",
+          "type": "instruction",
+          "shot": null,
+          "max_tokens": 8192,
+          "scorer": null
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": false
+        },
+        "seed": null
+      },
+      "status": "included",
+      "excluded_candidate_reasons": {},
+      "exported_items": 35
+    },
+    {
+      "dataset": "LiveCodeBench-v1",
+      "mode": "nothink_8192",
+      "items": 400,
+      "native_correct": 327,
+      "trained_correct": 320,
+      "recorded_gains": 21,
+      "recorded_losses": 28,
+      "prompt_mismatches": 0,
+      "model_tag_conflict": false,
+      "native_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_8192/20261010_143954_LiveCodeBench-v1",
+      "trained_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_8192/20261010_172350_LiveCodeBench-v1",
+      "native_config": {
+        "model": {
+          "tag": "qwen36-27b",
+          "name": "Qwen3.6-27B",
+          "path": "PLACEHOLDER"
+        },
+        "benchmark": {
+          "name": "LiveCodeBench-v1",
+          "data": "Coding/LiveCodeBench-v1.jsonl",
+          "type": "code",
+          "shot": 0,
+          "max_tokens": 8192,
+          "scorer": "lcb_scorer"
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": true
+        },
+        "seed": 1024
+      },
+      "trained_config": {
+        "model": {
+          "tag": "llin-step120-opensource",
+          "name": "Qwen3.6-27B",
+          "path": "PLACEHOLDER"
+        },
+        "benchmark": {
+          "name": "LiveCodeBench-v1",
+          "data": "Coding/LiveCodeBench-v1.jsonl",
+          "type": "code",
+          "shot": 0,
+          "max_tokens": 8192,
+          "scorer": "lcb_scorer"
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": true
+        },
+        "seed": 1024
+      },
+      "status": "included",
+      "excluded_candidate_reasons": {},
+      "exported_items": 21
+    },
+    {
+      "dataset": "LiveCodeBench-v2",
+      "mode": "nothink_8192",
+      "items": 111,
+      "native_correct": 85,
+      "trained_correct": 83,
+      "recorded_gains": 8,
+      "recorded_losses": 10,
+      "prompt_mismatches": 0,
+      "model_tag_conflict": false,
+      "native_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_8192/20261010_144541_LiveCodeBench-v2",
+      "trained_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_8192/20261010_172950_LiveCodeBench-v2",
+      "native_config": {
+        "model": {
+          "tag": "qwen36-27b",
+          "name": "Qwen3.6-27B",
+          "path": "PLACEHOLDER"
+        },
+        "benchmark": {
+          "name": "LiveCodeBench-v2",
+          "data": "Coding/LiveCodeBench-v2.jsonl",
+          "type": "code",
+          "shot": 0,
+          "max_tokens": 8192,
+          "scorer": "lcb_scorer"
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": true
+        },
+        "seed": 1024
+      },
+      "trained_config": {
+        "model": {
+          "tag": "llin-step120-opensource",
+          "name": "Qwen3.6-27B",
+          "path": "PLACEHOLDER"
+        },
+        "benchmark": {
+          "name": "LiveCodeBench-v2",
+          "data": "Coding/LiveCodeBench-v2.jsonl",
+          "type": "code",
+          "shot": 0,
+          "max_tokens": 8192,
+          "scorer": "lcb_scorer"
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": true
+        },
+        "seed": 1024
+      },
+      "status": "included",
+      "excluded_candidate_reasons": {},
+      "exported_items": 8
+    },
+    {
+      "dataset": "LiveCodeBench-v3",
+      "mode": "nothink_8192",
+      "items": 101,
+      "native_correct": 84,
+      "trained_correct": 88,
+      "recorded_gains": 6,
+      "recorded_losses": 2,
+      "prompt_mismatches": 0,
+      "model_tag_conflict": false,
+      "native_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_8192/20261010_144750_LiveCodeBench-v3",
+      "trained_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_8192/20261010_173206_LiveCodeBench-v3",
+      "native_config": {
+        "model": {
+          "tag": "qwen36-27b",
+          "name": "Qwen3.6-27B",
+          "path": "PLACEHOLDER"
+        },
+        "benchmark": {
+          "name": "LiveCodeBench-v3",
+          "data": "Coding/LiveCodeBench-v3.jsonl",
+          "type": "code",
+          "shot": 0,
+          "max_tokens": 8192,
+          "scorer": "lcb_scorer"
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": true
+        },
+        "seed": 1024
+      },
+      "trained_config": {
+        "model": {
+          "tag": "llin-step120-opensource",
+          "name": "Qwen3.6-27B",
+          "path": "PLACEHOLDER"
+        },
+        "benchmark": {
+          "name": "LiveCodeBench-v3",
+          "data": "Coding/LiveCodeBench-v3.jsonl",
+          "type": "code",
+          "shot": 0,
+          "max_tokens": 8192,
+          "scorer": "lcb_scorer"
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": true
+        },
+        "seed": 1024
+      },
+      "status": "included",
+      "excluded_candidate_reasons": {},
+      "exported_items": 6
+    },
+    {
+      "dataset": "LiveCodeBench-v4",
+      "mode": "nothink_8192",
+      "items": 101,
+      "native_correct": 53,
+      "trained_correct": 62,
+      "recorded_gains": 10,
+      "recorded_losses": 1,
+      "prompt_mismatches": 0,
+      "model_tag_conflict": false,
+      "native_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_8192/20261010_144955_LiveCodeBench-v4",
+      "trained_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_8192/20261010_173406_LiveCodeBench-v4",
+      "native_config": {
+        "model": {
+          "tag": "qwen36-27b",
+          "name": "Qwen3.6-27B",
+          "path": "PLACEHOLDER"
+        },
+        "benchmark": {
+          "name": "LiveCodeBench-v4",
+          "data": "Coding/LiveCodeBench-v4.jsonl",
+          "type": "code",
+          "shot": 0,
+          "max_tokens": 8192,
+          "scorer": "lcb_scorer"
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": true
+        },
+        "seed": 1024
+      },
+      "trained_config": {
+        "model": {
+          "tag": "llin-step120-opensource",
+          "name": "Qwen3.6-27B",
+          "path": "PLACEHOLDER"
+        },
+        "benchmark": {
+          "name": "LiveCodeBench-v4",
+          "data": "Coding/LiveCodeBench-v4.jsonl",
+          "type": "code",
+          "shot": 0,
+          "max_tokens": 8192,
+          "scorer": "lcb_scorer"
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": true
+        },
+        "seed": 1024
+      },
+      "status": "included",
+      "excluded_candidate_reasons": {},
+      "exported_items": 10
+    },
+    {
+      "dataset": "LiveCodeBench-v5",
+      "mode": "nothink_8192",
+      "items": 167,
+      "native_correct": 101,
+      "trained_correct": 97,
+      "recorded_gains": 11,
+      "recorded_losses": 15,
+      "prompt_mismatches": 0,
+      "model_tag_conflict": false,
+      "native_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_8192/20261010_145315_LiveCodeBench-v5",
+      "trained_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_8192/20261010_173716_LiveCodeBench-v5",
+      "native_config": {
+        "model": {
+          "tag": "qwen36-27b",
+          "name": "Qwen3.6-27B",
+          "path": "PLACEHOLDER"
+        },
+        "benchmark": {
+          "name": "LiveCodeBench-v5",
+          "data": "Coding/LiveCodeBench-v5.jsonl",
+          "type": "code",
+          "shot": 0,
+          "max_tokens": 8192,
+          "scorer": "lcb_scorer"
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": true
+        },
+        "seed": 1024
+      },
+      "trained_config": {
+        "model": {
+          "tag": "llin-step120-opensource",
+          "name": "Qwen3.6-27B",
+          "path": "PLACEHOLDER"
+        },
+        "benchmark": {
+          "name": "LiveCodeBench-v5",
+          "data": "Coding/LiveCodeBench-v5.jsonl",
+          "type": "code",
+          "shot": 0,
+          "max_tokens": 8192,
+          "scorer": "lcb_scorer"
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": true
+        },
+        "seed": 1024
+      },
+      "status": "included",
+      "excluded_candidate_reasons": {
+        "trained_response_truncated": 1
+      },
+      "exported_items": 10
+    },
+    {
+      "dataset": "LiveCodeBench-v6",
+      "mode": "nothink_8192",
+      "items": 175,
+      "native_correct": 96,
+      "trained_correct": 86,
+      "recorded_gains": 8,
+      "recorded_losses": 18,
+      "prompt_mismatches": 0,
+      "model_tag_conflict": false,
+      "native_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_8192/20261010_145744_LiveCodeBench-v6",
+      "trained_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_8192/20261010_174141_LiveCodeBench-v6",
+      "native_config": {
+        "model": {
+          "tag": "qwen36-27b",
+          "name": "Qwen3.6-27B",
+          "path": "PLACEHOLDER"
+        },
+        "benchmark": {
+          "name": "LiveCodeBench-v6",
+          "data": "Coding/LiveCodeBench-v6.jsonl",
+          "type": "code",
+          "shot": 0,
+          "max_tokens": 8192,
+          "scorer": "lcb_scorer"
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": true
+        },
+        "seed": 1024
+      },
+      "trained_config": {
+        "model": {
+          "tag": "llin-step120-opensource",
+          "name": "Qwen3.6-27B",
+          "path": "PLACEHOLDER"
+        },
+        "benchmark": {
+          "name": "LiveCodeBench-v6",
+          "data": "Coding/LiveCodeBench-v6.jsonl",
+          "type": "code",
+          "shot": 0,
+          "max_tokens": 8192,
+          "scorer": "lcb_scorer"
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": true
+        },
+        "seed": 1024
+      },
+      "status": "included",
+      "excluded_candidate_reasons": {
+        "trained_response_truncated": 1
+      },
+      "exported_items": 7
+    },
+    {
+      "dataset": "MBPP",
+      "mode": "nothink_8192",
+      "items": 974,
+      "native_correct": 825,
+      "trained_correct": 826,
+      "recorded_gains": 9,
+      "recorded_losses": 8,
+      "prompt_mismatches": 0,
+      "model_tag_conflict": false,
+      "native_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_8192/20260829_213900_MBPP",
+      "trained_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_8192/20260829_222703_MBPP",
+      "native_config": {
+        "model": {
+          "tag": "qwen36-27b",
+          "name": "Qwen3.6-27B",
+          "path": "/data3/models/Qwen3.6-27B"
+        },
+        "benchmark": {
+          "name": "MBPP",
+          "data": "MBPP.jsonl",
+          "type": "code",
+          "shot": 0,
+          "max_tokens": 8192,
+          "scorer": "code_scorer"
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": true
+        },
+        "seed": 1024
+      },
+      "trained_config": {
+        "model": {
+          "tag": "llin-step120-opensource",
+          "name": "Qwen3.6-27B",
+          "path": "/data3/llin/qwen3.6-27b-verl-grpo/runs/llin-step120-opensource-20260825-02/hf_export_step120_opensource"
+        },
+        "benchmark": {
+          "name": "MBPP",
+          "data": "MBPP.jsonl",
+          "type": "code",
+          "shot": 0,
+          "max_tokens": 8192,
+          "scorer": "code_scorer"
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": true
+        },
+        "seed": 1024
+      },
+      "status": "included",
+      "excluded_candidate_reasons": {},
+      "exported_items": 9
+    },
+    {
+      "dataset": "MGSM-zh",
+      "mode": "nothink_8192",
+      "items": 250,
+      "native_correct": 223,
+      "trained_correct": 217,
+      "recorded_gains": 8,
+      "recorded_losses": 14,
+      "prompt_mismatches": 0,
+      "model_tag_conflict": false,
+      "native_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_8192/20260823_181539_MGSM-zh",
+      "trained_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_8192/20260825_175123_MGSM-zh",
+      "native_config": {
+        "model": {
+          "tag": "qwen36-27b",
+          "name": "Qwen3.6-27B",
+          "path": "/data3/llin/base_model/Qwen3.6-27B"
+        },
+        "benchmark": {
+          "name": "MGSM-zh",
+          "data": "MGSM-zh.jsonl",
+          "type": "math",
+          "shot": 0,
+          "max_tokens": 8192,
+          "scorer": null
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": true
+        },
+        "seed": 1024
+      },
+      "trained_config": {
+        "model": {
+          "tag": "llin-step120-opensource",
+          "name": "Qwen3.6-27B",
+          "path": "/data3/llin/qwen3.6-27b-verl-grpo/runs/llin-step120-opensource-20260825-02/hf_export_step120_opensource"
+        },
+        "benchmark": {
+          "name": "MGSM-zh",
+          "data": "MGSM-zh.jsonl",
+          "type": "math",
+          "shot": null,
+          "max_tokens": 8192,
+          "scorer": null
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": false
+        },
+        "seed": null
+      },
+      "status": "included",
+      "excluded_candidate_reasons": {
+        "trained_response_truncated": 1
+      },
+      "exported_items": 7
+    },
+    {
+      "dataset": "MMLU-Pro",
+      "mode": "nothink_8192",
+      "items": 12032,
+      "native_correct": 8030,
+      "trained_correct": 9814,
+      "recorded_gains": 2426,
+      "recorded_losses": 642,
+      "prompt_mismatches": 12032,
+      "model_tag_conflict": false,
+      "native_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_8192/20260825_001217_MMLU-Pro",
+      "trained_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_8192/20260825_175123_MMLU-Pro",
+      "native_config": {
+        "model": {
+          "tag": "qwen36-27b",
+          "name": "Qwen3.6-27B",
+          "path": "/data3/models/Qwen3.6-27B"
+        },
+        "benchmark": {
+          "name": "MMLU-Pro",
+          "data": "MMLU-Pro.jsonl",
+          "type": "multiple_choice",
+          "shot": 5,
+          "max_tokens": 8192,
+          "scorer": "choice_scorer"
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": true
+        },
+        "seed": 1024
+      },
+      "trained_config": {
+        "model": {
+          "tag": "llin-step120-opensource",
+          "name": "Qwen3.6-27B",
+          "path": "/data3/llin/qwen3.6-27b-verl-grpo/runs/llin-step120-opensource-20260825-02/hf_export_step120_opensource"
+        },
+        "benchmark": {
+          "name": "MMLU-Pro",
+          "data": "MMLU-Pro.jsonl",
+          "type": "multiple_choice",
+          "shot": null,
+          "max_tokens": 8192,
+          "scorer": null
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": false
+        },
+        "seed": null
+      },
+      "status": "excluded_prompt_mismatch",
+      "excluded_candidate_reasons": {},
+      "exported_items": 0
+    },
+    {
+      "dataset": "OlymMATH",
+      "mode": "nothink_8192",
+      "items": 400,
+      "native_correct": 201,
+      "trained_correct": 3,
+      "recorded_gains": 0,
+      "recorded_losses": 198,
+      "prompt_mismatches": 0,
+      "model_tag_conflict": false,
+      "native_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_8192/20260713_165256_OlymMATH",
+      "trained_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_8192/20260825_175123_OlymMATH",
+      "native_config": {
+        "model": {
+          "tag": "qwen36-27b",
+          "name": "Qwen3.6-27B",
+          "path": "/data/models/Qwen3.6-27B"
+        },
+        "benchmark": {
+          "name": "OlymMATH",
+          "data": "OlymMATH.jsonl",
+          "type": "math",
+          "shot": 0,
+          "max_tokens": 8192,
+          "scorer": "math_scorer"
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": true
+        },
+        "seed": 1024
+      },
+      "trained_config": {
+        "model": {
+          "tag": "llin-step120-opensource",
+          "name": "Qwen3.6-27B",
+          "path": "/data3/llin/qwen3.6-27b-verl-grpo/runs/llin-step120-opensource-20260825-02/hf_export_step120_opensource"
+        },
+        "benchmark": {
+          "name": "OlymMATH",
+          "data": "OlymMATH.jsonl",
+          "type": "math",
+          "shot": null,
+          "max_tokens": 8192,
+          "scorer": null
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": false
+        },
+        "seed": null
+      },
+      "status": "no_complete_improvement",
+      "excluded_candidate_reasons": {},
+      "exported_items": 0
+    },
+    {
+      "dataset": "PolyMath",
+      "mode": "nothink_8192",
+      "items": 9000,
+      "native_correct": 4880,
+      "trained_correct": 4836,
+      "recorded_gains": 370,
+      "recorded_losses": 414,
+      "prompt_mismatches": 0,
+      "model_tag_conflict": true,
+      "native_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_8192/20260827_000838_PolyMath",
+      "trained_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_8192/20260827_034649_PolyMath",
+      "native_config": {
+        "model": {
+          "tag": "llin-step120-opensource",
+          "name": "Qwen3.6-27B",
+          "path": "/data3/llin/qwen3.6-27b-verl-grpo/runs/llin-step120-opensource-20260825-02/hf_export_step120_opensource"
+        },
+        "benchmark": {
+          "name": "PolyMath",
+          "data": "PolyMath.jsonl",
+          "type": "math",
+          "shot": 0,
+          "max_tokens": 8192,
+          "scorer": "math_scorer"
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": true
+        },
+        "seed": 1024
+      },
+      "trained_config": {
+        "model": {
+          "tag": "llin-step120-opensource",
+          "name": "Qwen3.6-27B",
+          "path": "/data3/llin/qwen3.6-27b-verl-grpo/runs/llin-step120-opensource-20260825-02/hf_export_step120_opensource"
+        },
+        "benchmark": {
+          "name": "PolyMath",
+          "data": "PolyMath.jsonl",
+          "type": "math",
+          "shot": 0,
+          "max_tokens": 8192,
+          "scorer": "math_scorer"
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": true
+        },
+        "seed": 1024
+      },
+      "status": "excluded_model_tag_conflict",
+      "excluded_candidate_reasons": {},
+      "exported_items": 0
+    },
+    {
+      "dataset": "RACE",
+      "mode": "nothink_8192",
+      "items": 4934,
+      "native_correct": 4630,
+      "trained_correct": 4626,
+      "recorded_gains": 1,
+      "recorded_losses": 5,
+      "prompt_mismatches": 0,
+      "model_tag_conflict": false,
+      "native_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_8192/20260829_214151_RACE",
+      "trained_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_8192/20260829_222940_RACE",
+      "native_config": {
+        "model": {
+          "tag": "qwen36-27b",
+          "name": "Qwen3.6-27B",
+          "path": "/data3/models/Qwen3.6-27B"
+        },
+        "benchmark": {
+          "name": "RACE",
+          "data": "RACE.jsonl",
+          "type": "multiple_choice",
+          "shot": 0,
+          "max_tokens": 8192,
+          "scorer": "choice_scorer"
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": true
+        },
+        "seed": 1024
+      },
+      "trained_config": {
+        "model": {
+          "tag": "llin-step120-opensource",
+          "name": "Qwen3.6-27B",
+          "path": "/data3/llin/qwen3.6-27b-verl-grpo/runs/llin-step120-opensource-20260825-02/hf_export_step120_opensource"
+        },
+        "benchmark": {
+          "name": "RACE",
+          "data": "RACE.jsonl",
+          "type": "multiple_choice",
+          "shot": 0,
+          "max_tokens": 8192,
+          "scorer": "choice_scorer"
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": true
+        },
+        "seed": 1024
+      },
+      "status": "included",
+      "excluded_candidate_reasons": {},
+      "exported_items": 1
+    },
+    {
+      "dataset": "SafetyBench-en",
+      "mode": "nothink_8192",
+      "items": 11435,
+      "native_correct": 10045,
+      "trained_correct": 10034,
+      "recorded_gains": 11,
+      "recorded_losses": 22,
+      "prompt_mismatches": 0,
+      "model_tag_conflict": false,
+      "native_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_8192/20260829_172333_SafetyBench-en",
+      "trained_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_8192/20260829_163725_SafetyBench-en",
+      "native_config": {
+        "model": {
+          "tag": "qwen36-27b",
+          "name": "Qwen3.6-27B",
+          "path": "/data3/models/Qwen3.6-27B"
+        },
+        "benchmark": {
+          "name": "SafetyBench-en",
+          "data": "SafetyBench-en.jsonl",
+          "type": "multiple_choice",
+          "shot": 0,
+          "max_tokens": 8192,
+          "scorer": "choice_scorer"
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": true
+        },
+        "seed": 1024
+      },
+      "trained_config": {
+        "model": {
+          "tag": "llin-step120-opensource",
+          "name": "Qwen3.6-27B",
+          "path": "/data3/llin/qwen3.6-27b-verl-grpo/runs/llin-step120-opensource-20260825-02/hf_export_step120_opensource"
+        },
+        "benchmark": {
+          "name": "SafetyBench-en",
+          "data": "SafetyBench-en.jsonl",
+          "type": "multiple_choice",
+          "shot": 0,
+          "max_tokens": 8192,
+          "scorer": "choice_scorer"
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": true
+        },
+        "seed": 1024
+      },
+      "status": "included",
+      "excluded_candidate_reasons": {},
+      "exported_items": 11
+    },
+    {
+      "dataset": "SafetyBench-zh",
+      "mode": "nothink_8192",
+      "items": 11435,
+      "native_correct": 10158,
+      "trained_correct": 10151,
+      "recorded_gains": 15,
+      "recorded_losses": 22,
+      "prompt_mismatches": 0,
+      "model_tag_conflict": false,
+      "native_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_8192/20260829_084143_SafetyBench-zh",
+      "trained_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_8192/20260829_092624_SafetyBench-zh",
+      "native_config": {
+        "model": {
+          "tag": "qwen36-27b",
+          "name": "Qwen3.6-27B",
+          "path": "/data3/models/Qwen3.6-27B"
+        },
+        "benchmark": {
+          "name": "SafetyBench-zh",
+          "data": "SafetyBench-zh.jsonl",
+          "type": "multiple_choice",
+          "shot": 0,
+          "max_tokens": 8192,
+          "scorer": "choice_scorer"
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": true
+        },
+        "seed": 1024
+      },
+      "trained_config": {
+        "model": {
+          "tag": "llin-step120-opensource",
+          "name": "Qwen3.6-27B",
+          "path": "/data3/llin/qwen3.6-27b-verl-grpo/runs/llin-step120-opensource-20260825-02/hf_export_step120_opensource"
+        },
+        "benchmark": {
+          "name": "SafetyBench-zh",
+          "data": "SafetyBench-zh.jsonl",
+          "type": "multiple_choice",
+          "shot": 0,
+          "max_tokens": 8192,
+          "scorer": "choice_scorer"
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": true
+        },
+        "seed": 1024
+      },
+      "status": "included",
+      "excluded_candidate_reasons": {},
+      "exported_items": 15
+    },
+    {
+      "dataset": "AIME24",
+      "mode": "nothink_30720",
+      "items": 30,
+      "native_correct": 25,
+      "trained_correct": 26,
+      "recorded_gains": 2,
+      "recorded_losses": 1,
+      "prompt_mismatches": 0,
+      "model_tag_conflict": true,
+      "native_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_30720/20260824_150404_AIME24",
+      "trained_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_30720/20260826_130602_AIME24",
+      "native_config": {
+        "model": {
+          "tag": "qwen36-27b",
+          "name": "Qwen3.6-27B",
+          "path": "/data3/models/Qwen3.6-27B"
+        },
+        "benchmark": {
+          "name": "AIME24",
+          "data": "AIME24.jsonl",
+          "type": "math",
+          "shot": 0,
+          "max_tokens": 30720,
+          "scorer": "math_scorer"
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": true
+        },
+        "seed": 1024
+      },
+      "trained_config": {
+        "model": {
+          "tag": "qwen36-27b",
+          "name": "Qwen3.6-27B",
+          "path": "/data3/models/Qwen3.6-27B"
+        },
+        "benchmark": {
+          "name": "AIME24",
+          "data": "AIME24.jsonl",
+          "type": "math",
+          "shot": 0,
+          "max_tokens": 30720,
+          "scorer": "math_scorer"
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": false
+        },
+        "seed": 1024
+      },
+      "status": "included_user_confirmed_identity",
+      "excluded_candidate_reasons": {},
+      "exported_items": 2,
+      "identity_confirmation": {
+        "date": "2026-10-24",
+        "source": "explicit user reply in this conversation",
+        "confirmed_model_tag": "llin-step120-opensource",
+        "reply": "确认是开源续训 Step120",
+        "snapshot_conflict_preserved": true
+      }
+    },
+    {
+      "dataset": "AIME25",
+      "mode": "nothink_30720",
+      "items": 30,
+      "native_correct": 24,
+      "trained_correct": 22,
+      "recorded_gains": 1,
+      "recorded_losses": 3,
+      "prompt_mismatches": 0,
+      "model_tag_conflict": true,
+      "native_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_30720/20260824_150404_AIME25",
+      "trained_run": "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_30720/20260826_130920_AIME25",
+      "native_config": {
+        "model": {
+          "tag": "qwen36-27b",
+          "name": "Qwen3.6-27B",
+          "path": "/data3/models/Qwen3.6-27B"
+        },
+        "benchmark": {
+          "name": "AIME25",
+          "data": "AIME25.jsonl",
+          "type": "math",
+          "shot": 0,
+          "max_tokens": 30720,
+          "scorer": "math_scorer"
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": true
+        },
+        "seed": 1024
+      },
+      "trained_config": {
+        "model": {
+          "tag": "qwen36-27b",
+          "name": "Qwen3.6-27B",
+          "path": "/data3/models/Qwen3.6-27B"
+        },
+        "benchmark": {
+          "name": "AIME25",
+          "data": "AIME25.jsonl",
+          "type": "math",
+          "shot": 0,
+          "max_tokens": 30720,
+          "scorer": "math_scorer"
+        },
+        "inference": {
+          "temperature": 0.0,
+          "enable_thinking": false,
+          "mtp": false
+        },
+        "seed": 1024
+      },
+      "status": "included_user_confirmed_identity",
+      "excluded_candidate_reasons": {},
+      "exported_items": 1,
+      "identity_confirmation": {
+        "date": "2026-10-24",
+        "source": "explicit user reply in this conversation",
+        "confirmed_model_tag": "llin-step120-opensource",
+        "reply": "确认是开源续训 Step120",
+        "snapshot_conflict_preserved": true
+      }
+    }
+  ],
+  "source_sha256": {
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_8192/20260713_165256_AIME24": {
+      "predictions.jsonl": "b26e76a32884ff57320db12c4c8ddde6aa7de681762a7c84c0da0dc78e064441",
+      "scores.jsonl": "a3d79422132c57ac186ca0aa4c95d7e8c998c69bcd9d93b3eb4dfb78f4c4a9ad",
+      "summary.json": "505d09a42c77b4f2676895a05667b6af6af984d88950252ce9e139c4874e3c9c",
+      "config_snapshot.yaml": "9d7987c659fe99162fdc9224c56a910baf57aab93189b9d36555a313bcb4b380"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_8192/20260825_175123_AIME24": {
+      "predictions.jsonl": "8a520ed851f228402039e3b6e9588554a68084b9d2dadf0ce70e5af35c5eb959",
+      "scores.jsonl": "029370ab15c2dbe6d7bf3cf822698fa9119baa6a68fe65c4accaf94590f02d83",
+      "summary.json": "f239e4ff17ece99462a0476aeacd26ebe68996f481351fb811f295fb4216b28e",
+      "config_snapshot.yaml": "33f93aa86c5335489700ba3a2fed824fa18e617be5074913bc3dd031f70ee51a"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_8192/20260713_165256_AIME25": {
+      "predictions.jsonl": "ffd27bb33d15abb875902262f636ae639d13f58e3e704c83b51bf7781eeb9824",
+      "scores.jsonl": "52506508fe9651e7ce949340b59b8147f055ef29ded4242f24600cb195005959",
+      "summary.json": "f7ea9272419f79ada583eebbb004f3e4694d916f8405dec200093ab7d58e3079",
+      "config_snapshot.yaml": "9f4948885748496e47e9d70351131b2ee152769c47017548e3c9eeafc01ace68"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_8192/20260825_175123_AIME25": {
+      "predictions.jsonl": "b4e1e58973e2bdf9780d759a2730349e949dffd23b6aa0a6521fcf07984106a0",
+      "scores.jsonl": "5f29836b776cf537c0ceb33835c84488cf776da93a54a45413afcdf32c6fdb5c",
+      "summary.json": "c0b381ab738258b47f166e17bffdbe64b02b7412ed830d33ce244a420d65295a",
+      "config_snapshot.yaml": "726a77a39e45240c27c963cad784db0303e3b121cf8831a71101cbc741269e66"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_8192/20260831_131259_BBH-0shot": {
+      "predictions.jsonl": "d7d87be20509eee863b0aa532018f75e4edda926997809925d709128e11ad25d",
+      "scores.jsonl": "2a116cbca538d2f7b74a74dadabb6a270980d4f966cf4733e78cb2a2eee88c18",
+      "summary.json": "4d1a97cf322a62db2dc84a73d4f91bb9dbee02b6b86ec5d81d10d0b7a4850e5a",
+      "config_snapshot.yaml": "7dea5681888e9e25f0597bc891136098e534bc8b765e157709b9929711d7022c"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_8192/20260831_161210_BBH-0shot": {
+      "predictions.jsonl": "58c28aea3a58f04056e5c24365c94e589165fe365041852018988c0ae58134ac",
+      "scores.jsonl": "02c553ed618e6d72a35e617879d96b7e174663b70bff9e1cc5f42f6731e3c4e0",
+      "summary.json": "37c4a69a568525e3cba968649b956b288d2937ef8c388332fbd201afd2f317c2",
+      "config_snapshot.yaml": "4bfbce7ff4296dc4f20a3e43696e24801498b306e941129e4d1a0d61ab9bd271"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_8192/20260831_134201_BBH-3shot": {
+      "predictions.jsonl": "aa571d572043885eb9633368411c44338d085382b324a407b49cd3de7cce36e9",
+      "scores.jsonl": "7040d898d4f7c7e48a64c2703c1d33c67cadfbfac8b3921149afaac654f30c41",
+      "summary.json": "f5e4d63addb8377247745acade048870774a90226705b6e663b4e9908cab8091",
+      "config_snapshot.yaml": "7b4b563955829bf62f770ab664ead99a10bd77b7823ba25015dc7fb0253d072f"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_8192/20260831_164106_BBH-3shot": {
+      "predictions.jsonl": "925de82b4124dd8ea2194f34dd541e22231ff30b813770c272e03e4a86bb983a",
+      "scores.jsonl": "4ea7e80ccc8d09da8223ef97fd86276a52441a6b80c6b94ef4c4183af665088a",
+      "summary.json": "32e6af4a00efa2725815d9f67d514f369b4447aabb3bbbd0859dad568b5486e7",
+      "config_snapshot.yaml": "ddb29bdd7408049955fec67bf78d62ff02d5c5be39b8e2259ccec59b22c07874"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_8192/20260713_165256_C-Eval-val": {
+      "predictions.jsonl": "197d8c974ada5b2d94246b164ff96f89b67ac5b2196b81f194d6c738e808a31d",
+      "scores.jsonl": "9d05cc3500dd3718026eafb74b4c1a39003fd95199397f64ca19a244e6df752b",
+      "summary.json": "0bea0d0c1e75058d4980ffdfdbe5ab6352eb24c7ab5b6e0f3becfc7eda50d77f",
+      "config_snapshot.yaml": "15da53d6d335c41e230d51e7241e1f71ccc5fae3004e2f62a6fdaf3dad3f2fbc"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_8192/20260825_175123_C-Eval-val": {
+      "predictions.jsonl": "f54ca932d4390e8ccfc4c06f01fcfc8a4f4bf587b22a894790880a64d3a68bc4",
+      "scores.jsonl": "1f43ef50e507588582bc33bf3f19e17454760e3942e09fa9b7908441cefbaff5",
+      "summary.json": "139dcd6efee9bbdcdd21e1f075df635aab81863c5cab12e3a140ba23cc0f2c06",
+      "config_snapshot.yaml": "641d4c7c516210a3774e44a19437460c9d79b038b414389fae8a062b0a0709bd"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_8192/20260829_213643_CMATH": {
+      "predictions.jsonl": "8124cf3840be6084650f648aa31d5ccbb49b3c7c2b9e6fedc09364e87996687b",
+      "scores.jsonl": "3232e0f524c104e626b98c753592080bf9a0576f05bd76dc0cd46b233f8335e8",
+      "summary.json": "8101a7b318f2111d0a71907527fdeccaf4aed883384f5b2adc4bf49254e745f9",
+      "config_snapshot.yaml": "afbe4f102503cf6afb55b6bbafed8d91e23ef00299c34edcefa9889df59414cb"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_8192/20260829_222450_CMATH": {
+      "predictions.jsonl": "115d167b9048e173e6c3bcdfa9b51ba4a6b3f9f560ed8a5eb84de46332fbcfca",
+      "scores.jsonl": "f56b0f5de22d3e88934beeeb40150d7c7037deabda657090c7147ee4906f7c16",
+      "summary.json": "00dbbd0caaa0de7fc7995ca5ca6b5de077b685aef6bd421e9897f93055179c77",
+      "config_snapshot.yaml": "e0a9bca8d7ece12af86807b8faf1d52d854188b8af3d7622717c2dcbd5f3c956"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_8192/20260825_001217_qwen36-27b_CMMLU": {
+      "predictions.jsonl": "7ca80f2e5b53d03f4579693cbb299f9fdc4dec790f195a6c37dc26b0842bf05e",
+      "scores.jsonl": "f18ad02de9f3ec9914caeccbc7b563ed936119a367c4bed1e5087ae34a2bfb22",
+      "summary.json": "7e6356a1c6b9e90284ceeb1019abc4b98341772c388c0c19a56a00b694a76219",
+      "config_snapshot.yaml": "15e4cafeed6e25357f91a3dbb1f254bf27cce5a20bd28e0fec2ba468cfa6b5cc"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_8192/20260825_175123_CMMLU": {
+      "predictions.jsonl": "229ffa91eb6d58a5c7c350514f4067b09ceb09907f14981a8d42851d85c1c2f3",
+      "scores.jsonl": "f270e287abec1036688c67d879f6e6d1c95b8d7fca6e7e6719d79358ce897356",
+      "summary.json": "22cce4dd8b1b307b63c29a2852cd75812932c0f6224c6de6ed439fd151b554fe",
+      "config_snapshot.yaml": "bd86ac16888fbe7531448d87841fa74dc31cad66975f406e40f587ebc6435c5b"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_8192/20260920_114937_GSM8K_test": {
+      "predictions.jsonl": "75f0d2f2cc574aa99c1cca833a15427c7276aed12deb728fcdd0cceb18ad4e04",
+      "scores.jsonl": "aca8338773886966885ba0dac1a1f69e07df6343db04c4fd9a089bcf13306016",
+      "summary.json": "887f2b2e18c200f70db05832a8639f946620c27bc07fe21c17e9bf138e1b1e15",
+      "config_snapshot.yaml": "5991852f115d9ba61ecf170ae80607e4fe5fa8c1ee4d519717bcfb8bc4717264"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_8192/20260920_161331_GSM8K_test": {
+      "predictions.jsonl": "950eedd2e632fc08d2885e98069e8f0d4ed14d106f583d21c284e502496dc3b6",
+      "scores.jsonl": "ac43fd8b7bb37f128ca79737ea98a976c720c36287d20e74d3cb63c51e5f8764",
+      "summary.json": "bcd001b7f7f0a69549915451e7f2c5abc9851ce7d74a1fb9662a99bae26e7d92",
+      "config_snapshot.yaml": "e624e9cac31297d9ba84957bd6e81d1d10d483c80e3035061f60d7fb9589baae"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_8192/20260823_181539_HumanEval": {
+      "predictions.jsonl": "80d2fa4c51a2937581d80691c099057a2d7cdce1a919f45869a36c1b5fd9d999",
+      "scores.jsonl": "d86b19cc62970a3a10610362bb6bed9fd08d5e23a95ebaaf4df3db2510f2c0b1",
+      "summary.json": "c5ba00f457d274fb53623e9428965061e92fa02c72e9c079040fb9908de6f10e",
+      "config_snapshot.yaml": "e507a737d11982b21a8e2d70d35b7067cf81c1f7ed626a3d412dfd4f69d1d5b0"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_8192/20260825_175123_HumanEval": {
+      "predictions.jsonl": "3f8351f7fcb9ac7926ae8f8e32dbc712c59eec7ffc355751f704bac4cfbfb3f2",
+      "scores.jsonl": "149b591e08366c594f57df60e96a10353043a57d390679e2f68c0d7a9b7443fd",
+      "summary.json": "321e08b7504dfaa88cc14178014a79b0daa31d6062cc14483099415d35d26b9d",
+      "config_snapshot.yaml": "3ea92021b3cb02eef0cebba86f770f6463a8a7ecc3ae739d3db3f3ced8ca675e"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_8192/20260823_181539_IFEval": {
+      "predictions.jsonl": "ffa6effcabd053f452ca513d8e61b4c4438d7befd9f432d1d5abcb9f3999d884",
+      "scores.jsonl": "5fac8067c87b370355f1827a65abb6fe81fac8676a07f89bd40c7ac7db2b5ab6",
+      "summary.json": "de4cd59cef76dfda056b5fa2099997782071916c69fb16da714009b6219b510b",
+      "config_snapshot.yaml": "dd040ec79df40f8912bc15e9a5a5e41ac1a83a17af285f0132ff5ddf73a36989"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_8192/20260825_175123_IFEval": {
+      "predictions.jsonl": "2484096e0d93db9be6ab9c473dd33036d5be0d8c999e5f8997e67ff79af92743",
+      "scores.jsonl": "76d76869845a8510e0d843e7e3a41053c0f2286085e96452efde9a8235e7b0ec",
+      "summary.json": "7d2d335ad8a4768ee92eefb720375b2c7493e5ef26895f978ef67ddc8d938b08",
+      "config_snapshot.yaml": "0f1e0c9297847d10ab2254a988072b21c43602446fd254bf8e2f9307dfc71711"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_8192/20261010_143954_LiveCodeBench-v1": {
+      "predictions.jsonl": "bc41b18832fe07676624634645c173c412118848cdcbd57f65ed0d666277c979",
+      "scores.jsonl": "d377004228c535dcc62b28f04f6a008ab57bd1b1a12780823278120ab4a34d40",
+      "summary.json": "6e31f51df7d56f3e2ff48e912284447933e5844a918ab73968ea84e151564cbb",
+      "config_snapshot.yaml": "0c5458b0378f711ea2b4035ade40286c3055ff8ef70a9fd86b6e1bff5ae4b9ed"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_8192/20261010_172350_LiveCodeBench-v1": {
+      "predictions.jsonl": "b72b85ef51324b68f77d2668185a277b106d181d1aea0dfcd67e710429f61e9c",
+      "scores.jsonl": "91b779dc16696807fe825fd6b3bb2814deecd3ea6a672bdce2a380333f2fd4bc",
+      "summary.json": "0a9e01b6fe6cf7ff30def6f0969748abc4efa6cf080294255fb2cae280e0d35e",
+      "config_snapshot.yaml": "92179f336e1ebd6bf71f15b67dbbb85136e4ce7ab868f09a5f221d4531062d3a"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_8192/20261010_144541_LiveCodeBench-v2": {
+      "predictions.jsonl": "a21693a092cb3f4bd429176db5cb0775b4e2c76087ee8b471538738cd6fca0d8",
+      "scores.jsonl": "5122876edce8c80b681d4ad1c515059a89f02049f35f2eb03dd16370ade10f43",
+      "summary.json": "ecb57cca7c15a6a4782a88b26dc7d2c374dad4591dfbd3dcf58a64d336a69f0c",
+      "config_snapshot.yaml": "3e3e9730517a2ef2f5810107332caef6aeb08c10077ca9e796075f782eec0916"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_8192/20261010_172950_LiveCodeBench-v2": {
+      "predictions.jsonl": "e57eb9347ed9857a7ce48b0cf45edc1ba98b6e99027641954806aa9528542e47",
+      "scores.jsonl": "0c10856467300aa4f9584545339f8ca66d4a61a56aa2606e255eef8581c264c5",
+      "summary.json": "d69576b2f0b4d6702d14763c1cec22cdcfb7b9e8defbf71a2440162f02fc4735",
+      "config_snapshot.yaml": "c6f3f28258f6127988d122048487c80dc1b89ba7671673378391a1e1933176ab"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_8192/20261010_144750_LiveCodeBench-v3": {
+      "predictions.jsonl": "a206becfa25a5b6d4461d6b4b9e3ffb2d247aa8fed44f3ea62d9ea2270f25d19",
+      "scores.jsonl": "0cd7396907eeb6f57d7e56b581231f8d0ffb9d9c1e2310c64b0d5577f4957f32",
+      "summary.json": "87ad90216478ba069ac29879f2f6b6a9282189efdb760f719df11f3e7d66f44f",
+      "config_snapshot.yaml": "cb8f33f2e50d7243945846fa6e338164f8640d76dc636fed9f7b5a405114b2d6"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_8192/20261010_173206_LiveCodeBench-v3": {
+      "predictions.jsonl": "51f704e3d4a0cca1b1c2d03182d63e7058765cda2a8396ca64edbba729f74f96",
+      "scores.jsonl": "3bcd767da32aeb206b26d05f1223ca72b5f9fae386bd594a6ce181510b74b4b5",
+      "summary.json": "54599008ef55193c55105e626e082f40ee77c33da06148efe6ef483380e5f196",
+      "config_snapshot.yaml": "b2f9225ee683e354ac62df3425559de8e68a36546425d8018c79a54b7eef91eb"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_8192/20261010_144955_LiveCodeBench-v4": {
+      "predictions.jsonl": "d8a813612178963d04aff39c75545b249c99f89361eeb6802ce9c552c432614e",
+      "scores.jsonl": "574db74371e08d8740518f0803030e1c03c4f87b4d575fd3ee2b3a83bcd31f3e",
+      "summary.json": "dbc0a36c30daf8170fb220b99d5956eec272513ccbc35e0c2edeacf046f89178",
+      "config_snapshot.yaml": "6d0e3d87ec4f6fc11c9a8604aae58cea3be82d4b8eb4af5758f5399e8142ca7a"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_8192/20261010_173406_LiveCodeBench-v4": {
+      "predictions.jsonl": "d214616931089e5bf4666e26d9ab79e53ac49cb8ff9d4da1acd07d8a47741f99",
+      "scores.jsonl": "76e6dce4648fdb675232b74b7ca7d261de0ca45e39681c2c28771398c5a95d1c",
+      "summary.json": "453d5cbb3faefb8f0beb307aa2431bf7c572a93a6b1ee954320905c62e0685da",
+      "config_snapshot.yaml": "235ccfe91081cb0bb4462b6b0e63b56b2bc156cb238195854437b41447c8fe16"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_8192/20261010_145315_LiveCodeBench-v5": {
+      "predictions.jsonl": "f3a0f8a0464e8922bb700e1f57923b9b8c5a51d79d998807698e6a0ab3e84d8b",
+      "scores.jsonl": "6dcd7746968ec0d4b5541625ed1aab74ef1ff4f277b5e55455dc855a89227baf",
+      "summary.json": "3ac4700f95fb5fb02bcb90550a4f2f60460d1a0c0fb027d80d0bcbf455c4f369",
+      "config_snapshot.yaml": "f6ef16751388b3a2566478e97cf534baf2b16e81341dcc85b2d484f3ba6faf60"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_8192/20261010_173716_LiveCodeBench-v5": {
+      "predictions.jsonl": "148199362590991b0dbb5b2cf521c87a547a2bb391bb461396af1e35c0050875",
+      "scores.jsonl": "8cbd532a2e2c69a21fe22d0cd2d3cdf434c0cd841d6eacaa694e64a1703758e2",
+      "summary.json": "6645ebaca65af84983164f48263da84b0edd68651e18d30f9ff6c916ef954349",
+      "config_snapshot.yaml": "46dfe7f479263fb474e68fb8094c4004b7fdc700bda94ac7ae3003d79b4ef5a5"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_8192/20261010_145744_LiveCodeBench-v6": {
+      "predictions.jsonl": "a696e49810acbeb587f2985f62d6cea2ac014759b5d090ffdecf9861a32364f4",
+      "scores.jsonl": "53b62aaaee182353dff4a9cad047244af74706022bbdcb59229ab66c5bf1d13e",
+      "summary.json": "5c75087f6617854ba585b81dad2c6733c81da2ea6e31f6cfdf270a1c4dee5cd5",
+      "config_snapshot.yaml": "567f9e78eee9b492b37b8bac5259f8f727fe0469f8f01d8fc925c9c52618cb9c"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_8192/20261010_174141_LiveCodeBench-v6": {
+      "predictions.jsonl": "17d7718e82ec9ac1b76d9859c52fa8049a970bab779878725089bef5f903a2cf",
+      "scores.jsonl": "9d4b754dba1ff947889fb0b77b43a4a32f85a2e416b5e53a06fe95cec5c2a708",
+      "summary.json": "6fa2007c86faff9de5eb5b2a8a79173fb491035a9ff7299ecea70e88574d1939",
+      "config_snapshot.yaml": "fe3c8c22ca0bcc63150223493aab6d3cc9b392a89b24e00790768b69172290a5"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_8192/20260829_213900_MBPP": {
+      "predictions.jsonl": "5b99dfd91e5b244dd35a29a0c2c31da6d0664fce900a3c584c2dbff37165d772",
+      "scores.jsonl": "0b3283e587b260d3a8d3b401fa0a43fd91488b600b99505dd1b8106fa88cd0f1",
+      "summary.json": "03c66dd20266434367ee2926b092200b3bc276306c9025bac2afc846087bb5ea",
+      "config_snapshot.yaml": "b4d41139743e6a5d95888f6aa87bfc272e5bb4f14819189953472d29aad60468"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_8192/20260829_222703_MBPP": {
+      "predictions.jsonl": "173eab4f4570b1e350f21a42b73c8716af74d467e5b240e36155b0b6951a3b99",
+      "scores.jsonl": "c38d4651a5e0ff983412d525e0073d7a80d432318d0002b024c2b97347c11603",
+      "summary.json": "cb3c0badf7f9f49ace1cfb4d87464a616485ee84f35361eddb20d0b618f3e18b",
+      "config_snapshot.yaml": "a1d66a210e28dcc01984b6ae556efd7c0e8c42fcdab18759f042b8e1c8c40ad8"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_8192/20260823_181539_MGSM-zh": {
+      "predictions.jsonl": "638c79818ed0677c52a7c3c28833d415fcc81843bfe7f7c963f7e44e18808135",
+      "scores.jsonl": "fefa94c6f6746a349f6706306b9a02a40fc04d776aa2e8e47387a2f2b6489dc4",
+      "summary.json": "8f8b5730df1a56bcd251c028a056e203f8a491ef3bf98c402f36278d4a0dc3d1",
+      "config_snapshot.yaml": "86fe65fc209ded0271fa7863859f51496af057d208699e39c5e65b1a64dcf3ff"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_8192/20260825_175123_MGSM-zh": {
+      "predictions.jsonl": "8f04cb6c1f8d7d0a5f361d70347e96384591cf3e784b43c9590f222267bb7f0b",
+      "scores.jsonl": "6f0ba0ea6dfef663c671559b5d88ff9085237a39ee7ff180d9afaf5299dc7004",
+      "summary.json": "b773bfe0315bed76e209653e9118a01be75222d060b7544b254051d1870ab4b9",
+      "config_snapshot.yaml": "5ffe47060f2a1847b9b3955a2761b5ad436eb30e64081722cdb0cb48fcf43c57"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_8192/20260825_001217_MMLU-Pro": {
+      "predictions.jsonl": "24a5dcf86bb2a330430f97951136cc23659dfdc9a2d64501d61fe5686503e6e5",
+      "scores.jsonl": "90311a028927cf7aa5a0d8d1a42dbcb41a251a81c9f3df01d95997c1f8c5ee98",
+      "summary.json": "58df4b5b9bfc270ed14b71fbf438cde2805400fa4c9b07ea5d326875ea8d9c57",
+      "config_snapshot.yaml": "610150a7d28dbcb045519722da5a6a2e272c73fff4c9ea0442975d8ea9697b4c"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_8192/20260825_175123_MMLU-Pro": {
+      "predictions.jsonl": "0a42991099db6050d33de4dd51227c2cfdc87eb13f04cfa96cc3cd4f0a8bd4ed",
+      "scores.jsonl": "18ba4a81ceba74d65fc7ccf5943f0a54c311b1528eee25e6db38442e5abc5e9e",
+      "summary.json": "b97ffb6d93f5f5e4b5206b9aaac974bc21bf1c3be35faea5546a8b4f9a559822",
+      "config_snapshot.yaml": "ab51d7ed93aa737e009f3f5ed28211ab36b7e263a747a070f3ff76836028cbaf"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_8192/20260713_165256_OlymMATH": {
+      "predictions.jsonl": "3be8918b04f88594627d744c013af6aa5934f05f7b528388d6f7cfd9d977ca78",
+      "scores.jsonl": "446d3ebe5a69b01e1d41272d372690713206fe83467b619992f3c3fd4ef2772e",
+      "summary.json": "027b210c35e2593dce0b292f856cb19339b25a9179589cfdfe4d7bc7c755dbc9",
+      "config_snapshot.yaml": "24493084250d3179e7a765d7082cb774f041f5dceff335242d9dd9e398ebc60f"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_8192/20260825_175123_OlymMATH": {
+      "predictions.jsonl": "c6ed47c485f85d056a6bfeeee64c6d5fed2608dc328892c40630f637cee454fc",
+      "scores.jsonl": "bdcc53c1b0ef7eb38c13520f8f085deccc261f3e2dadd1ea698a558189ff1a25",
+      "summary.json": "ef97e6bfbccb3dd57d5837d63ecc6e1b751de2bf1caccccf1fad0dd2114e5fbd",
+      "config_snapshot.yaml": "7954c8204bb994d8253c33a2608960b2d043a22cff364bb9cd5f3198ba45b2aa"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_8192/20260827_000838_PolyMath": {
+      "predictions.jsonl": "16d9f7c2721c8d65cfe15a29a63523702b7b9508106d84c37f9ce87ada36b62d",
+      "scores.jsonl": "28567866bb12434560dbf3a49b5b6d424b0af2b545a0723757bbc2ae4ab90a3c",
+      "summary.json": "e7cd6ef21a64f7ab0b0a6b9d54752a6ac996ff3f055d9b66f724b85133138729",
+      "config_snapshot.yaml": "148a97b0236d77d6ad965d381ca961f7ac7fbfdea685767adc82e83fea1abf3f"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_8192/20260827_034649_PolyMath": {
+      "predictions.jsonl": "319a8b6607cd4338a3d04d7e47e15f2975e8ca654f302006a5dbc28d75849a80",
+      "scores.jsonl": "0237eb1cee725ee8c83682241a8505848b2bc85f60a5246626e2b27b459c2256",
+      "summary.json": "fba865202b447f7fcea62d98ef0d5f61c90dc706e53544d0ba332b2bb5ad2ecc",
+      "config_snapshot.yaml": "148a97b0236d77d6ad965d381ca961f7ac7fbfdea685767adc82e83fea1abf3f"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_8192/20260829_214151_RACE": {
+      "predictions.jsonl": "5930027aae57ef7b1e580aea0915cac84fb1f251f2d0a10e4f91363858251f91",
+      "scores.jsonl": "9b207aadec2caee7cb5a60acf089b3aff011dc4e3d16ef9fc0be0f4b7580d863",
+      "summary.json": "694534873526106e73bda0aee681b4f6dc1fcb54a807fe9711bd9cfad695d43e",
+      "config_snapshot.yaml": "dfb8a944ab622155216ca28bf191a295a36d03aeccb8b2927cbb5c2a0e6ac4fa"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_8192/20260829_222940_RACE": {
+      "predictions.jsonl": "10ecf81a0dcf8403990fd438bbdd8256c8e8752b1ebeaf2d08d1c7e2972efc73",
+      "scores.jsonl": "ebe9074b2bd510b657cc6afa5537d3cae72aa909694352af111051bd6c722a7a",
+      "summary.json": "4e87041193d15c29f8e5a47d34138ecc26a6e42e59fe70495e5f62f34d058d7d",
+      "config_snapshot.yaml": "023cea426b3b5e70cd60c2d0d373cb364288673ecb4cf72ef646ea91a2aa1b2d"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_8192/20260829_172333_SafetyBench-en": {
+      "predictions.jsonl": "f0be8e94d347aec7a96caf4978d8e151dfed7c8e9fe64f52309e9fee76ef5180",
+      "scores.jsonl": "198aeb2ea6fa3addb9127065c62298e3fc2e49413e36bf7e4af32872243727c1",
+      "summary.json": "6a3c2ba5853f79f69656bd27290c31d66a4c30edc7aa756050800f8acc5c3fac",
+      "config_snapshot.yaml": "cdf47b4ab27b9b997bfe5dd3e8640b7eebbb398798fb01853cf1ee8e77a0c450"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_8192/20260829_163725_SafetyBench-en": {
+      "predictions.jsonl": "979695ae6642167f11f2e893132d912783e87a0d46182826c1f852990e37c737",
+      "scores.jsonl": "f8730757061340f1524149d24117e4282778ba9899b4868f5cbf0f2c92fddea1",
+      "summary.json": "580bbf90435096df2f9ced5924e034d7e132bf467271aa4eb7ff5d5fb15129a7",
+      "config_snapshot.yaml": "d78a5f50f8be0be9a6bc6d85cbb7e93260cee15fcd93cfd1831d8324b3159714"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_8192/20260829_084143_SafetyBench-zh": {
+      "predictions.jsonl": "360a3ee1e1efc65be16dfb4a3f7b5cd537c26ce3377198d0df6a49f2a8c8e107",
+      "scores.jsonl": "f44dfbce1ce7084d2d89f45e8a581557586411c320eb9f254d36d5c93ff57c98",
+      "summary.json": "98f31c16662d2177e6bbf8c1accc3112ec163e7a2bed700308603c5be8e8b3d5",
+      "config_snapshot.yaml": "d3f16bec37d232a1396ddd9b89287452ed98604a0d9bff7fe6cf8f92d43e5a78"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_8192/20260829_092624_SafetyBench-zh": {
+      "predictions.jsonl": "38a9e54a0800f5d17153a3f0a4e1f4f51f0f7f35d619fc8ed4b4a71807009141",
+      "scores.jsonl": "8e45799fe4e0b9077e3bb6eb6839fc6e58770033c35660796068d378d125c475",
+      "summary.json": "8c64d498b5e3287fe8448fad41c1e82ac23c5f4b38548be332721eeb9f552108",
+      "config_snapshot.yaml": "e15c3f7ff8d52a74f5a0fbb48ac35d3a63d86714127896a6c04e3eab301de6dd"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_30720/20260824_150404_AIME24": {
+      "predictions.jsonl": "21998ba7a14068804b59bb96ebc977d8d1dfa21d8b125350305ca35bb2414d24",
+      "scores.jsonl": "318cbb3fec4a28dd953f80ace1820d8b10f035d6b765850b8d1f18e18be97dde",
+      "summary.json": "b6fd5d0ad8e3722b66da3d661fe0a1877f0bed6ec91b98bd16c1afed2e0a6941",
+      "config_snapshot.yaml": "93141a8be1f5b7590971325e9b1b9e7c7a62ecebae965065002ba379c2869d9b"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_30720/20260826_130602_AIME24": {
+      "predictions.jsonl": "446f3fd23123c3ef30fde47bbafdcba9aeae7693d2715e5da454091d2003f6b2",
+      "scores.jsonl": "0b1398445a0ded0dea09d4fa6b296511bf08e65effd923ae71030166070d6d6c",
+      "summary.json": "1df99513644d4c1008737da929dddab8a034f04e8aca0b9261fed0bb454385af",
+      "config_snapshot.yaml": "cc9e264bbeb60483a95eb679553e8093595a775362833b290ce21153b98fe7cf"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/qwen36-27b/nothink_30720/20260824_150404_AIME25": {
+      "predictions.jsonl": "f3b97b375370456726f17e38a922bdc90050a7f015b992b9719598c47a4515d2",
+      "scores.jsonl": "b5fbb3fc0d58378d69c7ebf89753ae30f9575cc5d72fad15c15e84599d47fe67",
+      "summary.json": "940715847fb752ae674079eb62e16ccd7c7ee0ca813943603614bb626a3cc230",
+      "config_snapshot.yaml": "44da23daf650769ba60f0fc455e009e6e84a617d25f3f99701f13af40531bf05"
+    },
+    "/data/renjunxiang/coding/huawei_train/eval_results/benchmarks/Qwen3.6-27B/llin-step120-opensource/nothink_30720/20260826_130920_AIME25": {
+      "predictions.jsonl": "2ef574b9a60cbbe6b40a4e38d16cb64821ffe6f3805951bf1ec38284b454624d",
+      "scores.jsonl": "2a53c9a42e3b71f29affb00584fc3ca17037374317d2932431f132870c35a721",
+      "summary.json": "10cea467c0db9d6c0e7e2e86df5732bcd616d4c05ed2f0a5b6401f9d59b6989f",
+      "config_snapshot.yaml": "bcdad48884cc7b60ce39d14a25ec43c6c684fa9f64ebee13ee069ac4c44447d0"
+    }
+  },
+  "limitations": [
+    "Historical labels and snapshots do not independently prove which weights were served.",
+    "GSM8K's trained model snapshot has a PLACEHOLDER path; its archived model tag is retained.",
+    "8K AIME24 has only a scored-correct truncated candidate; 8K AIME25 has no gains.",
+    "8K C-Eval-val, CMMLU and MMLU-Pro prompts differ between models and are excluded.",
+    "Selected improvements are not net score gains and do not establish causality from training.",
+    "30K AIME identity was confirmed by the user; conflicting configuration snapshots remain unchanged and documented."
+  ],
+  "aime_identity_confirmation": {
+    "date": "2026-10-24",
+    "source": "explicit user reply in this conversation",
+    "confirmed_model_tag": "llin-step120-opensource",
+    "reply": "确认是开源续训 Step120",
+    "snapshot_conflict_preserved": true
+  },
+  "delivery_verification": {
+    "verified_cases": 307,
+    "datasets": 19,
+    "summary_rows": 26,
+    "full_text_rows": 12811,
+    "full_text_fields_verified": 3377,
+    "json_matches_original_private_records": true,
+    "all_detail_text_reassembled_and_verified": true,
+    "control_occurrences_escaped_in_excel_json_verbatim": 354,
+    "literal_formula_quote_chunks": 0,
+    "formula_count": 0,
+    "filters_and_freeze_panes_verified": true,
+    "rendered_sheets_checked": 3,
+    "targeted_tests_passed": 18,
+    "files": [
+      {
+        "name": "开源评测_基座与Step120改善题对照.xlsx",
+        "bytes": 1186793,
+        "sha256": "c6ac5232f6cebbc36cfd3de862875ea4c362ad71e9624b255bf8a9ab96b9bf69"
+      },
+      {
+        "name": "开源评测_基座与Step120改善题对照.json",
+        "bytes": 6090329,
+        "sha256": "ff9eb7d83d2bb6fc35d0442a65229b1df39dca27b1c9f133c6034f39133a3b26"
+      }
+    ]
+  }
+}
