@@ -1,0 +1,4593 @@
+{
+  "date": "2026-10-29",
+  "host_label": "machine05",
+  "scope": "aggregate_only_no_task_contents",
+  "runs": [
+    {
+      "run": "llin-disjoint-real-state-eval22-step120-20260813-01",
+      "exit_code": 0,
+      "summaries": [
+        {
+          "file": "safe_summary.json",
+          "sha256": "5100c3a039db50fdc39d0e9e0d36476fa34908f93dd6d39b0c0d3a0702f5e178",
+          "metrics": {
+            "training_allowed": false,
+            "promotion_allowed": false
+          }
+        }
+      ]
+    },
+    {
+      "run": "llin-multisandbox-dwh-full-m05-preflight-20260813-01",
+      "config": {
+        "tasks": 141,
+        "samples_per_task": 8,
+        "temperature": 1.0,
+        "top_p": 0.95,
+        "top_k": 20,
+        "tensor_parallel_size": 8,
+        "data_parallel_size": 2,
+        "rollout_npus": 16,
+        "agent_workers": 16,
+        "max_prompt_tokens": 4096,
+        "max_response_tokens": 45056,
+        "context_tokens": 49152,
+        "task_batch_size": 32,
+        "optimizer_initialized": false,
+        "actor_worker_created": false,
+        "checkpoint_saved": false,
+        "strict_runtime_configuration_matched": false
+      },
+      "identity": {}
+    },
+    {
+      "run": "llin-multisandbox-dwh-full281-dual-final-20260814-02",
+      "finalizer_exit_code": 0,
+      "summaries": [
+        {
+          "file": "merged/safe_summary.json",
+          "sha256": "577c17f3067165f37878c48f27ad2969a6fc9aacba7bf340b1be2f292c5c129d",
+          "metrics": {
+            "tasks": 281,
+            "samples_per_task": 8,
+            "trajectories": 2248,
+            "correct_trajectories": 911,
+            "completed_trajectories": 1771,
+            "runtime_error_trajectories": 0,
+            "timeout_trajectories": 475,
+            "evaluable_trajectories": 1773,
+            "correct_rate": 0.4052491103202847,
+            "completion_rate": 0.7878113879003559,
+            "bucket_counts": {
+              "all_correct": 65,
+              "all_wrong": 49,
+              "mixed": 49,
+              "timed_out": 118
+            },
+            "correct_count_histogram": {
+              "0": 120,
+              "1": 19,
+              "2": 11,
+              "3": 11,
+              "4": 11,
+              "5": 12,
+              "6": 11,
+              "7": 21,
+              "8": 65
+            },
+            "mixed_screening_rows": 49,
+            "training_allowed": false,
+            "promotion_allowed": false,
+            "explicit_semantic_review_completed": false,
+            "arms": 2
+          }
+        },
+        {
+          "file": "remote_arm/safe_summary.json",
+          "sha256": "8ae5ed20111057bd245b9ba5be4cf236452d962844fefdffbe17278759833a88",
+          "metrics": {
+            "expected_tasks": 140,
+            "tasks": 140,
+            "partial": false,
+            "complete_shards": 9,
+            "samples_per_task": 8,
+            "trajectories": 1120,
+            "correct_trajectories": 390,
+            "completed_trajectories": 870,
+            "runtime_error_trajectories": 0,
+            "timeout_trajectories": 249,
+            "evaluable_trajectories": 871,
+            "correct_rate": 0.3482142857142857,
+            "completion_rate": 0.7767857142857143,
+            "bucket_counts": {
+              "all_correct": 23,
+              "all_wrong": 28,
+              "mixed": 25,
+              "timed_out": 64
+            },
+            "correct_count_histogram": {
+              "0": 65,
+              "1": 10,
+              "2": 9,
+              "3": 5,
+              "4": 4,
+              "5": 7,
+              "6": 7,
+              "7": 10,
+              "8": 23
+            },
+            "mixed_screening_rows": 25,
+            "mixed_review_queue_rows": 25,
+            "training_allowed": false,
+            "promotion_allowed": false,
+            "explicit_semantic_review_completed": false
+          }
+        }
+      ]
+    },
+    {
+      "run": "llin-multisandbox-dwh-full281-m05-step120-20260814-01",
+      "config": {
+        "tasks": 141,
+        "samples_per_task": 8,
+        "temperature": 1.0,
+        "top_p": 0.95,
+        "top_k": 20,
+        "tensor_parallel_size": 8,
+        "data_parallel_size": 2,
+        "rollout_npus": 16,
+        "agent_workers": 16,
+        "max_prompt_tokens": 4096,
+        "max_response_tokens": 45056,
+        "context_tokens": 49152,
+        "trajectory_timeout_seconds": 900.0,
+        "task_batch_size": 32,
+        "optimizer_initialized": false,
+        "actor_worker_created": false,
+        "checkpoint_saved": false,
+        "strict_runtime_configuration_matched": false
+      },
+      "identity": {},
+      "exit_code": 1
+    },
+    {
+      "run": "llin-multisandbox-dwh-full281-m05-step120-20260814-02",
+      "config": {
+        "tasks": 141,
+        "samples_per_task": 8,
+        "temperature": 1.0,
+        "top_p": 0.95,
+        "top_k": 20,
+        "tensor_parallel_size": 8,
+        "data_parallel_size": 2,
+        "rollout_npus": 16,
+        "agent_workers": 16,
+        "max_prompt_tokens": 4096,
+        "max_response_tokens": 45056,
+        "context_tokens": 49152,
+        "trajectory_timeout_seconds": 900.0,
+        "task_batch_size": 16,
+        "optimizer_initialized": false,
+        "actor_worker_created": false,
+        "checkpoint_saved": false,
+        "strict_runtime_configuration_matched": false
+      },
+      "identity": {},
+      "exit_code": 0,
+      "summaries": [
+        {
+          "file": "outcomes/safe_summary.json",
+          "sha256": "fe79db2c17ad92400a6068e7386efdbda5c671b1760caa9782de831a7f2bce33",
+          "metrics": {
+            "expected_tasks": 141,
+            "tasks": 141,
+            "partial": false,
+            "complete_shards": 9,
+            "samples_per_task": 8,
+            "trajectories": 1128,
+            "correct_trajectories": 521,
+            "completed_trajectories": 901,
+            "runtime_error_trajectories": 0,
+            "timeout_trajectories": 226,
+            "evaluable_trajectories": 902,
+            "correct_rate": 0.46187943262411346,
+            "completion_rate": 0.7987588652482269,
+            "bucket_counts": {
+              "all_correct": 42,
+              "all_wrong": 21,
+              "mixed": 24,
+              "timed_out": 54
+            },
+            "correct_count_histogram": {
+              "0": 55,
+              "1": 9,
+              "2": 2,
+              "3": 6,
+              "4": 7,
+              "5": 5,
+              "6": 4,
+              "7": 11,
+              "8": 42
+            },
+            "mixed_screening_rows": 24,
+            "mixed_review_queue_rows": 24,
+            "training_allowed": false,
+            "promotion_allowed": false,
+            "explicit_semantic_review_completed": false
+          }
+        }
+      ],
+      "shard_audit": {
+        "files": 9,
+        "bytes": 28639181,
+        "rows": 1128,
+        "tasks": 141,
+        "duplicate_slots": 0,
+        "invalid_json_lines": 0,
+        "sample_count_histogram": {
+          "8": 141
+        },
+        "groups_with_exact_sample_indexes": 141,
+        "empty_inputs": 0,
+        "empty_outputs": 226,
+        "timeout_rows": 226,
+        "runtime_error_rows": 0,
+        "tool_call_blocks": 7375,
+        "tool_response_blocks": 7350,
+        "unique_output_count_histogram": {
+          "1": 16,
+          "2": 3,
+          "4": 7,
+          "6": 4,
+          "7": 6,
+          "8": 105
+        },
+        "file_set_sha256": "e10e23fe3eb3a68c1d7b7d3566627ba38b49cac065fcbf4a0d526002de99c8c5",
+        "fingerprints": [
+          {
+            "file": "tasks_00000_00016.jsonl",
+            "sha256": "6fa3f7b1d30ff1e8f0cf38f57d97ea3fe1f4391849ffae72b93a8cba60bc3fbf",
+            "bytes": 2993913
+          },
+          {
+            "file": "tasks_00016_00032.jsonl",
+            "sha256": "388eeac2697b8d4c5b9c9d730b03b380b9a1853a64c811b42061e28dd57b431b",
+            "bytes": 3349724
+          },
+          {
+            "file": "tasks_00032_00048.jsonl",
+            "sha256": "dbf6f90b3a8a318a30d3f43134efda02f623c4b245f352627da24acee20b381e",
+            "bytes": 4296201
+          },
+          {
+            "file": "tasks_00048_00064.jsonl",
+            "sha256": "309c1859fe2a8f24ae4496c68c500a1e69faee2aa98b3951091fbf6346e1a033",
+            "bytes": 2928442
+          },
+          {
+            "file": "tasks_00064_00080.jsonl",
+            "sha256": "a2b313e234ae7170669219427df04181289510b2679c21fa6f5064e8c77a93c2",
+            "bytes": 2755026
+          },
+          {
+            "file": "tasks_00080_00096.jsonl",
+            "sha256": "5e5dd0a317a9e661c4a1ae6ffabebb2bf2e78f360f60e8abcda5a479f01f9cec",
+            "bytes": 3068706
+          },
+          {
+            "file": "tasks_00096_00112.jsonl",
+            "sha256": "ca2f729bc00d6f40714010662a9bd6adb8addd6adf447167dc5d4fcbe412c730",
+            "bytes": 3423060
+          },
+          {
+            "file": "tasks_00112_00128.jsonl",
+            "sha256": "d7e1876c943ae2d85a78dcbfcee12a3bb23323298392ffa965e5ad9d89049e2c",
+            "bytes": 3033309
+          },
+          {
+            "file": "tasks_00128_00141.jsonl",
+            "sha256": "c89a33d31e2373f643a1ce6606b8d7957f60bc115e286b7cc88c4eef75eb7634",
+            "bytes": 2790800
+          }
+        ]
+      }
+    },
+    {
+      "run": "llin-multisandbox-dwh-probe-preflight-24-20260813-01",
+      "config": {
+        "tasks": 8,
+        "samples_per_task": 8,
+        "temperature": 1.0,
+        "top_p": 0.95,
+        "top_k": 20,
+        "tensor_parallel_size": 8,
+        "data_parallel_size": 2,
+        "rollout_npus": 16,
+        "agent_workers": 16,
+        "max_prompt_tokens": 4096,
+        "max_response_tokens": 45056,
+        "context_tokens": 49152,
+        "task_batch_size": 8,
+        "optimizer_initialized": false,
+        "actor_worker_created": false,
+        "checkpoint_saved": false,
+        "strict_runtime_configuration_matched": false
+      },
+      "identity": {}
+    },
+    {
+      "run": "llin-multisandbox-dwh-probe8-maxseq24-step120-20260813-01",
+      "config": {
+        "tasks": 8,
+        "samples_per_task": 8,
+        "temperature": 1.0,
+        "top_p": 0.95,
+        "top_k": 20,
+        "tensor_parallel_size": 8,
+        "data_parallel_size": 2,
+        "rollout_npus": 16,
+        "agent_workers": 16,
+        "max_prompt_tokens": 4096,
+        "max_response_tokens": 45056,
+        "context_tokens": 49152,
+        "task_batch_size": 8,
+        "optimizer_initialized": false,
+        "actor_worker_created": false,
+        "checkpoint_saved": false,
+        "strict_runtime_configuration_matched": false
+      },
+      "identity": {},
+      "exit_code": 0,
+      "summaries": [
+        {
+          "file": "safe_summary.json",
+          "sha256": "fae0fb35177673e3a16f84ad3ea598bf8954e3b211a9d79cec7a8ea5e5047e3b",
+          "metrics": {
+            "tasks": 8,
+            "complete_shards": 0,
+            "samples_per_task": 8
+          }
+        }
+      ],
+      "shard_audit": {
+        "files": 1,
+        "bytes": 2688309,
+        "rows": 64,
+        "tasks": 8,
+        "duplicate_slots": 0,
+        "invalid_json_lines": 0,
+        "sample_count_histogram": {
+          "8": 8
+        },
+        "groups_with_exact_sample_indexes": 8,
+        "empty_inputs": 0,
+        "empty_outputs": 0,
+        "timeout_rows": 0,
+        "runtime_error_rows": 0,
+        "tool_call_blocks": 1030,
+        "tool_response_blocks": 955,
+        "unique_output_count_histogram": {
+          "8": 8
+        },
+        "file_set_sha256": "fe5d196b52d3980a0d836e7e99fd4aff145d273f7e81239656d8e5f7b53d31cd",
+        "fingerprints": [
+          {
+            "file": "tasks_00000_00008.jsonl",
+            "sha256": "47c75a27eb5cd814dc2fc3cda83e51dce54a06c3c3e2961f663d7fccc00ab9f2",
+            "bytes": 2688309
+          }
+        ]
+      }
+    },
+    {
+      "run": "llin-multisandbox-dwh-timeout-gate8x1-step120-20260813-01",
+      "config": {
+        "tasks": 8,
+        "samples_per_task": 1,
+        "temperature": 1.0,
+        "top_p": 0.95,
+        "top_k": 20,
+        "tensor_parallel_size": 8,
+        "data_parallel_size": 2,
+        "rollout_npus": 16,
+        "agent_workers": 16,
+        "max_prompt_tokens": 4096,
+        "max_response_tokens": 45056,
+        "context_tokens": 49152,
+        "trajectory_timeout_seconds": 3.0,
+        "task_batch_size": 8,
+        "optimizer_initialized": false,
+        "actor_worker_created": false,
+        "checkpoint_saved": false,
+        "strict_runtime_configuration_matched": false
+      },
+      "identity": {},
+      "exit_code": 1
+    },
+    {
+      "run": "llin-multisandbox-dwh-timeout-gate8x1-step120-20260813-02",
+      "config": {
+        "tasks": 8,
+        "samples_per_task": 1,
+        "temperature": 1.0,
+        "top_p": 0.95,
+        "top_k": 20,
+        "tensor_parallel_size": 8,
+        "data_parallel_size": 2,
+        "rollout_npus": 16,
+        "agent_workers": 16,
+        "max_prompt_tokens": 4096,
+        "max_response_tokens": 45056,
+        "context_tokens": 49152,
+        "trajectory_timeout_seconds": 3.0,
+        "task_batch_size": 8,
+        "optimizer_initialized": false,
+        "actor_worker_created": false,
+        "checkpoint_saved": false,
+        "strict_runtime_configuration_matched": false
+      },
+      "identity": {},
+      "exit_code": 1
+    },
+    {
+      "run": "llin-multisandbox-dwh-timeout-gate8x1-step120-20260813-03",
+      "config": {
+        "tasks": 8,
+        "samples_per_task": 1,
+        "temperature": 1.0,
+        "top_p": 0.95,
+        "top_k": 20,
+        "tensor_parallel_size": 8,
+        "data_parallel_size": 2,
+        "rollout_npus": 16,
+        "agent_workers": 8,
+        "max_prompt_tokens": 4096,
+        "max_response_tokens": 45056,
+        "context_tokens": 49152,
+        "trajectory_timeout_seconds": 3.0,
+        "task_batch_size": 8,
+        "optimizer_initialized": false,
+        "actor_worker_created": false,
+        "checkpoint_saved": false,
+        "strict_runtime_configuration_matched": false
+      },
+      "identity": {},
+      "exit_code": 1
+    },
+    {
+      "run": "llin-multisandbox-dwh-timeout-gate8x1-step120-20260813-04",
+      "config": {
+        "tasks": 8,
+        "samples_per_task": 1,
+        "temperature": 1.0,
+        "top_p": 0.95,
+        "top_k": 20,
+        "tensor_parallel_size": 8,
+        "data_parallel_size": 2,
+        "rollout_npus": 16,
+        "agent_workers": 8,
+        "max_prompt_tokens": 4096,
+        "max_response_tokens": 45056,
+        "context_tokens": 49152,
+        "trajectory_timeout_seconds": 3.0,
+        "task_batch_size": 8,
+        "optimizer_initialized": false,
+        "actor_worker_created": false,
+        "checkpoint_saved": false,
+        "strict_runtime_configuration_matched": false
+      },
+      "identity": {},
+      "exit_code": 0,
+      "summaries": [
+        {
+          "file": "outcomes/safe_summary.json",
+          "sha256": "9b88505827ca0aa3c9c090dac4d0185b2495d778c613c04af8dd78f0063a1574",
+          "metrics": {
+            "tasks": 8,
+            "samples_per_task": 1,
+            "trajectories": 8,
+            "correct_trajectories": 0,
+            "completed_trajectories": 0,
+            "runtime_error_trajectories": 0,
+            "timeout_trajectories": 8,
+            "evaluable_trajectories": 0,
+            "correct_rate": 0.0,
+            "completion_rate": 0.0,
+            "bucket_counts": {
+              "timed_out": 8
+            },
+            "correct_count_histogram": {
+              "0": 8,
+              "1": 0
+            },
+            "mixed_screening_rows": 0,
+            "training_allowed": false,
+            "promotion_allowed": false,
+            "explicit_semantic_review_completed": false
+          }
+        }
+      ],
+      "shard_audit": {
+        "files": 1,
+        "bytes": 45019,
+        "rows": 8,
+        "tasks": 8,
+        "duplicate_slots": 0,
+        "invalid_json_lines": 0,
+        "sample_count_histogram": {
+          "1": 8
+        },
+        "groups_with_exact_sample_indexes": 8,
+        "empty_inputs": 0,
+        "empty_outputs": 8,
+        "timeout_rows": 8,
+        "runtime_error_rows": 0,
+        "tool_call_blocks": 0,
+        "tool_response_blocks": 0,
+        "unique_output_count_histogram": {
+          "1": 8
+        },
+        "file_set_sha256": "0a15acf710ab2136b9b9bd2d1a285b2b6adcc555caae112be2d1b3f25a0d2389",
+        "fingerprints": [
+          {
+            "file": "tasks_00000_00008.jsonl",
+            "sha256": "9c9a74066255f50011b944084833403c07f6ef4743085c6a4715088de60e763a",
+            "bytes": 45019
+          }
+        ]
+      }
+    },
+    {
+      "run": "llin-multisandbox-dwh-timeout-preflight-20260813-01",
+      "config": {
+        "tasks": 141,
+        "samples_per_task": 8,
+        "temperature": 1.0,
+        "top_p": 0.95,
+        "top_k": 20,
+        "tensor_parallel_size": 8,
+        "data_parallel_size": 2,
+        "rollout_npus": 16,
+        "agent_workers": 16,
+        "max_prompt_tokens": 4096,
+        "max_response_tokens": 45056,
+        "context_tokens": 49152,
+        "trajectory_timeout_seconds": 900.0,
+        "task_batch_size": 32,
+        "optimizer_initialized": false,
+        "actor_worker_created": false,
+        "checkpoint_saved": false,
+        "strict_runtime_configuration_matched": false
+      },
+      "identity": {}
+    },
+    {
+      "run": "llin-native-disjoint7-step120-margin-20260813-01",
+      "exit_code": 0,
+      "summaries": [
+        {
+          "file": "safe_summary.json",
+          "sha256": "d3355e3f3c8f81a43912b017b5b5b8c9d6a97e5e767aac8a6d66c8efdba9327f",
+          "metrics": {
+            "training_allowed": false,
+            "promotion_allowed": false
+          }
+        }
+      ]
+    },
+    {
+      "run": "llin-open-dwh-v15-step120-500x8-dual-summary-20260815-01",
+      "summaries": [
+        {
+          "file": "merged/safe_summary.json",
+          "sha256": "c88844c8141d8e281d583af1b0c0a43e3be57d0435c6e597ed8462ba9d81005a",
+          "metrics": {
+            "tasks": 500,
+            "samples_per_task": 8,
+            "trajectories": 4000,
+            "correct_trajectories": 0,
+            "completed_trajectories": 2148,
+            "runtime_error_trajectories": 0,
+            "timeout_trajectories": 1764,
+            "evaluable_trajectories": 2236,
+            "correct_rate": 0.0,
+            "completion_rate": 0.537,
+            "bucket_counts": {
+              "all_wrong": 39,
+              "timed_out": 461
+            },
+            "correct_count_histogram": {
+              "0": 500,
+              "1": 0,
+              "2": 0,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0,
+              "7": 0,
+              "8": 0
+            },
+            "mixed_screening_rows": 0,
+            "training_allowed": false,
+            "promotion_allowed": false,
+            "explicit_semantic_review_completed": false,
+            "arms": 2
+          }
+        },
+        {
+          "file": "remote_arm/safe_summary.json",
+          "sha256": "797c567b856eb8f5c030c66dc48f08783d0048e6acd620544c060a93d5b33e9e",
+          "metrics": {
+            "expected_tasks": 250,
+            "tasks": 250,
+            "partial": false,
+            "complete_shards": 6,
+            "samples_per_task": 8,
+            "trajectories": 2000,
+            "correct_trajectories": 0,
+            "completed_trajectories": 1241,
+            "runtime_error_trajectories": 0,
+            "timeout_trajectories": 685,
+            "evaluable_trajectories": 1315,
+            "correct_rate": 0.0,
+            "completion_rate": 0.6205,
+            "bucket_counts": {
+              "all_wrong": 27,
+              "timed_out": 223
+            },
+            "correct_count_histogram": {
+              "0": 250,
+              "1": 0,
+              "2": 0,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0,
+              "7": 0,
+              "8": 0
+            },
+            "mixed_screening_rows": 0,
+            "mixed_review_queue_rows": 0,
+            "training_allowed": false,
+            "promotion_allowed": false,
+            "explicit_semantic_review_completed": false
+          }
+        }
+      ]
+    },
+    {
+      "run": "llin-open-dwh-v15-step120-500x8-h05-20260815-01",
+      "config": {
+        "model_label": "step120-open-v15",
+        "policy_step": 120,
+        "tasks": 250,
+        "samples_per_task": 8,
+        "temperature": 1.0,
+        "top_p": 0.95,
+        "top_k": 20,
+        "tensor_parallel_size": 8,
+        "data_parallel_size": 2,
+        "rollout_npus": 16,
+        "agent_workers": 16,
+        "max_prompt_tokens": 4096,
+        "max_response_tokens": 90112,
+        "context_tokens": 94208,
+        "trajectory_timeout_seconds": 1800.0,
+        "task_batch_size": 48,
+        "optimizer_initialized": false,
+        "actor_worker_created": false,
+        "checkpoint_saved": false,
+        "strict_runtime_configuration_matched": false
+      },
+      "identity": {
+        "valid": true,
+        "kind": "llin_megatron_to_hf_export",
+        "policy_step": 120,
+        "config_sha256": "43eee23b0489ed1769bf2d49438015728ad686bef55d4aecb18a3a1ce840d6da",
+        "safetensor_index_sha256": "747b0b46e0334189cf0eb02ecc860f6de1e5f156f7115d5f76c20b1bc9ae03aa",
+        "export_manifest_sha256": "bf363a04d460a389021cf5e6e0c7013552ea88df6c5bd7bdb5ffd43300057208"
+      },
+      "exit_code": 0,
+      "summaries": [
+        {
+          "file": "outcomes/safe_summary.json",
+          "sha256": "d340ca10c5971426cf4985dee69ef3c4d0779e4085407580bacf71aef8c1b8f1",
+          "metrics": {
+            "expected_tasks": 250,
+            "tasks": 250,
+            "partial": false,
+            "complete_shards": 6,
+            "samples_per_task": 8,
+            "trajectories": 2000,
+            "correct_trajectories": 0,
+            "completed_trajectories": 907,
+            "runtime_error_trajectories": 0,
+            "timeout_trajectories": 1079,
+            "evaluable_trajectories": 921,
+            "correct_rate": 0.0,
+            "completion_rate": 0.4535,
+            "bucket_counts": {
+              "all_wrong": 12,
+              "timed_out": 238
+            },
+            "correct_count_histogram": {
+              "0": 250,
+              "1": 0,
+              "2": 0,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0,
+              "7": 0,
+              "8": 0
+            },
+            "mixed_screening_rows": 0,
+            "mixed_review_queue_rows": 0,
+            "training_allowed": false,
+            "promotion_allowed": false,
+            "explicit_semantic_review_completed": false
+          }
+        }
+      ],
+      "shard_audit": {
+        "files": 6,
+        "bytes": 18661300,
+        "rows": 2000,
+        "tasks": 250,
+        "duplicate_slots": 0,
+        "invalid_json_lines": 0,
+        "sample_count_histogram": {
+          "8": 250
+        },
+        "groups_with_exact_sample_indexes": 250,
+        "empty_inputs": 0,
+        "empty_outputs": 1079,
+        "timeout_rows": 1079,
+        "runtime_error_rows": 0,
+        "tool_call_blocks": 10234,
+        "tool_response_blocks": 10221,
+        "unique_output_count_histogram": {
+          "1": 3,
+          "2": 21,
+          "3": 41,
+          "4": 59,
+          "5": 57,
+          "6": 30,
+          "7": 22,
+          "8": 17
+        },
+        "file_set_sha256": "3d20cedc66fe26b54cff55324f3d9610f275e329ef8c5a30e559150872eef0a8",
+        "fingerprints": [
+          {
+            "file": "tasks_00000_00048.jsonl",
+            "sha256": "f765b9c46550bbe993b233efbe6624c724e53f69ed89f79841aa22a6b5f407f4",
+            "bytes": 3564243
+          },
+          {
+            "file": "tasks_00048_00096.jsonl",
+            "sha256": "3008355e8193c61a16ba50d095fe581cb29237f9dbf6fc1abbb713509c130a85",
+            "bytes": 3518454
+          },
+          {
+            "file": "tasks_00096_00144.jsonl",
+            "sha256": "7911e11fdff6c86fdeefc5ed395f99114acb52d0f0c54bbddc307bf5ea2452bd",
+            "bytes": 3509342
+          },
+          {
+            "file": "tasks_00144_00192.jsonl",
+            "sha256": "a48b84f2324f6d46ee7522e6af4dd767783b58db19fa36e569b022b3212c3834",
+            "bytes": 3355192
+          },
+          {
+            "file": "tasks_00192_00240.jsonl",
+            "sha256": "79c2b6585a6c7a4f995fbec18e913d6d72ccbc80b653b1926ce301486fdfd75a",
+            "bytes": 3459466
+          },
+          {
+            "file": "tasks_00240_00250.jsonl",
+            "sha256": "6fe80e5bea5e5a52ecdb724d6139d2e32ea27ea435a8c994f61686c78abae1b7",
+            "bytes": 1254603
+          }
+        ]
+      }
+    },
+    {
+      "run": "llin-open-dwh-v15-step120-500x8-h05-preflight-20260815-01",
+      "config": {
+        "model_label": "step120-open-v15",
+        "policy_step": 120,
+        "tasks": 250,
+        "samples_per_task": 8,
+        "temperature": 1.0,
+        "top_p": 0.95,
+        "top_k": 20,
+        "tensor_parallel_size": 8,
+        "data_parallel_size": 2,
+        "rollout_npus": 16,
+        "agent_workers": 16,
+        "max_prompt_tokens": 4096,
+        "max_response_tokens": 90112,
+        "context_tokens": 94208,
+        "trajectory_timeout_seconds": 1800.0,
+        "task_batch_size": 48,
+        "optimizer_initialized": false,
+        "actor_worker_created": false,
+        "checkpoint_saved": false,
+        "strict_runtime_configuration_matched": false
+      },
+      "identity": {
+        "valid": true,
+        "kind": "llin_megatron_to_hf_export",
+        "policy_step": 120,
+        "config_sha256": "43eee23b0489ed1769bf2d49438015728ad686bef55d4aecb18a3a1ce840d6da",
+        "safetensor_index_sha256": "747b0b46e0334189cf0eb02ecc860f6de1e5f156f7115d5f76c20b1bc9ae03aa",
+        "export_manifest_sha256": "bf363a04d460a389021cf5e6e0c7013552ea88df6c5bd7bdb5ffd43300057208"
+      }
+    },
+    {
+      "run": "llin-open-dwh-v15-step120-runtimefixed-500x8-dual-summary-20260815-02",
+      "finalizer_exit_code": 0,
+      "summaries": [
+        {
+          "file": "merged/safe_summary.json",
+          "sha256": "f11266bb3a18c63ddf1447f6425b8024dfea4e4c5f72c52284048062e328933e",
+          "metrics": {
+            "tasks": 500,
+            "samples_per_task": 8,
+            "trajectories": 4000,
+            "correct_trajectories": 1,
+            "completed_trajectories": 133,
+            "runtime_error_trajectories": 0,
+            "timeout_trajectories": 3861,
+            "evaluable_trajectories": 139,
+            "correct_rate": 0.00025,
+            "completion_rate": 0.03325,
+            "bucket_counts": {
+              "all_wrong": 7,
+              "timed_out": 493
+            },
+            "correct_count_histogram": {
+              "0": 499,
+              "1": 1,
+              "2": 0,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0,
+              "7": 0,
+              "8": 0
+            },
+            "mixed_screening_rows": 0,
+            "training_allowed": false,
+            "promotion_allowed": false,
+            "explicit_semantic_review_completed": false,
+            "arms": 2
+          }
+        },
+        {
+          "file": "remote_arm/safe_summary.json",
+          "sha256": "59e60999b3a29171411d59bbdb026630baf08e03aab23da415bfe6e02e6e342b",
+          "metrics": {
+            "expected_tasks": 250,
+            "tasks": 250,
+            "partial": false,
+            "complete_shards": 6,
+            "samples_per_task": 8,
+            "trajectories": 2000,
+            "correct_trajectories": 1,
+            "completed_trajectories": 69,
+            "runtime_error_trajectories": 0,
+            "timeout_trajectories": 1925,
+            "evaluable_trajectories": 75,
+            "correct_rate": 0.0005,
+            "completion_rate": 0.0345,
+            "bucket_counts": {
+              "all_wrong": 2,
+              "timed_out": 248
+            },
+            "correct_count_histogram": {
+              "0": 249,
+              "1": 1,
+              "2": 0,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0,
+              "7": 0,
+              "8": 0
+            },
+            "mixed_screening_rows": 0,
+            "mixed_review_queue_rows": 0,
+            "training_allowed": false,
+            "promotion_allowed": false,
+            "explicit_semantic_review_completed": false
+          }
+        }
+      ]
+    },
+    {
+      "run": "llin-open-dwh-v15-step120-runtimefixed-500x8-h05-20260815-01",
+      "config": {
+        "model_label": "step120-open-v15-runtimefixed",
+        "policy_step": 120,
+        "tasks": 250,
+        "samples_per_task": 8,
+        "temperature": 1.0,
+        "top_p": 0.95,
+        "top_k": 20,
+        "tensor_parallel_size": 8,
+        "data_parallel_size": 2,
+        "rollout_npus": 16,
+        "agent_workers": 16,
+        "max_prompt_tokens": 4096,
+        "max_response_tokens": 90112,
+        "context_tokens": 94208,
+        "trajectory_timeout_seconds": 1800.0,
+        "task_batch_size": 48,
+        "optimizer_initialized": false,
+        "actor_worker_created": false,
+        "checkpoint_saved": false,
+        "strict_runtime_configuration_matched": false
+      },
+      "identity": {
+        "valid": true,
+        "kind": "llin_megatron_to_hf_export",
+        "policy_step": 120,
+        "config_sha256": "43eee23b0489ed1769bf2d49438015728ad686bef55d4aecb18a3a1ce840d6da",
+        "safetensor_index_sha256": "747b0b46e0334189cf0eb02ecc860f6de1e5f156f7115d5f76c20b1bc9ae03aa",
+        "export_manifest_sha256": "bf363a04d460a389021cf5e6e0c7013552ea88df6c5bd7bdb5ffd43300057208"
+      },
+      "exit_code": 0,
+      "summaries": [
+        {
+          "file": "outcomes/safe_summary.json",
+          "sha256": "7d0b3cf6a53b55948e150e7ccfdb9e161eaf5c2d4407390c47a741cc30a5f074",
+          "metrics": {
+            "expected_tasks": 250,
+            "tasks": 250,
+            "partial": false,
+            "complete_shards": 6,
+            "samples_per_task": 8,
+            "trajectories": 2000,
+            "correct_trajectories": 0,
+            "completed_trajectories": 64,
+            "runtime_error_trajectories": 0,
+            "timeout_trajectories": 1936,
+            "evaluable_trajectories": 64,
+            "correct_rate": 0.0,
+            "completion_rate": 0.032,
+            "bucket_counts": {
+              "all_wrong": 5,
+              "timed_out": 245
+            },
+            "correct_count_histogram": {
+              "0": 250,
+              "1": 0,
+              "2": 0,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0,
+              "7": 0,
+              "8": 0
+            },
+            "mixed_screening_rows": 0,
+            "mixed_review_queue_rows": 0,
+            "training_allowed": false,
+            "promotion_allowed": false,
+            "explicit_semantic_review_completed": false
+          }
+        }
+      ],
+      "shard_audit": {
+        "files": 6,
+        "bytes": 13680167,
+        "rows": 2000,
+        "tasks": 250,
+        "duplicate_slots": 0,
+        "invalid_json_lines": 0,
+        "sample_count_histogram": {
+          "8": 250
+        },
+        "groups_with_exact_sample_indexes": 250,
+        "empty_inputs": 0,
+        "empty_outputs": 1936,
+        "timeout_rows": 1936,
+        "runtime_error_rows": 0,
+        "tool_call_blocks": 875,
+        "tool_response_blocks": 852,
+        "unique_output_count_histogram": {
+          "1": 232,
+          "2": 7,
+          "3": 5,
+          "8": 6
+        },
+        "file_set_sha256": "6c2c809aac49fcf5fe397224ec2ff2576117118c6bbe50e088f17fe6afb6ce3f",
+        "fingerprints": [
+          {
+            "file": "tasks_00000_00048.jsonl",
+            "sha256": "94a572148782c96ec260b294dd7f3c53ecdb5abb4cbfefb91a952c8f9bc54909",
+            "bytes": 2313856
+          },
+          {
+            "file": "tasks_00048_00096.jsonl",
+            "sha256": "6753bd1a3f4cf3d9e780e0058d2b7c4f80208dafa1bfdf92923ded78e572122c",
+            "bytes": 2277872
+          },
+          {
+            "file": "tasks_00096_00144.jsonl",
+            "sha256": "700901c1dedc63e9f270e1520941bcbd745cc0be6a2e05673a1eae3de78fec98",
+            "bytes": 2314236
+          },
+          {
+            "file": "tasks_00144_00192.jsonl",
+            "sha256": "0d730e34ab5d2cb3b19b4271b5ac443f56f2b335dda227a44d8c1984119a4f3c",
+            "bytes": 2316924
+          },
+          {
+            "file": "tasks_00192_00240.jsonl",
+            "sha256": "6b218b9687a0be97d0c4d6ddba04d3a1242e86546da4a682302c659ae4b01e63",
+            "bytes": 2383608
+          },
+          {
+            "file": "tasks_00240_00250.jsonl",
+            "sha256": "d1de93bcdeaaf425d1086b9d9fc8f2a0ca023f41f59073f3f292cc984374c1d3",
+            "bytes": 2073671
+          }
+        ]
+      }
+    },
+    {
+      "run": "llin-open-dwh-v15-step120-runtimefixed-smoke5x8-h05-20260815-01",
+      "config": {
+        "model_label": "step120-open-v15-runtimefixed-smoke",
+        "policy_step": 120,
+        "tasks": 5,
+        "samples_per_task": 8,
+        "temperature": 1.0,
+        "top_p": 0.95,
+        "top_k": 20,
+        "tensor_parallel_size": 8,
+        "data_parallel_size": 2,
+        "rollout_npus": 16,
+        "agent_workers": 16,
+        "max_prompt_tokens": 4096,
+        "max_response_tokens": 90112,
+        "context_tokens": 94208,
+        "trajectory_timeout_seconds": 1800.0,
+        "task_batch_size": 5,
+        "optimizer_initialized": false,
+        "actor_worker_created": false,
+        "checkpoint_saved": false,
+        "strict_runtime_configuration_matched": false
+      },
+      "identity": {
+        "valid": true,
+        "kind": "llin_megatron_to_hf_export",
+        "policy_step": 120,
+        "config_sha256": "43eee23b0489ed1769bf2d49438015728ad686bef55d4aecb18a3a1ce840d6da",
+        "safetensor_index_sha256": "747b0b46e0334189cf0eb02ecc860f6de1e5f156f7115d5f76c20b1bc9ae03aa",
+        "export_manifest_sha256": "bf363a04d460a389021cf5e6e0c7013552ea88df6c5bd7bdb5ffd43300057208"
+      },
+      "exit_code": 0,
+      "summaries": [
+        {
+          "file": "outcomes/safe_summary.json",
+          "sha256": "e76a46cb68c9204dcfe5136807f5822d44e142453ab8f209b16c84cae6f0a063",
+          "metrics": {
+            "expected_tasks": 5,
+            "tasks": 5,
+            "partial": false,
+            "complete_shards": 1,
+            "samples_per_task": 8,
+            "trajectories": 40,
+            "correct_trajectories": 1,
+            "completed_trajectories": 31,
+            "runtime_error_trajectories": 0,
+            "timeout_trajectories": 6,
+            "evaluable_trajectories": 34,
+            "correct_rate": 0.025,
+            "completion_rate": 0.775,
+            "bucket_counts": {
+              "all_wrong": 3,
+              "mixed": 1,
+              "timed_out": 1
+            },
+            "correct_count_histogram": {
+              "0": 4,
+              "1": 1,
+              "2": 0,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0,
+              "7": 0,
+              "8": 0
+            },
+            "mixed_screening_rows": 1,
+            "mixed_review_queue_rows": 1,
+            "training_allowed": false,
+            "promotion_allowed": false,
+            "explicit_semantic_review_completed": false
+          }
+        }
+      ],
+      "shard_audit": {
+        "files": 1,
+        "bytes": 1554810,
+        "rows": 40,
+        "tasks": 5,
+        "duplicate_slots": 0,
+        "invalid_json_lines": 0,
+        "sample_count_histogram": {
+          "8": 5
+        },
+        "groups_with_exact_sample_indexes": 5,
+        "empty_inputs": 0,
+        "empty_outputs": 6,
+        "timeout_rows": 6,
+        "runtime_error_rows": 0,
+        "tool_call_blocks": 766,
+        "tool_response_blocks": 747,
+        "unique_output_count_histogram": {
+          "3": 1,
+          "8": 4
+        },
+        "file_set_sha256": "20f2f0203fb9f152d0d138cf43963800ea8569052969b5854e335da78eb8cd0f",
+        "fingerprints": [
+          {
+            "file": "tasks_00000_00005.jsonl",
+            "sha256": "e6c7a685f363d21a4231c84bfdeb35175aea03d4dca7eca6beddcb97e9cbe787",
+            "bytes": 1554810
+          }
+        ]
+      }
+    },
+    {
+      "run": "llin-open-dwh-v15-step120-timeout-retry-admission-v2-h05-20260815-01",
+      "config": {
+        "model_label": "step120",
+        "policy_step": 120,
+        "tasks": 1936,
+        "samples_per_task": 1,
+        "temperature": 1.0,
+        "top_p": 0.95,
+        "top_k": 20,
+        "tensor_parallel_size": 8,
+        "data_parallel_size": 2,
+        "rollout_npus": 16,
+        "agent_workers": 16,
+        "max_prompt_tokens": 4096,
+        "max_response_tokens": 90112,
+        "context_tokens": 94208,
+        "trajectory_timeout_seconds": 1800.0,
+        "task_batch_size": 48,
+        "optimizer_initialized": false,
+        "actor_worker_created": false,
+        "checkpoint_saved": false,
+        "strict_runtime_configuration_matched": false
+      },
+      "identity": {
+        "valid": true,
+        "kind": "llin_megatron_to_hf_export",
+        "policy_step": 120,
+        "config_sha256": "43eee23b0489ed1769bf2d49438015728ad686bef55d4aecb18a3a1ce840d6da",
+        "safetensor_index_sha256": "747b0b46e0334189cf0eb02ecc860f6de1e5f156f7115d5f76c20b1bc9ae03aa",
+        "export_manifest_sha256": "bf363a04d460a389021cf5e6e0c7013552ea88df6c5bd7bdb5ffd43300057208"
+      },
+      "summaries": [
+        {
+          "file": "outcomes-partial/safe_summary.json",
+          "sha256": "05a0bf1576ec59070240f0af0b553f35cfdeb5945510ff4d736a6567e19eea10",
+          "metrics": {
+            "expected_tasks": 1936,
+            "tasks": 1152,
+            "partial": true,
+            "complete_shards": 24,
+            "samples_per_task": 1,
+            "trajectories": 1152,
+            "correct_trajectories": 27,
+            "completed_trajectories": 836,
+            "runtime_error_trajectories": 0,
+            "timeout_trajectories": 243,
+            "evaluable_trajectories": 909,
+            "correct_rate": 0.0234375,
+            "completion_rate": 0.7256944444444444,
+            "bucket_counts": {
+              "all_correct": 27,
+              "all_wrong": 882,
+              "timed_out": 243
+            },
+            "correct_count_histogram": {
+              "0": 1125,
+              "1": 27
+            },
+            "mixed_screening_rows": 0,
+            "mixed_review_queue_rows": 0,
+            "training_allowed": false,
+            "promotion_allowed": false,
+            "explicit_semantic_review_completed": false
+          }
+        }
+      ],
+      "shard_audit": {
+        "files": 25,
+        "bytes": 44700490,
+        "rows": 1200,
+        "tasks": 1200,
+        "duplicate_slots": 0,
+        "invalid_json_lines": 0,
+        "sample_count_histogram": {
+          "1": 1200
+        },
+        "groups_with_exact_sample_indexes": 1200,
+        "empty_inputs": 0,
+        "empty_outputs": 252,
+        "timeout_rows": 252,
+        "runtime_error_rows": 0,
+        "tool_call_blocks": 21802,
+        "tool_response_blocks": 21083,
+        "unique_output_count_histogram": {
+          "1": 1200
+        },
+        "file_set_sha256": "58b99a6b3068cd90c8660b7117fb619fa667781287fb98ce7ca4146ac8677a34",
+        "fingerprints": [
+          {
+            "file": "tasks_00000_00048.jsonl",
+            "sha256": "ed4a684d978a6787ba489258fcead13e9aee3ee6e54ac9a795c2daf9528844e5",
+            "bytes": 1703396
+          },
+          {
+            "file": "tasks_00048_00096.jsonl",
+            "sha256": "214a55979f7c2ee8c62a4e84215764680e10cda3fb32f773411e7975f24d9903",
+            "bytes": 1660905
+          },
+          {
+            "file": "tasks_00096_00144.jsonl",
+            "sha256": "55dac4152f41e5a05d6d850a4ff5cb626eaa9084f80f3d0a479fb45c96526324",
+            "bytes": 1822077
+          },
+          {
+            "file": "tasks_00144_00192.jsonl",
+            "sha256": "cfa3fdcccfda7e636f29894a87f0c904b3cd78cf674a84f6d41cfe43759970f2",
+            "bytes": 1774023
+          },
+          {
+            "file": "tasks_00192_00240.jsonl",
+            "sha256": "9a5191b79953e92855801e7119e8883c31f55d88bc7744722275fd15e3bcbed5",
+            "bytes": 2248486
+          },
+          {
+            "file": "tasks_00240_00288.jsonl",
+            "sha256": "74d64c0c96dedb938e0e3e9f958754eeebccdb0ad7dd31c5da94f6a1ed20226b",
+            "bytes": 2135834
+          },
+          {
+            "file": "tasks_00288_00336.jsonl",
+            "sha256": "0277a116e77210f073555f9372af7758e672e40677dded9a29b679870be85267",
+            "bytes": 1682934
+          },
+          {
+            "file": "tasks_00336_00384.jsonl",
+            "sha256": "c1f2b96ad4fac716105b8432c9afee7f8439ac836bdf936163f625770b2d6c44",
+            "bytes": 1941502
+          },
+          {
+            "file": "tasks_00384_00432.jsonl",
+            "sha256": "718fe041ad9ef3a710ff193772f6c49130a7acd344d31afd115cdacf389c4e07",
+            "bytes": 1827814
+          },
+          {
+            "file": "tasks_00432_00480.jsonl",
+            "sha256": "3d24433caf09a5360c4fc966b4436db7d1ebde0e1efdf1893ca69874d5085673",
+            "bytes": 1847541
+          },
+          {
+            "file": "tasks_00480_00528.jsonl",
+            "sha256": "dab58d103ff57b60461c4221719fa64708c8a51cea8d975ad14abc068397caf5",
+            "bytes": 1688688
+          },
+          {
+            "file": "tasks_00528_00576.jsonl",
+            "sha256": "b4d52b6d7eccce8fd26434798a3c7e99f32230b6b16c8ec57a50e936a45d0ad6",
+            "bytes": 1307992
+          },
+          {
+            "file": "tasks_00576_00624.jsonl",
+            "sha256": "9c0608d4e50bfab329528bef23b37b426aaf63d93d79220c45fd62ab815adb4e",
+            "bytes": 1979858
+          },
+          {
+            "file": "tasks_00624_00672.jsonl",
+            "sha256": "96623546822335586893806673e1e6afee9e5a73499b256d02265d5ff4c08b21",
+            "bytes": 1682643
+          },
+          {
+            "file": "tasks_00672_00720.jsonl",
+            "sha256": "04de7e9fc502ecf27a0338ae68c5e7b015148e79d96b0749f46b21a513354078",
+            "bytes": 1554814
+          },
+          {
+            "file": "tasks_00720_00768.jsonl",
+            "sha256": "3133d73f6fcff5a9a6e437a427b1b35458980d11163f0c21831053abadc6ec9c",
+            "bytes": 1373602
+          },
+          {
+            "file": "tasks_00768_00816.jsonl",
+            "sha256": "53cc4e153cb2c45df0a9e6339f6155fb9bdf5cee51624121f6e938c243af0a01",
+            "bytes": 1896096
+          },
+          {
+            "file": "tasks_00816_00864.jsonl",
+            "sha256": "890ad762ade1d37c08df53886edc6a39adcd63241403b822683213f87fcae18c",
+            "bytes": 1835105
+          },
+          {
+            "file": "tasks_00864_00912.jsonl",
+            "sha256": "d4541a7d1c11641202c302b0f47e727231aa95fe8e4da2104e337ea72eb9f76f",
+            "bytes": 1597641
+          },
+          {
+            "file": "tasks_00912_00960.jsonl",
+            "sha256": "d2e23eab2f653fd173644e08ba7878a113e4aaff5a01fb414f7eca65eaeb12ec",
+            "bytes": 1632200
+          },
+          {
+            "file": "tasks_00960_01008.jsonl",
+            "sha256": "31844da2590a2d4c7b30bcdbc802b53a3481962139c73b608979a64a162896fc",
+            "bytes": 1679750
+          },
+          {
+            "file": "tasks_01008_01056.jsonl",
+            "sha256": "3f549e761b2f0ec8c469804288bc7c7baf4e9ec8e6a4647fcf54c0dab56ae705",
+            "bytes": 1763558
+          },
+          {
+            "file": "tasks_01056_01104.jsonl",
+            "sha256": "d8dae2152d1ec8b199e6459d849f412a1897abcb269b1252fb3a376e03222537",
+            "bytes": 2198408
+          },
+          {
+            "file": "tasks_01104_01152.jsonl",
+            "sha256": "2580bbaa9c59574ff40930d1e8d8633a840f9c77f3fef5883f0cbb27c16fea34",
+            "bytes": 1789607
+          },
+          {
+            "file": "tasks_01152_01200.jsonl",
+            "sha256": "62a569ded2508c4b522ff8a5e807aa9f716de946e0664cec97f86d9b0caef728",
+            "bytes": 2076016
+          }
+        ]
+      }
+    },
+    {
+      "run": "llin-open-dwh-v15-step120-timeout-retry-rolling-v3-h05-20260816-01",
+      "config": {
+        "model_label": "step120",
+        "policy_step": 120,
+        "tasks": 1936,
+        "samples_per_task": 1,
+        "temperature": 1.0,
+        "top_p": 0.95,
+        "top_k": 20,
+        "tensor_parallel_size": 8,
+        "data_parallel_size": 2,
+        "rollout_npus": 16,
+        "agent_workers": 16,
+        "max_prompt_tokens": 4096,
+        "max_response_tokens": 90112,
+        "context_tokens": 94208,
+        "trajectory_timeout_seconds": 1800.0,
+        "task_batch_size": 48,
+        "rolling_admission_enabled": true,
+        "optimizer_initialized": false,
+        "actor_worker_created": false,
+        "checkpoint_saved": false,
+        "strict_runtime_configuration_matched": false
+      },
+      "identity": {
+        "valid": true,
+        "kind": "llin_megatron_to_hf_export",
+        "policy_step": 120,
+        "config_sha256": "43eee23b0489ed1769bf2d49438015728ad686bef55d4aecb18a3a1ce840d6da",
+        "safetensor_index_sha256": "747b0b46e0334189cf0eb02ecc860f6de1e5f156f7115d5f76c20b1bc9ae03aa",
+        "export_manifest_sha256": "bf363a04d460a389021cf5e6e0c7013552ea88df6c5bd7bdb5ffd43300057208"
+      },
+      "summaries": [
+        {
+          "file": "outcomes-partial/safe_summary.json",
+          "sha256": "96dabea68f3923adf76211f90d85f9244ca76b6267f95110887d5b5245a0ad2c",
+          "metrics": {
+            "expected_tasks": 1936,
+            "tasks": 1248,
+            "partial": true,
+            "complete_shards": 26,
+            "samples_per_task": 1,
+            "trajectories": 1248,
+            "correct_trajectories": 31,
+            "completed_trajectories": 898,
+            "runtime_error_trajectories": 0,
+            "timeout_trajectories": 265,
+            "evaluable_trajectories": 983,
+            "correct_rate": 0.024839743589743588,
+            "completion_rate": 0.719551282051282,
+            "bucket_counts": {
+              "all_correct": 31,
+              "all_wrong": 952,
+              "timed_out": 265
+            },
+            "correct_count_histogram": {
+              "0": 1217,
+              "1": 31
+            },
+            "mixed_screening_rows": 0,
+            "mixed_review_queue_rows": 0,
+            "training_allowed": false,
+            "promotion_allowed": false,
+            "explicit_semantic_review_completed": false
+          }
+        }
+      ],
+      "shard_audit": {
+        "files": 33,
+        "bytes": 59632291,
+        "rows": 1584,
+        "tasks": 1584,
+        "duplicate_slots": 0,
+        "invalid_json_lines": 0,
+        "sample_count_histogram": {
+          "1": 1584
+        },
+        "groups_with_exact_sample_indexes": 1584,
+        "empty_inputs": 0,
+        "empty_outputs": 312,
+        "timeout_rows": 312,
+        "runtime_error_rows": 0,
+        "tool_call_blocks": 29032,
+        "tool_response_blocks": 28050,
+        "unique_output_count_histogram": {
+          "1": 1584
+        },
+        "file_set_sha256": "5a27e0de9c27014ab03e767ff9ad8b4724fef6c44a026f19f445bf3e1a31dedf",
+        "fingerprints": [
+          {
+            "file": "tasks_00000_00048.jsonl",
+            "sha256": "ed4a684d978a6787ba489258fcead13e9aee3ee6e54ac9a795c2daf9528844e5",
+            "bytes": 1703396
+          },
+          {
+            "file": "tasks_00048_00096.jsonl",
+            "sha256": "214a55979f7c2ee8c62a4e84215764680e10cda3fb32f773411e7975f24d9903",
+            "bytes": 1660905
+          },
+          {
+            "file": "tasks_00096_00144.jsonl",
+            "sha256": "55dac4152f41e5a05d6d850a4ff5cb626eaa9084f80f3d0a479fb45c96526324",
+            "bytes": 1822077
+          },
+          {
+            "file": "tasks_00144_00192.jsonl",
+            "sha256": "cfa3fdcccfda7e636f29894a87f0c904b3cd78cf674a84f6d41cfe43759970f2",
+            "bytes": 1774023
+          },
+          {
+            "file": "tasks_00192_00240.jsonl",
+            "sha256": "9a5191b79953e92855801e7119e8883c31f55d88bc7744722275fd15e3bcbed5",
+            "bytes": 2248486
+          },
+          {
+            "file": "tasks_00240_00288.jsonl",
+            "sha256": "74d64c0c96dedb938e0e3e9f958754eeebccdb0ad7dd31c5da94f6a1ed20226b",
+            "bytes": 2135834
+          },
+          {
+            "file": "tasks_00288_00336.jsonl",
+            "sha256": "0277a116e77210f073555f9372af7758e672e40677dded9a29b679870be85267",
+            "bytes": 1682934
+          },
+          {
+            "file": "tasks_00336_00384.jsonl",
+            "sha256": "c1f2b96ad4fac716105b8432c9afee7f8439ac836bdf936163f625770b2d6c44",
+            "bytes": 1941502
+          },
+          {
+            "file": "tasks_00384_00432.jsonl",
+            "sha256": "718fe041ad9ef3a710ff193772f6c49130a7acd344d31afd115cdacf389c4e07",
+            "bytes": 1827814
+          },
+          {
+            "file": "tasks_00432_00480.jsonl",
+            "sha256": "3d24433caf09a5360c4fc966b4436db7d1ebde0e1efdf1893ca69874d5085673",
+            "bytes": 1847541
+          },
+          {
+            "file": "tasks_00480_00528.jsonl",
+            "sha256": "dab58d103ff57b60461c4221719fa64708c8a51cea8d975ad14abc068397caf5",
+            "bytes": 1688688
+          },
+          {
+            "file": "tasks_00528_00576.jsonl",
+            "sha256": "b4d52b6d7eccce8fd26434798a3c7e99f32230b6b16c8ec57a50e936a45d0ad6",
+            "bytes": 1307992
+          },
+          {
+            "file": "tasks_00576_00624.jsonl",
+            "sha256": "9c0608d4e50bfab329528bef23b37b426aaf63d93d79220c45fd62ab815adb4e",
+            "bytes": 1979858
+          },
+          {
+            "file": "tasks_00624_00672.jsonl",
+            "sha256": "96623546822335586893806673e1e6afee9e5a73499b256d02265d5ff4c08b21",
+            "bytes": 1682643
+          },
+          {
+            "file": "tasks_00672_00720.jsonl",
+            "sha256": "04de7e9fc502ecf27a0338ae68c5e7b015148e79d96b0749f46b21a513354078",
+            "bytes": 1554814
+          },
+          {
+            "file": "tasks_00720_00768.jsonl",
+            "sha256": "3133d73f6fcff5a9a6e437a427b1b35458980d11163f0c21831053abadc6ec9c",
+            "bytes": 1373602
+          },
+          {
+            "file": "tasks_00768_00816.jsonl",
+            "sha256": "53cc4e153cb2c45df0a9e6339f6155fb9bdf5cee51624121f6e938c243af0a01",
+            "bytes": 1896096
+          },
+          {
+            "file": "tasks_00816_00864.jsonl",
+            "sha256": "890ad762ade1d37c08df53886edc6a39adcd63241403b822683213f87fcae18c",
+            "bytes": 1835105
+          },
+          {
+            "file": "tasks_00864_00912.jsonl",
+            "sha256": "d4541a7d1c11641202c302b0f47e727231aa95fe8e4da2104e337ea72eb9f76f",
+            "bytes": 1597641
+          },
+          {
+            "file": "tasks_00912_00960.jsonl",
+            "sha256": "d2e23eab2f653fd173644e08ba7878a113e4aaff5a01fb414f7eca65eaeb12ec",
+            "bytes": 1632200
+          },
+          {
+            "file": "tasks_00960_01008.jsonl",
+            "sha256": "31844da2590a2d4c7b30bcdbc802b53a3481962139c73b608979a64a162896fc",
+            "bytes": 1679750
+          },
+          {
+            "file": "tasks_01008_01056.jsonl",
+            "sha256": "3f549e761b2f0ec8c469804288bc7c7baf4e9ec8e6a4647fcf54c0dab56ae705",
+            "bytes": 1763558
+          },
+          {
+            "file": "tasks_01056_01104.jsonl",
+            "sha256": "d8dae2152d1ec8b199e6459d849f412a1897abcb269b1252fb3a376e03222537",
+            "bytes": 2198408
+          },
+          {
+            "file": "tasks_01104_01152.jsonl",
+            "sha256": "2580bbaa9c59574ff40930d1e8d8633a840f9c77f3fef5883f0cbb27c16fea34",
+            "bytes": 1789607
+          },
+          {
+            "file": "tasks_01152_01200.jsonl",
+            "sha256": "62a569ded2508c4b522ff8a5e807aa9f716de946e0664cec97f86d9b0caef728",
+            "bytes": 2076016
+          },
+          {
+            "file": "tasks_01200_01248.jsonl",
+            "sha256": "68a01558212ad1110ef01eab0e2a711e835268e4e321324e86183999edafa4f2",
+            "bytes": 1648463
+          },
+          {
+            "file": "tasks_01248_01296.jsonl",
+            "sha256": "b07d4d1e42511bce8c1ca08555615516ea918e6f39d27be1fd26476554718f7c",
+            "bytes": 1766541
+          },
+          {
+            "file": "tasks_01296_01344.jsonl",
+            "sha256": "54847047ae067ddaa06187f8bbd07b42cb9b98b393617f45f3bd7df90b64761a",
+            "bytes": 1707729
+          },
+          {
+            "file": "tasks_01344_01392.jsonl",
+            "sha256": "ad6a848cb203812b37e770e4d4f472f38e54a141977ef4f3408f0aa68c6a0910",
+            "bytes": 1974675
+          },
+          {
+            "file": "tasks_01392_01440.jsonl",
+            "sha256": "48960817aef1d252a6580c29c471985dd38d9d110b4dc3d02b3aedd6b6f0a02e",
+            "bytes": 2141018
+          },
+          {
+            "file": "tasks_01440_01488.jsonl",
+            "sha256": "bf8f5c8000ce1347b8ddfb77a603cd8e7435f1ff9c7c98d3e77f1c937f2a8f33",
+            "bytes": 2084399
+          },
+          {
+            "file": "tasks_01488_01536.jsonl",
+            "sha256": "a3f9a80ba83cd3be087a52ce6df02c6efe7323357f8ee1166ada7fb6d8be7f70",
+            "bytes": 1903461
+          },
+          {
+            "file": "tasks_01536_01584.jsonl",
+            "sha256": "f608478a31b290ec63b5d41f54d23a2a188933db5ea342a50a89db331afc8016",
+            "bytes": 1705515
+          }
+        ]
+      }
+    },
+    {
+      "run": "llin-open-dwh-v20-step120-2plus2plus2-final-h05-20260816-01",
+      "summaries": [
+        {
+          "file": "adaptive_final_safe_summary.json",
+          "sha256": "c39da87778d8a2c2750af968a666c48ac2a385806ba7fe924617d2d4e54e8ea8",
+          "metrics": {
+            "training_allowed": false,
+            "promotion_allowed": false,
+            "initial_tasks": 215,
+            "mixed_after_four_tasks": 6,
+            "mixed_after_six_tasks": 5,
+            "variance_candidate_tasks": 11,
+            "unresolved_after_six_tasks": 204,
+            "sample_count_distribution": {
+              "2": 0,
+              "4": 6,
+              "6": 209
+            },
+            "actual_trajectories_including_existing_two": 1278
+          }
+        }
+      ]
+    },
+    {
+      "run": "llin-open-dwh-v20-step120-2plus2plus2-wave4-window125-h05-20260816-01",
+      "config": {
+        "model_label": "step120",
+        "policy_step": 120,
+        "tasks": 215,
+        "samples_per_task": 2,
+        "temperature": 1.0,
+        "top_p": 0.95,
+        "top_k": 20,
+        "tensor_parallel_size": 8,
+        "data_parallel_size": 2,
+        "rollout_npus": 16,
+        "agent_workers": 16,
+        "max_prompt_tokens": 4096,
+        "max_response_tokens": 90112,
+        "context_tokens": 94208,
+        "trajectory_timeout_seconds": 1800.0,
+        "task_batch_size": 24,
+        "rolling_admission_enabled": true,
+        "optimizer_initialized": false,
+        "actor_worker_created": false,
+        "checkpoint_saved": false,
+        "strict_runtime_configuration_matched": false
+      },
+      "identity": {
+        "valid": true,
+        "kind": "llin_megatron_to_hf_export",
+        "policy_step": 120,
+        "config_sha256": "43eee23b0489ed1769bf2d49438015728ad686bef55d4aecb18a3a1ce840d6da",
+        "safetensor_index_sha256": "747b0b46e0334189cf0eb02ecc860f6de1e5f156f7115d5f76c20b1bc9ae03aa",
+        "export_manifest_sha256": "bf363a04d460a389021cf5e6e0c7013552ea88df6c5bd7bdb5ffd43300057208"
+      },
+      "exit_code": 0,
+      "summaries": [
+        {
+          "file": "outcomes/safe_summary.json",
+          "sha256": "b1b3f63286c994496d9861f62418c9865e25946f160caf472d82c43c9724c920",
+          "metrics": {
+            "expected_tasks": 215,
+            "tasks": 215,
+            "partial": false,
+            "complete_shards": 9,
+            "samples_per_task": 2,
+            "trajectories": 430,
+            "correct_trajectories": 7,
+            "completed_trajectories": 299,
+            "runtime_error_trajectories": 0,
+            "timeout_trajectories": 123,
+            "evaluable_trajectories": 307,
+            "correct_rate": 0.01627906976744186,
+            "completion_rate": 0.6953488372093023,
+            "bucket_counts": {
+              "all_correct": 1,
+              "all_wrong": 119,
+              "mixed": 3,
+              "timed_out": 92
+            },
+            "correct_count_histogram": {
+              "0": 209,
+              "1": 5,
+              "2": 1
+            },
+            "mixed_screening_rows": 3,
+            "mixed_review_queue_rows": 3,
+            "training_allowed": false,
+            "promotion_allowed": false,
+            "explicit_semantic_review_completed": false
+          }
+        }
+      ],
+      "shard_audit": {
+        "files": 9,
+        "bytes": 14670923,
+        "rows": 430,
+        "tasks": 215,
+        "duplicate_slots": 0,
+        "invalid_json_lines": 0,
+        "sample_count_histogram": {
+          "2": 215
+        },
+        "groups_with_exact_sample_indexes": 215,
+        "empty_inputs": 0,
+        "empty_outputs": 123,
+        "timeout_rows": 123,
+        "runtime_error_rows": 0,
+        "tool_call_blocks": 5804,
+        "tool_response_blocks": 5613,
+        "unique_output_count_histogram": {
+          "1": 31,
+          "2": 184
+        },
+        "file_set_sha256": "6d659cd99bb843a7d7e0dfa8a2bc054b3e33610c8a2272975b81d47119ef67bc",
+        "fingerprints": [
+          {
+            "file": "tasks_00000_00024.jsonl",
+            "sha256": "864516ed409c6885657384e652c02b5bac3a257e606f38fb121b7ad9a43230ad",
+            "bytes": 1823743
+          },
+          {
+            "file": "tasks_00024_00048.jsonl",
+            "sha256": "d0ddc8598df6abba0f0e5a61d2182116f9e6a9bb88bac1b6e9ca258869171eb7",
+            "bytes": 1683891
+          },
+          {
+            "file": "tasks_00048_00072.jsonl",
+            "sha256": "ef27eea709063bf3c500dba7311fb0ef3537200efc8bf425250ed15fc1166ce4",
+            "bytes": 1450890
+          },
+          {
+            "file": "tasks_00072_00096.jsonl",
+            "sha256": "4b1f92c8a5e820edbef94c60be979aa023f468cc42778a08cb93651c8a5418fa",
+            "bytes": 1663511
+          },
+          {
+            "file": "tasks_00096_00120.jsonl",
+            "sha256": "2e0c414276f042fb4ba99c66cd639ab0b939d722027b6374c5e1c78b5dea6618",
+            "bytes": 1434410
+          },
+          {
+            "file": "tasks_00120_00144.jsonl",
+            "sha256": "065b691aeaee181c32b1a735f70388e88b590c3a48584f8f497e3a50d42b69cb",
+            "bytes": 1853820
+          },
+          {
+            "file": "tasks_00144_00168.jsonl",
+            "sha256": "eac527a88f762d86f31cd89091d88af34f490d679c4d810fdca9a243ca9628fa",
+            "bytes": 1487006
+          },
+          {
+            "file": "tasks_00168_00192.jsonl",
+            "sha256": "500be429d494460674361d9322405ca4aabb46194f636735b41e517ff02d3bd5",
+            "bytes": 1748157
+          },
+          {
+            "file": "tasks_00192_00215.jsonl",
+            "sha256": "8a7a2dd94a52f41c6017c76a99e2210bbdc1093ee719481ceb5b417dafee72fa",
+            "bytes": 1525495
+          }
+        ]
+      }
+    },
+    {
+      "run": "llin-open-dwh-v20-step120-2plus2plus2-wave6-window125-h05-20260816-01",
+      "config": {
+        "model_label": "step120",
+        "policy_step": 120,
+        "tasks": 209,
+        "samples_per_task": 2,
+        "temperature": 1.0,
+        "top_p": 0.95,
+        "top_k": 20,
+        "tensor_parallel_size": 8,
+        "data_parallel_size": 2,
+        "rollout_npus": 16,
+        "agent_workers": 16,
+        "max_prompt_tokens": 4096,
+        "max_response_tokens": 90112,
+        "context_tokens": 94208,
+        "trajectory_timeout_seconds": 1800.0,
+        "task_batch_size": 24,
+        "rolling_admission_enabled": true,
+        "optimizer_initialized": false,
+        "actor_worker_created": false,
+        "checkpoint_saved": false,
+        "strict_runtime_configuration_matched": false
+      },
+      "identity": {
+        "valid": true,
+        "kind": "llin_megatron_to_hf_export",
+        "policy_step": 120,
+        "config_sha256": "43eee23b0489ed1769bf2d49438015728ad686bef55d4aecb18a3a1ce840d6da",
+        "safetensor_index_sha256": "747b0b46e0334189cf0eb02ecc860f6de1e5f156f7115d5f76c20b1bc9ae03aa",
+        "export_manifest_sha256": "bf363a04d460a389021cf5e6e0c7013552ea88df6c5bd7bdb5ffd43300057208"
+      },
+      "exit_code": 0,
+      "summaries": [
+        {
+          "file": "outcomes/safe_summary.json",
+          "sha256": "e790e847b1e70f395442b493d88042f28cdd000e4636e42d121ba5ba1358caed",
+          "metrics": {
+            "expected_tasks": 209,
+            "tasks": 209,
+            "partial": false,
+            "complete_shards": 9,
+            "samples_per_task": 2,
+            "trajectories": 418,
+            "correct_trajectories": 7,
+            "completed_trajectories": 314,
+            "runtime_error_trajectories": 0,
+            "timeout_trajectories": 103,
+            "evaluable_trajectories": 315,
+            "correct_rate": 0.01674641148325359,
+            "completion_rate": 0.7511961722488039,
+            "bucket_counts": {
+              "all_correct": 2,
+              "all_wrong": 125,
+              "mixed": 2,
+              "timed_out": 80
+            },
+            "correct_count_histogram": {
+              "0": 204,
+              "1": 3,
+              "2": 2
+            },
+            "mixed_screening_rows": 2,
+            "mixed_review_queue_rows": 2,
+            "training_allowed": false,
+            "promotion_allowed": false,
+            "explicit_semantic_review_completed": false
+          }
+        }
+      ],
+      "shard_audit": {
+        "files": 9,
+        "bytes": 14888317,
+        "rows": 418,
+        "tasks": 209,
+        "duplicate_slots": 0,
+        "invalid_json_lines": 0,
+        "sample_count_histogram": {
+          "2": 209
+        },
+        "groups_with_exact_sample_indexes": 209,
+        "empty_inputs": 0,
+        "empty_outputs": 103,
+        "timeout_rows": 103,
+        "runtime_error_rows": 0,
+        "tool_call_blocks": 5747,
+        "tool_response_blocks": 5573,
+        "unique_output_count_histogram": {
+          "1": 23,
+          "2": 186
+        },
+        "file_set_sha256": "eca95eb529a7f1ae6752027442106ad0e81dcaf55dddd2f0a69adf50200dd085",
+        "fingerprints": [
+          {
+            "file": "tasks_00000_00024.jsonl",
+            "sha256": "166094cf6af32c7abcbd6717c16a8b81e28a94afe11b4e147dac471b830a5561",
+            "bytes": 1683802
+          },
+          {
+            "file": "tasks_00024_00048.jsonl",
+            "sha256": "ccbbb2f7e0d659e218e3a6e88ca639c268d00956b8ed8fb3e2ef145ba1fb944d",
+            "bytes": 1737581
+          },
+          {
+            "file": "tasks_00048_00072.jsonl",
+            "sha256": "12fedb4023fa3be1954a7e58b41f6882763a92f3c3716ad9528356b79ee8f278",
+            "bytes": 1825485
+          },
+          {
+            "file": "tasks_00072_00096.jsonl",
+            "sha256": "69917ae320b79b49b60c47c573dfd4ec638319e6d9583002e9662b2f6a834d61",
+            "bytes": 1743193
+          },
+          {
+            "file": "tasks_00096_00120.jsonl",
+            "sha256": "9a2c1ad7e9aeaf9a2feffa99adf73c5a56491bc29e590f2e5ce863298abf61e8",
+            "bytes": 1850642
+          },
+          {
+            "file": "tasks_00120_00144.jsonl",
+            "sha256": "ea50496977833b9fc457a619c6fbb8bb5535548cb4e38d01d99d8dde19a46fb2",
+            "bytes": 1592716
+          },
+          {
+            "file": "tasks_00144_00168.jsonl",
+            "sha256": "58f9e4851b33bd4e1ce83b2820be424ea37fecc102ca5c782a22787304189653",
+            "bytes": 1824073
+          },
+          {
+            "file": "tasks_00168_00192.jsonl",
+            "sha256": "0dcd2a4f8b16a1470fe8c4c601d17bc1d095af23d5bc3cee368f7b6889f6920b",
+            "bytes": 1639838
+          },
+          {
+            "file": "tasks_00192_00209.jsonl",
+            "sha256": "ec1bed2005b62138dfd51bcec21b89974f607a006ddf15c2ad01493ee5112b94",
+            "bytes": 990987
+          }
+        ]
+      }
+    },
+    {
+      "run": "llin-open-dwh-v20-step120-500x8-dual-summary-20260815-01",
+      "summaries": [
+        {
+          "file": "merged/safe_summary.json",
+          "sha256": "884eb1abbb2bbfd729f1f198c22bbbb6afbf726cfcde9d9e0cb2be940abe5ab0",
+          "metrics": {
+            "tasks": 500,
+            "samples_per_task": 8,
+            "trajectories": 4000,
+            "correct_trajectories": 0,
+            "completed_trajectories": 2043,
+            "runtime_error_trajectories": 0,
+            "timeout_trajectories": 1890,
+            "evaluable_trajectories": 2110,
+            "correct_rate": 0.0,
+            "completion_rate": 0.51075,
+            "bucket_counts": {
+              "all_wrong": 25,
+              "timed_out": 475
+            },
+            "correct_count_histogram": {
+              "0": 500,
+              "1": 0,
+              "2": 0,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0,
+              "7": 0,
+              "8": 0
+            },
+            "mixed_screening_rows": 0,
+            "training_allowed": false,
+            "promotion_allowed": false,
+            "explicit_semantic_review_completed": false,
+            "arms": 2
+          }
+        },
+        {
+          "file": "remote_arm/safe_summary.json",
+          "sha256": "1fa8744f9a2ae1ff220669cb5a4abd17a4b626a5dda14f337a42cffbe8411e6b",
+          "metrics": {
+            "expected_tasks": 250,
+            "tasks": 250,
+            "partial": false,
+            "complete_shards": 6,
+            "samples_per_task": 8,
+            "trajectories": 2000,
+            "correct_trajectories": 0,
+            "completed_trajectories": 1177,
+            "runtime_error_trajectories": 0,
+            "timeout_trajectories": 786,
+            "evaluable_trajectories": 1214,
+            "correct_rate": 0.0,
+            "completion_rate": 0.5885,
+            "bucket_counts": {
+              "all_wrong": 15,
+              "timed_out": 235
+            },
+            "correct_count_histogram": {
+              "0": 250,
+              "1": 0,
+              "2": 0,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0,
+              "7": 0,
+              "8": 0
+            },
+            "mixed_screening_rows": 0,
+            "mixed_review_queue_rows": 0,
+            "training_allowed": false,
+            "promotion_allowed": false,
+            "explicit_semantic_review_completed": false
+          }
+        }
+      ]
+    },
+    {
+      "run": "llin-open-dwh-v20-step120-500x8-h05-20260815-01",
+      "config": {
+        "model_label": "step120-open-v20",
+        "policy_step": 120,
+        "tasks": 250,
+        "samples_per_task": 8,
+        "temperature": 1.0,
+        "top_p": 0.95,
+        "top_k": 20,
+        "tensor_parallel_size": 8,
+        "data_parallel_size": 2,
+        "rollout_npus": 16,
+        "agent_workers": 16,
+        "max_prompt_tokens": 4096,
+        "max_response_tokens": 90112,
+        "context_tokens": 94208,
+        "trajectory_timeout_seconds": 1800.0,
+        "task_batch_size": 48,
+        "optimizer_initialized": false,
+        "actor_worker_created": false,
+        "checkpoint_saved": false,
+        "strict_runtime_configuration_matched": false
+      },
+      "identity": {
+        "valid": true,
+        "kind": "llin_megatron_to_hf_export",
+        "policy_step": 120,
+        "config_sha256": "43eee23b0489ed1769bf2d49438015728ad686bef55d4aecb18a3a1ce840d6da",
+        "safetensor_index_sha256": "747b0b46e0334189cf0eb02ecc860f6de1e5f156f7115d5f76c20b1bc9ae03aa",
+        "export_manifest_sha256": "bf363a04d460a389021cf5e6e0c7013552ea88df6c5bd7bdb5ffd43300057208"
+      },
+      "exit_code": 0,
+      "summaries": [
+        {
+          "file": "outcomes/safe_summary.json",
+          "sha256": "80fe710864f56dcd8d2b6dd0243c0e781f86802243b3d74d92c9630deeed0a53",
+          "metrics": {
+            "expected_tasks": 250,
+            "tasks": 250,
+            "partial": false,
+            "complete_shards": 6,
+            "samples_per_task": 8,
+            "trajectories": 2000,
+            "correct_trajectories": 0,
+            "completed_trajectories": 866,
+            "runtime_error_trajectories": 0,
+            "timeout_trajectories": 1104,
+            "evaluable_trajectories": 896,
+            "correct_rate": 0.0,
+            "completion_rate": 0.433,
+            "bucket_counts": {
+              "all_wrong": 10,
+              "timed_out": 240
+            },
+            "correct_count_histogram": {
+              "0": 250,
+              "1": 0,
+              "2": 0,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0,
+              "7": 0,
+              "8": 0
+            },
+            "mixed_screening_rows": 0,
+            "mixed_review_queue_rows": 0,
+            "training_allowed": false,
+            "promotion_allowed": false,
+            "explicit_semantic_review_completed": false
+          }
+        }
+      ],
+      "shard_audit": {
+        "files": 6,
+        "bytes": 18703377,
+        "rows": 2000,
+        "tasks": 250,
+        "duplicate_slots": 0,
+        "invalid_json_lines": 0,
+        "sample_count_histogram": {
+          "8": 250
+        },
+        "groups_with_exact_sample_indexes": 250,
+        "empty_inputs": 0,
+        "empty_outputs": 1104,
+        "timeout_rows": 1104,
+        "runtime_error_rows": 0,
+        "tool_call_blocks": 10360,
+        "tool_response_blocks": 10330,
+        "unique_output_count_histogram": {
+          "1": 7,
+          "2": 28,
+          "3": 31,
+          "4": 62,
+          "5": 53,
+          "6": 32,
+          "7": 21,
+          "8": 16
+        },
+        "file_set_sha256": "a8e1a25f41f7797bcdb9f812c11979f00af75f20251849aa072db57f3259772d",
+        "fingerprints": [
+          {
+            "file": "tasks_00000_00048.jsonl",
+            "sha256": "3bd272060a902e68c250ff4540a45d05e89d50e87e88495130386b56c3891c7e",
+            "bytes": 3473287
+          },
+          {
+            "file": "tasks_00048_00096.jsonl",
+            "sha256": "b77513b661ed04faa94db57faef37a8791987fd14677a90183cd11b1ce091e51",
+            "bytes": 3443079
+          },
+          {
+            "file": "tasks_00096_00144.jsonl",
+            "sha256": "8c19e535bcda4793a488e862052c6bf761495a04f4276968ec802a19ac8ae736",
+            "bytes": 3408206
+          },
+          {
+            "file": "tasks_00144_00192.jsonl",
+            "sha256": "d566ae299323bcceab7530ee302a2d5714fbb8924d9520102fc27b2308fabdf7",
+            "bytes": 3589109
+          },
+          {
+            "file": "tasks_00192_00240.jsonl",
+            "sha256": "7a9ddf31bfb1d0074ed679a8cfe1e2c6ac3f404f955131ee161f3de22dce0546",
+            "bytes": 3478849
+          },
+          {
+            "file": "tasks_00240_00250.jsonl",
+            "sha256": "2e12aadc16ffe23edd3d5f0ffeb3c8090bcf9522e13a4cda70538575aba8eaf8",
+            "bytes": 1310847
+          }
+        ]
+      }
+    },
+    {
+      "run": "llin-open-dwh-v20-step120-500x8-h05-preflight-20260815-01",
+      "config": {
+        "model_label": "step120-open-v20",
+        "policy_step": 120,
+        "tasks": 250,
+        "samples_per_task": 8,
+        "temperature": 1.0,
+        "top_p": 0.95,
+        "top_k": 20,
+        "tensor_parallel_size": 8,
+        "data_parallel_size": 2,
+        "rollout_npus": 16,
+        "agent_workers": 16,
+        "max_prompt_tokens": 4096,
+        "max_response_tokens": 90112,
+        "context_tokens": 94208,
+        "trajectory_timeout_seconds": 1800.0,
+        "task_batch_size": 48,
+        "optimizer_initialized": false,
+        "actor_worker_created": false,
+        "checkpoint_saved": false,
+        "strict_runtime_configuration_matched": false
+      },
+      "identity": {
+        "valid": true,
+        "kind": "llin_megatron_to_hf_export",
+        "policy_step": 120,
+        "config_sha256": "43eee23b0489ed1769bf2d49438015728ad686bef55d4aecb18a3a1ce840d6da",
+        "safetensor_index_sha256": "747b0b46e0334189cf0eb02ecc860f6de1e5f156f7115d5f76c20b1bc9ae03aa",
+        "export_manifest_sha256": "bf363a04d460a389021cf5e6e0c7013552ea88df6c5bd7bdb5ffd43300057208"
+      }
+    },
+    {
+      "run": "llin-open-dwh-v20-step120-adaptive-final-earlystop-v3-h05-20260816-02",
+      "summaries": [
+        {
+          "file": "outcomes/safe_summary.json",
+          "sha256": "f455a78d26dab1395851853690cafbf6259673210eff06ab32c6d22c3d9d2950",
+          "metrics": {
+            "expected_tasks": 22,
+            "tasks": 22,
+            "partial": false,
+            "complete_shards": 1,
+            "samples_per_task": 8,
+            "trajectories": 176,
+            "correct_trajectories": 17,
+            "completed_trajectories": 136,
+            "runtime_error_trajectories": 0,
+            "timeout_trajectories": 36,
+            "evaluable_trajectories": 140,
+            "correct_rate": 0.09659090909090909,
+            "completion_rate": 0.7727272727272727,
+            "bucket_counts": {
+              "all_wrong": 4,
+              "mixed": 5,
+              "timed_out": 13
+            },
+            "correct_count_histogram": {
+              "0": 15,
+              "1": 3,
+              "2": 2,
+              "3": 1,
+              "4": 0,
+              "5": 0,
+              "6": 0,
+              "7": 1,
+              "8": 0
+            },
+            "mixed_screening_rows": 5,
+            "mixed_review_queue_rows": 5,
+            "training_allowed": false,
+            "promotion_allowed": false,
+            "explicit_semantic_review_completed": false
+          }
+        },
+        {
+          "file": "adaptive_final_safe_summary.json",
+          "sha256": "1ce164506eb456c6708d17f6c0c0f1fb986d0b3e26a9b7305b6de43eb13c821a",
+          "metrics": {
+            "correct_trajectories": 17,
+            "runtime_error_trajectories": 0,
+            "timeout_trajectories": 36,
+            "training_allowed": false,
+            "promotion_allowed": false
+          }
+        }
+      ]
+    },
+    {
+      "run": "llin-open-dwh-v20-step120-adaptive-topup6-earlystop-v3-h05-20260816-01",
+      "config": {
+        "model_label": "step120",
+        "policy_step": 120,
+        "tasks": 22,
+        "samples_per_task": 6,
+        "temperature": 1.0,
+        "top_p": 0.95,
+        "top_k": 20,
+        "tensor_parallel_size": 8,
+        "data_parallel_size": 2,
+        "rollout_npus": 16,
+        "agent_workers": 16,
+        "max_prompt_tokens": 4096,
+        "max_response_tokens": 90112,
+        "context_tokens": 94208,
+        "trajectory_timeout_seconds": 1800.0,
+        "task_batch_size": 8,
+        "rolling_admission_enabled": true,
+        "optimizer_initialized": false,
+        "actor_worker_created": false,
+        "checkpoint_saved": false,
+        "strict_runtime_configuration_matched": false
+      },
+      "identity": {
+        "valid": true,
+        "kind": "llin_megatron_to_hf_export",
+        "policy_step": 120,
+        "config_sha256": "43eee23b0489ed1769bf2d49438015728ad686bef55d4aecb18a3a1ce840d6da",
+        "safetensor_index_sha256": "747b0b46e0334189cf0eb02ecc860f6de1e5f156f7115d5f76c20b1bc9ae03aa",
+        "export_manifest_sha256": "bf363a04d460a389021cf5e6e0c7013552ea88df6c5bd7bdb5ffd43300057208"
+      },
+      "exit_code": 1
+    },
+    {
+      "run": "llin-open-dwh-v20-step120-adaptive-topup6-earlystop-v3-h05-20260816-02",
+      "config": {
+        "model_label": "step120",
+        "policy_step": 120,
+        "tasks": 22,
+        "samples_per_task": 6,
+        "temperature": 1.0,
+        "top_p": 0.95,
+        "top_k": 20,
+        "tensor_parallel_size": 8,
+        "data_parallel_size": 2,
+        "rollout_npus": 16,
+        "agent_workers": 16,
+        "max_prompt_tokens": 4096,
+        "max_response_tokens": 90112,
+        "context_tokens": 94208,
+        "trajectory_timeout_seconds": 1800.0,
+        "task_batch_size": 8,
+        "rolling_admission_enabled": true,
+        "optimizer_initialized": false,
+        "actor_worker_created": false,
+        "checkpoint_saved": false,
+        "strict_runtime_configuration_matched": false
+      },
+      "identity": {
+        "valid": true,
+        "kind": "llin_megatron_to_hf_export",
+        "policy_step": 120,
+        "config_sha256": "43eee23b0489ed1769bf2d49438015728ad686bef55d4aecb18a3a1ce840d6da",
+        "safetensor_index_sha256": "747b0b46e0334189cf0eb02ecc860f6de1e5f156f7115d5f76c20b1bc9ae03aa",
+        "export_manifest_sha256": "bf363a04d460a389021cf5e6e0c7013552ea88df6c5bd7bdb5ffd43300057208"
+      },
+      "exit_code": 0,
+      "shard_audit": {
+        "files": 3,
+        "bytes": 4938815,
+        "rows": 132,
+        "tasks": 22,
+        "duplicate_slots": 0,
+        "invalid_json_lines": 0,
+        "sample_count_histogram": {
+          "6": 22
+        },
+        "groups_with_exact_sample_indexes": 22,
+        "empty_inputs": 0,
+        "empty_outputs": 26,
+        "timeout_rows": 26,
+        "runtime_error_rows": 0,
+        "tool_call_blocks": 1987,
+        "tool_response_blocks": 1944,
+        "unique_output_count_histogram": {
+          "1": 2,
+          "3": 1,
+          "4": 1,
+          "5": 1,
+          "6": 17
+        },
+        "file_set_sha256": "3a0b9b4f8a1ef0a0f55ecc6237ee1b6d8f9b5eccccb66fca92ed6e18f5bfad15",
+        "fingerprints": [
+          {
+            "file": "tasks_00000_00008.jsonl",
+            "sha256": "52efd21bc5d5a0709bda5a79bcdb90bc9a49f5a3b7c66feef4dce39f1bfc21cd",
+            "bytes": 2010386
+          },
+          {
+            "file": "tasks_00008_00016.jsonl",
+            "sha256": "b8eee32a60011ba1dd45ca5fd3bd47b2ff6a1e92c9c0c1aa005c166bcc05b826",
+            "bytes": 1546006
+          },
+          {
+            "file": "tasks_00016_00022.jsonl",
+            "sha256": "26e2c16655d6a34e1285c65a4c429f7d8d504481031640f06ca51d01c4b1dd39",
+            "bytes": 1382423
+          }
+        ]
+      }
+    },
+    {
+      "run": "llin-open-dwh-v20-step120-adaptive-topup6-h05-20260816-01",
+      "config": {
+        "model_label": "step120",
+        "policy_step": 120,
+        "tasks": 205,
+        "samples_per_task": 6,
+        "temperature": 1.0,
+        "top_p": 0.95,
+        "top_k": 20,
+        "tensor_parallel_size": 8,
+        "data_parallel_size": 2,
+        "rollout_npus": 16,
+        "agent_workers": 16,
+        "max_prompt_tokens": 4096,
+        "max_response_tokens": 90112,
+        "context_tokens": 94208,
+        "trajectory_timeout_seconds": 1800.0,
+        "task_batch_size": 8,
+        "rolling_admission_enabled": true,
+        "optimizer_initialized": false,
+        "actor_worker_created": false,
+        "checkpoint_saved": false,
+        "strict_runtime_configuration_matched": false
+      },
+      "identity": {
+        "valid": true,
+        "kind": "llin_megatron_to_hf_export",
+        "policy_step": 120,
+        "config_sha256": "43eee23b0489ed1769bf2d49438015728ad686bef55d4aecb18a3a1ce840d6da",
+        "safetensor_index_sha256": "747b0b46e0334189cf0eb02ecc860f6de1e5f156f7115d5f76c20b1bc9ae03aa",
+        "export_manifest_sha256": "bf363a04d460a389021cf5e6e0c7013552ea88df6c5bd7bdb5ffd43300057208"
+      },
+      "shard_audit": {
+        "files": 3,
+        "bytes": 5975061,
+        "rows": 144,
+        "tasks": 24,
+        "duplicate_slots": 0,
+        "invalid_json_lines": 0,
+        "sample_count_histogram": {
+          "6": 24
+        },
+        "groups_with_exact_sample_indexes": 24,
+        "empty_inputs": 0,
+        "empty_outputs": 14,
+        "timeout_rows": 14,
+        "runtime_error_rows": 0,
+        "tool_call_blocks": 2586,
+        "tool_response_blocks": 2512,
+        "unique_output_count_histogram": {
+          "3": 1,
+          "5": 2,
+          "6": 21
+        },
+        "file_set_sha256": "d536a871f04082f2dd7733843594dd66da0cd0129ed0b46a10cf5f269b3e63fa",
+        "fingerprints": [
+          {
+            "file": "tasks_00000_00008.jsonl",
+            "sha256": "7b8bf78918368a2b8910e3c83c2e1d4b65fe9739274f45535d1b48fe470d1fc2",
+            "bytes": 2051078
+          },
+          {
+            "file": "tasks_00008_00016.jsonl",
+            "sha256": "da8b9f605d119fed225945bc701d8340b4301c55ae2eb58295deb210c54e57c8",
+            "bytes": 1917916
+          },
+          {
+            "file": "tasks_00016_00024.jsonl",
+            "sha256": "6bc8f8872b24ce31010311a22d02420d9883eb681cd12fdae0d6dac4c91aa5fd",
+            "bytes": 2006067
+          }
+        ]
+      }
+    },
+    {
+      "run": "llin-open-dwh-v20-step120-adaptive2-500x2-h05-20260816-01",
+      "config": {
+        "model_label": "step120",
+        "policy_step": 120,
+        "tasks": 250,
+        "samples_per_task": 2,
+        "temperature": 1.0,
+        "top_p": 0.95,
+        "top_k": 20,
+        "tensor_parallel_size": 8,
+        "data_parallel_size": 2,
+        "rollout_npus": 16,
+        "agent_workers": 16,
+        "max_prompt_tokens": 4096,
+        "max_response_tokens": 90112,
+        "context_tokens": 94208,
+        "trajectory_timeout_seconds": 1800.0,
+        "task_batch_size": 24,
+        "rolling_admission_enabled": true,
+        "optimizer_initialized": false,
+        "actor_worker_created": false,
+        "checkpoint_saved": false,
+        "strict_runtime_configuration_matched": false
+      },
+      "identity": {
+        "valid": true,
+        "kind": "llin_megatron_to_hf_export",
+        "policy_step": 120,
+        "config_sha256": "43eee23b0489ed1769bf2d49438015728ad686bef55d4aecb18a3a1ce840d6da",
+        "safetensor_index_sha256": "747b0b46e0334189cf0eb02ecc860f6de1e5f156f7115d5f76c20b1bc9ae03aa",
+        "export_manifest_sha256": "bf363a04d460a389021cf5e6e0c7013552ea88df6c5bd7bdb5ffd43300057208"
+      },
+      "exit_code": 0,
+      "summaries": [
+        {
+          "file": "outcomes/safe_summary.json",
+          "sha256": "29d8bfa91d6be699a65150d76ff85b05d86c6ce07b9ee345555ab8667f7874fe",
+          "metrics": {
+            "expected_tasks": 250,
+            "tasks": 250,
+            "partial": false,
+            "complete_shards": 11,
+            "samples_per_task": 2,
+            "trajectories": 500,
+            "correct_trajectories": 19,
+            "completed_trajectories": 403,
+            "runtime_error_trajectories": 0,
+            "timeout_trajectories": 75,
+            "evaluable_trajectories": 425,
+            "correct_rate": 0.038,
+            "completion_rate": 0.806,
+            "bucket_counts": {
+              "all_correct": 2,
+              "all_wrong": 174,
+              "mixed": 13,
+              "timed_out": 61
+            },
+            "correct_count_histogram": {
+              "0": 233,
+              "1": 15,
+              "2": 2
+            },
+            "mixed_screening_rows": 13,
+            "mixed_review_queue_rows": 13,
+            "training_allowed": false,
+            "promotion_allowed": false,
+            "explicit_semantic_review_completed": false
+          }
+        },
+        {
+          "file": "outcomes-partial/safe_summary.json",
+          "sha256": "ec860a9da996783cfbe4adcec2bacd921dbf9ae649c7409f43d3996419585b54",
+          "metrics": {
+            "expected_tasks": 250,
+            "tasks": 168,
+            "partial": true,
+            "complete_shards": 7,
+            "samples_per_task": 2,
+            "trajectories": 336,
+            "correct_trajectories": 14,
+            "completed_trajectories": 270,
+            "runtime_error_trajectories": 0,
+            "timeout_trajectories": 52,
+            "evaluable_trajectories": 284,
+            "correct_rate": 0.041666666666666664,
+            "completion_rate": 0.8035714285714286,
+            "bucket_counts": {
+              "all_correct": 1,
+              "all_wrong": 113,
+              "mixed": 10,
+              "timed_out": 44
+            },
+            "correct_count_histogram": {
+              "0": 155,
+              "1": 12,
+              "2": 1
+            },
+            "mixed_screening_rows": 10,
+            "mixed_review_queue_rows": 10,
+            "training_allowed": false,
+            "promotion_allowed": false,
+            "explicit_semantic_review_completed": false
+          }
+        }
+      ],
+      "shard_audit": {
+        "files": 11,
+        "bytes": 20269847,
+        "rows": 500,
+        "tasks": 250,
+        "duplicate_slots": 0,
+        "invalid_json_lines": 0,
+        "sample_count_histogram": {
+          "2": 250
+        },
+        "groups_with_exact_sample_indexes": 250,
+        "empty_inputs": 0,
+        "empty_outputs": 75,
+        "timeout_rows": 75,
+        "runtime_error_rows": 0,
+        "tool_call_blocks": 8544,
+        "tool_response_blocks": 8293,
+        "unique_output_count_histogram": {
+          "1": 14,
+          "2": 236
+        },
+        "file_set_sha256": "2013c24e980e5823f837e3c622433d2e12aded4f748f531b7a69f9aef35a94bf",
+        "fingerprints": [
+          {
+            "file": "tasks_00000_00024.jsonl",
+            "sha256": "cd56a6789a129fdb00acf692b292d3167f75326e0ebccd760901896a571f05e2",
+            "bytes": 1861493
+          },
+          {
+            "file": "tasks_00024_00048.jsonl",
+            "sha256": "e75894fdbec159e9857f27974fdb1776f0016c58a54f95d3c503ad3a7bf667ab",
+            "bytes": 1924716
+          },
+          {
+            "file": "tasks_00048_00072.jsonl",
+            "sha256": "1f3ca8b8ffd632b28310f77fc055830486f233470cfd26389c9b1b80b9fcdb0f",
+            "bytes": 1892396
+          },
+          {
+            "file": "tasks_00072_00096.jsonl",
+            "sha256": "19a4a8346328a72e6117b914f1051254d220919104efa189bf4437271ad7d2aa",
+            "bytes": 1861565
+          },
+          {
+            "file": "tasks_00096_00120.jsonl",
+            "sha256": "af8b2e4bc682ae37c89c0a71ec4893c465450f44048a3df98c25d1b689959915",
+            "bytes": 2101646
+          },
+          {
+            "file": "tasks_00120_00144.jsonl",
+            "sha256": "08ea88683dd4c86fe80fcf6345ce488bdd5206043bd6d296190e1ac5baa8e7e2",
+            "bytes": 1971021
+          },
+          {
+            "file": "tasks_00144_00168.jsonl",
+            "sha256": "256429a2ddca6563ec91300c555d6a64343671aa7dfd610e0192070dfb1f7553",
+            "bytes": 1933498
+          },
+          {
+            "file": "tasks_00168_00192.jsonl",
+            "sha256": "665378eaf357e8b16e50ac7c4b2a297b8370215149904657c7fcbc03c8a20a0c",
+            "bytes": 2056032
+          },
+          {
+            "file": "tasks_00192_00216.jsonl",
+            "sha256": "32d17b034afd7c9136b9a3923eb4f1594c51a54e30c875e8cff3e1ec85566612",
+            "bytes": 1924986
+          },
+          {
+            "file": "tasks_00216_00240.jsonl",
+            "sha256": "4dc4d69ecf8ec5f3a17dc46cd0b8bf851f5bab09260322e059b9930e4992d015",
+            "bytes": 2001312
+          },
+          {
+            "file": "tasks_00240_00250.jsonl",
+            "sha256": "7a54e64daea02780b5fb4a031374c43a1024e4e034155c7d9712e12c253ca05d",
+            "bytes": 741182
+          }
+        ]
+      }
+    },
+    {
+      "run": "llin-open-dwh-v20-step120-agent-window125-ab-h05-20260816-01",
+      "config": {
+        "model_label": "step120",
+        "policy_step": 120,
+        "tasks": 22,
+        "samples_per_task": 6,
+        "temperature": 1.0,
+        "top_p": 0.95,
+        "top_k": 20,
+        "tensor_parallel_size": 8,
+        "data_parallel_size": 2,
+        "rollout_npus": 16,
+        "agent_workers": 16,
+        "max_prompt_tokens": 4096,
+        "max_response_tokens": 90112,
+        "context_tokens": 94208,
+        "trajectory_timeout_seconds": 1800.0,
+        "task_batch_size": 8,
+        "rolling_admission_enabled": true,
+        "optimizer_initialized": false,
+        "actor_worker_created": false,
+        "checkpoint_saved": false,
+        "strict_runtime_configuration_matched": false
+      },
+      "identity": {
+        "valid": true,
+        "kind": "llin_megatron_to_hf_export",
+        "policy_step": 120,
+        "config_sha256": "43eee23b0489ed1769bf2d49438015728ad686bef55d4aecb18a3a1ce840d6da",
+        "safetensor_index_sha256": "747b0b46e0334189cf0eb02ecc860f6de1e5f156f7115d5f76c20b1bc9ae03aa",
+        "export_manifest_sha256": "bf363a04d460a389021cf5e6e0c7013552ea88df6c5bd7bdb5ffd43300057208"
+      },
+      "exit_code": 0,
+      "summaries": [
+        {
+          "file": "outcomes/safe_summary.json",
+          "sha256": "4f17585145e2076f9c93ce490e06e9d84f81c41efe817bdb0e6bc7b21b2c8469",
+          "metrics": {
+            "expected_tasks": 22,
+            "tasks": 22,
+            "partial": false,
+            "complete_shards": 3,
+            "samples_per_task": 6,
+            "trajectories": 132,
+            "correct_trajectories": 13,
+            "completed_trajectories": 107,
+            "runtime_error_trajectories": 0,
+            "timeout_trajectories": 25,
+            "evaluable_trajectories": 107,
+            "correct_rate": 0.09848484848484848,
+            "completion_rate": 0.8106060606060606,
+            "bucket_counts": {
+              "all_wrong": 6,
+              "mixed": 3,
+              "timed_out": 13
+            },
+            "correct_count_histogram": {
+              "0": 16,
+              "1": 4,
+              "2": 0,
+              "3": 0,
+              "4": 1,
+              "5": 1,
+              "6": 0
+            },
+            "mixed_screening_rows": 3,
+            "mixed_review_queue_rows": 3,
+            "training_allowed": false,
+            "promotion_allowed": false,
+            "explicit_semantic_review_completed": false
+          }
+        }
+      ],
+      "shard_audit": {
+        "files": 3,
+        "bytes": 4759483,
+        "rows": 132,
+        "tasks": 22,
+        "duplicate_slots": 0,
+        "invalid_json_lines": 0,
+        "sample_count_histogram": {
+          "6": 22
+        },
+        "groups_with_exact_sample_indexes": 22,
+        "empty_inputs": 0,
+        "empty_outputs": 25,
+        "timeout_rows": 25,
+        "runtime_error_rows": 0,
+        "tool_call_blocks": 1812,
+        "tool_response_blocks": 1756,
+        "unique_output_count_histogram": {
+          "3": 2,
+          "4": 2,
+          "5": 2,
+          "6": 16
+        },
+        "file_set_sha256": "14214edb317684cededc9898863217b0bf32c1edda85643009432806001a9dac",
+        "fingerprints": [
+          {
+            "file": "tasks_00000_00008.jsonl",
+            "sha256": "926d5408dbc572839549974a9e3f1673dd190ceacd90d904b125c74b78bc7590",
+            "bytes": 1829146
+          },
+          {
+            "file": "tasks_00008_00016.jsonl",
+            "sha256": "32187e6726a1b6f4b3acbb22852a700bdd86c9aec4a659d147b1242a16057d8d",
+            "bytes": 1709289
+          },
+          {
+            "file": "tasks_00016_00022.jsonl",
+            "sha256": "19772c1663e36e4f3cf86079005ccc5d11c279ff74da055e39f5ea03bf250802",
+            "bytes": 1221048
+          }
+        ]
+      }
+    },
+    {
+      "run": "llin-open-dwh-v20-step120-runtimefixed-500x8-dual-summary-20260815-01",
+      "finalizer_exit_code": 0,
+      "summaries": [
+        {
+          "file": "merged/safe_summary.json",
+          "sha256": "2ba1e393cd6d8dff181c2068e8c412ae2a9d50a5fd4961b937bce25cc48ffb0c",
+          "metrics": {
+            "tasks": 500,
+            "samples_per_task": 8,
+            "trajectories": 4000,
+            "correct_trajectories": 14,
+            "completed_trajectories": 158,
+            "runtime_error_trajectories": 0,
+            "timeout_trajectories": 3841,
+            "evaluable_trajectories": 159,
+            "correct_rate": 0.0035,
+            "completion_rate": 0.0395,
+            "bucket_counts": {
+              "all_wrong": 7,
+              "mixed": 1,
+              "timed_out": 492
+            },
+            "correct_count_histogram": {
+              "0": 491,
+              "1": 8,
+              "2": 0,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 1,
+              "7": 0,
+              "8": 0
+            },
+            "mixed_screening_rows": 1,
+            "training_allowed": false,
+            "promotion_allowed": false,
+            "explicit_semantic_review_completed": false,
+            "arms": 2
+          }
+        },
+        {
+          "file": "remote_arm/safe_summary.json",
+          "sha256": "b8d7bcd3f09a7753847803b242f03cbedf09f8ed03aed9ac488a5286f6797ae5",
+          "metrics": {
+            "expected_tasks": 250,
+            "tasks": 250,
+            "partial": false,
+            "complete_shards": 6,
+            "samples_per_task": 8,
+            "trajectories": 2000,
+            "correct_trajectories": 13,
+            "completed_trajectories": 90,
+            "runtime_error_trajectories": 0,
+            "timeout_trajectories": 1909,
+            "evaluable_trajectories": 91,
+            "correct_rate": 0.0065,
+            "completion_rate": 0.045,
+            "bucket_counts": {
+              "all_wrong": 2,
+              "mixed": 1,
+              "timed_out": 247
+            },
+            "correct_count_histogram": {
+              "0": 242,
+              "1": 7,
+              "2": 0,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 1,
+              "7": 0,
+              "8": 0
+            },
+            "mixed_screening_rows": 1,
+            "mixed_review_queue_rows": 1,
+            "training_allowed": false,
+            "promotion_allowed": false,
+            "explicit_semantic_review_completed": false
+          }
+        }
+      ]
+    },
+    {
+      "run": "llin-open-dwh-v20-step120-runtimefixed-500x8-h05-20260815-01",
+      "config": {
+        "model_label": "step120",
+        "policy_step": 120,
+        "tasks": 250,
+        "samples_per_task": 8,
+        "temperature": 1.0,
+        "top_p": 0.95,
+        "top_k": 20,
+        "tensor_parallel_size": 8,
+        "data_parallel_size": 2,
+        "rollout_npus": 16,
+        "agent_workers": 16,
+        "max_prompt_tokens": 4096,
+        "max_response_tokens": 90112,
+        "context_tokens": 94208,
+        "trajectory_timeout_seconds": 1800.0,
+        "task_batch_size": 48,
+        "optimizer_initialized": false,
+        "actor_worker_created": false,
+        "checkpoint_saved": false,
+        "strict_runtime_configuration_matched": false
+      },
+      "identity": {
+        "valid": true,
+        "kind": "llin_megatron_to_hf_export",
+        "policy_step": 120,
+        "config_sha256": "43eee23b0489ed1769bf2d49438015728ad686bef55d4aecb18a3a1ce840d6da",
+        "safetensor_index_sha256": "747b0b46e0334189cf0eb02ecc860f6de1e5f156f7115d5f76c20b1bc9ae03aa",
+        "export_manifest_sha256": "bf363a04d460a389021cf5e6e0c7013552ea88df6c5bd7bdb5ffd43300057208"
+      },
+      "exit_code": 0,
+      "summaries": [
+        {
+          "file": "outcomes/safe_summary.json",
+          "sha256": "40a8a4ee1a3ef225c2efd24184fef2a86341aba4a6715d57b540e7619af54171",
+          "metrics": {
+            "expected_tasks": 250,
+            "tasks": 250,
+            "partial": false,
+            "complete_shards": 6,
+            "samples_per_task": 8,
+            "trajectories": 2000,
+            "correct_trajectories": 1,
+            "completed_trajectories": 68,
+            "runtime_error_trajectories": 0,
+            "timeout_trajectories": 1932,
+            "evaluable_trajectories": 68,
+            "correct_rate": 0.0005,
+            "completion_rate": 0.034,
+            "bucket_counts": {
+              "all_wrong": 5,
+              "timed_out": 245
+            },
+            "correct_count_histogram": {
+              "0": 249,
+              "1": 1,
+              "2": 0,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0,
+              "7": 0,
+              "8": 0
+            },
+            "mixed_screening_rows": 0,
+            "mixed_review_queue_rows": 0,
+            "training_allowed": false,
+            "promotion_allowed": false,
+            "explicit_semantic_review_completed": false
+          }
+        }
+      ],
+      "shard_audit": {
+        "files": 6,
+        "bytes": 13983341,
+        "rows": 2000,
+        "tasks": 250,
+        "duplicate_slots": 0,
+        "invalid_json_lines": 0,
+        "sample_count_histogram": {
+          "8": 250
+        },
+        "groups_with_exact_sample_indexes": 250,
+        "empty_inputs": 0,
+        "empty_outputs": 1932,
+        "timeout_rows": 1932,
+        "runtime_error_rows": 0,
+        "tool_call_blocks": 921,
+        "tool_response_blocks": 907,
+        "unique_output_count_histogram": {
+          "1": 232,
+          "2": 9,
+          "4": 2,
+          "7": 1,
+          "8": 6
+        },
+        "file_set_sha256": "fad06339d7383e5c439e446214aa9cfe5e1aedab77827ed2689eb7758809666b",
+        "fingerprints": [
+          {
+            "file": "tasks_00000_00048.jsonl",
+            "sha256": "5817bd44e797fdc0f8fd9f9b825fd4a8582e6d1c4fb2dfe9315ab9c86431111c",
+            "bytes": 2279144
+          },
+          {
+            "file": "tasks_00048_00096.jsonl",
+            "sha256": "cb8ce9bff2cea08005cab9b93e666b48655fec1c806c3c579dca4d95574f30b7",
+            "bytes": 2302148
+          },
+          {
+            "file": "tasks_00096_00144.jsonl",
+            "sha256": "6b7d61fb9038e0bf47364d303057fd2bc1c5db54449f3f435fc180a7ff60d060",
+            "bytes": 2321490
+          },
+          {
+            "file": "tasks_00144_00192.jsonl",
+            "sha256": "cbabcd6d2f7aefb7acc413c08dc927b0a49260051a6ff47b588cf2db14cbe39a",
+            "bytes": 2418237
+          },
+          {
+            "file": "tasks_00192_00240.jsonl",
+            "sha256": "497bd8595f4d3729653063bfaea06043ff42e20232623bab07b545b9049ddd48",
+            "bytes": 2303442
+          },
+          {
+            "file": "tasks_00240_00250.jsonl",
+            "sha256": "00d1f4cdd00749e677184df8a1f05afb6e9ce2e99b4f6b61b1cc5c8165738eb8",
+            "bytes": 2358880
+          }
+        ]
+      }
+    },
+    {
+      "run": "llin-open-dwh-v21-step120-2plus2plus2plus2-window125-h05-20260816-01-wave2",
+      "config": {
+        "model_label": "step120",
+        "policy_step": 120,
+        "tasks": 250,
+        "samples_per_task": 2,
+        "temperature": 1.0,
+        "top_p": 0.95,
+        "top_k": 20,
+        "tensor_parallel_size": 8,
+        "data_parallel_size": 2,
+        "rollout_npus": 16,
+        "agent_workers": 16,
+        "max_prompt_tokens": 4096,
+        "max_response_tokens": 90112,
+        "context_tokens": 94208,
+        "trajectory_timeout_seconds": 1800.0,
+        "task_batch_size": 24,
+        "rolling_admission_enabled": true,
+        "optimizer_initialized": false,
+        "actor_worker_created": false,
+        "checkpoint_saved": false,
+        "strict_runtime_configuration_matched": false
+      },
+      "identity": {
+        "valid": true,
+        "kind": "llin_megatron_to_hf_export",
+        "policy_step": 120,
+        "config_sha256": "43eee23b0489ed1769bf2d49438015728ad686bef55d4aecb18a3a1ce840d6da",
+        "safetensor_index_sha256": "747b0b46e0334189cf0eb02ecc860f6de1e5f156f7115d5f76c20b1bc9ae03aa",
+        "export_manifest_sha256": "bf363a04d460a389021cf5e6e0c7013552ea88df6c5bd7bdb5ffd43300057208"
+      },
+      "exit_code": 0,
+      "summaries": [
+        {
+          "file": "outcomes/safe_summary.json",
+          "sha256": "d61fd0c7a22deec8c0d08f99b1e880647b07715bad2a24ab28b012c934641989",
+          "metrics": {
+            "expected_tasks": 250,
+            "tasks": 250,
+            "partial": false,
+            "complete_shards": 11,
+            "samples_per_task": 2,
+            "trajectories": 500,
+            "correct_trajectories": 21,
+            "completed_trajectories": 356,
+            "runtime_error_trajectories": 0,
+            "timeout_trajectories": 137,
+            "evaluable_trajectories": 363,
+            "correct_rate": 0.042,
+            "completion_rate": 0.712,
+            "bucket_counts": {
+              "all_correct": 6,
+              "all_wrong": 138,
+              "mixed": 7,
+              "timed_out": 99
+            },
+            "correct_count_histogram": {
+              "0": 235,
+              "1": 9,
+              "2": 6
+            },
+            "mixed_screening_rows": 7,
+            "mixed_review_queue_rows": 7,
+            "training_allowed": false,
+            "promotion_allowed": false,
+            "explicit_semantic_review_completed": false
+          }
+        }
+      ],
+      "shard_audit": {
+        "files": 11,
+        "bytes": 16351988,
+        "rows": 500,
+        "tasks": 250,
+        "duplicate_slots": 0,
+        "invalid_json_lines": 0,
+        "sample_count_histogram": {
+          "2": 250
+        },
+        "groups_with_exact_sample_indexes": 250,
+        "empty_inputs": 0,
+        "empty_outputs": 137,
+        "timeout_rows": 137,
+        "runtime_error_rows": 0,
+        "tool_call_blocks": 6710,
+        "tool_response_blocks": 6575,
+        "unique_output_count_histogram": {
+          "1": 38,
+          "2": 212
+        },
+        "file_set_sha256": "0cd93d39c18ded99c980772494dfa8e9946cb4b8af2c7d1e0ebb29ca419eb0ff",
+        "fingerprints": [
+          {
+            "file": "tasks_00000_00024.jsonl",
+            "sha256": "443e1bb249b964929ad6943bbe073b665e33ee6981e2a99e15362ca0a1b52d95",
+            "bytes": 1628648
+          },
+          {
+            "file": "tasks_00024_00048.jsonl",
+            "sha256": "6b62bf344a377e3562fe936f74a4009c33448a420981b305cd1a085c8b2894e5",
+            "bytes": 1401372
+          },
+          {
+            "file": "tasks_00048_00072.jsonl",
+            "sha256": "ba6be50d7cd60566d5c144c2c272eeb308c6ecfcfef56ed2097683afa257d3b5",
+            "bytes": 1463605
+          },
+          {
+            "file": "tasks_00072_00096.jsonl",
+            "sha256": "b5b4c94d7495ec2d8cc55fe1746bc6f5c683bc9d570ed71f931877ef343b02de",
+            "bytes": 1552354
+          },
+          {
+            "file": "tasks_00096_00120.jsonl",
+            "sha256": "47284d1d0e86781fe06432a9a124826aeb0c2ca9acf0869b04911a07e0d74646",
+            "bytes": 1892116
+          },
+          {
+            "file": "tasks_00120_00144.jsonl",
+            "sha256": "4523d8c6a1737d9181ca855faaa7c34aeb17be82b2012dc1bec27b665c7d8746",
+            "bytes": 1791205
+          },
+          {
+            "file": "tasks_00144_00168.jsonl",
+            "sha256": "6de57e8a0331f90ad79c09c77e8f25151e35ab8831417a27951fa378ab9cfb28",
+            "bytes": 1708341
+          },
+          {
+            "file": "tasks_00168_00192.jsonl",
+            "sha256": "e34b567f6f6659e4b676fed4ef92794a56d8651b6cb9429eb7505a8c35c1554e",
+            "bytes": 1578069
+          },
+          {
+            "file": "tasks_00192_00216.jsonl",
+            "sha256": "dce66ebccd73bfd89885e75308b6397f9f5495433eaf73b958ca25fb8db13ac5",
+            "bytes": 1409028
+          },
+          {
+            "file": "tasks_00216_00240.jsonl",
+            "sha256": "8df0541b3576889c2895b67f6315b8e34d13fcfb5061a5dc92a4fda8b76b4f9a",
+            "bytes": 1309287
+          },
+          {
+            "file": "tasks_00240_00250.jsonl",
+            "sha256": "e0eb2094a4687cf1070930aa32ef1cb052e7fecfeec4184a10d07461edfab41c",
+            "bytes": 617963
+          }
+        ]
+      }
+    },
+    {
+      "run": "llin-open-dwh-v21-step120-2plus2plus2plus2-window125-h05-20260816-01-wave4",
+      "config": {
+        "model_label": "step120",
+        "policy_step": 120,
+        "tasks": 243,
+        "samples_per_task": 2,
+        "temperature": 1.0,
+        "top_p": 0.95,
+        "top_k": 20,
+        "tensor_parallel_size": 8,
+        "data_parallel_size": 2,
+        "rollout_npus": 16,
+        "agent_workers": 16,
+        "max_prompt_tokens": 4096,
+        "max_response_tokens": 90112,
+        "context_tokens": 94208,
+        "trajectory_timeout_seconds": 1800.0,
+        "task_batch_size": 24,
+        "rolling_admission_enabled": true,
+        "optimizer_initialized": false,
+        "actor_worker_created": false,
+        "checkpoint_saved": false,
+        "strict_runtime_configuration_matched": false
+      },
+      "identity": {
+        "valid": true,
+        "kind": "llin_megatron_to_hf_export",
+        "policy_step": 120,
+        "config_sha256": "43eee23b0489ed1769bf2d49438015728ad686bef55d4aecb18a3a1ce840d6da",
+        "safetensor_index_sha256": "747b0b46e0334189cf0eb02ecc860f6de1e5f156f7115d5f76c20b1bc9ae03aa",
+        "export_manifest_sha256": "bf363a04d460a389021cf5e6e0c7013552ea88df6c5bd7bdb5ffd43300057208"
+      },
+      "exit_code": 0,
+      "summaries": [
+        {
+          "file": "outcomes/safe_summary.json",
+          "sha256": "c770bfa3d84215e31eb6b029e1237395752502271776337686b9613e32ec2504",
+          "metrics": {
+            "expected_tasks": 243,
+            "tasks": 243,
+            "partial": false,
+            "complete_shards": 11,
+            "samples_per_task": 2,
+            "trajectories": 486,
+            "correct_trajectories": 12,
+            "completed_trajectories": 356,
+            "runtime_error_trajectories": 0,
+            "timeout_trajectories": 126,
+            "evaluable_trajectories": 360,
+            "correct_rate": 0.024691358024691357,
+            "completion_rate": 0.7325102880658436,
+            "bucket_counts": {
+              "all_correct": 4,
+              "all_wrong": 140,
+              "mixed": 3,
+              "timed_out": 96
+            },
+            "correct_count_histogram": {
+              "0": 235,
+              "1": 4,
+              "2": 4
+            },
+            "mixed_screening_rows": 3,
+            "mixed_review_queue_rows": 3,
+            "training_allowed": false,
+            "promotion_allowed": false,
+            "explicit_semantic_review_completed": false
+          }
+        }
+      ],
+      "shard_audit": {
+        "files": 11,
+        "bytes": 16285469,
+        "rows": 486,
+        "tasks": 243,
+        "duplicate_slots": 0,
+        "invalid_json_lines": 0,
+        "sample_count_histogram": {
+          "2": 243
+        },
+        "groups_with_exact_sample_indexes": 243,
+        "empty_inputs": 0,
+        "empty_outputs": 126,
+        "timeout_rows": 126,
+        "runtime_error_rows": 0,
+        "tool_call_blocks": 6852,
+        "tool_response_blocks": 6746,
+        "unique_output_count_histogram": {
+          "1": 30,
+          "2": 213
+        },
+        "file_set_sha256": "2c46aa78a430d9fb5085bec89e57ed2e4618ae593b42f417462f4f487d9a4add",
+        "fingerprints": [
+          {
+            "file": "tasks_00000_00024.jsonl",
+            "sha256": "421e6b45b07da104e4101bff93a2922009522e9623486fe3518a6af32fc38e03",
+            "bytes": 1752357
+          },
+          {
+            "file": "tasks_00024_00048.jsonl",
+            "sha256": "6fa0df7a77cdbbd3577d4528d9a46682e5849dfdd0e2b02e912cf0f3bc773a93",
+            "bytes": 1819952
+          },
+          {
+            "file": "tasks_00048_00072.jsonl",
+            "sha256": "80a2b850952116470c0f318c5832b3bac91487c457e00e4e82e1fd5f6d63ceae",
+            "bytes": 1471037
+          },
+          {
+            "file": "tasks_00072_00096.jsonl",
+            "sha256": "86e13f4fe7810d11fdf7daaada63dabc7fdc423d5cfecf9b9d49d359a53a9c62",
+            "bytes": 1718013
+          },
+          {
+            "file": "tasks_00096_00120.jsonl",
+            "sha256": "a159c3eb358b3c8ce41ca23832ea5a5354c6850705ac4dab4197e90c0fb358ec",
+            "bytes": 1587034
+          },
+          {
+            "file": "tasks_00120_00144.jsonl",
+            "sha256": "79351312b735526f4a6e93eb791a94055823d2874a855dea086838fafe780d94",
+            "bytes": 1358641
+          },
+          {
+            "file": "tasks_00144_00168.jsonl",
+            "sha256": "f6cb6c16179acc6c207c80617380579b7a5edf556c54fb80aab5aeb42b69bd11",
+            "bytes": 1478617
+          },
+          {
+            "file": "tasks_00168_00192.jsonl",
+            "sha256": "cf50ec1fef17b4dded3eb036a50da9887577f6ef765b9e1ee01bd36563f10ccc",
+            "bytes": 1546294
+          },
+          {
+            "file": "tasks_00192_00216.jsonl",
+            "sha256": "8c804665eeb7965975f176b3387533dc19f939be18269e06b95120c7a4476513",
+            "bytes": 1407064
+          },
+          {
+            "file": "tasks_00216_00240.jsonl",
+            "sha256": "b74a6fc13b413a626a645477a893617ec1a0f51176423985be95107951352433",
+            "bytes": 1886909
+          },
+          {
+            "file": "tasks_00240_00243.jsonl",
+            "sha256": "345dd46db3bff72134d02e4ed07340715c2392bae9a334075f565e613da8eb66",
+            "bytes": 259551
+          }
+        ]
+      }
+    },
+    {
+      "run": "llin-open-dwh-v21-step120-2plus2plus2plus2-window125-h05-20260816-01-wave6",
+      "config": {
+        "model_label": "step120",
+        "policy_step": 120,
+        "tasks": 235,
+        "samples_per_task": 2,
+        "temperature": 1.0,
+        "top_p": 0.95,
+        "top_k": 20,
+        "tensor_parallel_size": 8,
+        "data_parallel_size": 2,
+        "rollout_npus": 16,
+        "agent_workers": 16,
+        "max_prompt_tokens": 4096,
+        "max_response_tokens": 90112,
+        "context_tokens": 94208,
+        "trajectory_timeout_seconds": 1800.0,
+        "task_batch_size": 24,
+        "rolling_admission_enabled": true,
+        "optimizer_initialized": false,
+        "actor_worker_created": false,
+        "checkpoint_saved": false,
+        "strict_runtime_configuration_matched": false
+      },
+      "identity": {
+        "valid": true,
+        "kind": "llin_megatron_to_hf_export",
+        "policy_step": 120,
+        "config_sha256": "43eee23b0489ed1769bf2d49438015728ad686bef55d4aecb18a3a1ce840d6da",
+        "safetensor_index_sha256": "747b0b46e0334189cf0eb02ecc860f6de1e5f156f7115d5f76c20b1bc9ae03aa",
+        "export_manifest_sha256": "bf363a04d460a389021cf5e6e0c7013552ea88df6c5bd7bdb5ffd43300057208"
+      },
+      "shard_audit": {
+        "files": 10,
+        "bytes": 15208601,
+        "rows": 470,
+        "tasks": 235,
+        "duplicate_slots": 0,
+        "invalid_json_lines": 0,
+        "sample_count_histogram": {
+          "2": 235
+        },
+        "groups_with_exact_sample_indexes": 235,
+        "empty_inputs": 0,
+        "empty_outputs": 129,
+        "timeout_rows": 129,
+        "runtime_error_rows": 0,
+        "tool_call_blocks": 6346,
+        "tool_response_blocks": 6233,
+        "unique_output_count_histogram": {
+          "1": 34,
+          "2": 201
+        },
+        "file_set_sha256": "25d4afb82662bb7c6e61d6058b9c5f0b6a3a6fbec85a40e767198200ba19baad",
+        "fingerprints": [
+          {
+            "file": "tasks_00000_00024.jsonl",
+            "sha256": "e14c123fecd0b38ed11e0cc2fa2057e7da35b09a9abfba58a983f8e1914aaeec",
+            "bytes": 1649354
+          },
+          {
+            "file": "tasks_00024_00048.jsonl",
+            "sha256": "99cf91fb0f033e284f684ccfc38fe3ce4d55028ccc99ef10d05dded99d0001bd",
+            "bytes": 1330271
+          },
+          {
+            "file": "tasks_00048_00072.jsonl",
+            "sha256": "eb78738adac36b48f2beff9adf7971e24e4124f14439ff3400c815dff48d7cd8",
+            "bytes": 1370863
+          },
+          {
+            "file": "tasks_00072_00096.jsonl",
+            "sha256": "9f5c525ddc8db1beca64586f9c205dab4627c531a4a20d5eb98564cb3bf89dca",
+            "bytes": 1613215
+          },
+          {
+            "file": "tasks_00096_00120.jsonl",
+            "sha256": "66b876ac32724307b1037634dc2920b4a66e2b503d17d0ae6a2f89a0f94c49ed",
+            "bytes": 1704630
+          },
+          {
+            "file": "tasks_00120_00144.jsonl",
+            "sha256": "e09402acf5bdf7ead9556b6a1b3c67c893d436aebf08126c8d163185f918fab6",
+            "bytes": 1590298
+          },
+          {
+            "file": "tasks_00144_00168.jsonl",
+            "sha256": "e669a47416bcbd81e3f2c6c10e83fdac163d9bbd88aedb454678cf2381200ad3",
+            "bytes": 1679232
+          },
+          {
+            "file": "tasks_00168_00192.jsonl",
+            "sha256": "ef9bf4c5c41343d27e004b33add5ae3e99becbf4ba785750791024b43361225c",
+            "bytes": 1502478
+          },
+          {
+            "file": "tasks_00192_00216.jsonl",
+            "sha256": "4bb04f62baa461ea2e3b4d632b39ce3a2432c18284d815ab82aa7ead593b13e2",
+            "bytes": 1519239
+          },
+          {
+            "file": "tasks_00216_00235.jsonl",
+            "sha256": "bfef347a34dd56b5a08b54c4c7c3759f70e4ddddc3ac9b9c55f57d3a614facb7",
+            "bytes": 1249021
+          }
+        ]
+      }
+    },
+    {
+      "run": "llin-open-dwh-v21-step120-500x8-dual-partial-snapshot",
+      "summaries": [
+        {
+          "file": "merged/safe_summary.json",
+          "sha256": "9b4b02a123c65da30adeb63619cf8f572a3dcdc88130ac27d8f890ed65a18290",
+          "metrics": {
+            "tasks": 384,
+            "samples_per_task": 8,
+            "trajectories": 3072,
+            "correct_trajectories": 0,
+            "completed_trajectories": 1554,
+            "runtime_error_trajectories": 0,
+            "timeout_trajectories": 1483,
+            "evaluable_trajectories": 1589,
+            "correct_rate": 0.0,
+            "completion_rate": 0.505859375,
+            "bucket_counts": {
+              "all_wrong": 8,
+              "timed_out": 376
+            },
+            "correct_count_histogram": {
+              "0": 384,
+              "1": 0,
+              "2": 0,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0,
+              "7": 0,
+              "8": 0
+            },
+            "mixed_screening_rows": 0,
+            "training_allowed": false,
+            "promotion_allowed": false,
+            "explicit_semantic_review_completed": false,
+            "arms": 2
+          }
+        },
+        {
+          "file": "remote_arm/safe_summary.json",
+          "sha256": "41021667bedcc39dc97c71871ca8f5cc1a1fd6353acb09710df4dcb20e5e540c",
+          "metrics": {
+            "expected_tasks": 250,
+            "tasks": 192,
+            "partial": true,
+            "complete_shards": 4,
+            "samples_per_task": 8,
+            "trajectories": 1536,
+            "correct_trajectories": 0,
+            "completed_trajectories": 902,
+            "runtime_error_trajectories": 0,
+            "timeout_trajectories": 599,
+            "evaluable_trajectories": 937,
+            "correct_rate": 0.0,
+            "completion_rate": 0.5872395833333334,
+            "bucket_counts": {
+              "all_wrong": 8,
+              "timed_out": 184
+            },
+            "correct_count_histogram": {
+              "0": 192,
+              "1": 0,
+              "2": 0,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0,
+              "7": 0,
+              "8": 0
+            },
+            "mixed_screening_rows": 0,
+            "mixed_review_queue_rows": 0,
+            "training_allowed": false,
+            "promotion_allowed": false,
+            "explicit_semantic_review_completed": false
+          }
+        }
+      ]
+    },
+    {
+      "run": "llin-open-dwh-v21-step120-500x8-h05-20260815-01",
+      "config": {
+        "model_label": "step120-open-v21",
+        "policy_step": 120,
+        "tasks": 250,
+        "samples_per_task": 8,
+        "temperature": 1.0,
+        "top_p": 0.95,
+        "top_k": 20,
+        "tensor_parallel_size": 8,
+        "data_parallel_size": 2,
+        "rollout_npus": 16,
+        "agent_workers": 16,
+        "max_prompt_tokens": 4096,
+        "max_response_tokens": 90112,
+        "context_tokens": 94208,
+        "trajectory_timeout_seconds": 1800.0,
+        "task_batch_size": 48,
+        "optimizer_initialized": false,
+        "actor_worker_created": false,
+        "checkpoint_saved": false,
+        "strict_runtime_configuration_matched": false
+      },
+      "identity": {
+        "valid": true,
+        "kind": "llin_megatron_to_hf_export",
+        "policy_step": 120,
+        "config_sha256": "43eee23b0489ed1769bf2d49438015728ad686bef55d4aecb18a3a1ce840d6da",
+        "safetensor_index_sha256": "747b0b46e0334189cf0eb02ecc860f6de1e5f156f7115d5f76c20b1bc9ae03aa",
+        "export_manifest_sha256": "bf363a04d460a389021cf5e6e0c7013552ea88df6c5bd7bdb5ffd43300057208"
+      },
+      "summaries": [
+        {
+          "file": "outcomes-partial-snapshot/safe_summary.json",
+          "sha256": "b3fd218fe10ac4e449462cc0cf8e855d7a1e63eed12bcffe7aa4cfeeacefaa5e",
+          "metrics": {
+            "expected_tasks": 250,
+            "tasks": 192,
+            "partial": true,
+            "complete_shards": 4,
+            "samples_per_task": 8,
+            "trajectories": 1536,
+            "correct_trajectories": 0,
+            "completed_trajectories": 652,
+            "runtime_error_trajectories": 0,
+            "timeout_trajectories": 884,
+            "evaluable_trajectories": 652,
+            "correct_rate": 0.0,
+            "completion_rate": 0.4244791666666667,
+            "bucket_counts": {
+              "timed_out": 192
+            },
+            "correct_count_histogram": {
+              "0": 192,
+              "1": 0,
+              "2": 0,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0,
+              "7": 0,
+              "8": 0
+            },
+            "mixed_screening_rows": 0,
+            "mixed_review_queue_rows": 0,
+            "training_allowed": false,
+            "promotion_allowed": false,
+            "explicit_semantic_review_completed": false
+          }
+        }
+      ],
+      "shard_audit": {
+        "files": 5,
+        "bytes": 17499340,
+        "rows": 1920,
+        "tasks": 240,
+        "duplicate_slots": 0,
+        "invalid_json_lines": 0,
+        "sample_count_histogram": {
+          "8": 240
+        },
+        "groups_with_exact_sample_indexes": 240,
+        "empty_inputs": 0,
+        "empty_outputs": 1095,
+        "timeout_rows": 1095,
+        "runtime_error_rows": 0,
+        "tool_call_blocks": 9059,
+        "tool_response_blocks": 9058,
+        "unique_output_count_histogram": {
+          "1": 9,
+          "2": 26,
+          "3": 33,
+          "4": 58,
+          "5": 50,
+          "6": 36,
+          "7": 18,
+          "8": 10
+        },
+        "file_set_sha256": "421242012345c56618f3cb468708420066d966f350061338582adfe896f4f940",
+        "fingerprints": [
+          {
+            "file": "tasks_00000_00048.jsonl",
+            "sha256": "0a2e5a582ccea93e4a9bda9c08ef4663f363dd512ee2f4b011b49ba38f19c8be",
+            "bytes": 3526893
+          },
+          {
+            "file": "tasks_00048_00096.jsonl",
+            "sha256": "3522e7d969816072dd3678fcee4fe3eae2ced418a385d586a347fdeb43c88f40",
+            "bytes": 3490910
+          },
+          {
+            "file": "tasks_00096_00144.jsonl",
+            "sha256": "f4a03ad8cd1038444d82b5f5c267d9d320c8a2af43765d89a6d1a44af00113f3",
+            "bytes": 3492781
+          },
+          {
+            "file": "tasks_00144_00192.jsonl",
+            "sha256": "186c57124c6de603259e7a32b8c0bb87ccee8334999e04bb78a5f4370336fe1c",
+            "bytes": 3429570
+          },
+          {
+            "file": "tasks_00192_00240.jsonl",
+            "sha256": "c4c3590e24eac1b15d49723e346bd220ea0614e0c9d8c86fcbed07f1f48d3071",
+            "bytes": 3559186
+          }
+        ]
+      }
+    },
+    {
+      "run": "llin-open-dwh-v21-step120-500x8-h05-20260815-01-preflight",
+      "config": {
+        "model_label": "step120-open-v21",
+        "policy_step": 120,
+        "tasks": 250,
+        "samples_per_task": 8,
+        "temperature": 1.0,
+        "top_p": 0.95,
+        "top_k": 20,
+        "tensor_parallel_size": 8,
+        "data_parallel_size": 2,
+        "rollout_npus": 16,
+        "agent_workers": 16,
+        "max_prompt_tokens": 4096,
+        "max_response_tokens": 90112,
+        "context_tokens": 94208,
+        "trajectory_timeout_seconds": 1800.0,
+        "task_batch_size": 48,
+        "optimizer_initialized": false,
+        "actor_worker_created": false,
+        "checkpoint_saved": false,
+        "strict_runtime_configuration_matched": false
+      },
+      "identity": {
+        "valid": true,
+        "kind": "llin_megatron_to_hf_export",
+        "policy_step": 120,
+        "config_sha256": "43eee23b0489ed1769bf2d49438015728ad686bef55d4aecb18a3a1ce840d6da",
+        "safetensor_index_sha256": "747b0b46e0334189cf0eb02ecc860f6de1e5f156f7115d5f76c20b1bc9ae03aa",
+        "export_manifest_sha256": "bf363a04d460a389021cf5e6e0c7013552ea88df6c5bd7bdb5ffd43300057208"
+      }
+    },
+    {
+      "run": "llin-open-dwh-v21-step120-runtimefixed-500x8-h05-20260815-01",
+      "config": {
+        "model_label": "step120",
+        "policy_step": 120,
+        "tasks": 250,
+        "samples_per_task": 8,
+        "temperature": 1.0,
+        "top_p": 0.95,
+        "top_k": 20,
+        "tensor_parallel_size": 8,
+        "data_parallel_size": 2,
+        "rollout_npus": 16,
+        "agent_workers": 16,
+        "max_prompt_tokens": 4096,
+        "max_response_tokens": 90112,
+        "context_tokens": 94208,
+        "trajectory_timeout_seconds": 1800.0,
+        "task_batch_size": 48,
+        "optimizer_initialized": false,
+        "actor_worker_created": false,
+        "checkpoint_saved": false,
+        "strict_runtime_configuration_matched": false
+      },
+      "identity": {
+        "valid": true,
+        "kind": "llin_megatron_to_hf_export",
+        "policy_step": 120,
+        "config_sha256": "43eee23b0489ed1769bf2d49438015728ad686bef55d4aecb18a3a1ce840d6da",
+        "safetensor_index_sha256": "747b0b46e0334189cf0eb02ecc860f6de1e5f156f7115d5f76c20b1bc9ae03aa",
+        "export_manifest_sha256": "bf363a04d460a389021cf5e6e0c7013552ea88df6c5bd7bdb5ffd43300057208"
+      },
+      "shard_audit": {
+        "files": 1,
+        "bytes": 2319109,
+        "rows": 384,
+        "tasks": 48,
+        "duplicate_slots": 0,
+        "invalid_json_lines": 0,
+        "sample_count_histogram": {
+          "8": 48
+        },
+        "groups_with_exact_sample_indexes": 48,
+        "empty_inputs": 0,
+        "empty_outputs": 382,
+        "timeout_rows": 382,
+        "runtime_error_rows": 0,
+        "tool_call_blocks": 14,
+        "tool_response_blocks": 14,
+        "unique_output_count_histogram": {
+          "1": 46,
+          "2": 2
+        },
+        "file_set_sha256": "9699af47831857965bc74f4857c989c86a82ea8f950cd720daf9d151851d5cff",
+        "fingerprints": [
+          {
+            "file": "tasks_00000_00048.jsonl",
+            "sha256": "6cb87c31323732e2f07d4c19142d526210c64958749ba521e96d96c2e198812a",
+            "bytes": 2319109
+          }
+        ]
+      }
+    },
+    {
+      "run": "llin-planfirst-v3-base-vs-step120-300x8-20260814-02-finalizer",
+      "finalizer_exit_code": 0,
+      "summaries": [
+        {
+          "file": "comparison/safe_summary.json",
+          "sha256": "c1bb2d42cb70fc89060a2d51e3f0f3713b9e1667ae7e3e6b1db4787457b7bdac",
+          "metrics": {
+            "tasks": 300,
+            "samples_per_task": 8,
+            "training_allowed": false,
+            "promotion_allowed": false,
+            "arms": {
+              "native": {
+                "tasks": 300,
+                "trajectories": 2400,
+                "correct_trajectories": 1129,
+                "correct_rate": 0.47041666666666665,
+                "runtime_error_trajectories": 0,
+                "timeout_trajectories": 1227,
+                "bucket_counts": {
+                  "all_correct": 92,
+                  "mixed": 5,
+                  "timed_out": 203
+                },
+                "correct_count_histogram": {
+                  "0": 76,
+                  "1": 38,
+                  "2": 29,
+                  "3": 21,
+                  "4": 14,
+                  "5": 11,
+                  "6": 10,
+                  "7": 9,
+                  "8": 92
+                }
+              },
+              "step120": {
+                "tasks": 300,
+                "trajectories": 2400,
+                "correct_trajectories": 1584,
+                "correct_rate": 0.66,
+                "runtime_error_trajectories": 0,
+                "timeout_trajectories": 725,
+                "bucket_counts": {
+                  "all_correct": 121,
+                  "mixed": 9,
+                  "timed_out": 170
+                },
+                "correct_count_histogram": {
+                  "0": 26,
+                  "1": 23,
+                  "2": 26,
+                  "3": 20,
+                  "4": 15,
+                  "5": 22,
+                  "6": 18,
+                  "7": 29,
+                  "8": 121
+                }
+              }
+            },
+            "step120_mixed_training_candidates": 9,
+            "paired_mean_success_rate_delta": 0.18958333333333333
+          }
+        },
+        {
+          "file": "step120_remote/safe_summary.json",
+          "sha256": "1299c17628b7f3d6c3896001c515e605b0bb42ec0b761494958160b700f9eab0",
+          "metrics": {
+            "expected_tasks": 300,
+            "tasks": 300,
+            "partial": false,
+            "complete_shards": 7,
+            "samples_per_task": 8,
+            "trajectories": 2400,
+            "correct_trajectories": 1584,
+            "completed_trajectories": 1675,
+            "runtime_error_trajectories": 0,
+            "timeout_trajectories": 725,
+            "evaluable_trajectories": 1675,
+            "correct_rate": 0.66,
+            "completion_rate": 0.6979166666666666,
+            "bucket_counts": {
+              "all_correct": 121,
+              "mixed": 9,
+              "timed_out": 170
+            },
+            "correct_count_histogram": {
+              "0": 26,
+              "1": 23,
+              "2": 26,
+              "3": 20,
+              "4": 15,
+              "5": 22,
+              "6": 18,
+              "7": 29,
+              "8": 121
+            },
+            "mixed_screening_rows": 9,
+            "mixed_review_queue_rows": 9,
+            "training_allowed": false,
+            "promotion_allowed": false,
+            "explicit_semantic_review_completed": false
+          }
+        }
+      ]
+    },
+    {
+      "run": "llin-planfirst-v3-base-vs-step120-reconciled-30m-96k-20260814-02-finalizer",
+      "finalizer_exit_code": 0,
+      "summaries": [
+        {
+          "file": "comparison/safe_summary.json",
+          "sha256": "938c137c5fe7e3f28e7c06fc207fe67ded0c4cfe4d3d67b051955ba1942e8a5a",
+          "metrics": {
+            "tasks": 300,
+            "samples_per_task": 8,
+            "training_allowed": false,
+            "promotion_allowed": false,
+            "arms": {
+              "native": {
+                "tasks": 300,
+                "trajectories": 2400,
+                "correct_trajectories": 2201,
+                "correct_rate": 0.9170833333333334,
+                "runtime_error_trajectories": 0,
+                "timeout_trajectories": 0,
+                "bucket_counts": {
+                  "all_correct": 244,
+                  "all_wrong": 3,
+                  "mixed": 53
+                },
+                "correct_count_histogram": {
+                  "0": 3,
+                  "1": 1,
+                  "2": 7,
+                  "3": 7,
+                  "4": 7,
+                  "5": 10,
+                  "6": 12,
+                  "7": 9,
+                  "8": 244
+                }
+              },
+              "step120": {
+                "tasks": 300,
+                "trajectories": 2400,
+                "correct_trajectories": 2178,
+                "correct_rate": 0.9075,
+                "runtime_error_trajectories": 0,
+                "timeout_trajectories": 0,
+                "bucket_counts": {
+                  "all_correct": 240,
+                  "all_wrong": 4,
+                  "mixed": 56
+                },
+                "correct_count_histogram": {
+                  "0": 4,
+                  "1": 3,
+                  "2": 5,
+                  "3": 10,
+                  "4": 9,
+                  "5": 9,
+                  "6": 6,
+                  "7": 14,
+                  "8": 240
+                }
+              }
+            },
+            "step120_mixed_training_candidates": 46,
+            "paired_mean_success_rate_delta": -0.009583333333333333
+          }
+        },
+        {
+          "file": "step120_remote/safe_summary.json",
+          "sha256": "eacadb93697b3b1fcf0e58a605416e1b65b20a4018feb782bf2eab495d6234c8",
+          "metrics": {
+            "expected_tasks": 300,
+            "tasks": 300,
+            "partial": false,
+            "complete_shards": 7,
+            "samples_per_task": 8,
+            "trajectories": 2400,
+            "correct_trajectories": 2178,
+            "completed_trajectories": 2400,
+            "runtime_error_trajectories": 0,
+            "timeout_trajectories": 0,
+            "evaluable_trajectories": 2400,
+            "correct_rate": 0.9075,
+            "completion_rate": 1.0,
+            "bucket_counts": {
+              "all_correct": 240,
+              "all_wrong": 4,
+              "mixed": 56
+            },
+            "correct_count_histogram": {
+              "0": 4,
+              "1": 3,
+              "2": 5,
+              "3": 10,
+              "4": 9,
+              "5": 9,
+              "6": 6,
+              "7": 14,
+              "8": 240
+            },
+            "mixed_screening_rows": 56,
+            "mixed_review_queue_rows": 56,
+            "training_allowed": false,
+            "promotion_allowed": false,
+            "explicit_semantic_review_completed": false
+          }
+        }
+      ]
+    },
+    {
+      "run": "llin-planfirst-v3-native-300x8-20260814-01",
+      "config": {
+        "model_label": "native",
+        "policy_step": 0,
+        "tasks": 300,
+        "samples_per_task": 8,
+        "temperature": 1.0,
+        "top_p": 0.95,
+        "top_k": 20,
+        "tensor_parallel_size": 8,
+        "data_parallel_size": 2,
+        "rollout_npus": 16,
+        "agent_workers": 16,
+        "max_prompt_tokens": 4096,
+        "max_response_tokens": 45056,
+        "context_tokens": 49152,
+        "trajectory_timeout_seconds": 900.0,
+        "task_batch_size": 48,
+        "optimizer_initialized": false,
+        "actor_worker_created": false,
+        "checkpoint_saved": false,
+        "strict_runtime_configuration_matched": false
+      },
+      "identity": {
+        "valid": true,
+        "kind": "native_hf_checkpoint",
+        "policy_step": 0,
+        "config_sha256": "69db4eb7196bc8190813231b3018ca05d8c2e3abc7b1af19d55c157af44a9d9c",
+        "safetensor_index_sha256": "a8ad2c26fb707ff8c245806315b03e3b4b74595528492423af5dae0ce39b4d9b",
+        "export_manifest_sha256": null
+      }
+    },
+    {
+      "run": "llin-planfirst-v3-native-300x8-20260814-02",
+      "config": {
+        "model_label": "native",
+        "policy_step": 0,
+        "tasks": 300,
+        "samples_per_task": 8,
+        "temperature": 1.0,
+        "top_p": 0.95,
+        "top_k": 20,
+        "tensor_parallel_size": 8,
+        "data_parallel_size": 2,
+        "rollout_npus": 16,
+        "agent_workers": 16,
+        "max_prompt_tokens": 4096,
+        "max_response_tokens": 45056,
+        "context_tokens": 49152,
+        "trajectory_timeout_seconds": 900.0,
+        "task_batch_size": 48,
+        "optimizer_initialized": false,
+        "actor_worker_created": false,
+        "checkpoint_saved": false,
+        "strict_runtime_configuration_matched": false
+      },
+      "identity": {
+        "valid": true,
+        "kind": "native_hf_checkpoint",
+        "policy_step": 0,
+        "config_sha256": "69db4eb7196bc8190813231b3018ca05d8c2e3abc7b1af19d55c157af44a9d9c",
+        "safetensor_index_sha256": "a8ad2c26fb707ff8c245806315b03e3b4b74595528492423af5dae0ce39b4d9b",
+        "export_manifest_sha256": null
+      },
+      "exit_code": 0,
+      "summaries": [
+        {
+          "file": "outcomes/safe_summary.json",
+          "sha256": "87da6342f6130f8f5fea131c601bee445fb0ae8b014fa7efa9222e967b4e7ad8",
+          "metrics": {
+            "expected_tasks": 300,
+            "tasks": 300,
+            "partial": false,
+            "complete_shards": 7,
+            "samples_per_task": 8,
+            "trajectories": 2400,
+            "correct_trajectories": 1129,
+            "completed_trajectories": 1173,
+            "runtime_error_trajectories": 0,
+            "timeout_trajectories": 1227,
+            "evaluable_trajectories": 1173,
+            "correct_rate": 0.47041666666666665,
+            "completion_rate": 0.48875,
+            "bucket_counts": {
+              "all_correct": 92,
+              "mixed": 5,
+              "timed_out": 203
+            },
+            "correct_count_histogram": {
+              "0": 76,
+              "1": 38,
+              "2": 29,
+              "3": 21,
+              "4": 14,
+              "5": 11,
+              "6": 10,
+              "7": 9,
+              "8": 92
+            },
+            "mixed_screening_rows": 5,
+            "mixed_review_queue_rows": 5,
+            "training_allowed": false,
+            "promotion_allowed": false,
+            "explicit_semantic_review_completed": false
+          }
+        }
+      ],
+      "shard_audit": {
+        "files": 7,
+        "bytes": 18366314,
+        "rows": 2400,
+        "tasks": 300,
+        "duplicate_slots": 0,
+        "invalid_json_lines": 0,
+        "sample_count_histogram": {
+          "8": 300
+        },
+        "groups_with_exact_sample_indexes": 300,
+        "empty_inputs": 0,
+        "empty_outputs": 1227,
+        "timeout_rows": 1227,
+        "runtime_error_rows": 0,
+        "tool_call_blocks": 3295,
+        "tool_response_blocks": 3295,
+        "unique_output_count_histogram": {
+          "1": 64,
+          "2": 42,
+          "3": 29,
+          "4": 24,
+          "5": 17,
+          "6": 12,
+          "7": 8,
+          "8": 104
+        },
+        "file_set_sha256": "c000581f90129e3745d6e97c67bfea25ada8c4f59018375333ed2deed4736a2c",
+        "fingerprints": [
+          {
+            "file": "tasks_00000_00048.jsonl",
+            "sha256": "67987fc9c589b0248d135f43e156ae7092f3fb219bd1d704c9e6fa45990a019a",
+            "bytes": 2914619
+          },
+          {
+            "file": "tasks_00048_00096.jsonl",
+            "sha256": "f76471300e513531fe94075aa48b4c0bcc22752254c134d93d7736aae51af4dd",
+            "bytes": 2855924
+          },
+          {
+            "file": "tasks_00096_00144.jsonl",
+            "sha256": "2058218be9d7c4bae4faecc25f9a9f92a5a9a8fecfbc570944ae461958859036",
+            "bytes": 2784026
+          },
+          {
+            "file": "tasks_00144_00192.jsonl",
+            "sha256": "fe4832cdf629032343457f9f5d68c48b78d6bda9d89aa70b43f9e7c7395e5fd2",
+            "bytes": 2955802
+          },
+          {
+            "file": "tasks_00192_00240.jsonl",
+            "sha256": "c1fb1afa83df644a501576d37a02e213840edd64515efd4bc95755d1c104997e",
+            "bytes": 2894135
+          },
+          {
+            "file": "tasks_00240_00288.jsonl",
+            "sha256": "6249eea815e67d647e3ee0a85a8aa939b7fb334f718eb23f5ab408f0802dad00",
+            "bytes": 2841828
+          },
+          {
+            "file": "tasks_00288_00300.jsonl",
+            "sha256": "dd8e288436b869860787bdc6a8c6d7c20a12103317dc52a8069dc634a3f5a9c3",
+            "bytes": 1119980
+          }
+        ]
+      }
+    },
+    {
+      "run": "llin-planfirst-v3-native-300x8-20260814-preflight",
+      "config": {
+        "model_label": "native",
+        "policy_step": 0,
+        "tasks": 300,
+        "samples_per_task": 8,
+        "temperature": 1.0,
+        "top_p": 0.95,
+        "top_k": 20,
+        "tensor_parallel_size": 8,
+        "data_parallel_size": 2,
+        "rollout_npus": 16,
+        "agent_workers": 16,
+        "max_prompt_tokens": 4096,
+        "max_response_tokens": 45056,
+        "context_tokens": 49152,
+        "trajectory_timeout_seconds": 900.0,
+        "task_batch_size": 48,
+        "optimizer_initialized": false,
+        "actor_worker_created": false,
+        "checkpoint_saved": false,
+        "strict_runtime_configuration_matched": false
+      },
+      "identity": {
+        "valid": true,
+        "kind": "native_hf_checkpoint",
+        "policy_step": 0,
+        "config_sha256": "69db4eb7196bc8190813231b3018ca05d8c2e3abc7b1af19d55c157af44a9d9c",
+        "safetensor_index_sha256": "a8ad2c26fb707ff8c245806315b03e3b4b74595528492423af5dae0ce39b4d9b",
+        "export_manifest_sha256": null
+      }
+    },
+    {
+      "run": "llin-planfirst-v3-native-reconciled-30m-96k-20260814-01",
+      "exit_code": 0,
+      "summaries": [
+        {
+          "file": "outcomes/safe_summary.json",
+          "sha256": "6c9648e287f5626879d9ceabe8e81be8cf9dd0a72703660c8d5f4892b3e8b478",
+          "metrics": {
+            "expected_tasks": 300,
+            "tasks": 300,
+            "partial": false,
+            "complete_shards": 7,
+            "samples_per_task": 8,
+            "trajectories": 2400,
+            "correct_trajectories": 2201,
+            "completed_trajectories": 2400,
+            "runtime_error_trajectories": 0,
+            "timeout_trajectories": 0,
+            "evaluable_trajectories": 2400,
+            "correct_rate": 0.9170833333333334,
+            "completion_rate": 1.0,
+            "bucket_counts": {
+              "all_correct": 244,
+              "all_wrong": 3,
+              "mixed": 53
+            },
+            "correct_count_histogram": {
+              "0": 3,
+              "1": 1,
+              "2": 7,
+              "3": 7,
+              "4": 7,
+              "5": 10,
+              "6": 12,
+              "7": 9,
+              "8": 244
+            },
+            "mixed_screening_rows": 53,
+            "mixed_review_queue_rows": 53,
+            "training_allowed": false,
+            "promotion_allowed": false,
+            "explicit_semantic_review_completed": false
+          }
+        }
+      ]
+    },
+    {
+      "run": "llin-planfirst-v3-native-timeout-retry-30m-96k-20260814-01",
+      "config": {
+        "model_label": "native-timeout-retry",
+        "policy_step": 0,
+        "tasks": 1227,
+        "samples_per_task": 1,
+        "temperature": 1.0,
+        "top_p": 0.95,
+        "top_k": 20,
+        "tensor_parallel_size": 8,
+        "data_parallel_size": 2,
+        "rollout_npus": 16,
+        "agent_workers": 16,
+        "max_prompt_tokens": 4096,
+        "max_response_tokens": 90112,
+        "context_tokens": 94208,
+        "trajectory_timeout_seconds": 1800.0,
+        "task_batch_size": 96,
+        "optimizer_initialized": false,
+        "actor_worker_created": false,
+        "checkpoint_saved": false,
+        "strict_runtime_configuration_matched": false
+      },
+      "identity": {
+        "valid": true,
+        "kind": "native_hf_checkpoint",
+        "policy_step": 0,
+        "config_sha256": "69db4eb7196bc8190813231b3018ca05d8c2e3abc7b1af19d55c157af44a9d9c",
+        "safetensor_index_sha256": "a8ad2c26fb707ff8c245806315b03e3b4b74595528492423af5dae0ce39b4d9b",
+        "export_manifest_sha256": null
+      },
+      "exit_code": 0,
+      "shard_audit": {
+        "files": 13,
+        "bytes": 15649348,
+        "rows": 1227,
+        "tasks": 1227,
+        "duplicate_slots": 0,
+        "invalid_json_lines": 0,
+        "sample_count_histogram": {
+          "1": 1227
+        },
+        "groups_with_exact_sample_indexes": 1227,
+        "empty_inputs": 0,
+        "empty_outputs": 0,
+        "timeout_rows": 0,
+        "runtime_error_rows": 0,
+        "tool_call_blocks": 5962,
+        "tool_response_blocks": 5960,
+        "unique_output_count_histogram": {
+          "1": 1227
+        },
+        "file_set_sha256": "424320cf6e7f3d41ef9f604495654ad3874f3da6d281f0ac226ae2eab811d84a",
+        "fingerprints": [
+          {
+            "file": "tasks_00000_00096.jsonl",
+            "sha256": "0fcbfe4697a1eff4e2ceebccf5aac5902099cc0f786c0621a95782ef3dda9dfa",
+            "bytes": 1212082
+          },
+          {
+            "file": "tasks_00096_00192.jsonl",
+            "sha256": "52629c027333d80642426c157cf77c8615413d5eb01111ca5dd8514f27eabb51",
+            "bytes": 1238045
+          },
+          {
+            "file": "tasks_00192_00288.jsonl",
+            "sha256": "00cbc6a9c240f254b0f4ffeb2432fa131bf9c6d502e1336baf2d35d052f948be",
+            "bytes": 1225072
+          },
+          {
+            "file": "tasks_00288_00384.jsonl",
+            "sha256": "f38ca47f0aca56a1cf5cdb75d7d36af3bbfa612fc75cf77cb73bdb2adf1ef58d",
+            "bytes": 1242639
+          },
+          {
+            "file": "tasks_00384_00480.jsonl",
+            "sha256": "5281bf5150b44440a0e1c0c8c938ec8c6eaefaaf36b7c38ceddcbdb990e1cc13",
+            "bytes": 1216030
+          },
+          {
+            "file": "tasks_00480_00576.jsonl",
+            "sha256": "fbe9b9deb6cd87572370ce7345a9c94946a469d45e4efdb83d6d29812ff1eeb8",
+            "bytes": 1259781
+          },
+          {
+            "file": "tasks_00576_00672.jsonl",
+            "sha256": "88adbc6be1ac4ef5e1a186816083ea7b1f59a3cf08be322da1631dc23f849811",
+            "bytes": 1209321
+          },
+          {
+            "file": "tasks_00672_00768.jsonl",
+            "sha256": "4dfa296cb00c411766c2c7c783acdd4dbba784393a3d687826e25006eb878a70",
+            "bytes": 1229199
+          },
+          {
+            "file": "tasks_00768_00864.jsonl",
+            "sha256": "59769adbea6a5f9bd0a2db0e399df247f4bcb7667971254578f08a2bc7080776",
+            "bytes": 1238635
+          },
+          {
+            "file": "tasks_00864_00960.jsonl",
+            "sha256": "9a48fb7d2eb96954d9a0d72d547015e1d401245aebef05c58d081f1058c697f3",
+            "bytes": 1188928
+          },
+          {
+            "file": "tasks_00960_01056.jsonl",
+            "sha256": "5a463867162ada8e30f00a9ad63268310e9b4ee854b25c2138cc27e2e342eec8",
+            "bytes": 1182526
+          },
+          {
+            "file": "tasks_01056_01152.jsonl",
+            "sha256": "6e993da681e9aa0c81b7d21ec1ff4cf20c511e43bd02faca915fbdd6233af419",
+            "bytes": 1239818
+          },
+          {
+            "file": "tasks_01152_01227.jsonl",
+            "sha256": "5ca55717dac8d2cc485e494127bf8ba18477ab51f6844d354a1c6a6516a3d39a",
+            "bytes": 967272
+          }
+        ]
+      }
+    },
+    {
+      "run": "llin-planfirst-v3-native-timeout-retry-30m-96k-20260814-preflight",
+      "config": {
+        "model_label": "native-timeout-retry",
+        "policy_step": 0,
+        "tasks": 1227,
+        "samples_per_task": 1,
+        "temperature": 1.0,
+        "top_p": 0.95,
+        "top_k": 20,
+        "tensor_parallel_size": 8,
+        "data_parallel_size": 2,
+        "rollout_npus": 16,
+        "agent_workers": 16,
+        "max_prompt_tokens": 4096,
+        "max_response_tokens": 90112,
+        "context_tokens": 94208,
+        "trajectory_timeout_seconds": 1800.0,
+        "task_batch_size": 96,
+        "optimizer_initialized": false,
+        "actor_worker_created": false,
+        "checkpoint_saved": false,
+        "strict_runtime_configuration_matched": false
+      },
+      "identity": {
+        "valid": true,
+        "kind": "native_hf_checkpoint",
+        "policy_step": 0,
+        "config_sha256": "69db4eb7196bc8190813231b3018ca05d8c2e3abc7b1af19d55c157af44a9d9c",
+        "safetensor_index_sha256": "a8ad2c26fb707ff8c245806315b03e3b4b74595528492423af5dae0ce39b4d9b",
+        "export_manifest_sha256": null
+      }
+    },
+    {
+      "run": "llin-v15-codex-model2-100-step120-8x-20260821-01",
+      "config": {
+        "model_label": "step120",
+        "policy_step": 120,
+        "tasks": 100,
+        "samples_per_task": 8,
+        "temperature": 1.0,
+        "top_p": 0.95,
+        "top_k": 20,
+        "tensor_parallel_size": 8,
+        "data_parallel_size": 2,
+        "rollout_npus": 16,
+        "agent_workers": 16,
+        "max_prompt_tokens": 4096,
+        "max_response_tokens": 90112,
+        "context_tokens": 94208,
+        "trajectory_timeout_seconds": 1800.0,
+        "task_batch_size": 6,
+        "rolling_admission_enabled": true,
+        "optimizer_initialized": false,
+        "actor_worker_created": false,
+        "checkpoint_saved": false,
+        "strict_runtime_configuration_matched": false
+      },
+      "identity": {
+        "valid": true,
+        "kind": "llin_megatron_to_hf_export",
+        "policy_step": 120,
+        "config_sha256": "43eee23b0489ed1769bf2d49438015728ad686bef55d4aecb18a3a1ce840d6da",
+        "safetensor_index_sha256": "747b0b46e0334189cf0eb02ecc860f6de1e5f156f7115d5f76c20b1bc9ae03aa",
+        "export_manifest_sha256": "bf363a04d460a389021cf5e6e0c7013552ea88df6c5bd7bdb5ffd43300057208"
+      },
+      "exit_code": 0,
+      "summaries": [
+        {
+          "file": "outcomes/safe_summary.json",
+          "sha256": "fd02ca553a6ce35c70f48bdb7528859b8d669e12be3cbaad85e6ca463afbcd1b",
+          "metrics": {
+            "expected_tasks": 100,
+            "tasks": 100,
+            "partial": false,
+            "complete_shards": 17,
+            "samples_per_task": 8,
+            "trajectories": 800,
+            "correct_trajectories": 344,
+            "completed_trajectories": 783,
+            "runtime_error_trajectories": 0,
+            "timeout_trajectories": 7,
+            "evaluable_trajectories": 793,
+            "correct_rate": 0.43,
+            "completion_rate": 0.97875,
+            "bucket_counts": {
+              "all_correct": 30,
+              "all_wrong": 47,
+              "mixed": 21,
+              "timed_out": 2
+            },
+            "correct_count_histogram": {
+              "0": 49,
+              "1": 1,
+              "2": 0,
+              "3": 5,
+              "4": 3,
+              "5": 3,
+              "6": 2,
+              "7": 7,
+              "8": 30
+            },
+            "mixed_screening_rows": 21,
+            "mixed_review_queue_rows": 21,
+            "training_allowed": false,
+            "promotion_allowed": false,
+            "explicit_semantic_review_completed": false
+          }
+        }
+      ],
+      "shard_audit": {
+        "files": 17,
+        "bytes": 23470319,
+        "rows": 800,
+        "tasks": 100,
+        "duplicate_slots": 0,
+        "invalid_json_lines": 0,
+        "sample_count_histogram": {
+          "8": 100
+        },
+        "groups_with_exact_sample_indexes": 100,
+        "empty_inputs": 0,
+        "empty_outputs": 7,
+        "timeout_rows": 7,
+        "runtime_error_rows": 0,
+        "tool_call_blocks": 5093,
+        "tool_response_blocks": 5081,
+        "unique_output_count_histogram": {
+          "4": 1,
+          "7": 1,
+          "8": 98
+        },
+        "file_set_sha256": "7deaeb67f8bd5148bad88912e893a43f4e1e67674f1cbfef6a0e5f6801608aa1",
+        "fingerprints": [
+          {
+            "file": "tasks_00000_00006.jsonl",
+            "sha256": "40a5c441359b523448f5f5a706c7e62f2ad3a7297c8118955cf7835d2204d1bf",
+            "bytes": 1212125
+          },
+          {
+            "file": "tasks_00006_00012.jsonl",
+            "sha256": "d9b398541c13d4b581cd75b6aa8fcfb7d82c3371a10535ef96c7425b6fc8d73b",
+            "bytes": 1237554
+          },
+          {
+            "file": "tasks_00012_00018.jsonl",
+            "sha256": "1c556d1363cb4c35f8a9cc03632ac3a425512064c702094ca559f79ffdbc3664",
+            "bytes": 1239186
+          },
+          {
+            "file": "tasks_00018_00024.jsonl",
+            "sha256": "9ce5124f0eace388c8620cec55d72f02ac12632569923be267001c7da38dc95b",
+            "bytes": 1234381
+          },
+          {
+            "file": "tasks_00024_00030.jsonl",
+            "sha256": "c3e907074d4baa61d82ddf5f63d3ee9203b84f3f84f38e905b8bb6b56497c082",
+            "bytes": 1332399
+          },
+          {
+            "file": "tasks_00030_00036.jsonl",
+            "sha256": "43a7124e4dad1cf85f29620d53930e9d546f1dced61655d1d27c1c00a724dbf7",
+            "bytes": 1289593
+          },
+          {
+            "file": "tasks_00036_00042.jsonl",
+            "sha256": "5e562cc5fe1c28539d129f9ffd90a6359194a28c59ce7778bf580b5cd29d7a77",
+            "bytes": 1299341
+          },
+          {
+            "file": "tasks_00042_00048.jsonl",
+            "sha256": "cadefb0f416369cec2b97aa73711fa13a8096253ce5d6cd97a30e22cff342ac6",
+            "bytes": 1605298
+          },
+          {
+            "file": "tasks_00048_00054.jsonl",
+            "sha256": "fa625848a154537c95374f5e56b3ce6f97bf45de5c1a749b5dc3633c8adef942",
+            "bytes": 1472625
+          },
+          {
+            "file": "tasks_00054_00060.jsonl",
+            "sha256": "1413a10255db66ba609b77ee810c7d960355558177e58e227ad5a12cb8a7d528",
+            "bytes": 1613208
+          },
+          {
+            "file": "tasks_00060_00066.jsonl",
+            "sha256": "3065abcfab0f496a11b5033716571e86a95fb86d80fcebc260623a05227806e3",
+            "bytes": 1555499
+          },
+          {
+            "file": "tasks_00066_00072.jsonl",
+            "sha256": "edad1ac18f63ea920117ad97c00de111ed7c1938fea8d5984146df5005e32d54",
+            "bytes": 1556975
+          },
+          {
+            "file": "tasks_00072_00078.jsonl",
+            "sha256": "16d1f7e55441f2dfc1e42c2d0d75a23c1399d5baea34f5f50166cec3941cee0c",
+            "bytes": 1510648
+          },
+          {
+            "file": "tasks_00078_00084.jsonl",
+            "sha256": "469c3ead9638d9750566365a5d27d5aa32409a6eefd001378ecd9091408eee35",
+            "bytes": 1518335
+          },
+          {
+            "file": "tasks_00084_00090.jsonl",
+            "sha256": "582389e6ddffc75973f980e6b347479e52ba7b9264ee994c8cc86fed6ad2abb7",
+            "bytes": 1409600
+          },
+          {
+            "file": "tasks_00090_00096.jsonl",
+            "sha256": "af6b4b126873672804ebc6f7f3c56a6bb18f45fed3f1bba668e76b0d30106d30",
+            "bytes": 1411124
+          },
+          {
+            "file": "tasks_00096_00100.jsonl",
+            "sha256": "c4c1983aa1cd7ac78f63c27a8292da53cb7cb29dbb00ec92c4fbe477282e9e9b",
+            "bytes": 972428
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [],
+  "scoring_versions": [
+    {
+      "file": "grpo_readiness_audit_20260822-05/safe_summary.json",
+      "sha256": "69f28213e6845a44ef366e5216b0470bffc6f84e4f67acbf7bdd8d205571650a",
+      "metrics": {
+        "source": {
+          "complete_shards": 17,
+          "expected_tasks": 100,
+          "original_scope_buckets": {
+            "all_wrong": 47,
+            "mixed": 21
+          },
+          "samples_per_task": 8,
+          "scope_tasks": 68,
+          "trajectory_slots": 800
+        },
+        "grpo_readiness": {
+          "conditional_candidates_blocked_until_reward_route_fixed": 22,
+          "directly_audited_mixed_candidates": 21,
+          "reward_repair_conditional_mixed_candidates": 22,
+          "total_nonzero_variance_candidates_after_reward_repair": 43
+        }
+      }
+    },
+    {
+      "file": "grpo_reward_shadow_20260822-02/safe_summary.json",
+      "sha256": "1e8a9cb48975bbabc0ce938872de97c2c3ec8b03824b0bf8f8d73e72b30628b0",
+      "metrics": {
+        "corrected_outcomes": {
+          "approved43_all_mixed": false,
+          "correct_trajectories": 289,
+          "incorrect_trajectories": 511,
+          "labels_changed_by_strict_final_parser": 194,
+          "legacy_permissive_correct_trajectories": 483,
+          "numeric_final_parse_ambiguities": 118.0,
+          "task_bucket_counts": {
+            "all_correct": 12,
+            "all_wrong": 34,
+            "mixed": 54
+          }
+        },
+        "hard_gates": {
+          "approved43_all_trajectories_eligible": false,
+          "eligible_trajectories": 774.0,
+          "ineligible_trajectories": 26.0
+        }
+      }
+    }
+  ],
+  "contract": "step120-agent-evaluation-inventory-safe-v1",
+  "scope_note": "Run records include retries, native controls, preflights and merged copies. Counts are not independent Step120 samples.",
+  "audit_totals": {
+    "run_records": 51,
+    "shard_directories": 24,
+    "shard_rows_including_reused_sources_and_controls": 21967,
+    "invalid_json_lines": 0,
+    "duplicate_slots_within_each_run": 0
+  },
+  "model_identity": {
+    "branch": "domain_dense_step120_20260810",
+    "export_directory_basename": "llin-qwen3.6-27b-grpo-step120-hf-20260813",
+    "source_training_run": "llin-pi-dense-correctness-step100-to-step120-20260810-01",
+    "source_global_step": 120,
+    "excluded_opensource_training_run": "llin-step120-opensource-20260825-02",
+    "export_manifest_sha256": "bf363a04d460a389021cf5e6e0c7013552ea88df6c5bd7bdb5ffd43300057208",
+    "config_sha256": "43eee23b0489ed1769bf2d49438015728ad686bef55d4aecb18a3a1ce840d6da",
+    "safetensor_index_sha256": "747b0b46e0334189cf0eb02ecc860f6de1e5f156f7115d5f76c20b1bc9ae03aa",
+    "indexed_weight_files": 15,
+    "all_indexed_weight_files_present": true,
+    "indexed_weight_file_bytes": 56484503104,
+    "full_weight_hashes_recomputed": false
+  },
+  "supplemental_checks": {
+    "full25_step120": {
+      "run": "llin-disjoint-pair-step120-first-query-20260812-05-full25",
+      "validation_rows": 64,
+      "validation_sha256": "3ba7a51f9ae96cde60b0aa207c0599972d3758fb51d762827f6708b37493a471",
+      "exit_code": 0,
+      "dense_checkpoint_in_driver_log": true,
+      "force_sync_marker": true,
+      "skip_sync_marker": false
+    },
+    "full25_native": {
+      "run": "llin-disjoint-native-full25-20260813-01",
+      "validation_rows": 64,
+      "validation_sha256": "3b3dd9e6a560583bf9e00855c5b739e3f9391c2076a2f1bcc405f727d1a2e6df",
+      "exit_code": 0,
+      "force_sync_marker": false,
+      "skip_sync_marker": true
+    },
+    "pi_matched48k": {
+      "run": "llin-runtime-parity-10x8-step120-20260813-01",
+      "subdirectory": "pi_native_matched48k",
+      "raw_sample_files": 80,
+      "raw_sample_file_bytes": 662052907
+    },
+    "primary100_timestamps": {
+      "started_at": "2026-08-21T21:32:08+08:00",
+      "finished_at": "2026-08-21T22:55:33+08:00"
+    },
+    "grounded_subset": {
+      "file": "grpo_grounded_tristate_calibration_20260822-01/safe_summary.json",
+      "sha256": "ce420579faf5a54a11e55392d289bae58672c061e36bf86278099d35011fca3a",
+      "tasks": 43,
+      "trajectories": 344,
+      "PASS": 0,
+      "FAIL": 253,
+      "UNKNOWN": 91,
+      "final_correct_rows": 128,
+      "human_completed_rows": 0,
+      "human_required_rows": 344
+    },
+    "machine06_raw_trajectories_rechecked_this_session": false
+  },
+  "fingerprint_encoding": "file_set_sha256 = SHA256(UTF8(json.dumps(sorted file-name/sha256/bytes tuples, separators=(comma,colon))))",
+  "contains_prompts_gold_sql_task_ids_answers_or_tool_outputs": false
+}
